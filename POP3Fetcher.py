@@ -13,6 +13,7 @@ class POP3Fetcher(poplib.POP3):
     
     def withLogin(method):
         def methodWithLogin(self, *args, **kwargs):
+            #maybe with apop or rpop?
             self.user(self.__username)
             self.pass_( self.__password)
             method(self, *args, **kwargs)
@@ -23,8 +24,11 @@ class POP3Fetcher(poplib.POP3):
     def fetchAndPrintAll(self, mailbox = 'INBOX'):
         self.select(mailbox)
         typ, data = self.search(None, 'ALL')
-        for number in data[0].split()[-2:]:
-            typ, data = self.fetch(number, '(RFC822)')
-            print('Message %s\n%s\n' % (number, MailParser.parseTo(data[0][1]))) 
+        messageNumber = len(self.list()[1])
+        fullMessage = ""
+        for number in range(messageNumber):
+            typ, messageData = self.retr(number + 1)
+            fullMessage += messageData[1]
+        print('Message %s\n%s\n' % (number, MailParser.parseTo(fullMessage))) 
 
 
