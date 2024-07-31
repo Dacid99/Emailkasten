@@ -3,7 +3,7 @@ import os
 
 from MailParser import MailParser
 
-class IMAP_Fetcher(imaplib.IMAP4): 
+class IMAPFetcher(imaplib.IMAP4): 
 
     def __init__(self, username, password, host: str = "", port: int = 993, timeout= None):
         super().__init__(host, port, timeout)
