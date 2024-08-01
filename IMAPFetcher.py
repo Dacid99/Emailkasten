@@ -5,7 +5,7 @@ from MailParser import MailParser
 
 class IMAPFetcher(imaplib.IMAP4): 
 
-    def __init__(self, username, password, host: str = "", port: int = 993, timeout= None):
+    def __init__(self, username, password, host: str = "", port: int = 143, timeout= None):
         super().__init__(host, port, timeout)
         self.__username = username
         self.__password = password

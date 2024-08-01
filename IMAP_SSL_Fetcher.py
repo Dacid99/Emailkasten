@@ -21,8 +21,7 @@ class IMAP_SSL_Fetcher(imaplib.IMAP4_SSL):
     def fetchAndPrintAll(self, mailbox = 'INBOX'):
         self.select(mailbox)
         typ, messageNumbers = self.search(None, 'ALL')
-        for number in messageNumbers[0].split()[-2:]:
+        for number in messageNumbers[0].split()[-10:]:
             typ, messageData = self.fetch(number, '(RFC822)')
-            print(MailParser.parseFrom(messageData[0][1])) 
-            print(MailParser.parseSubject(messageData[0][1])) 
-            print(MailParser.parseBcc(messageData[0][1])) 
+            mailParser = MailParser(messageData[0][1]) 
+            print(mailParser.parseFrom())
