@@ -43,17 +43,23 @@ class MailParser:
     
     def parseTo(self):
         recipients = self.mailMessage.get_all(MailParser.__toString)
+        if recipients is None:
+            return None
         decodedAndSeparatedRecipients = [self.separateMailNameAndAdress(self.decodeHeader(recipient)) for recipient in recipients]
         return decodedAndSeparatedRecipients
     
     def parseBcc(self):
         recipients = self.mailMessage.get_all(MailParser.__bccString)
+        if recipients is None:
+            return None
         decodedAndSeparatedRecipients = [self.separateMailNameAndAdress(self.decodeHeader(recipient)) for recipient in recipients]
         return decodedAndSeparatedRecipients
 
     
     def parseCc(self):
         recipients = self.mailMessage.get_all(MailParser.__ccString)
+        if recipients is None:
+            return None
         decodedAndSeparatedRecipients = [self.separateMailNameAndAdress(self.decodeHeader(recipient)) for recipient in recipients]
         return decodedAndSeparatedRecipients
 
