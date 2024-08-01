@@ -1,5 +1,6 @@
 import email 
 import email.header
+import email.utils
 
 class MailParser:
     __fromString = "From"
@@ -30,23 +31,31 @@ class MailParser:
         decodedText = text.get_payload(decode=True).decode(charset, errors='replace')
         return decodedText
     
+    def separateMailNameAndAdress(self, mailer):
+        mailName, mailAddress = email.utils.parseaddr(mailer)
+        if mailAddress.find("@") == -1:
+            mailAddress = mailer
+        return (mailName, mailAddress)
+
     def parseFrom(self):
-        return self.decodeHeader(self.mailMessage.get(MailParser.__fromString))
+        sender = self.decodeHeader(self.mailMessage.get(MailParser.__fromString))
+        return self.separateMailNameAndAdress(sender)
     
     def parseTo(self):
         recipients = self.mailMessage.get_all(MailParser.__toString)
-        decodedRecipients = [self.decodeHeader(recipient) for recipient in recipients]
-        return decodedRecipients
+        decodedAndSeparatedRecipients = [self.separateMailNameAndAdress(self.decodeHeader(recipient)) for recipient in recipients]
+        return decodedAndSeparatedRecipients
     
     def parseBcc(self):
         recipients = self.mailMessage.get_all(MailParser.__bccString)
-        decodedRecipients = [self.decodeHeader(recipient) for recipient in recipients]
-        return decodedRecipients
+        decodedAndSeparatedRecipients = [self.separateMailNameAndAdress(self.decodeHeader(recipient)) for recipient in recipients]
+        return decodedAndSeparatedRecipients
+
     
     def parseCc(self):
         recipients = self.mailMessage.get_all(MailParser.__ccString)
-        decodedRecipients = [self.decodeHeader(recipient) for recipient in recipients]
-        return decodedRecipients
+        decodedAndSeparatedRecipients = [self.separateMailNameAndAdress(self.decodeHeader(recipient)) for recipient in recipients]
+        return decodedAndSeparatedRecipients
 
     def parseDate(self):
         return self.decodeHeader(self.mailMessage.get(MailParser.__dateString))
