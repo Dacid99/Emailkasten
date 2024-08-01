@@ -25,10 +25,11 @@ class POP3Fetcher(poplib.POP3):
         self.select(mailbox)
         typ, data = self.search(None, 'ALL')
         messageNumber = len(self.list()[1])
-        fullMessage = ""
         for number in range(messageNumber):
             typ, messageData = self.retr(number + 1)
-            fullMessage += messageData[1]
-        print('Message %s\n%s\n' % (number, MailParser.parseTo(fullMessage))) 
+            fullMessage = bytes()
+            for messageLine in messageData:
+                fullMessage += messageLine
+            print('Message %s\n%s\n' % (number, MailParser.parseTo(fullMessage))) 
 
 
