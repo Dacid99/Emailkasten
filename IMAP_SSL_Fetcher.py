@@ -23,4 +23,6 @@ class IMAP_SSL_Fetcher(imaplib.IMAP4_SSL):
         typ, messageNumbers = self.search(None, 'ALL')
         for number in messageNumbers[0].split()[-2:]:
             typ, messageData = self.fetch(number, '(RFC822)')
-            print('Message %s\n%s\n' % (number, MailParser.parseTo(messageData[0][1]))) 
+            print(MailParser.parseFrom(messageData[0][1])) 
+            print(MailParser.parseSubject(messageData[0][1])) 
+            print(MailParser.parseBcc(messageData[0][1])) 

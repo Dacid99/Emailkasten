@@ -4,6 +4,7 @@ class MailParser:
     __fromString = "From"
     __toString = "To"
     __bccString = "Bcc"
+    __ccString = "Cc"
     __dateString = "Date"
     __subjectString = "Subject"
 
@@ -20,9 +21,13 @@ class MailParser:
         mailText = MailParser.parseToText(mail)
         return mailText.get(MailParser.__toString)
     
-    def parseBCC(mail):
+    def parseBcc(mail):
         mailText = MailParser.parseToText(mail)
         return mailText.get(MailParser.__bccString)
+    
+    def parseCc(mail):
+        mailText = MailParser.parseToText(mail)
+        return mailText.get(MailParser.__ccString)
 
     def parseDate(mail):
         mailText = MailParser.parseToText(mail)
