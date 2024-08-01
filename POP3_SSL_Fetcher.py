@@ -3,10 +3,10 @@ import os
 
 from MailParser import MailParser
 
-class POP3_SSL_Fetcher(poplib.POP3_SSL): 
+class POP3_SSL_Fetcher: 
 
     def __init__(self, username, password, host: str = "", port: int = 995, keyfile= None, certfile = None, ssl_context = None, timeout= None):
-        super().__init__(host, port, keyfile, certfile, timeout, ssl_context)
+        self.__mailhost = poplib.POP3_SSL(host, port, keyfile, certfile, timeout, ssl_context)
         self.__username = username
         self.__password = password
 
@@ -14,17 +14,17 @@ class POP3_SSL_Fetcher(poplib.POP3_SSL):
     def withLogin(method):
         def methodWithLogin(self, *args, **kwargs):
             #maybe with apop or rpop?
-            self.user(self.__username)
-            self.pass_( self.__password)
+            self.__mailhost.user(self.__username)
+            self.__mailhost.pass_( self.__password)
             method(self, *args, **kwargs)
-            self.quit()
+            self.__mailhost.quit()
         return methodWithLogin
     
     @withLogin
     def fetchAndPrintAll(self):
-        messageNumber = len(self.list()[1])
+        messageNumber = len(self.__mailhost.list()[1])
         for number in range(messageNumber):
-            messageData = self.retr(number + 1)[1]
+            messageData = self.__mailhost.retr(number + 1)[1]
             
             fullMessage = b'\n'.join(messageData)
             mailParser = MailParser(fullMessage)
