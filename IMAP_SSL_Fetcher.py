@@ -12,22 +12,19 @@ class IMAP_SSL_Fetcher:
 
     def withLogin(method):
         def methodWithLogin(self, *args, **kwargs):
-            self.__mailhost.login(self.__username, self.__password)
+            
             method(self, *args, **kwargs)
-            self.__mailhost.logout()
+
         return methodWithLogin
     
-    @withLogin
-    def fetchAndPrintAll(self, mailbox = 'INBOX'):
+
+    def fetchLatest(self, mailbox = 'INBOX'):
+        self.__mailhost.login(self.__username, self.__password)
         self.__mailhost.select(mailbox)
         typ, messageNumbers = self.__mailhost.search(None, 'ALL')
-        for number in messageNumbers[0].split()[-10:]:
-            typ, messageData = self.__mailhost.fetch(number, '(RFC822)')
-            mailParser = MailParser(messageData[0][1]) 
-            print(mailParser.parseFrom())
-            print(mailParser.parseTo())
-            print(mailParser.parseSubject())
-            print(mailParser.parseBody())
-            print(mailParser.parseDate())
-            print(mailParser.parseCc())
-            print(mailParser.parseBcc())
+        number = messageNumbers[0].split()[-2]
+        typ, messageData = self.__mailhost.fetch(number, '(RFC822)')
+        mailParser = MailParser(messageData[0][1]) 
+        self.__mailhost.logout()
+        return mailParser
+

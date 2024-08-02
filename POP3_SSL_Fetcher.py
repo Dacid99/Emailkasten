@@ -20,20 +20,17 @@ class POP3_SSL_Fetcher:
             self.__mailhost.quit()
         return methodWithLogin
     
-    @withLogin
-    def fetchAndPrintAll(self):
+
+    def fetchLatest(self):
+        self.__mailhost.user(self.__username)
+        self.__mailhost.pass_( self.__password)
+        
         messageNumber = len(self.__mailhost.list()[1])
-        for number in range(messageNumber):
-            messageData = self.__mailhost.retr(number + 1)[1]
-            
-            fullMessage = b'\n'.join(messageData)
-            mailParser = MailParser(fullMessage)
-            print(mailParser.parseFrom())
-            print(mailParser.parseTo())
-            print(mailParser.parseSubject())
-            print(mailParser.parseBody())
-            print(mailParser.parseDate())
-            print(mailParser.parseCc())
-            print(mailParser.parseBcc())
+        number=messageNumber-1
+        messageData = self.__mailhost.retr(number + 1)[1]
+        fullMessage = b'\n'.join(messageData)
+        mailParser = MailParser(fullMessage)
+        self.__mailhost.quit()
+        return mailParser
         
 
