@@ -8,8 +8,10 @@ class MailParser:
     __bccString = "Bcc"
     __ccString = "Cc"
     __dateString = "Date"
+    __dateFormat = '%Y-%m-%d %H:%M:%S'
     __subjectString = "Subject"
     __charsetDefault = "utf-8"
+    __noneDefaultString = ""
 
     def __init__(self, mailToParse):
         self.mailMessage = email.message_from_bytes(mailToParse)
@@ -38,36 +40,45 @@ class MailParser:
         return (mailName, mailAddress)
 
     def parseFrom(self):
-        sender = self.decodeHeader(self.mailMessage.get(MailParser.__fromString))
-        return self.separateMailNameAndAdress(sender)
+        sender = self.mailMessage.get(MailParser.__fromString)
+        if sender is None:
+            return MailParser.__noneDefaultString
+        return self.separateMailNameAndAdress(self.decodeHeader(sender))
     
     def parseTo(self):
         recipients = self.mailMessage.get_all(MailParser.__toString)
         if recipients is None:
-            return None
+            return [self.separateMailNameAndAdress(MailParser.__noneDefaultString)]
         decodedAndSeparatedRecipients = [self.separateMailNameAndAdress(self.decodeHeader(recipient)) for recipient in recipients]
         return decodedAndSeparatedRecipients
     
     def parseBcc(self):
         recipients = self.mailMessage.get_all(MailParser.__bccString)
         if recipients is None:
-            return None
+            return [self.separateMailNameAndAdress(MailParser.__noneDefaultString)]
         decodedAndSeparatedRecipients = [self.separateMailNameAndAdress(self.decodeHeader(recipient)) for recipient in recipients]
         return decodedAndSeparatedRecipients
-
     
     def parseCc(self):
         recipients = self.mailMessage.get_all(MailParser.__ccString)
         if recipients is None:
-            return None
+            return [self.separateMailNameAndAdress(MailParser.__noneDefaultString)]
         decodedAndSeparatedRecipients = [self.separateMailNameAndAdress(self.decodeHeader(recipient)) for recipient in recipients]
         return decodedAndSeparatedRecipients
 
     def parseDate(self):
-        return self.decodeHeader(self.mailMessage.get(MailParser.__dateString))
+        date = self.mailMessage.get(MailParser.__dateString)
+        if date is None:
+            return MailParser.__noneDefaultString
+        decodedDate = self.decodeHeader(date)
+        decodedConverterDate = email.utils.parsedate_to_datetime(decodedDate).strftime(MailParser.__dateFormat)
+        return decodedConverterDate
     
     def parseSubject(self):
-        return self.decodeHeader(self.mailMessage.get(MailParser.__subjectString))
+        subject = self.mailMessage.get(MailParser.__subjectString)
+        if subject is None:
+            return MailParser.__noneDefaultString
+        return self.decodeHeader(subject)
     
     def parseBody(self):
         mailBodyText = ""
