@@ -10,6 +10,6 @@ popMail = POP3_SSL_Fetcher(username="archiv@aderbauer.org", password="nxF154j987
 
 parsedLatestMail = popMail.fetchLatest()
 
-db = EMailDBFeeder("192.168.178.109", "root", "example", "email", "utf8mb4", "utf8mb4_bin")
+db = EMailDBFeeder("192.168.178.109", "root", "example", "email_archive", "utf8mb4", "utf8mb4_bin")
 
 db.insert(parsedLatestMail)
