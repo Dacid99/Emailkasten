@@ -42,10 +42,8 @@ class MailParser:
     
     def parseMessageID(self):
         messageID = self.mailMessage.get(MailParser.__messageIDString)
-        print(messageID)
-        print(hash(self.mailMessage))
         if messageID is None:
-            return hash(self.mailMessage)
+            return hash(self.mailMessage)  #fallback for unique identifier if no messageID found
         return messageID
 
     def parseFrom(self):
