@@ -1,5 +1,6 @@
 import mysql.connector
 import time
+import logging
 
 class DBManager:
     __reconnectWaitTime = 15  #seconds
