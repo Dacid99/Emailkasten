@@ -1,5 +1,6 @@
 test exchange
-move sender to correspondents
+perform loop over correspondents in sql procedure
+account email connection
 attachments
 eml files
 fix bodytext in outgoing

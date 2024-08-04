@@ -10,6 +10,7 @@ class EMailDBFeeder:
         SELECT id FROM correspondents WHERE email_address IN (%s)
     '''
 
+    MENTION_FROM = "FROM"
     MENTION_TO = "TO"
     MENTION_CC = "CC"
     MENTION_BCC = "BCC"
@@ -21,17 +22,18 @@ class EMailDBFeeder:
     def insertEmail(self, parsedEMail):
         emailData = []
         emailData.append(parsedEMail.parseMessageID())
-        emailData.append(parsedEMail.parseFrom()[1])
         emailData.append(parsedEMail.parseDate())
         emailData.append(parsedEMail.parseBody())
         self.__dbManager.callproc(DBManager.INSERT_EMAIL_PROCEDURE, emailData)
 
     def insertCorrespondents(self, parsedEMail):
 
+        fromCorrespondent = parsedEMail.parseFrom()
         toCorrespondents = parsedEMail.parseTo()
         ccCorrespondents = parsedEMail.parseCc()
         bccCorrespondents = parsedEMail.parseBcc()
 
+        self.__dbManager.callproc(DBManager.INSERT_CORRESPONDENT_PROCEDURE, fromCorrespondent)
         for toCorrespondent in toCorrespondents:
             self.__dbManager.callproc(DBManager.INSERT_CORRESPONDENT_PROCEDURE, toCorrespondent)
         for ccCorrespondent in ccCorrespondents:
@@ -41,6 +43,8 @@ class EMailDBFeeder:
 
 
     def insertEmailCorrespondentsConnection(self, parsedEMail, emailID):
+
+        fromCorrespondentAddress = parsedEMail.parseFrom()[1]
 
         toCorrespondentsAddresses = []
         for toCorrespondent in parsedEMail.parseTo():
@@ -54,6 +58,8 @@ class EMailDBFeeder:
         for bccCorrespondent in parsedEMail.parseBcc():
             bccCorrespondentsAddresses.append(bccCorrespondent[1])
 
+        self.__dbManager.execute(EMailDBFeeder.__SELECT_CORRESPONDENTS_ID_SQL, fromCorrespondentAddress)
+        fromCorrespondentID = self.__dbManager.fetchall()
 
         self.__dbManager.execute(EMailDBFeeder.__SELECT_CORRESPONDENTS_ID_SQL % ', '.join(['%s']*len(toCorrespondentsAddresses)), toCorrespondentsAddresses)
         toCorrespondentsIDs = self.__dbManager.fetchall()
@@ -65,6 +71,9 @@ class EMailDBFeeder:
         bccCorrespondentsIDs = self.__dbManager.fetchall()
 
         emailMessageID = parsedEMail.parseMessageID()
+
+        self.__dbManager.callproc(DBManager.INSERT_EMAIL_CORRESPONDENT_CONNECTION_PROCEDURE, [emailMessageID, fromCorrespondentId[0], EMailDBFeeder.MENTION_FROM])
+
         for toCorrespondentId in toCorrespondentsIDs:
             self.__dbManager.callproc(DBManager.INSERT_EMAIL_CORRESPONDENT_CONNECTION_PROCEDURE, [emailMessageID, toCorrespondentId[0], EMailDBFeeder.MENTION_TO])
 

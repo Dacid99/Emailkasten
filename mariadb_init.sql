@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS mailboxes (
 CREATE TABLE IF NOT EXISTS emails (
     id int AUTO_INCREMENT PRIMARY KEY,
     message_id VARCHAR(255) UNIQUE NOT NULL, 
-    sender VARCHAR(255) NOT NULL, 
     date_received DATETIME NOT NULL,
     bodytext TEXT NOT NULL
 );
@@ -36,7 +35,7 @@ CREATE TABLE IF NOT EXISTS correspondents (
 CREATE TABLE IF NOT EXISTS email_correspondents (
     email_id int,
     correspondent_id int,
-    mention ENUM('TO', 'CC', 'BCC') NOT NULL,
+    mention ENUM('FROM', 'TO', 'CC', 'BCC') NOT NULL,
     FOREIGN KEY (email_id) REFERENCES emails(id) ON DELETE CASCADE,
     FOREIGN KEY (correspondent_id) REFERENCES correspondents(id) ON DELETE CASCADE,
     PRIMARY KEY (email_id, correspondent_id, mention)
@@ -59,7 +58,7 @@ BEGIN
     END IF;
 END //
 
-CREATE PROCEDURE safe_insert_email_correspondent(IN new_email_message_id VARCHAR(255), IN new_correspondent_id int, IN new_mention ENUM('TO', 'CC', 'BCC'))
+CREATE PROCEDURE safe_insert_email_correspondent(IN new_email_message_id VARCHAR(255), IN new_correspondent_id int, IN new_mention ENUM('FROM','TO', 'CC', 'BCC'))
 BEGIN
     DECLARE new_email_id int;
 
