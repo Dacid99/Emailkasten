@@ -41,6 +41,14 @@ CREATE TABLE IF NOT EXISTS email_correspondents (
     PRIMARY KEY (email_id, correspondent_id, mention)
 );
 
+CREATE TABLE IF NOT EXISTS account_emails (
+    email_id int, 
+    account_id int, 
+    FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+    FOREIGN KEY (email_id) REFERENCES emails(id) ON DELETE CASCADE,
+    PRIMARY KEY (account_id, email_id) 
+);
+
 
 DELIMITER //
 
