@@ -90,9 +90,16 @@ class EMailDBFeeder:
 
 
     def insert(self, parsedEMail):
-        emailID = self.insertEmail(parsedEMail)
-        self.insertCorrespondents(parsedEMail)
-        self.insertEmailCorrespondentsConnection(parsedEMail, emailID)
-        self.__dbManager.commit()
+        try:
+            self.__dbManager.startTransaction()
+            emailID = self.insertEmail(parsedEMail)
+            self.insertCorrespondents(parsedEMail)
+            self.insertEmailCorrespondentsConnection(parsedEMail, emailID)
+            self.__dbManager.commit()
+        except Exception as e:
+            logging.error("Error while writing to database! Rolling back uncommitted changes!", exc_info=True)
+            self.__dbManager.rollback()
+
+
 
         
