@@ -44,6 +44,13 @@ CREATE TABLE IF NOT EXISTS email_correspondents (
     PRIMARY KEY (email_id, correspondent_id, mention)
 );
 
+CREATE TABLE IF NOT EXISTS attachments (
+    id int AUTO_INCREMENT PRIMARY KEY,
+    file_name VARCHAR(255) NOT NULL,
+    file_path VARCHAR(255) UNIQUE NOT NULL, 
+    email_id int,
+    FOREIGN KEY (email_id) REFERENCES emails(id) ON DELETE CASCADE
+);
 
 
 DELIMITER //
@@ -73,7 +80,22 @@ BEGIN
             INSERT INTO email_correspondents (email_id, correspondent_id, mention) VALUES (new_email_id, new_correspondent_id, new_mention);
         END IF;
     ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ID not found';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'MessageID not found';
+    END IF;
+END //
+
+CREATE PROCEDURE safe_insert_attachment(IN new_file_name VARCHAR(255), IN new_file_path VARCHAR(255), IN new_email_message_id VARCHAR(255))
+BEGIN
+    DECLARE new_email_id int;
+
+    SELECT id INTO new_email_id FROM emails WHERE message_id = new_email_message_id LIMIT 1;
+
+    IF new_email_id IS NOT NULL THEN
+        IF NOT EXISTS (SELECT 1 FROM attachments WHERE file_path = new_file_path) THEN
+        INSERT INTO attachments (file_name, file_path, email_id) VALUES (new_file_name, new_file_path, new_email_id);
+        END IF;
+    ELSE
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'MessageID not found';
     END IF;
 END //
 
