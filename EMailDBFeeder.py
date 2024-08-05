@@ -24,7 +24,10 @@ class EMailDBFeeder:
         emailData.append(parsedEMail.messageID)
         emailData.append(parsedEMail.dateReceived)
         emailData.append(parsedEMail.bodyText)
+        emailData.append(parsedEMail.emlFilePath)
+
         self.__dbManager.callproc(DBManager.INSERT_EMAIL_PROCEDURE, emailData)
+
 
     def insertCorrespondents(self, parsedEMail):
 

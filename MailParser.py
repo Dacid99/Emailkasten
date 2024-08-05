@@ -1,7 +1,9 @@
 import email 
 import email.header
 import email.utils
+import email.generator
 import logging
+import os.path
 
 from ParsedEMail import ParsedEMail
 
@@ -16,6 +18,7 @@ class MailParser:
     __charsetDefault = "utf-8"
     __dateFormat = '%Y-%m-%d %H:%M:%S'
     __dateDefault = "1971-01-01 00:00:00"  #must fit dateFormat
+    __emlDirectoryPath = "/mnt/eml/"
 
     @staticmethod
     def parse(mailToParse):
@@ -111,6 +114,28 @@ class MailParser:
                 logging.warn("Mail has no Bodytext!")
             return mailBodyText
 
+        def generateEML():
+            logging.debug("Storing mail in .eml file ...")
+            emlFilePath = os.path.join(MailParser.__emlDirectoryPath, parseMessageID() + ".eml")
+            try:
+                if os.path.getsize(emlFilePath):
+                    logging.debug(f"{emlFilePath} already exists is not empty!")
+                else:
+                    logging.debug(f"Writing to empty .eml file {emlFilePath}...")
+                    with open(emlFilePath, "w") as emlFile:
+                        emlGenerator = email.generator.Generator(emlFile)
+                        emlGenerator.flatten(mailToParse)
+                    logging.debug("Success")
+
+            except os.OSError as e:
+                logging.debug(f"Creating new .eml file {emlFilePath}...")
+                with open(emlFilePath, "w") as emlFile:
+                    emlGenerator = email.generator.Generator(emlFile)
+                    emlGenerator.flatten(mailToParse)
+                logging.debug("Success")
+
+            return emlFilePath
+
 
         
         parsedEMail = ParsedEMail()
@@ -122,6 +147,7 @@ class MailParser:
         parsedEMail.emailBcc = parseBcc()
         parsedEMail.dateReceived = parseDate()
         parsedEMail.bodyText = parseBody()
+        parsedEMail.emlFilePath = generateEML()
 
         logging.debug("Success")
         return parsedEMail
