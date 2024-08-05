@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS emails (
     message_id VARCHAR(255) UNIQUE NOT NULL, 
     account_id int,
     date_received DATETIME NOT NULL,
-    bodytext TEXT NOT NULL
+    bodytext TEXT NOT NULL,
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
 );
 
@@ -50,7 +50,7 @@ DELIMITER //
 CREATE PROCEDURE safe_insert_email(IN new_message_id VARCHAR(255), IN new_sender VARCHAR(255), IN new_date_received DATETIME, IN new_bodytext TEXT)
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM emails WHERE message_id = new_message_id) THEN
-        INSERT INTO emails (message_id, sender, date_received, bodytext) VALUES (new_message_id, new_sender, new_date_received, new_bodytext);
+        INSERT INTO emails (message_id, date_received, bodytext) VALUES (new_message_id, new_date_received, new_bodytext);
     END IF;
 END //
 
