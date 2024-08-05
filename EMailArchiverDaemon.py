@@ -9,8 +9,8 @@ from IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
 class EMailArchiverDaemon:
     cyclePeriod = 60  #seconds
     __restartTime = 10
-    __loggerName = "EMailArchiverDaemon"
-    __logfilePath = f"/var/log/{__loggerName}.log"
+    loggerName = "EMailArchiverDaemon"
+    __logfilePath = f"/var/log/{loggerName}.log"
     __logLevel = logging.INFO
     __logfileMaxSize = 1024 * 1024 # 1 MB
     __logfileBackupCount = 3 
@@ -62,7 +62,7 @@ class EMailArchiverDaemon:
         self.logger.info(f"EMailArchiverDaemon stopped by system signal {signum}.")
 
     def setupLogger(self):
-        self.logger = logging.getLogger(EMailArchiverDaemon.__loggerName)
+        self.logger = logging.getLogger(EMailArchiverDaemon.loggerName)
         self.logger.setLevel(logging.DEBUG)
 
         logfileHandler= logging.RotatingFileHandler(EMailArchiverDaemon.__logfilePath, maxBytes = EMailArchiverDaemon.__logfileMaxSize, backupCount = EMailArchiverDaemon.__logfileBackupCount)

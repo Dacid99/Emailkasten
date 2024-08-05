@@ -5,7 +5,10 @@ from MailParser import MailParser
 from DBManager import DBManager
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(EMailArchiverDaemon.loggerName)
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+logger.addHandler(handler)
 
 MailParser.emlDirectoryPath = "C:\\Users\\phili\\Desktop\\emltest\\"
 

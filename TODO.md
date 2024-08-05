@@ -4,4 +4,4 @@ account email connection
 attachments
 methods for imap infos like mailbox names
 account db manager
-loggers in all classes
+logging missing in: EMailDBFeeder

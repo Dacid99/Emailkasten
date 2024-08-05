@@ -17,6 +17,9 @@ class POP3_SSL_Fetcher(POP3Fetcher):
         self._mailhost = poplib.POP3_SSL(host, port, keyfile, certfile, timeout, ssl_context)
         self.username = username
         self.password = password
+
+        self.logger = logging.getLogger(EMailArchiverDaemon.loggerName + self.__class__.__name__)
+
         self.login()
 
         

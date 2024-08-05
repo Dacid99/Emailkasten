@@ -17,4 +17,7 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
         self._mailhost = imaplib.IMAP4_SSL(host, port, keyfile, certfile, ssl_context, timeout)
         self.username = username
         self.password = password
+
+        self.logger = logging.getLogger(EMailArchiverDaemon.loggerName + self.__class__.__name__)
+
         self.login()

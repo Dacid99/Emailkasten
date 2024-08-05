@@ -22,9 +22,10 @@ class MailParser:
 
     @staticmethod
     def parse(mailToParse):
+        self.logger = logging.getLogger(EMailArchiverDaemon.loggerName + MailParser.__name__)
 
         mailMessage = email.message_from_bytes(mailToParse)
-        logging.debug(f"Parsing email with content\n{mailMessage}\n ...")
+        logger.debug(f"Parsing email with content\n{mailMessage}\n ...")
 
         def decodeHeader(header):
             decodedFragments = email.header.decode_header(header)
@@ -58,14 +59,14 @@ class MailParser:
         def parseFrom():
             sender = mailMessage.get(MailParser.__fromString)
             if sender is None:
-                logging.warn("Mail has no From!")
+                logger.warn("Mail has no From!")
                 return None
             return separateMailNameAndAdress(decodeHeader(sender))
 
         def parseTo():
             recipients = mailMessage.get_all(MailParser.__toString)
             if recipients is None:
-                logging.warn("Mail has no To!")
+                logger.warn("Mail has no To!")
                 return []
             decodedAndSeparatedRecipients = [separateMailNameAndAdress(decodeHeader(recipient)) for recipient in recipients]
             return decodedAndSeparatedRecipients
@@ -73,7 +74,7 @@ class MailParser:
         def parseBcc():
             recipients = mailMessage.get_all(MailParser.__bccString)
             if recipients is None:
-                logging.debug("Mail has no Bcc!")
+                logger.debug("Mail has no Bcc!")
                 return []
             decodedAndSeparatedRecipients = [separateMailNameAndAdress(decodeHeader(recipient)) for recipient in recipients]
             return decodedAndSeparatedRecipients
@@ -81,7 +82,7 @@ class MailParser:
         def parseCc():
             recipients = mailMessage.get_all(MailParser.__ccString)
             if recipients is None:
-                logging.debug("Mail has no Cc!")
+                logger.debug("Mail has no Cc!")
                 return []
             decodedAndSeparatedRecipients = [separateMailNameAndAdress(decodeHeader(recipient)) for recipient in recipients]
             return decodedAndSeparatedRecipients
@@ -89,7 +90,7 @@ class MailParser:
         def parseDate():
             date = mailMessage.get(MailParser.__dateString)
             if date is None:
-                logging.warn("Mail has no Date!")
+                logger.warn("Mail has no Date!")
                 return MailParser.__dateDefault
             decodedDate = decodeHeader(date)
             decodedConvertedDate = email.utils.parsedate_to_datetime(decodedDate).strftime(MailParser.__dateFormat)
@@ -99,7 +100,7 @@ class MailParser:
             if (subject := mailMessage.get(MailParser.__subjectString)):
                 return decodeHeader(subject)
             else: 
-                logging.warn("Mail has no Subject!")
+                logger.warn("Mail has no Subject!")
                 return ""
         
         def parseBody():
@@ -111,32 +112,32 @@ class MailParser:
             else:
                 mailBodyText = decodeText(mailMessage)
             if mailBodyText == "":
-                logging.warn("Mail has no Bodytext!")
+                logger.warn("Mail has no Bodytext!")
             return mailBodyText
 
         def generateEML():
-            logging.debug("Storing mail in .eml file ...")
+            logger.debug("Storing mail in .eml file ...")
             emlFilePath = os.path.join(MailParser.emlDirectoryPath, parseSubject() + ".eml")
             try:
                 if os.path.exists(emlFilePath):
                     if os.path.getsize(emlFilePath) > 0:
-                        logging.debug(f"{emlFilePath} already exists and is not empty!")
+                        logger.debug(f"{emlFilePath} already exists and is not empty!")
                         return emlFilePath
                     else:
-                        logging.debug(f"Writing to empty .eml file {emlFilePath}...")
+                        logger.debug(f"Writing to empty .eml file {emlFilePath}...")
                         with open(emlFilePath, "wb") as emlFile:
                             emlGenerator = email.generator.BytesGenerator(emlFile)
                             emlGenerator.flatten(mailMessage)
-                        logging.debug("Success")
+                        logger.debug("Success")
                 else:
-                    logging.debug(f"Creating new .eml file {emlFilePath}...")
+                    logger.debug(f"Creating new .eml file {emlFilePath}...")
                     with open(emlFilePath, "wb") as emlFile:
                         emlGenerator = email.generator.BytesGenerator(emlFile)
                         emlGenerator.flatten(mailMessage)
-                    logging.debug("Success")
+                    logger.debug("Success")
 
             except OSError as e:
-               logging.error(f"Failed to write .eml file for message\n{mailMessage}!", exc_info=True)
+               logger.error(f"Failed to write .eml file for message\n{mailMessage}!", exc_info=True)
 
             return emlFilePath
 
@@ -153,5 +154,5 @@ class MailParser:
         parsedEMail.bodyText = parseBody()
         parsedEMail.emlFilePath = generateEML()
 
-        logging.debug("Success")
+        logger.debug("Success")
         return parsedEMail

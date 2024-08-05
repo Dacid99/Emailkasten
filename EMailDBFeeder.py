@@ -18,6 +18,7 @@ class EMailDBFeeder:
 
     def __init__(self, dbManager):
         self.__dbManager = dbManager
+        self.logger = logging.getLogger(EMailArchiverDaemon.loggerName + self.__class__.__name__)
 
     def insertEmail(self, parsedEMail):
         emailData = []
@@ -109,7 +110,7 @@ class EMailDBFeeder:
             self.insertEmailCorrespondentsConnection(parsedEMail, emailID)
             self.__dbManager.commit()
         except Exception as e:
-            logging.error("Error while writing to database! Rolling back uncommitted changes!", exc_info=True)
+            self.logger.error("Error while writing to database! Rolling back uncommitted changes!", exc_info=True)
             self.__dbManager.rollback()
 
 
