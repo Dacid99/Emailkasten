@@ -11,6 +11,9 @@ class ParsedEMail:
         self.bodyText = None
         self.emlFilePath = None
 
+    def __str__(self):
+        return "MessageID: " + self.messageID + "\nSubject: " + self.subject + "\nDate: " + self.dateReceived + "\nFrom: " + self.emailFrom + "\nTo: " + str(self.emailTo) + "\nCc: " + str(self.emailCc) + "\nBcc: " + str(self.emailBcc) + "\nContent: " + self.bodyText
+
     def hasMessageID(self):
         return bool(self.messageID)
 
