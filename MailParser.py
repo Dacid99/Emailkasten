@@ -11,10 +11,10 @@ class MailParser:
     __bccString = "Bcc"
     __ccString = "Cc"
     __dateString = "Date"
-    __dateFormat = '%Y-%m-%d %H:%M:%S'
     __subjectString = "Subject"
     __charsetDefault = "utf-8"
-    __noneDefaultString = ""
+    __dateFormat = '%Y-%m-%d %H:%M:%S'
+    __dateDefault = "1971-01-01 00:00:00"
 
     @staticmethod
     def parse(mailToParse):
@@ -81,10 +81,10 @@ class MailParser:
         def parseDate():
             date = mailMessage.get(MailParser.__dateString)
             if date is None:
-                return None
+                return MailParser.__dateDefault
             decodedDate = decodeHeader(date)
-            decodedConverterDate = email.utils.parsedate_to_datetime(decodedDate).strftime(MailParser.__dateFormat)
-            return decodedConverterDate
+            decodedConvertedDate = email.utils.parsedate_to_datetime(decodedDate).strftime(MailParser.__dateFormat)
+            return decodedConvertedDate
         
         def parseSubject():
             if (subject := mailMessage.get(MailParser.__subjectString)):
