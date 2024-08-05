@@ -11,27 +11,27 @@ class ParsedEMail:
         self.dateReceived = None
         self.bodyText = None
 
-    def hasMessageID():
+    def hasMessageID(self):
         return bool(self.messageID)
 
-    def hasSubject(subject):
+    def hasSubject(self):
         return bool(self.subject)
 
-    def hasFrom(subject):
+    def hasFrom(self):
         return bool(self.emailFrom) and True
 
-    def hasTo(subject):
+    def hasTo(self):
         return bool(self.emailTo) and True
 
-    def hasCc(subject):
+    def hasCc(self):
         return bool(self.emailCc) and True
     
-    def hasBcc(subject):
+    def hasBcc(self):
         return bool(self.emailBcc) and True
     
-    def hasDateReceived(subject):
+    def hasDateReceived(self):
         return bool(self.dateReceived) and True
         
-    def hasBodyText(subject):
+    def hasBodyText(self):
         return bool(self.bodyText) and True
 

@@ -78,7 +78,7 @@ class MailParser:
             decodedAndSeparatedRecipients = [separateMailNameAndAdress(decodeHeader(recipient)) for recipient in recipients]
             return decodedAndSeparatedRecipients
 
-        def parseDate(self):
+        def parseDate():
             date = mailMessage.get(MailParser.__dateString)
             if date is None:
                 return None

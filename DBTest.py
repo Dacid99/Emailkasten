@@ -12,7 +12,7 @@ with DBManager("192.168.178.109", "root", "example", "email_archive", "utf8mb4",
     with IMAP_SSL_Fetcher(username="archiv@aderbauer.org", password="nxF154j9879ZZsW", host="imap.ionos.de", port=993) as imapMail:
     #with POP3_SSL_Fetcher(username="archiv@aderbauer.org", password="nxF154j9879ZZsW", host="pop.ionos.de") as popMail:
 
-        parsedNewMails = imapMail.fetchBySearch(searchCriterion="RECENT")
+        parsedNewMails = imapMail.fetchBySearch(searchCriterion="ALL")
         #parsedNewMails = popMail.fetchAll("")
 
         dbfeeder = EMailDBFeeder(db)
