@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS email_correspondents (
 
 DELIMITER //
 
-CREATE PROCEDURE safe_insert_email(IN new_message_id VARCHAR(255), IN new_sender VARCHAR(255), IN new_date_received DATETIME, IN new_bodytext TEXT, IN new_eml_filepath VARCHAR(255))
+CREATE PROCEDURE safe_insert_email(IN new_message_id VARCHAR(255), IN new_date_received DATETIME, IN new_bodytext TEXT, IN new_eml_filepath VARCHAR(255))
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM emails WHERE message_id = new_message_id) THEN
         INSERT INTO emails (message_id, date_received, bodytext, eml_filepath) VALUES (new_message_id, new_date_received, new_bodytext, new_eml_filepath);
