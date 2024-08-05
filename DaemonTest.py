@@ -5,5 +5,6 @@ from EMailArchiverDaemon import EMailArchiverDaemon
 
 logging.basicConfig(level=logging.DEBUG)
 
-daemon = EMailArchiverDaemon()
-daemon.start()
+if __name__ == "__main__":
+    daemon = EMailArchiverDaemon()
+    daemon.start()

@@ -1,5 +1,6 @@
 import logging
 import time
+import signal
 
 from DBManager import DBManager
 from EMailDBFeeder import EMailDBFeeder
@@ -12,11 +13,19 @@ class EMailArchiverDaemon:
     dbUser = "root"
     dbPassword = "example"
 
+    def __init__(self):
+        signal.signal(signal.SIGTERM, self.signalHandler)
+        signal.signal(signal.SIGINT, self.signalHandler)
+        signal.signal(signal.SIGKILL, self.signalHandler)
+        self.isRunning = True
+
     def start(self):
+        logging.info("Starting EMailArchiverDaemon")
         try:
-            while True:
+            while self.isRunning:
                 self.cycle()
                 time.sleep(EMailArchiverDaemon.cyclePeriod)
+            logging.info("Stopped EMailArchiverDaemon")
         except Exception as e:
             logging.error("EMailArchiverDaemon crashed! Attempting to restart ...", exc_info=True)
             time.sleep(EMailArchiverDaemon.__restartTime)
@@ -38,3 +47,7 @@ class EMailArchiverDaemon:
         except Exception as e:
             logging.error("Error during daemon cycle execution!", exc_info=True)
             raise
+
+    def signalHandler(self, signal, frame):
+        self.isRunning = False
+        logging.info(f"EMailArchiverDaemon stopped by system signal {signum}.")
