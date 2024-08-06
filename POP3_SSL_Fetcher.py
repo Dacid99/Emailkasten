@@ -1,6 +1,7 @@
 import poplib
 import os
 
+from LoggerFactory import LoggerFactory
 from POP3Fetcher import POP3Fetcher
 
 class POP3_SSL_Fetcher(POP3Fetcher): 
@@ -18,7 +19,7 @@ class POP3_SSL_Fetcher(POP3Fetcher):
         self.username = username
         self.password = password
 
-        self.logger = logging.getLogger(EMailArchiverDaemon.loggerName + self.__class__.__name__)
+        self.logger =LoggerFactory.getChildLogger(self.__class__.__name__)
 
         self.login()
 

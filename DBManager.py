@@ -6,6 +6,8 @@ class DBManager:
     INSERT_EMAIL_PROCEDURE = "safe_insert_email"
 
     INSERT_CORRESPONDENT_PROCEDURE = "safe_insert_correspondent"
+
+    INSERT_ATTACHMENT_PROCEDURE = "safe_insert_attachment"
     
     INSERT_EMAIL_CORRESPONDENT_CONNECTION_PROCEDURE = "safe_insert_email_correspondent"
 

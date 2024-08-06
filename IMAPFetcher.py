@@ -1,6 +1,7 @@
 import imaplib
 import logging
 
+from LoggerFactory import LoggerFactory
 from MailParser import MailParser
 
 class IMAPFetcher: 
@@ -15,9 +16,10 @@ class IMAPFetcher:
         self.username = username
         self.password = password
 
-        self.logger = logging.getLogger(EMailArchiverDaemon.loggerName + self.__class__.__name__)
+        self.logger = LoggerFactory.getChildLogger(self.__class__.__name__)
 
         self.login()
+        
 
     def login(self):
         self.logger.debug(f"Logging in to {self.host} on port {self.port} with username {self.username} and password {self.password} via {self.protocol} ...")

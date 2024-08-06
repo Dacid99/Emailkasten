@@ -2,6 +2,7 @@ import mysql.connector
 import logging
 import traceback
 
+from LoggerFactory import LoggerFactory
 from DBManager import DBManager
 
 class EMailDBFeeder:
@@ -18,7 +19,7 @@ class EMailDBFeeder:
 
     def __init__(self, dbManager):
         self.__dbManager = dbManager
-        self.logger = logging.getLogger(EMailArchiverDaemon.loggerName + self.__class__.__name__)
+        self.logger = LoggerFactory.getChildLogger(self)
 
     def insertEmail(self, parsedEMail):
         emailData = []
@@ -147,6 +148,18 @@ class EMailDBFeeder:
             
         else:
             self.logger.debug("No BCC correspondents for this mail to insert into email_correspondents table")
+
+
+    def insertAttachments(self, parsedEMail):
+
+        if parsedEMail.hasAttachments():
+            self.logger.debug("Inserting attachments into attachments table ...")
+            for attachment in parsedEMail.attachments:
+                attachmentsInput = list(attachment).append(parsedEMail.messageID)
+                self.__dbManager.callproc(DBManager.INSERT_ATTACHMENTS_PROCEDURE, attachmentInput)
+            self.logger.debug("Success")
+        else:
+            self.logger.debug(f"No attachments for this mail to insert into attachments table!")
 
 
     def insert(self, parsedEMail):

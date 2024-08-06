@@ -1,6 +1,6 @@
 import imaplib
-import logging
 
+from LoggerFactory import LoggerFactory
 from IMAPFetcher import IMAPFetcher
 
 class IMAP_SSL_Fetcher(IMAPFetcher): 
@@ -18,6 +18,6 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
         self.username = username
         self.password = password
 
-        self.logger = logging.getLogger(EMailArchiverDaemon.loggerName + self.__class__.__name__)
+        self.logger = LoggerFactory.getChildLogger(self.__class__.__name__)
 
         self.login()

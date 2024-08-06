@@ -10,6 +10,7 @@ class ParsedEMail:
         self.dateReceived = None
         self.bodyText = None
         self.emlFilePath = None
+        self.attachments = []
 
     def __str__(self):
         return "MessageID: " + self.messageID + "\nSubject: " + self.subject + "\nDate: " + self.dateReceived + "\nFrom: " + self.emailFrom + "\nTo: " + str(self.emailTo) + "\nCc: " + str(self.emailCc) + "\nBcc: " + str(self.emailBcc) + "\nContent: " + self.bodyText
@@ -39,4 +40,7 @@ class ParsedEMail:
         return bool(self.bodyText)
 
     def hasEML(self):
-        return bool(self.emlFilePath) 
+        return bool(self.emlFilePath)
+
+    def hasAttachments(self):
+        return bool(self.attachments) 
