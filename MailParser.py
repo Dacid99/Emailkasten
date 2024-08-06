@@ -4,6 +4,8 @@ import email.utils
 import email.generator
 import logging
 import os.path
+import datetime
+import pytz
 
 from LoggerFactory import LoggerFactory
 from ParsedEMail import ParsedEMail
@@ -19,6 +21,7 @@ class MailParser:
     __charsetDefault = "utf-8"
     __dateFormat = '%Y-%m-%d %H:%M:%S'
     __dateDefault = "1971-01-01 00:00:00"  #must fit dateFormat
+    timezone = "Europe/Berlin"
     emlDirectoryPath = "/mnt/eml/"
     attachmentDirectoryPath = "/mnt/attachments/"
 
@@ -30,7 +33,6 @@ class MailParser:
         logger.debug(f"Parsing email with content ...")
 
         def decodeHeader(header):
-            logger.debug("Decoding header ...")
 
             decodedFragments = email.header.decode_header(header)
             decodedString = ""
@@ -40,19 +42,16 @@ class MailParser:
                 else:
                     decodedString += fragment.decode(charset, errors='replace')
 
-            logger.debug("Success")
             return decodedString
 
 
         def decodeText(text):
-            logger.debug("Decoding text ...")
 
             charset = text.get_content_charset()
             if charset is None:
                 charset = MailParser.__charsetDefault
             decodedText = text.get_payload(decode=True).decode(charset, errors='replace')
 
-            logger.debug("Success")
             return decodedText
         
 
@@ -109,7 +108,12 @@ class MailParser:
                 logger.warn(f"No DATE found in mail, resorting to default!")
                 return MailParser.__dateDefault
             decodedDate = decodeHeader(date)
-            decodedConvertedDate = email.utils.parsedate_to_datetime(decodedDate).strftime(MailParser.__dateFormat)
+            if MailParser.timezone in pytz.all_timezones:
+                timezoneObject = pytz.timezone(MailParser.timezone)
+            else:
+                logger.warn(f"Invalid timezone {MailParser.timezone}, defaulting to UTC!")
+                timezoneObject = datetime.timezone.utc
+            decodedConvertedDate = email.utils.parsedate_to_datetime(decodedDate).astimezone(timezoneObject).strftime(MailParser.__dateFormat)
             return decodedConvertedDate
         
         def parseSubject():
@@ -170,6 +174,7 @@ class MailParser:
                     logger.debug("File was not created")
 
             return emlFilePath
+
 
         def parseAttachments():
             attachmentFiles = []
