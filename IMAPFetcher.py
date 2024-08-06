@@ -1,5 +1,7 @@
 import imaplib
 import logging
+import email
+import email.policy
 
 from LoggerFactory import LoggerFactory
 from MailParser import MailParser
@@ -48,12 +50,26 @@ class IMAPFetcher:
             parsedMails = []
             for number in messageNumbers[0].split():
                 typ, messageData = self._mailhost.fetch(number, '(RFC822)')
-                parsedMail = MailParser.parse(messageData[0][1]) 
+                parsedMail = MailParser.parseMail(messageData[0][1]) 
                 parsedMails.append(parsedMail)
             self.logger.debug(f"Successfully fetched {searchCriterion} messages from {mailbox} at {self.host} on port {self.port} with username {self.username} via {self.protocol}.")
             return parsedMails
         except imaplib.IMAP4.error as e:
             self.logger.error(f"Failed to fetch {searchCriterion} messages from {self.host} on port {self.port} with username {self.username} via {self.protocol} !", exc_info=True)
+            return []
+
+    def fetchMailboxes(self):
+        self.logger.debug(f"Fetching mailboxes at {self.host} on port {self.port} with username {self.username} via {self.protocol} ...")
+        try:
+            status, mailboxes = self._mailhost.list()
+            mailboxesList = []
+            for mailbox in mailboxes:
+                mailboxesList.append(MailParser.parseMailbox(mailbox))
+            print(mailboxesList)
+            self.logger.debug(f"Successfully fetched mailboxes at {self.host} on port {self.port} with username {self.username} via {self.protocol}.")
+            return mailboxesList
+        except imaplib.IMAP4.error as e:
+            self.logger.error(f"Failed to fetch mailboxes from {self.host} on port {self.port} with username {self.username} via {self.protocol}!", exc_info=True)
             return []
 
     def __enter__(self):

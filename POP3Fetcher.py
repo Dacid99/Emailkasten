@@ -48,7 +48,7 @@ class POP3Fetcher:
             for number in range(messageCount):
                 messageData = self._mailhost.retr(number + 1)[1]
                 fullMessage = b'\n'.join(messageData)
-                parsedMail = MailParser.parse(fullMessage)
+                parsedMail = MailParser.parseMail(fullMessage)
                 parsedMails.append(parsedMail)
             self.logger.debug(f"Successfully fetched all messages at {self.host} on port {self.port} with username {self.username} via {self.protocol}.")
             return parsedMails

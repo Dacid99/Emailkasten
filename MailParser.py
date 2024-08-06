@@ -26,11 +26,19 @@ class MailParser:
     attachmentDirectoryPath = "/mnt/attachments/"
 
     @staticmethod
-    def parse(mailToParse):
+    def parseMailbox(mailboxBytes):
+        mailbox = mailboxBytes.decode(MailParser.__charsetDefault)
+        mailboxName = mailbox.split("\"/\"")[1].strip()
+        if mailboxName == "":
+            mailboxName = mailbox.split("\" \"")[1].strip()
+        return mailboxName
+
+    @staticmethod
+    def parseMail(mailToParse):
         logger = LoggerFactory.getChildLogger(MailParser.__name__)
 
         mailMessage = email.message_from_bytes(mailToParse)
-        logger.debug(f"Parsing email with content ...")
+        logger.debug(f"Parsing email with content {mailMessage}...")
 
         def decodeHeader(header):
 
