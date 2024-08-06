@@ -7,10 +7,6 @@ from DBManager import DBManager
 
 class EMailDBFeeder:
 
-    __SELECT_CORRESPONDENTS_ID_SQL = '''
-        SELECT id FROM correspondents WHERE email_address IN (%s)
-    '''
-
     MENTION_FROM = "FROM"
     MENTION_TO = "TO"
     MENTION_CC = "CC"
