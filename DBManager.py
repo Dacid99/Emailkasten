@@ -1,6 +1,6 @@
 import mysql.connector
 import time
-import logging
+from LoggerFactory import LoggerFactory
 
 class DBManager:
     INSERT_EMAIL_PROCEDURE = "safe_insert_email"
@@ -20,16 +20,17 @@ class DBManager:
         self.database = database
         self.charset = charset
         self.collation = collation
-        logging.info("Initial connecting to database ...")
+        self.logger = LoggerFactory.getChildLogger(DBManager.__class__.__name__)
+        self.logger.info("Initial connecting to database ...")
         try:
             self.connect()
         except mysql.connector.Error as e:
-            logging.error("Failed to create initial connection to database! Please check the credentials!")
+            self.logger.error("Failed to create initial connection to database! Please check the credentials!")
             self.heal()
-        logging.info("Successfully connected to database")
+        self.logger.info("Successfully connected to database")
 
     def connect(self):
-        logging.debug(f"Connecting to database {self.database} at {self.host} with user {self.user} and password {self.password} ...")
+        self.logger.debug(f"Connecting to database {self.database} at {self.host} with user {self.user} and password {self.password} ...")
         self.__dbConnection = mysql.connector.connect(
             host=self.host,
             user=self.user,
@@ -39,17 +40,17 @@ class DBManager:
             collation=self.collation
         )
         self.__dbCursor = self.__dbConnection.cursor()
-        logging.debug(f"Successfully connected to database {self.database} at {self.host} with user {self.user} and password {self.password}.")
+        self.logger.debug(f"Successfully connected to database {self.database} at {self.host} with user {self.user} and password {self.password}.")
 
 
     def close(self):
-        logging.debug("Closing connection to database ...")
+        self.logger.debug("Closing connection to database ...")
         if self.__dbConnection and self.__dbConnection.is_connected():
             self.__dbCursor.close()
             self.__dbConnection.close()
-            logging.info("Connection to database closed gracefully")
+            self.logger.info("Connection to database closed gracefully")
         else:
-            logging.debug("Connection to database is already closed")
+            self.logger.debug("Connection to database is already closed")
 
     def isHealthy(self):
         return self.__dbConnection.is_connected()
@@ -59,7 +60,7 @@ class DBManager:
             try:
                 return method(self, *args, **kwargs)
             except mysql.connector.Error as e:
-                logging.error("Database connection error!", exc_info=True)
+                self.logger.error("Database connection error!", exc_info=True)
                 self.heal()
                 return method(self, *args, **kwargs)
         return methodWithHeal
@@ -68,24 +69,24 @@ class DBManager:
     def heal(self):
         while not self.__dbConnection.is_connected():
             time.sleep(DBManager.__reconnectWaitTime)
-            logging.error("No connection to database! Attempting reconnect ...")
+            self.logger.error("No connection to database! Attempting reconnect ...")
             try:
                 self.connect()
-                logging.info("Reconnected to database")
+                self.logger.info("Reconnected to database")
             except sql.connector.Error as e:
-                logging.error("Reconnect attempt failed!")
+                self.logger.error("Reconnect attempt failed!")
 
     @withHeal
     def execute(self, sqlStatement, values=None):
-        logging.debug(f"Executing SQL Statement {sqlStatement} with values {values} ...")
+        self.logger.debug(f"Executing SQL Statement {sqlStatement} with values {values} ...")
         self.__dbCursor.execute(sqlStatement, values)
-        logging.debug("Success")
+        self.logger.debug("Success")
 
     @withHeal
     def callproc(self, procedure, values):
-        logging.debug(f"Executing SQL Procedure {procedure} with values {values} ...")
+        self.logger.debug(f"Executing SQL Procedure {procedure} with values {values} ...")
         self.__dbCursor.callproc(procedure, values)
-        logging.debug("Success")
+        self.logger.debug("Success")
 
 
 
@@ -96,34 +97,34 @@ class DBManager:
 
     @withHeal
     def startTransaction(self):
-        logging.debug("Starting database transaction ...")
+        self.logger.debug("Starting database transaction ...")
         self.__dbConnection.start_transaction()
-        logging.debug("Success")
+        self.logger.debug("Success")
 
 
     @withHeal
     def commit(self):
-        logging.debug("Commiting transaction to database ...")
+        self.logger.debug("Commiting transaction to database ...")
         self.__dbConnection.commit()
-        logging.debug("Success")
+        self.logger.debug("Success")
 
     @withHeal
     def rollback(self):
-        logging.debug("Rolling back uncommitted changes to database ...")
+        self.logger.debug("Rolling back uncommitted changes to database ...")
         self.__dbConnection.rollback()
-        logging.debug("Success")
+        self.logger.debug("Success")
     
 
 
                 
 
     def __enter__(self):
-        logging.debug("DBManager.__enter__")
+        self.logger.debug("DBManager.__enter__")
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
-        logging.debug("DBManager.__exit__")
+        self.logger.debug("DBManager.__exit__")
 
 
         
