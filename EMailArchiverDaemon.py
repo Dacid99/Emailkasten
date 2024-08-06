@@ -14,8 +14,8 @@ class EMailArchiverDaemon:
     dbPassword = "example"
 
     def __init__(self):
-        self.registerSignals()
         self.logger = LoggerFactory.getMainLogger()
+        self.registerSignals()
         self.isRunning = True
 
     def start(self):
@@ -57,11 +57,10 @@ class EMailArchiverDaemon:
         self.logger.debug("Registering signal handlers ...")
         signal.signal(signal.SIGTERM, self.handleStopSignal)
         signal.signal(signal.SIGINT, self.handleStopSignal)
-        signal.signal(signal.SIGKILL, self.handleStopSignal)
         self.logger.debug("Success")
 
 
     def handleStopSignal(self, signal, frame):
         self.isRunning = False
-        self.logger.info(f"EMailArchiverDaemon stopped by system signal {signum}.")
+        self.logger.info(f"EMailArchiverDaemon stopped by system signal {signal}.")
 
