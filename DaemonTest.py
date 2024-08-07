@@ -7,13 +7,15 @@ from MailParser import MailParser
 from DBManager import DBManager
 from LoggerFactory import LoggerFactory
 from EMailArchiverDaemon import EMailArchiverDaemon
+from FileManager import FileManager
 
 
-MailParser.emlDirectoryPath = "C:\\Users\\phili\\Desktop\\emltest\\"
-MailParser.attachmentDirectoryPath = "C:\\Users\\phili\\Desktop\\attachmenttest\\"
+FileManager.emlDirectoryPath = "C:\\Users\\phili\\Desktop\\emltest\\"
+FileManager.attachmentDirectoryPath = "C:\\Users\\phili\\Desktop\\attachmenttest\\"
 LoggerFactory.logfilePath = "C:\\Users\\phili\\Desktop\\log.log\\"
 LoggerFactory.logLevel = logging.DEBUG
 LoggerFactory.consoleLogging = True
+
 
 
 if __name__ == "__main__":

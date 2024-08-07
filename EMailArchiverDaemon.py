@@ -5,6 +5,11 @@ from LoggerFactory import LoggerFactory
 from DBManager import DBManager
 from EMailDBFeeder import EMailDBFeeder
 from IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
+from IMAPFetcher import IMAPFetcher
+from POP3Fetcher import POP3Fetcher
+from POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from ExchangeFetcher import ExchangeFetcher
+
 
 class EMailArchiverDaemon:
     cyclePeriod = 60  #seconds
@@ -12,6 +17,9 @@ class EMailArchiverDaemon:
     dbHost = "192.168.178.109"
     dbUser = "root"
     dbPassword = "example"
+    protocol = "IMAP_SSL"
+    saveAttachments = True
+    saveToEML= True
 
     def __init__(self):
         self.logger = LoggerFactory.getMainLogger()
@@ -37,13 +45,47 @@ class EMailArchiverDaemon:
             with DBManager(EMailArchiverDaemon.dbHost, EMailArchiverDaemon.dbUser, EMailArchiverDaemon.dbPassword, "email_archive", "utf8mb4", "utf8mb4_bin") as db:
                 
                 dbfeeder = EMailDBFeeder(db)
-                
-                with IMAP_SSL_Fetcher(username="archiv@aderbauer.org", password="nxF154j9879ZZsW", host="pop.ionos.de") as imapMail:
 
-                    parsedNewMails = imapMail.fetchBySearch(searchCriterion="RECENT")
+                if EMailArchiverDaemon.protocol == IMAPFetcher.protocol:
+                    with IMAPFetcher(username="archiv@aderbauer.org", password="nxF154j9879ZZsW", host="imap.ionos.de") as imapMail:
 
+                        parsedNewMails = imapMail.fetchBySearch(searchCriterion="RECENT")
+
+                elif EMailArchiverDaemon.protocol == IMAP_SSL_Fetcher.protocol:
+                    with IMAP_SSL_Fetcher(username="archiv@aderbauer.org", password="nxF154j9879ZZsW", host="imap.ionos.de") as imapMail:
+
+                        parsedNewMails = imapMail.fetchBySearch(searchCriterion="RECENT")
+
+                elif EMailArchiverDaemon.protocol == POP3Fetcher.protocol:
+                    with POP3Fetcher(username="archiv@aderbauer.org", password="nxF154j9879ZZsW", host="pop.ionos.de") as imapMail:
+
+                        parsedNewMails = imapMail.fetchBySearch(searchCriterion="RECENT")
+
+                elif EMailArchiverDaemon.protocol == POP3_SSL_Fetcher.protocol:
+                    with POP3_SSL_Fetcher(username="archiv@aderbauer.org", password="nxF154j9879ZZsW", host="pop.ionos.de") as imapMail:
+
+                        parsedNewMails = imapMail.fetchBySearch(searchCriterion="RECENT")
+
+                elif EMailArchiverDaemon.protocol == ExchangeFetcher.protocol:
+                    with ExchangeFetcher() as exchangeMail:
+
+                        parsedNewMails = exchangeMail.fetchBySearch()
+
+                else:
+                    self.logger.error("Can not fetch mails, protocol is not or incorrectly specified!")
+                    parsedNewMails = []
+
+                if EMailArchiverDaemon.saveToEML:
                     for mail in parsedNewMails:
-                        dbfeeder.insert(mail)
+                        mail.saveToEML()
+
+                if EMailArchiverDaemon.saveAttachments:
+                    for mail in parsedNewMails:
+                        mail.saveAttachments()
+
+                for mail in parsedNewMails:
+                    dbfeeder.insert(mail)
+
 
             endtime = time.time()
             self.logger.debug(f"Cycle complete after {endtime - startTime} seconds\n-------------------------------------------")
