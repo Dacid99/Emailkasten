@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from CorrespondentModel import CorrespondentModel
+from Serializers import CorrespondentSerializer
 
 class CorrespondentViewSet(viewsets.ModelViewSet):
-    class Meta:
-        model = CorrespondentModel
-        fields = '__all__'
+    queryset = CorrespondentModel.objects.all()
+    serializer_class = CorrespondentSerializer

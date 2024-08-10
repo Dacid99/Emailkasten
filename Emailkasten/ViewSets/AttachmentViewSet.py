@@ -1,7 +1,7 @@
 from rest_framework import viewsets
-from AttchmentModel import AttchmentModel
+from AttachmentModel import AttachmentModel
+from Serializers import AttachmentSerializer
 
-class AttchmentViewSet(viewsets.ModelViewSet):
-    class Meta:
-        model = AttchmentModel
-        fields = '__all__'
+class AttachmentViewSet(viewsets.ModelViewSet):
+    queryset = AttachmentModel.objects.all()
+    serializer_class = AttachmentSerializer
