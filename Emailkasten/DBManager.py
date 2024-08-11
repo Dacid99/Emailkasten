@@ -1,6 +1,6 @@
 import mysql.connector
 import time
-from LoggerFactory import LoggerFactory
+from .LoggerFactory import LoggerFactory
 
 class DBManager:
     INSERT_EMAIL_PROCEDURE = "safe_insert_email"

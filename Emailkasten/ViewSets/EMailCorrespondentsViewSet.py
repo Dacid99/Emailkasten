@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from EMailCorrespondentsModel import EMailCorrespondentsModel
-from Serializers import EMailCorrespondentsSerializer
+from ..Models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from ..Serializers import EMailCorrespondentsSerializer
 
 class EMailCorrespondentsViewSet(viewsets.ModelViewSet):
     queryset = EMailCorrespondentsModel.objects.all()

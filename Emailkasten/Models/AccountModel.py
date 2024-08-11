@@ -1,16 +1,25 @@
 from django.db import models
-from .IMAPFetcher import IMAPFetcher
-from .IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
-from .POP3Fetcher import POP3Fetcher
-from .POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from ..IMAPFetcher import IMAPFetcher
+from ..IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
+from ..POP3Fetcher import POP3Fetcher
+from ..POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from ..ExchangeFetcher import ExchangeFetcher
+from ..EMailArchiverDaemon import EMailArchiverDaemon
 
 
 class AccountModel(models.Model):
-    mail_address = models.CharField(max_length=255, unique=True)
+    mail_address = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     mail_host = models.CharField(max_length=255)
     mail_host_port = models.IntegerField(null=True)
-    protocol = models.TextChoices(IMAPFetcher.PROTOCOL, IMAP_SSL_Fetcher.PROTOCOL, POP3Fetcher.PROTOCOL, POP3_SSL_Fetcher.PROTOCOL, ExchangeFetcher.PROTOCOL)
+    protocolChoices = {
+        IMAPFetcher.PROTOCOL : "IMAP", 
+        IMAP_SSL_Fetcher.PROTOCOL : "IMAP SSL",
+        POP3Fetcher.PROTOCOL : "POP3",
+        POP3_SSL_Fetcher.PROTOCOL : "POP3 SSL",
+        ExchangeFetcher.PROTOCOL : "Exchange"
+    }
+    protocol = models.CharField(choices=protocolChoices, max_length=10)
     cycle_interval = models.IntegerField(default=EMailArchiverDaemon.cyclePeriod)
     save_attachments = models.BooleanField(default=True)
     save_toEML = models.BooleanField(default=True)

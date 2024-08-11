@@ -1,11 +1,11 @@
 from django.db import models
-from EMailModel import EMailModel
-from CorrespondentModel import CorrespondentModel
+from .EMailModel import EMailModel
+from .CorrespondentModel import CorrespondentModel
 
 class EMailCorrespondentsModel(models.Model):
     email = models.ForeignKey(EMailModel, related_name="emails", on_delete=models.CASCADE)
     correspondent = models.ForeignKey(CorrespondentModel, related_name="correspondents", on_delete=models.CASCADE)
-    mentionTypes = models.TextChoices("TO", "FROM", "CC", "BCC")
+    mentionTypes = {"TO" : "To", "FROM" : "From", "CC" : "Cc", "BCC" : "Bcc"}
     mention = models.CharField(choices=mentionTypes, max_length=10)
 
     def __str__(self):
@@ -13,4 +13,4 @@ class EMailCorrespondentsModel(models.Model):
     
     class Meta:
         unique_together = ('email_id', 'correspondent_id', 'mention')
-        db_table = "correspondents"
+        db_table = "email_correspondents"

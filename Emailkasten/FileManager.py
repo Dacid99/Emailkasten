@@ -1,7 +1,8 @@
 import email
 import email.generator
 import os.path
-from LoggerFactory import LoggerFactory
+import sys
+from .LoggerFactory import LoggerFactory
 
 class FileManager:
     emlDirectoryPath = "/mnt/eml/"
@@ -92,6 +93,6 @@ class FileManager:
                 logger.debug("File was not created")
             filePath = None
         
-        return (fileName,filePath)
+        return (fileName, filePath, sys.getsizeof(attachmentData))
         
             

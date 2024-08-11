@@ -1,6 +1,6 @@
 from django.db import models
-from FileManager import FileManager
-from EMailModel import EMailModel
+from .EMailModel import EMailModel
+from ..FileManager import FileManager 
 
 class AttachmentModel(models.Model):
     file_name = models.CharField(max_length=255)

@@ -1,6 +1,10 @@
+from .IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
+from .IMAPFetcher import IMAPFetcher
+from .POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from .POP3Fetcher import POP3Fetcher
+from .ExchangeFetcher import ExchangeFetcher
 
-
-class MailFetcher:
+class MailProcessor:
     UNSEEN = "UNSEEN"
     ALL = "ALL"
     RECENT = "RECENT"
@@ -36,11 +40,11 @@ class MailFetcher:
             logger.error("Can not fetch mails, protocol is not or incorrectly specified!")
             parsedMails = []
 
-        if self.mailAccount.save_toEML:
+        if mailAccount.save_toEML:
             for mail in parsedMails:
                 mail.saveToEML()
 
-        if self.mailAccount.save_attachments:
+        if mailAccount.save_attachments:
             for mail in parsedMails:
                 mail.saveAttachments()
 

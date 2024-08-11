@@ -1,8 +1,8 @@
 import poplib
 import os
 
-from LoggerFactory import LoggerFactory
-from POP3Fetcher import POP3Fetcher
+from .LoggerFactory import LoggerFactory
+from .POP3Fetcher import POP3Fetcher
 
 class POP3_SSL_Fetcher(POP3Fetcher): 
 

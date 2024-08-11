@@ -1,5 +1,5 @@
 from django.db import models
-from FileManager import FileManager
+from ..FileManager import FileManager
 
 class EMailModel(models.Model):
     message_id = models.CharField(max_length=255, unique=True)

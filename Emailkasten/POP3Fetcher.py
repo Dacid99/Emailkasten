@@ -1,8 +1,8 @@
 import poplib
 import logging
 
-from LoggerFactory import LoggerFactory
-from MailParser import MailParser
+from .LoggerFactory import LoggerFactory
+from .MailParser import MailParser
 
 class POP3Fetcher: 
 

@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from EMailModel import EMailModel
-from Serializers import EMailSerializer
+from ..Models.EMailModel import EMailModel
+from ..Serializers import EMailSerializer
 
 class EMailViewSet(viewsets.ModelViewSet):
     queryset = EMailModel.objects.all()

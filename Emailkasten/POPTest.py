@@ -1,4 +1,4 @@
-from POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from .POP3_SSL_Fetcher import POP3_SSL_Fetcher
 
 import logging
 

@@ -1,4 +1,4 @@
-from FileManager import FileManager
+from .FileManager import FileManager
 
 
 class ParsedEMail:

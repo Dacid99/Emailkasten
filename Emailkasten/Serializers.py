@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
-from AccountModel import AccountModel
-from EmailModel import EmailModel
-from CorrespondentModel import CorrespondentModel
-from EMailCorrespondentsModel import EMailCorrespondentsModel
-from AttachmentModel import AttachmentModel
+from .Models.AccountModel import AccountModel
+from .Models.EMailModel import EMailModel
+from .Models.CorrespondentModel import CorrespondentModel
+from .Models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from .Models.AttachmentModel import AttachmentModel
 
 class AccountSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(max_length=255, write_only=True)
 
     class Meta:
         model = AccountModel

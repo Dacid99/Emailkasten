@@ -5,8 +5,8 @@ import logging
 import datetime
 import pytz
 
-from LoggerFactory import LoggerFactory
-from ParsedEMail import ParsedEMail
+from .LoggerFactory import LoggerFactory
+from .ParsedEMail import ParsedEMail
 
 class MailParser:
     __messageIDString = "Message-ID"

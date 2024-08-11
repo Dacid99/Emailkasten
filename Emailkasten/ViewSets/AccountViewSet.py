@@ -1,6 +1,7 @@
 from rest_framework import viewsets
-from AccountModel import AccountModel
-from Serializers import AccountSerializer
+from rest_framework.decorators import action
+from ..Models.AccountModel import AccountModel
+from ..Serializers import AccountSerializer
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = AccountModel.objects.all()
@@ -42,7 +43,7 @@ class AccountViewSet(viewsets.ModelViewSet):
                 parsedMails = MailFetcher.fetch(account, MailFetcher.ALL)
 
                 for mail in parsedNewMails:
-                    dbfeeder.insert(mail)
+                    EMailDBFeeder.insert(mail)
                         
         except Exception as e:
             raise
