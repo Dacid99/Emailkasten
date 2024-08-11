@@ -3,9 +3,10 @@ from EMailModel import EMailModel
 from CorrespondentModel import CorrespondentModel
 
 class EMailCorrespondentsModel(models.Model):
-    email_id = models.ForeignKey(EMailModel, related_name="emails", on_delete=models.CASCADE)
-    correspondent_id = models.ForeignKey(CorrespondentModel, related_name="correspondents", on_delete=models.CASCADE)
-    mention = models.TextChoices("TO", "FROM", "CC", "BCC", non_null=True)
+    email = models.ForeignKey(EMailModel, related_name="emails", on_delete=models.CASCADE)
+    correspondent = models.ForeignKey(CorrespondentModel, related_name="correspondents", on_delete=models.CASCADE)
+    mentionTypes = models.TextChoices("TO", "FROM", "CC", "BCC")
+    mention = models.CharField(choices=mentionTypes, max_length=10)
 
     def __str__(self):
         return f"EMail-Correspondent connection from email {self.email_id} to correspondent {self.correspondent_id} with mention {self.mention}"

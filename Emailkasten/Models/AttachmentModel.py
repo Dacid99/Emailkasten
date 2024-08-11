@@ -6,11 +6,11 @@ class AttachmentModel(models.Model):
     file_name = models.CharField(max_length=255)
     file_path = models.FilePathField(
         path=FileManager.attachmentDirectoryPath,
-        recursive=True, 
-        not_null=True,
-        blank=True,  
-        unique=True)
-    email_id = models.ForeignKey(EMailModel, related_name="emails", on_delete=models.CASCADE)
+        recursive=True,
+        unique=True,
+        null=True)
+    datasize = models.IntegerField()
+    email_id = models.ForeignKey(EMailModel, related_name="email", on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Attachment {self.file_name}"

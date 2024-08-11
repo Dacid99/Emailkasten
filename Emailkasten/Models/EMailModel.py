@@ -2,16 +2,16 @@ from django.db import models
 from FileManager import FileManager
 
 class EMailModel(models.Model):
-    message_id = models.CharField(max_length=255, unique=True, not_null=True)
-    date_received = models.DateTimeField(not_null=True)
-    email_subject = models.CharField(max_length=255, not_null=True)
-    bodytext = models.TextField(not_null=True)
+    message_id = models.CharField(max_length=255, unique=True)
+    date_received = models.DateTimeField()
+    email_subject = models.CharField(max_length=255)
+    bodytext = models.TextField()
+    datasize = models.IntegerField()
     eml_filepath = models.FilePathField(
         path=FileManager.emlDirectoryPath, 
         recursive=True, 
         match='.*\.eml$', 
-        blank=True, 
-        not_null=True
+        null=True
     )
 
     def __str__(self):
