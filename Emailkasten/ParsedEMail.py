@@ -6,6 +6,7 @@ class ParsedEMail:
         self.mailMessage = None
         self.messageID = None
         self.subject = None
+        self.dataSize = None
         self.emailFrom = None
         self.emailTo = []
         self.emailCc = []
