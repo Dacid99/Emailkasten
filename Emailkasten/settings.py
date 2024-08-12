@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -77,10 +77,10 @@ WSGI_APPLICATION = "Emailkasten.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "email_archive_django",
+        "NAME": os.getenv("DB_NAME"),
         "USER": "root",
-        "PASSWORD": "example",
-        "HOST": '192.168.178.109',
+        "PASSWORD": os.getenv("DB_ROOT_PASSWORD"),
+        "HOST": "localhost",
         "PORT": '3306'
         }
 }

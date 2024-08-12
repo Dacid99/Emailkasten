@@ -4,10 +4,10 @@ services:
   db:
     image: mariadb:latest
     volumes:
-      - :/var/lib/mysql
+      - /root/Emailkasten/test/mysql:/var/lib/mysql
     environment:
-      - MARIADB_database=email_archive_django
-      - MARIADB_ROOT_PASSWORD=example
+      - MARIADB_database: email_archive_django
+      - MARIADB_ROOT_PASSWORD: example
     container_name: emailkasten_db
     restart: unless-stopped
 
@@ -20,11 +20,11 @@ services:
   web:
     build: .
     volumes:
-      - .:/code
+      - /root/Emailkasten/test/code:/code
     ports:
-      - 8000:8000
+      - 1122:8000
     environment:
-      - MARIADB_NAME=email_archive_django
-      - MARIADB_ROOT_PASSWORD=example
+      - DB_NAME: email_archive_django
+      - DB_ROOT_PASSWORD: example
     depends_on:
       - db
