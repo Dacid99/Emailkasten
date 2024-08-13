@@ -51,11 +51,11 @@ class ParsedEMail:
         return bool(self.attachmentsFiles) 
 
     def saveToEML(self):
-        emlFile = FileManager.writeMessageToEML(self.mailMessage, self.subject)
+        emlFile = FileManager.writeMessageToEML(self.mailMessage, self.messageID)
         self.emlFilePath = emlFile
 
     def saveAttachments(self):
         for attachment in self.attachmentsData:
-            attachmentFile = FileManager.writeAttachment(attachment, self.subject)
+            attachmentFile = FileManager.writeAttachment(attachment, self.messageID)
             self.attachmentsFiles.append(attachmentFile)
 
