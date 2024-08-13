@@ -25,6 +25,7 @@ services:
     volumes:
       - /main/Emailkasten/test/attachments:/mnt/attachments
       - /main/Emailkasten/test/eml:/mnt/eml
+      - /main/Emailkasten/test/log:/var/log
     ports:
       - 1122:8000
     environment:

@@ -1,10 +1,10 @@
 import time
-import signal
 import threading
 
 from .LoggerFactory import LoggerFactory
-
-
+from .MailProcessor import MailProcessor
+from .EMailDBFeeder import EMailDBFeeder
+from .MailFetcher import MailFetcher
 
 class EMailArchiverDaemon:
     restartTime = 10
@@ -15,7 +15,7 @@ class EMailArchiverDaemon:
         self.thread = None
         self.isRunning = False
 
-        self.mailAccount = account
+        self.account = account
 
 
     def start(self):
