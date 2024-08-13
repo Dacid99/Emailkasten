@@ -21,7 +21,7 @@ class EMailDBFeeder:
 
         try:
             with django.db.transaction.atomic():
-                emailEntry = EMailModel.objects.get_or_create(
+                emailEntry, created = EMailModel.objects.get_or_create(
                     message_id = parsedEMail.messageID,
                     defaults = {
                         'date_received' : parsedEMail.dateReceived,
@@ -31,63 +31,104 @@ class EMailDBFeeder:
                         'eml_filepath' : parsedEMail.emlFilePath
                     }
                 )
+                if created:
+                    logger.debug("EmailEntry created")
+                else:
+                    logger.debug("EmailEntry already exists")
 
                 for attachmentFile in parsedEMail.attachmentsFiles:
-                    attachmentEntry = AttachmentModel.objects.get_or_create(
+                    attachmentEntry, created  = AttachmentModel.objects.get_or_create(
                         file_name = attachmentsFiles[0],
                         file_path = attachmentsFiles[1],
                         datasize = attachmentFile[2],
                         email = emailEntry
                     )
+                    if created:
+                        logger.debug("AttachmentEntry created")
+                    else:
+                        logger.debug("AttachmentEntry already exists")
 
                 for correspondent in parsedEMail.emailFrom:
-                    correspondentEntry = CorrespondentModel.objects.get_or_create(
+                    correspondentEntry, created  = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
                     )
+                    if created:
+                        logger.debug("CorrespondentEntry created")
+                    else:
+                        logger.debug("CorrespondentEntry already exists")
                    
 
-                    EMailCorrespondentsModel.objects.get_or_create(
+                    EMailCorrespondentsEntry, created = EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
                         mention = EMailDBFeeder.MENTION_FROM
                     )
+                    if created:
+                        logger.debug("EmailCorrespondentEntry with FROM created")
+                    else:
+                        logger.debug("EmailCorrespondentEntry with FROM already exists")
 
                 for correspondent in parsedEMail.emailTo:
-                    correspondentEntry = CorrespondentModel.objects.get_or_create(
+                    correspondentEntry, created  = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
                     )
+                    if created:
+                        logger.debug("CorrespondentEntry created")
+                    else:
+                        logger.debug("CorrespondentEntry already exists")
 
-                    EMailCorrespondentsModel.objects.get_or_create(
+                    EMailCorrespondentsEntry, created = EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
                         mention = EMailDBFeeder.MENTION_TO
                     )
+                    if created:
+                        logger.debug("EmailCorrespondentEntry with TO created")
+                    else:
+                        logger.debug("EmailCorrespondentEntry with TO already exists")
                 
                 for correspondent in parsedEMail.emailCc:
-                    correspondentEntry = CorrespondentModel.objects.get_or_create(
+                    correspondentEntry, created  = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
                     )
+                    if created:
+                        logger.debug("CorrespondentEntry created")
+                    else:
+                        logger.debug("CorrespondentEntry already exists")
 
-                    EMailCorrespondentsModel.objects.get_or_create(
+                    EMailCorrespondentsEntry, created = EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
                         mention = EMailDBFeeder.MENTION_CC
                     )
+                    if created:
+                        logger.debug("EmailCorrespondentEntry with CC created")
+                    else:
+                        logger.debug("EmailCorrespondentEntry with CC already exists")
 
                 for correspondent in parsedEMail.emailBcc:
-                    correspondentEntry = CorrespondentModel.objects.get_or_create(
+                    correspondentEntry, created  = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
                     )
+                    if created:
+                        logger.debug("CorrespondentEntry created")
+                    else:
+                        logger.debug("CorrespondentEntry already exists")
 
-                    EMailCorrespondentsModel.objects.get_or_create(
+                    EMailCorrespondentsEntry, created = EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
                         mention = EMailDBFeeder.MENTION_BCC
                     )
+                    if created:
+                        logger.debug("EmailCorrespondentEntry with BCC created")
+                    else:
+                        logger.debug("EmailCorrespondentEntry with BCC already exists")
+
 
         except django.db.IntegrityError as e:
             logger.error("Error while writing to database, rollback to last state", exc_info=True)
