@@ -4,7 +4,7 @@ import threading
 from .LoggerFactory import LoggerFactory
 from .MailProcessor import MailProcessor
 from .EMailDBFeeder import EMailDBFeeder
-from .MailFetcher import MailFetcher
+
 
 class EMailArchiverDaemon:
     restartTime = 10
@@ -45,7 +45,7 @@ class EMailArchiverDaemon:
         self.logger.debug("---------------------------------------\nNew cycle")
         startTime = time.time()
         try:
-            parsedNewMails = MailProcessor.fetch(self.account, MailFetcher.RECENT)
+            parsedNewMails = MailProcessor.fetch(self.account, MailProcessor.RECENT)
 
             for mail in parsedNewMails:
                 EMailDBFeeder.insert(mail)

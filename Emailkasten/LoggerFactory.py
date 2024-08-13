@@ -1,6 +1,6 @@
 import logging
 import logging.handlers
-import os.environ 
+import os
 
 class LoggerFactory:
     loggerName = "EMailkasten"

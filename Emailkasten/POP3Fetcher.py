@@ -12,7 +12,7 @@ class POP3Fetcher:
         self.host = host
         self.port = port
         self.timeout = timeout
-        self._mailhost = poplib.POP3(host, port, timeout)
+        self._mailhost = poplib.POP3(host=host, port=port, timeout=timeout)
         self.username = username
         self.password = password
 

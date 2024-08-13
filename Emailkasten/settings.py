@@ -123,7 +123,7 @@ LOGGING = {
     'handlers': {
         'console': {
             'level': 'DEBUG',
-            'class': 'logging.Streamhandler',
+            'class': 'logging.StreamHandler',
             'formatter': 'default',
         },
         'file': {

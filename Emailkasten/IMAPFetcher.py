@@ -14,7 +14,7 @@ class IMAPFetcher:
         self.host = host
         self.port = port
         self.timeout = timeout
-        self._mailhost = imaplib.IMAP4(host, port, timeout)
+        self._mailhost = imaplib.IMAP4(host=host, port=port, timeout=timeout)
         self.username = username
         self.password = password
 

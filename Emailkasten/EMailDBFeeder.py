@@ -1,28 +1,27 @@
 import logging
 import traceback
-
+import django.db
 from .LoggerFactory import LoggerFactory
-from .DBManager import DBManager
-from Models.EMailModel import EMailModel
-from Models.AttachmentModel import AttachmentModel
-from Models.CorrespondentModel import CorrespondentModel
-from Models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from .Models.EMailModel import EMailModel
+from .Models.AttachmentModel import AttachmentModel
+from .Models.CorrespondentModel import CorrespondentModel
+from .Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 
 
 class EMailDBFeeder:
 
-    __MENTION_FROM = "FROM"
-    __MENTION_TO = "TO"
-    __MENTION_CC = "CC"
-    __MENTION_BCC = "BCC"
+    MENTION_FROM = "FROM"
+    MENTION_TO = "TO"
+    MENTION_CC = "CC"
+    MENTION_BCC = "BCC"
 
     @staticmethod
-    def insert(self, parsedEMail):
-        logger = LoggerFactory.getChildLogger(self.__class__.__name__)
+    def insert(parsedEMail):
+        logger = LoggerFactory.getChildLogger(EMailDBFeeder.__name__)
 
         try:
-            with transaction.atomic():
-                emailEntry = EMailModel.get_or_create(
+            with django.db.transaction.atomic():
+                emailEntry = EMailModel.objects.get_or_create(
                     message_id = parsedEMail.messageID,
                     defaults = {
                         'date_received' : parsedEMail.dateReceived,
@@ -41,49 +40,50 @@ class EMailDBFeeder:
                         email = emailEntry
                     )
 
-                for correspondent in parsedEMail.emailFrom():
+                for correspondent in parsedEMail.emailFrom:
                     correspondentEntry = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
                     )
+                   
 
-                    EMailCorrespondent.get_or_create(
+                    EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
                         mention = EMailDBFeeder.MENTION_FROM
                     )
 
-                for correspondent in parsedEMail.emailTo():
+                for correspondent in parsedEMail.emailTo:
                     correspondentEntry = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
                     )
 
-                    EMailCorrespondent.get_or_create(
+                    EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
                         mention = EMailDBFeeder.MENTION_TO
                     )
                 
-                for correspondent in parsedEMail.emailCc():
+                for correspondent in parsedEMail.emailCc:
                     correspondentEntry = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
                     )
 
-                    EMailCorrespondent.get_or_create(
+                    EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
                         mention = EMailDBFeeder.MENTION_CC
                     )
 
-                for correspondent in parsedEMail.emailBcc():
+                for correspondent in parsedEMail.emailBcc:
                     correspondentEntry = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
                     )
 
-                    EMailCorrespondent.get_or_create(
+                    EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
                         mention = EMailDBFeeder.MENTION_BCC
