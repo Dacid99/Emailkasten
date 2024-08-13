@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from ..Models.AccountModel import AccountModel
 from ..Serializers import AccountSerializer
 from ..EMailArchiverDaemon import EMailArchiverDaemon 
+from ..MailProcessor import MailProcessor
+from ..EMailDBFeeder import EMailDBFeeder
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = AccountModel.objects.all()
@@ -39,15 +41,15 @@ class AccountViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def fetch_all(self, request, pk=None):
         account = self.get_object() 
+        
+        startTime = time.time()
         try:
-            with DBManager(EMailArchiverDaemon.dbHost, EMailArchiverDaemon.dbUser, EMailArchiverDaemon.dbPassword, "email_archive", "utf8mb4", "utf8mb4_bin") as db:
-                dbfeeder = EMailDBFeeder(db)
+            parsedNewMails = MailProcessor.fetch(self.account, MailProcessor.ALL)
 
-                parsedMails = MailFetcher.fetch(account, MailFetcher.ALL)
+            for mail in parsedNewMails:
+                EMailDBFeeder.insert(mail)
 
-                for mail in parsedNewMails:
-                    EMailDBFeeder.insert(mail)
-                        
+            endtime = time.time()
         except Exception as e:
             raise
 
