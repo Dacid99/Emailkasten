@@ -42,14 +42,12 @@ class AccountViewSet(viewsets.ModelViewSet):
     def fetch_all(self, request, pk=None):
         account = self.get_object() 
         
-        startTime = time.time()
         try:
-            parsedNewMails = MailProcessor.fetch(self.account, MailProcessor.ALL)
+            parsedNewMails = MailProcessor.fetch(account, MailProcessor.ALL)
 
             for mail in parsedNewMails:
                 EMailDBFeeder.insert(mail)
 
-            endtime = time.time()
         except Exception as e:
             raise
 
