@@ -10,7 +10,7 @@ class EMailModel(models.Model):
     eml_filepath = models.FilePathField(
         path=FileManager.emlDirectoryPath, 
         recursive=True, 
-        match='.*\.eml$', 
+        match=r".*\.eml$", 
         null=True
     )
 

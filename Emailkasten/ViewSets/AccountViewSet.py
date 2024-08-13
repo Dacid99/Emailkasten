@@ -15,7 +15,8 @@ class AccountViewSet(viewsets.ModelViewSet):
     def start(self, request, pk=None):
         account = self.get_object()
         if account.mail_address not in self.activeEmailArchiverDaemons:
-            daemon = EMailArchiverDaemon(account).start()
+            daemon = EMailArchiverDaemon(account)
+            daemon.start()
             self.activeEmailArchiverDaemons[account.mail_address] = daemon
             account.is_fetched = True
             account.save()

@@ -43,7 +43,7 @@ class EMailDBFeeder:
                         file_path = attachmentFile[1],
 			email = emailEntry,
                         defaults = {
-      			   'filename' : attachmentFile[0],
+      			   'file_name' : attachmentFile[0],
                            'datasize' : attachmentFile[2]
                         }
                     )

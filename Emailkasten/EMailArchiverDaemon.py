@@ -35,7 +35,7 @@ class EMailArchiverDaemon:
         try:
             while self.isRunning:
                 self.cycle()
-                time.sleep(self.mailAccount.cycle_interval)
+                time.sleep(self.account.cycle_interval)
         except Exception as e:
             self.logger.critical("EMailArchiverDaemon crashed! Attempting to restart ...", exc_info=True)
             time.sleep(EMailArchiverDaemon.restartTime)
