@@ -6,7 +6,7 @@ from .Models.EMailModel import EMailModel
 from .Models.AttachmentModel import AttachmentModel
 from .Models.CorrespondentModel import CorrespondentModel
 from .Models.EMailCorrespondentsModel import EMailCorrespondentsModel
-
+from .MailParser import MailParser
 
 class EMailDBFeeder:
 
@@ -21,8 +21,9 @@ class EMailDBFeeder:
 
         try:
             with django.db.transaction.atomic():
+                logger.debug(parsedEMail[MailParser.emlFilePathString])
                 emailEntry, created = EMailModel.objects.get_or_create(
-                    message_id = parsedEMail.messageID,
+                    message_id = parsedEMail[MailParser.messageIDString],
                     defaults = {
                         'date_received' : parsedEMail[MailParser.dateString],
                         'email_subject' : parsedEMail[MailParser.subjectString],

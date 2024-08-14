@@ -4,6 +4,7 @@ from .POP3_SSL_Fetcher import POP3_SSL_Fetcher
 from .POP3Fetcher import POP3Fetcher
 from .ExchangeFetcher import ExchangeFetcher
 from .FileManager import FileManager
+from .LoggerFactory import LoggerFactory
 
 class MailProcessor:
     UNSEEN = "UNSEEN"
@@ -12,6 +13,8 @@ class MailProcessor:
 
     @staticmethod
     def fetch(mailAccount, criterion):
+        logger = LoggerFactory.getChildLogger(MailProcessor.__name__)
+
         if mailAccount.protocol == IMAPFetcher.PROTOCOL:
             with IMAPFetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as imapMail:
 
@@ -42,7 +45,7 @@ class MailProcessor:
             parsedMails = []
 
         if mailAccount.save_toEML:
-            logger.debug("Saving mail to eml file ...")
+            logger.debug("Saving mails to eml files ...")
             for mail in parsedMails:
                 FileManager.writeMessageToEML(mail)
             logger.debug("Success")

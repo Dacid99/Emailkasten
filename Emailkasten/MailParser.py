@@ -202,19 +202,19 @@ class MailParser:
 
 
         parsedEMail = {}
-        parsedEMail[dataString] = mailToParse
-        parsedEMail[fullMessageString] = mailMessage
-        parsedEMail[sizeString] = sys.getsizeof(mailToParse)
-        parsedEMail[messageIDString] = parseMessageID()
-        parsedEMail[subjectString] = parseSubject()
-        parsedEMail[bodyTextString] = parseBody()
-        parsedEMail[fromString] = parseFrom()
-        parsedEMail[toString] = parseTo()
-        parsedEMail[ccString] = parseCc()
-        parsedEMail[bccString] = parseBcc()
-        parsedEMail[dateString] = parseDate()
-        parsedEMail[attachmentsString] = parseAttachments()
-        parsedEMail[MailParser.emlFilePath] = None
+        parsedEMail[MailParser.dataString] = mailToParse
+        parsedEMail[MailParser.fullMessageString] = mailMessage
+        parsedEMail[MailParser.sizeString] = sys.getsizeof(mailToParse)
+        parsedEMail[MailParser.messageIDString] = parseMessageID()
+        parsedEMail[MailParser.subjectString] = parseSubject()
+        parsedEMail[MailParser.bodyTextString] = parseBody()
+        parsedEMail[MailParser.fromString] = parseFrom()
+        parsedEMail[MailParser.toString] = parseTo()
+        parsedEMail[MailParser.ccString] = parseCc()
+        parsedEMail[MailParser.bccString] = parseBcc()
+        parsedEMail[MailParser.dateString] = parseDate()
+        parsedEMail[MailParser.attachmentsString] = parseAttachments()
+        parsedEMail[MailParser.emlFilePathString] = None
 
 
 

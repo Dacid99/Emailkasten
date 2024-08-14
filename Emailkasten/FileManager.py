@@ -3,6 +3,7 @@ import email.generator
 import os.path
 import sys
 from .LoggerFactory import LoggerFactory
+from .MailParser import MailParser
 
 class FileManager:
     subdirNumber = 0
@@ -15,13 +16,13 @@ class FileManager:
     def writeMessageToEML(parsedEMail):
         logger = LoggerFactory.getChildLogger(FileManager.__class__.__name__)
         logger.debug("Storing mail in .eml file ...")
-        emlDirPath = getStoragePath(parsedEMail[MailParser.messageIDString])
+        emlDirPath = FileManager.getStoragePath(parsedEMail[MailParser.messageIDString])
         emlFilePath = os.path.join(emlDirPath , parsedEMail[MailParser.messageIDString] + ".eml")
         try:
             if os.path.exists(emlFilePath):
                 if os.path.getsize(emlFilePath) > 0:
                     logger.debug(f"Not writing to {emlFilePath}, it already exists and is not empty")
-                    return emlFilePath
+                    
                 else:
                     logger.debug(f"Writing to empty .eml file {emlFilePath} ...")
                     with open(emlFilePath, "wb") as emlFile:
@@ -32,7 +33,7 @@ class FileManager:
                 if not os.path.exists(emlDirPath):
                     logger.debug(f"Creating directory {emlDirPath} ...")
                     os.makedirs(emlDirPath)
-                    subdirNumber += 1
+                    FileManager.subdirNumber += 1
                     logger.debug("Success")
                 logger.debug(f"Creating and writing new .eml file {emlFilePath}...")
                 with open(emlFilePath, "wb") as emlFile:
@@ -55,37 +56,37 @@ class FileManager:
                 logger.debug("File was not created")
             emlFilePath = None
 
-        parsedEMail[FileManager.emlFilePathString] = emlFilePath
+        parsedEMail[MailParser.emlFilePathString] = emlFilePath
 
 
     @staticmethod
     def writeAttachments(parsedEMail):
         logger = LoggerFactory.getChildLogger(FileManager.__class__.__name__)
 
-        dirPath = getStoragePath(parsedEMail[MailParser.messageIDString])
-        for attachmentData in parsedEMail[MailParser.attachmentDataString]:
-            fileName = attachmentData.get_filename()
+        dirPath = FileManager.getStoragePath(parsedEMail[MailParser.messageIDString])
+        for attachmentData in parsedEMail[MailParser.attachmentsString]:
+            fileName = attachmentData[MailParser.attachment_fileNameString]
             filePath = os.path.join(dirPath, fileName)
             logger.debug(f"Storing attachment {fileName} in {filePath} ...")
             try:
                 if os.path.exists(filePath):
                     if os.path.getsize(filePath) > 0:
                         logger.debug(f"Not writing to {filePath}, it already exists and is not empty")
-                        return (fileName, filePath, fileSize)
+                        
                     else:
                         logger.debug(f"Writing to empty file {filePath} ...")
                         with open(filePath, "wb") as file:
-                            file.write(attachmentData.get_payload(decode=True))
+                            file.write(attachmentData[MailParser.attachment_dataString].get_payload(decode=True))
                         logger.debug("Success")
                 else:
                     if not os.path.exists(dirPath):
                         logger.debug(f"Creating directory {dirPath} ...")
                         os.makedirs(dirPath)
-                        subdirNumber += 1
+                        FileManager.subdirNumber += 1
                         logger.debug("Success")
                     logger.debug(f"Creating new file {filePath} ...")
                     with open(filePath, "wb") as file:
-                        file.write(attachmentData.get_payload(decode=True))
+                        file.write(attachmentData[MailParser.attachment_dataString].get_payload(decode=True))
                     logger.debug("Success")
 
             except OSError as e:
@@ -102,14 +103,14 @@ class FileManager:
                     logger.debug("File was not created")
                 filePath = None
         
-            parsedEMail[MailParser.attachment_filePathString] = filePath
+            attachmentData[MailParser.attachment_filePathString] = filePath
 
 
     @staticmethod
     def getStoragePath(filename):
-        if subdirNumber > maxSubdirsPerDir:
-            dirNumber += 1
-            subdirNumber = 0
-        path = os.path.join(STORAGE_PATH, dirNumber, filename)
+        if FileManager.subdirNumber > FileManager.maxSubdirsPerDir:
+            FileManager.dirNumber += 1
+            FileManager.subdirNumber = 0
+        path = os.path.join(FileManager.STORAGE_PATH, str(FileManager.dirNumber), filename)
         return path
             
