@@ -23,8 +23,7 @@ services:
     build: .
     command: sh -c "sleep 10 && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - /main/Emailkasten/test/attachments:/mnt/attachments
-      - /main/Emailkasten/test/eml:/mnt/eml
+      - /main/Emailkasten/test/archive:/mnt/archive
       - /main/Emailkasten/test/log:/var/log
     ports:
       - 1122:8000
