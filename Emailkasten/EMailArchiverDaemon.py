@@ -27,15 +27,13 @@ class EMailArchiverDaemon:
     def stop(self):
         self.logger.info("Stopping EMailArchiverDaemon")
         self.isRunning = False
-        if self.thread:
-            self.thread.join()
-        self.logger.info("Gracefully stopped EMailArchiverDaemon")
 
     def run(self):
         try:
             while self.isRunning:
                 self.cycle()
                 time.sleep(self.account.cycle_interval)
+            self.logger.info("EMailArchiverDaemon finished")
         except Exception as e:
             self.logger.critical("EMailArchiverDaemon crashed! Attempting to restart ...", exc_info=True)
             time.sleep(EMailArchiverDaemon.restartTime)
