@@ -196,7 +196,7 @@ class MailParser:
         parsedEMail.emailBcc = parseBcc()
         parsedEMail.dateReceived = parseDate()
         parsedEMail.bodyText = parseBody()
-        parsedEMail.dataSize = sys.getsizeof(mailMessage)
+        parsedEMail.dataSize = sys.getsizeof(mailToParse)
         parsedEMail.attachmentsData = parseAttachments()
 
         logger.debug("Successfully parsed mail")
