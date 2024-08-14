@@ -2,9 +2,8 @@ import email
 import email.header
 import email.utils
 import logging
-import datetime
-import pytz
 import sys
+import datetime
 from .LoggerFactory import LoggerFactory
 
 class MailParser:
@@ -144,15 +143,10 @@ class MailParser:
             date = mailMessage.get(MailParser.__dateString)
             if date is None:
                 logger.warn("No DATE found in mail, resorting to default!")
-                return MailParser.__dateDefault
-            decodedDate = decodeHeader(date)
-            if MailParser.timezone in pytz.all_timezones:
-                timezoneObject = pytz.timezone(MailParser.timezone)
-            else:
-                logger.warn(f"Invalid timezone {MailParser.timezone}, defaulting to UTC!")
-                timezoneObject = datetime.timezone.utc
-            decodedConvertedDate = email.utils.parsedate_to_datetime(decodedDate).astimezone(timezoneObject).strftime(MailParser.__dateFormat)
-            return decodedConvertedDate
+                return datetime.strptime(MailParser.__dateDefault, MailParser.__dateFormat)
+     
+            decodedDate = email.utils.parsedate_to_datetime(decodeHeader(date))
+            return decodedDate
         
 
         def parseSubject():
