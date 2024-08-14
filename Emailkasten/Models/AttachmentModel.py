@@ -6,6 +6,7 @@ class AttachmentModel(models.Model):
     file_name = models.CharField(max_length=255)
     file_path = models.FilePathField(
         path=FileManager.STORAGE_PATH,
+        max_length=511,
         recursive=True,
         unique=True,
         null=True)
