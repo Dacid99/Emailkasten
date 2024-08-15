@@ -62,12 +62,12 @@ class MailProcessor:
         if mailAccount.protocol == IMAPFetcher.PROTOCOL:
             with IMAPFetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as imapMail:
 
-                parsedMails = imapMail.fetchBySearch(mailbox=mailbox.name, searchCriterion=MailProcessor.getFilter(mailbox.fetching_criterion))
+                parsedMails = imapMail.fetchBySearch(mailbox=mailbox.name, searchCriterion=MailProcessor.getFilter(criterion))
 
         elif mailAccount.protocol == IMAP_SSL_Fetcher.PROTOCOL:
             with IMAP_SSL_Fetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as imapMail:
 
-                parsedMails = imapMail.fetchBySearch(mailbox=mailbox.name, searchCriterion=MailProcessor.getFilter(mailbox.fetching_criterion))
+                parsedMails = imapMail.fetchBySearch(mailbox=mailbox.name, searchCriterion=MailProcessor.getFilter(criterion))
 
         elif mailAccount.protocol == POP3Fetcher.PROTOCOL:
             with POP3Fetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as popMail:
