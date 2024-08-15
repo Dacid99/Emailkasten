@@ -38,36 +38,55 @@ class IMAPFetcher:
                 self._mailhost.close()
                 self._mailhost.logout()
                 self.logger.info(f"Gracefully closed connection to {self.host} on port {self.port} via {self.PROTOCOL}.")
+
             except imaplib.IMAP4.error:
                 self.logger.error(f"Failed to close connection to {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}!", exc_info=True)
+
 
     def fetchBySearch(self, mailbox = 'INBOX', searchCriterion='RECENT'):    #for criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4
         self.logger.debug(f"Searching and fetching {searchCriterion} messages in {mailbox} at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL} ...")
         try:
             self._mailhost.select(mailbox, readonly=True)
-            typ, messageNumbers = self._mailhost.search(None, searchCriterion)
+            status, messageNumbers = self._mailhost.search(None, searchCriterion)
+            if status != "OK":
+                self.logger.error(f"Bad response searching for mails, response {status}")
+                return []
+            
             self.logger.info(f"Found {searchCriterion} messages with numbers {messageNumbers} in {mailbox} at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}.")
+            
             parsedMails = []
             for number in messageNumbers[0].split():
-                typ, messageData = self._mailhost.fetch(number, '(RFC822)')
+                status, messageData = self._mailhost.fetch(number, '(RFC822)')
+                if status != "OK":
+                    self.logger.error(f"Bad response trying to fetch mail {number}, response {status}")
+                    continue
+                
                 parsedMail = MailParser.parseMail(messageData[0][1]) 
                 parsedMails.append(parsedMail)
+                
             self.logger.info(f"Successfully fetched {searchCriterion} messages from {mailbox} at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}.")
             return parsedMails
+
         except imaplib.IMAP4.error as e:
             self.logger.error(f"Failed to fetch {searchCriterion} messages from {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL} !", exc_info=True)
             return []
+
 
     def fetchMailboxes(self):
         self.logger.debug(f"Fetching mailboxes at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL} ...")
         try:
             status, mailboxes = self._mailhost.list()
+            if status != "OK":
+                self.logger.error(f"Bad response trying to scan mailboxes, response {status}")                  
+                return []
+
             mailboxesList = []
             for mailbox in mailboxes:
                 mailboxesList.append(MailParser.parseMailbox(mailbox))
-            print(mailboxesList)
+
             self.logger.debug(f"Successfully fetched mailboxes at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}.")
             return mailboxesList
+
         except imaplib.IMAP4.error as e:
             self.logger.error(f"Failed to fetch mailboxes from {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}!", exc_info=True)
             return []
