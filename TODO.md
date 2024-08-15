@@ -1,9 +1,11 @@
 test exchange
-account email connection
+separate Mailparsing from fetching, add inserting to processor : processor brings together the individual components, the daemon wraps it and handles it running continuouly
+emaildbfeeder and mailparser should be factories or something more maintainable than right now
 mail&attachmentsizes are all the same
 daemon autostart/stop on container up/down
 download api for eml and attachments
+api for updateds and queries by filter
 double logging fix, child loggers unnecesary due to module
-configurations extra
+configurations to extra class
 different choices for fetching depending on protocol
 custom fetching filter
