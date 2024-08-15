@@ -7,6 +7,9 @@ import email.utils
 
 with IMAP_SSL_Fetcher(username="archiv@aderbauer.org", password="nxF154j9879ZZsW", host="imap.ionos.de", port=993) as mail:
 
-    parsedMails = mail.fetchBySearch(mailbox='"Gesendete Objekte"', searchCriterion=MailProcessor.DAILY)
-    for mail in parsedMails:
-        print(mail[MailParser.fullMessageString])
+    mailsDataList = mail.fetchBySearch(mailbox='"Gesendete Objekte"', searchCriterion=MailProcessor.ALL)
+    print(mailsDataList)
+    
+    for mailData in mailsDataList:
+        parsedMail = MailParser.parseMail(mailData)
+        print(parsedMail[MailParser.fullMessageString])
