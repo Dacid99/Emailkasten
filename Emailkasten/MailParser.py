@@ -143,7 +143,7 @@ class MailParser:
             date = mailMessage.get(MailParser.dateString)
             if date is None:
                 logger.warn("No DATE found in mail, resorting to default!")
-                return datetime.strptime(MailParser.__dateDefault, MailParser.__dateFormat)
+                return datetime.datetime.strptime(MailParser.__dateDefault, MailParser.__dateFormat)
      
             decodedDate = email.utils.parsedate_to_datetime(decodeHeader(date))
             return decodedDate
