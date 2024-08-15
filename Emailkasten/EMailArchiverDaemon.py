@@ -47,7 +47,7 @@ class EMailArchiverDaemon:
             parsedNewMails = MailProcessor.fetch(self.mailbox, self.account, self.mailbox.fetching_criterion)
 
             for mail in parsedNewMails:
-                EMailDBFeeder.insertEMail(mail)
+                EMailDBFeeder.insertEMail(mail, self.account)
 
             endtime = time.time()
             self.logger.debug(f"Cycle complete after {endtime - startTime} seconds\n-------------------------------------------")

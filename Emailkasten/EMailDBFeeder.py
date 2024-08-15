@@ -38,7 +38,7 @@ class EMailDBFeeder:
 
 
     @staticmethod
-    def insertEMail(parsedEMail):
+    def insertEMail(parsedEMail, account):
         logger = LoggerFactory.getChildLogger(EMailDBFeeder.__name__)
 
         try:
@@ -46,11 +46,12 @@ class EMailDBFeeder:
                 emailEntry, created = EMailModel.objects.get_or_create(
                     message_id = parsedEMail[MailParser.messageIDString],
                     defaults = {
-                        'date_received' : parsedEMail[MailParser.dateString],
+                        'datetime' : parsedEMail[MailParser.dateString],
                         'email_subject' : parsedEMail[MailParser.subjectString],
                         'bodytext' : parsedEMail[MailParser.bodyTextString],
                         'datasize' :  parsedEMail[MailParser.sizeString],
-                        'eml_filepath' : parsedEMail[MailParser.emlFilePathString]
+                        'eml_filepath' : parsedEMail[MailParser.emlFilePathString],
+                        'account' : account
                     }
                 )
                 if created:

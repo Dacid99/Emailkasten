@@ -45,6 +45,6 @@ class MailboxViewSet(viewsets.ModelViewSet):
         parsedNewMails = MailProcessor.fetch(mailbox, mailbox.account, MailProcessor.ALL)
 
         for mail in parsedNewMails:
-            EMailDBFeeder.insertEMail(mail)
+            EMailDBFeeder.insertEMail(mail, mailbox.account)
 
         return Response({'status': 'All mails fetched', 'account': mailbox.account.mail_address, 'mailbox': mailbox.name})
