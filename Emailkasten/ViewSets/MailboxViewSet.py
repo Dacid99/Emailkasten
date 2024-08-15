@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from ..Models.MailboxModelModel import MailboxModel
-from ..Serializers import AccountSerializer
+from ..Models.MailboxModel import MailboxModel
+from ..Serializers import MailboxSerializer
 from ..EMailArchiverDaemon import EMailArchiverDaemon 
 from ..MailProcessor import MailProcessor
 from ..EMailDBFeeder import EMailDBFeeder
@@ -29,7 +29,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def stop(self, request, pk=None):
         mailbox = self.get_object() 
-        if account.id in self.activeEmailArchiverDaemons:
+        if mailbox.id in self.activeEmailArchiverDaemons:
             daemon = self.activeEmailArchiverDaemons.pop(mailbox.id)
             daemon.stop()
             mailbox.is_fetched = False
