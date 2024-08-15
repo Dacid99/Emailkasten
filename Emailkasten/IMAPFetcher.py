@@ -54,18 +54,17 @@ class IMAPFetcher:
             
             self.logger.info(f"Found {searchCriterion} messages with numbers {messageNumbers} in {mailbox} at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}.")
             
-            parsedMails = []
+            mailDataList = []
             for number in messageNumbers[0].split():
                 status, messageData = self._mailhost.fetch(number, '(RFC822)')
                 if status != "OK":
                     self.logger.error(f"Bad response trying to fetch mail {number}, response {status}")
                     continue
-                
-                parsedMail = MailParser.parseMail(messageData[0][1]) 
-                parsedMails.append(parsedMail)
+
+                mailDataList.append(messageData[0][1])
                 
             self.logger.info(f"Successfully fetched {searchCriterion} messages from {mailbox} at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}.")
-            return parsedMails
+            return mailDataList
 
         except imaplib.IMAP4.error as e:
             self.logger.error(f"Failed to fetch {searchCriterion} messages from {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL} !", exc_info=True)

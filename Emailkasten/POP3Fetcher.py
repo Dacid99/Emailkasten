@@ -49,7 +49,7 @@ class POP3Fetcher:
 
             messageCount = len(messageList)
             self.logger.debug(f"Found {messageCount} messages at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}.")
-            parsedMails = []
+            mailDataList = []
             for number in range(messageCount):
                 status, messageData = self._mailhost.retr(number + 1)
                 if status != "OK":
@@ -57,11 +57,10 @@ class POP3Fetcher:
                     continue
                     
                 fullMessage = b'\n'.join(messageData)
-                parsedMail = MailParser.parseMail(fullMessage)
-                parsedMails.append(parsedMail)
+                mailDataList.append(fullMessage)
 
             self.logger.debug(f"Successfully fetched all messages at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}.")
-            return parsedMails
+            return mailDataList
                 
         except poplib.error_proto as e:
             self.logger.error(f"Failed to fetch all messages from {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}!", exc_info=True)
