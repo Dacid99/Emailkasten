@@ -1,8 +1,8 @@
 import logging
 
-from .LoggerFactory import LoggerFactory
-from .EMailArchiverDaemon import EMailArchiverDaemon
-from .FileManager import FileManager
+from Emailkasten.LoggerFactory import LoggerFactory
+from Emailkasten.EMailArchiverDaemon import EMailArchiverDaemon
+from Emailkasten.FileManager import FileManager
 
 # on Windows
 FileManager.emlDirectoryPath = "C:\\Users\\phili\\Desktop\\emltest\\"
