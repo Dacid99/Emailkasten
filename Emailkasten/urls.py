@@ -35,5 +35,6 @@ router.register(r'attachments', AttachmentViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("health/", include('health_check.urls')),
     path('', include(router.urls)),
 ]
