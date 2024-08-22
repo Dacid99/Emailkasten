@@ -13,11 +13,14 @@ class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountModel
         fields = '__all__'
+        read_only_fields = ['is_healthy']
 
 class MailboxSerializer(serializers.ModelSerializer):
     class Meta:
         model = MailboxModel
         fields = '__all__'
+        read_only_fields = ['name', 'account' ,'is_fetched']
+
 
 class EMailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,3 +43,4 @@ class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttachmentModel
         fields = '__all__'
+        read_only_fields = []

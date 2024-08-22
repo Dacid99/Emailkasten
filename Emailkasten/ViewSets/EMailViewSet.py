@@ -5,7 +5,7 @@ from ..Models.EMailModel import EMailModel
 from ..Serializers import EMailSerializer
 import os
 
-class EMailViewSet(viewsets.ModelViewSet):
+class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = EMailModel.objects.all()
     serializer_class = EMailSerializer
 
