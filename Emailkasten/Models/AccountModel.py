@@ -20,10 +20,11 @@ class AccountModel(models.Model):
         ExchangeFetcher.PROTOCOL : "Exchange"
     }
     protocol = models.CharField(choices=protocolChoices, max_length=10)
-    user = models.ForeignKey(UserModel, related_name='user' ,on_delete=models.CASCADE)
+    is_healthy = models.BooleanField(default=True)
+    user = models.ForeignKey(UserModel, related_name='user', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Account {self.mail_address} with protocol {self.protocol}"
+        return f"Account {self.mail_address} at host {self.mail_host}:{self.mail_host_port} with protocol {self.protocol}"
 
     class Meta:
         db_table = "accounts"

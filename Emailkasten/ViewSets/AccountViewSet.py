@@ -18,4 +18,10 @@ class AccountViewSet(viewsets.ModelViewSet):
         EMailDBFeeder.insertMailboxes(mailboxesList, account)
         
         return Response({'status': 'Scanned for mailboxes', 'account': account.mail_address, 'found mailboxes': mailboxesList})
+    
+    @action(detail=True, methods=['post'])
+    def test(self, request, pk=None):
+        account = self.get_object()
+        result = MailProcessor.test(account)
+        return Response({'status': 'Tested mailaccount', 'account': account.mail_address, 'result': result})
 

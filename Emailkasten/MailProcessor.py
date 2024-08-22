@@ -5,6 +5,8 @@ from .Fetchers.POP3Fetcher import POP3Fetcher
 from .Fetchers.ExchangeFetcher import ExchangeFetcher
 from .FileManager import FileManager
 from .LoggerFactory import LoggerFactory
+from .MailParser import MailParser
+from .EMailDBFeeder import EMailDBFeeder
 import datetime
 
 class MailProcessor:
@@ -21,6 +23,43 @@ class MailProcessor:
             return "SINCE {date}".format(date=datetime.date.today().strftime("%d-%b-%Y"))
         else: 
             return flag
+        
+    @staticmethod
+    def test(account):
+        logger = LoggerFactory.getChildLogger(MailProcessor.__name__)
+
+        logger.debug(f"Testing {str(account)} ...")
+        if account.protocol == IMAPFetcher.PROTOCOL:
+            with IMAPFetcher(account) as imapMail:
+
+                result = imapMail.test(account)
+
+        elif account.protocol == IMAP_SSL_Fetcher.PROTOCOL:
+            with IMAP_SSL_Fetcher(account) as imapMail:
+
+                result = imapMail.test(account)
+
+        elif account.protocol == POP3Fetcher.PROTOCOL:
+            with POP3Fetcher(account) as popMail:
+
+                result = popMail.test(account)
+
+        elif account.protocol == POP3_SSL_Fetcher.PROTOCOL:
+            with POP3_SSL_Fetcher(account) as popMail:
+
+                result = popMail.test(account)
+
+        elif account.protocol == ExchangeFetcher.PROTOCOL:
+            with ExchangeFetcher(account) as exchangeMail:
+
+                result = exchangeMail.fetchBySearch()
+
+        else:
+            logger.error("Can not fetch mails, protocol is not or incorrectly specified!")
+            result = False
+
+        logger.debug(f"Tested {str(account)} as {result}")
+        return result
 
 
     @staticmethod
@@ -30,12 +69,12 @@ class MailProcessor:
         logger.debug(f"Searching mailboxes in {mailAccount}...")
 
         if mailAccount.protocol == IMAPFetcher.PROTOCOL:
-            with IMAPFetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as imapMail:
+            with IMAPFetcher(mailAccount) as imapMail:
 
                 mailboxes = imapMail.fetchMailboxes()
 
         elif mailAccount.protocol == IMAP_SSL_Fetcher.PROTOCOL:
-            with IMAP_SSL_Fetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as imapMail:
+            with IMAP_SSL_Fetcher(mailAccount) as imapMail:
 
                 mailboxes = imapMail.fetchMailboxes()
 
@@ -46,7 +85,7 @@ class MailProcessor:
             mailboxes = ['INBOX']
 
         elif mailAccount.protocol == ExchangeFetcher.PROTOCOL:
-            with ExchangeFetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as exchangeMail:
+            with ExchangeFetcher(mailAccount) as exchangeMail:
 
                 mailboxes = exchangeMail.fetchMailboxes()
 
@@ -65,27 +104,27 @@ class MailProcessor:
 
         logger.debug(f"Fetching emails with criterion {criterion} from mailbox {mailbox} in account {mailAccount}...")
         if mailAccount.protocol == IMAPFetcher.PROTOCOL:
-            with IMAPFetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as imapMail:
+            with IMAPFetcher(mailAccount) as imapMail:
 
                 mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, searchCriterion=MailProcessor.getFilter(criterion))
 
         elif mailAccount.protocol == IMAP_SSL_Fetcher.PROTOCOL:
-            with IMAP_SSL_Fetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as imapMail:
+            with IMAP_SSL_Fetcher(mailAccount) as imapMail:
 
                 mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, searchCriterion=MailProcessor.getFilter(criterion))
 
         elif mailAccount.protocol == POP3Fetcher.PROTOCOL:
-            with POP3Fetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as popMail:
+            with POP3Fetcher(mailAccount) as popMail:
 
                 mailDataList = popMail.fetchAll()
 
         elif mailAccount.protocol == POP3_SSL_Fetcher.PROTOCOL:
-            with POP3_SSL_Fetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as popMail:
+            with POP3_SSL_Fetcher(mailAccount) as popMail:
 
                 mailDataList = popMail.fetchAll()
 
         elif mailAccount.protocol == ExchangeFetcher.PROTOCOL:
-            with ExchangeFetcher(username=mailAccount.mail_address, password=mailAccount.password, host=mailAccount.mail_host, port=mailAccount.mail_host_port) as exchangeMail:
+            with ExchangeFetcher(mailAccount) as exchangeMail:
 
                 mailDataList = exchangeMail.fetchBySearch()
 
@@ -99,7 +138,7 @@ class MailProcessor:
         logger.debug("Parsing emaildata ...")
         parsedMailsList = []
         for mailData in mailDataList:
-            parsedMail = MailParser.parse(mail)
+            parsedMail = MailParser.parse(mailData)
             parsedMailsList.append(parsedMail)
         logger.debug("Successfully parsed emaildata")
 

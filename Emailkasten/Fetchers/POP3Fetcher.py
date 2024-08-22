@@ -1,46 +1,52 @@
 import poplib
-import logging
 
 from ..LoggerFactory import LoggerFactory
-from ..MailParser import MailParser
 
 class POP3Fetcher: 
 
     PROTOCOL = "POP3"
 
-    def __init__(self, username, password, host: str = "", port: int = 110, timeout= None):
-        self.host = host
-        self.port = port
-        self.timeout = timeout
-        self._mailhost = poplib.POP3(host=host, port=port, timeout=timeout)
-        self.username = username
-        self.password = password
+    def __init__(self, account):
+        self.account = account
 
         self.logger = LoggerFactory.getChildLogger(self.__class__.__name__)
+        
+        try:
+            self.connectToHost()
+            self.login()
+        except poplib.error_proto as e:
+            self.logger.error(f"Failed connecting to {str(self.account)}!", exc_info=True)
+            self._mailhost = None
+            self.account.is_healthy = False
 
-        self.login()
-
+    def connectToHost(self):
+        self.logger.debug(f"Connecting to {str(self.account)} ...")
+        self._mailhost = poplib.POP3(host=self.account.mail_host, port=self.account.mail_host_port, timeout=None)
+        self.logger.debug("Success")
 
     def login(self):
-        self.logger.debug(f"Logging in to {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL} ...")
-        try:
-            self._mailhost.user(self.username)
-            self._mailhost.pass_(self.password)
-            self.logger.info(f"Successfully logged in to {self.host} via {self.PROTOCOL}.")
-        except poplib.error_proto as e:
-            self.logger.error(f"Failed connecting via {self.PROTOCOL} to {self.host} on port {self.port} with username {self.username} and password {self.password}!", exc_info=True)
+        self.logger.debug(f"Logging into {str(self.account)} ...")
+        self._mailhost.user(self.account.mail_account)
+        self._mailhost.pass_(self.account.password)
+        self.logger.info(f"Successfully logged into {str(self.account)}.")
 
     def close(self):
-        self.logger.debug(f"Closing connection to {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL} ...")
+        self.logger.debug(f"Closing connection to {str(self.account)} ...")
         if self._mailhost:
             try:
                 self._mailhost.quit()
-                self.logger.info(f"Gracefully closed connection to {self.host} on port {self.port} via {self.PROTOCOL}.")
-            except imaplib.IMAP4.error:
-                self.logger.error(f"Failed to close connection to {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}!", exc_info=True)
+                self.logger.info(f"Gracefully closed connection to {str(self.account)}.")
+            except poplib.error_proto:
+                self.logger.error(f"Failed to close connection to {str(self.account)}!", exc_info=True)
+
+    @staticmethod
+    def test(account):
+        pop3Fetcher = POP3Fetcher(account)
+        return pop3Fetcher is not None
+
 
     def fetchAll(self):
-        self.logger.debug(f"Fetching all messages at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL} ...")
+        self.logger.debug(f"Fetching all messages in {str(self.account)} ...")
         try:
             status, messageNumbersList, _ = self._mailhost.list()
             if status != b'+OK':
@@ -48,7 +54,7 @@ class POP3Fetcher:
                 return []
 
             messageCount = len(messageNumbersList)
-            self.logger.debug(f"Found {messageCount} messages at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}.")
+            self.logger.debug(f"Found {messageCount} messages in {str(self.account)}.")
             mailDataList = []
             for number in range(messageCount):
                 status, messageData, _ = self._mailhost.retr(number + 1)
@@ -59,11 +65,11 @@ class POP3Fetcher:
                 fullMessage = b'\n'.join(messageData)
                 mailDataList.append(fullMessage)
 
-            self.logger.debug(f"Successfully fetched all messages at {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}.")
+            self.logger.debug(f"Successfully fetched all messages in {str(self.account)}.")
             return mailDataList
                 
         except poplib.error_proto as e:
-            self.logger.error(f"Failed to fetch all messages from {self.host} on port {self.port} with username {self.username} via {self.PROTOCOL}!", exc_info=True)
+            self.logger.error(f"Failed to fetch all messages in {str(self.account)}!", exc_info=True)
             return []
 
     def __enter__(self):
