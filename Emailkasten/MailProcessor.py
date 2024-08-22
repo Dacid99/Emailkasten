@@ -133,7 +133,7 @@ class MailProcessor:
         logger.debug("Parsing emaildata ...")
         parsedMailsList = []
         for mailData in mailDataList:
-            parsedMail = MailParser.parse(mailData)
+            parsedMail = MailParser.parseMail(mailData)
             parsedMailsList.append(parsedMail)
         logger.debug("Successfully parsed emaildata")
 
