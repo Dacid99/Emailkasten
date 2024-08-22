@@ -44,9 +44,6 @@ class AccountSerializer(serializers.ModelSerializer):
         return value.lower()
     
 
-
-
-
 class SimpleCorrespondentSerializer(serializers.ModelSerializer):
     class Meta:
         model = CorrespondentModel

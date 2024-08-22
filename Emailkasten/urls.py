@@ -20,7 +20,6 @@ from rest_framework.routers import DefaultRouter
 from .ViewSets.AccountViewSet import AccountViewSet
 from .ViewSets.EMailViewSet import EMailViewSet
 from .ViewSets.CorrespondentViewSet import CorrespondentViewSet
-from .ViewSets.EMailCorrespondentsViewSet import EMailCorrespondentsViewSet
 from .ViewSets.AttachmentViewSet import AttachmentViewSet
 from .ViewSets.MailboxViewSet import MailboxViewSet
 from .ViewSets.UserCreateView import UserCreateView
@@ -30,7 +29,6 @@ router.register(r'accounts', AccountViewSet)
 router.register(r'mailboxes', MailboxViewSet)
 router.register(r'emails', EMailViewSet)
 router.register(r'correspondents', CorrespondentViewSet)
-router.register(r'email_correspondents', EMailCorrespondentsViewSet)
 router.register(r'attachments', AttachmentViewSet)
 
 
