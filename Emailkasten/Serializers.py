@@ -24,11 +24,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 class AccountSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=255, write_only=True)
+    email = serializers.EmailField()
 
     class Meta:
         model = AccountModel
         fields = '__all__'
         read_only_fields = ['is_healthy']
+
+    def validate_email(self, value):
+        return value.lower()
 
 class MailboxSerializer(serializers.ModelSerializer):
     class Meta:
