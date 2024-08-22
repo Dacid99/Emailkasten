@@ -1,18 +1,18 @@
 import logging
 import logging.handlers
-import os
+from . import constants
 
 class LoggerFactory:
 
     @staticmethod
     def getMainLogger():
-        logger = logging.getLogger(LoggerFactory.loggerName)
+        logger = logging.getLogger(constants.LoggerConfiguration.LOGGER_NAME)
         
         return logger
 
     
     @staticmethod
     def getChildLogger(instanceName):
-        logger = logging.getLogger(LoggerFactory.loggerName + "." + str(instanceName))
+        logger = logging.getLogger(constants.LoggerConfiguration.LOGGER_NAME + "." + str(instanceName))
 
         return logger
