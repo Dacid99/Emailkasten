@@ -1,11 +1,12 @@
 import imaplib
 
+from .. import constants
 from ..LoggerFactory import LoggerFactory
 from ..MailParser import MailParser
 
 class IMAPFetcher: 
     
-    PROTOCOL = "IMAP"
+    PROTOCOL = constants.MailFetchingProtocols.IMAP
 
     def __init__(self, account):
         self.account = account

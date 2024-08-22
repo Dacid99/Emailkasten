@@ -1,5 +1,5 @@
 from django.db import models
-from ..MailProcessor import MailProcessor
+from .. import constants
 from .AccountModel import AccountModel
 
 
@@ -8,13 +8,13 @@ class MailboxModel(models.Model):
     account = models.ForeignKey(AccountModel, related_name="account", on_delete=models.CASCADE)
     cycle_interval = models.IntegerField(default=60)
     fetchingChoices = {
-        MailProcessor.RECENT : "recent",
-        MailProcessor.UNSEEN : "unseen",
-        MailProcessor.ALL : "all",
-        MailProcessor.NEW : "new",
-        MailProcessor.DAILY : "daily"
+        constants.MailFetchingCriteria.RECENT : "recent",
+        constants.MailFetchingCriteria.UNSEEN : "unseen",
+        constants.MailFetchingCriteria.ALL : "all",
+        constants.MailFetchingCriteria.NEW : "new",
+        constants.MailFetchingCriteria.DAILY : "daily"
     }
-    fetching_criterion = models.CharField(choices=fetchingChoices, default=MailProcessor.RECENT, max_length=10)
+    fetching_criterion = models.CharField(choices=fetchingChoices, default=constants.MailProcessor.RECENT, max_length=10)
     save_attachments = models.BooleanField(default=True)
     save_toEML = models.BooleanField(default=True)
     is_fetched = models.BooleanField(default=False)

@@ -1,10 +1,11 @@
 import poplib
 
+from .. import constants
 from .POP3Fetcher import POP3Fetcher
 
 class POP3_SSL_Fetcher(POP3Fetcher): 
 
-    PROTOCOL = "POP3_SSL"
+    PROTOCOL = constants.MailFetchingProtocols.POP3_SSL
 
 
     def connectToHost(self):

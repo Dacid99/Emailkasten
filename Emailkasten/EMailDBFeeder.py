@@ -6,13 +6,11 @@ from .Models.AttachmentModel import AttachmentModel
 from .Models.CorrespondentModel import CorrespondentModel
 from .Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from .MailParser import MailParser
+from . import constants
 
 class EMailDBFeeder:
-
-    MENTION_FROM = "FROM"
-    MENTION_TO = "TO"
-    MENTION_CC = "CC"
-    MENTION_BCC = "BCC"
+    subdirNumber = 0
+    dirNumber = 0
 
     @staticmethod
     def insertMailboxes(mailboxesList, account):
@@ -93,7 +91,7 @@ class EMailDBFeeder:
                     emailCorrespondentsEntry, created = EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
-                        mention = EMailDBFeeder.MENTION_FROM
+                        mention = constants.MENTIONS.FROM
                     )
                     if created:
                         logger.debug(f"Entry for {str(emailCorrespondentsEntry)} created")
@@ -117,7 +115,7 @@ class EMailDBFeeder:
                     emailCorrespondentsEntry, created = EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
-                        mention = EMailDBFeeder.MENTION_TO
+                        mention = constants.MENTIONS.TO
                     )
                     if created:
                         logger.debug(f"Entry for {str(emailCorrespondentsEntry)} created")
@@ -141,7 +139,7 @@ class EMailDBFeeder:
                     emailCorrespondentsEntry, created = EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
-                        mention = EMailDBFeeder.MENTION_CC
+                        mention = constants.MENTIONS.CC
                     )
                     if created:
                         logger.debug(f"Entry for {str(emailCorrespondentsEntry)} created")
@@ -165,7 +163,7 @@ class EMailDBFeeder:
                     emailCorrespondentsEntry, created = EMailCorrespondentsModel.objects.get_or_create(
                         email = emailEntry, 
                         correspondent = correspondentEntry,
-                        mention = EMailDBFeeder.MENTION_BCC
+                        mention = constants.MENTIONS.BCC
                     )
                     if created:
                         logger.debug(f"Entry for {str(emailCorrespondentsEntry)} created")

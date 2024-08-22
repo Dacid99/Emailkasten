@@ -1,10 +1,11 @@
 import poplib
 
+from .. import constants
 from ..LoggerFactory import LoggerFactory
 
 class POP3Fetcher: 
 
-    PROTOCOL = "POP3"
+    PROTOCOL = constants.MailFetchingProtocols.POP3_SSL
 
     def __init__(self, account):
         self.account = account

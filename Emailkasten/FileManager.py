@@ -1,16 +1,11 @@
 import email
 import email.generator
 import os.path
-import sys
+from . import constants
 from .LoggerFactory import LoggerFactory
 from .MailParser import MailParser
 
 class FileManager:
-    subdirNumber = 0
-    dirNumber = 0
-    maxSubdirsPerDir = 10000
-    STORAGE_PATH = "/mnt/archive"
-    
 
     @staticmethod
     def writeMessageToEML(parsedEMail):
@@ -108,9 +103,9 @@ class FileManager:
 
     @staticmethod
     def getStoragePath(filename):
-        if FileManager.subdirNumber > FileManager.maxSubdirsPerDir:
+        if FileManager.subdirNumber > constants.StorageConfiguration.MAX_SUBDIRS_PER_DIR:
             FileManager.dirNumber += 1
             FileManager.subdirNumber = 0
-        path = os.path.join(FileManager.STORAGE_PATH, str(FileManager.dirNumber), filename)
+        path = os.path.join(constants.StorageConfiguration.STORAGE_PATH, str(FileManager.dirNumber), filename)
         return path
             

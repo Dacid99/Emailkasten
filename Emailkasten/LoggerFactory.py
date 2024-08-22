@@ -3,13 +3,6 @@ import logging.handlers
 import os
 
 class LoggerFactory:
-    loggerName = "EMailkasten"
-    logfilePath = "C:\\Users\\phili\\Desktop\\log.log" #f"/var/log/{loggerName}.log"
-    logLevel = os.environ.get('LOG_LEVEL', 'INFO')
-    logfileMaxSize = 10 * 1024 * 1024 # 10 MB
-    logfileBackupCount = 3 
-    consoleLogging = False
-    logFormat = '{name} {levelname} {asctime} {module} {message}'
 
     @staticmethod
     def getMainLogger():

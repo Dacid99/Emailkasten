@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import logging
 import logging.handlers
-from .LoggerFactory import LoggerFactory
+from . import constants
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -93,7 +93,7 @@ DATABASES = {
         }
 }
 
-AUTH_USER_MODEL = 'Emailkasten.UserModel'
+#AUTH_USER_MODEL = 'Emailkasten.UserModel'
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -120,7 +120,7 @@ LOGGING = {
     'disable_existing_loggers': False, 
     'formatters': {
         "default": {
-            'format': LoggerFactory.logFormat,
+            'format': constants.LoggerConfiguration.LOG_FORMAT,
             'style': '{',
         },
     },
@@ -133,9 +133,9 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LoggerFactory.logfilePath,
-            'maxBytes': LoggerFactory.logfileMaxSize,
-            'backupCount': LoggerFactory.logfileBackupCount,
+            'filename': constants.LoggerConfiguration.LOGFILE_PATH,
+            'maxBytes': constants.LoggerConfiguration.LOGFILE_MAXSIZE,
+            'backupCount': constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
             'formatter': 'default',
         },
     },
@@ -149,9 +149,9 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
-        LoggerFactory.loggerName: {
+        constants.LoggerConfiguration.LOGGER_NAME: {
             'handlers': ['console', 'file'],
-            'level': LoggerFactory.logLevel,
+            'level': constants.LoggerConfiguration.LOG_LEVEL,
             'propagate': True,
         },
     },

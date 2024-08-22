@@ -8,18 +8,13 @@ from .LoggerFactory import LoggerFactory
 from .MailParser import MailParser
 from .EMailDBFeeder import EMailDBFeeder
 import datetime
+from . import constants
 
 class MailProcessor:
-    UNSEEN = "UNSEEN"
-    ALL = "ALL"
-    RECENT = "RECENT"
-    SINCE = "SINCE"
-    NEW = "NEW"
-    DAILY = "DAILY"
 
     @staticmethod
     def getFilter(flag):
-        if flag == MailProcessor.DAILY:
+        if flag == constants.MailFetchingCriteria.DAILY:
             return "SINCE {date}".format(date=datetime.date.today().strftime("%d-%b-%Y"))
         else: 
             return flag

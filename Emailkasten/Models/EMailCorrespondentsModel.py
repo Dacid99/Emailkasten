@@ -1,11 +1,12 @@
 from django.db import models
+from .. import constants
 from .EMailModel import EMailModel
 from .CorrespondentModel import CorrespondentModel
 
 class EMailCorrespondentsModel(models.Model):
     email = models.ForeignKey(EMailModel, related_name="emails", on_delete=models.CASCADE)
     correspondent = models.ForeignKey(CorrespondentModel, related_name="correspondents", on_delete=models.CASCADE)
-    mentionTypes = {"TO" : "To", "FROM" : "From", "CC" : "Cc", "BCC" : "Bcc"}
+    mentionTypes = {constants.MENTIONS.TO : "To", constants.MENTIONS.FROM : "From", constants.MENTIONS.CC : "Cc", constants.MENTIONS.BCC : "Bcc"}
     mention = models.CharField(choices=mentionTypes, max_length=10)
 
     def __str__(self):

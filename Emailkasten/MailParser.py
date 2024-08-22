@@ -1,7 +1,7 @@
 import email 
 import email.header
 import email.utils
-import logging
+from . import constants
 import sys
 import datetime
 from .LoggerFactory import LoggerFactory
@@ -30,14 +30,12 @@ class MailParser:
     attachment_filePathString= "AttachmentFilePath" 
 
     #Defaults
-    __charsetDefault = "utf-8"
     __dateFormat = '%Y-%m-%d %H:%M:%S'
     __dateDefault = "1971-01-01 00:00:00"  #must fit dateFormat
-    timezone = "Europe/Berlin"
 
     @staticmethod
     def parseMailbox(mailboxBytes):
-        mailbox = mailboxBytes.decode(MailParser.__charsetDefault)
+        mailbox = mailboxBytes.decode(constants.ParsingConfiguration.CHARSET_DEFAULT)
         mailboxName = mailbox.split("\"/\"")[1].strip()
         if mailboxName == "":
             mailboxName = mailbox.split("\" \"")[1].strip()
@@ -55,7 +53,7 @@ class MailParser:
             decodedString = ""
             for fragment, charset in decodedFragments:
                 if charset is None:
-                    decodedString += fragment.decode(MailParser.__charsetDefault, errors='replace') if isinstance(fragment, bytes) else fragment
+                    decodedString += fragment.decode(constants.ParsingConfiguration.CHARSET_DEFAULT, errors='replace') if isinstance(fragment, bytes) else fragment
                 else:
                     decodedString += fragment.decode(charset, errors='replace')
 
@@ -65,7 +63,7 @@ class MailParser:
         def decodeText(text):
             charset = text.get_content_charset()
             if charset is None:
-                charset = MailParser.__charsetDefault
+                charset = constants.ParsingConfiguration.CHARSET_DEFAULT
             decodedText = text.get_payload(decode=True).decode(charset, errors='replace')
 
             return decodedText

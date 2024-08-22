@@ -8,6 +8,9 @@ configurations to extra class
 different choices for fetching depending on protocol
 custom fetching filters
 authentication
+configurationModel
+storageModel
+distinguish configs by env, db and user-immutables
 
 # tests
 download api

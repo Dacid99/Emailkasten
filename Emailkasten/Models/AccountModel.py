@@ -1,11 +1,6 @@
 from django.db import models
-from ..Fetchers.IMAPFetcher import IMAPFetcher
-from ..Fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
-from ..Fetchers.POP3Fetcher import POP3Fetcher
-from ..Fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
-from ..Fetchers.ExchangeFetcher import ExchangeFetcher
 from .UserModel import UserModel
-
+from .. import constants
 
 class AccountModel(models.Model):
     mail_address = models.EmailField(max_length=255, unique=True)
@@ -13,11 +8,11 @@ class AccountModel(models.Model):
     mail_host = models.CharField(max_length=255)
     mail_host_port = models.IntegerField(null=True)
     protocolChoices = {
-        IMAPFetcher.PROTOCOL : "IMAP", 
-        IMAP_SSL_Fetcher.PROTOCOL : "IMAP SSL",
-        POP3Fetcher.PROTOCOL : "POP3",
-        POP3_SSL_Fetcher.PROTOCOL : "POP3 SSL",
-        ExchangeFetcher.PROTOCOL : "Exchange"
+        constants.MailFetchingProtocols.IMAP : "IMAP", 
+        constants.MailFetchingProtocols.IMAP_SSL : "IMAP SSL",
+        constants.MailFetchingProtocols.POP3 : "POP3",
+        constants.MailFetchingProtocols.POP3_SSL : "POP3 SSL",
+        constants.MailFetchingProtocols.EXCHANGE : "Exchange"
     }
     protocol = models.CharField(choices=protocolChoices, max_length=10)
     is_healthy = models.BooleanField(default=True)

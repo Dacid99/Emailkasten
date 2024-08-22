@@ -1,11 +1,11 @@
 import imaplib
 
+from .. import constants
 from .IMAPFetcher import IMAPFetcher
 
 class IMAP_SSL_Fetcher(IMAPFetcher): 
 
-    PROTOCOL = "IMAP_SSL"
-
+    PROTOCOL = constants.MailFetchingProtocols.IMAP_SSL
 
     def connectToHost(self):
         self.logger.debug(f"Connecting to {str(self.account)} ...")

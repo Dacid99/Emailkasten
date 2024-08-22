@@ -5,7 +5,7 @@ from ..Models.MailboxModel import MailboxModel
 from ..Serializers import MailboxSerializer
 from ..EMailArchiverDaemon import EMailArchiverDaemon 
 from ..MailProcessor import MailProcessor
-from ..EMailDBFeeder import EMailDBFeeder
+from .. import constants
 
 class MailboxViewSet(viewsets.ModelViewSet):
     queryset = MailboxModel.objects.all()
@@ -42,6 +42,6 @@ class MailboxViewSet(viewsets.ModelViewSet):
     def fetch_all(self, request, pk=None):
         mailbox = self.get_object() 
         
-        MailProcessor.fetch(mailbox, mailbox.account, MailProcessor.ALL)
+        MailProcessor.fetch(mailbox, mailbox.account, constants.MailFetchingCriteria.ALL)
 
         return Response({'status': 'All mails fetched', 'account': mailbox.account.mail_address, 'mailbox': mailbox.name})

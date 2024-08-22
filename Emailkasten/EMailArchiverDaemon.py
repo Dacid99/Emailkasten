@@ -1,14 +1,13 @@
 import time
 import threading
 
+from . import constants
 from .LoggerFactory import LoggerFactory
 from .MailProcessor import MailProcessor
 from .EMailDBFeeder import EMailDBFeeder
 
 
 class EMailArchiverDaemon:
-    restartTime = 10
-    cyclePeriod = 60
 
     def __init__(self, mailbox):
         self.logger = LoggerFactory.getChildLogger(self.__class__.__name__)
@@ -37,7 +36,7 @@ class EMailArchiverDaemon:
             self.logger.info("EMailArchiverDaemon finished")
         except Exception as e:
             self.logger.critical("EMailArchiverDaemon crashed! Attempting to restart ...", exc_info=True)
-            time.sleep(EMailArchiverDaemon.restartTime)
+            time.sleep(constants.EMailArchiverDaemonConfiguration.restartTime)
             self.run()
 
     def cycle(self):
