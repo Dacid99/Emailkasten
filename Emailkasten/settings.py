@@ -149,7 +149,7 @@ LOGGING = {
             'propagate': True,
         },
         constants.LoggerConfiguration.LOGGER_NAME: {
-            'handlers': ['console', 'file'],
+            'handlers': ['file'],
             'level': constants.LoggerConfiguration.LOG_LEVEL,
             'propagate': True,
         },
