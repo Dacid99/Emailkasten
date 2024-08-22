@@ -32,7 +32,7 @@ class MailboxSerializer(serializers.ModelSerializer):
 
 class AccountSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=255, write_only=True)
-    email = serializers.EmailField()
+    mail_address = serializers.EmailField()
     mailboxes = MailboxSerializer(many=True, read_only=True)
 
     class Meta:
@@ -40,7 +40,7 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['is_healthy']
 
-    def validate_email(self, value):
+    def validate_mail_address(self, value):
         return value.lower()
     
 
@@ -100,5 +100,5 @@ class EMailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_correspondents(self, object):
-        emailcorrespondents = CorrespondentModel.objects.filter(correspondentemails__email=object)
+        emailcorrespondents = EMailCorrespondentsModel.objects.filter(email=object)
         return EMailCorrespondentSerializer(emailcorrespondents, many=True, read_only=True).data
