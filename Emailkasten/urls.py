@@ -23,6 +23,7 @@ from .ViewSets.CorrespondentViewSet import CorrespondentViewSet
 from .ViewSets.EMailCorrespondentsViewSet import EMailCorrespondentsViewSet
 from .ViewSets.AttachmentViewSet import AttachmentViewSet
 from .ViewSets.MailboxViewSet import MailboxViewSet
+from .ViewSets.UserCreateView import UserCreateView
 
 router = DefaultRouter()
 router.register(r'accounts', AccountViewSet)
@@ -35,6 +36,7 @@ router.register(r'attachments', AttachmentViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('api/register', UserCreateView.as_view(), name = 'user-register'),
     path("health/", include('health_check.urls')),
     path('', include(router.urls)),
 ]
