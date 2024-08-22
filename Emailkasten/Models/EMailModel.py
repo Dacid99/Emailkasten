@@ -1,5 +1,5 @@
 from django.db import models
-from ..FileManager import FileManager
+from .. import constants
 from .AccountModel import AccountModel
 
 class EMailModel(models.Model):
@@ -9,7 +9,7 @@ class EMailModel(models.Model):
     bodytext = models.TextField()
     datasize = models.IntegerField()
     eml_filepath = models.FilePathField(
-        path=FileManager.STORAGE_PATH,
+        path=constants.StorageConfiguration.STORAGE_PATH,
         max_length=255, 
         recursive=True, 
         match=r".*\.eml$", 

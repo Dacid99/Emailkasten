@@ -1,11 +1,11 @@
 from django.db import models
 from .EMailModel import EMailModel
-from ..FileManager import FileManager 
+from .. import constants
 
 class AttachmentModel(models.Model):
     file_name = models.CharField(max_length=255)
     file_path = models.FilePathField(
-        path=FileManager.STORAGE_PATH,
+        path=constants.StorageConfiguration.STORAGE_PATH,
         max_length=511,
         recursive=True,
         unique=True,

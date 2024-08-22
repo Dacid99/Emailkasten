@@ -16,3 +16,8 @@ distinguish configs by env, db and user-immutables
 download api
 logging fixed?
 connection testing
+
+
+
+# remember
+logpath is misconfigured to work on windows

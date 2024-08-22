@@ -14,7 +14,7 @@ class MailboxModel(models.Model):
         constants.MailFetchingCriteria.NEW : "new",
         constants.MailFetchingCriteria.DAILY : "daily"
     }
-    fetching_criterion = models.CharField(choices=fetchingChoices, default=constants.MailProcessor.RECENT, max_length=10)
+    fetching_criterion = models.CharField(choices=fetchingChoices, default=constants.MailFetchingCriteria.RECENT, max_length=10)
     save_attachments = models.BooleanField(default=True)
     save_toEML = models.BooleanField(default=True)
     is_fetched = models.BooleanField(default=False)
