@@ -32,7 +32,7 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     
     
     @action(detail=False, methods=['get'], url_path='favorites')
-    def favorites(self, request, pk=None):
+    def favorites(self, request):
         favoriteEmails = EMailModel.objects.filter(is_favorite=True)
         serializer = self.get_serializer(favoriteEmails, many=True)
         return Response(serializer.data)

@@ -6,6 +6,7 @@ from ..Serializers import MailboxSerializer
 from ..EMailArchiverDaemon import EMailArchiverDaemon 
 from ..MailProcessor import MailProcessor
 from .. import constants
+import logging
 
 class MailboxViewSet(viewsets.ModelViewSet):
     queryset = MailboxModel.objects.all()
@@ -17,14 +18,26 @@ class MailboxViewSet(viewsets.ModelViewSet):
     def start(self, request, pk=None):
         mailbox = self.get_object()
         if mailbox.id not in self.activeEmailArchiverDaemons:
+            try:
+                self.startDaemon(mailbox)
+                return Response({'status': 'Daemon started', 'account': mailbox.account.mail_address, 'mailbox': mailbox.name})
+            except Exception as e:
+                return Response({'status': 'Daemon failed to start!', 'account': mailbox.account.mail_address, 'mailbox': mailbox.name})
+        else:
+            return Response({'status': 'Daemon already running', 'account': mailbox.account.mail_address, 'mailbox': mailbox.name})
+
+    def startDaemon(self, mailbox):
+        try:
             daemon = EMailArchiverDaemon(mailbox)
             daemon.start()
             self.activeEmailArchiverDaemons[mailbox.id] = daemon
             mailbox.is_fetched = True
             mailbox.save()
-            return Response({'status': 'Daemon started', 'account': mailbox.account.mail_address, 'mailbox': mailbox.name})
-        else:
-            return Response({'status': 'Daemon already running', 'account': mailbox.account.mail_address, 'mailbox': mailbox.name})
+        except Exception as e:
+            logging.error(f"Could not start daemon for {str(mailbox)}!", exc_info=True)
+            mailbox.is_fetched = False
+            mailbox.save()
+            raise e
 
     @action(detail=True, methods=['post'])
     def stop(self, request, pk=None):
