@@ -23,7 +23,7 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
         return response
     
 
-    @action(detail=True, methods=['get'], url_path='toggle_favorite')
+    @action(detail=True, methods=['post'], url_path='toggle_favorite')
     def toggle_favorite(self, request, pk=None):
         email = self.get_object()
         email.is_favorite = not email.is_favorite
@@ -31,7 +31,7 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({'status': 'Email marked as favorite'})
     
     
-    @action(detail=True, methods=['get'], url_path='favorites')
+    @action(detail=False, methods=['get'], url_path='favorites')
     def favorites(self, request, pk=None):
         favoriteEmails = EMailModel.objects.filter(is_favorite=True)
         serializer = self.get_serializer(favoriteEmails, many=True)

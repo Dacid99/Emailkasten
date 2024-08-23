@@ -46,13 +46,15 @@ class IMAPFetcher:
             except imaplib.IMAP4.error:
                 self.logger.error(f"Failed to close connection to {str(self.account)}!", exc_info=True)
 
+    def __bool__(self):
+        return self._mailhost is not None
+
     @staticmethod
     def test(account):
         imapFetcher = IMAPFetcher(account)
-        return imapFetcher is not None
+        return bool(imapFetcher)
         
         
-
     def fetchBySearch(self, mailbox = 'INBOX', searchCriterion='RECENT'):    #for criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4
         if not self._mailhost:
             self.logger.error(f"No connection to {str(self.account)}!")   

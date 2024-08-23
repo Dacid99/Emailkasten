@@ -41,10 +41,13 @@ class POP3Fetcher:
             except poplib.error_proto:
                 self.logger.error(f"Failed to close connection to {str(self.account)}!", exc_info=True)
 
+    def __bool__(self):
+        return self._mailhost is not None
+    
     @staticmethod
     def test(account):
         pop3Fetcher = POP3Fetcher(account)
-        return pop3Fetcher is not None
+        return bool(pop3Fetcher)
 
 
     def fetchAll(self):
