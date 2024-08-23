@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from django.http import FileResponse, Http404
 from rest_framework.decorators import action
+from rest_framework.response import Response
 from ..Models.EMailModel import EMailModel
 from ..Serializers import EMailSerializer
 import os
@@ -20,3 +21,18 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
         
         response = FileResponse(open(filePath, 'rb'), as_attachment=True, filename=fileName)
         return response
+    
+
+    @action(detail=True, methods=['get'], url_path='toggle_favorite')
+    def toggle_favorite(self, request, pk=None):
+        email = self.get_object()
+        email.is_favorite = not email.is_favorite
+        email.save()
+        return Response({'status': 'Email marked as favorite'})
+    
+    
+    @action(detail=True, methods=['get'], url_path='favorites')
+    def favorites(self, request, pk=None):
+        favoriteEmails = EMailModel.objects.filter(is_favorite=True)
+        serializer = self.get_serializer(favoriteEmails, many=True)
+        return Response(serializer.data)

@@ -15,6 +15,7 @@ class EMailModel(models.Model):
         match=r".*\.eml$", 
         null=True
     )
+    is_favorite = models.BooleanField(default=False)
     account = models.ForeignKey(AccountModel, related_name="in_account", on_delete=models.CASCADE)
 
     def __str__(self):
