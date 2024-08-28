@@ -9,7 +9,7 @@ authentication
 configurationModel
 storageModel
 distinguish configs by env, db and user-immutables
-
+autostart daemons on restart
 
 
 # remember
