@@ -10,8 +10,7 @@ configurationModel
 storageModel
 distinguish configs by env, db and user-immutables
 autostart daemons on restart
-test filters
-db stats
+test filters, pagination, stats and sorting
 static variables for field names
 
 # remember
