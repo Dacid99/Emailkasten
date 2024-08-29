@@ -49,6 +49,10 @@ INSTALLED_APPS = [
     "Emailkasten"
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'Emailkasten.Pagination.Pagination',
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
