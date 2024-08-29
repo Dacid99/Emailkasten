@@ -31,7 +31,7 @@ router.register(r'mailboxes', MailboxViewSet)
 router.register(r'emails', EMailViewSet)
 router.register(r'correspondents', CorrespondentViewSet)
 router.register(r'attachments', AttachmentViewSet)
-router.register(r'stats', DatabaseStatsViewSet)
+router.register(r'stats', DatabaseStatsViewSet, basename='stats')
 
 
 urlpatterns = [

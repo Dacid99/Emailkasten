@@ -10,8 +10,9 @@ configurationModel
 storageModel
 distinguish configs by env, db and user-immutables
 autostart daemons on restart
-test filters, pagination, stats and sorting
 static variables for field names
+paginations next pages weird with custom page size
+icontains doesnt work
 
 # remember
 logpath is misconfigured to work on windows
