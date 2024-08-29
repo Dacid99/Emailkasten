@@ -1,14 +1,18 @@
 from rest_framework import viewsets
 from django.http import FileResponse, Http404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from ..Models.EMailModel import EMailModel
 from ..Serializers import EMailSerializer
+from ..Filters.EMailFilter import EMailFilter
 import os
 
 class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = EMailModel.objects.all()
     serializer_class = EMailSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = EMailFilter
 
     @action(detail=True, methods=['get'], url_path='download')
     def download(self, request, pk=None):

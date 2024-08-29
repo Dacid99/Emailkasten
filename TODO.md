@@ -10,7 +10,7 @@ configurationModel
 storageModel
 distinguish configs by env, db and user-immutables
 autostart daemons on restart
-
+test filters, add more
 
 # remember
 logpath is misconfigured to work on windows
