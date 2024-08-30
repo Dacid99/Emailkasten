@@ -92,9 +92,9 @@ WSGI_APPLICATION = "Emailkasten.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "NAME": constants.DatabaseConfiguration.NAME,
+        "USER": constants.DatabaseConfiguration.USER,
+        "PASSWORD": constants.DatabaseConfiguration.PASSWORD,
         "HOST": "db",
         "PORT": '3306'
         }

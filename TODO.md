@@ -10,10 +10,16 @@ distinguish configs by env, db and user-immutables
 autostart daemons on restart
 simple request for correspondents
 
+# to test
+attachmentfilter
+case sensitive filters
+api docu
+
 # at next db reset
 use manytomanyfield thorugh the bridge table
 start to use configurationmodel
 static variables for field names
+test stripped whitespace from body and subject
 
 # remember
 new migration must include setting of defaults

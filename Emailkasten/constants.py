@@ -40,3 +40,8 @@ class LoggerConfiguration:
 class ParsingConfiguration:
     CHARSET_DEFAULT = 'utf-8'
     STRIP_TEXTS = True
+
+class DatabaseConfiguration:
+    NAME = os.environ.get("DB_NAME", "emailkasten")
+    USER = os.environ.get("DB_USER", "user")
+    PASSWORD = os.environ.get("DB_PASSWORD", "passwd")
