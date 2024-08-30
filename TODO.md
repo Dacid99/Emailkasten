@@ -11,7 +11,6 @@ storageModel
 distinguish configs by env, db and user-immutables
 autostart daemons on restart
 simple request for correspondents
-filter for attachments
 static variables for field names
 strip bodytext and subject before db insertation
 
