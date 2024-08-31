@@ -1,5 +1,7 @@
 django 
 djangorestframework
 django-health-check
+django-filter
+drf-spectacular
 mysqlclient
 exchangelib

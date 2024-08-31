@@ -17,12 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from .ViewSets.AccountViewSet import AccountViewSet
 from .ViewSets.EMailViewSet import EMailViewSet
 from .ViewSets.CorrespondentViewSet import CorrespondentViewSet
 from .ViewSets.AttachmentViewSet import AttachmentViewSet
 from .ViewSets.MailboxViewSet import MailboxViewSet
+from .ViewSets.DatabaseStatsViewSet import DatabaseStatsViewSet
 from .ViewSets.UserCreateView import UserCreateView
+from .ViewSets.ConfigurationViewSet import ConfigurationViewSet
 
 router = DefaultRouter()
 router.register(r'accounts', AccountViewSet)
@@ -30,10 +33,14 @@ router.register(r'mailboxes', MailboxViewSet)
 router.register(r'emails', EMailViewSet)
 router.register(r'correspondents', CorrespondentViewSet)
 router.register(r'attachments', AttachmentViewSet)
-
+router.register(r'config', ConfigurationViewSet)
+router.register(r'stats', DatabaseStatsViewSet, basename='stats')
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/schema/", SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('api/register', UserCreateView.as_view(), name = 'user-register'),
     path("health/", include('health_check.urls')),
     path('', include(router.urls)),
