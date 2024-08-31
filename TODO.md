@@ -6,10 +6,9 @@ different choices for fetching depending on protocol
 custom fetching filters
 authentication
 storageModel
-distinguish configs by env, db and user-immutables
+distinguish configs by env, db and user-immutables, migrate db settings to initial settings
 autostart daemons on restart
 simple request for correspondents
-makemigrations overdue, with defaults for settings
 
 # to test
 new orderings

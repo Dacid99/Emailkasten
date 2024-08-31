@@ -11,7 +11,7 @@ class ConfigurationModel(models.Model):
     key = models.CharField(max_length=255)
     value_bool = models.BooleanField(null=True, blank=True)
     value_int = models.IntegerField(null=True, blank=True)
-    value_char = models.CharField(null=True, blank=True)
+    value_char = models.CharField(max_length=255, null=True, blank=True)
     description = models.CharField(max_length=255)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

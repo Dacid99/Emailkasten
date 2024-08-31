@@ -53,14 +53,12 @@ class SimpleCorrespondentSerializer(serializers.ModelSerializer):
     class Meta:
         model = CorrespondentModel
         fields = '__all__'
-        read_only_fields = ['created', 'updated']
 
 
 class SimpleEmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = EMailModel
         fields = '__all__'
-        read_only_fields = ['created', 'updated']
 
 
 class EMailCorrespondentSerializer(serializers.ModelSerializer):
