@@ -1,8 +1,10 @@
 from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from ..Models.MailboxModel import MailboxModel
+from ..Filters.MailboxFilter import MailboxFilter
 from ..Serializers import MailboxSerializer
 from ..EMailArchiverDaemon import EMailArchiverDaemon 
 from ..MailProcessor import MailProcessor
@@ -12,8 +14,8 @@ import logging
 class MailboxViewSet(viewsets.ModelViewSet):
     queryset = MailboxModel.objects.all()
     serializer_class = MailboxSerializer
-    filter_backends = [OrderingFilter]
-
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+    filterset_class = MailboxFilter
     ordering_fields = ['name', 'account__mail_address', 'account__mail_host', 'account__protocol', 'created', 'updated']
     ordering = ['id']
 

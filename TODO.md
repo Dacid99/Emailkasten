@@ -13,6 +13,7 @@ makemigrations overdue, with defaults for settings
 
 # to test
 new orderings
+filters for account and mailbox
 autoincrementation if row already exists?
 
 # at next db reset

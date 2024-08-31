@@ -7,14 +7,14 @@ class AccountModel(models.Model):
     password = models.CharField(max_length=255)
     mail_host = models.CharField(max_length=255)
     mail_host_port = models.IntegerField(null=True)
-    protocolChoices = {
+    PROTOCOL_CHOICES = {
         constants.MailFetchingProtocols.IMAP : "IMAP", 
         constants.MailFetchingProtocols.IMAP_SSL : "IMAP SSL",
         constants.MailFetchingProtocols.POP3 : "POP3",
         constants.MailFetchingProtocols.POP3_SSL : "POP3 SSL",
         constants.MailFetchingProtocols.EXCHANGE : "Exchange"
     }
-    protocol = models.CharField(choices=protocolChoices, max_length=10)
+    protocol = models.CharField(choices=PROTOCOL_CHOICES, max_length=10)
     is_healthy = models.BooleanField(default=True)
     user = models.ForeignKey(User, related_name='accounts', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
