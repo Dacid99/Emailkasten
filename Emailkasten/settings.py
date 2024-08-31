@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_filters",
-    "drf-spectacular",
+    "drf_spectacular",
     "health_check",
     "health_check.db",
     "health_check.storage",

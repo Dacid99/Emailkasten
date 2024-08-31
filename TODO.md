@@ -11,9 +11,6 @@ autostart daemons on restart
 simple request for correspondents
 
 # to test
-attachmentfilter
-case sensitive filters
-api docu
 
 # at next db reset
 use manytomanyfield thorugh the bridge table
