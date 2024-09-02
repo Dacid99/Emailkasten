@@ -1,3 +1,3 @@
 # EMailkasten
 
-A self-hosted mail archive based on python and React.js
+A self-hosted mail archive based on django and React.js

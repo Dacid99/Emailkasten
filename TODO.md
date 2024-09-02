@@ -4,7 +4,6 @@ attachmentdatasize kinda small
 api for queries by filter
 different choices for fetching depending on protocol
 custom fetching filters
-authentication
 storageModel
 distinguish configs by env, db and user-immutables, migrate db settings to initial settings
 autostart daemons on restart
@@ -12,6 +11,8 @@ simple request for correspondents
 
 # to test
 auth and user creation
+request restriction and permissions
+stats only for user
 autoincrementation if row already exists?
 
 # at next db reset
