@@ -15,13 +15,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'password', 'is_staff']
 
-        def create(self, validated_data):
-            user = User.objects.create_user(
-                username=validated_data['username'],
-                password=validated_data['password'],
-                is_staff=validated_data.get('is_staff', False) 
-            )
-            return user
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password'],
+            is_staff=validated_data.get('is_staff', False) 
+        )
+        return user
 
 class ConfigurationSerializer(serializers.ModelSerializer):
     class Meta:
