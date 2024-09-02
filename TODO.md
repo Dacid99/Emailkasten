@@ -24,3 +24,4 @@ test stripped whitespace from body and subject
 # remember
 new migration must include setting of defaults
 logpath is misconfigured to work on windows
+csrf is disabled for debug
