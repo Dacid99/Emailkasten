@@ -13,7 +13,7 @@ class EMailArchiverDaemon:
     def start(daemonModel):
         if not daemonModel.id in EMailArchiverDaemon.runningDaemonsList:
             try:
-                daemon = EMailArchiverDaemon(daemon)
+                daemon = EMailArchiverDaemon(daemonModel)
                 daemon.start()
                 EMailArchiverDaemon.runningDaemonsList[daemonModel.id] = daemon
                 daemonModel.is_running = True
@@ -35,8 +35,6 @@ class EMailArchiverDaemon:
         else:
             return Response({'status': 'Daemon not running', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
         
-        
-    
         
 
     def __init__(self, daemon):
