@@ -1,7 +1,5 @@
 from django.db import models
-from rest_framework.response import Response
 from .. import constants
-from ..EMailArchiverDaemon import EMailArchiverDaemon 
 from .MailboxModel import MailboxModel
 
 class DaemonModel(models.Model):
@@ -17,32 +15,3 @@ class DaemonModel(models.Model):
     def __str__(self):
         return f"Mailfetcher daemon configuration for mailbox {self.mailbox}"
     
-    
-    runningDaemonsList = []
-    
-    def start(self):
-        if not self.id in self.runningDaemonsList:
-            try:
-                daemon = EMailArchiverDaemon(self)
-                daemon.start()
-                self.runningDaemonsList[self.id] = daemon
-                self.is_running = True
-                self.save() 
-                return Response({'status': 'Daemon started', 'account': self.mailbox.account.mail_address, 'mailbox': self.mailbox.name})
-            except Exception as e:
-                return Response({'status': 'Daemon failed to start!', 'account': self.mailbox.account.mail_address, 'mailbox': self.mailbox.name})
-        else:
-            return Response({'status': 'Daemon already running', 'account': self.mailbox.account.mail_address, 'mailbox': self.mailbox.name})
-        
-    
-    def stop(self):
-        if self.id in self.runningDaemonsList:
-            daemon = self.runningDaemonsList.pop(self.id)
-            daemon.stop()
-            self.is_running = False
-            self.save()
-            return Response({'status': 'Daemon stopped', 'account': self.mailbox.account.mail_address, 'mailbox': self.mailbox.name})
-        else:
-            return Response({'status': 'Daemon not running', 'account': self.mailbox.account.mail_address, 'mailbox': self.mailbox.name})
-        
-        

@@ -1,13 +1,43 @@
 import time
 import threading
-
+from rest_framework.response import Response
 from . import constants
 from .LoggerFactory import LoggerFactory
 from .MailProcessor import MailProcessor
-from .EMailDBFeeder import EMailDBFeeder
 
 
 class EMailArchiverDaemon:
+    runningDaemonsList = []
+    
+    @staticmethod
+    def start(daemonModel):
+        if not daemonModel.id in EMailArchiverDaemon.runningDaemonsList:
+            try:
+                daemon = EMailArchiverDaemon(daemon)
+                daemon.start()
+                EMailArchiverDaemon.runningDaemonsList[daemonModel.id] = daemon
+                daemonModel.is_running = True
+                daemonModel.save() 
+                return Response({'status': 'Daemon started', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+            except Exception as e:
+                return Response({'status': 'Daemon failed to start!', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+        else:
+            return Response({'status': 'Daemon already running', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+        
+    @staticmethod
+    def stop(daemonModel):
+        if daemonModel.id in EMailArchiverDaemon.runningDaemonsList:
+            daemon = EMailArchiverDaemon.runningDaemonsList.pop(daemonModel.id)
+            daemon.stop()
+            daemonModel.is_running = False
+            daemonModel.save()
+            return Response({'status': 'Daemon stopped', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+        else:
+            return Response({'status': 'Daemon not running', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+        
+        
+    
+        
 
     def __init__(self, daemon):
         self.logger = LoggerFactory.getChildLogger(self.__class__.__name__)

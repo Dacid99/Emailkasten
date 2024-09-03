@@ -2,13 +2,11 @@ from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from ..Models.MailboxModel import MailboxModel
 from ..Filters.MailboxFilter import MailboxFilter
-from ..Serializers import MailboxSerializer, MailboxWithDaemonSerializer
-from ..MailProcessor import MailProcessor
-from .. import constants
-import logging
+from ..Serializers import MailboxWithDaemonSerializer
+from ..EMailArchiverDaemon import EMailArchiverDaemon
+
 
 class MailboxViewSet(viewsets.ModelViewSet):
     queryset = MailboxModel.objects.all()
@@ -24,19 +22,11 @@ class MailboxViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def start(self, request, pk=None):
         mailbox = self.get_object()
-        return mailbox.daemon.start()
+        return EMailArchiverDaemon.start(mailbox.daemon)
     
 
     @action(detail=True, methods=['post'])
     def stop(self, request, pk=None):
         mailbox = self.get_object() 
-        return mailbox.daemon.stop()
+        return EMailArchiverDaemon.stop(mailbox.daemon)
     
-    
-    @action(detail=True, methods=['post'])
-    def fetch_all(self, request, pk=None):
-        mailbox = self.get_object() 
-        
-        MailProcessor.fetch(mailbox, mailbox.account, constants.MailFetchingCriteria.ALL)
-
-        return Response({'status': 'All mails fetched', 'account': mailbox.account.mail_address, 'mailbox': mailbox.name})

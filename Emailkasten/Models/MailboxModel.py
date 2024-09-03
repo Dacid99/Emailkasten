@@ -1,7 +1,6 @@
 from django.db import models
 from .. import constants
 from .AccountModel import AccountModel
-from .DaemonModel import DaemonModel
 
 class MailboxModel(models.Model):
     name = models.CharField(max_length=255)
