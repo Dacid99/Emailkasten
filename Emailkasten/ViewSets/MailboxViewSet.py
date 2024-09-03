@@ -5,14 +5,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from ..Models.MailboxModel import MailboxModel
 from ..Filters.MailboxFilter import MailboxFilter
-from ..Serializers import MailboxSerializer
+from ..Serializers import MailboxSerializer, MailboxWithDaemonSerializer
 from ..MailProcessor import MailProcessor
 from .. import constants
 import logging
 
 class MailboxViewSet(viewsets.ModelViewSet):
     queryset = MailboxModel.objects.all()
-    serializer_class = MailboxSerializer
+    serializer_class = MailboxWithDaemonSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     filterset_class = MailboxFilter
     ordering_fields = ['name', 'account__mail_address', 'account__mail_host', 'account__protocol', 'created', 'updated']
@@ -21,15 +21,18 @@ class MailboxViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return MailboxModel.objects.filter(account__user = self.request.user)
 
+
     @action(detail=True, methods=['post'])
     def start(self, request, pk=None):
         mailbox = self.get_object()
         return mailbox.daemon.start()
+    
 
     @action(detail=True, methods=['post'])
     def stop(self, request, pk=None):
         mailbox = self.get_object() 
         return mailbox.daemon.stop()
+    
     
     @action(detail=True, methods=['post'])
     def fetch_all(self, request, pk=None):

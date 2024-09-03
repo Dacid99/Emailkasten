@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .Models.AccountModel import AccountModel
 from .Models.MailboxModel import MailboxModel
+from .Models.DaemonModel import DaemonModel
 from .Models.EMailModel import EMailModel
 from .Models.CorrespondentModel import CorrespondentModel
 from .Models.EMailCorrespondentsModel import EMailCorrespondentsModel
@@ -23,16 +24,35 @@ class UserSerializer(serializers.ModelSerializer):
         )
         return user
 
+
 class ConfigurationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConfigurationModel
         fields = '__all__'
+        read_only_fields = ['created', 'updated']
+        
+        
+class DaemonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DaemonModel
+        fields = '__all__'
+        read_only_fields = ['is_running', 'created', 'updated']
 
+
+class MailboxWithDaemonSerializer(serializers.ModelSerializer):
+    daemon = DaemonSerializer()
+    
+    class Meta:
+        model = MailboxModel
+        fields = '__all__'
+        read_only_fields = ['name', 'account', 'created', 'updated']
+        
+        
 class MailboxSerializer(serializers.ModelSerializer):
     class Meta:
         model = MailboxModel
         fields = '__all__'
-        read_only_fields = ['name', 'account' ,'is_fetched', 'created', 'updated']
+        read_only_fields = ['name', 'account', 'created', 'updated']
 
 
 class AccountSerializer(serializers.ModelSerializer):

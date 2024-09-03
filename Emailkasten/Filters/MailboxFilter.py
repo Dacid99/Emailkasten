@@ -33,15 +33,21 @@ class MailboxFilter(django_filters.FilterSet):
 
     is_healthy__exact = django_filters.BooleanFilter(field_name='account__is_healthy', lookup_expr='exact')
     
+    cycle_interval__exact = django_filters.NumberFilter(field_name='daemon__cycle_interval', lookup_expr='exact')
+    cycle_interval__lte = django_filters.NumberFilter(field_name='daemon__cycle_interval', lookup_expr='lte')
+    cycle_interval__gte = django_filters.NumberFilter(field_name='daemon__cycle_interval', lookup_expr='gte')
+    cycle_interval__lt = django_filters.NumberFilter(field_name='daemon__cycle_interval', lookup_expr='lt')
+    cycle_interval__gt = django_filters.NumberFilter(field_name='daemon__cycle_interval', lookup_expr='gt')
+    
+    is_fetched__exact = django_filters.BooleanFilter(field_name='daemon__is_running', lookup_expr='exact')
+    
     class Meta:
         model = MailboxModel
         fields = {
             'name': ['icontains', 'contains', 'exact', 'iexact', 'startswith', 'istartswith', 'endswith', 'iendswith', 'regex', 'iregex', 'in'],
-            'cycle_interval': ['exact', 'lte', 'gte', 'lt', 'gt'],
             'fetching_criterion': ['iexact'],
             'save_toEML': ['exact'],
             'save_attachments': ['exact'],
-            'is_fetched': ['exact'],
             'created': ['lte', 'gte'],
             'updated': ['lte', 'gte']
         }
