@@ -111,7 +111,7 @@ class MailProcessor:
         elif mailAccount.protocol == ExchangeFetcher.PROTOCOL:
             with ExchangeFetcher(mailAccount) as exchangeMail:
 
-                mailDataList = exchangeMail.fetchBySearch()
+                mailDataList = exchangeMail.fetchBySearch() #incomplete
 
         else:
             logger.error("Can not fetch mails, protocol is not or incorrectly specified!")

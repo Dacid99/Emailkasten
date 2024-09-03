@@ -9,13 +9,14 @@ from .EMailDBFeeder import EMailDBFeeder
 
 class EMailArchiverDaemon:
 
-    def __init__(self, mailbox):
+    def __init__(self, daemon):
         self.logger = LoggerFactory.getChildLogger(self.__class__.__name__)
         self.thread = None
         self.isRunning = False
-
-        self.mailbox = mailbox
-        self.account = mailbox.account
+        
+        self.daemon = daemon
+        self.mailbox = daemon.mailbox
+        self.account = daemon.mailbox.account
 
 
     def start(self):
@@ -32,7 +33,7 @@ class EMailArchiverDaemon:
         try:
             while self.isRunning:
                 self.cycle()
-                time.sleep(self.mailbox.cycle_interval)
+                time.sleep(self.daemon.cycle_interval)
             self.logger.info("EMailArchiverDaemon finished")
         except Exception as e:
             self.logger.critical("EMailArchiverDaemon crashed! Attempting to restart ...", exc_info=True)
