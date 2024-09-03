@@ -37,7 +37,7 @@ class EMailArchiverDaemon:
             self.logger.info("EMailArchiverDaemon finished")
         except Exception as e:
             self.logger.critical("EMailArchiverDaemon crashed! Attempting to restart ...", exc_info=True)
-            time.sleep(constants.EMailArchiverDaemonConfiguration.restartTime)
+            time.sleep(constants.EMailArchiverDaemonConfiguration.RESTART_TIME)
             self.run()
 
     def cycle(self):

@@ -21,7 +21,7 @@ class MENTIONS:
     BCC = "BCC"
 
 class EMailArchiverDaemonConfiguration:
-    CYCLE_PERIOD = 60
+    CYCLE_PERIOD_DEFAULT = 60
     RESTART_TIME = 10
 
 class StorageConfiguration:
@@ -40,7 +40,11 @@ class LoggerConfiguration:
 class ParsingConfiguration:
     CHARSET_DEFAULT = 'utf-8'
     STRIP_TEXTS = True
-
+    
+class FetchingConfiguration:
+    SAVE_TO_EML_DEFAULT = True
+    SAVE_ATTACHMENTS_DEFAULT = True
+    
 class DatabaseConfiguration:
     NAME = os.environ.get("DB_NAME", "emailkasten")
     USER = os.environ.get("DB_USER", "user")

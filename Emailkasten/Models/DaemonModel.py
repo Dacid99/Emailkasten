@@ -5,7 +5,7 @@ from ..EMailArchiverDaemon import EMailArchiverDaemon
 
 
 class DaemonModel(models.Model):
-    cycle_interval = models.IntegerField(default=60)
+    cycle_interval = models.IntegerField(default=constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT)
     is_running = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
