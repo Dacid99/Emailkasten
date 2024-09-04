@@ -2,6 +2,7 @@ from django.db import models
 from .. import constants
 from .AccountModel import AccountModel
 
+
 class EMailModel(models.Model):
     message_id = models.CharField(max_length=255, unique=True)
     datetime = models.DateTimeField()
@@ -16,6 +17,7 @@ class EMailModel(models.Model):
         null=True
     )
     is_favorite = models.BooleanField(default=False)
+    correspondents = models.ManyToManyField('CorrespondentModel', through='EMailCorrespondentsModel', related_name='emails')
     account = models.ForeignKey(AccountModel, related_name="in_account", on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

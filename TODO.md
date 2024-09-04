@@ -11,10 +11,8 @@ restructure logging
 return serialized db data after scan and fetch_all
 
 # to test
-list response of correspondents, interference with filtering?
 
 # to fix
-correspondents miscounted
 
 # at next db reset
 use manytomanyfield thorugh the bridge table

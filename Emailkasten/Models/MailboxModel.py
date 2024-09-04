@@ -5,14 +5,14 @@ from .AccountModel import AccountModel
 class MailboxModel(models.Model):
     name = models.CharField(max_length=255)
     account = models.ForeignKey(AccountModel, related_name="mailboxes", on_delete=models.CASCADE)
-    fetchingChoices = {
+    FETCHINGCHOICES = {
         constants.MailFetchingCriteria.RECENT : "recent",
         constants.MailFetchingCriteria.UNSEEN : "unseen",
         constants.MailFetchingCriteria.ALL : "all",
         constants.MailFetchingCriteria.NEW : "new",
         constants.MailFetchingCriteria.DAILY : "daily"
     }
-    fetching_criterion = models.CharField(choices=fetchingChoices, default=constants.MailFetchingCriteria.RECENT, max_length=10)
+    fetching_criterion = models.CharField(choices=FETCHINGCHOICES, default=constants.MailFetchingCriteria.RECENT, max_length=10)
     save_attachments = models.BooleanField(default=constants.FetchingConfiguration.SAVE_ATTACHMENTS_DEFAULT)
     save_toEML = models.BooleanField(default=constants.FetchingConfiguration.SAVE_TO_EML_DEFAULT)
     created = models.DateTimeField(auto_now_add=True)
