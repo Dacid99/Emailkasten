@@ -7,15 +7,15 @@ from .MailProcessor import MailProcessor
 
 
 class EMailArchiverDaemon:
-    runningDaemonsList = []
+    runningDaemons = {}
     
     @staticmethod
-    def start(daemonModel):
-        if not daemonModel.id in EMailArchiverDaemon.runningDaemonsList:
+    def startDaemon(daemonModel):
+        if not daemonModel.id in EMailArchiverDaemon.runningDaemons:
             try:
-                daemon = EMailArchiverDaemon(daemonModel)
-                daemon.start()
-                EMailArchiverDaemon.runningDaemonsList[daemonModel.id] = daemon
+                newDaemon = EMailArchiverDaemon(daemonModel)
+                newDaemon.start()
+                EMailArchiverDaemon.runningDaemons[daemonModel.id] = newDaemon
                 daemonModel.is_running = True
                 daemonModel.save() 
                 return Response({'status': 'Daemon started', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
@@ -25,16 +25,15 @@ class EMailArchiverDaemon:
             return Response({'status': 'Daemon already running', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
         
     @staticmethod
-    def stop(daemonModel):
-        if daemonModel.id in EMailArchiverDaemon.runningDaemonsList:
-            daemon = EMailArchiverDaemon.runningDaemonsList.pop(daemonModel.id)
-            daemon.stop()
+    def stopDaemon(daemonModel):
+        if daemonModel.id in EMailArchiverDaemon.runningDaemons:
+            oldDaemon = EMailArchiverDaemon.runningDaemons.pop(daemonModel.id)
+            oldDaemon.stop()
             daemonModel.is_running = False
             daemonModel.save()
             return Response({'status': 'Daemon stopped', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
         else:
             return Response({'status': 'Daemon not running', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
-        
         
 
     def __init__(self, daemon):

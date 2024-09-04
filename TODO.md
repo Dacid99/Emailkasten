@@ -7,21 +7,24 @@ storageModel
 distinguish configs by env, db and user-immutables, migrate db settings to initial settings
 autostart daemons on restart
 custom additional healthchecks
+restructure logging
+return serialized db data after scan and fetch_all
 
 # to test
-auth and user creation
 request restriction and permissions
 stats only for user
 daemons still working?
-autmatic addition/creation of user/daemon 
 list response of correspondents, interference with filtering?
 autoincrementation if row already exists?
+test stripped whitespace from body and subject
+
+# to fix
+weird behhaviour in daemon init daemonmodel is assigned to logger??
 
 # at next db reset
 use manytomanyfield thorugh the bridge table
 start to use configurationmodel
 static variables for field names
-test stripped whitespace from body and subject
 
 # remember
 new migration must include setting of defaults

@@ -81,6 +81,7 @@ class MailProcessor:
         EMailDBFeeder.insertMailboxes(mailboxes, mailAccount)
 
         logger.debug("Successfully searched mailboxes")
+        return mailboxes
 
         
     @staticmethod

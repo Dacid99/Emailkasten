@@ -17,11 +17,14 @@ class AccountViewSet(viewsets.ModelViewSet):
     ordering_fields = ['mail_address', 'mail_host', 'protocol', 'created', 'updated']
     ordering = ['id']
 
+
     def get_queryset(self):
         return AccountModel.objects.filter(user = self.request.user)
 
+
     def perform_create(self, serializer):
         serializer.save(user = self.request.user)
+        
         
     @action(detail=True, methods=['post'])
     def scan_mailboxes(self, request, pk=None):
@@ -29,6 +32,7 @@ class AccountViewSet(viewsets.ModelViewSet):
         mailboxesList = MailProcessor.scanMailboxes(account)
         
         return Response({'status': 'Scanned for mailboxes', 'account': account.mail_address, 'found mailboxes': mailboxesList})
+    
     
     @action(detail=True, methods=['post'])
     def test(self, request, pk=None):
