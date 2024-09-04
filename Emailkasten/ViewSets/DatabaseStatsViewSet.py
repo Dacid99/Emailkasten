@@ -10,7 +10,7 @@ class DatabaseStatsViewSet(viewsets.ViewSet):
         email_count = EMailModel.objects.filter(account__user = request.user).count()
         correspondent_count = CorrespondentModel.objects.filter(correspondentemails__email__account__user = request.user).count()
         attachment_count = AttachmentModel.objects.filter(email__account__user = request.user).count()
-        account_count = AccountModel.objects.filter(account__user = request.user).count()
+        account_count = AccountModel.objects.filter(user = request.user).count()
 
         data = {
             'email_count': email_count,

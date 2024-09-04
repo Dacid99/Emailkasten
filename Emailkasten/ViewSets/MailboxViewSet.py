@@ -25,13 +25,13 @@ class MailboxViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def start(self, request, pk=None):
         mailbox = self.get_object()
-        return EMailArchiverDaemon.start(mailbox.daemon)
+        return EMailArchiverDaemon.startDaemon(mailbox.daemon)
     
 
     @action(detail=True, methods=['post'])
     def stop(self, request, pk=None):
         mailbox = self.get_object() 
-        return EMailArchiverDaemon.stop(mailbox.daemon)
+        return EMailArchiverDaemon.stopDaemon(mailbox.daemon)
     
     
     @action(detail=True, methods=['post'])

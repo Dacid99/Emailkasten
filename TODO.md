@@ -11,15 +11,10 @@ restructure logging
 return serialized db data after scan and fetch_all
 
 # to test
-request restriction and permissions
-stats only for user
-daemons still working?
 list response of correspondents, interference with filtering?
-autoincrementation if row already exists?
-test stripped whitespace from body and subject
 
 # to fix
-weird behhaviour in daemon init daemonmodel is assigned to logger??
+correspondents miscounted
 
 # at next db reset
 use manytomanyfield thorugh the bridge table

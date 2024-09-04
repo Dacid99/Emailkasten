@@ -47,6 +47,16 @@ class MailboxWithDaemonSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['name', 'account', 'created', 'updated']
         
+    def update(self, instance, validated_data):
+        daemonData = validated_data.pop('daemon', None)
+        if daemonData:
+            daemonInstance = instance.daemon
+            for key, value in daemonData.items():
+                setattr(daemonInstance, key,value)
+            daemonInstance.save()
+        
+        return super().update(instance, validated_data)
+    
         
 class MailboxSerializer(serializers.ModelSerializer):
     class Meta:
