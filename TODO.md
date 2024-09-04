@@ -15,9 +15,8 @@ return serialized db data after scan and fetch_all
 # to fix
 
 # at next db reset
-use manytomanyfield thorugh the bridge table
 start to use configurationmodel
-static variables for field names
+
 
 # remember
 new migration must include setting of defaults
