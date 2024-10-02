@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from rest_framework.exceptions import ValidationError
 from .Models.AccountModel import AccountModel
 from .Models.MailboxModel import MailboxModel
 from .Models.DaemonModel import DaemonModel
@@ -24,6 +25,22 @@ class UserSerializer(serializers.ModelSerializer):
         )
         return user
 
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+
+        if 'password' in validated_data and validated_data['password']:
+            instance.set_password(validated_data['password'])
+        
+        if 'is_staff' in validated_data and validated_data['is_staff']:
+            request = self.context.get('request')
+            if request.user.is_staff:
+                instance.is_staff = validated_data['is_staff']
+            else:
+                raise ValidationError({"detail": "You do not have permissions to modify the 'is_staff' field!"})
+        
+        instance.save()
+        return instance
+    
 
 class ConfigurationSerializer(serializers.ModelSerializer):
     class Meta:

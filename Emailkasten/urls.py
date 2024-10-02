@@ -25,7 +25,7 @@ from .ViewSets.CorrespondentViewSet import CorrespondentViewSet
 from .ViewSets.AttachmentViewSet import AttachmentViewSet
 from .ViewSets.MailboxViewSet import MailboxViewSet
 from .ViewSets.DatabaseStatsViewSet import DatabaseStatsViewSet
-from .ViewSets.UserCreateView import UserCreateView
+from .ViewSets.UserCreateView import UserCreateView, UserViewSet
 from .ViewSets.ConfigurationViewSet import ConfigurationViewSet
 
 router = DefaultRouter()
@@ -36,6 +36,7 @@ router.register(r'correspondents', CorrespondentViewSet)
 router.register(r'attachments', AttachmentViewSet)
 router.register(r'config', ConfigurationViewSet)
 router.register(r'stats', DatabaseStatsViewSet, basename='stats')
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
