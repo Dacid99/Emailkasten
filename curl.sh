@@ -1,15 +1,19 @@
 #!/bin/bash
 
 #use-case scenario
-#curl -X POST http://192.168.178.138:1122/register/ -H "Content-Type: application/json" -d '{"username": "usr", "password": "pwd"}' 
+curl -u staff:staff -X PATCH -H "COntent-Type: application/json" -d '{"username":"david"}' http://192.168.178.138:1122/users/1/
+#curl -c cookie.txt http://192.168.178.138:1122/login/
+#curl -X POST -d "username=usr&password=pwd" -c cookie.txt http://192.168.178.138:1122/login/
+#curl -X POST http://192.168.178.138:1122/register/ -H "Content-Type: application/json" -d '{"username": "staff", "password": "staff", "is_staff": true}' 
 #curl -u usr:pwd -X POST http://192.168.178.138:1122/accounts/ -H "Content-Type: application/json" -d '{"mail_address": "archiv@aderbauer.org", "password": "nxF154j9879ZZsW", "mail_host": "imap.ionos.de", "mail_host_port": "993", "protocol": "IMAP_SSL"}' 
+#curl -b cookie.txt -X POST http://192.168.178.138:1122/accounts/ -H "Content-Type: application/json" -d '{"mail_address": "archiv@aderbauer.org", "password": "nxF154j9879ZZsW", "mail_host": "imap.ionos.de", "mail_host_port": "993", "protocol": "IMAP_SSL"}' 
 #curl -u usr:pwd -X POST http://192.168.178.138:1122/accounts/1/test/
 #curl -u usr:pwd -X POST http://192.168.178.138:1122/accounts/1/scan_mailboxes/
 #curl -u usr:pwd -X GET http://192.168.178.138:1122/mailboxes/
 #curl -u usr:pwd -X GET http://192.168.178.138:1122/mailboxes/?name__icontains=inbox
 #curl -u usr:pwd -X POST http://192.168.178.138:1122/mailboxes/5/fetch_all/
 #curl -u usr:pwd -X GET 'http://192.168.178.138:1122/emails/'
-curl -u usr:pwd -X GET 'http://192.168.178.138:1122/correspondents/'
+#curl -b cookie.txt -X GET 'http://192.168.178.138:1122/correspondents/'
 #curl -u usr:pwd -X GET 'http://192.168.178.138:1122/correspondents/1/'
 #curl -u usr:pwd -X GET 'http://192.168.178.138:1122/attachments/'
 #curl -u usr:pwd -X GET 'http://192.168.178.138:1122/accounts/'
