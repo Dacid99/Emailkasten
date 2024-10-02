@@ -9,6 +9,8 @@ autostart daemons on restart
 custom additional healthchecks
 restructure logging
 return serialized db data after scan and fetch_all
+loginout
+dbstats can be apiview
 
 # to test
 

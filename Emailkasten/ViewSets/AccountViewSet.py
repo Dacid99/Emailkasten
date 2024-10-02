@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from ..Models.AccountModel import AccountModel
 from ..Filters.AccountFilter import AccountFilter
@@ -14,6 +15,7 @@ class AccountViewSet(viewsets.ModelViewSet):
     serializer_class = AccountSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     filterset_class = AccountFilter
+    permission_classes = [IsAuthenticated]
     ordering_fields = ['mail_address', 'mail_host', 'protocol', 'created', 'updated']
     ordering = ['id']
 

@@ -3,6 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from ..Models.MailboxModel import MailboxModel
 from ..Filters.MailboxFilter import MailboxFilter
 from ..Serializers import MailboxWithDaemonSerializer
@@ -16,6 +17,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
     serializer_class = MailboxWithDaemonSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     filterset_class = MailboxFilter
+    permission_classes = [IsAuthenticated]
     ordering_fields = ['name', 'account__mail_address', 'account__mail_host', 'account__protocol', 'created', 'updated']
     ordering = ['id']
 

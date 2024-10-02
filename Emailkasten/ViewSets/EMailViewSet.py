@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
@@ -15,6 +16,7 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = EMailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = EMailFilter
+    permission_classes = [IsAuthenticated]
     ordering_fields = ['datetime', 'email_subject', 'datasize', 'created']
     ordering = ['id']
 

@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from ..Models.CorrespondentModel import CorrespondentModel
 from ..Serializers import CorrespondentSerializer, SimpleCorrespondentSerializer
@@ -11,6 +12,7 @@ class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CorrespondentSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = CorrespondentFilter
+    permission_classes = [IsAuthenticated]
     ordering_fields = ['email_name', 'email_address', 'created']
     ordering = ['id']
 

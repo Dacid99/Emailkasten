@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import FileResponse, Http404
 from rest_framework.decorators import action
@@ -14,6 +15,7 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = AttachmentSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = AttachmentFilter
+    permission_classes = [IsAuthenticated]
     ordering_fields = ['file_name', 'datasize', 'email__datetime', 'created']
     ordering = ['id']
 
