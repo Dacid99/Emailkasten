@@ -26,8 +26,8 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=['get'], url_path='download')
     def download(self, request, pk=None):
         email = self.get_object()
-        fileName = email.message_id
         filePath = email.eml_filepath
+        fileName = os.path.basename(filePath)
 
         if not os.path.exists(filePath):
             raise Http404("Attachment file not found")
