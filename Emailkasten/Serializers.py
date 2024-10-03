@@ -36,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
             if request.user.is_staff:
                 instance.is_staff = validated_data['is_staff']
             else:
-                raise ValidationError({"detail": "You do not have permissions to modify the 'is_staff' field!"})
+                raise ValidationError({"detail": "You do not have permissions to perform this action."})  # default permissions message to avoid giving clues to attackers
         
         instance.save()
         return instance

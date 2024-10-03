@@ -24,5 +24,3 @@ class UserViewSet(viewsets.ModelViewSet):
 #            return [IsAuthenticated()]
         return super().get_permissions()
     
-    def get_queryset(self):
-        return User.objects.filter(username=self.request.user.username)

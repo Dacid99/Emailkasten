@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #use-case scenario
-curl -u staff:staff -X PATCH -H "COntent-Type: application/json" -d '{"username":"david"}' http://192.168.178.138:1122/users/1/
+curl -u usr:pwd -X PATCH -H "Content-Type: application/json" -d '{"is_staff":true}' http://192.168.178.138:1122/users/1/
 #curl -c cookie.txt http://192.168.178.138:1122/login/
 #curl -X POST -d "username=usr&password=pwd" -c cookie.txt http://192.168.178.138:1122/login/
 #curl -X POST http://192.168.178.138:1122/register/ -H "Content-Type: application/json" -d '{"username": "staff", "password": "staff", "is_staff": true}' 
