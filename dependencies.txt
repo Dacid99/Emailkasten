@@ -5,3 +5,5 @@ django-filter
 drf-spectacular
 mysqlclient
 exchangelib
+pillow
+imgkit
