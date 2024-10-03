@@ -25,7 +25,7 @@ from .ViewSets.CorrespondentViewSet import CorrespondentViewSet
 from .ViewSets.AttachmentViewSet import AttachmentViewSet
 from .ViewSets.MailboxViewSet import MailboxViewSet
 from .ViewSets.DatabaseStatsViewSet import DatabaseStatsViewSet
-from .ViewSets.UserCreateView import UserCreateView, UserViewSet
+from .ViewSets.UserCreateView import UserViewSet
 from .ViewSets.ConfigurationViewSet import ConfigurationViewSet
 
 router = DefaultRouter()
@@ -45,7 +45,6 @@ urlpatterns = [
     path("api/schema/", SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path('register/', UserCreateView.as_view(), name = 'user-register'),
     path("health/", include('health_check.urls')),
     path('', include(router.urls)),
     path("api-auth/", include('rest_framework.urls', namespace='rest_framework')), 
