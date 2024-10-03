@@ -187,76 +187,37 @@ class MailProcessor:
 
     @staticmethod
     def processEml(data):
+        
+        def appendImages(images):
+            bgColor=(255,255,255)
+            widths, heights = zip(*(i.size for i in images))
+
+            new_width = max(widths)
+            new_height = sum(heights)
+            new_im = Image.new('RGB', (new_width, new_height), color = bgColor)
+            offset = 0
+            for im in images:
+                # x = int((new_width - im.size[0])/2)
+                x = 0
+                new_im.paste(im, (x, offset))
+                offset += im.size[1]
+            return new_im
+        
+        
+        logger = LoggerFactory.getChildLogger(MailProcessor.__name__)
         # Create the dump directory if not existing yet
         if not os.path.isdir(dumpDir):
             os.makedirs(dumpDir)
-            writeLog("[INFO] Created dump directory %s" % dumpDir)
+            logger.debug("Created dump directory %s" % dumpDir)
 
         msg = email.message_from_bytes(data)
-        try:
-            decode = email.header.decode_header(msg['Date'])[0]
-            dateField = str(decode[0])
-        except:
-            dateField = '&lt;Unknown&gt;'
-        writeLog('[INFO] Date: %s' % dateField)
-
-        try:
-            decode = email.header.decode_header(msg['From'])[0]
-            fromField = str(decode[0])
-        except:
-            fromField = '&lt;Unknown&gt;'
-        writeLog('[INFO] From: %s' %  fromField)
-        fromField = fromField.replace('<', '&lt;').replace('>', '&gt;')
-
-        try:
-            decode = email.header.decode_header(msg['To'])[0]
-            toField = str(decode[0])
-        except:
-            toField = '&lt;Unknown&gt;'
-        writeLog('[INFO] To: %s' % toField)
-        toField = toField.replace('<', '&lt;').replace('>', '&gt;')
-
-        try:
-            decode = email.header.decode_header(msg['Subject'])[0]
-            subjectField = str(decode[0])
-        except:
-            subjectField = '&lt;Unknown&gt;'
-        writeLog('[INFO] Subject: %s' % subjectField)
-        subjectField = subjectField.replace('<', '&lt;').replace('>', '&gt;')
-
-        try:
-            decode = email.header.decode_header(msg['Message-Id'])[0]
-            idField = str(decode[0])
-        except:
-            idField = '&lt;Unknown&gt;'
-        writeLog('[INFO] Message-Id: %s' % idField)
-        idField = idField.replace('<', '&lt;').replace('>', '&gt;')    
-
+            
+        textTypes  = [ 'text/plain', 'text/html' ]
+        imageTypes = [ 'image/gif', 'image/jpeg', 'image/png' ]
         imgkitOptions = { 'load-error-handling': 'skip'}
         # imgkitOptions.update({ 'quiet': None })
         imagesList = []
         attachments = []
-
-        # Build a first image with basic mail details
-        headers = '''
-        <table width="100%%">
-        <tr><td align="right"><b>Date:</b></td><td>%s</td></tr>
-        <tr><td align="right"><b>From:</b></td><td>%s</td></tr>
-        <tr><td align="right"><b>To:</b></td><td>%s</td></tr>
-        <tr><td align="right"><b>Subject:</b></td><td>%s</td></tr>
-        <tr><td align="right"><b>Message-Id:</b></td><td>%s</td></tr>
-        </table>
-        <hr></p>
-        ''' % (dateField, fromField, toField, subjectField, idField)
-        m = hashlib.md5()
-        m.update(headers.encode('utf-8'))
-        imagePath = m.hexdigest() + '.png'
-        try:
-            imgkit.from_string(headers, dumpDir + '/' + imagePath, options = imgkitOptions)
-            writeLog('[INFO] Created headers %s' % imagePath)
-            imagesList.append(dumpDir + '/' + imagePath)
-        except:
-            writeLog('[WARNING] Creation of headers failed')
 
         #
         # Main loop - process the MIME parts
@@ -264,10 +225,10 @@ class MailProcessor:
         for part in msg.walk():
             mimeType = part.get_content_type()
             if part.is_multipart():
-                writeLog('[INFO] Multipart found, continue')
+                logger.debug('Multipart found, continue')
                 continue
 
-            writeLog('[INFO] Found MIME part: %s' % mimeType)
+            logger.debug('Found MIME part: %s' % mimeType)
             if mimeType in textTypes:
                 try:
                     payload = quopri.decodestring(part.get_payload(decode=True)).decode('utf-8')
@@ -285,10 +246,10 @@ class MailProcessor:
                 imagePath = m.hexdigest() + '.png'
                 try:
                     imgkit.from_string(payload, dumpDir + '/' + imagePath, options = imgkitOptions)
-                    writeLog('[INFO] Decoded %s' % imagePath)
+                    logger.debug('Decoded %s' % imagePath)
                     imagesList.append(dumpDir + '/' + imagePath)
                 except:
-                    writeLog('[WARNING] Decoding this MIME part returned error')
+                    logger.warn('Decoding this MIME part returned error')
             elif mimeType in imageTypes:
                 payload = part.get_payload(decode=False)
                 imgdata = base64.b64decode(payload)
@@ -299,16 +260,16 @@ class MailProcessor:
                 try:
                     with open(dumpDir + '/' + imagePath, 'wb') as f:
                         f.write(imgdata)
-                    writeLog('[INFO] Decoded %s' % imagePath)
+                    logger.debug('Decoded %s' % imagePath)
                     imagesList.append(dumpDir + '/' + imagePath)
                 except:
-                    writeLog('[WARNING] Decoding this MIME part returned error')
+                    logger.warn('Decoding this MIME part returned error')
             else:
                 fileName = part.get_filename()
                 if not fileName:
                     fileName = "Unknown"
                 attachments.append("%s (%s)" % (fileName, mimeType))
-                writeLog('[INFO] Skipped attachment %s (%s)' % (fileName, mimeType))
+                logger.debug('Skipped attachment %s (%s)' % (fileName, mimeType))
 
         if len(attachments):
             footer = '<p><hr><p><b>Attached Files:</b><p><ul>'
@@ -320,10 +281,10 @@ class MailProcessor:
             imagePath = m.hexdigest() + '.png'
             try:
                 imgkit.from_string(footer, dumpDir + '/' + imagePath, options = imgkitOptions)
-                writeLog('[INFO] Created footer %s' % imagePath)
+                logger.debug('[INFO] Created footer %s' % imagePath)
                 imagesList.append(dumpDir + '/' + imagePath)
             except:
-                writeLog('[WARNING] Creation of footer failed')
+                logger.error('Creation of footer failed')
 
         resultImage = dumpDir + '/' + 'new.png'
         if len(imagesList) > 0:
@@ -332,7 +293,7 @@ class MailProcessor:
             combo.save(resultImage)
             # Clean up temporary images
             for i in imagesList:
-            os.remove(i)
+                os.remove(i)
             return(resultImage)
         else:
             return(False)
