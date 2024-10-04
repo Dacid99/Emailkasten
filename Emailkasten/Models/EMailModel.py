@@ -38,7 +38,7 @@ class EMailModel(models.Model):
         path=constants.StorageConfiguration.STORAGE_PATH,
         max_length=255, 
         recursive=True, 
-        match=rf".*{constants.StorageConfiguration.PRERENDER_BASENAME}\.{constants.StorageConfiguration.PRERENDER_IMAGETYPE}$", 
+        match=rf".*\.{constants.StorageConfiguration.PRERENDER_IMAGETYPE}$", 
         null=True
     )
     is_favorite = models.BooleanField(default=False)
