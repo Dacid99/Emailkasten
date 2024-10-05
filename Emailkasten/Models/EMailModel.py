@@ -19,6 +19,7 @@
 from django.db import models
 from .. import constants
 from .AccountModel import AccountModel
+from .MailingListModel import MailingListModel
 
 
 class EMailModel(models.Model):
@@ -44,9 +45,38 @@ class EMailModel(models.Model):
     )
     is_favorite = models.BooleanField(default=False)
     correspondents = models.ManyToManyField('CorrespondentModel', through='EMailCorrespondentsModel', related_name='emails')
+    mailinglist = models.ForeignKey(MailingListModel, null=True, related_name='emails', on_delete=models.CASCADE)
     account = models.ForeignKey(AccountModel, related_name="emails", on_delete=models.CASCADE)
+    
+    comments = models.CharField(max_length=255, null=True)
+    keywords = models.CharField(max_length=255, null=True)
+    
+    importance = models.CharField(max_length=255, null=True)
+    priority = models.CharField(max_length=255, null=True)
+    precedence = models.CharField(max_length=255, null=True)
+    
+    sender = models.EmailField(max_length=255, null=True)
+    return_receipt_to = models.EmailField(max_length=255, null=True)
+    disposition_notification_to = models.EmailField(max_length=255, null=True)
+    reply_to = models.EmailField(max_length=255, null=True)
+    envelope_to = models.EmailField(max_length=255, null=True)
+    delivered_to = models.EmailField(max_length=255, null=True)
+    return_path = models.EmailField(max_length=255, null=True)
+    user_agent = models.CharField(max_length=255, null=True)
+    auto_submitted = models.CharField(max_length=255, null=True)
+    
+    content_type = models.CharField(max_length=255, null=True)
+    content_language = models.CharField(max_length=255, null=True)
+    content_location = models.CharField(max_length=255, null=True)
+    
+    x_priority = models.CharField(max_length=255, null=True)
+    x_originated_client = models.CharField(max_length=255, null=True)
+    x_spam = models.CharField(max_length=255, null=True) 
+    
+    
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    
 
     def __str__(self):
         return f"Email with ID {self.message_id}, received on {self.datetime} with subject {self.email_subject}"

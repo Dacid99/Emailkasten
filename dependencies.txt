@@ -7,3 +7,4 @@ mysqlclient
 exchangelib
 pillow
 imgkit
+email-validator

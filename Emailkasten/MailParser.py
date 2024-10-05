@@ -19,6 +19,7 @@
 import email 
 import email.header
 import email.utils
+import email_validator
 from . import constants
 import sys
 import datetime
@@ -33,6 +34,7 @@ class MailParser:
     prerenderFilePathString = "PrerenderFilePath"
     attachmentsString = "Attachments"
     imagesString = "Images"
+    mailinglistString = "Mailinglist"
     #Keys to the xml and the dict
     messageIDHeader = "Message-ID"
     inReplyToHeader = "In-Reply-To"
@@ -40,10 +42,38 @@ class MailParser:
     toHeader = "To"
     bccHeader = "Bcc"
     ccHeader = "Cc"
+    replyToHeader = "Reply-To"
+    returnPathHeader = "Return-Path"
+    envelopeToHeader = "Envelope-To"
+    deliveredToHeader = "Delivered-To"
+    senderHeader = "Sender"
+    
     dateHeader = "Date"
     subjectHeader = "Subject"
-    bodyTextHeader = "Bodytext"
+    commentsHeader = "Comments"
+    keywordsHeader = "Keywords"
+    
+    receivedHeader = "Received"
+    importanceHeader = "Importance"
+    priorityHeader = "Priority"
+    precedenceHeader = "Precedence"
+    returnReceiptTo = "Return-Receipt-To"
+    dispositionNotificationTo = "Disposition-Notification-To"
+    
+    languageHeader = "Language"
+    contentLanguageHeader = "Content-Language"
+    contentLocationHeader = "Content-Location"
+    contentTypeHeader = "Content-Type"
+    
+    userAgentHeader = "User agent"
+    autoSubmittedHeader = "Auto-Submitted"
+    archivedAtHeader = "Archived-At"
+    
+    xPriorityHeader = "X-Priority"
+    xOriginatingClientHeader = "X-Originating-Client"
+    xSpamFlag = "X-Spam-Flag"
 
+    bodyText = "Bodytext"
     #attachment keys
     attachment_dataString = "AttachmentData"
     attachment_sizeString= "AttachmentSize"
@@ -56,6 +86,14 @@ class MailParser:
     images_fileNameString = "ImageFileName"
     images_filePathString= "ImageFilePath" 
     
+    #mailinglist keys
+    listIDHeader = "List-Id"
+    listOwnerHeader = "List-Owner"
+    listSubscribeHeader = "List-Subscribe"
+    listUnsubscribeHeader = "List-Unsubscribe"
+    listPostHeader = "List-Post"
+    listHelpHeader = "List-Help"
+    listArchiveHeader = "List-Archive"
 
     #Defaults
     __dateFormat = '%Y-%m-%d %H:%M:%S'
@@ -97,11 +135,13 @@ class MailParser:
             return decodedText
         
 
-        def separateMailNameAndAdress(mailer):
+        def separateRFC2822MailAddressFormat(mailer):
             mailName, mailAddress = email.utils.parseaddr(mailer)
-            if mailAddress.find("@") == -1:
+            try:
+                email_validator.validate_email(mailAddress, check_deliverability=False)
+            except email_validator.EmailNotValidError:
                 logger.warning(f"Separation of mailname and address failed for {mailer}!")
-                mailAddress = mailer
+                mailAddress = mailer 
             
             return (mailName, mailAddress)
         
@@ -135,7 +175,7 @@ class MailParser:
                 return None
             else:
                 logger.debug("Success")
-            return separateMailNameAndAdress(decodeHeader(sender))
+            return separateRFC2822MailAddressFormat(decodeHeader(sender))
 
 
         def parseTo():
@@ -146,7 +186,7 @@ class MailParser:
                 return []
             else:
                 logger.debug("Success")
-            decodedAndSeparatedRecipients = [separateMailNameAndAdress(decodeHeader(recipient)) for recipient in recipients]
+            decodedAndSeparatedRecipients = [separateRFC2822MailAddressFormat(decodeHeader(recipient)) for recipient in recipients]
             return decodedAndSeparatedRecipients
         
 
@@ -158,7 +198,7 @@ class MailParser:
                 return []
             else:
                 logger.debug("Success")
-            decodedAndSeparatedRecipients = [separateMailNameAndAdress(decodeHeader(recipient)) for recipient in recipients]
+            decodedAndSeparatedRecipients = [separateRFC2822MailAddressFormat(decodeHeader(recipient)) for recipient in recipients]
             return decodedAndSeparatedRecipients
         
 
@@ -170,7 +210,7 @@ class MailParser:
                 return []
             else:
                 logger.debug("Success")
-            decodedAndSeparatedRecipients = [separateMailNameAndAdress(decodeHeader(recipient)) for recipient in recipients]
+            decodedAndSeparatedRecipients = [separateRFC2822MailAddressFormat(decodeHeader(recipient)) for recipient in recipients]
             return decodedAndSeparatedRecipients
 
 
@@ -220,7 +260,26 @@ class MailParser:
                 parsedBodyText = mailBodyText
 
             return parsedBodyText
-
+        
+        
+        def parseAdditionalHeader(headerKey):
+            logger.debug(f"Parsing {headerKey} ...")
+            header = mailMessage.get(headerKey)
+            if header is None:
+                logger.debug(f"No {headerKey} found in mail.")
+            else:
+                logger.debug("Success")
+            return header
+        
+        def parseAdditionalMailAddressHeader(headerKey):
+            logger.debug(f"Parsing {headerKey} ...")
+            header = mailMessage.get(headerKey)
+            if header is None:
+                logger.debug(f"No {headerKey} found in mail.")
+            else:
+                logger.debug("Success")
+            return separateRFC2822MailAddressFormat(decodeHeader(headerKey))[1]
+        
 
         def parseImages():
             logger.debug("Parsing images ...")
@@ -268,6 +327,17 @@ class MailParser:
 
             return attachments
         
+        
+        def parseMailinglist():
+            mailinglist = {}
+            mailinglist[MailParser.listIDHeader] = parseAdditionalHeader[MailParser.listIDHeader]
+            mailinglist[MailParser.listOwnerHeader] = parseAdditionalHeader[MailParser.listOwnerHeader]
+            mailinglist[MailParser.listSubscribeHeader] = parseAdditionalMailAddressHeader[MailParser.listSubscribeHeader]
+            mailinglist[MailParser.listUnsubscribeHeader] = parseAdditionalMailAddressHeader[MailParser.listUnsubscribeHeader]
+            mailinglist[MailParser.listPostHeader] = parseAdditionalHeader[MailParser.listPostHeader]
+            mailinglist[MailParser.listHelpHeader] = parseAdditionalHeader[MailParser.listHelpHeader]
+            mailinglist[MailParser.listArchiveHeader] = parseAdditionalHeader[MailParser.listArchiveHeader]
+            return mailinglist
 
 
         logger.debug(f"Parsing email with subject {parseSubject()} ...")
@@ -279,7 +349,7 @@ class MailParser:
         parsedEMail[MailParser.sizeString] = sys.getsizeof(mailToParse)
         parsedEMail[MailParser.messageIDHeader] = parseMessageID()
         parsedEMail[MailParser.subjectHeader] = parseSubject()
-        parsedEMail[MailParser.bodyTextHeader] = parseBody()
+        parsedEMail[MailParser.bodyText] = parseBody()
         parsedEMail[MailParser.inReplyToHeader] = parseInReplyTo()
         parsedEMail[MailParser.fromHeader] = parseFrom()
         parsedEMail[MailParser.toHeader] = parseTo()
@@ -290,8 +360,33 @@ class MailParser:
         parsedEMail[MailParser.imagesString] = parseImages()
         parsedEMail[MailParser.emlFilePathString] = None
         parsedEMail[MailParser.prerenderFilePathString] = None
-
-
+        
+        parsedEMail[MailParser.returnPathHeader] = parseAdditionalMailAddressHeader[MailParser.returnPathHeader]
+        parsedEMail[MailParser.commentsHeader] = parseAdditionalHeader[MailParser.commentsHeader]
+        parsedEMail[MailParser.languageHeader] = parseAdditionalHeader[MailParser.languageHeader]
+        parsedEMail[MailParser.contentLanguageHeader] = parseAdditionalHeader[MailParser.contentLanguageHeader]
+        parsedEMail[MailParser.contentTypeHeader] = parseAdditionalHeader[MailParser.contentTypeHeader]
+        parsedEMail[MailParser.envelopeToHeader] = parseAdditionalHeader[MailParser.envelopeToHeader]
+        parsedEMail[MailParser.deliveredToHeader] = parseAdditionalMailAddressHeader[MailParser.deliveredToHeader]
+        parsedEMail[MailParser.senderHeader] = parseAdditionalMailAddressHeader[MailParser.senderHeader]
+        parsedEMail[MailParser.replyToHeader] = parseAdditionalMailAddressHeader(MailParser.replyToHeader)
+        parsedEMail[MailParser.returnReceiptTo] = parseAdditionalMailAddressHeader[MailParser.returnReceiptTo]
+        parsedEMail[MailParser.dispositionNotificationTo] = parseAdditionalMailAddressHeader[MailParser.dispositionNotificationTo]
+        
+        parsedEMail[MailParser.keywordsHeader] = parseAdditionalHeader[MailParser.keywordsHeader]
+        parsedEMail[MailParser.receivedHeader] = parseAdditionalHeader[MailParser.receivedHeader]
+        parsedEMail[MailParser.importanceHeader] = parseAdditionalHeader[MailParser.importanceHeader]
+        parsedEMail[MailParser.priorityHeader] = parseAdditionalHeader[MailParser.priorityHeader]
+        parsedEMail[MailParser.precedenceHeader] = parseAdditionalHeader[MailParser.precedenceHeader]
+        parsedEMail[MailParser.contentLocationHeader] = parseAdditionalHeader[MailParser.contentLocationHeader]
+        parsedEMail[MailParser.archivedAtHeader] = parseAdditionalHeader[MailParser.archivedAtHeader]
+        parsedEMail[MailParser.userAgentHeader] = parseAdditionalHeader[MailParser.userAgentHeader]
+        parsedEMail[MailParser.xPriorityHeader] = parseAdditionalHeader[MailParser.xPriorityHeader]
+        parsedEMail[MailParser.xOriginatingClientHeader] = parseAdditionalHeader[MailParser.xOriginatingClientHeader]
+        parsedEMail[MailParser.xSpamFlag] = parseAdditionalHeader[MailParser.xSpamFlag]
+        parsedEMail[MailParser.autoSubmittedHeader] = parseAdditionalHeader[MailParser.autoSubmittedHeader]
+        
+        parsedEMail[MailParser.mailinglistString] = parseMailinglist()
 
 
         logger.debug("Successfully parsed mail")
