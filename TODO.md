@@ -12,13 +12,12 @@ return serialized db data after scan and fetch_all
 loginout
 dbstats can be apiview
 parsing walks multiple times, could be more efficient
-parse images and links and conversation structures as well
 
 # to test
 
 # to fix
 'Decoding this mime part returned error' for paypal mail 
-newline characters missing (1), doubled content (13)
+newline characters missing (1)
 
 # at next db reset
 start to use configurationmodel

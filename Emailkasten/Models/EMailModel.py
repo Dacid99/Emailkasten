@@ -26,6 +26,7 @@ class EMailModel(models.Model):
     datetime = models.DateTimeField()
     email_subject = models.CharField(max_length=255)
     bodytext = models.TextField()
+    inReplyTo = models.ForeignKey('self', null=True, related_name='replies', on_delete=models.SET_NULL)
     datasize = models.IntegerField()
     eml_filepath = models.FilePathField(
         path=constants.StorageConfiguration.STORAGE_PATH,

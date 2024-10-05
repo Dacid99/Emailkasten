@@ -34,14 +34,15 @@ class MailParser:
     attachmentsString = "Attachments"
     imagesString = "Images"
     #Keys to the xml and the dict
-    messageIDString = "Message-ID"
-    fromString = "From"
-    toString = "To"
-    bccString = "Bcc"
-    ccString = "Cc"
-    dateString = "Date"
-    subjectString = "Subject"
-    bodyTextString = "Bodytext"
+    messageIDHeader = "Message-ID"
+    inReplyToHeader = "In-Reply-To"
+    fromHeader = "From"
+    toHeader = "To"
+    bccHeader = "Bcc"
+    ccHeader = "Cc"
+    dateHeader = "Date"
+    subjectHeader = "Subject"
+    bodyTextHeader = "Bodytext"
 
     #attachment keys
     attachment_dataString = "AttachmentData"
@@ -107,18 +108,28 @@ class MailParser:
 
         def parseMessageID():
             logger.debug("Parsing MessageID ...")
-            messageID = mailMessage.get(MailParser.messageIDString)
+            messageID = mailMessage.get(MailParser.messageIDHeader)
             if messageID is None:
                 logger.warning(f"No messageID found in mail, resorting to hash!")
                 return str(hash(mailMessage))  #fallback for unique identifier if no messageID found
             else:
                 logger.debug("Success")
             return messageID
+        
+        
+        def parseInReplyTo():
+            logger.debug("Parsing InReplyTo ...")
+            inReplyMessageID = mailMessage.get(MailParser.inReplyToHeader)
+            if inReplyMessageID is None:
+                logger.debug(f"No In-Reply-To found in mail.")
+            else:
+                logger.debug("Success")
+            return inReplyMessageID
 
 
         def parseFrom():
             logger.debug("Parsing From ...")
-            sender = mailMessage.get(MailParser.fromString)
+            sender = mailMessage.get(MailParser.fromHeader)
             if sender is None:
                 logger.warning(f"No FROM correspondent found in mail!")
                 return None
@@ -129,7 +140,7 @@ class MailParser:
 
         def parseTo():
             logger.debug("Parsing To ...")
-            recipients = mailMessage.get_all(MailParser.toString)
+            recipients = mailMessage.get_all(MailParser.toHeader)
             if recipients is None:
                 logger.warning(f"No TO correspondents found in mail!")
                 return []
@@ -141,7 +152,7 @@ class MailParser:
 
         def parseBcc():
             logger.debug("Parsing Bcc ...")
-            recipients = mailMessage.get_all(MailParser.bccString)
+            recipients = mailMessage.get_all(MailParser.bccHeader)
             if recipients is None:
                 logger.debug("No BCC correspondents found in mail")
                 return []
@@ -153,7 +164,7 @@ class MailParser:
 
         def parseCc():
             logger.debug("Parsing Cc ...")
-            recipients = mailMessage.get_all(MailParser.ccString)
+            recipients = mailMessage.get_all(MailParser.ccHeader)
             if recipients is None:
                 logger.debug("No CC correspondents found in mail")
                 return []
@@ -165,7 +176,7 @@ class MailParser:
 
         def parseDate():
             logger.debug("Parsing date ...")
-            date = mailMessage.get(MailParser.dateString)
+            date = mailMessage.get(MailParser.dateHeader)
             if date is None:
                 logger.warning("No DATE found in mail, resorting to default!")
                 return datetime.datetime.strptime(MailParser.__dateDefault, MailParser.__dateFormat)
@@ -176,7 +187,7 @@ class MailParser:
 
         def parseSubject():
             logger.debug("Parsing subject ...")
-            if (subject := mailMessage.get(MailParser.subjectString)):
+            if (subject := mailMessage.get(MailParser.subjectHeader)):
                 logger.debug("Success")
                 decodedSubject = decodeHeader(subject)
                 if constants.ParsingConfiguration.STRIP_TEXTS:
@@ -256,6 +267,7 @@ class MailParser:
                 logger.debug("Success")
 
             return attachments
+        
 
 
         logger.debug(f"Parsing email with subject {parseSubject()} ...")
@@ -265,14 +277,15 @@ class MailParser:
         parsedEMail[MailParser.dataString] = mailToParse
         parsedEMail[MailParser.fullMessageString] = mailMessage
         parsedEMail[MailParser.sizeString] = sys.getsizeof(mailToParse)
-        parsedEMail[MailParser.messageIDString] = parseMessageID()
-        parsedEMail[MailParser.subjectString] = parseSubject()
-        parsedEMail[MailParser.bodyTextString] = parseBody()
-        parsedEMail[MailParser.fromString] = parseFrom()
-        parsedEMail[MailParser.toString] = parseTo()
-        parsedEMail[MailParser.ccString] = parseCc()
-        parsedEMail[MailParser.bccString] = parseBcc()
-        parsedEMail[MailParser.dateString] = parseDate()
+        parsedEMail[MailParser.messageIDHeader] = parseMessageID()
+        parsedEMail[MailParser.subjectHeader] = parseSubject()
+        parsedEMail[MailParser.bodyTextHeader] = parseBody()
+        parsedEMail[MailParser.inReplyToHeader] = parseInReplyTo()
+        parsedEMail[MailParser.fromHeader] = parseFrom()
+        parsedEMail[MailParser.toHeader] = parseTo()
+        parsedEMail[MailParser.ccHeader] = parseCc()
+        parsedEMail[MailParser.bccHeader] = parseBcc()
+        parsedEMail[MailParser.dateHeader] = parseDate()
         parsedEMail[MailParser.attachmentsString] = parseAttachments()
         parsedEMail[MailParser.imagesString] = parseImages()
         parsedEMail[MailParser.emlFilePathString] = None

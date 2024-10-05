@@ -31,8 +31,8 @@ class FileManager:
     def writeMessageToEML(parsedEMail):
         logger = LoggerFactory.getChildLogger(FileManager.__class__.__name__)
         logger.debug("Storing mail in .eml file ...")
-        emlDirPath = FileManager.getStoragePath(parsedEMail[MailParser.messageIDString])
-        emlFilePath = os.path.join(emlDirPath , parsedEMail[MailParser.messageIDString] + ".eml")
+        emlDirPath = FileManager.getStoragePath(parsedEMail[MailParser.messageIDHeader])
+        emlFilePath = os.path.join(emlDirPath , parsedEMail[MailParser.messageIDHeader] + ".eml")
         try:
             if os.path.exists(emlFilePath):
                 if os.path.getsize(emlFilePath) > 0:
@@ -78,7 +78,7 @@ class FileManager:
     def writeAttachments(parsedEMail):
         logger = LoggerFactory.getChildLogger(FileManager.__class__.__name__)
 
-        dirPath = FileManager.getStoragePath(parsedEMail[MailParser.messageIDString])
+        dirPath = FileManager.getStoragePath(parsedEMail[MailParser.messageIDHeader])
         for attachmentData in parsedEMail[MailParser.attachmentsString]:
             fileName = attachmentData[MailParser.attachment_fileNameString]
             filePath = os.path.join(dirPath, fileName)
@@ -124,7 +124,7 @@ class FileManager:
     def writeImages(parsedEMail):
         logger = LoggerFactory.getChildLogger(FileManager.__class__.__name__)
 
-        dirPath = FileManager.getStoragePath(parsedEMail[MailParser.messageIDString])
+        dirPath = FileManager.getStoragePath(parsedEMail[MailParser.messageIDHeader])
         for imageData in parsedEMail[MailParser.imagesString]:
             fileName = imageData[MailParser.images_fileNameString]
             filePath = os.path.join(dirPath, fileName)
@@ -169,9 +169,9 @@ class FileManager:
 
     @staticmethod
     def getPrerenderImageStoragePath(parsedMail):
-        dirPath = FileManager.getStoragePath(parsedMail[MailParser.messageIDString])
+        dirPath = FileManager.getStoragePath(parsedMail[MailParser.messageIDHeader])
 
-        filePath = os.path.join(dirPath, f"{parsedMail[MailParser.messageIDString]}.{constants.StorageConfiguration.PRERENDER_IMAGETYPE}")
+        filePath = os.path.join(dirPath, f"{parsedMail[MailParser.messageIDHeader]}.{constants.StorageConfiguration.PRERENDER_IMAGETYPE}")
         parsedMail[MailParser.prerenderFilePathString] = filePath
         return filePath
 

@@ -62,12 +62,22 @@ class EMailDBFeeder:
 
         try:
             with django.db.transaction.atomic():
+                if parsedEMail[MailParser.inReplyToHeader]:
+                    try:
+                        logger.debug("Querying inReplyTo mail ...")
+                        inReplyToMail = EMailModel.objects.get(message_id = parsedEMail[MailParser.inReplyToHeader])
+                        logger.debug("Successfully retrieved inReplyTo mail.")
+                    except EMailModel.DoesNotExist:
+                        logger.warning(f"Could not find inReplyTo mail {parsedEMail[MailParser.inReplyToHeader]}!")
+                        inReplyToMail = None
+                
                 emailEntry, created = EMailModel.objects.get_or_create(
-                    message_id = parsedEMail[MailParser.messageIDString],
+                    message_id = parsedEMail[MailParser.messageIDHeader],
                     defaults = {
-                        'datetime' : parsedEMail[MailParser.dateString],
-                        'email_subject' : parsedEMail[MailParser.subjectString],
-                        'bodytext' : parsedEMail[MailParser.bodyTextString],
+                        'datetime' : parsedEMail[MailParser.dateHeader],
+                        'email_subject' : parsedEMail[MailParser.subjectHeader],
+                        'bodytext' : parsedEMail[MailParser.bodyTextHeader],
+                        'inReplyTo' : inReplyToMail,
                         'datasize' :  parsedEMail[MailParser.sizeString],
                         'eml_filepath' : parsedEMail[MailParser.emlFilePathString],
                         'prerender_filepath': parsedEMail[MailParser.prerenderFilePathString],
@@ -117,7 +127,7 @@ class EMailDBFeeder:
                     logger.debug("No images found in mail, not writing to DB")
                 
                 
-                correspondent = parsedEMail[MailParser.fromString]
+                correspondent = parsedEMail[MailParser.fromHeader]
                 if correspondent:
                     correspondentEntry, created  = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
@@ -143,7 +153,7 @@ class EMailDBFeeder:
                     logger.warning("No FROM Correspondent found in mail, not writing to DB!")
 
                 
-                for correspondent in parsedEMail[MailParser.toString]:
+                for correspondent in parsedEMail[MailParser.toHeader]:
                     correspondentEntry, created  = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
@@ -163,11 +173,11 @@ class EMailDBFeeder:
                     else:
                         logger.debug(f"Entry for {str(emailCorrespondentsEntry)} already exists")
 
-                if not parsedEMail[MailParser.toString]:
+                if not parsedEMail[MailParser.toHeader]:
                     logger.warning("No TO Correspondent found in mail, not writing to DB!")
 
 
-                for correspondent in parsedEMail[MailParser.ccString]:
+                for correspondent in parsedEMail[MailParser.ccHeader]:
                     correspondentEntry, created  = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
@@ -187,11 +197,11 @@ class EMailDBFeeder:
                     else:
                         logger.debug(f"Entry for {str(emailCorrespondentsEntry)} already exists")
 
-                if not parsedEMail[MailParser.ccString]:
+                if not parsedEMail[MailParser.ccHeader]:
                     logger.debug("No CC Correspondent found in mail, not writing to DB")
 
 
-                for correspondent in parsedEMail[MailParser.bccString]:
+                for correspondent in parsedEMail[MailParser.bccHeader]:
                     correspondentEntry, created  = CorrespondentModel.objects.get_or_create(
                         email_address = correspondent[1], 
                         defaults = {'email_name': correspondent[0]}
@@ -211,7 +221,7 @@ class EMailDBFeeder:
                     else:
                         logger.debug(f"Entry for {str(emailCorrespondentsEntry)} already exists")
 
-                if not parsedEMail[MailParser.ccString]:
+                if not parsedEMail[MailParser.ccHeader]:
                     logger.debug("No BCC Correspondent found in mail, not writing to DB")
 
 
