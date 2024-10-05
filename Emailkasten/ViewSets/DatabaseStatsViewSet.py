@@ -22,6 +22,7 @@ from rest_framework.permissions import IsAuthenticated
 from ..Models.EMailModel import EMailModel
 from ..Models.CorrespondentModel import CorrespondentModel
 from ..Models.AttachmentModel import AttachmentModel
+from ..Models.ImageModel import ImageModel
 from ..Models.AccountModel import AccountModel
 
 class DatabaseStatsViewSet(viewsets.ViewSet):
@@ -31,12 +32,14 @@ class DatabaseStatsViewSet(viewsets.ViewSet):
         email_count = EMailModel.objects.filter(account__user = request.user).count()
         correspondent_count = CorrespondentModel.objects.filter(emails__account__user = request.user).distinct().count()
         attachment_count = AttachmentModel.objects.filter(email__account__user = request.user).count()
+        images_count = ImageModel.objects.filter(email__account__user = request.user).count()
         account_count = AccountModel.objects.filter(user = request.user).count()
 
         data = {
             'email_count': email_count,
             'correspondent_count': correspondent_count,
             'attachment_count': attachment_count,
+            'images_count': images_count,
             'account_count': account_count,
         }
         return Response(data)

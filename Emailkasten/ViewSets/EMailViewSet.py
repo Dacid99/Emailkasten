@@ -25,13 +25,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from ..Models.EMailModel import EMailModel
-from ..Serializers import EMailSerializer
+from ..Serializers import FullEMailSerializer
 from ..Filters.EMailFilter import EMailFilter
 import os
 
 class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = EMailModel.objects.all()
-    serializer_class = EMailSerializer
+    serializer_class = FullEMailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = EMailFilter
     permission_classes = [IsAuthenticated]

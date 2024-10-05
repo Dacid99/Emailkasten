@@ -170,14 +170,27 @@ class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageModel
         exclude = ['file_path']
-        
-class MailingListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MailingListModel
-        fields = '__all__'
 
-
+                
 class EMailSerializer(serializers.ModelSerializer):
+    attachments = AttachmentSerializer(many=True, read_only=True)
+    correspondents = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EMailModel
+        fields = ['message_id', 'datetime', 'email_subject', 'bodytext', 'is_favorite', 'account', 'created', 'updated']
+        
+    def get_correspondents(self, object):
+        request = self.context.get('request')
+        user = request.user if request else None
+        if user:
+            emailcorrespondents = EMailCorrespondentsModel.objects.filter(email=object, email__account__user=user).distinct()
+            return EMailCorrespondentSerializer(emailcorrespondents, many=True, read_only=True).data
+        else:
+            return None
+        
+        
+class FullEMailSerializer(serializers.ModelSerializer):
     attachments = AttachmentSerializer(many=True, read_only=True)
     images = ImageSerializer(many=True, read_only=True)
     correspondents = serializers.SerializerMethodField()
@@ -194,3 +207,16 @@ class EMailSerializer(serializers.ModelSerializer):
             return EMailCorrespondentSerializer(emailcorrespondents, many=True, read_only=True).data
         else:
             return None
+
+
+class MailingListSerializer(serializers.ModelSerializer):
+    emails = EMailSerializer(many=True, read_only=True)
+    email_number = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = MailingListModel
+        fields = '__all__'
+
+    def get_email_number(self, object):
+        number = object.emails.count()
+        return number
