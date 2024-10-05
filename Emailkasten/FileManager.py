@@ -119,6 +119,53 @@ class FileManager:
                 filePath = None
         
             attachmentData[MailParser.attachment_filePathString] = filePath
+            
+    @staticmethod
+    def writeImages(parsedEMail):
+        logger = LoggerFactory.getChildLogger(FileManager.__class__.__name__)
+
+        dirPath = FileManager.getStoragePath(parsedEMail[MailParser.messageIDString])
+        for imageData in parsedEMail[MailParser.imagesString]:
+            fileName = imageData[MailParser.images_fileNameString]
+            filePath = os.path.join(dirPath, fileName)
+            logger.debug(f"Storing image {fileName} in {filePath} ...")
+            try:
+                if os.path.exists(filePath):
+                    if os.path.getsize(filePath) > 0:
+                        logger.debug(f"Not writing to {filePath}, it already exists and is not empty")
+                        
+                    else:
+                        logger.debug(f"Writing to empty file {filePath} ...")
+                        with open(filePath, "wb") as file:
+                            file.write(imageData[MailParser.images_dataString].get_payload(decode=True))
+                        logger.debug("Success")
+                else:
+                    if not os.path.exists(dirPath):
+                        logger.debug(f"Creating directory {dirPath} ...")
+                        os.makedirs(dirPath)
+                        FileManager.subdirNumber += 1
+                        logger.debug("Success")
+                    logger.debug(f"Creating new file {filePath} ...")
+                    with open(filePath, "wb") as file:
+                        file.write(imageData[MailParser.images_dataString].get_payload(decode=True))
+                    logger.debug("Success")
+
+            except OSError as e:
+                logger.error(f"Failed to write image file {fileName} to {filePath}!", exc_info=True)
+                if os.path.exists(filePath):
+                    logger.debug("Clearing incomplete file ...")
+                    try: 
+                        with open(filePath, "wb") as file:
+                            file.truncate(0)
+                        logger.debug("Success")
+                    except OSError as e:
+                        logger.error("Failed to clear the incomplete file!")
+                else:
+                    logger.debug("File was not created")
+                filePath = None
+        
+            imageData[MailParser.image_filePathString] = filePath
+            
 
     @staticmethod
     def getPrerenderImageStoragePath(parsedMail):

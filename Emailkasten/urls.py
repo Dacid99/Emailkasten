@@ -39,6 +39,7 @@ from .ViewSets.AccountViewSet import AccountViewSet
 from .ViewSets.EMailViewSet import EMailViewSet
 from .ViewSets.CorrespondentViewSet import CorrespondentViewSet
 from .ViewSets.AttachmentViewSet import AttachmentViewSet
+from .ViewSets.ImageViewSet import ImageViewSet
 from .ViewSets.MailboxViewSet import MailboxViewSet
 from .ViewSets.DatabaseStatsViewSet import DatabaseStatsViewSet
 from .ViewSets.UserCreateView import UserViewSet
@@ -51,6 +52,7 @@ router.register(r'mailboxes', MailboxViewSet)
 router.register(r'emails', EMailViewSet)
 router.register(r'correspondents', CorrespondentViewSet)
 router.register(r'attachments', AttachmentViewSet)
+router.register(r'images', ImageViewSet)
 router.register(r'config', ConfigurationViewSet)
 router.register(r'stats', DatabaseStatsViewSet, basename='stats')
 router.register(r'users', UserViewSet)

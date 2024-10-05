@@ -32,6 +32,7 @@ class MailParser:
     emlFilePathString = "EmlFilePath"
     prerenderFilePathString = "PrerenderFilePath"
     attachmentsString = "Attachments"
+    imagesString = "Images"
     #Keys to the xml and the dict
     messageIDString = "Message-ID"
     fromString = "From"
@@ -47,6 +48,13 @@ class MailParser:
     attachment_sizeString= "AttachmentSize"
     attachment_fileNameString = "AttachmentFileName"
     attachment_filePathString= "AttachmentFilePath" 
+    
+    #image keys
+    images_dataString = "ImageData"
+    images_sizeString= "ImageSize"
+    images_fileNameString = "ImageFileName"
+    images_filePathString= "ImageFilePath" 
+    
 
     #Defaults
     __dateFormat = '%Y-%m-%d %H:%M:%S'
@@ -167,7 +175,7 @@ class MailParser:
         
 
         def parseSubject():
-            logger.debug("Parsing attachments ...")
+            logger.debug("Parsing subject ...")
             if (subject := mailMessage.get(MailParser.subjectString)):
                 logger.debug("Success")
                 decodedSubject = decodeHeader(subject)
@@ -202,6 +210,31 @@ class MailParser:
 
             return parsedBodyText
 
+
+        def parseImages():
+            logger.debug("Parsing images ...")
+            images = []
+            if mailMessage.is_multipart():
+                for part in mailMessage.walk():
+                    if part.get_content_type() in ['image/png', 'image/jpeg', 'image/gif']:
+                        # imageFileName = part.get_filename()
+                        # if not imageFileName:
+                        #     imageFileName = 
+                        imagesDict = {}
+                        imagesDict[MailParser.images_dataString] = part
+                        imagesDict[MailParser.images_sizeString] = sys.getsizeof(part)
+                        imagesDict[MailParser.images_fileNameString] = part.get_filename()
+                        imagesDict[MailParser.images_filePathString] = None 
+
+                        images.append(imagesDict)
+
+            if not images:
+                logger.debug("No images found in mail")
+            else:
+                logger.debug("Success")
+
+            return images
+        
 
         def parseAttachments():
             logger.debug("Parsing attachments ...")
@@ -241,6 +274,7 @@ class MailParser:
         parsedEMail[MailParser.bccString] = parseBcc()
         parsedEMail[MailParser.dateString] = parseDate()
         parsedEMail[MailParser.attachmentsString] = parseAttachments()
+        parsedEMail[MailParser.imagesString] = parseImages()
         parsedEMail[MailParser.emlFilePathString] = None
         parsedEMail[MailParser.prerenderFilePathString] = None
 

@@ -172,6 +172,16 @@ class MailProcessor:
             logger.debug("Successfully saved attachments")
         else:
             logger.debug(f"Not saving attachments for mailbox {mailbox.name}")
+            
+        
+        if mailbox.save_images:
+            logger.debug("Saving images ...")
+            for parsedMail in parsedMailsList:
+                FileManager.writeImages(parsedMail)
+            logger.debug("Successfully saved images")
+        else:
+            logger.debug(f"Not saving images for mailbox {mailbox.name}")
+
 
         logger.debug("Writing emails to database ...")
         for parsedMail in parsedMailsList:

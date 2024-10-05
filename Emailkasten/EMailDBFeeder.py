@@ -81,7 +81,7 @@ class EMailDBFeeder:
 
                 
                 for attachment in parsedEMail[MailParser.attachmentsString]:
-                    attachmentEntry, created  = AttachmentModel.objects.get_or_create(
+                    imageEntry, created  = AttachmentModel.objects.get_or_create(
                         file_path = attachment[MailParser.attachment_filePathString],
                         email = emailEntry,
                         defaults = {
@@ -90,14 +90,31 @@ class EMailDBFeeder:
                         }
                     )
                     if created:
-                        logger.debug(f"Entry for {str(attachmentEntry)} created")
+                        logger.debug(f"Entry for {str(imageEntry)} created")
                     else:
-                        logger.debug(f"Entry for {str(attachmentEntry)} already exists")
+                        logger.debug(f"Entry for {str(imageEntry)} already exists")
 
                 if not parsedEMail[MailParser.attachmentsString]: 
                     logger.debug("No attachment files found in mail, not writing to DB")
+                
+                
+                for image in parsedEMail[MailParser.imagesString]:
+                    imageEntry, created  = AttachmentModel.objects.get_or_create(
+                        file_path = attachment[MailParser.images_filePathString],
+                        email = emailEntry,
+                        defaults = {
+                            'file_name' : image[MailParser.images_fileNameString],
+                            'datasize' : image[MailParser.images_sizeString]
+                        }
+                    )
+                    if created:
+                        logger.debug(f"Entry for {str(imageEntry)} created")
+                    else:
+                        logger.debug(f"Entry for {str(imageEntry)} already exists")
 
-
+                if not parsedEMail[MailParser.imagesString]: 
+                    logger.debug("No images found in mail, not writing to DB")
+                
                 
                 correspondent = parsedEMail[MailParser.fromString]
                 if correspondent:

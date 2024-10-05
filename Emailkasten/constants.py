@@ -66,6 +66,7 @@ class ProcessingConfiguration:
 class FetchingConfiguration:
     SAVE_TO_EML_DEFAULT = True
     SAVE_ATTACHMENTS_DEFAULT = True
+    SAVE_IMAGES_DEFAULT = True
     
 class DatabaseConfiguration:
     NAME = os.environ.get("DB_NAME", "emailkasten")
