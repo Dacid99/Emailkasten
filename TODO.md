@@ -1,19 +1,20 @@
 implement basic exchange
-emaildbfeeder and mailparser should be factories or something more maintainable than right now
+emaildbfeeder and mailparser should be factories or something more maintainable than right now, more pythonic
 attachmentdatasize kinda small
 different choices for fetching depending on protocol
 custom fetching filters
-storageModel
+storageModel and fix for getStoragePath
 distinguish configs by env, db and user-immutables, migrate db settings to initial settings
 autostart daemons on restart
 custom additional healthchecks
 restructure logging
 return serialized db data after scan and fetch_all
-loginout
 dbstats can be apiview
 parsing walks multiple times, could be more efficient
+possibly move extra emailfields from emailmodel to correspondents
 
 # to test
+new email fields, mailing list
 
 # to fix
 'Decoding this mime part returned error' for paypal mail 
