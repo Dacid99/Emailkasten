@@ -18,36 +18,20 @@
 
 from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
-from django.http import FileResponse, Http404
-from rest_framework.decorators import action
-from ..Models.ImageModel import ImageModel
-from ..Serializers import ImageSerializer
-from ..Filters.ImageFilter import ImageFilter
-import os
+from ..Models.MailingListModel import MailingListModel
+from ..Serializers import MailingListSerializer
+from ..Filters.MailingListFilter import MailingListFilter
 
-class ImageViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = ImageModel.objects.all()
-    serializer_class = ImageSerializer
+class MailingListViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = MailingListModel.objects.all()
+    serializer_class = MailingListSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_class = ImageFilter
+    filterset_class = MailingListFilter
     permission_classes = [IsAuthenticated]
-    ordering_fields = ['file_name', 'datasize', 'email__datetime', 'created', 'updated']
+    ordering_fields = ['list_id', 'list_owner', 'list_subscribe', 'list_unsubscribe', 'list_post', 'list_help', 'list_archive', 'created', 'updated']
     ordering = ['id']
 
-    def get_queryset(self):
-        return ImageModel.objects.filter(email__account__user = self.request.user)
-
-    @action(detail=True, methods=['get'], url_path='download')
-    def download(self, request, pk=None):
-        image = self.get_object()
-        fileName = image.file_name
-        filePath = image.file_path
-
-        if not os.path.exists(filePath):
-            raise Http404("Image file not found")
-        
-        response = FileResponse(open(filePath, 'rb'), as_attachment=True, filename=fileName)
-        return response
+    # def get_queryset(self):
+    #     return MailingListModel.objects.filter(email__account__user = self.request.user)

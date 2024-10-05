@@ -26,6 +26,10 @@ class MailingListModel(models.Model):
     list_post = models.CharField(max_length=255, null=True)
     list_help = models.CharField(max_length=255, null=True)
     list_archive = models.CharField(max_length=255, null=True)
+    
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return f"Mailinglist {self.list_id}"

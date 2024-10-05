@@ -12,12 +12,14 @@ return serialized db data after scan and fetch_all
 dbstats can be apiview
 parsing walks multiple times, could be more efficient
 possibly move extra emailfields from emailmodel to correspondents
+maybe unique together account and id 
 
 # to test
 new email fields, mailing list
 
 # to fix
 'Decoding this mime part returned error' for paypal mail 
+list connection to account
 newline characters missing (1)
 
 # at next db reset

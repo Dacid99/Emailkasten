@@ -28,5 +28,6 @@ class ImageFilter(django_filters.FilterSet):
         fields = {
             'file_name': ['icontains', 'contains', 'exact', 'iexact', 'startswith', 'istartswith', 'endswith', 'iendswith', 'regex', 'iregex', 'in'],
             'datasize': ['lte', 'gte', 'lt', 'gt', 'exact', 'in'],
-            'created': ['lte', 'gte']
+            'created': ['lte', 'gte'],
+            'updated': ['lte', 'gte']
         }

@@ -23,6 +23,7 @@ from .Models.AccountModel import AccountModel
 from .Models.MailboxModel import MailboxModel
 from .Models.DaemonModel import DaemonModel
 from .Models.EMailModel import EMailModel
+from .Models.MailingListModel import MailingListModel
 from .Models.CorrespondentModel import CorrespondentModel
 from .Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from .Models.ImageModel import ImageModel
@@ -159,6 +160,7 @@ class CorrespondentSerializer(serializers.ModelSerializer):
         else:
             return None
 
+
 class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttachmentModel
@@ -168,6 +170,11 @@ class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageModel
         exclude = ['file_path']
+        
+class MailingListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MailingListModel
+        fields = '__all__'
 
 
 class EMailSerializer(serializers.ModelSerializer):
