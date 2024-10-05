@@ -216,6 +216,8 @@ class MailProcessor:
             
         textTypes  = [ 'text/plain', 'text/html' ]
         imageTypes = [ 'image/gif', 'image/jpeg', 'image/png' ]
+        dirtyChars = [ '\n', '\\n', '\t', '\\t', '\r', '\\r']
+        
         imgkitOptions = { 'load-error-handling': 'skip'}
         # imgkitOptions.update({ 'quiet': None })
         imagesList = []
@@ -225,16 +227,16 @@ class MailProcessor:
         # Main loop - process the MIME parts
         #
         for part in msg.walk():
-            mimeType = part.get_content_type()
-            charset = part.get_content_charset()
-            if charset is None:
-                    charset = constants.ParsingConfiguration.CHARSET_DEFAULT
-            
             if part.is_multipart():
                 logger.debug('Multipart found, continue')
                 continue
+            
+            mimeType = part.get_content_type()
+            charset = part.get_content_charset()
+            if charset is None:
+                charset = constants.ParsingConfiguration.CHARSET_DEFAULT
 
-            logger.debug('Found MIME part: %s' % mimeType)
+            logger.debug(f'Found MIME part: {mimeType}')
             if mimeType in textTypes:
                 
                 try:
@@ -243,7 +245,6 @@ class MailProcessor:
                     payload = str(quopri.decodestring(part.get_payload(decode=True)))[2:-1]
                 
                 # Cleanup dirty characters
-                dirtyChars = [ '\n', '\\n', '\t', '\\t', '\r', '\\r']
                 for char in dirtyChars:
                     payload = payload.replace(char, '')
                 
@@ -255,8 +256,9 @@ class MailProcessor:
                     imgkit.from_string(payload, dumpDir + '/' + imagePath, options = imgkitOptions)
                     logger.debug('Decoded %s' % imagePath)
                     imagesList.append(dumpDir + '/' + imagePath)
-                except:
-                    logger.warn('Decoding this MIME part returned error')
+                except Exception as e:
+                    logger.warn(f'Decoding this MIME part of type {mimeType} returned error {e}')
+                    
             elif mimeType in imageTypes:
                 payload = part.get_payload(decode=False)
                 imgdata = base64.b64decode(payload)
@@ -267,18 +269,19 @@ class MailProcessor:
                 try:
                     with open(dumpDir + '/' + imagePath, 'wb') as f:
                         f.write(imgdata)
-                    logger.debug('Decoded %s' % imagePath)
+                    logger.debug(f'Decoded {imagePath}')
                     imagesList.append(dumpDir + '/' + imagePath)
-                except:
-                    logger.warn('Decoding this MIME part returned error')
+                except Exception as e:
+                    logger.warn(f'Decoding this MIME part of type {mimeType} returned error {e}')
+                    
             else:
                 fileName = part.get_filename()
                 if not fileName:
                     fileName = "Unknown"
                 attachments.append("%s (%s)" % (fileName, mimeType))
-                logger.debug('Skipped attachment %s (%s)' % (fileName, mimeType))
+                logger.debug(f'Added attachment {fileName} of MIME type {mimeType}')
 
-        if len(attachments):
+        if attachments:
             footer = '<p><hr><p><b>Attached Files:</b><p><ul>'
             for a in attachments:
                 footer = footer + '<li>' + a + '</li>'
@@ -289,11 +292,14 @@ class MailProcessor:
                 imgkit.from_string(footer, dumpDir + '/' + imagePath, options = imgkitOptions)
                 logger.debug('Created footer %s' % imagePath)
                 imagesList.append(dumpDir + '/' + imagePath)
-            except:
-                logger.error('Creation of footer failed')
+            except Exception as e:
+                logger.warn(f'Creation of footer failed with error {e}')
+        else:
+            logger.debug("No attachments found for rendering.")
 
-        resultImage = FileManager.getPrerenderImageStoragePath(parsedMail)
-        if len(imagesList) > 0:
+        if imagesList:
+            resultImage = FileManager.getPrerenderImageStoragePath(parsedMail)
+            logger.debug(f"Combining and saving prerender image at {resultImage} ...")
             images = list(map(Image.open, imagesList))
             combo = appendImages(images)
             combo.save(resultImage)
@@ -301,3 +307,6 @@ class MailProcessor:
             # Clean up temporary images
             for i in imagesList:
                 os.remove(i)
+        else:
+            logger.debug("No images rendered.")
+            
