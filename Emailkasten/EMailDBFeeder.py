@@ -32,23 +32,23 @@ class EMailDBFeeder:
     dirNumber = 0
 
     @staticmethod
-    def insertMailboxes(mailboxesList, account):
+    def insertMailbox(mailbox, account):
         logger = LoggerFactory.getChildLogger(EMailDBFeeder.__name__)
 
         try:
             with django.db.transaction.atomic():
-                for mailbox in mailboxesList:
-                    mailboxEntry, created = MailboxModel.objects.get_or_create(
-                        name = mailbox,
-                        account = account
-                    )
-                    if created:
-                        logger.debug(f"Entry for {str(mailboxEntry)} created")
-                        logger.debug("Attaching daemon ...")
-                        newDaemon = DaemonModel.objects.create(mailbox = mailboxEntry)
-                        logger.debug("Success")
-                    else:
-                        logger.debug(f"Entry for {str(mailboxEntry)} already exists")
+                
+                mailboxEntry, created = MailboxModel.objects.get_or_create(
+                    name = mailbox,
+                    account = account
+                )
+                if created:
+                    logger.debug(f"Entry for {str(mailboxEntry)} created")
+                    logger.debug("Attaching daemon ...")
+                    newDaemon = DaemonModel.objects.create(mailbox = mailboxEntry)
+                    logger.debug("Success")
+                else:
+                    logger.debug(f"Entry for {str(mailboxEntry)} already exists")
 
         except django.db.IntegrityError as e:
             logger.error("Error while writing to database, rollback to last state", exc_info=True)

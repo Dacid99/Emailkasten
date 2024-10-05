@@ -104,7 +104,8 @@ class MailProcessor:
             logger.error("Can not fetch mails, protocol is not or incorrectly specified!")
             mailboxes = []
             
-        EMailDBFeeder.insertMailboxes(mailboxes, mailAccount)
+        for mailbox in mailboxes:
+            EMailDBFeeder.insertMailbox(mailbox, mailAccount)
 
         logger.debug("Successfully searched mailboxes")
         return mailboxes
