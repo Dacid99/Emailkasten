@@ -22,6 +22,7 @@ from .Models.EMailModel import EMailModel
 from .Models.DaemonModel import DaemonModel
 from .Models.MailboxModel import MailboxModel
 from .Models.AttachmentModel import AttachmentModel
+from .Models.ImageModel import ImageModel
 from .Models.CorrespondentModel import CorrespondentModel
 from .Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from .MailParser import MailParser
@@ -99,8 +100,8 @@ class EMailDBFeeder:
                 
                 
                 for image in parsedEMail[MailParser.imagesString]:
-                    imageEntry, created  = AttachmentModel.objects.get_or_create(
-                        file_path = attachment[MailParser.images_filePathString],
+                    imageEntry, created  = ImageModel.objects.get_or_create(
+                        file_path = image[MailParser.images_filePathString],
                         email = emailEntry,
                         defaults = {
                             'file_name' : image[MailParser.images_fileNameString],

@@ -164,7 +164,7 @@ class FileManager:
                     logger.debug("File was not created")
                 filePath = None
         
-            imageData[MailParser.image_filePathString] = filePath
+            imageData[MailParser.images_filePathString] = filePath
             
 
     @staticmethod
