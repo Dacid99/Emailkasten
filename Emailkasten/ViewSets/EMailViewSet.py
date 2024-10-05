@@ -35,7 +35,7 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = EMailFilter
     permission_classes = [IsAuthenticated]
-    ordering_fields = ['datetime', 'email_subject', 'datasize', 'created']
+    ordering_fields = ['datetime', 'email_subject', 'datasize', 'created', 'updated', 'user_agent', 'language', 'content_language', 'importance', 'priority', 'precedence', 'x_priority', 'x_originated_client']
     ordering = ['id']
 
     def get_queryset(self):
