@@ -75,7 +75,7 @@ class EMailDBFeeder:
                         logger.debug(f"Entry for {str(fromCorrespondentEntry)} already exists")
                         
                 else:
-                    logger.warning("No FROM Correspondent found in mail, not writing to DB!")
+                    logger.error("No FROM Correspondent found in mail, not writing to DB!")
                     
                     
                 mailinglistData = parsedEMail[MailParser.mailinglistString]
@@ -99,6 +99,7 @@ class EMailDBFeeder:
                     else:
                         logger.debug("Mailinglist entry already exists")
                 else:
+                    mailinglist = None
                     logger.debug("No mailinglist found in mail, not writing to DB")
                    
                 
@@ -111,6 +112,7 @@ class EMailDBFeeder:
                         logger.warning(f"Could not find inReplyTo mail {parsedEMail[MailParser.inReplyToHeader]}!")
                         inReplyToMail = None
                 else:
+                    inReplyToMail = None
                     logger.debug("No In-Reply-To found in mail, not writing to DB")
                   
                 
