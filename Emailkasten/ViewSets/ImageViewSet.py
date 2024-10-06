@@ -24,7 +24,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.http import FileResponse, Http404
 from rest_framework.decorators import action
 from ..Models.ImageModel import ImageModel
-from ..Serializers import ImageSerializer
+from ..Serializers.ImageSerializers.ImageSerializer import ImageSerializer
 from ..Filters.ImageFilter import ImageFilter
 import os
 

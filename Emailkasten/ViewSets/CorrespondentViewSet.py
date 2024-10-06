@@ -22,7 +22,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from ..Models.CorrespondentModel import CorrespondentModel
-from ..Serializers import CorrespondentSerializer, SimpleCorrespondentSerializer
+from ..Serializers.CorrespondentSerializers.CorrespondentSerializer import CorrespondentSerializer
+from ..Serializers.CorrespondentSerializers.SimpleCorrespondentSerializer import SimpleCorrespondentSerializer
 from ..Filters.CorrespondentFilter import CorrespondentFilter
 
 class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):

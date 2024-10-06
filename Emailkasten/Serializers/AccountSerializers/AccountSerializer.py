@@ -16,13 +16,21 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser
-from ..Models.ConfigurationModel import ConfigurationModel
-from ..Serializers.ConfigurationSerializers.ConfigurationSerializer import ConfigurationSerializer
-import os
+from rest_framework import serializers
+from ...Models.AccountModel import AccountModel
+from ..MailboxSerializers.MailboxSerializer import MailboxSerializer
 
-class ConfigurationViewSet(viewsets.ModelViewSet):
-    queryset = ConfigurationModel.objects.all()
-    serializer_class = ConfigurationSerializer
-    permission_classes = [IsAdminUser]
+
+class AccountSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=255, write_only=True)
+    mail_address = serializers.EmailField()
+    mailboxes = MailboxSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = AccountModel
+        exclude = ['user']
+        read_only_fields = ['is_healthy', 'created', 'updated']
+
+    def validate_mail_address(self, value):
+        return value.lower()
+    

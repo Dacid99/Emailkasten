@@ -16,13 +16,24 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser
-from ..Models.ConfigurationModel import ConfigurationModel
-from ..Serializers.ConfigurationSerializers.ConfigurationSerializer import ConfigurationSerializer
-import os
+from rest_framework import serializers
+from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from ..CorrespondentSerializers.SimpleCorrespondentSerializer import SimpleCorrespondentSerializer
+from ..EMailSerializers.SimpleEMailSerializer import SimpleEmailSerializer
 
-class ConfigurationViewSet(viewsets.ModelViewSet):
-    queryset = ConfigurationModel.objects.all()
-    serializer_class = ConfigurationSerializer
-    permission_classes = [IsAdminUser]
+
+class EMailCorrespondentSerializer(serializers.ModelSerializer):
+    correspondent = SimpleCorrespondentSerializer()
+    
+    class Meta:
+        model = EMailCorrespondentsModel
+        fields = ['correspondent', 'mention']
+
+
+class CorrespondentEMailSerializer(serializers.ModelSerializer):
+    email = SimpleEmailSerializer()
+
+    class Meta:
+        model = EMailCorrespondentsModel
+        fields = ['email', 'mention']
+

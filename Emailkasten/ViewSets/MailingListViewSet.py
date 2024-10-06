@@ -22,7 +22,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from ..Models.MailingListModel import MailingListModel
-from ..Serializers import MailingListSerializer
+from ..Serializers.MailingListSerializers.MailingListSerializer import MailingListSerializer
 from ..Filters.MailingListFilter import MailingListFilter
 
 class MailingListViewSet(viewsets.ReadOnlyModelViewSet):

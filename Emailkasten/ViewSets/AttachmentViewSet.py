@@ -18,13 +18,12 @@
 
 from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import FileResponse, Http404
 from rest_framework.decorators import action
 from ..Models.AttachmentModel import AttachmentModel
-from ..Serializers import AttachmentSerializer
+from ..Serializers.AttachmentSerializers.AttachmentSerializer import AttachmentSerializer
 from ..Filters.AttachmentsFilter import AttachmentFilter
 import os
 

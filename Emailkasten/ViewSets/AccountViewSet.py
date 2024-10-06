@@ -24,7 +24,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from ..Models.AccountModel import AccountModel
 from ..Filters.AccountFilter import AccountFilter
-from ..Serializers import AccountSerializer
+from ..Serializers.AccountSerializers.AccountSerializer import AccountSerializer
 from ..MailProcessor import MailProcessor
 from ..EMailDBFeeder import EMailDBFeeder
 

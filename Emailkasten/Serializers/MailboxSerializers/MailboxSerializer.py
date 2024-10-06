@@ -16,13 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser
-from ..Models.ConfigurationModel import ConfigurationModel
-from ..Serializers.ConfigurationSerializers.ConfigurationSerializer import ConfigurationSerializer
-import os
+from rest_framework import serializers
+from ...Models.MailboxModel import MailboxModel        
 
-class ConfigurationViewSet(viewsets.ModelViewSet):
-    queryset = ConfigurationModel.objects.all()
-    serializer_class = ConfigurationSerializer
-    permission_classes = [IsAdminUser]
+        
+class MailboxSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MailboxModel
+        fields = '__all__'
+        read_only_fields = ['name', 'account', 'created', 'updated']

@@ -16,13 +16,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser
-from ..Models.ConfigurationModel import ConfigurationModel
-from ..Serializers.ConfigurationSerializers.ConfigurationSerializer import ConfigurationSerializer
-import os
+from rest_framework import serializers
+from ...Models.MailingListModel import MailingListModel
+from ..EMailSerializers.EMailSerializer import EMailSerializer
 
-class ConfigurationViewSet(viewsets.ModelViewSet):
-    queryset = ConfigurationModel.objects.all()
-    serializer_class = ConfigurationSerializer
-    permission_classes = [IsAdminUser]
+
+class MailingListSerializer(serializers.ModelSerializer):
+    emails = EMailSerializer(many=True, read_only=True)
+    email_number = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = MailingListModel
+        fields = '__all__'
+
+    def get_email_number(self, object):
+        number = object.emails.count()
+        return number

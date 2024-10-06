@@ -16,13 +16,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser
-from ..Models.ConfigurationModel import ConfigurationModel
-from ..Serializers.ConfigurationSerializers.ConfigurationSerializer import ConfigurationSerializer
-import os
+from rest_framework import serializers
+from ...Models.EMailModel import EMailModel
 
-class ConfigurationViewSet(viewsets.ModelViewSet):
-    queryset = ConfigurationModel.objects.all()
-    serializer_class = ConfigurationSerializer
-    permission_classes = [IsAdminUser]
+class SimpleEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EMailModel
+        exclude = ['eml_filepath']
+

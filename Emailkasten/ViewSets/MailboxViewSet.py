@@ -24,7 +24,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..Models.MailboxModel import MailboxModel
 from ..Filters.MailboxFilter import MailboxFilter
-from ..Serializers import MailboxWithDaemonSerializer
+from ..Serializers.MailboxSerializers.MailboxWithDaemonSerializer import MailboxWithDaemonSerializer
 from ..EMailArchiverDaemon import EMailArchiverDaemon
 from .. import constants
 from ..MailProcessor import MailProcessor
