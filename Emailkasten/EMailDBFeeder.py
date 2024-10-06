@@ -77,9 +77,9 @@ class EMailDBFeeder:
                 else:
                     logger.warning("No FROM Correspondent found in mail, not writing to DB!")
                     
-                
-                if parsedEMail[MailParser.listIDHeader]:
-                    mailinglistData = parsedEMail[MailParser.listIDHeader]
+                    
+                mailinglistData = parsedEMail[MailParser.mailinglistString]
+                if mailinglistData[MailParser.listIDHeader]:
                     
                     logger.debug("Creating entry for mailinglist in db...")
                     mailinglist, created = EMailModel.objects.get_or_create(
@@ -98,7 +98,9 @@ class EMailDBFeeder:
                         logger.debug("Created mailinglist entry")
                     else:
                         logger.debug("Mailinglist entry already exists")
-                        
+                else:
+                    logger.debug("No mailinglist found in mail, not writing to DB")
+                   
                 
                 if parsedEMail[MailParser.inReplyToHeader]:
                     try:
@@ -108,7 +110,9 @@ class EMailDBFeeder:
                     except EMailModel.DoesNotExist:
                         logger.warning(f"Could not find inReplyTo mail {parsedEMail[MailParser.inReplyToHeader]}!")
                         inReplyToMail = None
-                        
+                else:
+                    logger.debug("No In-Reply-To found in mail, not writing to DB")
+                  
                 
                 logger.debug("Creating entry for email in db...")
                 emailEntry, created = EMailModel.objects.get_or_create(
