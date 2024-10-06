@@ -65,7 +65,7 @@ class MailParser:
     contentLocationHeader = "Content-Location"
     contentTypeHeader = "Content-Type"
     
-    userAgentHeader = "User agent"
+    userAgentHeader = "User-Agent"
     autoSubmittedHeader = "Auto-Submitted"
     archivedAtHeader = "Archived-At"
     
@@ -276,9 +276,10 @@ class MailParser:
             header = mailMessage.get(headerKey)
             if header is None:
                 logger.debug(f"No {headerKey} found in mail.")
+                return header
             else:
                 logger.debug("Success")
-            return separateRFC2822MailAddressFormat(decodeHeader(headerKey))[1]
+                return separateRFC2822MailAddressFormat(decodeHeader(header))[1]
         
 
         def parseImages():
@@ -366,7 +367,7 @@ class MailParser:
         parsedEMail[MailParser.languageHeader] = parseAdditionalHeader(MailParser.languageHeader)
         parsedEMail[MailParser.contentLanguageHeader] = parseAdditionalHeader(MailParser.contentLanguageHeader)
         parsedEMail[MailParser.contentTypeHeader] = parseAdditionalHeader(MailParser.contentTypeHeader)
-        parsedEMail[MailParser.envelopeToHeader] = parseAdditionalHeader(MailParser.envelopeToHeader)
+        parsedEMail[MailParser.envelopeToHeader] = parseAdditionalMailAddressHeader(MailParser.envelopeToHeader)
         parsedEMail[MailParser.deliveredToHeader] = parseAdditionalMailAddressHeader(MailParser.deliveredToHeader)
         parsedEMail[MailParser.senderHeader] = parseAdditionalMailAddressHeader(MailParser.senderHeader)
         parsedEMail[MailParser.replyToHeader] = parseAdditionalMailAddressHeader(MailParser.replyToHeader)

@@ -134,6 +134,7 @@ class EMailDBFeeder:
                         'importance': parsedEMail[MailParser.importanceHeader],
                         'priority': parsedEMail[MailParser.priorityHeader],
                         'precedence': parsedEMail[MailParser.precedenceHeader],
+                        'received': parsedEMail[MailParser.receivedHeader],
                         'sender': parsedEMail[MailParser.senderHeader] ,
                         'return_receipt_to': parsedEMail[MailParser.returnReceiptTo] ,
                         'disposition_notification_to': parsedEMail[MailParser.dispositionNotificationTo] ,
