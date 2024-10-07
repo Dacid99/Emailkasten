@@ -54,7 +54,7 @@ class EMailModel(models.Model):
     importance = models.CharField(max_length=255, null=True)
     priority = models.CharField(max_length=255, null=True)
     precedence = models.CharField(max_length=255, null=True)
-    received = models.CharField(max_length=255, null=True)
+    received = models.TextField(null=True)
     
     sender = models.EmailField(max_length=255, null=True)
     return_receipt_to = models.EmailField(max_length=255, null=True)
