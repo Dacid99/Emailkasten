@@ -17,8 +17,7 @@ middleware for reconnecting
 # to test
 
 # to fix
-'Decoding this mime part returned error' for paypal 
-accounts cant handle duplicate inputs
+'Decoding this mime part returned error' for paypal
 
 # at next db reset
 start to use configurationmodel
