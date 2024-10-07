@@ -236,7 +236,7 @@ def parseMail(mailToParse):
 
     mailMessage = email.message_from_bytes(mailToParse)
 
-    logger.debug(f"Parsing email with subject {_parseSubject()} ...")
+    logger.debug(f"Parsing email with subject {_parseSubject(mailMessage)} ...")
 
     parsedEMail = {}
     parsedEMail[ParsedMailKeys.DATA] = mailToParse

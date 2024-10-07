@@ -57,7 +57,7 @@ def _insertEMailCorrespondent(emailEntry, correspondentEntry, mention):
         mention = mention
     )
     if created:
-        logger.debug(f"Entry for {str(emailCorrespondentsEntry)} created")
+        logger.debug(f"Successfully created entry for {str(emailCorrespondentsEntry)}.")
     else:
         logger.debug(f"Entry for {str(emailCorrespondentsEntry)} already exists")
     
@@ -73,7 +73,7 @@ def _insertAttachment(attachmentData, emailEntry):
         }
     )
     if created:
-        logger.debug(f"Entry for {str(attachmentEntry)} created")
+        logger.debug(f"Successfully created entry for {str(attachmentEntry)}.")
     else:
         logger.debug(f"Entry for {str(attachmentEntry)} already exists")
      
@@ -89,7 +89,7 @@ def _insertImage(imageData, emailEntry):
         }
     )
     if created:
-        logger.debug(f"Entry for {str(imageEntry)} created")
+        logger.debug(f"Successfully created entry for {str(imageEntry)}.")
     else:
         logger.debug(f"Entry for {str(imageEntry)} already exists")
         
@@ -113,7 +113,7 @@ def _insertMailinglist(mailinglistData, fromCorrespondentEntry):
                 }
             )
         if created:
-            logger.debug("Created mailinglist entry")
+            logger.debug(f"Successfully created entry for {str(mailinglistEntry)}.")
         else:
             logger.debug("Mailinglist entry already exists")
     else:
@@ -164,8 +164,8 @@ def insertEMail(parsedEMail, account):
                 
                 
             mailinglistEntry = None  
-            if parsedEMail[ParsedMailKeys.MAILINGLIST]:
-                mailinglistEntry = _insertMailinglist(parsedEMail[ParsedMailKeys.MAILINGLIST])
+            if parsedEMail[ParsedMailKeys.MAILINGLIST] and fromCorrespondentEntry:
+                mailinglistEntry = _insertMailinglist(parsedEMail[ParsedMailKeys.MAILINGLIST], fromCorrespondentEntry)
             else:
                 logger.debug("No mailinglist info found in mail, not writing to DB")
                 
@@ -216,7 +216,7 @@ def insertEMail(parsedEMail, account):
                 }
             )
             if created:
-                logger.debug(f"Entry for {str(emailEntry)} created")
+                logger.debug(f"Successfully created entry for {str(emailEntry)}.")
             else:
                 logger.debug(f"Entry for {str(emailEntry)} already exists")
             
@@ -246,11 +246,11 @@ def insertEMail(parsedEMail, account):
                 
     
 
-            for mentionType, correspondentHeader in ParsedMailKeys.Correspondent:
+            for mentionType, correspondentHeader in ParsedMailKeys.Correspondent():
                 if (correspondentHeader is ParsedMailKeys.Correspondent.FROM):   # from correspondent has been added earlier, just add the connection to bridge table here
                     if fromCorrespondent:
                 
-                        _insertEMailCorrespondent(fromCorrespondentEntry, emailEntry, mentionType)
+                        _insertEMailCorrespondent(emailEntry, fromCorrespondentEntry, mentionType)
                         
                         logger.debug(f"Successfully added entries for {mentionType} correspondent to DB.")
                     else:

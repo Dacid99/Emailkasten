@@ -10,14 +10,14 @@ custom additional healthchecks
 return serialized db data after scan and fetch_all
 dbstats can be apiview
 parsing walks multiple times, could be more efficient
+saving images and attachments is done even if theyre already in db
 maybe unique together account and id 
 reconsider decoding of mailbytes using BytesParser
-update incomplete correspondents?
-possibly move extra emailfields from emailmodel to correspondents
+update incomplete correspondents
 popfetcher scan mailboxes prop
 
+
 # to test
-restructured code
 
 # to fix
 'Decoding this mime part returned error' for paypal mail
