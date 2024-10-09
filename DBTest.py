@@ -1,11 +1,11 @@
 import logging
 
-from Emailkasten.EMailDBFeeding import insertEmail, insertMailbox
+from Emailkasten.emailDBFeeding import insertEmail, insertMailbox
 from Emailkasten.Fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
 from Emailkasten.Fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
-from Emailkasten.MailParsing import ParsedMailKeys
+from Emailkasten.mailParsing import ParsedMailKeys
 from Emailkasten.LoggerFactory import LoggerFactory
-from Emailkasten.FileManagment import FileManager
+from Emailkasten.fileManagment import FileManager
 
 # on Windows
 ParsedMailKeys.EML_FILE_PATH = "C:\\Users\\phili\\Desktop\\emltest\\"

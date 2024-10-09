@@ -20,7 +20,7 @@ import imaplib
 
 from .. import constants
 import logging
-from ..MailParsing import parseMailbox
+from ..mailParsing import parseMailbox
 
 class IMAPFetcher: 
     

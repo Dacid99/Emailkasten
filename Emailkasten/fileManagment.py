@@ -21,7 +21,7 @@ import email.generator
 import os.path
 from .constants import StorageConfiguration
 import logging
-from .MailParsing import ParsedMailKeys
+from .mailParsing import ParsedMailKeys
 
 class StorageState:
     subdirNumber = 0

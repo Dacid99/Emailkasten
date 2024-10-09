@@ -21,11 +21,11 @@ from .Fetchers.IMAPFetcher import IMAPFetcher
 from .Fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
 from .Fetchers.POP3Fetcher import POP3Fetcher
 from .Fetchers.ExchangeFetcher import ExchangeFetcher
-from .FileManagment import writeImages, writeAttachments, writeMessageToEML
+from .fileManagment import writeImages, writeAttachments, writeMessageToEML
 import logging
-from .MailParsing import parseMail
-from .MailRendering import prerender
-from .EMailDBFeeding import insertEMail, insertMailbox
+from .mailParsing import parseMail
+from .mailRendering import prerender
+from .emailDBFeeding import insertEMail, insertMailbox
 import datetime
 
 from . import constants

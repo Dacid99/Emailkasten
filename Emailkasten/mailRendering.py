@@ -25,8 +25,8 @@ import base64
 import hashlib
 import logging
 from PIL import Image
-from .FileManagment import getPrerenderImageStoragePath
-from .MailParsing import ParsedMailKeys
+from .fileManagment import getPrerenderImageStoragePath
+from .mailParsing import ParsedMailKeys
 from .constants import ProcessingConfiguration, ParsingConfiguration
 
 
