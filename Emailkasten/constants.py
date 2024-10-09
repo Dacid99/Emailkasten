@@ -37,7 +37,7 @@ class EMailArchiverDaemonConfiguration:
     RESTART_TIME = 10
 
 class StorageConfiguration:
-    MAX_SUBDIRS_PER_DIR = 10000
+    MAX_SUBDIRS_PER_DIR = 1000
     STORAGE_PATH = "/mnt/archive"
     PRERENDER_IMAGETYPE = 'jpg'
 
