@@ -141,47 +141,35 @@ def fetchMails(mailbox, mailAccount, criterion):
     logger.debug("Successfully fetched emails")
 
 
-    logger.debug("Parsing emaildata ...")
-    parsedMailsList = []
+    logger.debug("Parsing emails from data and saving to db ...")
     for mailData in mailDataList:
-        parsedMail = parseMail(mailData)
-        parsedMailsList.append(parsedMail)
-    logger.debug("Successfully parsed emaildata")
+        try: 
+            parsedMail = parseMail(mailData)
+
+            if mailbox.save_toEML:
+                writeMessageToEML(parsedMail)
+                prerender(parsedMail)
+            else:
+                logger.debug(f"Not saving to eml for mailbox {mailbox.name}")
 
 
-    if mailbox.save_toEML:
-        logger.debug("Saving mails to eml files ...")
-        for parsedMail in parsedMailsList:
-            writeMessageToEML(parsedMail)
-            prerender(parsedMail)
-        logger.debug("Successfully saved mails to eml files")
-    else:
-        logger.debug(f"Not saving to eml for mailbox {mailbox.name}")
+            if mailbox.save_attachments:
+                writeAttachments(parsedMail)
+            else:
+                logger.debug(f"Not saving attachments for mailbox {mailbox.name}")
+                
+            
+            if mailbox.save_images:
+                writeImages(parsedMail)
+            else:
+                logger.debug(f"Not saving images for mailbox {mailbox.name}")
 
-
-    if mailbox.save_attachments:
-        logger.debug("Saving attachments ...")
-        for parsedMail in parsedMailsList:
-            writeAttachments(parsedMail)
-        logger.debug("Successfully saved attachments")
-    else:
-        logger.debug(f"Not saving attachments for mailbox {mailbox.name}")
+            insertEMail(parsedMail, mailAccount)
         
-    
-    if mailbox.save_images:
-        logger.debug("Saving images ...")
-        for parsedMail in parsedMailsList:
-            writeImages(parsedMail)
-        logger.debug("Successfully saved images")
-    else:
-        logger.debug(f"Not saving images for mailbox {mailbox.name}")
+        except Exception as e:
+            logger.error(f"Error parsing and saving email with subject {parsedMail[constants.ParsedMailKeys.Header.SUBJECT]} from {parsedMail[constants.ParsedMailKeys.Header.DATE]}!", exc_info=True)
+            continue
 
-
-    logger.debug("Writing emails to database ...")
-    for parsedMail in parsedMailsList:
-        insertEMail(parsedMail, mailAccount)
-    logger.debug("Successfully wrote emails to database")
-
-
+    logger.debug("Successfully parsed emails from data and saved to db.")
 
         

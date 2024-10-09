@@ -14,6 +14,7 @@ reconsider decoding of mailbytes using BytesParser
 
 # to test
 middleware for reconnecting
+sucessive mailprocessing
 
 # to fix
 'Decoding this mime part returned error' for paypal
