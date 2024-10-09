@@ -12,9 +12,9 @@ parsing walks multiple times, could be more efficient
 saving images and attachments is done even if theyre already in db
 maybe unique together account and id 
 reconsider decoding of mailbytes using BytesParser
-middleware for reconnecting
 
 # to test
+middleware for reconnecting
 
 # to fix
 'Decoding this mime part returned error' for paypal

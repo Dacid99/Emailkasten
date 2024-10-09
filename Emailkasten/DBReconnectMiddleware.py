@@ -1,4 +1,5 @@
 import time
+from .constants import DatabaseConfiguration
 from django.db import connection, OperationalError
 
 class DBReconnectMiddleware:
@@ -6,8 +7,8 @@ class DBReconnectMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        max_retries = 5  # Set the maximum number of retries
-        delay = 5        # Delay in seconds between retries
+        max_retries = DatabaseConfiguration.RECONNECT_RETRIES  # Set the maximum number of retries
+        delay = DatabaseConfiguration.RECONNECT_DELAY        # Delay in seconds between retries
 
         for attempt in range(max_retries):
             try:

@@ -84,7 +84,8 @@ class DatabaseConfiguration:
     NAME = os.environ.get("DB_NAME", "emailkasten")
     USER = os.environ.get("DB_USER", "user")
     PASSWORD = os.environ.get("DB_PASSWORD", "passwd")
-
+    RECONNECT_RETRIES = 10
+    RECONNECT_DELAY = 30
 
 class ParsedMailKeys:
     #Keys to the dict
