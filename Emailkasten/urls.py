@@ -35,16 +35,16 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-from .ViewSets.AccountViewSet import AccountViewSet
-from .ViewSets.EMailViewSet import EMailViewSet
-from .ViewSets.CorrespondentViewSet import CorrespondentViewSet
-from .ViewSets.AttachmentViewSet import AttachmentViewSet
-from .ViewSets.ImageViewSet import ImageViewSet
-from .ViewSets.MailboxViewSet import MailboxViewSet
-from .ViewSets.DatabaseStatsView import DatabaseStatsView
-from .ViewSets.UserCreateView import UserViewSet
-from .ViewSets.ConfigurationViewSet import ConfigurationViewSet
-from .ViewSets.LoginOut import LoginView, LogoutView, CSRFCookieView
+from .Views.AccountViewSet import AccountViewSet
+from .Views.EMailViewSet import EMailViewSet
+from .Views.CorrespondentViewSet import CorrespondentViewSet
+from .Views.AttachmentViewSet import AttachmentViewSet
+from .Views.ImageViewSet import ImageViewSet
+from .Views.MailboxViewSet import MailboxViewSet
+from .Views.DatabaseStatsView import DatabaseStatsView
+from .Views.UserCreateView import UserViewSet
+from .Views.ConfigurationViewSet import ConfigurationViewSet
+from .Views.LoginOutView import LoginView, LogoutView, CSRFCookieView
 
 router = DefaultRouter()
 router.register(r'accounts', AccountViewSet)
