@@ -153,6 +153,7 @@ def insertMailbox(mailbox, account):
 
 
 def insertEMail(parsedEMail, account):
+    logger.debug(f"Saving mail with subject {parsedEMail[ParsedMailKeys.Header.SUBJECT]} from {parsedEMail[ParsedMailKeys.Header.DATE]} to db ...")
     try:
         with django.db.transaction.atomic():
             
@@ -272,8 +273,9 @@ def insertEMail(parsedEMail, account):
                     else:
                         logger.warning(f"No {mentionType} correspondent found in mail, not writing to DB!")
 
-
+        
     except django.db.IntegrityError as e:
         logger.error("Error while writing to database, rollback to last state", exc_info=True)
 
+    logger.debug("Successfully saved mail to db.")
 
