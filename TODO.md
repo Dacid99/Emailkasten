@@ -2,7 +2,6 @@ implement basic exchange
 maybe get rid of filesizes
 different choices for fetching depending on protocol
 custom fetching filters
-storageModel and fix for getStoragePath
 distinguish configs by env, db and user-immutables, migrate db settings to initial settings
 autostart daemons on restart
 custom additional healthchecks
@@ -15,6 +14,7 @@ reconsider decoding of mailbytes using BytesParser
 # to test
 middleware for reconnecting
 sucessive mailprocessing
+storageModel
 
 # to fix
 'Decoding this mime part returned error' for paypal

@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 class StorageModel(models.Model):
     directory_number = models.PositiveIntegerField(unique=True)
     path = models.FilePathField(unique=True, path=constants.StorageConfiguration.STORAGE_PATH)
-    subdirectory_count = models.SmallIntegerField(default=0)
+    subdirectory_count = models.PositiveSmallIntegerField(default=0)
     current = models.BooleanField(default=False)
 
     created = models.DateTimeField(auto_now_add=True)
@@ -39,12 +39,17 @@ class StorageModel(models.Model):
         return f"{state} storage directory {self.path}"
     
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.current and StorageModel.objects.filter(current=True):
             logger.critical("More than one current storage directories!!")
         if not self.path:
             self.path = os.path.join(constants.StorageConfiguration.STORAGE_PATH, self.directory_number)
-        super().save()
+            if not os.path.exists( self.path ):
+                logger.debug(f"Creating new storage directory {self.path} ...")
+                os.makedirs( self.path )
+                logger.debug(f"Successfully created new storage directory.")
+
+        super().save(*args, **kwargs)
 
 
     def incrementSubdirectoryCount(self):
@@ -59,7 +64,7 @@ class StorageModel(models.Model):
         self.current = False
         self.save()
         
-        newStorageEntry = StorageModel.objects.create(directory_number=self.directory_number+1, current=True, subdirectory_count=0)
+        StorageModel.objects.create(directory_number=self.directory_number+1, current=True, subdirectory_count=0)
 
 
     class Meta:
@@ -67,13 +72,16 @@ class StorageModel(models.Model):
 
 
     @staticmethod
-    def getStoragePath(increment=False):
+    def getSubdirectory(subdirectoryName):
         storageEntry = StorageModel.objects.filter(current=True).first()
         if not storageEntry:
             storageEntry = StorageModel.objects.create(directory_number=0, current=True, subdirectory_count=0)
 
-        if increment:
+        subdirectoryPath = os.path.join(storageEntry.path, subdirectoryName)
+        if not os.path.exists(subdirectoryPath):
+            os.makedirs(subdirectoryPath)
             storageEntry.incrementSubdirectoryCount()
-        return storageEntry.path 
+ 
+        return subdirectoryPath
 
 

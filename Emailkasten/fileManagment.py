@@ -19,34 +19,17 @@
 import email
 import email.generator
 import os.path
-from .constants import StorageConfiguration
 import logging
 from .mailParsing import ParsedMailKeys
+from .constants import StorageConfiguration
+from .Models.StorageModel import StorageModel
 
 
 logger = logging.getLogger(__name__)
 
 
-class StorageState:
-    subdirNumber = 0
-    dirNumber = 0
-    
-    @staticmethod
-    def newSubDir():
-        StorageState.subdirNumber += 1
-        if (StorageState.subdirNumber >= StorageConfiguration.MAX_SUBDIRS_PER_DIR):
-            StorageState.dirNumber += 1
-            StorageState.subdirNumber = 0
-
-    @staticmethod
-    def getStoragePath(filename):
-        path = os.path.join(StorageConfiguration.STORAGE_PATH, str(StorageState.dirNumber), filename)
-        return path
-            
-
-
 def writeMessageToEML(parsedEMail):
-    emlDirPath = StorageState.getStoragePath(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
+    emlDirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
     emlFilePath = os.path.join(emlDirPath , parsedEMail[ParsedMailKeys.Header.MESSAGE_ID] + ".eml")
 
     logger.debug(f"Storing mail in .eml file {emlFilePath} ...")
@@ -64,12 +47,6 @@ def writeMessageToEML(parsedEMail):
 
                 logger.debug("Successfully wrote to empty .eml file.")
         else:
-            if not os.path.exists(emlDirPath):
-                logger.debug(f"Creating directory {emlDirPath} ...")
-                os.makedirs(emlDirPath)
-                StorageState.newSubDir()
-                logger.debug("Successfully created new directory.")
-
             logger.debug(f"Creating and writing new .eml file {emlFilePath}...")
 
             with open(emlFilePath, "wb") as emlFile:
@@ -102,7 +79,7 @@ def writeMessageToEML(parsedEMail):
 def writeAttachments(parsedEMail):
     logger.debug("Saving attachments from mail ...")
     
-    dirPath = StorageState.getStoragePath(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
+    dirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
     for attachmentData in parsedEMail[ParsedMailKeys.ATTACHMENTS]:
         fileName = attachmentData[ParsedMailKeys.Attachment.FILE_NAME]
         filePath = os.path.join(dirPath, fileName)
@@ -121,12 +98,6 @@ def writeAttachments(parsedEMail):
 
                     logger.debug("Successfully wrote to empty .eml file.")
             else:
-                if not os.path.exists(dirPath):
-                    logger.debug(f"Creating directory {dirPath} ...")
-                    os.makedirs(dirPath)
-                    StorageState.newSubDir()
-                    logger.debug("Successfully created new directory.")
-
                 logger.debug(f"Creating and writing new file {filePath} ...")
 
                 with open(filePath, "wb") as file:
@@ -162,7 +133,7 @@ def writeAttachments(parsedEMail):
 def writeImages(parsedEMail):
     logger.debug("Saving images from mail ...")
 
-    dirPath = StorageState.getStoragePath(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
+    dirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
     for imageData in parsedEMail[ParsedMailKeys.IMAGES]:
         fileName = imageData[ParsedMailKeys.Image.FILE_NAME]
         filePath = os.path.join(dirPath, fileName)
@@ -179,14 +150,6 @@ def writeImages(parsedEMail):
                         file.write(imageData[ParsedMailKeys.Image.DATA].get_payload(decode=True))
                     logger.debug("Successfully wrote to empty file.")
             else:
-                if not os.path.exists(dirPath):
-                    logger.debug(f"Creating directory {dirPath} ...")
-
-                    os.makedirs(dirPath)
-                    StorageState.newSubDir()
-
-                    logger.debug("Successfully created new directory.")
-
                 logger.debug(f"Creating and writing new file {filePath} ...")
 
                 with open(filePath, "wb") as file:
@@ -221,7 +184,7 @@ def writeImages(parsedEMail):
 
 
 def getPrerenderImageStoragePath(parsedMail):
-    dirPath = StorageState.getStoragePath(parsedMail[ParsedMailKeys.Header.MESSAGE_ID])
+    dirPath = StorageModel.getSubdirectory(parsedMail[ParsedMailKeys.Header.MESSAGE_ID])
 
     filePath = os.path.join(dirPath, f"{parsedMail[ParsedMailKeys.Header.MESSAGE_ID]}.{StorageConfiguration.PRERENDER_IMAGETYPE}")
     parsedMail[ParsedMailKeys.PRERENDER_FILE_PATH] = filePath
