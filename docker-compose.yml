@@ -12,6 +12,12 @@ services:
       - MARIADB_ROOT_PASSWORD=example
     container_name: emailkasten_db
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   adminer:
     image: adminer:latest
@@ -34,4 +40,5 @@ services:
       - ROOT_LOG_LEVEL=DEBUG
     restart: unless-stopped
     depends_on:
-      - db
+      db:
+        condition: service_healthy
