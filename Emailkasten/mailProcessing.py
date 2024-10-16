@@ -44,25 +44,28 @@ def testAccount(account):
 
     logger.info(f"Testing {str(account)} ...")
     if account.protocol == IMAPFetcher.PROTOCOL:
-            result = IMAPFetcher.test(account)
+        result = IMAPFetcher.test(account)
 
     elif account.protocol == IMAP_SSL_Fetcher.PROTOCOL:
-            result = IMAP_SSL_Fetcher.test(account)
+        result = IMAP_SSL_Fetcher.test(account)
 
     elif account.protocol == POP3Fetcher.PROTOCOL:
-            result = POP3Fetcher.test(account)
+        result = POP3Fetcher.test(account)
 
     elif account.protocol == POP3_SSL_Fetcher.PROTOCOL:
-            result = POP3_SSL_Fetcher.test(account)
+        result = POP3_SSL_Fetcher.test(account)
 
     elif account.protocol == ExchangeFetcher.PROTOCOL:
-            result = ExchangeFetcher.test(account)
+        result = ExchangeFetcher.test(account)
 
     else:
-        logger.error("Can not fetch mails, protocol is not or incorrectly specified!")
+        logger.error(f"Account {str(account)} has unknown protocol!")
         result = False
 
-    logger.info(f"Tested {str(account)} as {result}")
+    logger.info(f"Successfully tested account to be {result}.")
+
+    account.is_healthy = result
+    account.save()
     return result
 
 

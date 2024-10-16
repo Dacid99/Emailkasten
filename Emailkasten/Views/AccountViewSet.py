@@ -55,12 +55,15 @@ class AccountViewSet(viewsets.ModelViewSet):
         account = self.get_object()
         mailboxesList = scanMailboxes(account)
         
-        return Response({'status': 'Scanned for mailboxes', 'account': account.mail_address, 'found mailboxes': mailboxesList})
+        accountSerializer = self.get_serializer(account)
+        return Response({'status': 'Scanned for mailboxes', 'account': accountSerializer.data})
     
     
     @action(detail=True, methods=['post'])
     def test(self, request, pk=None):
         account = self.get_object()
         result = testAccount(account)
-        return Response({'status': 'Tested mailaccount', 'account': account.mail_address, 'result': result})
+        
+        accountSerializer = self.get_serializer(account)
+        return Response({'status': 'Tested mailaccount', 'account': accountSerializer.data, 'result': result})
 
