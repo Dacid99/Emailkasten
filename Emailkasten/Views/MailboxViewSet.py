@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.decorators import action
@@ -28,6 +28,9 @@ from ..Serializers.MailboxSerializers.MailboxWithDaemonSerializer import Mailbox
 from ..EMailArchiverDaemon import EMailArchiverDaemon
 from .. import constants
 from ..mailProcessing import fetchMails
+from ..Fetchers.IMAPFetcher import IMAPFetcher
+from ..Fetchers.POP3Fetcher import POP3Fetcher
+
 
 
 class MailboxViewSet(viewsets.ModelViewSet):
@@ -61,4 +64,16 @@ class MailboxViewSet(viewsets.ModelViewSet):
         fetchMails(mailbox, mailbox.account, constants.MailFetchingCriteria.ALL)
 
         return Response({'status': 'All mails fetched', 'account': mailbox.account.mail_address, 'mailbox': mailbox.name})
+
+
+    @action(detail=True, methods=['get'])
+    def fetching_options(self, request, pk=None):
+        mailbox = self.get_object()
+
+        if mailbox.account__protocol.startswith(IMAPFetcher.PROTOCOL):
+            return Response({'fetching_options': IMAPFetcher.AVAILABLE_FETCHING_CRITERIA})
+        elif mailbox.account__protocol.startswith(POP3Fetcher.PROTOCOL):
+            return Response({'fetching_options': POP3Fetcher.AVAILABLE_FETCHING_CRITERIA})
+        else:
+            return Response({'error': "The protocol of this account is unknown!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
