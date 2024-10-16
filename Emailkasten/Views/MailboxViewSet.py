@@ -42,9 +42,27 @@ class MailboxViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'account__mail_address', 'account__mail_host', 'account__protocol', 'created', 'updated']
     ordering = ['id']
 
+
     def get_queryset(self):
         return MailboxModel.objects.filter(account__user = self.request.user)
+
+
+    def update(self, request, *args, **kwargs):
+        changedMailbox = request.get_object()
+        
+        if mailbox.account__protocol.startswith(IMAPFetcher.PROTOCOL):
+            availableFetchingOptions = IMAPFetcher.AVAILABLE_FETCHING_CRITERIA
+        elif mailbox.account__protocol.startswith(POP3Fetcher.PROTOCOL):
+            availableFetchingOptions = POP3Fetcher.AVAILABLE_FETCHING_CRITERIA
+        else:
+            availableFetchingOptions = []
+          
+        if changedMailbox.fetching_criterion not in availableFetchingOptions:
+            return Response({'error': "Fetching criterion not available for this mailbox!"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().update(request, *args, **kwargs)
     
+
     @action(detail=True, methods=['post'])
     def start(self, request, pk=None):
         mailbox = self.get_object()
