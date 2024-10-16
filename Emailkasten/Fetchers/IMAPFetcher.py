@@ -17,14 +17,31 @@
 '''
 
 import imaplib
+import logging
+from django.utils import timezone
 
 from .. import constants
-import logging
 from ..mailParsing import parseMailbox
+
 
 class IMAPFetcher: 
     
     PROTOCOL = constants.MailFetchingProtocols.IMAP
+    
+    AVAILABLE_FETCHING_CRITERIA = [
+        constants.MailFetchingCriteria.ALL,
+        constants.MailFetchingCriteria.UNSEEN,
+        constants.MailFetchingCriteria.RECENT,
+        constants.MailFetchingCriteria.NEW,
+        constants.MailFetchingCriteria.OLD,
+        constants.MailFetchingCriteria.FLAGGED,
+        constants.MailFetchingCriteria.ANSWERED,
+        constants.MailFetchingCriteria.DAILY,
+        constants.MailFetchingCriteria.WEEKLY,
+        constants.MailFetchingCriteria.MONTHLY,
+        constants.MailFetchingCriteria.ANNUALLY
+    ]
+
 
     def __init__(self, account):
         self.account = account
@@ -80,12 +97,38 @@ class IMAPFetcher:
         with IMAPFetcher(account) as imapFetcher:
             return bool(imapFetcher)
         
+
+    def makeFetchingCriterion(criterionName):
+        if criterionName in IMAPFetcher.AVAILABLE_FETCHING_CRITERIA:
+            if criterionName is constants.MailFetchingCriteria.DAILY:
+                startTime = timezone.now() - datetime.timedelta(days=1)
+                return "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
+            elif criterionName is constants.MailFetchingCriteria.WEEKLY:
+                startTime = timezone.now() - datetime.timedelta(weeks=1)
+                return "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
+            elif criterionName is constants.MailFetchingCriteria.MONTHLY:
+                startTime = timezone.now() - datetime.timedelta(weeks=4)
+                return "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
+            elif criterionName is constants.MailFetchingCriteria.ANNUALLY:
+                startTime = timezone.now() - datetime.timedelta(weeks=52)
+                return "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
+            else:
+                return criterionName
+
+        else:
+            self.logger.error(f"Fetching by {criterionName} is not available via protocol {self.PROTOCOL}!")
+            return None
+            
         
-    def fetchBySearch(self, mailbox = 'INBOX', searchCriterion='RECENT'):    #for criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4
+    def fetchBySearch(self, mailbox = 'INBOX', criterionName ='RECENT'):    #for criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4
         if not self._mailhost:
             self.logger.error(f"No connection to {str(self.account)}!")   
             return []
         
+        searchCriterion = self.makeFetchingCriterion(criterionName)
+        if not searchCriterion:
+            return []
+
         self.logger.debug(f"Searching and fetching {searchCriterion} messages in {mailbox} of {str(self.account)} ...")
         try:
             self.logger.debug(f"Opening mailbox {mailbox} of {str(self.account)} ...")

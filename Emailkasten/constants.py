@@ -23,7 +23,13 @@ class MailFetchingCriteria:
     UNSEEN = "UNSEEN"
     ALL = "ALL"
     NEW = "NEW"
+    OLD = "OLD"
+    FLAGGED = "FLAGGED"
+    ANSWERED = "ANSWERED"
     DAILY = "DAILY"
+    WEEKLY = "WEEKLY"
+    MONTHLY = "MONTHLY"
+    ANNUALLY = "ANNUALLY"
 
 class MailFetchingProtocols:
     IMAP = "IMAP"

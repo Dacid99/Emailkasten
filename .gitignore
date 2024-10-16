@@ -1,5 +1,6 @@
 __pycache__/*
 venv/*
+.vscode/
 C:\\Users\\phili\\Desktop\\log.log
 cookie.txt
 debug.txt

@@ -23,7 +23,11 @@ import logging
 
 class POP3Fetcher: 
 
-    PROTOCOL = constants.MailFetchingProtocols.POP3_SSL
+    PROTOCOL = constants.MailFetchingProtocols.POP3
+
+    AVAILABLE_FETCHING_CRITERIA = [
+        constants.MailFetchingCriteria.ALL
+    ]
 
     def __init__(self, account):
         self.account = account
