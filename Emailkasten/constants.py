@@ -31,6 +31,13 @@ class MailFetchingCriteria:
     MONTHLY = "MONTHLY"
     ANNUALLY = "ANNUALLY"
 
+    def __iter__(self):
+        return iter((attr, value) for attr, value in self.__class__.__dict__.items() if not attr.startswith("__"))
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+
 class MailFetchingProtocols:
     IMAP = "IMAP"
     IMAP_SSL = "IMAP_SSL"
