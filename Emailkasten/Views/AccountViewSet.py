@@ -67,3 +67,17 @@ class AccountViewSet(viewsets.ModelViewSet):
         accountSerializer = self.get_serializer(account)
         return Response({'status': 'Tested mailaccount', 'account': accountSerializer.data, 'result': result})
 
+
+    @action(detail=True, methods=['post'], url_path='toggle_favorite')
+    def toggle_favorite(self, request, pk=None):
+        account = self.get_object()
+        account.is_favorite = not account.is_favorite
+        account.save()
+        return Response({'status': 'Account marked as favorite'})
+    
+    
+    @action(detail=False, methods=['get'], url_path='favorites')
+    def favorites(self, request):
+        favoriteAccounts = AccountModel.objects.filter(is_favorite=True)
+        serializer = self.get_serializer(favoriteAccounts, many=True)
+        return Response(serializer.data)

@@ -44,3 +44,18 @@ class MailingListViewSet(viewsets.ReadOnlyModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except MailingListModel.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+    @action(detail=True, methods=['post'], url_path='toggle_favorite')
+    def toggle_favorite(self, request, pk=None):
+        mailinglist = self.get_object()
+        mailinglist.is_favorite = not mailinglist.is_favorite
+        mailinglist.save()
+        return Response({'status': 'Mailinglist marked as favorite'})
+    
+    
+    @action(detail=False, methods=['get'], url_path='favorites')
+    def favorites(self, request):
+        favoriteMailinglists = MailingListModel.objects.filter(is_favorite=True)
+        serializer = self.get_serializer(favoriteMailinglists, many=True)
+        return Response(serializer.data)

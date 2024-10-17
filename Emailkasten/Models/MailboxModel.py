@@ -17,6 +17,7 @@
 '''
 
 from django.db import models
+from rest_framework.decorators import action
 from ..constants import MailFetchingCriteria, FetchingConfiguration
 from .AccountModel import AccountModel
 
@@ -28,8 +29,11 @@ class MailboxModel(models.Model):
     save_attachments = models.BooleanField(default=FetchingConfiguration.SAVE_ATTACHMENTS_DEFAULT)
     save_images = models.BooleanField(default=FetchingConfiguration.SAVE_IMAGES_DEFAULT)
     save_toEML = models.BooleanField(default=FetchingConfiguration.SAVE_TO_EML_DEFAULT)
+    is_favorite = models.BooleanField(default=False)
+
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return f"Mailbox {self.name} of {self.account}"

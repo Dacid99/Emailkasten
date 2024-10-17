@@ -39,6 +39,7 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return AttachmentModel.objects.filter(email__account__user = self.request.user)
 
+
     @action(detail=True, methods=['get'], url_path='download')
     def download(self, request, pk=None):
         attachment = self.get_object()
@@ -50,3 +51,18 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
         
         response = FileResponse(open(filePath, 'rb'), as_attachment=True, filename=fileName)
         return response
+
+
+    @action(detail=True, methods=['post'], url_path='toggle_favorite')
+    def toggle_favorite(self, request, pk=None):
+        attachment = self.get_object()
+        attachment.is_favorite = not attachment.is_favorite
+        attachment.save()
+        return Response({'status': 'Attachment marked as favorite'})
+    
+    
+    @action(detail=False, methods=['get'], url_path='favorites')
+    def favorites(self, request):
+        favoriteAttachments = AttachmentModel.objects.filter(is_favorite=True)
+        serializer = self.get_serializer(favoriteAttachments, many=True)
+        return Response(serializer.data)

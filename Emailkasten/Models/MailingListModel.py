@@ -17,6 +17,7 @@
 '''
 
 from django.db import models
+from rest_framework.decorators import action
 from .CorrespondentModel import CorrespondentModel
 
 class MailingListModel(models.Model):
@@ -27,8 +28,9 @@ class MailingListModel(models.Model):
     list_post = models.CharField(max_length=255, null=True)
     list_help = models.CharField(max_length=255, null=True)
     list_archive = models.CharField(max_length=255, null=True)
+    is_favorite = models.BooleanField(default=False)
     correspondent = models.ForeignKey(CorrespondentModel, related_name='mailinglist', on_delete=models.CASCADE)
-    
+
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

@@ -20,6 +20,7 @@ from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from ..Models.CorrespondentModel import CorrespondentModel
 from ..Serializers.CorrespondentSerializers.CorrespondentSerializer import CorrespondentSerializer
@@ -42,3 +43,18 @@ class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action == 'list':
             return SimpleCorrespondentSerializer
         return super().get_serializer_class()
+
+
+    @action(detail=True, methods=['post'], url_path='toggle_favorite')
+    def toggle_favorite(self, request, pk=None):
+        correspondent = self.get_object()
+        correspondent.is_favorite = not correspondent.is_favorite
+        correspondent.save()
+        return Response({'status': 'Correspondent marked as favorite'})
+    
+    
+    @action(detail=False, methods=['get'], url_path='favorites')
+    def favorites(self, request):
+        favoriteCorrespondents = CorrespondentModel.objects.filter(is_favorite=True)
+        serializer = self.get_serializer(favoriteCorrespondents, many=True)
+        return Response(serializer.data)

@@ -28,6 +28,7 @@ class AttachmentModel(models.Model):
         recursive=True,
         null=True)
     datasize = models.IntegerField()
+    is_favorite = models.BooleanField(default=False)
     email = models.ForeignKey(EMailModel, related_name="attachments", on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

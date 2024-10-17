@@ -18,6 +18,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from rest_framework.decorators import action
 from .. import constants
 
 class AccountModel(models.Model):
@@ -34,6 +35,7 @@ class AccountModel(models.Model):
     }
     protocol = models.CharField(choices=PROTOCOL_CHOICES, max_length=10)
     is_healthy = models.BooleanField(default=True)
+    is_favorite = models.BooleanField(default=False)
     user = models.ForeignKey(User, related_name='accounts', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

@@ -79,3 +79,17 @@ class MailboxViewSet(viewsets.ModelViewSet):
         else:
             return Response({'error': "No fetching options available for this mailbox!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+
+    @action(detail=True, methods=['post'], url_path='toggle_favorite')
+    def toggle_favorite(self, request, pk=None):
+        mailbox = self.get_object()
+        mailbox.is_favorite = not mailbox.is_favorite
+        mailbox.save()
+        return Response({'status': 'Mailbox marked as favorite'})
+    
+    
+    @action(detail=False, methods=['get'], url_path='favorites')
+    def favorites(self, request):
+        favoriteMailboxes = MailboxModel.objects.filter(is_favorite=True)
+        serializer = self.get_serializer(favoriteMailboxes, many=True)
+        return Response(serializer.data)

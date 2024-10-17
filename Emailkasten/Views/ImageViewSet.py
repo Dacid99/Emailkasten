@@ -51,3 +51,18 @@ class ImageViewSet(viewsets.ReadOnlyModelViewSet):
         
         response = FileResponse(open(filePath, 'rb'), as_attachment=True, filename=fileName)
         return response
+
+    
+    @action(detail=True, methods=['post'], url_path='toggle_favorite')
+    def toggle_favorite(self, request, pk=None):
+        image = self.get_object()
+        image.is_favorite = not image.is_favorite
+        image.save()
+        return Response({'status': 'Image marked as favorite'})
+    
+    
+    @action(detail=False, methods=['get'], url_path='favorites')
+    def favorites(self, request):
+        favoriteImages = ImageModel.objects.filter(is_favorite=True)
+        serializer = self.get_serializer(favoriteImages, many=True)
+        return Response(serializer.data)
