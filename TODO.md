@@ -14,8 +14,6 @@ user divided storage to make file_paths unique again
 
 # to test
 unique together account and id, adapted insertion and querying
-serialized db data after scan and fetch_all
-imap with uid
 
 # to fix
 'Decoding this mime part returned error' for paypal
