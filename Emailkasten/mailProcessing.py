@@ -115,12 +115,12 @@ def fetchMails(mailbox, mailAccount, criterion):
     if mailAccount.protocol == IMAPFetcher.PROTOCOL:
         with IMAPFetcher(mailAccount) as imapMail:
 
-            mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, searchCriterion=_getFilter(criterion))
+            mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, criterionName=_getFilter(criterion))
 
     elif mailAccount.protocol == IMAP_SSL_Fetcher.PROTOCOL:
         with IMAP_SSL_Fetcher(mailAccount) as imapMail:
 
-            mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, searchCriterion=_getFilter(criterion))
+            mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, criterionName=_getFilter(criterion))
 
     elif mailAccount.protocol == POP3Fetcher.PROTOCOL:
         with POP3Fetcher(mailAccount) as popMail:

@@ -18,6 +18,7 @@
 
 import imaplib
 import logging
+import datetime
 from django.utils import timezone
 
 from .. import constants
@@ -98,7 +99,7 @@ class IMAPFetcher:
             return bool(imapFetcher)
         
 
-    def makeFetchingCriterion(criterionName):
+    def makeFetchingCriterion(self, criterionName):
         if criterionName in IMAPFetcher.AVAILABLE_FETCHING_CRITERIA:
             if criterionName is constants.MailFetchingCriteria.DAILY:
                 startTime = timezone.now() - datetime.timedelta(days=1)

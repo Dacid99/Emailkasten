@@ -47,7 +47,7 @@ class AccountViewSet(viewsets.ModelViewSet):
         try:
             serializer.save(user = self.request.user)
         except IntegrityError as e:
-            return Response({'detail': 'This account already exists!'}, status=status.HTTP_500)
+            return Response({'detail': 'This account already exists!'}, status=status.HTTP_409_CONFLICT)
         
         
     @action(detail=True, methods=['post'])
