@@ -26,7 +26,19 @@ from ..mailParsing import parseMailbox
 
 
 class IMAPFetcher: 
-    
+    """Maintains a connection to the IMAP server and fetches data
+
+    Opens a connection to the IMAP server on construction, it's preferably used in a 'with' environment.
+    Allows fetching of mails and mailboxes from an account on an IMAP host.
+
+    Attributes:
+        PROTOCOL (string): Name of the used protocol, refers to :class:`constants.MailFetchingProtocols`.
+        AVAILABLE_FETCHING_CRITERIA (list): List of all criteria available for fetching. 
+        account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
+        logger (logging.Logger): The logger for this instance.
+        _mailhost (imaplib.IMAP4): The IMAP host this instance connects to.
+    """
+
     PROTOCOL = constants.MailFetchingProtocols.IMAP
     
     AVAILABLE_FETCHING_CRITERIA = [
@@ -42,9 +54,19 @@ class IMAPFetcher:
         constants.MailFetchingCriteria.MONTHLY,
         constants.MailFetchingCriteria.ANNUALLY
     ]
+    #for criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4
 
 
     def __init__(self, account):
+        """Constructor, starts the IMAP connection and logs into the account.
+        If the connection could not be established, `_mailhost` remains None and the `account` is marked as unhealthy.
+
+        Args:
+            account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
+        
+        Returns:
+            None
+        """
         self.account = account
 
         self.logger = logging.getLogger(__name__)
@@ -61,18 +83,33 @@ class IMAPFetcher:
 
 
     def connectToHost(self):
+        """Opens the connection to the IMAP server using the credentials from `account`.
+        
+        Returns:
+            None
+        """
         self.logger.debug(f"Connecting to {str(self.account)} ...")
         self._mailhost = imaplib.IMAP4(host=self.account.mail_host, port=self.account.mail_host_port, timeout=None)
         self.logger.debug("Successfully connected to mail account.")
         
 
     def login(self):
+        """Logs into the target account using credentials from `account`.
+        
+        Returns:
+            None
+        """
         self.logger.debug(f"Logging into {str(self.account)} ...")
         self._mailhost.login(self.account.mail_address, self.account.password)
         self.logger.debug(f"Successfully logged into {str(self.account)}.")
         
 
     def close(self):
+        """Logs out of the account and closes the connection to the IMAP server.
+        
+        Returns:
+            None
+        """
         self.logger.debug(f"Closing connection to {str(self.account)} ...")
         if self._mailhost:
             try:
@@ -87,6 +124,11 @@ class IMAPFetcher:
 
 
     def __bool__(self):
+        """Returns whether the connection to the IMAP host is alive.
+
+        Returns:
+            bool: Whether `_mailhost` is None or not.
+        """
         self.logger.debug(f"Testing connection to {str(self.account)}")
         status = self._mailhost is not None
         self.logger.debug(f"Tested account with result {status}.")
@@ -95,11 +137,29 @@ class IMAPFetcher:
 
     @staticmethod
     def test(account):
+        """Static method to test the validity of account data.
+
+        Args:
+            account (:class:`Emailkasten.Models.AccountModel`): Data of the account to be tested.
+
+        Returns:
+            bool: Whether a connection was successfully established or not.
+        """
         with IMAPFetcher(account) as imapFetcher:
             return bool(imapFetcher)
         
 
     def makeFetchingCriterion(self, criterionName):
+        """Returns the formatted criterion for the IMAP request, handles dates in particular.
+
+        Args:
+            criterionName (str): The criterion to prepare for the IMAP request.
+                If not in `AVAILABLE_FETCHING_CRITERIA`, returns None.
+
+        Returns:
+            Optional[str]: Formatted criterion to be used in IMAP request;
+            None if `criterionName` is not in `AVAILABLE_FETCHING_CRITERIA`.
+        """
         if criterionName in IMAPFetcher.AVAILABLE_FETCHING_CRITERIA:
             if criterionName is constants.MailFetchingCriteria.DAILY:
                 startTime = timezone.now() - datetime.timedelta(days=1)
@@ -121,12 +181,23 @@ class IMAPFetcher:
             return None
             
         
-    def fetchBySearch(self, mailbox = 'INBOX', criterionName ='RECENT'):    #for criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4
+    def fetchBySearch(self, mailbox = 'INBOX', criterion ='RECENT'):
+        """Fetches and returns maildata from a mailbox based on a given criterion.
+
+        Args:
+            mailbox (str, optional): Name of the mailbox to fetch data from. Defaults to INBOX.
+                If a mailbox that is not in the account is given, returns [].
+            criterion (str, optional): Formatted criterion to filter mails in the IMAP request. Defaults to RECENT.
+                If an invalid criterion is given, returns []. 
+
+        Returns:
+            list: List of :class:`email.Message` mails in the mailbox matching the criterion. Empty if no such messages are found.
+        """
         if not self._mailhost:
             self.logger.error(f"No connection to {str(self.account)}!")   
             return []
         
-        searchCriterion = self.makeFetchingCriterion(criterionName)
+        searchCriterion = self.makeFetchingCriterion(criterion)
         if not searchCriterion:
             return []
 
@@ -165,6 +236,11 @@ class IMAPFetcher:
 
 
     def fetchMailboxes(self):
+        """Retrieves and returns the names of all mailbox in the account.  
+        
+        Returns:
+            list: List of str names of all the mailboxes found in the account. Empty if none are found.
+        """
         if not self._mailhost:
             self.logger.error(f"No connection to {str(self.account)}!")   
             return []
@@ -189,11 +265,13 @@ class IMAPFetcher:
 
 
     def __enter__(self):
+        """Framework method for use of class in 'with' statement, creates an instance."""
         self.logger.debug(str(self.__class__.__name__) + "._enter_")
         return self
 
 
     def __exit__(self, exc_type, exc_value, traceback):
+        """Framework method for use of class in 'with' statement, closes an instance."""
         self.logger.debug(str(self.__class__.__name__) + "._exit_")
         self.close()
 
