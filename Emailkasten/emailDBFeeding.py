@@ -36,7 +36,7 @@ def _insertCorrespondent(correspondentData):
     If a correspondent with that address already exists, updates the name field if it is blank.
 
     Args:
-        correspondentData (dict): Data of the correspondent as created by `Emailkasten.mailParsing.parseCorrespondent` to be inserted.
+        correspondentData (dict): Data of the correspondent to be inserted, as created by `Emailkasten.mailParsing.parseCorrespondent`.
 
     Returns:
         :class:`Emailkasten.Models.CorrespondentModel`: The entry to the correspondent from the database. 
@@ -62,6 +62,17 @@ def _insertCorrespondent(correspondentData):
   
   
 def _insertEMailCorrespondent(emailEntry, correspondentEntry, mention):
+    """Writes the connection betweeen an email and a correspondent to the database.
+    If that entry already exists does nothing.
+
+    Args:
+        emailEntry (:class:`Emailkasten.Models.CorrespondentModel`): The database entry of the mail that names the correspondent.
+        correspondentEntry (:class:`Emailkasten.Models.CorrespondentModel`): The database entry of the correspondent to connect to the mails entry.
+        mention (str): The mention type of the correspondent in the mail. Must be one of `Emailkasten.constants.ParsedMailKeys.Correspondent`.
+
+    Returns:
+        None
+    """
     logger.debug(f"Creating entry for {mention} correspondent in DB...")
     
     emailCorrespondentsEntry, created = EMailCorrespondentsModel.objects.get_or_create(
@@ -77,6 +88,15 @@ def _insertEMailCorrespondent(emailEntry, correspondentEntry, mention):
    
         
 def _insertAttachment(attachmentData, emailEntry):
+    """Writes the given data for an attachment to the database.  
+    If that entry already exists does nothing.
+
+    Args:
+        attachmentData (dict): The data for the attachment to be inserted, as created by `Emailkasten.mailParsing.parseAttachment`.
+        emailEntry (:class:`Emailkasten.Models.EMailModel`): The database entry of the mail that the attachment is part of.
+    Returns:
+        None
+    """
     attachmentEntry, created  = AttachmentModel.objects.get_or_create(
         file_path = attachmentData[ParsedMailKeys.Attachment.FILE_PATH],
         email = emailEntry,
@@ -93,6 +113,15 @@ def _insertAttachment(attachmentData, emailEntry):
         
 
 def _insertImage(imageData, emailEntry):
+    """Writes the given data for an image to the database.  
+    If that entry already exists does nothing.
+
+    Args:
+        imageData (dict): The data for the image to be inserted, as created by `Emailkasten.mailParsing.parseImage`.
+        emailEntry (:class:`Emailkasten.Models.EMailModel`): The database entry of the mail that the image is part of.
+    Returns:
+        None
+    """
     imageEntry, created  = ImageModel.objects.get_or_create(
         file_path = imageData[ParsedMailKeys.Image.FILE_PATH],
         email = emailEntry,
