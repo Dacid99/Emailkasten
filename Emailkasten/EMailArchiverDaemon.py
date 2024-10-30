@@ -25,10 +25,30 @@ from .mailProcessing import fetchMails
 
 
 class EMailArchiverDaemon:
+    """Daemon for continuous fetching and saving of mails to database.
+
+    Attributes:
+        runningDaemons (dict): A static dictionary of all active daemon instances with their database ids as keys.
+        logger (logging.Logger): Logger for this instance.
+        thread (threading.Thread): The thread that the daemon runs on.
+        isRunning (bool): Whether this daemon instance is active.
+        daemon (:class:`Emailkasten.Models.DaemonModel)`: The database model of this daemon. 
+        mailbox (:class:`Emailkasten.Models.MailboxModel`): The database model of the mailbox this instance fetches from.
+        account (:class:`Emailkasten.Models.AccountModel`): The database model of the account this instance fetches from.
+    """
     runningDaemons = {}
     
     @staticmethod
     def startDaemon(daemonModel):
+        """Static method to create, start and add a new daemon to `runningDaemons`. 
+        If it is already in the dict does nothing.
+
+        Args:
+            daemonModel (:class:`Emailkasten.Models.DaemonModel): The data for the daemon.
+
+        Returns: 
+            rest_framework.response.Response: A response detailing what has done. 
+        """
         if not daemonModel.id in EMailArchiverDaemon.runningDaemons:
             try:
                 newDaemon = EMailArchiverDaemon(daemonModel)
@@ -45,6 +65,15 @@ class EMailArchiverDaemon:
 
     @staticmethod
     def stopDaemon(daemonModel):
+        """Static method to stop and remove a daemon from `runningDaemons`. 
+        If it is not in the dict does nothing.
+
+        Args:
+            daemonModel (:class:`Emailkasten.Models.DaemonModel): The data of the daemon.
+
+        Returns: 
+            rest_framework.response.Response: A response detailing what has done. 
+        """
         if daemonModel.id in EMailArchiverDaemon.runningDaemons:
             oldDaemon = EMailArchiverDaemon.runningDaemons.pop(daemonModel.id)
             oldDaemon.stop()
@@ -56,6 +85,14 @@ class EMailArchiverDaemon:
         
 
     def __init__(self, daemon):
+        """Constructor, sets up the daemon with the specification in `daemon`.
+
+        Args:
+            daemon (:class:`Emailkasten.Models.DaemonModel): The data of the daemon.
+
+        Returns:
+            None
+        """
         self.logger = logging.getLogger(__name__)
         self.thread = None
         self.isRunning = False
@@ -66,30 +103,64 @@ class EMailArchiverDaemon:
 
 
     def start(self):
-        self.logger.info("Starting EMailArchiverDaemon")
-        self.isRunning = True
-        self.thread = threading.Thread(target = self.run)
-        self.thread.start()
+        """Starts this daemon instance if it is not active.
+        Creates and starts a new thread performing `run`.
+
+        Returns:
+            None 
+        """
+        if not self.isRunning:
+            self.logger.info(f"Starting {str(self.daemon)} ...")
+            self.isRunning = True
+            self.thread = threading.Thread(target = self.run)
+            self.thread.start()
+            self.logger.info("Successfully started daemon.")
+        else:
+            self.logger.info("EMailArchiverDaemon is already running.")
+        
 
 
     def stop(self):
-        self.logger.info("Stopping EMailArchiverDaemon")
-        self.isRunning = False
+        """Stops this daemon instance if it is active. 
+        The thread finishes by itself later. 
+
+        Returns:
+            None 
+        """
+        if self.isRunning:
+            self.logger.info(f"Stopping {str(self.daemon)} ...")
+            self.isRunning = False
+        else:
+            self.logger.info("EMailArchiverDaemon is not running.")
 
 
     def run(self):
+        """The looping task execute on `thread`.
+        Attempts to restart if crashed after time set in `constants.EMailArchiverDaemonConfiguration.RESTART_TIME`. 
+
+        Returns:
+            None
+        """
         try:
             while self.isRunning:
                 self.cycle()
                 time.sleep(self.daemon.cycle_interval)
-            self.logger.info("EMailArchiverDaemon finished")
+            self.logger.info(f"{str(self.daemon)} finished")
         except Exception as e:
-            self.logger.critical("EMailArchiverDaemon crashed! Attempting to restart ...", exc_info=True)
+            self.logger.error(f"{str(self.daemon)} crashed! Attempting to restart ...", exc_info=True)
             time.sleep(constants.EMailArchiverDaemonConfiguration.RESTART_TIME)
             self.run()
+        self.logger.info(f"{str(self.daemon)} finished successfully.")
+        
 
 
     def cycle(self):
+        """The routine of this daemon. 
+        Fetches and saves mails using `mailProcessing.fetchMails. Logs the execution time.
+        
+        Returns:
+            None
+        """
         self.logger.debug("---------------------------------------\nNew cycle")
         
         startTime = time.time()
