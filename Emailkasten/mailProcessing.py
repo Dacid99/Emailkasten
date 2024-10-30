@@ -31,14 +31,6 @@ import datetime
 from . import constants
 
 
-def _getFilter(flag):
-    if flag == constants.MailFetchingCriteria.DAILY:
-        return "SINCE {date}".format(date=datetime.date.today().strftime("%d-%b-%Y"))
-    else: 
-        return flag
-
-
-
 def testAccount(account):
     logger = logging.getLogger(__name__)
 
@@ -115,12 +107,12 @@ def fetchMails(mailbox, mailAccount, criterion):
     if mailAccount.protocol == IMAPFetcher.PROTOCOL:
         with IMAPFetcher(mailAccount) as imapMail:
 
-            mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, criterionName=_getFilter(criterion))
+            mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, criterionName=criterion)
 
     elif mailAccount.protocol == IMAP_SSL_Fetcher.PROTOCOL:
         with IMAP_SSL_Fetcher(mailAccount) as imapMail:
 
-            mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, criterionName=_getFilter(criterion))
+            mailDataList = imapMail.fetchBySearch(mailbox=mailbox.name, criterionName=criterion)
 
     elif mailAccount.protocol == POP3Fetcher.PROTOCOL:
         with POP3Fetcher(mailAccount) as popMail:
