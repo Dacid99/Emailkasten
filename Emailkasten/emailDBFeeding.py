@@ -30,7 +30,7 @@ Functions:
     :func:`insertEMail`: Writes the given data for an email to database.
 
 Global variables:
-    logger (:class:`python:logging.Logger`): The logger for this module.
+    logger (:python::class:`logging.Logger`): The logger for this module.
 """
 
 import django.db
@@ -53,7 +53,7 @@ def _insertCorrespondent(correspondentData):
     If a correspondent with that address already exists, updates the name field if it is blank.
 
     Args:
-        correspondentData (dict): Data of the correspondent to be inserted, as created by `Emailkasten.mailParsing.parseCorrespondent`.
+        correspondentData (dict): Data of the correspondent to be inserted, as created by :func:`Emailkasten.mailParsing.parseCorrespondent`.
 
     Returns:
         :class:`Emailkasten.Models.CorrespondentModel`: The entry to the correspondent from the database. 
@@ -85,7 +85,7 @@ def _insertEMailCorrespondent(emailEntry, correspondentEntry, mention):
     Args:
         emailEntry (:class:`Emailkasten.Models.CorrespondentModel`): The database entry of the mail that names the correspondent.
         correspondentEntry (:class:`Emailkasten.Models.CorrespondentModel`): The database entry of the correspondent to connect to the mails entry.
-        mention (str): The mention type of the correspondent in the mail. Must be one of `Emailkasten.constants.ParsedMailKeys.Correspondent`.
+        mention (str): The mention type of the correspondent in the mail. Must be one of :class:`Emailkasten.constants.ParsedMailKeys.Correspondent`.
 
     Returns:
         None
@@ -109,7 +109,7 @@ def _insertAttachment(attachmentData, emailEntry):
     If that entry already exists does nothing.
 
     Args:
-        attachmentData (dict): The data of the attachment to be inserted, as created by `Emailkasten.mailParsing.parseAttachment`.
+        attachmentData (dict): The data of the attachment to be inserted, as created by :func:`Emailkasten.mailParsing.parseAttachment`.
         emailEntry (:class:`Emailkasten.Models.EMailModel`): The database entry of the mail that the attachment is part of.
 
     Returns:
@@ -135,7 +135,7 @@ def _insertImage(imageData, emailEntry):
     If that entry already exists does nothing.
 
     Args:
-        imageData (dict): The data of the image to be inserted, as created by `Emailkasten.mailParsing.parseImage`.
+        imageData (dict): The data of the image to be inserted, as created by :func:`Emailkasten.mailParsing.parseImage`.
         emailEntry (:class:`Emailkasten.Models.EMailModel`): The database entry of the mail that the image is part of.
 
     Returns:
@@ -161,11 +161,11 @@ def _insertMailinglist(mailinglistData, fromCorrespondentEntry):
     If that entry already exists does nothing. If the mailinglist has no ID, it will not be saved.
 
     Args:
-        mailinglistData (dict): The data of the mailinglist to be inserted, as created by `Emailkasten.mailParsing.parseMailinglist`.
+        mailinglistData (dict): The data of the mailinglist to be inserted, as created by :func:`Emailkasten.mailParsing.parseMailinglist`.
         fromCorrespondentEntry (:class:`Emailkasten.Models.CorrespondentModel`): The database entry of the correspondent that serves the mailinglist.
 
     Returns:
-        :class:``Emailkasten.Models.MailingListModel`: The database entry of the mailinglist, either newly created or retrieved.
+        :class:`Emailkasten.Models.MailingListModel`: The database entry of the mailinglist, either newly created or retrieved.
     """
     mailinglistEntry = None
     if mailinglistData[ParsedMailKeys.MailingList.ID]:
@@ -200,7 +200,7 @@ def insertMailbox(mailboxData, account):
     If the entry for the mailbox already exists does nothing.
 
     Args:
-        mailboxData (str): The name of the mailbox to be inserted, as created by `Emailkasten.mailParsing.parseMailbox`.
+        mailboxData (str): The name of the mailbox to be inserted, as created by :func:`Emailkasten.mailParsing.parseMailbox`.
         account (:class:`Emailkasten.Models.AccountModel`): The database entry of the account that the mailbox belongs to.
 
     Returns:
@@ -238,7 +238,7 @@ def insertEMail(emailData, account):
     If that entry already exists does nothing. If any of the database operations fails, discards all changes to ensure data integrity.
 
     Args:
-        emailData (dict): The data of the mail to be inserted, as created by `Emailkasten.mailParsing.parseMail`.
+        emailData (dict): The data of the mail to be inserted, as created by :func:`Emailkasten.mailParsing.parseMail`.
         account (:class:`Emailkasten.Models.AccountModel`): The database entry of the account that the mail was found in.
 
     Returns:

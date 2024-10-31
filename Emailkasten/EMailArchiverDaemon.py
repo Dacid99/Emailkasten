@@ -28,11 +28,11 @@ class EMailArchiverDaemon:
     """Daemon for continuous fetching and saving of mails to database.
 
     Attributes:
-        runningDaemons (dict): A static dictionary of all active daemon instances with their database ids as keys.
-        logger (logging.Logger): Logger for this instance.
-        thread (threading.Thread): The thread that the daemon runs on.
+        runningDaemons (dict): A static dictionary of all active daemon instances with their database IDs as keys.
+        logger (:python:class:`logging.Logger`): Logger for this instance.
+        thread (:python:class:`threading.Thread`): The thread that the daemon runs on.
         isRunning (bool): Whether this daemon instance is active.
-        daemon (:class:`Emailkasten.Models.DaemonModel)`: The database model of this daemon. 
+        daemon (:class:`Emailkasten.Models.DaemonModel`): The database model of this daemon. 
         mailbox (:class:`Emailkasten.Models.MailboxModel`): The database model of the mailbox this instance fetches from.
         account (:class:`Emailkasten.Models.AccountModel`): The database model of the account this instance fetches from.
     """
@@ -40,14 +40,14 @@ class EMailArchiverDaemon:
     
     @staticmethod
     def startDaemon(daemonModel):
-        """Static method to create, start and add a new daemon to `runningDaemons`. 
+        """Static method to create, start and add a new daemon to :attr:`runningDaemons`. 
         If it is already in the dict does nothing.
 
         Args:
             daemonModel (:class:`Emailkasten.Models.DaemonModel): The data for the daemon.
 
         Returns: 
-            rest_framework.response.Response: A response detailing what has done. 
+            :rest_framework:class:`response.Response`: A response detailing what has done. 
         """
         if not daemonModel.id in EMailArchiverDaemon.runningDaemons:
             try:
@@ -65,14 +65,14 @@ class EMailArchiverDaemon:
 
     @staticmethod
     def stopDaemon(daemonModel):
-        """Static method to stop and remove a daemon from `runningDaemons`. 
+        """Static method to stop and remove a daemon from :attr:`runningDaemons`. 
         If it is not in the dict does nothing.
 
         Args:
-            daemonModel (:class:`Emailkasten.Models.DaemonModel): The data of the daemon.
+            daemonModel (:class:`Emailkasten.Models.DaemonModel`): The data of the daemon.
 
         Returns: 
-            rest_framework.response.Response: A response detailing what has done. 
+            :rest_framework:class:`response.Response`: A response detailing what has done. 
         """
         if daemonModel.id in EMailArchiverDaemon.runningDaemons:
             oldDaemon = EMailArchiverDaemon.runningDaemons.pop(daemonModel.id)
@@ -88,7 +88,7 @@ class EMailArchiverDaemon:
         """Constructor, sets up the daemon with the specification in `daemon`.
 
         Args:
-            daemon (:class:`Emailkasten.Models.DaemonModel): The data of the daemon.
+            daemon (:class:`Emailkasten.Models.DaemonModel`): The data of the daemon.
 
         Returns:
             None
@@ -104,7 +104,7 @@ class EMailArchiverDaemon:
 
     def start(self):
         """Starts this daemon instance if it is not active.
-        Creates and starts a new thread performing `run`.
+        Creates and starts a new thread performing :func:`run`.
 
         Returns:
             None 
@@ -135,8 +135,8 @@ class EMailArchiverDaemon:
 
 
     def run(self):
-        """The looping task execute on `thread`.
-        Attempts to restart if crashed after time set in `constants.EMailArchiverDaemonConfiguration.RESTART_TIME`. 
+        """The looping task execute on :attr:`thread`.
+        Attempts to restart if crashed after time set in :attr:`constants.EMailArchiverDaemonConfiguration.RESTART_TIME`. 
 
         Returns:
             None
@@ -156,7 +156,7 @@ class EMailArchiverDaemon:
 
     def cycle(self):
         """The routine of this daemon. 
-        Fetches and saves mails using `mailProcessing.fetchMails. Logs the execution time.
+        Fetches and saves mails using :func:`Emailkasten.mailProcessing.fetchMails. Logs the execution time.
         
         Returns:
             None

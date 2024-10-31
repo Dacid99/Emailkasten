@@ -22,7 +22,7 @@ from .. import constants
 from .IMAPFetcher import IMAPFetcher
 
 class IMAP_SSL_Fetcher(IMAPFetcher): 
-    """Subclass of `IMAP_Fetcher`
+    """Subclass of :class:`Emailkasten.Fetchers.IMAP_Fetcher`.
 
     Does the same things, just using IMAP_SSL protocol.
     """

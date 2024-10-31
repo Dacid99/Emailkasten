@@ -40,6 +40,8 @@ autodoc_default_options = {
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
+    'django': ('https://docs.djangoproject.com/en/stable/', None),
+    'restframework': ('https://www.django-rest-framework.org/', None),
 }
 
 nitpick = True

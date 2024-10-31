@@ -26,17 +26,17 @@ from ..mailParsing import parseMailbox
 
 
 class IMAPFetcher: 
-    """Maintains a connection to the IMAP server and fetches data
+    """Maintains a connection to the IMAP server and fetches data using :python:mod:`imaplib`.
 
-    Opens a connection to the IMAP server on construction, it's preferably used in a 'with' environment.
+    Opens a connection to the IMAP server on construction and is preferably used in a 'with' environment.
     Allows fetching of mails and mailboxes from an account on an IMAP host.
 
     Attributes:
         PROTOCOL (string): Name of the used protocol, refers to :class:`constants.MailFetchingProtocols`.
-        AVAILABLE_FETCHING_CRITERIA (list): List of all criteria available for fetching. 
+        AVAILABLE_FETCHING_CRITERIA (list): List of all criteria available for fetching. For a list of all existing IMAP criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4.
         account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
-        logger (logging.Logger): The logger for this instance.
-        _mailhost (imaplib.IMAP4): The IMAP host this instance connects to.
+        logger (:python:class:`logging.Logger`): The logger for this instance.
+        _mailhost (:python:class:`imaplib.IMAP4`): The IMAP host this instance connects to.
     """
 
     PROTOCOL = constants.MailFetchingProtocols.IMAP
@@ -54,7 +54,6 @@ class IMAPFetcher:
         constants.MailFetchingCriteria.MONTHLY,
         constants.MailFetchingCriteria.ANNUALLY
     ]
-    #for criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4
 
 
     def __init__(self, account):

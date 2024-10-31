@@ -25,7 +25,7 @@ Functions:
     :func:`fetchMails`: Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database. 
 
 Global variables:
-    logger (:class:`python:logging.Logger`): The logger for this module.
+    logger (:python:class:`logging.Logger`): The logger for this module.
 """
 
 from .Fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 
 def testAccount(account):
     """Tests whether the data in an accountmodel is correct and allows connecting and logging in to the mailhost and account.
-    Set is_healthy according to the result. Relies on the `test` static method of the `Emailkasten.Fetchers` classes. 
+    Set is_healthy according to the result. Relies on the `test` static method of the :mod:`Emailkasten.Fetchers` classes. 
     
     Args:
         account (:class:`Emailkasten.Models.AccountModel`): The account data to test.
@@ -87,7 +87,7 @@ def testAccount(account):
 def scanMailboxes(account):
     """Scans the given mailaccount for mailboxes, inserts them into the database. 
     For POP3 accounts, there is only one mailbox, it defaults to INBOX.
-    Relies on the `fetchMailboxes` method of the `Emailkasten.Fetchers` classes and `insertMailbox` from `Emailkasten.emailDBFeeding`. 
+    Relies on the :func:`fetchMailboxes` method of the :mod:`Emailkasten.Fetchers` classes and :func:`insertMailbox` from :mod:`Emailkasten.emailDBFeeding`. 
 
     Args:
         account (:class:`Emailkasten.Models.AccountModel`): The data of the account to scan for mailboxes.
@@ -134,13 +134,13 @@ def scanMailboxes(account):
 def fetchMails(mailbox, account, criterion):
     """Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database. 
     For POP3 accounts, there is only one mailbox and no options for specific queries, so all messages are fetched.
-    Relies on the `fetchBySearch` and `fetchAll` methods of the `Emailkasten.Fetchers` classes, the methods from `Emailkasten.mailParsing` and `Emailkasten.emailDBFeeding`. 
+    Relies on the :func:`fetchBySearch` and :func:`fetchAll` methods of the :mod:`Emailkasten.Fetchers` classes, the methods from :mod:`Emailkasten.mailParsing` and :mod:`Emailkasten.emailDBFeeding`. 
 
     Args:
         mailbox (:class:`Emailkasten.Models.MailboxModel`): The data of the mailbox to fetch from.
         account (:class:`Emailkasten.Models.AccountModel`): The data of the mailaccount to fetch from.
-        criterion (str): A formatted criterion for message filtering as returned by `Emailkasten.Fetchers.IMAPFetcher.makeFetchingCriterion`.
-            If none is given, defaults to RECENT inside `Emailkasten.Fetchers.IMAPFetcher.fetchBySearch`.
+        criterion (str): A formatted criterion for message filtering as returned by :func:`Emailkasten.Fetchers.IMAPFetcher.makeFetchingCriterion`.
+            If none is given, defaults to RECENT inside :func:`Emailkasten.Fetchers.IMAPFetcher.fetchBySearch`.
         
     Returns:
         None
