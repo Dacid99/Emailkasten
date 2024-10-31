@@ -23,6 +23,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx_autodoc_typehints',
+    'sphinx.ext.intersphinx',
 ]
 
 templates_path = ['_templates']
@@ -35,6 +36,10 @@ autodoc_default_options = {
     'private-members': True,
     'special-members': '__init__',
     'show-inheritance': True
+}
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
 }
 
 nitpick = True
