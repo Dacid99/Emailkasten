@@ -29,8 +29,8 @@ class EMailArchiverDaemon:
 
     Attributes:
         runningDaemons (dict): A static dictionary of all active daemon instances with their database IDs as keys.
-        logger (:python:class:`logging.Logger`): Logger for this instance.
-        thread (:python:class:`threading.Thread`): The thread that the daemon runs on.
+        logger (:python::class:`logging.Logger`): Logger for this instance.
+        thread (:python::class:`threading.Thread`): The thread that the daemon runs on.
         isRunning (bool): Whether this daemon instance is active.
         daemon (:class:`Emailkasten.Models.DaemonModel`): The database model of this daemon. 
         mailbox (:class:`Emailkasten.Models.MailboxModel`): The database model of the mailbox this instance fetches from.
@@ -47,7 +47,7 @@ class EMailArchiverDaemon:
             daemonModel (:class:`Emailkasten.Models.DaemonModel): The data for the daemon.
 
         Returns: 
-            :rest_framework:class:`response.Response`: A response detailing what has done. 
+            :rest_framework::class:`response.Response`: A response detailing what has done. 
         """
         if not daemonModel.id in EMailArchiverDaemon.runningDaemons:
             try:
@@ -72,7 +72,7 @@ class EMailArchiverDaemon:
             daemonModel (:class:`Emailkasten.Models.DaemonModel`): The data of the daemon.
 
         Returns: 
-            :rest_framework:class:`response.Response`: A response detailing what has done. 
+            :rest_framework::class:`response.Response`: A response detailing what has done. 
         """
         if daemonModel.id in EMailArchiverDaemon.runningDaemons:
             oldDaemon = EMailArchiverDaemon.runningDaemons.pop(daemonModel.id)

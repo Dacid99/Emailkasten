@@ -38,7 +38,7 @@ Functions:
     :func:`parseMailbox`: Parses the mailbox name as received by the scanMailboxes method in :mod:`Emailkasten.Fetchers`.
 
 Global variables:
-    logger (:python:class:`logging.Logger`): The logger for this module.
+    logger (:python::class:`logging.Logger`): The logger for this module.
 """
 
 import email 
@@ -75,7 +75,7 @@ def _decodeText(text):
 def _decodeHeader(header):
     """Decodes an email header field encoded as bytes.
     Checks for a specific charset to use. If none is found uses the default :attr:`Emailkasten.constants.MailParsingConfiguration.CHARSET_DEFAULT`.
-    Uses the :python:func:`email.header.decode_header` function.
+    Uses the :python::func:`email.header.decode_header` function.
 
     Args:
         header (bytes): The mail header to decode.
@@ -96,7 +96,7 @@ def _decodeHeader(header):
 
 def _separateRFC2822MailAddressFormat(mailers):
     """Splits the RFC2822 address fiels into the mailer name mail address.
-    Uses :python:func:`email.utils.getaddresses` to seperate and :python:func:`email_validator.validate_email` to validate. 
+    Uses :python::func:`email.utils.getaddresses` to seperate and :python::func:`email_validator.validate_email` to validate. 
     TODO: If no valid mailaddress is found uses the entire address as fallback.
 
     Args:
@@ -123,7 +123,7 @@ def _parseMessageID(mailMessage):
     If none is found uses the hash of the mailmessage as a fallback.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
 
     Returns:
         str: The messageID header of the mailmessage.
@@ -141,11 +141,11 @@ def _parseMessageID(mailMessage):
 
 def _parseDate(mailMessage):
     """Parses the date header of the given mailmessage.
-    Uses :python:func:`email.utils.parsedate_to_datetime`.
+    Uses :python::func:`email.utils.parsedate_to_datetime`.
     If none is found uses :attr:`Emailkasten.constants.ParsingConfiguration.DATE_DEFAULT` as a fallback.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
 
     Returns:
         datetime: The datetime of the mailmessage.
@@ -166,7 +166,7 @@ def _parseSubject(mailMessage):
     If :attr:`constants.ParsingConfiguration.STRIP_TEXTS` is True, whitespace is stripped.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
 
     Returns:
         str: The subject header of the mailmessage.
@@ -193,7 +193,7 @@ def _parseBodyText(mailMessage):
     If :attr:`constants.ParsingConfiguration.STRIP_TEXTS` is True, whitespace is stripped.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
 
     Returns:
         str: The bodytext of the mailmessage.
@@ -227,7 +227,7 @@ def _parseImages(mailMessage):
     Looks for elements of content type image that are not an attachment.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
 
     Returns:
         list: A list of images in the mailmessage.
@@ -264,7 +264,7 @@ def _parseAttachments(mailMessage):
     Looks for elements with content disposition attachment or content type in :attr:`Emailkasten.ParsingConfiguration.APPLICATION_TYPES`.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
 
     Returns:
         list: A list of attachments in the mailmessage.
@@ -296,7 +296,7 @@ def _parseAdditionalHeader(mailMessage, headerKey):
     """Parses the given header of the given mailmessage.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
         headerKey (str): The header to extract from the message.
 
     Returns:
@@ -316,7 +316,7 @@ def _parseAdditionalMultipleHeader(mailMessage, headerKey):
     """Parses the given header, which may appear multiple times, of the given mailmessage.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
         headerKey (str): The header to extract from the message.
 
     Returns:
@@ -341,7 +341,7 @@ def _parseMailinglist(mailMessage):
     """Parses the mailinglist headers of the given mailmessage.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
 
     Returns:
         dict:The parsed mailinglist headers in the mailmessage.
@@ -361,7 +361,7 @@ def _parseCorrespondents(mailMessage, mentionHeaderKey):
     """Parses the correspondents that are mentioned in a given way.
 
     Args:
-        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
         mentionHeaderKey (str): The way the correspondents are mentioned.
 
     Returns:

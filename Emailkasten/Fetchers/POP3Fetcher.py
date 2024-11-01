@@ -22,7 +22,7 @@ from .. import constants
 import logging
 
 class POP3Fetcher: 
-    """Maintains a connection to the POP server and fetches data using :python:mod:`poplib`.
+    """Maintains a connection to the POP server and fetches data using :python::mod:`poplib`.
 
     Opens a connection to the POP server on construction and is preferably used in a 'with' environment.
     Allows fetching of mails and mailboxes from an account on an POP host.
@@ -31,8 +31,8 @@ class POP3Fetcher:
         PROTOCOL (string): Name of the used protocol, refers to :class:`constants.MailFetchingProtocols`.
         AVAILABLE_FETCHING_CRITERIA (list): List of all criteria available for fetching. 
         account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
-        logger (:python:class:`logging.Logger`): The logger for this instance.
-        _mailhost (:python:class:`poplib.POP3`): The POP host this instance connects to.
+        logger (:python::class:`logging.Logger`): The logger for this instance.
+        _mailhost (:python::class:`poplib.POP3`): The POP host this instance connects to.
     """
 
     PROTOCOL = constants.MailFetchingProtocols.POP3

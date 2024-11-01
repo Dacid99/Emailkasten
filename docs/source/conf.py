@@ -55,7 +55,7 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/{}'.format(python_version), None),
     'django': ('https://docs.djangoproject.com/en/{}/'.format(django_version), 
                'https://docs.djangoproject.com/en/{}/_objects/'.format(django_version)),
-    'restframework': ('https://www.django-rest-framework.org/', None),
+    'rest_framework': ('https://www.django-rest-framework.org/', None),
 }
 
 nitpick = True

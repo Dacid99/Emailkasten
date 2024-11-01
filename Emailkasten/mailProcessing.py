@@ -26,7 +26,7 @@ Functions:
     :func:`fetchMails`: Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database. 
 
 Global variables:
-    logger (:python:class:`logging.Logger`): The logger for this module.
+    logger (:python::class:`logging.Logger`): The logger for this module.
 """
 
 from .Fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
