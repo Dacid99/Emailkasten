@@ -18,7 +18,7 @@
 
 
 """Provides functions for inserting data from the mails and their environment into the database.
-Functions starting with _ are helpers and are used only within the scope of the module.
+Functions starting with _ are helpers and are used only within the scope of this module.
 
 Functions:
     :func:`_insertCorrespondent`: Writes the given data of a correspondent to the database.  

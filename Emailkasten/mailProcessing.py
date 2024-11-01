@@ -18,6 +18,7 @@
 
 """Provides functions for processing the mails by fetching and storing them.
 Combines functions from :mod:`Emailkasten.emailDBFeeding`, :mod:`Emailkasten.mailParsing` and :mod:`Emailkasten.Fetchers`.
+Functions starting with _ are helpers and are used only within the scope of this module.
 
 Functions:
     :func:`testAccount`: Tests whether the data in an accountmodel is correct and allows connecting and logging in to the mailhost and account.
