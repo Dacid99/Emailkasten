@@ -36,7 +36,7 @@ from .Fetchers.POP3Fetcher import POP3Fetcher
 from .Fetchers.ExchangeFetcher import ExchangeFetcher
 from .fileManagment import writeImages, writeAttachments, writeMessageToEML
 import logging
-from .mailParsing import parseMail
+from .mailParsing import parseMail, parseMailbox
 from .mailRendering import prerender
 from .emailDBFeeding import insertEMail, insertMailbox
 
@@ -86,9 +86,9 @@ def testAccount(account):
 
 
 def scanMailboxes(account):
-    """Scans the given mailaccount for mailboxes, inserts them into the database. 
+    """Scans the given mailaccount for mailboxes, parses and inserts them into the database. 
     For POP3 accounts, there is only one mailbox, it defaults to INBOX.
-    Relies on the :func:`fetchMailboxes` method of the :mod:`Emailkasten.Fetchers` classes and :func:`insertMailbox` from :mod:`Emailkasten.emailDBFeeding`. 
+    Relies on the :func:`fetchMailboxes` method of the :mod:`Emailkasten.Fetchers` classes, :func:`parseMailbox` from :mod:`Emailkasten.mailParsing` and :func:`insertMailbox` from :mod:`Emailkasten.emailDBFeeding`. 
 
     Args:
         account (:class:`Emailkasten.Models.AccountModel`): The data of the account to scan for mailboxes.
@@ -125,7 +125,8 @@ def scanMailboxes(account):
         mailboxes = []
         
     for mailbox in mailboxes:
-        insertMailbox(mailbox, account)
+        parsedMailbox = parseMailbox(mailbox)
+        insertMailbox(parsedMailbox, account)
 
     logger.info("Successfully searched mailboxes")
 
@@ -133,7 +134,7 @@ def scanMailboxes(account):
     
 
 def fetchMails(mailbox, account, criterion):
-    """Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database. 
+    """Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database and storage. 
     For POP3 accounts, there is only one mailbox and no options for specific queries, so all messages are fetched.
     Relies on the :func:`fetchBySearch` and :func:`fetchAll` methods of the :mod:`Emailkasten.Fetchers` classes, the methods from :mod:`Emailkasten.mailParsing` and :mod:`Emailkasten.emailDBFeeding`. 
 

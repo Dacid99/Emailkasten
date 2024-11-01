@@ -14,13 +14,13 @@ marking of daemon as unhealthy, improved crashhandling
 user divided storage to make file_paths unique again
 some fallback for failed emailaddress parsing is required
 combined filter for correspondent with mention 
-move parseMailbox to processing
 
 # work in progress
 documentation
 type annotations
 
 # to test
+mailboxparsing moved to processing
 mailbox with full decode method
 parseMailbox splitting (why?)
 does decodeHeader do anything? If yes it should be used more

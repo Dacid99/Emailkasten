@@ -22,7 +22,6 @@ import datetime
 from django.utils import timezone
 
 from .. import constants
-from ..mailParsing import parseMailbox
 
 
 class IMAPFetcher: 
@@ -235,10 +234,10 @@ class IMAPFetcher:
 
 
     def fetchMailboxes(self):
-        """Retrieves and returns the names of all mailbox in the account.  
+        """Retrieves and returns the data of the mailboxes in the account.  
         
         Returns:
-            list: List of str names of all the mailboxes found in the account. Empty if none are found.
+            list: List of data of all mailboxes in the account. Empty if none are found.
         """
         if not self._mailhost:
             self.logger.error(f"No connection to {str(self.account)}!")   
@@ -251,12 +250,8 @@ class IMAPFetcher:
                 self.logger.error(f"Bad response trying to scan mailboxes, response {status}")                  
                 return []
 
-            mailboxesList = []
-            for mailbox in mailboxes:
-                mailboxesList.append(parseMailbox(mailbox))
-
             self.logger.debug(f"Successfully fetched mailboxes in {str(self.account)}.")
-            return mailboxesList
+            return mailboxes
 
         except imaplib.IMAP4.error as e:
             self.logger.error(f"Failed to fetch mailboxes in {str(self.account)}!", exc_info=True)
