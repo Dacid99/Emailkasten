@@ -155,7 +155,7 @@ def _parseDate(mailMessage):
     date = mailMessage.get(ParsedMailKeys.Header.DATE)
     if date is None:
         logger.warning("No DATE found in mail, resorting to default!")
-        return datetime.datetime.strptime(ParsedMailKeys.__dateDefault, ParsedMailKeys.__dateFormat)
+        return datetime.datetime.strptime(ParsingConfiguration.DATE_DEFAULT, ParsingConfiguration.DATE_FORMAT)
 
     decodedDate = email.utils.parsedate_to_datetime(_decodeHeader(date))
     return decodedDate
@@ -403,7 +403,7 @@ def parseMail(mailToParse):
     parsedEMail[ParsedMailKeys.Header.DATE] = _parseDate(mailMessage)
     parsedEMail[ParsedMailKeys.BODYTEXT] = _parseBodyText(mailMessage)
     
-    for mentionType, correspondentHeader in ParsedMailKeys.Correspondent():
+    for _, correspondentHeader in ParsedMailKeys.Correspondent():
         parsedEMail[correspondentHeader] = _parseCorrespondents(mailMessage, correspondentHeader)
     
     parsedEMail[ParsedMailKeys.ATTACHMENTS] = _parseAttachments(mailMessage)

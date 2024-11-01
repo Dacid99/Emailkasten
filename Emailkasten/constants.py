@@ -128,6 +128,8 @@ class ParsingConfiguration:
     STRIP_TEXTS = True
     THROW_OUT_SPAM = True
     APPLICATION_TYPES = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+    DATE_DEFAULT = "1971-01-01 00:00:00"
+    DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
     
 class ProcessingConfiguration:
     DUMP_DIRECTORY = '/tmp/images'
