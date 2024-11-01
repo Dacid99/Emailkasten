@@ -16,6 +16,31 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+
+"""Provides functions for parsing features from the maildata.
+Functions starting with _ are helpers and are used only within the scope of this module.
+
+Functions:
+    :func:`_decodeText`: Decodes a text encoded as bytes.
+    :func:`_decodeHeader`: Decodes an email header field encoded as bytes.
+    :func:`_separateRFC2822MailAddressFormat`: Splits the RFC2822 address fiels into the mailer name and the mail address.
+    :func:`_parseMessageID`: Parses the messageID of the given mailmessage.
+    :func:`_parseDate`: Parses the datetime of the given mailmessage.
+    :func:`_parseSubject`:  Parses the subject of the given mailmessage.
+    :func:`_parseBodyText`: Parses the bodytext of the given mailmessage.
+    :func:`_parseImages`: Parses the inline images in the given mailmessage.
+    :func:`_parseAttachments`: Parses the attachments in the given mailmessage.
+    :func:`_parseAdditionalHeader`: Parses the given header of the given mailmessage.
+    :func:`_parseAdditionalMultipleHeader`: Parses the given header, which may appear multiple times, of the given mailmessage.
+    :func:`_parseMailinglist`: Parses the mailinglist headers of the given mailmessage.
+    :func:`_parseCorrespondents`: Parses the correspondents that are mentioned in a given way.
+    :func:`parseMail`: Parses a mail returned by a mail server for its features.
+    :func:`parseMailbox`: Parses the mailbox name as received by the scanMailboxes method in :mod:`Emailkasten.Fetchers`.
+
+Global variables:
+    logger (:python:class:`logging.Logger`): The logger for this module.
+"""
+
 import email 
 import email.header
 import email.utils
@@ -29,20 +54,16 @@ from .constants import ParsedMailKeys
 logger = logging.getLogger(__name__)
 
 
-#Defaults
-__DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
-__DATE_DEFAULT = "1971-01-01 00:00:00"  #must fit dateFormat
-
-   
-def parseMailbox(mailboxBytes):
-    mailbox = _decodeText(mailboxBytes)
-    mailboxName = mailbox.split("\"/\"")[1].strip()
-    if mailboxName == "":
-        mailboxName = mailbox.split("\" \"")[1].strip()
-    return mailboxName
-
-
 def _decodeText(text):
+    """Decodes a text encoded as bytes.
+    Checks for a specific charset to use. If none is found uses the default :attr:`Emailkasten.constants.ParsingConfiguration.CHARSET_DEFAULT`.
+
+    Args:
+        text (bytes): The text in bytes format to decode properly.
+
+    Returns:
+        str: The decoded text. 
+    """
     charset = text.get_content_charset()
     if charset is None:
         charset = ParsingConfiguration.CHARSET_DEFAULT
@@ -52,18 +73,38 @@ def _decodeText(text):
 
 
 def _decodeHeader(header):
-        decodedFragments = email.header.decode_header(header)
-        decodedString = ""
-        for fragment, charset in decodedFragments:
-            if charset is None:
-                decodedString += fragment.decode(ParsingConfiguration.CHARSET_DEFAULT, errors='replace') if isinstance(fragment, bytes) else fragment
-            else:
-                decodedString += fragment.decode(charset, errors='replace')
+    """Decodes an email header field encoded as bytes.
+    Checks for a specific charset to use. If none is found uses the default :attr:`Emailkasten.constants.MailParsingConfiguration.CHARSET_DEFAULT`.
+    Uses the :python:func:`email.header.decode_header` function.
 
-        return decodedString
+    Args:
+        header (bytes): The mail header to decode.
+
+    Returns:
+        str: The decoded mail header 
+    """
+    decodedFragments = email.header.decode_header(header)
+    decodedString = ""
+    for fragment, charset in decodedFragments:
+        if charset is None:
+            decodedString += fragment.decode(ParsingConfiguration.CHARSET_DEFAULT, errors='replace') if isinstance(fragment, bytes) else fragment
+        else:
+            decodedString += fragment.decode(charset, errors='replace')
+
+    return decodedString
     
 
 def _separateRFC2822MailAddressFormat(mailers):
+    """Splits the RFC2822 address fiels into the mailer name mail address.
+    Uses :python:func:`email.utils.getaddresses` to seperate and :python:func:`email_validator.validate_email` to validate. 
+    If no valid mailaddress is found uses the entire address as fallback.
+
+    Args:
+        mailers (list(str)): A list of address fields to seperate.
+
+    Returns:
+        list((str,str)): A list of mailernames and mailaddresses
+    """
     decodedMailers = [_decodeHeader(mailer) for mailer in mailers]
     mailAddresses = email.utils.getaddresses(decodedMailers)
     separatedMailers = []
@@ -78,6 +119,16 @@ def _separateRFC2822MailAddressFormat(mailers):
 
 
 def _parseMessageID(mailMessage):
+    """Parses the messageID header of the given mailmessage.
+    If none is found uses the hash of the mailmessage as a fallback.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+
+    Returns:
+        str: The messageID header of the mailmessage.
+            If there is no such header, the hash of the mailmessage.
+    """
     logger.debug("Parsing MessageID ...")
     messageID = mailMessage.get(ParsedMailKeys.Header.MESSAGE_ID)
     if messageID is None:
@@ -89,6 +140,17 @@ def _parseMessageID(mailMessage):
 
 
 def _parseDate(mailMessage):
+    """Parses the date header of the given mailmessage.
+    Uses :python:func:`email.utils.parsedate_to_datetime`.
+    If none is found uses :attr:`Emailkasten.constants.ParsingConfiguration.DATE_DEFAULT` as a fallback.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+
+    Returns:
+        datetime: The datetime of the mailmessage.
+            If there is no such header, :attr:`Emailkasten.constants.ParsingConfiguration.DATE_DEFAULT`.
+    """
     logger.debug("Parsing date ...")
     date = mailMessage.get(ParsedMailKeys.Header.DATE)
     if date is None:
@@ -100,6 +162,17 @@ def _parseDate(mailMessage):
 
 
 def _parseSubject(mailMessage):
+    """Parses the subject header of the given mailmessage.
+    If :attr:`constants.ParsingConfiguration.STRIP_TEXTS` is True, whitespace is stripped.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+
+    Returns:
+        str: The subject header of the mailmessage.
+            If there is no such header, the string is empty.
+            If :attr:`constants.ParsingConfiguration.STRIP_TEXTS` is True, whitespace is stripped.
+    """
     logger.debug("Parsing subject ...")
     if (subject := mailMessage.get(ParsedMailKeys.Header.SUBJECT)):
         decodedSubject = _decodeHeader(subject)
@@ -115,6 +188,17 @@ def _parseSubject(mailMessage):
 
 
 def _parseBodyText(mailMessage):
+    """Parses the bodytext of the given mailmessage.
+    Combines all elements of content type text if the message is multipart. Otherwise uses the full message.
+    If :attr:`constants.ParsingConfiguration.STRIP_TEXTS` is True, whitespace is stripped.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+
+    Returns:
+        str: The bodytext of the mailmessage.
+            If :attr:`constants.ParsingConfiguration.STRIP_TEXTS` is True, whitespace is stripped.
+    """
     logger.debug("Parsing bodytext ...")
     mailBodyText = ""
     if mailMessage.is_multipart():
@@ -139,6 +223,16 @@ def _parseBodyText(mailMessage):
 
 
 def _parseImages(mailMessage):
+    """Parses the inline images in the given mailmessage.
+    Looks for elements of content type image that are not an attachment.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+
+    Returns:
+        list: A list of images in the mailmessage.
+            Empty if none are found or the message is not multipart.
+    """
     logger.debug("Parsing images ...")
     images = []
     if mailMessage.is_multipart():
@@ -166,6 +260,16 @@ def _parseImages(mailMessage):
         
 
 def _parseAttachments(mailMessage):
+    """Parses the attachments in the given mailmessage.
+    Looks for elements with content disposition attachment or content type in :attr:`Emailkasten.ParsingConfiguration.APPLICATION_TYPES`.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+
+    Returns:
+        list: A list of attachments in the mailmessage.
+            Empty if none are found or the message is not multipart.
+    """
     logger.debug("Parsing attachments ...")
     attachments = []
     if mailMessage.is_multipart():
@@ -189,6 +293,16 @@ def _parseAttachments(mailMessage):
 
 
 def _parseAdditionalHeader(mailMessage, headerKey):
+    """Parses the given header of the given mailmessage.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        headerKey (str): The header to extract from the message.
+
+    Returns:
+        str: The parsed header of the mailmessage.
+            Empty if there is no such header.
+    """
     logger.debug(f"Parsing {headerKey} ...")
     header = mailMessage.get(headerKey)
     if header is None:
@@ -199,6 +313,16 @@ def _parseAdditionalHeader(mailMessage, headerKey):
 
 
 def _parseAdditionalMultipleHeader(mailMessage, headerKey):
+    """Parses the given header, which may appear multiple times, of the given mailmessage.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        headerKey (str): The header to extract from the message.
+
+    Returns:
+        list: A list of the parsed headers in the mailmessage.
+            Empty if there is no such header.
+    """
     logger.debug(f"Parsing {headerKey} ...")
     header = mailMessage.get_all(headerKey)
     if header is None:
@@ -214,6 +338,14 @@ def _parseAdditionalMultipleHeader(mailMessage, headerKey):
 
 
 def _parseMailinglist(mailMessage):
+    """Parses the mailinglist headers of the given mailmessage.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+
+    Returns:
+        dict:The parsed mailinglist headers in the mailmessage.
+    """
     mailinglist = {}
     mailinglist[ParsedMailKeys.MailingList.ID] = _parseAdditionalHeader(mailMessage, ParsedMailKeys.MailingList.ID)
     mailinglist[ParsedMailKeys.MailingList.OWNER] = _parseAdditionalHeader(mailMessage, ParsedMailKeys.MailingList.OWNER)
@@ -226,6 +358,15 @@ def _parseMailinglist(mailMessage):
 
 
 def _parseCorrespondents(mailMessage, mentionHeaderKey):
+    """Parses the correspondents that are mentioned in a given way.
+
+    Args:
+        mailMessage (:python:class:`email.message.EmailMessage`): The mailmessage to be parsed.
+        mentionHeaderKey (str): The way the correspondents are mentioned.
+
+    Returns:
+        list((str,str)): A list of correspondent mailaddresses and mailernames
+    """
     logger.debug(f"Parsing {mentionHeaderKey} ...")
     correspondents = mailMessage.get_all(mentionHeaderKey)
     if correspondents is None:
@@ -239,7 +380,15 @@ def _parseCorrespondents(mailMessage, mentionHeaderKey):
 
 
 def parseMail(mailToParse):
+    """Parses a mail returned by a mail server for its features.
+    Uses the various private functions in :mod:`Emailkasten.mailParsing`.
 
+    Args:
+        mailToParse (bytes): The mail data as supplied by the mailhost.
+
+    Returns:
+        dict: The features of the mail in a dictionary with keys as defined in :class:`Emailkasten.constants.ParsedMailKeys`.
+    """
     mailMessage = email.message_from_bytes(mailToParse)
 
     logger.debug(f"Parsing email with subject {_parseSubject(mailMessage)} ...")
@@ -283,7 +432,22 @@ def parseMail(mailToParse):
     parsedEMail[ParsedMailKeys.Header.X_SPAM_FLAG] = _parseAdditionalHeader(mailMessage, ParsedMailKeys.Header.X_SPAM_FLAG)
     parsedEMail[ParsedMailKeys.Header.AUTO_SUBMITTED] = _parseAdditionalHeader(mailMessage, ParsedMailKeys.Header.AUTO_SUBMITTED)
     
-
-
     logger.debug("Successfully parsed mail")
     return parsedEMail
+
+
+def parseMailbox(mailboxBytes):
+    """Parses the mailbox name as received by the scanMailboxes method in :mod:`Emailkasten.Fetchers`.
+    Decodes using :func:`_decodeText`.
+
+    Args:
+        mailboxBytes (bytes): The mailbox name in bytes as received from the mail server.
+    
+    Returns: 
+        str: The name of the mailbox independent of its parent folders
+    """
+    mailbox = _decodeText(mailboxBytes)
+    mailboxName = mailbox.split("\"/\"")[1].strip()
+    if mailboxName == "":
+        mailboxName = mailbox.split("\" \"")[1].strip()
+    return mailboxName
