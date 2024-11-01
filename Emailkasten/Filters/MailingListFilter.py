@@ -17,7 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import django_filters
-from ..Models.EMailModel import EMailModel
+from ..Models.MailingListModel import MailingListModel
 
 class MailingListFilter(django_filters.FilterSet):
     
@@ -46,7 +46,7 @@ class MailingListFilter(django_filters.FilterSet):
     correspondent_address__in = django_filters.BaseInFilter(field_name='correspondent__email_address', lookup_expr='in')
 
     class Meta:
-        model = EMailModel
+        model = MailingListModel
         fields = {
             'list_id': ['icontains', 'contains', 'exact', 'iexact', 'startswith', 'istartswith', 'endswith', 'iendswith', 'regex', 'iregex', 'in'],
             'list_owner': ['icontains', 'contains', 'exact', 'iexact', 'startswith', 'istartswith', 'endswith', 'iendswith', 'regex', 'iregex', 'in'],

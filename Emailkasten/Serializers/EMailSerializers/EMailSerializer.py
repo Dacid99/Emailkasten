@@ -22,7 +22,7 @@ from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from ..AttachmentSerializers.AttachmentSerializer import AttachmentSerializer
 from ..EMailCorrespondentsSerializers.EMailCorrespondentsSerializer import EMailCorrespondentSerializer
             
-class EMailSerializer(serializers.Modelserializer):
+class EMailSerializer(serializers.ModelSerializer):
     attachments = AttachmentSerializer(many=True, read_only=True)
     correspondents = serializers.SerializerMethodField()
 
