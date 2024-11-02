@@ -295,6 +295,7 @@ def _parseAttachments(mailMessage):
 
 def _parseAdditionalHeader(mailMessage, headerKey):
     """Parses the given header of the given mailmessage.
+    For existing header fields see https://www.iana.org/assignments/message-headers/message-headers.xhtml.
 
     Args:
         mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
@@ -345,7 +346,7 @@ def _parseMailinglist(mailMessage):
         mailMessage (:python::class:`email.message.EmailMessage`): The mailmessage to be parsed.
 
     Returns:
-        dict:The parsed mailinglist headers in the mailmessage.
+        dict: The parsed mailinglist headers in the mailmessage.
     """
     mailinglist = {}
     mailinglist[ParsedMailKeys.MailingList.ID] = _parseAdditionalHeader(mailMessage, ParsedMailKeys.MailingList.ID)

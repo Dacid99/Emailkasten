@@ -31,14 +31,13 @@ class IMAPFetcher:
     Allows fetching of mails and mailboxes from an account on an IMAP host.
 
     Attributes:
-        PROTOCOL (string): Name of the used protocol, refers to :class:`constants.MailFetchingProtocols`.
-        AVAILABLE_FETCHING_CRITERIA (list): List of all criteria available for fetching. For a list of all existing IMAP criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4.
         account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
         logger (:python::class:`logging.Logger`): The logger for this instance.
         _mailhost (:python::class:`imaplib.IMAP4`): The IMAP host this instance connects to.
     """
 
     PROTOCOL = constants.MailFetchingProtocols.IMAP
+    """Name of the used protocol, refers to :attr:`constants.MailFetchingProtocols.IMAP`."""
     
     AVAILABLE_FETCHING_CRITERIA = [
         constants.MailFetchingCriteria.ALL,
@@ -53,6 +52,7 @@ class IMAPFetcher:
         constants.MailFetchingCriteria.MONTHLY,
         constants.MailFetchingCriteria.ANNUALLY
     ]
+    """List of all criteria available for fetching. Refers to :class:`constants.MailFetchingCriteria`. For a list of all existing IMAP criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4."""
 
 
     def __init__(self, account):

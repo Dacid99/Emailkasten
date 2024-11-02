@@ -20,119 +20,156 @@ import os
 
 class MailFetchingCriteria:
     """Namespace class for all implemented mail fetching criteria constants.
+    For a list of all existing IMAP criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4
     Note that IMAP does not support time just dates. So we are always refering to full days.
-    
-    Attributes:
-        RECENT (str): Filter by "RECENT" flag.
-        UNSEEN (str): Filter by "UNSEEN" flag.
-        ALL (str): Filter by "ALL" flag.
-        NEW (str): Filter by "NEW" flag.
-        OLD (str): Filter by "OLD" flag.
-        FLAGGED (str): Filter by "FLAGGED" flag.
-        ANSWERED (str): Filter by "ANSWERED" flag.
-        DAILY (str): Filter using "SENTSINCE" for mails sent the previous day or later.
-        WEEKLY (str): Filter using "SENTSINCE" for mails sent the previous week (counting back from now) or later.
-        MONTHLY (str): Filter using "SENTSINCE" for mails sent the previous 4 weeks (counting back from now) or later.
-        ANNUALLY (str): Filter using "SENTSINCE" for mails sent the previous 52 weeks (counting back from now) or later.
-    """
+    POP does not support queries at all, so everything will be fetched."""
+
     RECENT = "RECENT"
+    """Filter by "RECENT" flag."""
+
     UNSEEN = "UNSEEN"
+    """Filter by "UNSEEN" flag."""
+
     ALL = "ALL"
+    """Filter by "ALL" flag."""
+
     NEW = "NEW"
+    """Filter by "NEW" flag."""
+
     OLD = "OLD"
+    """Filter by "OLD" flag."""
+
     FLAGGED = "FLAGGED"
+    """Filter by "FLAGGED" flag."""
+
     ANSWERED = "ANSWERED"
+    """Filter by "ANSWERED" flag."""
+
     DAILY = "DAILY"
+    """Filter using "SENTSINCE" for mails sent the previous day or later."""
+
     WEEKLY = "WEEKLY"
+    """Filter using "SENTSINCE" for mails sent the previous week (counting back from now) or later."""
+
     MONTHLY = "MONTHLY"
+    """Filter using "SENTSINCE" for mails sent the previous 4 weeks (counting back from now) or later."""
+
     ANNUALLY = "ANNUALLY"
+    """Filter using "SENTSINCE" for mails sent the previous 52 weeks (counting back from now) or later."""
+
 
     def __iter__(self):
-        """Method to allow easier referencing of the members by listing"""
+        """Method to allow easier referencing of the members by listing."""
         return iter((attr, value) for attr, value in self.__class__.__dict__.items() if not attr.startswith("__"))
 
     def __getitem__(self, key):
         return getattr(self, key)
 
 
+
 class MailFetchingProtocols:
-    """Namespace class for all implemented mail protocols constants.
-    
-    Attributes:
-        IMAP (str): The IMAP4 protocol.
-        IMAP_SSL (str): The IMAP4 protocol over SSL.
-        POP3 (str): The POP3 protocol.
-        POP3_SSL (str): The POP3 protocol over SSL.
-        EXCHANGE (str): Microsofts Exchange protocol.
-    """
+    """Namespace class for all implemented mail protocols constants."""
+
     IMAP = "IMAP"
+    """The IMAP4 protocol."""
+    
     IMAP_SSL = "IMAP_SSL"
+    """The IMAP4 protocol over SSL."""
+    
     POP3 = "POP3"
+    """The POP3 protocol."""
+    
     POP3_SSL = "POP3_SSL"
+    """The POP3 protocol over SSL."""
+    
     EXCHANGE = "EXCHANGE"
+    """Microsofts Exchange protocol."""
+
+
 
 class EMailArchiverDaemonConfiguration:
-    """Namespace class for all configurations constants for the :class:`Emailkasten.EMailArchiverDaemon` instances.
-    
-    Attributes:
-        CYCLE_PERIOD_DEFAULT (int): The default cycle period of the daemons, in seconds, initially set to 60.
-        RESTART_TIME (int): The default restart time for the daemons in case of a crash, in seconds, initially set to 10.
-    """
+    """Namespace class for all configurations constants for the :class:`Emailkasten.EMailArchiverDaemon` instances."""
+
     CYCLE_PERIOD_DEFAULT = 60
+    """The default cycle period of the daemons in seconds."""
+
     RESTART_TIME = 10
+    """The default restart time for the daemons in case of a crash in seconds."""
+
+
 
 class StorageConfiguration:
-    """Namespace class for all configurations constants for the :class:`Emailkasten.Models.StorageModel`.
+    """Namespace class for all configurations constants for the :class:`Emailkasten.Models.StorageModel`."""
     
-    Attributes:
-        MAX_SUBDIRS_PER_DIR (int): The maximum numbers of subdirectories in one storage unit. Initially set to 1000. Must not exceed 64000 for ext4 filesystem! 
-        STORAGE_PATH (str): The path to the storage for the saved data. Intially set to /mnt/archive. Must match the path in the docker-compose.yml to ensure data safety.
-        PRERENDER_IMAGETYPE (str): The image format for the prerendered eml files. Initially set to jpg.
-    """
     MAX_SUBDIRS_PER_DIR = 1000
+    """The maximum numbers of subdirectories in one storage unit. Must not exceed 64000 for ext4 filesystem! """
+    
     STORAGE_PATH = "/mnt/archive"
+    """The path to the storage for the saved data. Must match the path in the docker-compose.yml to ensure data safety."""
+    
     PRERENDER_IMAGETYPE = 'jpg'
+    """The image format for the prerendered eml files."""
+
+
 
 class LoggerConfiguration:
-    """Namespace class for all configurations constants for the application loggers.
-    
-    Attributes:
-        APP_LOGFILE_PATH (str): The path to the Emailkasten logfile. Initially set to /var/log/Emailkasten.log . 
-        DJANGO_LOGFILE_PATH (str):  The path to the django logfile. Initially set to /var/log/django.log . 
-        APP_LOG_LEVEL (str):  The loglevel to the Emailkasten logfile. Is being set from an environment variable of the same name. Defaults to INFO. 
-        DJANGO_LOG_LEVEL (str): The loglevel to the django logfile. Is being set from an environment variable of the same name. Defaults to INFO. 
-        ROOT_LOG_LEVEL (str): The loglevel to the root console logger. Is being set from an environment variable of the same name. Defaults to INFO. 
-        LOGFILE_MAXSIZE (int): The maximum file size of a logfile. Initially set to 10 MiB.
-        LOGFILE_BACKUP_NUMBER (int): The maximum number of backup logfiles to keep. Initially set to 3.
-        LOG_FORMAT (str): The format of the log messages for all loggers. Initially set to '{asctime} {levelname} - {name}.{funcName}: {message}'.
-    """
+    """Namespace class for all configurations constants for the application loggers."""
+   
     APP_LOGFILE_PATH = "Emailkasten.log" # /var/log/
+    """The path to the Emailkasten logfile."""
+
     DJANGO_LOGFILE_PATH = "django.log"  # /var/log/
+    """The path to the django logfile."""
+
     APP_LOG_LEVEL = os.environ.get('APP_LOG_LEVEL', 'INFO')
+    """The loglevel to the Emailkasten logfile. Is being set from an environment variable of the same name."""
+    
     DJANGO_LOG_LEVEL = os.environ.get('DJANGO_LOG_LEVEL', 'INFO')
+    """The loglevel to the django logfile. Is being set from an environment variable of the same name."""
+    
     ROOT_LOG_LEVEL = os.environ.get('ROOT_LOG_LEVEL', 'INFO')
+    """The loglevel to the root console logger. Is being set from an environment variable of the same name."""
+    
     LOGFILE_MAXSIZE = 10 * 1024 * 1024 # 10 MiB
+    """The maximum file size of a logfile."""
+    
     LOGFILE_BACKUP_NUMBER = 3 
+    """The maximum number of backup logfiles to keep."""
+    
     LOG_FORMAT = '{asctime} {levelname} - {name}.{funcName}: {message}'
+    """The format of the log messages for all loggers."""
+
+
 
 class ParsingConfiguration:
-    """Namespace class for all configurations constants for the parsing of mails.
-    
-    Attributes:
-        CHARSET_DEFAULT (str): The default charset used for parsing of text. Initially set to utf-8.
-        STRIP_TEXTS (bool): Whether or not to strip whitespace from textfields like bodytext and subject. Initially set to True.
-        THROW_OUT_SPAM (bool): Whether or not to ignore emails that have a spam flag. Initially set to True.
-        APPLICATION_TYPES (list): A list of application types to parse as attachments. Initially set to ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-    """
+    """Namespace class for all configurations constants for the parsing of mails."""
+
     CHARSET_DEFAULT = 'utf-8'
+    """The default charset used for parsing of text."""
+    
     STRIP_TEXTS = True
+    """Whether or not to strip whitespace from textfields like bodytext and subject."""
+    
     THROW_OUT_SPAM = True
+    """Whether or not to ignore emails that have a spam flag."""
+    
     APPLICATION_TYPES = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+    """A list of application types to parse as attachments."""
+    
     DATE_DEFAULT = "1971-01-01 00:00:00"
+    """The fallback date to use if none is found in a mail."""
+    
     DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
+    """The mail datetime format as specified in RFC5322. Must match the pattern of `DATE_DEFAULT`."""
+
+
     
 class ProcessingConfiguration:
+    """Namespace class for all configurations constants for the processing, especially the prerendering, of mails."""
+
     DUMP_DIRECTORY = '/tmp/images'
+    """The directory path where temporary images of the prerendering process will be placed."""
+
     HTML_FORMAT = """
         <html>
         <head>
@@ -149,18 +186,43 @@ class ProcessingConfiguration:
         </body>
         </html>
         """
-    
+    """The html template to wrap around plain text before prerendering."""
+
+
+
 class FetchingConfiguration:
+    """Namespace class for all configurations constants for the fetching of mails."""
+
     SAVE_TO_EML_DEFAULT = True
-    SAVE_ATTACHMENTS_DEFAULT = True
-    SAVE_IMAGES_DEFAULT = True
+    """The default setting whether to store mails as eml. Initially set to True."""
     
+    SAVE_ATTACHMENTS_DEFAULT = True
+    """The default setting whether to store attachments. Initially set to True."""
+    
+    SAVE_IMAGES_DEFAULT = True
+    """The default setting whether to store images. Initially set to True."""
+    
+
+
 class DatabaseConfiguration:
+    """Namespace class for all configurations constants for the database."""
+
     NAME = os.environ.get("DB_NAME", "emailkasten")
+    """The name of the database on the mariadb server. Can be set from docker-compose.yml."""
+    
     USER = os.environ.get("DB_USER", "user")
+    """The name of the database user. Can be set from docker-compose.yml."""
+    
     PASSWORD = os.environ.get("DB_PASSWORD", "passwd")
+    """The password of the database user. Can be set from docker-compose.yml."""
+
     RECONNECT_RETRIES = 10
+    """The number of reconnect attempt in case of database disconnect."""
+
     RECONNECT_DELAY = 30
+    """The delay between reconnect attempt in case of database disconnect."""
+
+
 
 class ParsedMailKeys:
     #Keys to the dict
@@ -175,6 +237,7 @@ class ParsedMailKeys:
     BODYTEXT = "Bodytext"
     
     class Header:
+        """For existing header fields see https://www.iana.org/assignments/message-headers/message-headers.xhtml."""
         MESSAGE_ID = "Message-ID"
         IN_REPLY_TO = "In-Reply-To"
         

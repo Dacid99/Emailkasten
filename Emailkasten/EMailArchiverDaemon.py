@@ -28,7 +28,6 @@ class EMailArchiverDaemon:
     """Daemon for continuous fetching and saving of mails to database.
 
     Attributes:
-        runningDaemons (dict): A static dictionary of all active daemon instances with their database IDs as keys.
         logger (:python::class:`logging.Logger`): Logger for this instance.
         thread (:python::class:`threading.Thread`): The thread that the daemon runs on.
         isRunning (bool): Whether this daemon instance is active.
@@ -36,7 +35,9 @@ class EMailArchiverDaemon:
         mailbox (:class:`Emailkasten.Models.MailboxModel`): The database model of the mailbox this instance fetches from.
         account (:class:`Emailkasten.Models.AccountModel`): The database model of the account this instance fetches from.
     """
+
     runningDaemons = {}
+    """A static dictionary of all active daemon instances with their database IDs as keys."""
     
     @staticmethod
     def startDaemon(daemonModel):
@@ -44,7 +45,7 @@ class EMailArchiverDaemon:
         If it is already in the dict does nothing.
 
         Args:
-            daemonModel (:class:`Emailkasten.Models.DaemonModel): The data for the daemon.
+            daemonModel (:class:`Emailkasten.Models.DaemonModel`): The data for the daemon.
 
         Returns: 
             :rest_framework::class:`response.Response`: A response detailing what has done. 
@@ -156,7 +157,7 @@ class EMailArchiverDaemon:
 
     def cycle(self):
         """The routine of this daemon. 
-        Fetches and saves mails using :func:`Emailkasten.mailProcessing.fetchMails. Logs the execution time.
+        Fetches and saves mails using :func:`Emailkasten.mailProcessing.fetchMails`. Logs the execution time.
         
         Returns:
             None

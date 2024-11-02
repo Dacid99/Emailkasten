@@ -28,18 +28,19 @@ class POP3Fetcher:
     Allows fetching of mails and mailboxes from an account on an POP host.
 
     Attributes:
-        PROTOCOL (string): Name of the used protocol, refers to :class:`constants.MailFetchingProtocols`.
-        AVAILABLE_FETCHING_CRITERIA (list): List of all criteria available for fetching. 
         account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
         logger (:python::class:`logging.Logger`): The logger for this instance.
         _mailhost (:python::class:`poplib.POP3`): The POP host this instance connects to.
     """
 
     PROTOCOL = constants.MailFetchingProtocols.POP3
+    """Name of the used protocol, refers to :attr:`constants.MailFetchingProtocols.POP3`."""
 
     AVAILABLE_FETCHING_CRITERIA = [
         constants.MailFetchingCriteria.ALL
     ]
+    """List of all criteria available for fetching. Refers to :class:`constants.MailFetchingCriteria`."""
+
 
     def __init__(self, account):
         """Constructor, starts the POP connection and logs into the account.
