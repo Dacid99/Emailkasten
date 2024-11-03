@@ -24,6 +24,7 @@ Functions:
     :func:`testAccount`: Tests whether the data in an accountmodel is correct and allows connecting and logging in to the mailhost and account.
     :func:`scanMailboxes`: Scans the given mailaccount for mailboxes, inserts them into the database.
     :func:`fetchMails`: Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database. 
+    :func:`_isSpam`: Checks the spam headers of the parsed mail to decide whether the mail is spam.
 
 Global variables:
     logger (:python::class:`logging.Logger`): The logger for this module.
@@ -188,7 +189,7 @@ def fetchMails(mailbox, account, criterion):
             parsedMail = parseMail(mailData)
 
             if constants.ParsingConfiguration.THROW_OUT_SPAM:
-                if parsedMail[constants.ParsedMailKeys.Header.X_SPAM_FLAG] and parsedMail[constants.ParsedMailKeys.Header.X_SPAM_FLAG] != 'NO':
+                if _isSpam(parsedMail):
                     logger.debug("Not saving email, it is flagged as spam.")
                     continue
 
@@ -221,4 +222,16 @@ def fetchMails(mailbox, account, criterion):
         logger.info("Successfully parsed emails from data and saved to db.")
     else:
         logger.info("Parsed emails from data and saved to db with an error.")
+
+
+def _isSpam(parsedMail):
+    """Checks the spam headers of the parsed mail to decide whether the mail is spam.
+
+    Args:
+        parsedMail (dict): The mail to be checked for spam.
+
+    Returns:
+        bool: Whether the mail is considered spam.
+    """
+    return parsedMail[constants.ParsedMailKeys.Header.X_SPAM_FLAG] and parsedMail[constants.ParsedMailKeys.Header.X_SPAM_FLAG] != 'NO'
         
