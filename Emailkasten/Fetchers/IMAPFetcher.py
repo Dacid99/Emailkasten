@@ -47,6 +47,7 @@ class IMAPFetcher:
         constants.MailFetchingCriteria.NEW,
         constants.MailFetchingCriteria.OLD,
         constants.MailFetchingCriteria.FLAGGED,
+        constants.MailFetchingCriteria.DRAFT,
         constants.MailFetchingCriteria.ANSWERED,
         constants.MailFetchingCriteria.DAILY,
         constants.MailFetchingCriteria.WEEKLY,

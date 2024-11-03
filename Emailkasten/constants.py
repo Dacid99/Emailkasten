@@ -42,6 +42,9 @@ class MailFetchingCriteria:
     FLAGGED = "FLAGGED"
     """Filter by "FLAGGED" flag."""
 
+    DRAFT = "DRAFT"
+    """Filter by "DRAFT" flag."""
+
     ANSWERED = "ANSWERED"
     """Filter by "ANSWERED" flag."""
 
