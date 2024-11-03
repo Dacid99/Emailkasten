@@ -16,12 +16,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
+import logging
 
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 from .. import constants
 from .EMailModel import EMailModel
 
+
+logger = logging.getLogger(__name__)
 
 class AttachmentModel(models.Model):
     """Database model for an attachment file in a mail."""
@@ -56,6 +62,7 @@ class AttachmentModel(models.Model):
 
     def __str__(self):
         return f"Attachment {self.file_name}"
+    
 
     class Meta:
         db_table = "attachments"
@@ -63,3 +70,32 @@ class AttachmentModel(models.Model):
 
         unique_together = ("file_path", "email")
         """`file_path` and `email` in combination are unique."""
+
+
+
+@receiver(post_delete, sender=AttachmentModel)
+def post_delete_attachment(sender, instance, **kwargs):
+    """Receiver function removing an attachment from the storage when its db entry is deleted.
+
+    Args:
+        sender (type): The class type that sent the post_delete signal.
+        instance (:class:`Emailkasten.Models.AttachmentModel`): The instance that has been deleted.
+    
+    Returns:
+        None
+    """
+    if instance.file_path:
+        logger.debug(f"Removing {str(instance)} from storage ...")
+        try:
+            os.remove(instance.file_path)
+            logger.debug("Successfully removed the attachment file from storage.", exc_info=True)
+        except FileNotFoundError:
+            logger.error(f"{instance.file_path} was not found!", exc_info=True)
+        except PermissionError:
+            logger.error(f"Permission to remove {instance.file_path} was denied!", exc_info=True)
+        except IsADirectoryError:
+            logger.error(f"{instance.file_path} is a directory, not a file!", exc_info=True)
+        except OSError:
+            logger.error(f"An OS error occured removing {instance.file_path}!", exc_info=True)
+        except Exception:
+            logger.error(f"An unexpected error occured removing {instance.file_path}!", exc_info=True)

@@ -16,12 +16,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
+import os
+
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 from .. import constants
 from .AccountModel import AccountModel
 from .MailingListModel import MailingListModel
 
+
+logger = logging.getLogger(__name__)
 
 class EMailModel(models.Model):
     """Database model for an email."""
@@ -136,3 +143,47 @@ class EMailModel(models.Model):
 
         unique_together = ("message_id", "account")
         """`message_id` and `account` in combination are unique."""
+
+
+@receiver(post_delete, sender=EMailModel)
+def post_delete_email_files(sender, instance, **kwargs):
+    """Receiver function removing the files for an email from the storage when ita db entry is deleted.
+
+    Args:
+        sender (type): The class type that sent the post_delete signal.
+        instance (:class:`Emailkasten.Models.EMailModel`): The instance that has been deleted.
+
+    Returns:
+        None
+    """
+    logger.debug(f"Removing files for {str(instance)} from storage ...")
+    if instance.eml_filepath:
+        try:
+            os.remove(instance.eml_filepath)
+            logger.debug("Successfully removed the emails .eml file from storage.", exc_info=True)
+        except FileNotFoundError:
+            logger.error(f"{instance.eml_filepath} was not found!", exc_info=True)
+        except PermissionError:
+            logger.error(f"Permission to remove {instance.eml_filepath} was denied!", exc_info=True)
+        except IsADirectoryError:
+            logger.error(f"{instance.eml_filepath} is a directory, not a file!", exc_info=True)
+        except OSError:
+            logger.error(f"An OS error occured removing {instance.eml_filepath}!", exc_info=True)
+        except Exception:
+            logger.error(f"An unexpected error occured removing {instance.eml_filepath}!", exc_info=True)
+    
+    if instance.prerender_filepath:
+        try:
+            os.remove(instance.prerender_filepath)
+            logger.debug("Successfully removed the emails .eml file from storage.", exc_info=True)
+        except FileNotFoundError:
+            logger.error(f"{instance.prerender_filepath} was not found!", exc_info=True)
+        except PermissionError:
+            logger.error(f"Permission to remove {instance.prerender_filepath} was denied!", exc_info=True)
+        except IsADirectoryError:
+            logger.error(f"{instance.prerender_filepath} is a directory, not a file!", exc_info=True)
+        except OSError:
+            logger.error(f"An OS error occured removing {instance.prerender_filepath}!", exc_info=True)
+        except Exception:
+            logger.error(f"An unexpected error occured removing {instance.prerender_filepath}!", exc_info=True)
+    
