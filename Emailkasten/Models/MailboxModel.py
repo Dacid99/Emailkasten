@@ -16,13 +16,20 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
+
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from ..constants import FetchingConfiguration, MailFetchingCriteria
 from ..Fetchers.IMAPFetcher import IMAPFetcher
 from ..Fetchers.POP3Fetcher import POP3Fetcher
 from .AccountModel import AccountModel
 
+
+logger = logging.getLogger(__name__)
+"""The logger instance for this module."""
 
 class MailboxModel(models.Model):
     """Database model for a mailbox in a mail account."""
@@ -53,7 +60,8 @@ class MailboxModel(models.Model):
 
     is_healthy = models.BooleanField(default=True)
     """Flags whether the mailbox can be accessed and read. True by default. 
-    When the :attr:`AccountModel.is_healthy` field changes to `False`, this field is updated accordingly."""
+    When the :attr:`Emailkasten.Models.AccountModel.is_healthy` field changes to `False`, this field is updated accordingly.
+    When this field becomes `True` after being `False`, the :attr:`Emailkasten.Models.AccountModel.is_healthy` field of :attr:`account` will be set to `True` as well."""
 
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""
@@ -89,3 +97,25 @@ class MailboxModel(models.Model):
         """`name` and `account` in combination are unique."""
 
 
+
+@receiver(post_save, sender=MailboxModel)
+def post_save_is_healthy(sender, instance, **kwargs):
+    """Receiver function flagging the account of a mailbox as healthy once that mailbox becomes healthy again.
+
+    Args:
+        sender (type): The class type that sent the post_save signal.
+        instance (:class:`Emailkasten.Models.MailboxModel`): The instance that has been saved.
+    
+    Returns:
+        None
+    """
+    if instance.is_healthy:
+        try:
+            oldInstance = MailboxModel.objects.get(pk=instance.pk)
+            if oldInstance.is_healthy is not instance.is_healthy :
+                logger.debug(f"{str(instance)} has become healthy, flagging its account as healthy ...")
+                instance.account.update(is_healthy=instance.is_healthy)
+                logger.debug("Successfully flagged account as healthy.")
+
+        except MailboxModel.DoesNotExist:
+            logger.debug(f"Previous instance of {str(instance)} not found, no health flag comparison possible.")
