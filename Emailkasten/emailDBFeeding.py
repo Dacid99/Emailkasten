@@ -343,7 +343,7 @@ def insertEMail(emailData, account):
     
 
             for mentionType, correspondentHeader in ParsedMailKeys.Correspondent():
-                if (correspondentHeader is ParsedMailKeys.Correspondent.FROM):   # from correspondent has been added earlier, just add the connection to bridge table here
+                if (correspondentHeader == ParsedMailKeys.Correspondent.FROM):   # from correspondent has been added earlier, just add the connection to bridge table here
                     if fromCorrespondent:
                 
                         _insertEMailCorrespondent(emailEntry, fromCorrespondentEntry, mentionType)
@@ -362,7 +362,7 @@ def insertEMail(emailData, account):
                             
                         logger.debug(f"Successfully added entries for {mentionType} correspondents to DB.")
                     else:
-                        if mentionType is ParsedMailKeys.Correspondent.TO:
+                        if mentionType == ParsedMailKeys.Correspondent.TO:
                             logger.warning(f"No {mentionType} correspondent found in mail, not writing to DB!")
                         else:
                             logger.debug(f"No {mentionType} correspondent found in mail, not writing to DB!")

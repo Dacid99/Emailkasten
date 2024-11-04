@@ -179,16 +179,16 @@ class IMAPFetcher:
             None if `criterionName` is not in `AVAILABLE_FETCHING_CRITERIA`.
         """
         if criterionName in IMAPFetcher.AVAILABLE_FETCHING_CRITERIA:
-            if criterionName is constants.MailFetchingCriteria.DAILY:
+            if criterionName == constants.MailFetchingCriteria.DAILY:
                 startTime = timezone.now() - datetime.timedelta(days=1)
                 return "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
-            elif criterionName is constants.MailFetchingCriteria.WEEKLY:
+            elif criterionName == constants.MailFetchingCriteria.WEEKLY:
                 startTime = timezone.now() - datetime.timedelta(weeks=1)
                 return "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
-            elif criterionName is constants.MailFetchingCriteria.MONTHLY:
+            elif criterionName == constants.MailFetchingCriteria.MONTHLY:
                 startTime = timezone.now() - datetime.timedelta(weeks=4)
                 return "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
-            elif criterionName is constants.MailFetchingCriteria.ANNUALLY:
+            elif criterionName == constants.MailFetchingCriteria.ANNUALLY:
                 startTime = timezone.now() - datetime.timedelta(weeks=52)
                 return "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
             else:

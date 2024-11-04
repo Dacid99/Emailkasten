@@ -20,7 +20,6 @@
 - general save decorator in filemanagement
 - refine storage management logging and error correction 
 - documentation check for missing :flags: before ``
-- replace prolematic 'is' comparisons
   
 ### Work in progress
 - documentation 
