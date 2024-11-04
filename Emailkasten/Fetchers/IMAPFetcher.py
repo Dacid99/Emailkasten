@@ -59,7 +59,7 @@ class IMAPFetcher:
 
     def __init__(self, account):
         """Constructor, starts the IMAP connection and logs into the account.
-        If the connection could not be established, `_mailhost` remains None and the `account` is marked as unhealthy.
+        If the connection or session could not be established, `_mailhost` remains None and the `account` is marked as unhealthy.
 
         Args:
             account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
@@ -73,9 +73,29 @@ class IMAPFetcher:
 
         try:
             self.connectToHost()
+        except imaplib.IMAP4.error:
+            self.logger.error(f"An IMAP error occured connecting to {str(self.account)}!", exc_info=True)
+            self._mailhost = None
+            self.account.is_healthy = False
+            self.account.save()
+            self.logger.info(f"Marked {str(self.account)} as unhealthy")
+        except Exception:
+            self.logger.error(f"An unexpected error occured connecting to {str(self.account)}!", exc_info=True)
+            self._mailhost = None
+            self.account.is_healthy = False
+            self.account.save()
+            self.logger.info(f"Marked {str(self.account)} as unhealthy")
+
+        try:
             self.login()
         except imaplib.IMAP4.error:
-            self.logger.error(f"Failed logging into {str(self.account)}!", exc_info=True)
+            self.logger.error(f"An IMAP error occured logging into {str(self.account)}!", exc_info=True)
+            self._mailhost = None
+            self.account.is_healthy = False
+            self.account.save()
+            self.logger.info(f"Marked {str(self.account)} as unhealthy")
+        except Exception:
+            self.logger.error(f"An unexpected error occured logging into {str(self.account)}!", exc_info=True)
             self._mailhost = None
             self.account.is_healthy = False
             self.account.save()
@@ -89,8 +109,9 @@ class IMAPFetcher:
             None
         """
         self.logger.debug(f"Connecting to {str(self.account)} ...")
-        self._mailhost = imaplib.IMAP4(host=self.account.mail_host, port=self.account.mail_host_port, timeout=None)
-        self.logger.debug("Successfully connected to mail account.")
+        self._mailhost = imaplib.IMAP4(host=self.account.mail_host, port=self.account.mail_host_port, timeout=None)      
+        self.logger.debug(f"Successfully connected to {str(self.account)}.")
+       
         
 
     def login(self):
@@ -185,6 +206,7 @@ class IMAPFetcher:
             self.logger.error(f"Fetching by {criterionName} is not available via protocol {self.PROTOCOL}!")
             return None
             
+
         
     def fetchBySearch(self, mailbox = 'INBOX', criterion ='RECENT'):
         """Fetches and returns maildata from a mailbox based on a given criterion.
@@ -238,8 +260,8 @@ class IMAPFetcher:
             return []
         
         self.logger.debug(f"Fetching {searchCriterion} messages in {mailbox} of {str(self.account)} ...")
+        mailDataList = []
         try:
-            mailDataList = []
             for number in messageNumbers[0].split():
                 status, messageData = self._mailhost.uid('FETCH', number, '(RFC822)')
                 if status != "OK":
@@ -272,6 +294,7 @@ class IMAPFetcher:
         
         self.logger.debug(f"Successfully searched and fetched {searchCriterion} messages in {mailbox} of {str(self.account)}.")
         return mailDataList
+
 
 
     def fetchMailboxes(self):

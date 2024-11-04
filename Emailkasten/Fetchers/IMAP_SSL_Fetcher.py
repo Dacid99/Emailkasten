@@ -34,7 +34,7 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
         """Overrides `connectToHost` from `IMAPFetcher` to use :class:`imaplib.IMAP4_SSL`."""
         self.logger.debug(f"Connecting to {str(self.account)} ...")
         self._mailhost = imaplib.IMAP4_SSL(host=self.account.mail_host, port=self.account.mail_host_port, ssl_context=None, timeout=None)
-        self.logger.debug("Success")
+        self.logger.debug(f"Successfully connected to {str(self.account)}.")
 
 
     @staticmethod

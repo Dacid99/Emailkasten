@@ -59,9 +59,29 @@ class POP3Fetcher:
         
         try:
             self.connectToHost()
+        except poplib.error_proto:
+            self.logger.error(f"A POP error occured connecting to {str(self.account)}!", exc_info=True)
+            self._mailhost = None
+            self.account.is_healthy = False
+            self.account.save()
+            self.logger.info(f"Marked {str(self.account)} as unhealthy")
+        except Exception:
+            self.logger.error(f"An unexpected error occured connecting to {str(self.account)}!", exc_info=True)
+            self._mailhost = None
+            self.account.is_healthy = False
+            self.account.save()
+            self.logger.info(f"Marked {str(self.account)} as unhealthy")
+
+        try:
             self.login()
         except poplib.error_proto:
-            self.logger.error(f"Failed connecting to {str(self.account)}!", exc_info=True)
+            self.logger.error(f"A POP error occured logging into {str(self.account)}!", exc_info=True)
+            self._mailhost = None
+            self.account.is_healthy = False
+            self.account.save()
+            self.logger.info(f"Marked {str(self.account)} as unhealthy")
+        except Exception:
+            self.logger.error(f"An unexpected error occured logging into {str(self.account)}!", exc_info=True)
             self._mailhost = None
             self.account.is_healthy = False
             self.account.save()
@@ -76,7 +96,7 @@ class POP3Fetcher:
         """
         self.logger.debug(f"Connecting to {str(self.account)} ...")
         self._mailhost = poplib.POP3(host=self.account.mail_host, port=self.account.mail_host_port, timeout=None)
-        self.logger.debug("Successfully connected to account.")
+        self.logger.debug(f"Successfully connected to {str(self.account)}.")
 
 
     def login(self):
@@ -101,9 +121,14 @@ class POP3Fetcher:
         if self._mailhost:
             try:
                 self._mailhost.quit()
-                self.logger.info(f"Gracefully closed connection to {str(self.account)}.")
+                self.logger.info(f"Successfully closed connection to {str(self.account)}.")
             except poplib.error_proto:
-                self.logger.error(f"Failed to close connection to {str(self.account)}!", exc_info=True)
+                self.logger.error(f"A POP error occured to closing connection to {str(self.account)}!", exc_info=True)
+            except Exception:
+                self.logger.error(f"An unexpected error occured closing connection to {str(self.account)}!", exc_info=True)
+        else:
+            self.logger.debug(f"Connection to {str(self.account)} was already closed.")
+        
 
 
     def __bool__(self):
@@ -138,32 +163,52 @@ class POP3Fetcher:
         Returns:
             list: List of :class:`email.Message` mails in the mailbox matching the criterion. Empty if no such messages are found or if an error occured.
         """
+        if not self._mailhost:
+            self.logger.error(f"No connection to {str(self.account)}!")   
+            return []
+        
         self.logger.debug(f"Fetching all messages in {str(self.account)} ...")
+
+        self.logger.debug(f"Listing all messages in {str(self.account)} ...")
         try:
             status, messageNumbersList, _ = self._mailhost.list()
             if status != b'+OK':
-                self.logger.error(f"Bad response trying to fetch mails, response {status}")
+                self.logger.error(f"Bad response trying to list mails, response {status}")
                 return []
+        except poplib.error_proto:
+            self.logger.error(f"A POP error occured listing all messages in {str(self.account)}!", exc_info=True)
+            return []
+        except Exception:
+            self.logger.error(f"An unexpected error occured listing all messages in {str(self.account)}!", exc_info=True)
+            return []
 
-            messageCount = len(messageNumbersList)
-            self.logger.debug(f"Found {messageCount} messages in {str(self.account)}.")
-            mailDataList = []
+        messageCount = len(messageNumbersList)
+        self.logger.debug(f"Found {messageCount} messages in {str(self.account)}.")
+
+        self.logger.debug(f"Retrieving all messages in {str(self.account)} ...")
+        mailDataList = []
+        try:
             for number in range(messageCount):
                 status, messageData, _ = self._mailhost.retr(number + 1)
                 if status != b'+OK':
-                    self.logger.error(f"Bad response trying to fetch mail {number}, response {status}")
+                    self.logger.error(f"Bad response trying to retrieve mail {number}, response {status}")
                     continue
                     
                 fullMessage = b'\n'.join(messageData)
                 mailDataList.append(fullMessage)
-
-            self.logger.debug(f"Successfully fetched all messages in {str(self.account)}.")
-            return mailDataList
                 
+            self.logger.debug(f"Successfully retrieved all messages in {str(self.account)}.")
+
         except poplib.error_proto:
-            self.logger.error(f"Failed to fetch all messages in {str(self.account)}!", exc_info=True)
+            self.logger.error(f"A POP error occured retrieving all messages in {str(self.account)}!", exc_info=True)
+            return []
+        except Exception:
+            self.logger.error(f"An unexpected error occured retrieving all messages in {str(self.account)}!", exc_info=True)
             return []
 
+        self.logger.debug(f"Successfully fetched all messages in {str(self.account)}.")
+        return mailDataList
+    
 
     def __enter__(self):
         """Framework method for use of class in 'with' statement, creates an instance."""

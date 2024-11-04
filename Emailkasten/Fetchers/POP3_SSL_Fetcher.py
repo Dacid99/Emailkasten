@@ -35,7 +35,7 @@ class POP3_SSL_Fetcher(POP3Fetcher):
         """Overrides `connectToHost` from `POP3Fetcher` to use :class:`poplib.POP3_SSL`."""
         self.logger.debug(f"Connecting to {str(self.account)} ...")
         self._mailhost = poplib.POP3_SSL(host=self.account.mail_host, port=self.account.mail_host_port, context=None, timeout=None)
-        self.logger.debug("Success")
+        self.logger.debug(f"Successfully connected to {str(self.account)}.")
 
     
     @staticmethod
