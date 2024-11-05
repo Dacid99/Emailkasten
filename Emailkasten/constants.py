@@ -118,11 +118,14 @@ class StorageConfiguration:
 class LoggerConfiguration:
     """Namespace class for all configurations constants for the application loggers."""
    
-    APP_LOGFILE_PATH = "Emailkasten.log" # /var/log/
-    """The path to the Emailkasten logfile."""
+    LOG_DIRECTORY_PATH = "" #/var/log
+    """The path to directory with the logs.  Must match the path in the docker-compose.yml to store the logs outside the container."""
 
-    DJANGO_LOGFILE_PATH = "django.log"  # /var/log/
-    """The path to the django logfile."""
+    APP_LOGFILE_NAME = "Emailkasten.log"
+    """The name of the Emailkasten logfile."""
+
+    DJANGO_LOGFILE_NAME = "django.log"
+    """The naeme of the django logfile."""
 
     APP_LOG_LEVEL = os.environ.get('APP_LOG_LEVEL', 'INFO')
     """The loglevel to the Emailkasten logfile. Is being set from an environment variable of the same name."""

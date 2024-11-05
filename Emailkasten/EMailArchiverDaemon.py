@@ -30,7 +30,7 @@ class EMailArchiverDaemon:
     """Daemon for continuous fetching and saving of mails to database.
 
     Attributes:
-        logger (:python::class:`logging.Logger`): Logger for this instance.
+        logger (:python::class:`logging.Logger`): Logger for this instance with a filehandler for the daemons own logfile.
         thread (:python::class:`threading.Thread`): The thread that the daemon runs on.
         isRunning (bool): Whether this daemon instance is active.
         daemon (:class:`Emailkasten.Models.DaemonModel`): The database model of this daemon. 
@@ -96,13 +96,27 @@ class EMailArchiverDaemon:
         Returns:
             None
         """
-        self.logger = logging.getLogger(__name__)
-        self.thread = None
-        self.isRunning = False
-        
         self.daemon = daemon
         self.mailbox = daemon.mailbox
         self.account = daemon.mailbox.account
+
+        self.thread = None
+        self.isRunning = False
+        
+        self.setupLogger()
+
+
+    
+    def setupLogger(self):
+        """Sets up the logger for the daemon with an additional filehandler for its own logfile.
+
+        Return:
+            None
+        """
+        self.logger = logging.getLogger(__name__ + f".daemon_{self.daemon.id}")
+        fileHandler = logging.FileHandler(self.daemon.log_filepath)
+        self.logger.addHandler(fileHandler)
+
 
 
     def start(self):

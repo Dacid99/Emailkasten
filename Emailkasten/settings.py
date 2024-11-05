@@ -181,7 +181,7 @@ LOGGING = {
         'django_logfile': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': constants.LoggerConfiguration.DJANGO_LOGFILE_PATH,
+            'filename': os.path.join(constants.LoggerConfiguration.LOG_DIRECTORY_PATH, constants.LoggerConfiguration.DJANGO_LOGFILE_NAME),
             'maxBytes': constants.LoggerConfiguration.LOGFILE_MAXSIZE,
             'backupCount': constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
             'formatter': 'default',
@@ -189,7 +189,7 @@ LOGGING = {
         'app_logfile': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': constants.LoggerConfiguration.APP_LOGFILE_PATH,
+            'filename': os.path.join(constants.LoggerConfiguration.LOG_DIRECTORY_PATH, constants.LoggerConfiguration.APP_LOGFILE_NAME),
             'maxBytes': constants.LoggerConfiguration.LOGFILE_MAXSIZE,
             'backupCount': constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
             'formatter': 'default',

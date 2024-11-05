@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
 
 from django.db import models
 
@@ -34,6 +35,12 @@ class DaemonModel(models.Model):
     
     is_running = models.BooleanField(default=False)
     """Flags whether the daemon is active. `False` by default."""
+
+    log_filepath = models.FilePathField(
+        path=constants.LoggerConfiguration.LOG_DIRECTORY_PATH, 
+        recursive=True, 
+        null=True)
+    """The logfile the daemon logs to. Is automatically set by :func:`save`."""
     
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""
@@ -49,4 +56,17 @@ class DaemonModel(models.Model):
         
     def __str__(self):
         return f"Mailfetcher daemon configuration for mailbox {self.mailbox}"
+
+
+    def save(self, *args, **kwargs):
+        """Extended :django::func:`django.models.Model.save` method to create and set :attr:`log_filepath` if it is null."""
+
+        if not self.log_filepath:
+            if self.pk is None:
+                super().save(*args, **kwargs)
+            self.log_filepath = os.path.join(constants.LoggerConfiguration.LOG_DIRECTORY_PATH, f"daemon_{self.id}")
+            if not os.path.exists(self.log_filepath):
+                with open(self.log_filepath, 'w'):
+                    pass
+        super().save(*args,**kwargs)
     
