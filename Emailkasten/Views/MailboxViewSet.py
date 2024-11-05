@@ -15,7 +15,9 @@
 
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+import os
 
+from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -98,3 +100,16 @@ class MailboxViewSet(viewsets.ModelViewSet):
         favoriteMailboxes = MailboxModel.objects.filter(is_favorite=True)
         serializer = self.get_serializer(favoriteMailboxes, many=True)
         return Response(serializer.data)
+
+
+    @action(detail=True, methods=['get'], url_path='daemon/log/download')
+    def log_download(self, request, pk=None):
+        mailbox = self.get_object()
+        daemonLogFilepath = mailbox.dameon.log_filepath
+        daemonLogFilename = os.path.basename(daemonLogFilepath)
+
+        if not os.path.exists(daemonLogFilepath):
+            raise Http404("Log file not found")
+        
+        response = FileResponse(open(daemonLogFilepath, 'rb'), as_attachment=True, filename=daemonLogFilename)
+        return response

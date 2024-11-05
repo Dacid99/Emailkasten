@@ -64,7 +64,7 @@ class DaemonModel(models.Model):
         if not self.log_filepath:
             if self.pk is None:
                 super().save(*args, **kwargs)
-            self.log_filepath = os.path.join(constants.LoggerConfiguration.LOG_DIRECTORY_PATH, f"daemon_{self.id}")
+            self.log_filepath = os.path.join(constants.LoggerConfiguration.LOG_DIRECTORY_PATH, f"daemon_{self.id}.log")
             if not os.path.exists(self.log_filepath):
                 with open(self.log_filepath, 'w'):
                     pass
