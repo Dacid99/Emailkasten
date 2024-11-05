@@ -100,7 +100,9 @@ class MailboxModel(models.Model):
 
 @receiver(post_save, sender=MailboxModel)
 def post_save_is_healthy(sender, instance, **kwargs):
-    """Receiver function flagging the account of a mailbox as healthy once that mailbox becomes healthy again.
+    """Receiver function doing twofold:
+    - once that mailbox becomes healthy again flags the account of that mailbox as healthy
+    - if a mailbox becomed unhealthy flags its daemon as unhealthy as well.
 
     Args:
         sender (type): The class type that sent the post_save signal.
@@ -112,9 +114,19 @@ def post_save_is_healthy(sender, instance, **kwargs):
     if instance.is_healthy:
         try:
             oldInstance = MailboxModel.objects.get(pk=instance.pk)
-            if oldInstance.is_healthy != instance.is_healthy :
+            if not oldInstance.is_healthy:
                 logger.debug(f"{str(instance)} has become healthy, flagging its account as healthy ...")
-                instance.account.update(is_healthy=instance.is_healthy)
+                instance.account.update(is_healthy=True)
+                logger.debug("Successfully flagged account as healthy.")
+
+        except MailboxModel.DoesNotExist:
+            logger.debug(f"Previous instance of {str(instance)} not found, no health flag comparison possible.")
+    else:
+        try:
+            oldInstance = MailboxModel.objects.get(pk=instance.pk)
+            if oldInstance.is_healthy:
+                logger.debug(f"{str(instance)} has become unhealthy, flagging its daemon as unhealthy ...")
+                instance.daemon.update(is_healthy=False)
                 logger.debug("Successfully flagged account as healthy.")
 
         except MailboxModel.DoesNotExist:
