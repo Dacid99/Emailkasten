@@ -22,9 +22,16 @@ from ...Models.ConfigurationModel import ConfigurationModel
 
 
 class ConfigurationSerializer(serializers.ModelSerializer):
+    """The standard serializer for a :class:`Emailkasten.Models.AccountModel`."""
+    
     class Meta:
         model = ConfigurationModel
+        
         fields = '__all__'
+        """Include all fields."""
+
         read_only_fields = ['created', 'updated']
+        """The :attr:`Emailkasten.Models.AccountModel.created`, and :attr:`Emailkasten.Models.AccountModel.updated` fields are read-only."""
+
         
         

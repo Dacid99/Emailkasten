@@ -22,6 +22,12 @@ from ...Models.ImageModel import ImageModel
 
 
 class ImageSerializer(serializers.ModelSerializer):
+    """The standard serializer for a :class:`Emailkasten.Models.ImageModel`.
+    Uses all fields except :attr:`Emailkasten.Models.ImageModel.file_path`.
+    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
+    
     class Meta:
         model = ImageModel
+        
         exclude = ['file_path']
+        """Exclude the :attr:`Emailkasten.Models.ImageModel.file_path` field."""

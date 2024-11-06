@@ -21,8 +21,15 @@ from rest_framework import serializers
 from ...Models.EMailModel import EMailModel
 
 
-class SimpleEmailSerializer(serializers.ModelSerializer):
+class SimpleEMailSerializer(serializers.ModelSerializer):
+    """A reduced serializer for a :class:`Emailkasten.Models.EMailModel`. 
+    Uses all fields excluding including the correspondents, the mailinglist and all images and attachments..
+    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
+
     class Meta:
         model = EMailModel
-        exclude = ['eml_filepath']
+        
+        exclude = ['eml_filepath', 'prerender_filepath']
+        """Exclude the :attr:`Emailkasten.Models.EMailModel.eml_filepath` and :attr:`Emailkasten.Models.EMailModel.prerender_filepath` fields."""
+
 

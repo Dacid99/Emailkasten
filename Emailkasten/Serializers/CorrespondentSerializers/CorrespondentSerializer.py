@@ -22,16 +22,38 @@ from ...Models.CorrespondentModel import CorrespondentModel
 from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from ..EMailCorrespondentsSerializers.CorrespondentEMailSerializer import \
     CorrespondentEMailSerializer
+from ..MailingListSerializers.SimpleMailingListSerializer import SimpleMailingListSerializer
 
 
 class CorrespondentSerializer(serializers.ModelSerializer):
+    """The standard serializer for a :class:`Emailkasten.Models.CorrespondentModel`. 
+    Uses all fields including all emails and mailinglists mentioning the correspondent.
+    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
+
     emails = serializers.SerializerMethodField()
+    """The emails are set from the :class:`Emailkasten.Models.EMailCorrespondentsModel` via :func:`get_emails`."""
+
+    mailinglist = SimpleMailingListSerializer(many=True, read_only=True)
+    """The mailinglists are serialized by :class:`Emailkasten.MailingListSerializers.MailingListSerializer`."""
+
 
     class Meta:
         model = CorrespondentModel
+
         fields = '__all__'
+        """Include all fields."""
+
 
     def get_emails(self, object):
+        """Serializes the emails connected to the instance to be serialized.  
+
+        Args:
+            object (:class:`Emailkasten.Models.CorrespondentModel`): The instance being serialized.
+
+        Returns:
+            Optional[:class:`Emailkasten.Serializers.EMailCorrespondentsSerializers.CorrespondentEMailSerializer`]: The serialized emails connected to the instance to be serialized.
+            None if the the user is not authenticated. 
+        """
         request = self.context.get('request')
         user = request.user if request else None
         if user:

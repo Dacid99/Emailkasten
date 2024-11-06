@@ -21,21 +21,46 @@ from rest_framework import serializers
 from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from ...Models.EMailModel import EMailModel
 from ..AttachmentSerializers.AttachmentSerializer import AttachmentSerializer
+from ..MailingListSerializers.SimpleMailingListSerializer import SimpleMailingListSerializer
 from ..EMailCorrespondentsSerializers.EMailCorrespondentsSerializer import \
     EMailCorrespondentSerializer
 from ..ImageSerializers.ImageSerializer import ImageSerializer
 
 
 class FullEMailSerializer(serializers.ModelSerializer):
+    """The standard serializer for a :class:`Emailkasten.Models.EMailModel`. 
+    Uses all fields including all correspondents and mailinglists mentioning the correspondent as well as all images and attachments.
+    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
+
     attachments = AttachmentSerializer(many=True, read_only=True)
+    """The attachments are serialized by :class:`Emailkasten.AttachmentSerializers.AttachmentSerializer.AttachmentSerializer`."""
+
     images = ImageSerializer(many=True, read_only=True)
+    """The images are serialized by :class:`Emailkasten.ImageSerializers.ImageSerializer.ImageSerializer`."""
+
+    mailinglist = SimpleMailingListSerializer(read_only=True)
+    """The attachments are serialized by :class:`Emailkasten.MailingListSerializers.SimpleMailingListSerializer.SimpleMailingListSerializer`."""
+
     correspondents = serializers.SerializerMethodField()
+    """The emails are set from the :class:`Emailkasten.Models.EMailCorrespondentsModel` via :func:`get_emails`."""
+
 
     class Meta:
         model = EMailModel
         exclude = ['eml_filepath', 'prerender_filepath']
+        """Exclude the :attr:`Emailkasten.Models.EMailModel.eml_filepath` and :attr:`Emailkasten.Models.EMailModel.prerender_filepath` fields."""
         
+
     def get_correspondents(self, object):
+        """Serializes the correspondents connected to the instance to be serialized.  
+
+        Args:
+            object (:class:`Emailkasten.Models.EMailModel`): The instance being serialized.
+
+        Returns:
+            Optional[:class:`Emailkasten.Serializers.EMailCorrespondentsSerializers.EMailCorrespondentSerializer.EMailCorrespondentSerializer`]: The serialized correspondents connected to the instance to be serialized.
+            None if the the user is not authenticated. 
+        """
         request = self.context.get('request')
         user = request.user if request else None
         if user:

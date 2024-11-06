@@ -19,12 +19,19 @@
 from rest_framework import serializers
 
 from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from ..EMailSerializers.SimpleEMailSerializer import SimpleEmailSerializer
+from ..EMailSerializers.SimpleEMailSerializer import SimpleEMailSerializer
 
 
 class CorrespondentEMailSerializer(serializers.ModelSerializer):
-    email = SimpleEmailSerializer()
+    """The serializer for emails from :class:`Emailkasten.Models.EMailCorrespondentsModel`. 
+    Used to serialize the emails belonging to a correspondent. Does not include this correpondent.
+    Use exclusively as read-only."""
+
+    email = SimpleEMailSerializer()
+    """The email is serialized by :class:`Emailkasten.Serializers.EMailSerializers.SimpleEMailSerializer.SimpleEMailSerializer`."""
 
     class Meta:
         model = EMailCorrespondentsModel
+
         fields = ['email', 'mention']
+        """Includes only :attr:`email` and :attr:`Emailkasten.Models.EMailCorrespondentsModel.mention`."""

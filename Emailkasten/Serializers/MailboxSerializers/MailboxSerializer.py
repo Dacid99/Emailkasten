@@ -22,12 +22,31 @@ from ...Models.MailboxModel import MailboxModel
 
 
 class MailboxSerializer(serializers.ModelSerializer):
+    """The standard serializer for a :class:`Emailkasten.Models.MailboxModel`.
+    Uses all fields except the daemon."""
+
     class Meta:
         model = MailboxModel
+        
         fields = '__all__'
+        """Includes all fields."""
+
         read_only_fields = ['name', 'account', 'created', 'updated']
+        """The :attr:`Emailkasten.Models.MailboxModel.name`, :attr:`Emailkasten.Models.MailboxModel.account`, :attr:`Emailkasten.Models.MailboxModel.created`, and :attr:`Emailkasten.Models.MailboxModel.updated` fields are read-only."""
+
 
     def validate_fetching_criterion(self, value):
+        """Check whether the fetching criterion is available for the serialized mailbox.
+
+        Args:
+            value (str): The given fetching criterion.
+
+        Returns: 
+            None
+
+        Raises:
+            :restframework::class:`serializers.ValidationError`: If the given fetching criterion is not available for the mailbox.
+        """
         if self.instance and value not in self.instance.getAvailableFetchingCriteria():
             raise serializers.ValidationError("Fetching criterion not available for this mailbox!")
     

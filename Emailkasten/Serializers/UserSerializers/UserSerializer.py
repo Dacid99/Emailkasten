@@ -22,13 +22,29 @@ from rest_framework.exceptions import ValidationError
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """A custom serializer for a :django::class:`contrib.auth.models.User`."""
+
     password = serializers.CharField(write_only=True)
+    """The password field is set to write-only for security reasons."""
+
 
     class Meta:
         model = User
+
         fields = ['username', 'password', 'is_staff']
+        """Includes only :django::attr:`contrib.auth.models.User.username`, :attr:`password` and :django::attr:`contrib.auth.models.User.is_staff`."""
+
 
     def create(self, validated_data):
+        """Creates a new :django::class:`contrib.auth.models.User` instance with given data.
+        Uses :django::func:`contrib.auth.models.UserManager.create_user` to ensure encryption of the password.
+
+        Args:
+            validated_data (dict): The validated data to create a new model instance with.
+
+        Returns:
+            :django::class:`django.contrib.auth.models.User`: The newly created model instance.
+        """
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
@@ -36,7 +52,20 @@ class UserSerializer(serializers.ModelSerializer):
         )
         return user
 
+
     def update(self, instance, validated_data):
+        """Overrides :django::func:`serializers.ModelSerializer.update` to ensure correct encryption of password and proper permission changes.
+
+        Args:
+            instance (:django::class:`contrib.auth.models.User`): The model instance to be updated.
+            validated_data (dict): The validated data update the model instance with.
+
+        Raises:
+            ValidationError: If the user is not staff, and is thus not permitted to make users staff.
+
+        Returns:
+            :django::class:`django.contrib.auth.models.User`: The updated model instance.
+        """
         instance.username = validated_data.get('username', instance.username)
 
         if 'password' in validated_data and validated_data['password']:

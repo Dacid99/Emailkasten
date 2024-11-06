@@ -22,6 +22,12 @@ from ...Models.AttachmentModel import AttachmentModel
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
+    """The standard serializer for a :class:`Emailkasten.Models.AttachmentModel`.
+    Uses all fields except :attr:`Emailkasten.Models.AttachmentModel.file_path`.
+    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
+    
     class Meta:
         model = AttachmentModel
+
         exclude = ['file_path']
+        """Exclude the :attr:`Emailkasten.Models.AttachmentModel.file_path` field."""

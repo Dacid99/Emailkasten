@@ -22,6 +22,10 @@ from ...Models.CorrespondentModel import CorrespondentModel
 
 
 class SimpleCorrespondentSerializer(serializers.ModelSerializer):
+    """A simplified serializer for a :class:`Emailkasten.Models.CorrespondentModel`. 
+    Uses all fields except for the emails mentioning the correspondent.
+    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
+
     class Meta:
         model = CorrespondentModel
         fields = '__all__'

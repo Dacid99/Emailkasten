@@ -19,7 +19,6 @@
 - combined filter for correspondent with mention 
 - general save decorator in filemanagement
 - refine storage management logging and error correction
-- health flag for daemons
 - streamable logs for daemons
 
 ### Work in progress
@@ -27,6 +26,7 @@
 - type annotations
  
 ## To test
+- available fetching criteria validation
 - daemontest
 - logfile for daemons
 - health flagging in fetchers

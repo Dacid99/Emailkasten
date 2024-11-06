@@ -23,14 +23,25 @@ from ..DaemonSerializers.DaemonSerializer import DaemonSerializer
 
 
 class MailboxWithDaemonSerializer(serializers.ModelSerializer):
+    """The standard serializer for a :class:`Emailkasten.Models.DaemonModel`.
+    Uses all fields including the daemon."""
+
     daemon = DaemonSerializer()
+    """The emails are serialized by :class:`Emailkasten.Serializers.DaemonSerializers.DaemonSerializer`."""
+
     
     class Meta:
         model = MailboxModel
+
         fields = '__all__'
+        """Includes all fields."""
+
         read_only_fields = ['name', 'account', 'created', 'updated']
+        """The :attr:`Emailkasten.Models.MailboxModel.name`, :attr:`Emailkasten.Models.MailboxModel.account`, :attr:`Emailkasten.Models.MailboxModel.created`, and :attr:`Emailkasten.Models.MailboxModel.updated` fields are read-only."""
+
         
     def update(self, instance, validated_data):
+        """Extends :restframework::func:`serializers.ModelSerializer.update` to allow changing the daemon data."""
         daemonData = validated_data.pop('daemon', None)
         if daemonData:
             daemonInstance = instance.daemon
@@ -40,7 +51,19 @@ class MailboxWithDaemonSerializer(serializers.ModelSerializer):
         
         return super().update(instance, validated_data)
 
+
     def validate_fetching_criterion(self, value):
+        """Check whether the fetching criterion is available for the serialized mailbox.
+
+        Args:
+            value (str): The given fetching criterion.
+
+        Returns: 
+            None
+
+        Raises:
+            :restframework::class:`serializers.ValidationError`: If the given fetching criterion is not available for the mailbox.
+        """
         if self.instance and value not in self.instance.getAvailableFetchingCriteria():
             raise serializers.ValidationError("Fetching criterion not available for this mailbox!")
     

@@ -23,15 +23,37 @@ from ..MailboxSerializers.MailboxSerializer import MailboxSerializer
 
 
 class AccountSerializer(serializers.ModelSerializer):
+    """The standard serializer for a :class:`Emailkasten.Models.AccountModel`.
+    Uses all fields except :attr:`Emailkasten.Models.AccountModel.user`."""
+
     password = serializers.CharField(max_length=255, write_only=True)
+    """The password field is set to write-only for security reasons."""
+
     mail_address = serializers.EmailField()
+    """The password field is a :restframework::class:`serializers.EmailField` for automatic validation of input."""
+
     mailboxes = MailboxSerializer(many=True, read_only=True)
+    """The mailboxes of the account are serialized by :class:`Emailkasten.Models.MailboxSerializer`."""
+
 
     class Meta:
         model = AccountModel
+
         exclude = ['user']
+        """Exclude the :attr:`Emailkasten.Models.AccountModel.user` field."""
+
         read_only_fields = ['is_healthy', 'created', 'updated']
+        """The :attr:`Emailkasten.Models.AccountModel.is_healthy`, :attr:`Emailkasten.Models.AccountModel.created`, and :attr:`Emailkasten.Models.AccountModel.updated` fields are read-only."""
+
 
     def validate_mail_address(self, value):
+        """Validation step, sets the mailaddress to lower case.
+
+        Args:
+            value (str): The mail address given by the user.
+
+        Returns:
+            str: The given mail address in lower case. 
+        """
         return value.lower()
     
