@@ -71,7 +71,7 @@ class StorageModel(models.Model):
         super().save(*args, **kwargs)
 
 
-    def _incrementSubdirectoryCount(self):
+    def incrementSubdirectoryCount(self):
         """Increments the :attr:`subdirectory_count` within the limits of :attr:`Emailkasten.constants.StorageConfiguration.MAX_SUBDIRS_PER_DIR`.
         If the result exceeds this limit, creates a new storage directory via :func:`_addNewDirectory`.
 
@@ -126,7 +126,7 @@ class StorageModel(models.Model):
         if not os.path.exists(subdirectoryPath):
             logger.debug("Creating new subdirectory in the current storage directory ...")
             os.makedirs(subdirectoryPath)
-            storageEntry._incrementSubdirectoryCount()
+            storageEntry.incrementSubdirectoryCount()
             logger.debug("Successfully created new subdirectory in the current storage directory.")
 
 

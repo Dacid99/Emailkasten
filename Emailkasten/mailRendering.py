@@ -22,18 +22,20 @@
     This modified code is part of an AGPLv3 project. See the LICENSE file for details.
 '''
 
+import base64
 import email
 import email.header
-import imgkit
-import os
-import quopri
-import base64
 import hashlib
 import logging
+import os
+import quopri
+
+import imgkit
 from PIL import Image
+
+from .constants import ParsingConfiguration, ProcessingConfiguration
 from .fileManagment import getPrerenderImageStoragePath
 from .mailParsing import ParsedMailKeys
-from .constants import ProcessingConfiguration, ParsingConfiguration
 
 
 logger = logging.getLogger(__name__)
@@ -43,18 +45,18 @@ def _combineImages(imagesList):
     backgroundColor=(255,255,255)
     widths, heights = zip(*(i.size for i in imagesList))
 
-    new_width = max(widths)
-    new_height = sum(heights)
-    new_im = Image.new('RGB', (new_width, new_height), color = backgroundColor)
+    newWidth = max(widths)
+    newHeight = sum(heights)
+    newImage = Image.new('RGB', (newWidth, newHeight), color = backgroundColor)
     offset = 0
     for images in imagesList:
         # x = int((new_width - im.size[0])/2)
         x = 0
-        new_im.paste(images, (x, offset))
+        newImage.paste(images, (x, offset))
         offset += images.size[1]
 
     logger.debug("Successfully combined image parts.")
-    return new_im
+    return newImage
 
 
 
@@ -114,8 +116,8 @@ def prerender(parsedMail):
                     imgkit.from_string(payload, dumpDir + '/' + imagePath, options = imgkitOptions)
                     logger.debug("Decoded %s", imagePath)
                     imagesList.append(os.path.join(dumpDir, imagePath))
-                except Exception as e:
-                    logger.warning("Decoding this MIME part of type %s returned error %s", mimeType, e)
+                except Exception:
+                    logger.warning("Decoding this MIME part of type %s returned error!", mimeType, exc_info=True)
 
             elif mimeType.startswith('image/'):
                 payload = part.get_payload(decode=False)
@@ -129,8 +131,8 @@ def prerender(parsedMail):
                         f.write(imgdata)
                     logger.debug("Decoded %s", imagePath)
                     imagesList.append(os.path.join(dumpDir, imagePath))
-                except Exception as e:
-                    logger.warning("Decoding this MIME part of type %s returned error %s", mimeType, e)
+                except Exception:
+                    logger.warning("Decoding this MIME part of type %s returned error!", mimeType, exc_info=True)
 
             else:
                 fileName = part.get_filename() or f"{hash(part)}.attachment"
@@ -152,8 +154,8 @@ def prerender(parsedMail):
             imgkit.from_string(footer, dumpDir + '/' + imagePath, options = imgkitOptions)
             logger.debug("Created footer %s", imagePath)
             imagesList.append(os.path.join(dumpDir, imagePath))
-        except Exception as e:
-            logger.warning("Creation of footer failed with error %s", e)
+        except Exception:
+            logger.warning("Creation of footer failed with error!", exc_info=True)
     else:
         logger.debug("No attachments found for rendering.")
 
