@@ -345,7 +345,7 @@ def insertEMail(emailData, account):
 
 
             for mentionType, correspondentHeader in ParsedMailKeys.Correspondent():
-                if (correspondentHeader == ParsedMailKeys.Correspondent.FROM):   # from correspondent has been added earlier, just add the connection to bridge table here
+                if correspondentHeader == ParsedMailKeys.Correspondent.FROM:   # from correspondent has been added earlier, just add the connection to bridge table here
                     if fromCorrespondent:
 
                         _insertEMailCorrespondent(emailEntry, fromCorrespondentEntry, mentionType)

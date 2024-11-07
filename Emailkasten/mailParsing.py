@@ -174,7 +174,7 @@ def _parseSubject(mailMessage):
             If :attr:`constants.ParsingConfiguration.STRIP_TEXTS` is True, whitespace is stripped.
     """
     logger.debug("Parsing subject ...")
-    if (subject := mailMessage.get(ParsedMailKeys.Header.SUBJECT)):
+    if subject := mailMessage.get(ParsedMailKeys.Header.SUBJECT):
         decodedSubject = _decodeHeader(subject)
         if ParsingConfiguration.STRIP_TEXTS:
             parsedSubject = decodedSubject.strip()
@@ -275,7 +275,7 @@ def _parseAttachments(mailMessage):
     attachments = []
     if mailMessage.is_multipart():
         for part in mailMessage.walk():
-            if ( part.get_content_disposition() and "attachment" in part.get_content_disposition() ) or ( part.get_content_type() and part.get_content_type() in ParsingConfiguration.APPLICATION_TYPES):
+            if  part.get_content_disposition() and "attachment" in part.get_content_disposition() ) or ( part.get_content_type() and part.get_content_type() in ParsingConfiguration.APPLICATION_TYPES:
                 attachmentDict = {}
                 attachmentDict[ParsedMailKeys.Attachment.DATA] = part
                 attachmentDict[ParsedMailKeys.Attachment.SIZE] = len(part.as_bytes())

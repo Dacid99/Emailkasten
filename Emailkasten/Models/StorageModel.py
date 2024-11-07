@@ -79,7 +79,7 @@ class StorageModel(models.Model):
             None
         """
         self.subdirectory_count += 1
-        if (self.subdirectory_count >= constants.StorageConfiguration.MAX_SUBDIRS_PER_DIR):
+        if self.subdirectory_count >= constants.StorageConfiguration.MAX_SUBDIRS_PER_DIR:
             self._addNewDirectory()
         else:
             self.save()
