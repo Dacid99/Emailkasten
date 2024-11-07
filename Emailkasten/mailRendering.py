@@ -88,7 +88,7 @@ def prerender(parsedMail):
             mimeType = part.get_content_type()
             charset = part.get_content_charset() or ParsingConfiguration.CHARSET_DEFAULT
 
-            logger.debug(f'Found MIME part: {mimeType}')
+            logger.debug("Found MIME part: %s", mimeType)
             if mimeType.startswith('text/'):
 
                 try:
@@ -112,10 +112,10 @@ def prerender(parsedMail):
                 imagePath = m.hexdigest() + '.png'
                 try:
                     imgkit.from_string(payload, dumpDir + '/' + imagePath, options = imgkitOptions)
-                    logger.debug(f'Decoded {imagePath}')
+                    logger.debug("Decoded %s", imagePath)
                     imagesList.append(os.path.join(dumpDir, imagePath))
                 except Exception as e:
-                    logger.warning(f'Decoding this MIME part of type {mimeType} returned error {e}')
+                    logger.warning("Decoding this MIME part of type %s returned error %s", mimeType, e)
 
             elif mimeType.startswith('image/'):
                 payload = part.get_payload(decode=False)
@@ -127,19 +127,19 @@ def prerender(parsedMail):
                 try:
                     with open(dumpDir + '/' + imagePath, 'wb') as f:
                         f.write(imgdata)
-                    logger.debug(f'Decoded {imagePath}')
+                    logger.debug("Decoded %s", imagePath)
                     imagesList.append(os.path.join(dumpDir, imagePath))
                 except Exception as e:
-                    logger.warning(f'Decoding this MIME part of type {mimeType} returned error {e}')
+                    logger.warning("Decoding this MIME part of type %s returned error %s", mimeType, e)
 
             else:
                 fileName = part.get_filename() or f"{hash(part)}.attachment"
                 attachments.append(f"{fileName} ({mimeType})")
-                logger.debug(f'Added attachment {fileName} of MIME type {mimeType}')
+                logger.debug("Added attachment %s of MIME type %s", fileName, mimeType)
         else:
             fileName = part.get_filename() or f"{hash(part)}.attachment"
             attachments.append(f"{fileName} ({mimeType})")
-            logger.debug(f'Added attachment {fileName} of MIME type {mimeType}')
+            logger.debug("Added attachment %s of MIME type %s", fileName, mimeType)
 
     if attachments:
         footer = '<p><hr><p><b>Attached Files:</b><p><ul>'
@@ -150,10 +150,10 @@ def prerender(parsedMail):
         imagePath = m.hexdigest() + '.png'
         try:
             imgkit.from_string(footer, dumpDir + '/' + imagePath, options = imgkitOptions)
-            logger.debug(f'Created footer {imagePath}')
+            logger.debug("Created footer %s", imagePath)
             imagesList.append(os.path.join(dumpDir, imagePath))
         except Exception as e:
-            logger.warning(f'Creation of footer failed with error {e}')
+            logger.warning("Creation of footer failed with error %s", e)
     else:
         logger.debug("No attachments found for rendering.")
 
