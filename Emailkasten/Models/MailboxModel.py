@@ -59,7 +59,7 @@ class MailboxModel(models.Model):
     """Flags favorite mailboxes. False by default."""
 
     is_healthy = models.BooleanField(default=True)
-    """Flags whether the mailbox can be accessed and read. True by default. 
+    """Flags whether the mailbox can be accessed and read. True by default.
     When the :attr:`Emailkasten.Models.AccountModel.is_healthy` field changes to `False`, this field is updated accordingly.
     When this field becomes `True` after being `False`, the :attr:`Emailkasten.Models.AccountModel.is_healthy` field of :attr:`account` will be set to `True` as well."""
 
@@ -74,7 +74,7 @@ class MailboxModel(models.Model):
         return f"Mailbox {self.name} of {self.account}"
 
     def getAvailableFetchingCriteria(self):
-        """Gets the available fetching criteria based on the mail protocol of this mailbox. 
+        """Gets the available fetching criteria based on the mail protocol of this mailbox.
         Used by :func:`Emailkasten.Views.MailboxViewSet.fetching_options` to show the choices for fetching to the user.
 
         Returns:
@@ -87,7 +87,7 @@ class MailboxModel(models.Model):
         else:
             availableFetchingOptions = []
         return availableFetchingOptions
-    
+
 
     class Meta:
         db_table = "mailboxes"
@@ -107,7 +107,7 @@ def post_save_is_healthy(sender, instance, **kwargs):
     Args:
         sender (type): The class type that sent the post_save signal.
         instance (:class:`Emailkasten.Models.MailboxModel`): The instance that has been saved.
-    
+
     Returns:
         None
     """
@@ -115,19 +115,19 @@ def post_save_is_healthy(sender, instance, **kwargs):
         try:
             oldInstance = MailboxModel.objects.get(pk=instance.pk)
             if not oldInstance.is_healthy:
-                logger.debug(f"{str(instance)} has become healthy, flagging its account as healthy ...")
+                logger.debug("%s has become healthy, flagging its account as healthy ...", str(instance))
                 instance.account.update(is_healthy=True)
                 logger.debug("Successfully flagged account as healthy.")
 
         except MailboxModel.DoesNotExist:
-            logger.debug(f"Previous instance of {str(instance)} not found, no health flag comparison possible.")
+            logger.debug("Previous instance of %s not found, no health flag comparison possible.", str(instance))
     else:
         try:
             oldInstance = MailboxModel.objects.get(pk=instance.pk)
             if oldInstance.is_healthy:
-                logger.debug(f"{str(instance)} has become unhealthy, flagging its daemon as unhealthy ...")
+                logger.debug("%s has become unhealthy, flagging its daemon as unhealthy ...", str(instance))
                 instance.daemon.update(is_healthy=False)
                 logger.debug("Successfully flagged account as healthy.")
 
         except MailboxModel.DoesNotExist:
-            logger.debug(f"Previous instance of {str(instance)} not found, no health flag comparison possible.")
+            logger.debug("Previous instance of %s not found, no health flag comparison possible.", str(instance))

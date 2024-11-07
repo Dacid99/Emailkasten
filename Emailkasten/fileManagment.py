@@ -56,14 +56,14 @@ def storeMessageAsEML(parsedEMail):
     emlDirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
     emlFilePath = os.path.join(emlDirPath , parsedEMail[ParsedMailKeys.Header.MESSAGE_ID] + ".eml")
 
-    logger.debug(f"Storing mail in .eml file {emlFilePath} ...")
+    logger.debug("Storing mail in .eml file %s ...", emlFilePath)
     try:
         if os.path.exists(emlFilePath):
             if os.path.getsize(emlFilePath) > 0:
-                logger.debug(f"Not writing to {emlFilePath}, it already exists and is not empty")
-                
+                logger.debug("Not writing to %s, it already exists and is not empty", emlFilePath)
+
             else:
-                logger.debug(f"Writing to empty .eml file {emlFilePath} ...")
+                logger.debug("Writing to empty .eml file %s ...", emlFilePath)
 
                 with open(emlFilePath, "wb") as emlFile:
                     emlGenerator = email.generator.BytesGenerator(emlFile)
@@ -71,19 +71,19 @@ def storeMessageAsEML(parsedEMail):
 
                 logger.debug("Successfully wrote to empty .eml file.")
         else:
-            logger.debug(f"Creating and writing new .eml file {emlFilePath}...")
+            logger.debug("Creating and writing new .eml file %s...", emlFilePath)
 
             with open(emlFilePath, "wb") as emlFile:
                 emlGenerator = email.generator.BytesGenerator(emlFile)
                 emlGenerator.flatten(parsedEMail[ParsedMailKeys.FULL_MESSAGE])
-            
+
             logger.debug("Successfully created and wrote new .eml file.")
 
     except OSError:
         logger.error("Failed to write .eml file for message!", exc_info=True)
         if os.path.exists(emlFilePath):
             logger.debug("Clearing incomplete file ...")
-            try: 
+            try:
                 with open(emlFilePath, "wb") as file:
                     file.truncate(0)
 
@@ -111,38 +111,38 @@ def storeAttachments(parsedEMail):
         None
     """
     logger.debug("Saving attachments from mail ...")
-    
+
     dirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
     for attachmentData in parsedEMail[ParsedMailKeys.ATTACHMENTS]:
         fileName = attachmentData[ParsedMailKeys.Attachment.FILE_NAME]
         filePath = os.path.join(dirPath, fileName)
 
-        logger.debug(f"Storing attachment {fileName} in {filePath} ...")
+        logger.debug("Storing attachment %s in %s ...", fileName, filePath)
         try:
             if os.path.exists(filePath):
                 if os.path.getsize(filePath) > 0:
-                    logger.debug(f"Not writing to {filePath}, it already exists and is not empty")
-                    
+                    logger.debug("Not writing to %s, it already exists and is not empty", filePath)
+
                 else:
-                    logger.debug(f"Writing to empty file {filePath} ...")
+                    logger.debug("Writing to empty file %s ...", filePath)
 
                     with open(filePath, "wb") as file:
                         file.write(attachmentData[ParsedMailKeys.Attachment.DATA].get_payload(decode=True))
 
                     logger.debug("Successfully wrote to empty .eml file.")
             else:
-                logger.debug(f"Creating and writing new file {filePath} ...")
+                logger.debug("Creating and writing new file %s ...", filePath)
 
                 with open(filePath, "wb") as file:
                     file.write(attachmentData[ParsedMailKeys.Attachment.DATA].get_payload(decode=True))
-                
+
                 logger.debug("Successfully created and wrote new .eml file.")
 
         except OSError:
-            logger.error(f"Failed to write attachment file {fileName} to {filePath}!", exc_info=True)
+            logger.error("Failed to write attachment file %s to %s!", fileName,  filePath, exc_info=True)
             if os.path.exists(filePath):
                 logger.debug("Clearing incomplete file ...")
-                try: 
+                try:
                     with open(filePath, "wb") as file:
                         file.truncate(0)
 
@@ -152,15 +152,15 @@ def storeAttachments(parsedEMail):
             else:
                 logger.debug("File was not created")
             filePath = None
-    
+
         attachmentData[ParsedMailKeys.Attachment.FILE_PATH] = filePath
         logger.debug("Successfully stored attachment.")
 
     if not parsedEMail[ParsedMailKeys.ATTACHMENTS]:
         logger.debug("No attachments in mail.")
-    else: 
+    else:
         logger.debug("Successfully saved attachments to file.")
-        
+
 
 
 def storeImages(parsedEMail):
@@ -180,19 +180,19 @@ def storeImages(parsedEMail):
         fileName = imageData[ParsedMailKeys.Image.FILE_NAME]
         filePath = os.path.join(dirPath, fileName)
 
-        logger.debug(f"Storing image {fileName} in {filePath} ...")
+        logger.debug("Storing image %s in %s ...", fileName, filePath)
         try:
             if os.path.exists(filePath):
                 if os.path.getsize(filePath) > 0:
-                    logger.debug(f"Not writing to {filePath}, it already exists and is not empty")
-                    
+                    logger.debug("Not writing to %s, it already exists and is not empty", filePath)
+
                 else:
-                    logger.debug(f"Writing to empty file {filePath} ...")
+                    logger.debug("Writing to empty file %s ...", filePath)
                     with open(filePath, "wb") as file:
                         file.write(imageData[ParsedMailKeys.Image.DATA].get_payload(decode=True))
                     logger.debug("Successfully wrote to empty file.")
             else:
-                logger.debug(f"Creating and writing new file {filePath} ...")
+                logger.debug("Creating and writing new file %s ...", filePath)
 
                 with open(filePath, "wb") as file:
                     file.write(imageData[ParsedMailKeys.Image.DATA].get_payload(decode=True))
@@ -200,10 +200,10 @@ def storeImages(parsedEMail):
                 logger.debug("Successfully created and wrote new file.")
 
         except OSError:
-            logger.error(f"Failed to write image file {fileName} to {filePath}!", exc_info=True)
+            logger.error("Failed to write image file %s to %s!", fileName,  filePath, exc_info=True)
             if os.path.exists(filePath):
                 logger.debug("Clearing incomplete file ...")
-                try: 
+                try:
                     with open(filePath, "wb") as file:
                         file.truncate(0)
 
@@ -214,13 +214,13 @@ def storeImages(parsedEMail):
             else:
                 logger.debug("File was not created")
             filePath = None
-    
+
         imageData[ParsedMailKeys.Image.FILE_PATH] = filePath
         logger.debug("Successfully stored image.")
 
     if not parsedEMail[ParsedMailKeys.IMAGES]:
         logger.debug("No images in mail.")
-    else: 
+    else:
         logger.debug("Successfully saved images to file.")
 
 
@@ -239,5 +239,3 @@ def getPrerenderImageStoragePath(parsedMail):
     filePath = os.path.join(dirPath, f"{parsedMail[ParsedMailKeys.Header.MESSAGE_ID]}.{StorageConfiguration.PRERENDER_IMAGETYPE}")
     parsedMail[ParsedMailKeys.PRERENDER_FILE_PATH] = filePath
     return filePath
-
-        

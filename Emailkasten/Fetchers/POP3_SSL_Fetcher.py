@@ -22,7 +22,7 @@ from .. import constants
 from .POP3Fetcher import POP3Fetcher
 
 
-class POP3_SSL_Fetcher(POP3Fetcher): 
+class POP3_SSL_Fetcher(POP3Fetcher):
     """Subclass of :class:`Emailkasten.Fetchers.POP3Fetcher`.
 
     Does the same things, just using POP3_SSL protocol.
@@ -33,14 +33,13 @@ class POP3_SSL_Fetcher(POP3Fetcher):
 
     def connectToHost(self):
         """Overrides :func:`Emailkasten.Fetchers.POP3Fetcher.connectToHost` to use :class:`poplib.POP3_SSL`."""
-        self.logger.debug(f"Connecting to {str(self.account)} ...")
+        self.logger.debug("Connecting to %s ...", str(self.account))
         self._mailhost = poplib.POP3_SSL(host=self.account.mail_host, port=self.account.mail_host_port, context=None, timeout=None)
-        self.logger.debug(f"Successfully connected to {str(self.account)}.")
+        self.logger.debug("Successfully connected to %s.", str(self.account))
 
-    
+
     @staticmethod
     def test(account):
         """Overrides :func:`Emailkasten.Fetchers.POP3Fetcher.test` to use :class:`poplib.POP3_SSL`."""
         with POP3_SSL_Fetcher(account) as pop3sslFetcher:
             return bool(pop3sslFetcher)
-

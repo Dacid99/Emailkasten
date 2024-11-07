@@ -33,7 +33,7 @@ class EMailArchiverDaemon:
         logger (:python::class:`logging.Logger`): Logger for this instance with a filehandler for the daemons own logfile.
         thread (:python::class:`threading.Thread`): The thread that the daemon runs on.
         isRunning (bool): Whether this daemon instance is active.
-        daemon (:class:`Emailkasten.Models.DaemonModel`): The database model of this daemon. 
+        daemon (:class:`Emailkasten.Models.DaemonModel`): The database model of this daemon.
         mailbox (:class:`Emailkasten.Models.MailboxModel`): The database model of the mailbox this instance fetches from.
         account (:class:`Emailkasten.Models.AccountModel`): The database model of the account this instance fetches from.
     """
@@ -44,13 +44,13 @@ class EMailArchiverDaemon:
 
     @staticmethod
     def testDaemon(daemonModel):
-        """Static method to test data for a daemon. 
+        """Static method to test data for a daemon.
 
         Args:
             daemonModel (:class:`Emailkasten.Models.DaemonModel`): The data for the daemon to be tested.
 
-        Returns: 
-            :rest_framework::class:`response.Response`: A response detailing what has happened. 
+        Returns:
+            :rest_framework::class:`response.Response`: A response detailing what has happened.
         """
         try:
             newDaemon = EMailArchiverDaemon(daemonModel)
@@ -58,18 +58,18 @@ class EMailArchiverDaemon:
             return Response({'status': 'Daemon tested', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
         except Exception:
             return Response({'status': 'Daemon test failed!', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
-        
-    
+
+
     @staticmethod
     def startDaemon(daemonModel):
-        """Static method to create, start and add a new daemon to :attr:`runningDaemons`. 
+        """Static method to create, start and add a new daemon to :attr:`runningDaemons`.
         If it is already in the dict does nothing.
 
         Args:
             daemonModel (:class:`Emailkasten.Models.DaemonModel`): The data for the daemon.
 
-        Returns: 
-            :rest_framework::class:`response.Response`: A response detailing what has been done. 
+        Returns:
+            :rest_framework::class:`response.Response`: A response detailing what has been done.
         """
         if daemonModel.id not in EMailArchiverDaemon.runningDaemons:
             try:
@@ -77,24 +77,24 @@ class EMailArchiverDaemon:
                 newDaemon.start()
                 EMailArchiverDaemon.runningDaemons[daemonModel.id] = newDaemon
                 daemonModel.is_running = True
-                daemonModel.save() 
+                daemonModel.save()
                 return Response({'status': 'Daemon started', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
             except Exception:
                 return Response({'status': 'Daemon failed to start!', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
         else:
             return Response({'status': 'Daemon already running', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
-        
+
 
     @staticmethod
     def stopDaemon(daemonModel):
-        """Static method to stop and remove a daemon from :attr:`runningDaemons`. 
+        """Static method to stop and remove a daemon from :attr:`runningDaemons`.
         If it is not in the dict does nothing.
 
         Args:
             daemonModel (:class:`Emailkasten.Models.DaemonModel`): The data of the daemon.
 
-        Returns: 
-            :rest_framework::class:`response.Response`: A response detailing what has been done. 
+        Returns:
+            :rest_framework::class:`response.Response`: A response detailing what has been done.
         """
         if daemonModel.id in EMailArchiverDaemon.runningDaemons:
             oldDaemon = EMailArchiverDaemon.runningDaemons.pop(daemonModel.id)
@@ -104,7 +104,7 @@ class EMailArchiverDaemon:
             return Response({'status': 'Daemon stopped', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
         else:
             return Response({'status': 'Daemon not running', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
-        
+
 
     def __init__(self, daemon):
         """Constructor, sets up the daemon with the specification in `daemon`.
@@ -121,11 +121,11 @@ class EMailArchiverDaemon:
 
         self.thread = None
         self.isRunning = False
-        
+
         self.setupLogger()
 
 
-    
+
     def setupLogger(self):
         """Sets up the logger for the daemon with an additional filehandler for its own logfile.
 
@@ -143,28 +143,28 @@ class EMailArchiverDaemon:
         Creates and starts a new thread performing :func:`run`.
 
         Returns:
-            None 
+            None
         """
         if not self.isRunning:
-            self.logger.info(f"Starting {str(self.daemon)} ...")
+            self.logger.info("Starting %s ...", str(self.daemon))
             self.isRunning = True
             self.thread = threading.Thread(target = self.run)
             self.thread.start()
             self.logger.info("Successfully started daemon.")
         else:
             self.logger.info("EMailArchiverDaemon is already running.")
-        
+
 
 
     def stop(self):
-        """Stops this daemon instance if it is active. 
-        The thread finishes by itself later. 
+        """Stops this daemon instance if it is active.
+        The thread finishes by itself later.
 
         Returns:
-            None 
+            None
         """
         if self.isRunning:
-            self.logger.info(f"Stopping {str(self.daemon)} ...")
+            self.logger.info("Stopping %s ...", str(self.daemon))
             self.isRunning = False
         else:
             self.logger.info("EMailArchiverDaemon is not running.")
@@ -172,7 +172,7 @@ class EMailArchiverDaemon:
 
     def run(self):
         """The looping task execute on :attr:`thread`.
-        Attempts to restart if crashed after time set in :attr:`constants.EMailArchiverDaemonConfiguration.RESTART_TIME`. 
+        Attempts to restart if crashed after time set in :attr:`constants.EMailArchiverDaemonConfiguration.RESTART_TIME`.
 
         Returns:
             None
@@ -181,31 +181,31 @@ class EMailArchiverDaemon:
             while self.isRunning:
                 self.cycle()
                 time.sleep(self.daemon.cycle_interval)
-            self.logger.info(f"{str(self.daemon)} finished")
+            self.logger.info("%s finished", str(self.daemon))
         except Exception:
-            self.logger.error(f"{str(self.daemon)} crashed! Attempting to restart ...", exc_info=True)
+            self.logger.error("%s crashed! Attempting to restart ...", str(self.daemon), exc_info=True)
             time.sleep(constants.EMailArchiverDaemonConfiguration.RESTART_TIME)
             self.run()
-        self.logger.info(f"{str(self.daemon)} finished successfully.")
-        
+        self.logger.info("%s finished successfully.", str(self.daemon))
+
 
 
     def cycle(self):
-        """The routine of this daemon. 
+        """The routine of this daemon.
         Fetches and saves mails using :func:`Emailkasten.mailProcessing.fetchMails`. Logs the execution time.
-        
+
         Returns:
             None
         """
         self.logger.debug("---------------------------------------\nNew cycle")
-        
+
         startTime = time.time()
         try:
             fetchMails(self.mailbox, self.account, self.mailbox.fetching_criterion)
             endtime = time.time()
-                            
+
         except Exception:
             self.logger.error("Error during daemon cycle execution!", exc_info=True)
             raise
 
-        self.logger.debug(f"Cycle complete after {endtime - startTime} seconds\n-------------------------------------------")
+        self.logger.debug("Cycle complete after %s seconds\n-------------------------------------------", endtime - startTime)

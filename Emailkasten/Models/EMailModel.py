@@ -53,9 +53,9 @@ class EMailModel(models.Model):
 
     eml_filepath = models.FilePathField(
         path=constants.StorageConfiguration.STORAGE_PATH,
-        max_length=255, 
-        recursive=True, 
-        match=r".*\.eml$", 
+        max_length=255,
+        recursive=True,
+        match=r".*\.eml$",
         null=True
     )
     """The path where the mail is stored in .eml format.
@@ -63,79 +63,79 @@ class EMailModel(models.Model):
     Must contain :attr:`Emailkasten.constants.StorageConfiguration.STORAGE_PATH` and end on .eml .
     When this entry is deleted, the file will be removed by :func:`post_delete_email_files`.
     """
-    
+
     prerender_filepath = models.FilePathField(
         path=constants.StorageConfiguration.STORAGE_PATH,
-        max_length=255, 
-        recursive=True, 
-        match=rf".*\.{constants.StorageConfiguration.PRERENDER_IMAGETYPE}$", 
+        max_length=255,
+        recursive=True,
+        match=rf".*\.{constants.StorageConfiguration.PRERENDER_IMAGETYPE}$",
         null=True
     )
     """The path where the prerender image of the mail is stored.
     Can be null if the prerendering process was no successful.
     Must contain :attr:`Emailkasten.constants.StorageConfiguration.STORAGE_PATH` and end on :attr:`Emailkasten.constants.StorageConfiguration.PRERENDER_IMAGETYPE`.
     When this entry is deleted, the file will be removed by :func:`post_delete_email_files`."""
-    
+
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mails. False by default."""
-    
+
     correspondents = models.ManyToManyField('CorrespondentModel', through='EMailCorrespondentsModel', related_name='emails')
     """The correspondents that are mentioned in this mail. Bridges through :class:`Emailkasten.Models.EMailCorrespondentsModel`."""
-    
+
     mailinglist = models.ForeignKey(MailingListModel, null=True, related_name='emails', on_delete=models.CASCADE)
     """The mailinglist that this mail has been sent from. Can be null. Deletion of that `mailinglist` deletes this mail."""
-    
+
     account = models.ForeignKey(AccountModel, related_name="emails", on_delete=models.CASCADE)
     """The account that this mail has been found in. Unique together with :attr:`message_id`. Deletion of that `account` deletes this mail."""
-    
+
     comments = models.CharField(max_length=255, null=True)
     """The comments header of this mail. Can be null."""
-    
+
     keywords = models.CharField(max_length=255, null=True)
     """The keywords header of this mail. Can be null."""
-    
+
     importance = models.CharField(max_length=255, null=True)
     """The importance header of this mail. Can be null."""
-    
+
     priority = models.CharField(max_length=255, null=True)
     """The priority header of this mail. Can be null."""
-    
+
     precedence = models.CharField(max_length=255, null=True)
     """The precedence header of this mail. Can be null."""
-    
+
     received = models.TextField(null=True)
     """The received header of this mail. Can be null."""
-    
+
     user_agent = models.CharField(max_length=255, null=True)
     """The user_agent header of this mail. Can be null."""
-    
+
     auto_submitted = models.CharField(max_length=255, null=True)
     """The auto_submitted header of this mail. Can be null."""
-    
+
     content_type = models.CharField(max_length=255, null=True)
     """The content_type header of this mail. Can be null."""
-    
+
     content_language = models.CharField(max_length=255, null=True)
     """The content_language header of this mail. Can be null."""
-    
+
     content_location = models.CharField(max_length=255, null=True)
     """The content_location header of this mail. Can be null."""
-    
+
     x_priority = models.CharField(max_length=255, null=True)
     """The x_priority header of this mail. Can be null."""
-    
+
     x_originated_client = models.CharField(max_length=255, null=True)
     """The x_originated_client header of this mail. Can be null."""
-    
-    x_spam = models.CharField(max_length=255, null=True) 
+
+    x_spam = models.CharField(max_length=255, null=True)
     """The x_spam header of this mail. Can be null."""
-    
+
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
-    
+
 
     def __str__(self):
         return f"Email with ID {self.message_id}, received on {self.datetime} with subject {self.email_subject}"
@@ -160,34 +160,33 @@ def post_delete_email_files(sender, instance, **kwargs):
     Returns:
         None
     """
-    logger.debug(f"Removing files for {str(instance)} from storage ...")
+    logger.debug("Removing files for %s from storage ...", str(instance))
     if instance.eml_filepath:
         try:
             os.remove(instance.eml_filepath)
             logger.debug("Successfully removed the emails .eml file from storage.", exc_info=True)
         except FileNotFoundError:
-            logger.error(f"{instance.eml_filepath} was not found!", exc_info=True)
+            logger.error("%s was not found!", instance.eml_filepath, exc_info=True)
         except PermissionError:
-            logger.error(f"Permission to remove {instance.eml_filepath} was denied!", exc_info=True)
+            logger.error("Permission to remove %s was denied!", instance.eml_filepath, exc_info=True)
         except IsADirectoryError:
-            logger.error(f"{instance.eml_filepath} is a directory, not a file!", exc_info=True)
+            logger.error("%s is a directory, not a file!", instance.eml_filepath, exc_info=True)
         except OSError:
-            logger.error(f"An OS error occured removing {instance.eml_filepath}!", exc_info=True)
+            logger.error("An OS error occured removing %s!", instance.eml_filepath, exc_info=True)
         except Exception:
-            logger.error(f"An unexpected error occured removing {instance.eml_filepath}!", exc_info=True)
-    
+            logger.error("An unexpected error occured removing %s!", instance.eml_filepath, exc_info=True)
+
     if instance.prerender_filepath:
         try:
             os.remove(instance.prerender_filepath)
             logger.debug("Successfully removed the emails .eml file from storage.", exc_info=True)
         except FileNotFoundError:
-            logger.error(f"{instance.prerender_filepath} was not found!", exc_info=True)
+            logger.error("%s was not found!", instance.prerender_filepath, exc_info=True)
         except PermissionError:
-            logger.error(f"Permission to remove {instance.prerender_filepath} was denied!", exc_info=True)
+            logger.error("Permission to remove %s was denied!", instance.prerender_filepath, exc_info=True)
         except IsADirectoryError:
-            logger.error(f"{instance.prerender_filepath} is a directory, not a file!", exc_info=True)
+            logger.error("%s is a directory, not a file!", instance.prerender_filepath, exc_info=True)
         except OSError:
-            logger.error(f"An OS error occured removing {instance.prerender_filepath}!", exc_info=True)
+            logger.error("An OS error occured removing %s!", instance.prerender_filepath, exc_info=True)
         except Exception:
-            logger.error(f"An unexpected error occured removing {instance.prerender_filepath}!", exc_info=True)
-    
+            logger.error("An unexpected error occured removing %s!", instance.prerender_filepath, exc_info=True)

@@ -37,7 +37,7 @@ class AccountModel(models.Model):
 
     password = models.CharField(max_length=255)
     """The password to log into the account."""
-    
+
     mail_host = models.CharField(max_length=255)
     """The url of the mail server where the account is located."""
 
@@ -45,7 +45,7 @@ class AccountModel(models.Model):
     """The port of the mail server. Can be null if the default port of the protocol is used."""
 
     PROTOCOL_CHOICES = {
-        constants.MailFetchingProtocols.IMAP : "IMAP", 
+        constants.MailFetchingProtocols.IMAP : "IMAP",
         constants.MailFetchingProtocols.IMAP_SSL : "IMAP SSL",
         constants.MailFetchingProtocols.POP3 : "POP3",
         constants.MailFetchingProtocols.POP3_SSL : "POP3 SSL",
@@ -59,7 +59,7 @@ class AccountModel(models.Model):
     is_healthy = models.BooleanField(default=True)
     """Flags whether the account can be accessed using the data. True by default.
     When this field changes to `False`, all mailboxes :attr:`Emailkasten.Models.MailboxModel.is_healthy` field will be updated accordingly.
-    When the :attr:`Emailkasten.Models.MailboxModel.is_healthy` field of one of the mailboxes referencing this entry via :attr:`Emailkasten.Models.MailboxModel.account` 
+    When the :attr:`Emailkasten.Models.MailboxModel.is_healthy` field of one of the mailboxes referencing this entry via :attr:`Emailkasten.Models.MailboxModel.account`
     becomes `True` after being `False`, this field will be set to `True` as well."""
 
     is_favorite = models.BooleanField(default=False)
@@ -94,7 +94,7 @@ def post_save_is_healthy(sender, instance, **kwargs):
     Args:
         sender (type): The class type that sent the post_save signal.
         instance (:class:`Emailkasten.Models.AccountModel`): The instance that has been saved.
-    
+
     Returns:
         None
     """
@@ -102,7 +102,7 @@ def post_save_is_healthy(sender, instance, **kwargs):
         try:
             oldInstance = AccountModel.objects.get(pk=instance.pk)
             if oldInstance.is_healthy:
-                logger.debug(f"{str(instance)} has become unhealthy, flagging all its mailboxes as unhealthy ...")
+                logger.debug("%s has become unhealthy, flagging all its mailboxes as unhealthy ...", str(instance))
                 mailboxEntries = instance.mailboxes.all()
                 for mailboxEntry in mailboxEntries:
                     mailboxEntry.is_healthy = False
@@ -110,5 +110,4 @@ def post_save_is_healthy(sender, instance, **kwargs):
                 logger.debug("Successfully flagged mailboxes as unhealthy.")
 
         except AccountModel.DoesNotExist:
-            logger.debug(f"Previous instance of {str(instance)} not found, no health flag comparison possible.")
-        
+            logger.debug("Previous instance of %s not found, no health flag comparison possible.", str(instance))

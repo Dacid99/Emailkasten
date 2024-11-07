@@ -40,11 +40,11 @@ class AttachmentModel(models.Model):
         max_length=511,
         recursive=True,
         null=True)
-    """The path where the attachment is stored. Unique together with :attr:`email`. 
+    """The path where the attachment is stored. Unique together with :attr:`email`.
     Can be null if the attachment has not been saved (null does not collide with the unique constraint.).
     Must contain :attr:`Emailkasten.constants.StorageConfiguration.STORAGE_PATH`.
     When this entry is deleted, the file will be removed by :func:`post_delete_attachment`."""
-    
+
     datasize = models.IntegerField()
     """The filesize of the attachment."""
 
@@ -63,7 +63,7 @@ class AttachmentModel(models.Model):
 
     def __str__(self):
         return f"Attachment {self.file_name}"
-    
+
 
     class Meta:
         db_table = "attachments"
@@ -81,22 +81,22 @@ def post_delete_attachment(sender, instance, **kwargs):
     Args:
         sender (type): The class type that sent the post_delete signal.
         instance (:class:`Emailkasten.Models.AttachmentModel`): The instance that has been deleted.
-    
+
     Returns:
         None
     """
     if instance.file_path:
-        logger.debug(f"Removing {str(instance)} from storage ...")
+        logger.debug("Removing %s from storage ...", str(instance))
         try:
             os.remove(instance.file_path)
             logger.debug("Successfully removed the attachment file from storage.", exc_info=True)
         except FileNotFoundError:
-            logger.error(f"{instance.file_path} was not found!", exc_info=True)
+            logger.error("%s was not found!", instance.file_path, exc_info=True)
         except PermissionError:
-            logger.error(f"Permission to remove {instance.file_path} was denied!", exc_info=True)
+            logger.error("Permission to remove %s was denied!", instance.file_path, exc_info=True)
         except IsADirectoryError:
-            logger.error(f"{instance.file_path} is a directory, not a file!", exc_info=True)
+            logger.error("%s is a directory, not a file!", instance.file_path, exc_info=True)
         except OSError:
-            logger.error(f"An OS error occured removing {instance.file_path}!", exc_info=True)
+            logger.error("An OS error occured removing %s!", instance.file_path, exc_info=True)
         except Exception:
-            logger.error(f"An unexpected error occured removing {instance.file_path}!", exc_info=True)
+            logger.error("An unexpected error occured removing %s!", instance.file_path, exc_info=True)

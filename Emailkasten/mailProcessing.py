@@ -23,7 +23,7 @@ Functions starting with _ are helpers and are used only within the scope of this
 Functions:
     :func:`testAccount`: Tests whether the data in an accountmodel is correct and allows connecting and logging in to the mailhost and account.
     :func:`scanMailboxes`: Scans the given mailaccount for mailboxes, inserts them into the database.
-    :func:`fetchMails`: Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database. 
+    :func:`fetchMails`: Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database.
     :func:`_isSpam`: Checks the spam headers of the parsed mail to decide whether the mail is spam.
 
 Global variables:
@@ -48,17 +48,17 @@ logger = logging.getLogger(__name__)
 
 def testAccount(account):
     """Tests whether the data in an accountmodel is correct and allows connecting and logging in to the mailhost and account.
-    The :attr:`Emailkasten.Models.AccountModel.is_healthy` flag is set according to the result by the Fetcher class, e.g. :class:`Emailkasten.Fetchers.IMAPFetcher`. 
-    Relies on the `test` static method of the :mod:`Emailkasten.Fetchers` classes. 
-    
+    The :attr:`Emailkasten.Models.AccountModel.is_healthy` flag is set according to the result by the Fetcher class, e.g. :class:`Emailkasten.Fetchers.IMAPFetcher`.
+    Relies on the `test` static method of the :mod:`Emailkasten.Fetchers` classes.
+
     Args:
         account (:class:`Emailkasten.Models.AccountModel`): The account data to test.
-        
+
     Returns:
         bool: The result of the test.
     """
-    
-    logger.info(f"Testing {str(account)} ...")
+
+    logger.info("Testing %s ...", str(account))
     if account.protocol == IMAPFetcher.PROTOCOL:
         result = IMAPFetcher.test(account)
 
@@ -75,28 +75,28 @@ def testAccount(account):
         result = ExchangeFetcher.test(account)
 
     else:
-        logger.error(f"Account {str(account)} has unknown protocol!")
+        logger.error("Account %s has unknown protocol!", str(account))
         result = False
 
-    logger.info(f"Successfully tested account to be {result}.")
+    logger.info("Successfully tested account to be %s.", result)
 
     return result
 
 
 
 def scanMailboxes(account):
-    """Scans the given mailaccount for mailboxes, parses and inserts them into the database. 
+    """Scans the given mailaccount for mailboxes, parses and inserts them into the database.
     For POP3 accounts, there is only one mailbox, it defaults to INBOX.
-    Relies on the :func:`fetchMailboxes` method of the :mod:`Emailkasten.Fetchers` classes, :func:`parseMailbox` from :mod:`Emailkasten.mailParsing` and :func:`insertMailbox` from :mod:`Emailkasten.emailDBFeeding`. 
+    Relies on the :func:`fetchMailboxes` method of the :mod:`Emailkasten.Fetchers` classes, :func:`parseMailbox` from :mod:`Emailkasten.mailParsing` and :func:`insertMailbox` from :mod:`Emailkasten.emailDBFeeding`.
 
     Args:
         account (:class:`Emailkasten.Models.AccountModel`): The data of the account to scan for mailboxes.
-        
+
     Returns:
         None
     """
-    
-    logger.info(f"Searching mailboxes in {account}...")
+
+    logger.info("Searching mailboxes in %s...", account)
 
     if account.protocol == IMAPFetcher.PROTOCOL:
         with IMAPFetcher(account) as imapMail:
@@ -122,7 +122,7 @@ def scanMailboxes(account):
     else:
         logger.error("Can not fetch mails, protocol is not or incorrectly specified!")
         mailboxes = []
-        
+
     for mailbox in mailboxes:
         parsedMailbox = parseMailbox(mailbox)
         insertMailbox(parsedMailbox, account)
@@ -130,24 +130,24 @@ def scanMailboxes(account):
     logger.info("Successfully searched mailboxes")
 
 
-    
+
 
 def fetchMails(mailbox, account, criterion):
-    """Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database and storage. 
+    """Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database and storage.
     For POP3 accounts, there is only one mailbox and no options for specific queries, so all messages are fetched.
-    Relies on the :func:`fetchBySearch` and :func:`fetchAll` methods of the :mod:`Emailkasten.Fetchers` classes, the methods from :mod:`Emailkasten.mailParsing` and :mod:`Emailkasten.emailDBFeeding`. 
+    Relies on the :func:`fetchBySearch` and :func:`fetchAll` methods of the :mod:`Emailkasten.Fetchers` classes, the methods from :mod:`Emailkasten.mailParsing` and :mod:`Emailkasten.emailDBFeeding`.
 
     Args:
         mailbox (:class:`Emailkasten.Models.MailboxModel`): The data of the mailbox to fetch from.
         account (:class:`Emailkasten.Models.AccountModel`): The data of the mailaccount to fetch from.
         criterion (str): A formatted criterion for message filtering as returned by :func:`Emailkasten.Fetchers.IMAPFetcher.makeFetchingCriterion`.
             If none is given, defaults to RECENT inside :func:`Emailkasten.Fetchers.IMAPFetcher.fetchBySearch`.
-        
+
     Returns:
         None
     """
 
-    logger.info(f"Fetching emails with criterion {criterion} from mailbox {mailbox} in account {account}...")
+    logger.info("Fetching emails with criterion %s from mailbox %s in account %s...", criterion, mailbox, account)
     if account.protocol == IMAPFetcher.PROTOCOL:
         with IMAPFetcher(account) as imapMail:
 
@@ -183,7 +183,7 @@ def fetchMails(mailbox, account, criterion):
     logger.info("Parsing emails from data and saving to db ...")
     status = True
     for mailData in mailDataList:
-        try: 
+        try:
             parsedMail = parseMail(mailData)
 
             if constants.ParsingConfiguration.THROW_OUT_SPAM:
@@ -195,25 +195,25 @@ def fetchMails(mailbox, account, criterion):
                 storeMessageAsEML(parsedMail)
                 prerender(parsedMail)
             else:
-                logger.debug(f"Not saving to eml for mailbox {mailbox.name}")
+                logger.debug("Not saving to eml for mailbox %s", mailbox.name)
 
 
             if mailbox.save_attachments:
                 storeAttachments(parsedMail)
             else:
-                logger.debug(f"Not saving attachments for mailbox {mailbox.name}")
-                
-            
+                logger.debug("Not saving attachments for mailbox %s", mailbox.name)
+
+
             if mailbox.save_images:
                 storeImages(parsedMail)
             else:
-                logger.debug(f"Not saving images for mailbox {mailbox.name}")
+                logger.debug("Not saving images for mailbox %s", mailbox.name)
 
             insertEMail(parsedMail, account)
-        
+
         except Exception:
             status = False
-            logger.error(f"Error parsing and saving email with subject {parsedMail[constants.ParsedMailKeys.Header.SUBJECT]} from {parsedMail[constants.ParsedMailKeys.Header.DATE]}!", exc_info=True)
+            logger.error("Error parsing and saving email with subject %s from %s!", parsedMail[constants.ParsedMailKeys.Header.SUBJECT], parsedMail[constants.ParsedMailKeys.Header.DATE], exc_info=True)
             continue
 
     if status:
@@ -232,4 +232,3 @@ def _isSpam(parsedMail):
         bool: Whether the mail is considered spam.
     """
     return parsedMail[constants.ParsedMailKeys.Header.X_SPAM_FLAG] and parsedMail[constants.ParsedMailKeys.Header.X_SPAM_FLAG] != 'NO'
-        

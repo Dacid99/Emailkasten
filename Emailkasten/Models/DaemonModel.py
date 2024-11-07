@@ -38,7 +38,7 @@ class DaemonModel(models.Model):
 
     cycle_interval = models.IntegerField(default=constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT)
     """The interval in which the mailbox is fetched. Set to :attr:`Emailkasten.constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT` by default."""
-    
+
     is_running = models.BooleanField(default=False)
     """Flags whether the daemon is active. `False` by default."""
 
@@ -46,8 +46,8 @@ class DaemonModel(models.Model):
     """Flags whether the daemon is healthy. `True` by default."""
 
     log_filepath = models.FilePathField(
-        path=constants.LoggerConfiguration.LOG_DIRECTORY_PATH, 
-        recursive=True, 
+        path=constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
+        recursive=True,
         null=True)
     """The logfile the daemon logs to. Is automatically set by :func:`save`."""
 
@@ -56,13 +56,13 @@ class DaemonModel(models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
-    
+
 
     class Meta:
         db_table = 'daemons'
         """The name of the database table for the daemons."""
 
-        
+
     def __str__(self):
         return f"Mailfetcher daemon configuration for mailbox {self.mailbox}"
 
@@ -78,7 +78,7 @@ class DaemonModel(models.Model):
                 with open(self.log_filepath, 'w'):
                     pass
         super().save(*args,**kwargs)
-    
+
 
 
 @receiver(post_save, sender=DaemonModel)
@@ -88,7 +88,7 @@ def post_save_is_healthy(sender, instance, **kwargs):
     Args:
         sender (type): The class type that sent the post_save signal.
         instance (:class:`Emailkasten.Models.DaemonModel`): The instance that has been saved.
-    
+
     Returns:
         None
     """
@@ -96,9 +96,9 @@ def post_save_is_healthy(sender, instance, **kwargs):
         try:
             oldInstance = DaemonModel.objects.get(pk=instance.pk)
             if not oldInstance.is_healthy:
-                logger.debug(f"{str(instance)} has become healthy, flagging its mailbox as healthy ...")
+                logger.debug("%s has become healthy, flagging its mailbox as healthy ...", str(instance))
                 instance.account.update(is_healthy=True)
                 logger.debug("Successfully flagged mailbox as healthy.")
 
         except DaemonModel.DoesNotExist:
-            logger.debug(f"Previous instance of {str(instance)} not found, no health flag comparison possible.")
+            logger.debug("Previous instance of %s not found, no health flag comparison possible.", str(instance))

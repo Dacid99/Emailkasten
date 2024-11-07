@@ -31,11 +31,11 @@ class StorageModel(models.Model):
 
     directory_number = models.PositiveIntegerField(unique=True)
     """The number of the directory tracked by this entry. Unique."""
-    
+
     path = models.FilePathField(unique=True, path=constants.StorageConfiguration.STORAGE_PATH)
     """The path of the tracked directory. Unique.
     Must contain :attr:`Emailkasten.constants.StorageConfiguration.STORAGE_PATH`."""
-    
+
     subdirectory_count = models.PositiveSmallIntegerField(default=0)
     """The number of subdirectories in this directory. 0 by default.
     Managed to not exceed :attr:`Emailkasten.constants.StorageConfiguration.MAX_SUBDIRS_PER_DIR`."""
@@ -54,7 +54,7 @@ class StorageModel(models.Model):
     def __str__(self):
         state = "Current" if self.current else "Archived"
         return f"{state} storage directory {self.path}"
-    
+
 
     def save(self, *args, **kwargs):
         """Extended :django::func:`django.models.Model.save` method with additional check for unique current directory and storage directory creation for new entries."""
@@ -64,7 +64,7 @@ class StorageModel(models.Model):
         if not self.path:
             self.path = os.path.join(constants.StorageConfiguration.STORAGE_PATH, str(self.directory_number))
             if not os.path.exists( self.path ):
-                logger.debug(f"Creating new storage directory {self.path} ...")
+                logger.debug("Creating new storage directory %s ...", self.path)
                 os.makedirs( self.path )
                 logger.debug("Successfully created new storage directory.")
 
@@ -75,7 +75,7 @@ class StorageModel(models.Model):
         """Increments the :attr:`subdirectory_count` within the limits of :attr:`Emailkasten.constants.StorageConfiguration.MAX_SUBDIRS_PER_DIR`.
         If the result exceeds this limit, creates a new storage directory via :func:`_addNewDirectory`.
 
-        Returns: 
+        Returns:
             None
         """
         self.subdirectory_count += 1
@@ -88,11 +88,11 @@ class StorageModel(models.Model):
     def _addNewDirectory(self):
         """Adds a new storage directory by setting this entries :attr:`current` to `False` and creating a new database entry with incremented :attr:`directory_number` and :attr:`current` set to `True`.
 
-        Returns: 
+        Returns:
             None
         """
         self.current = False
-        self.save() 
+        self.save()
         StorageModel.objects.create(directory_number=self.directory_number+1, current=True, subdirectory_count=0)
 
 
@@ -129,7 +129,5 @@ class StorageModel(models.Model):
             storageEntry._incrementSubdirectoryCount()
             logger.debug("Successfully created new subdirectory in the current storage directory.")
 
- 
+
         return subdirectoryPath
-
-

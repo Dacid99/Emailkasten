@@ -14,8 +14,8 @@
 # GNU Affero General Public License for more details.
 
 # You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.   
-''' 
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+'''
     The following code is a modified version of code from xme's emlrender project https://github.com/xme/emlrender.
     Original code by Xavier Mertens, licensed under the GNU General Public License version 3 (GPLv3).
     Modifications by David & Philipp Aderbauer, licensed under the GNU Affero General Public License version 3 (AGPLv3).
@@ -52,10 +52,10 @@ def _combineImages(imagesList):
         x = 0
         new_im.paste(images, (x, offset))
         offset += images.size[1]
-    
+
     logger.debug("Successfully combined image parts.")
     return new_im
-    
+
 
 
 def prerender(parsedMail):
@@ -65,12 +65,12 @@ def prerender(parsedMail):
     # Create the dump directory if not existing yet
     if not os.path.isdir(dumpDir):
         os.makedirs(dumpDir)
-        logger.debug(f"Created dump directory {dumpDir}")
+        logger.debug("Created dump directory %s", dumpDir)
 
     message = email.message_from_bytes(parsedMail[ParsedMailKeys.DATA])
-        
+
     dirtyChars = [ '\n', '\\n', '\t', '\\t', '\r', '\\r']
-    
+
     imgkitOptions = { 'load-error-handling': 'skip'}
     # imgkitOptions.update({ 'quiet': None })
     imagesList = []
@@ -83,29 +83,29 @@ def prerender(parsedMail):
         if part.is_multipart():
             logger.debug('Multipart found, continue')
             continue
-        
+
         if not part.get_content_disposition():
             mimeType = part.get_content_type()
             charset = part.get_content_charset() or ParsingConfiguration.CHARSET_DEFAULT
 
             logger.debug(f'Found MIME part: {mimeType}')
             if mimeType.startswith('text/'):
-                
+
                 try:
                     payload = quopri.decodestring(part.get_payload(decode=True)).decode(charset, errors='replace')
                 except Exception:
                     payload = str(quopri.decodestring(part.get_payload(decode=True)))[2:-1]
-                
+
                 # Cleanup dirty characters in html
                 if mimeType == 'text/html':
                     for char in dirtyChars:
                         payload = payload.replace(char, '')
-                
+
                 # Insert other text into html format
-                else: 
+                else:
                     payload = ProcessingConfiguration.HTML_FORMAT % payload
-                
-                
+
+
                 # Generate MD5 hash of the payload
                 m = hashlib.md5()
                 m.update(payload.encode(charset))
@@ -116,7 +116,7 @@ def prerender(parsedMail):
                     imagesList.append(os.path.join(dumpDir, imagePath))
                 except Exception as e:
                     logger.warning(f'Decoding this MIME part of type {mimeType} returned error {e}')
-                    
+
             elif mimeType.startswith('image/'):
                 payload = part.get_payload(decode=False)
                 imgdata = base64.b64decode(payload)
@@ -131,7 +131,7 @@ def prerender(parsedMail):
                     imagesList.append(os.path.join(dumpDir, imagePath))
                 except Exception as e:
                     logger.warning(f'Decoding this MIME part of type {mimeType} returned error {e}')
-                    
+
             else:
                 fileName = part.get_filename() or f"{hash(part)}.attachment"
                 attachments.append(f"{fileName} ({mimeType})")
@@ -161,9 +161,9 @@ def prerender(parsedMail):
         renderImageFilePath = getPrerenderImageStoragePath(parsedMail)
         images = list(map(Image.open, imagesList))
         combinedImage = _combineImages(images)
-        logger.debug(f"Saving prerender image at {renderImageFilePath} ...")
+        logger.debug("Saving prerender image at %s ...", renderImageFilePath)
         combinedImage.save(renderImageFilePath)
-        logger.debug(f"Successfully saved prerender image at {renderImageFilePath}.")
+        logger.debug("Successfully saved prerender image at %s.", renderImageFilePath)
         # Clean up temporary images
         for image in imagesList:
             os.remove(image)
