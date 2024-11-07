@@ -252,6 +252,7 @@ def insertEMail(emailData, account):
 
             # the FROM correspondent insertion has to be split to be able to add the FROM correspondent to an eventual mailinglist
             fromCorrespondent = emailData[ParsedMailKeys.Correspondent.FROM]
+            fromCorrespondentEntry = None
             if fromCorrespondent:
                 logger.debug("Adding FROM correspondent to DB...")
 
