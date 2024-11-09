@@ -34,7 +34,7 @@ class POP3_SSL_Fetcher(POP3Fetcher):
     def connectToHost(self):
         """Overrides :func:`Emailkasten.Fetchers.POP3Fetcher.connectToHost` to use :class:`poplib.POP3_SSL`."""
         self.logger.debug("Connecting to %s ...", str(self.account))
-        self._mailhost = poplib.POP3_SSL(host=self.account.mail_host, port=self.account.mail_host_port, context=None, timeout=None)
+        self._mailhost = poplib.POP3_SSL(host=self.account.mail_host, port=self.account.mail_host_port, context=None, timeout=self.account.timeout)
         self.logger.debug("Successfully connected to %s.", str(self.account))
 
 

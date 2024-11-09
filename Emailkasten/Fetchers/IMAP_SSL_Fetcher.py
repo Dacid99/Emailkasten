@@ -33,7 +33,7 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
     def connectToHost(self):
         """Overrides :func:`Emailkasten.Fetchers.IMAPFetcher.connectToHost` to use :class:`imaplib.IMAP4_SSL`."""
         self.logger.debug("Connecting to %s ...", str(self.account))
-        self._mailhost = imaplib.IMAP4_SSL(host=self.account.mail_host, port=self.account.mail_host_port, ssl_context=None, timeout=None)
+        self._mailhost = imaplib.IMAP4_SSL(host=self.account.mail_host, port=self.account.mail_host_port, ssl_context=None, timeout=self.account.timeout)
         self.logger.debug("Successfully connected to %s.", str(self.account))
 
 
