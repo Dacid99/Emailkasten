@@ -20,6 +20,7 @@
 - streamable logs for daemons
 - adding daemons to mailboxes
 - test on insertion
+- imap capabilities for better decoding
 
 ### Work in progress
 - documentation
@@ -31,7 +32,6 @@
 - logfile for daemons
 - health flagging in fetchers
 - mailboxparsing moved to processing
-- mailbox with full decode method
 - parseMailbox splitting (why?)
 - does decodeHeader do anything? If yes it should be used more
 - datedefault correctly formatted?
@@ -42,7 +42,7 @@
 
 # Remember
 - new migration must include setting of defaults
-- logpath is misconfigured to work on windows
+- logpath is misconfigured for makemigrations
 - csrf is disabled for debug
 
 ## At next db reset
