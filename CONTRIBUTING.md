@@ -4,8 +4,9 @@ To make it easier for me to read and understand your pull requests please follow
 
 ## Guidelines
 
-- Adapt to the code style of the repository. Its the standard [python style](https://peps.python.org/pep-0008/):
-  PascalCase for classes and snake_case for variables and functions. Constants are capitalized.
+- Adapt to the code style of the repository:
+  PascalCase for classes and camelCase for variables and functions. Constants are capitalized.
+  Model fields are named in snake_case.
 
 - The variable names should be comprehensive and the code self-explanatory. Use comments only where required for structure, comprehension or warning.
 
