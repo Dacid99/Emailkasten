@@ -162,7 +162,14 @@ class IMAPFetcher:
                 self.account.save()
                 return TestStatusCodes.BAD_RESPONSE
 
+            self.account.is_healthy = True
+            self.account.save()
+
+            self.logger.debug("Successfully tested %s.", str(self.account))
+
             if mailbox:
+                self.logger.debug("Testing %s ...", str(mailbox))
+
                 if mailbox.account != self.account:
                     self.logger.error("%s is not a mailbox of %s!", str(mailbox), self.account)
                     return TestStatusCodes.UNEXPECTED_ERROR
@@ -183,10 +190,10 @@ class IMAPFetcher:
                     mailbox.save()
                     return TestStatusCodes.BAD_RESPONSE
 
-            self.account.is_healthy = True
-            self.account.save()
+                mailbox.is_healthy = True
+                mailbox.save()
+                self.logger.debug("Successfully tested %s.", str(mailbox))
 
-            self.logger.error("Successfully tested %s.", str(self.account))
             return TestStatusCodes.OK
 
         except imaplib.IMAP4.abort:

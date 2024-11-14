@@ -146,9 +146,13 @@ class POP3Fetcher:
 
                 return TestStatusCodes.BAD_RESPONSE
 
-            self.logger.error("Successfully tested %s.", str(self.account))
+            self.account.is_healthy = True
+            self.account.save()
+            self.logger.debug("Successfully tested %s.", str(self.account))
 
             if mailbox:
+                self.logger.debug("Testing %s ...", str(mailbox))
+
                 status, response = self._mailhost.list()
 
                 if status != b'+OK':
@@ -158,10 +162,9 @@ class POP3Fetcher:
 
                     return TestStatusCodes.BAD_RESPONSE
 
-            self.logger.error("Successfully tested %s.", str(mailbox))
-
-            mailbox.is_healthy = True
-            mailbox.save()
+                mailbox.is_healthy = True
+                mailbox.save()
+                self.logger.debug("Successfully tested %s ...", str(mailbox))
 
             return TestStatusCodes.OK
 
