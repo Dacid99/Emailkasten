@@ -5,11 +5,11 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV XDG_RUNTIME_DIR /tmp/xdg_runtime
 ENV PYTHONPATH /mnt/Emailkasten
-COPY dependencies.txt /mnt/
+COPY ../dependencies.txt /mnt/
 RUN pip install --upgrade pip
 RUN pip install -r dependencies.txt
-COPY . /mnt/
+COPY .. /mnt/
 RUN chmod +x entrypoint.sh
 EXPOSE 8000
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT [ "./docker/entrypoint.sh" ]
 HEALTHCHECK --interval=60s --timeout=10s --start-period=5s --retries=3 CMD curl -f http://localhost:8000/health/ || exit 1
