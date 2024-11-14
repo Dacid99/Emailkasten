@@ -1,0 +1,30 @@
+If you have an idea for the project you are very welcome to implement it yourself!
+
+To make it easier for me to read and understand your pull requests please follow these guidelines as closely as possible.
+
+## Guidelines
+
+- Adapt to the code style of the repository. Its the standard [python style](https://peps.python.org/pep-0008/):
+  PascalCase for classes and snake_case for variables and functions. Constants are capitalized.
+
+- The variable names should be comprehensive and the code self-explanatory. Use comments only where required for structure, comprehension or warning.
+
+- Avoid suppressing warnings (e.g. by pylint) by annotations, this only hides potential issues. If such a warning is raised either fix it or explain why you cant in a comment.
+
+- Commits should have a clear commit message prefaced with a keyword of what has been done.
+  Examples:
+  - fix: error where xyz fails when calling abc
+  - implementation: view for the object xyz
+
+- Every single commit should be able to run, so the changes made in it must be complete. If not that has to be indicated in the commit message.
+  The completing commit then mentions the commit it completes.
+
+- Every commit should be as concise and small as possible within the bounds of the rule above. Every commit should be its own logical and consistent unit of change.
+
+- Please do not change and commit the django files unless you need to add a new dependency or it is inevitable for your change to work.
+
+- Your pull request should already have been properly tested by yourself.
+
+
+
+Thank you for helping with the project!
