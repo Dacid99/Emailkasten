@@ -22,9 +22,11 @@ To make it easier for me to read and understand your pull requests please follow
 
 - Every commit should be as concise and small as possible within the bounds of the rule above. Every commit should be its own logical and consistent unit of change.
 
-- Please do not change and commit the django files unless you need to add a new dependency or it is inevitable for your change to work.
+- Please do not change and commit the project configuration and test files unless you need to add a new dependency or it is inevitable for your change to work.
 
 - Your pull request should already have been properly tested by yourself.
+
+- Every pull request will be linted and checked using the tools in the validation folder. Please make sure to do this yourself as well.
 
 
 
