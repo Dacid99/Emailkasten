@@ -1,8 +1,7 @@
-version: '0.0.1'
-
 services:
   db:
     image: mariadb:latest
+    container_name: emailkasten-db
     volumes:
       - /main/Emailkasten/test/mysql:/var/lib/mysql
     environment:
@@ -10,7 +9,6 @@ services:
       - MARIADB_USER=user
       - MARIADB_PASSWORD=passwd
       - MARIADB_ROOT_PASSWORD=example
-    container_name: emailkasten_db
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "mariadb -u$$MARIADB_USER -p$$MARIADB_PASSWORD -e 'SELECT 1'"]
@@ -21,12 +19,17 @@ services:
 
   adminer:
     image: adminer:latest
+    container_name: emailkasten-adminer
     restart: unless-stopped
     ports:
       - 9999:8080
 
   web:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: emailkasten
+    container_name: emailkasten-web
     volumes:
       - /main/Emailkasten/test/archive:/mnt/archive
       - /main/Emailkasten/test/log:/var/log

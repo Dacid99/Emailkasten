@@ -1,0 +1,10 @@
+venv/
+test/
+validation/
+docs/
+.vscode/
+.mypy_cache/
+Readme.md
+CONTRIBUTING.md
+LICENSE
+TODO.md
