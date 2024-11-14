@@ -27,14 +27,9 @@
 - type annotations
 
 ## To test
-- available fetching criteria validation
-- daemontest
 - logfile for daemons
 - health flagging in fetchers
-- mailboxparsing moved to processing
-- parseMailbox splitting (why?)
 - does decodeHeader do anything? If yes it should be used more
-- datedefault correctly formatted?
 
 ## To fix
 - 'Decoding this mime part returned error' for paypal in prerender
