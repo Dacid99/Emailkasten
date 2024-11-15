@@ -30,6 +30,7 @@
 - logfile for daemons
 - health flagging in fetchers
 - does decodeHeader do anything? If yes it should be used more
+- fileresponse with
 
 ## To fix
 - 'Decoding this mime part returned error' for paypal in prerender

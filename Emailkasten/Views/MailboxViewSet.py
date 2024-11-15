@@ -115,11 +115,12 @@ class MailboxViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'], url_path='daemon/log/download')
     def log_download(self, request, pk=None):
         mailbox = self.get_object()
-        daemonLogFilepath = mailbox.dameon.log_filepath
-        daemonLogFilename = os.path.basename(daemonLogFilepath)
 
-        if not os.path.exists(daemonLogFilepath):
+        daemonLogFilepath = mailbox.dameon.log_filepath
+        if not daemonLogFilepath or not os.path.exists(daemonLogFilepath):
             raise Http404("Log file not found")
 
-        response = FileResponse(open(daemonLogFilepath, 'rb'), as_attachment=True, filename=daemonLogFilename)
-        return response
+        daemonLogFilename = os.path.basename(daemonLogFilepath)
+        with open(daemonLogFilepath, 'rb') as daemonLogFile:
+            response = FileResponse(daemonLogFile, as_attachment=True, filename=daemonLogFilename)
+            return response

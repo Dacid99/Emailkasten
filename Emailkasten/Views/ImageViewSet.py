@@ -43,27 +43,29 @@ class ImageViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return ImageModel.objects.filter(email__account__user = self.request.user)
 
+
     @action(detail=True, methods=['get'], url_path='download')
     def download(self, request, pk=None):
         image = self.get_object()
-        fileName = image.file_name
-        filePath = image.file_path
 
-        if not os.path.exists(filePath):
+        imageFilePath = image.file_path
+        if not imageFilePath or not os.path.exists(imageFilePath):
             raise Http404("Image file not found")
-        
-        response = FileResponse(open(filePath, 'rb'), as_attachment=True, filename=fileName)
-        return response
 
-    
+        imageFileName = image.file_name
+        with open(imageFilePath, 'rb') as imageFile:
+            response = FileResponse(imageFile, as_attachment=True, filename=imageFileName)
+            return response
+
+
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
     def toggle_favorite(self, request, pk=None):
         image = self.get_object()
         image.is_favorite = not image.is_favorite
         image.save()
         return Response({'status': 'Image marked as favorite'})
-    
-    
+
+
     @action(detail=False, methods=['get'], url_path='favorites')
     def favorites(self, request):
         favoriteImages = ImageModel.objects.filter(is_favorite=True)

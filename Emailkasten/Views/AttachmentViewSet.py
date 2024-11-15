@@ -48,14 +48,15 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=['get'], url_path='download')
     def download(self, request, pk=None):
         attachment = self.get_object()
-        fileName = attachment.file_name
-        filePath = attachment.file_path
 
-        if not os.path.exists(filePath):
+        attachmentFilePath = attachment.file_path
+        if not attachmentFilePath or not os.path.exists(attachmentFilePath):
             raise Http404("Attachment file not found")
-        
-        response = FileResponse(open(filePath, 'rb'), as_attachment=True, filename=fileName)
-        return response
+
+        attachmentFileName = attachment.file_name
+        with open(attachmentFilePath, 'rb') as attachmentFile:
+            response = FileResponse(attachmentFile, as_attachment=True, filename=attachmentFileName)
+            return response
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
@@ -64,8 +65,8 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
         attachment.is_favorite = not attachment.is_favorite
         attachment.save()
         return Response({'status': 'Attachment marked as favorite'})
-    
-    
+
+
     @action(detail=False, methods=['get'], url_path='favorites')
     def favorites(self, request):
         favoriteAttachments = AttachmentModel.objects.filter(is_favorite=True)

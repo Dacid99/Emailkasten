@@ -43,45 +43,44 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return EMailModel.objects.filter(account__user = self.request.user)
-    
+
+
     @action(detail=True, methods=['get'], url_path='download')
     def download(self, request, pk=None):
         email = self.get_object()
+
         filePath = email.eml_filepath
-        if filePath:
-            if os.path.exists(filePath):
-                fileName = os.path.basename(filePath)
-                response = FileResponse(open(filePath, 'rb'), as_attachment=True, filename=fileName)
-                return response
-            else:
-                raise Http404("EMl file not found")
-        else:
-            raise Http404("No EML file available")            
-    
-    
+        if not filePath or not os.path.exists(filePath):
+            raise Http404("EMl file not found")
+
+        fileName = os.path.basename(filePath)
+        with open(filePath, 'rb') as file:
+            response = FileResponse(file, as_attachment=True, filename=fileName)
+            return response
+
+
     @action(detail=True, methods=['get'], url_path='prerender')
     def prerender(self, request, pk=None):
         email = self.get_object()
-        filePath = email.prerender_filepath
-        if filePath:
-            if os.path.exists(filePath):
-                fileName = os.path.basename(filePath)
-                response = FileResponse(open(filePath, 'rb'), as_attachment=True, filename=fileName)
-                return response
-            else:
-                raise Http404("Prerender image file not found")
-        else:
-            raise Http404("No prerender image file available")
-        
-    
+
+        prerenderFilePath = email.prerender_filepath
+        if not prerenderFilePath or not os.path.exists(prerenderFilePath):
+            raise Http404("Prerender image file not found")
+
+        prerenderFileName = os.path.basename(prerenderFilePath)
+        with open(prerenderFilePath, 'rb') as prerenderFile:
+            response = FileResponse(prerenderFile, as_attachment=True, filename=prerenderFileName)
+            return response
+
+
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
     def toggle_favorite(self, request, pk=None):
         email = self.get_object()
         email.is_favorite = not email.is_favorite
         email.save()
         return Response({'status': 'Email marked as favorite'})
-    
-    
+
+
     @action(detail=False, methods=['get'], url_path='favorites')
     def favorites(self, request):
         favoriteEmails = EMailModel.objects.filter(is_favorite=True)
