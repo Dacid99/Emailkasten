@@ -86,6 +86,7 @@ def testAccount(account):
     return result
 
 
+
 def testMailbox(mailbox):
     """Tests whether the data in a mailboxmodel is correct and allows connecting and opening the account and mailbox.
     The :attr:`Emailkasten.Models.MailboxModel.is_healthy` flag is set according to the result by the Fetcher class, e.g. :class:`Emailkasten.Fetchers.IMAPFetcher`.
@@ -142,12 +143,10 @@ def scanMailboxes(account):
 
     if account.protocol == IMAPFetcher.PROTOCOL:
         with IMAPFetcher(account) as imapMail:
-
             mailboxes = imapMail.fetchMailboxes()
 
     elif account.protocol == IMAP_SSL_Fetcher.PROTOCOL:
         with IMAP_SSL_Fetcher(account) as imapMail:
-
             mailboxes = imapMail.fetchMailboxes()
 
     elif account.protocol == POP3Fetcher.PROTOCOL:
@@ -158,7 +157,6 @@ def scanMailboxes(account):
 
     elif account.protocol == ExchangeFetcher.PROTOCOL:
         with ExchangeFetcher(account) as exchangeMail:
-
             mailboxes = exchangeMail.fetchMailboxes()
 
     else:

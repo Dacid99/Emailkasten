@@ -74,8 +74,9 @@ def _decodeText(text):
 
 def _decodeHeader(header):
     """Decodes an email header field encoded as bytes.
-    Checks for a specific charset to use. If none is found uses the default :attr:`Emailkasten.constants.MailParsingConfiguration.CHARSET_DEFAULT`.
     Uses the :python::func:`email.header.decode_header` function.
+    Checks for a specific charset to use.
+    If none is found uses the default :attr:`Emailkasten.constants.MailParsingConfiguration.CHARSET_DEFAULT`.
 
     Args:
         header (bytes): The mail header to decode.
@@ -89,7 +90,7 @@ def _decodeHeader(header):
         if charset is None:
             decodedString += fragment.decode(ParsingConfiguration.CHARSET_DEFAULT, errors='replace') if isinstance(fragment, bytes) else fragment
         else:
-            decodedString += fragment.decode(charset, errors='replace')
+            decodedString += fragment.decode(charset, errors='replace') if isinstance(fragment, bytes) else fragment
 
     return decodedString
 

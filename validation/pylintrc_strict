@@ -326,7 +326,7 @@ min-public-methods=2
 [EXCEPTIONS]
 
 # Exceptions that will emit a warning when caught.
-overgeneral-exceptions=builtins.BaseException,builtins.Exception
+overgeneral-exceptions=builtins.BaseException
 
 
 [FORMAT]
@@ -431,6 +431,7 @@ confidence=HIGH,
 # --disable=W".
 disable=raw-checker-failed,
         no-member,
+        no-else-return,
         too-few-public-methods,
         unused-argument,
         bad-inline-option,

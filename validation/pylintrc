@@ -326,7 +326,7 @@ min-public-methods=2
 [EXCEPTIONS]
 
 # Exceptions that will emit a warning when caught.
-overgeneral-exceptions=builtins.BaseException,builtins.Exception
+overgeneral-exceptions=builtins.BaseException
 
 
 [FORMAT]
@@ -435,6 +435,7 @@ disable=raw-checker-failed,
         trailing-newlines,
         missing-final-newline,
         invalid-name,
+        no-else-return,
         no-member,
         missing-docstring,
         too-few-public-methods,

@@ -49,6 +49,7 @@ class AccountViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         try:
             serializer.save(user = self.request.user)
+            return None
         except IntegrityError:
             return Response({'detail': 'This account already exists!'}, status=status.HTTP_409_CONFLICT)
 

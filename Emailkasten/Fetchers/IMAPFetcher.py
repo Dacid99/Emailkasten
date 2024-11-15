@@ -281,11 +281,13 @@ class IMAPFetcher:
         Args:
             mailbox (:class:`Emailkasten.Models.MailboxModel`): Database model of the mailbox to fetch data from.
                 If a mailbox that is not in the account is given, returns [].
-            criterion (str, optional): Formatted criterion to filter mails in the IMAP request. Defaults to :attr:`Emailkasten.constants.MailFetchingCriteria.RECENT`.
+            criterion (str, optional): Formatted criterion to filter mails in the IMAP request.
+                Defaults to :attr:`Emailkasten.constants.MailFetchingCriteria.RECENT`.
                 If an invalid criterion is given, returns [].
 
         Returns:
-            list: List of :class:`email.message.EmailMessage` mails in the mailbox matching the criterion. Empty if no such messages are found, if there is no connection to the server or if an error occured.
+            list: List of :class:`email.message.EmailMessage` mails in the mailbox matching the criterion.
+                Empty if no such messages are found, if there is no connection to the server or if an error occured.
         """
         if not self._mailhost:
             self.logger.error("No connection to %s!", str(self.account))

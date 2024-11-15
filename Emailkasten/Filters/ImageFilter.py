@@ -22,14 +22,45 @@ from ..Models.ImageModel import ImageModel
 
 
 class ImageFilter(django_filters.FilterSet):
-    datetime__lte = django_filters.DateTimeFilter(field_name='email__datetime', lookup_expr='lte')
-    datetime__gte = django_filters.DateTimeFilter(field_name='email__datetime', lookup_expr='gte')
+
+    datetime__lte = django_filters.DateTimeFilter(
+        field_name="email__datetime", lookup_expr="lte"
+    )
+
+    datetime__gte = django_filters.DateTimeFilter(
+        field_name="email__datetime", lookup_expr="gte"
+    )
 
     class Meta:
         model = ImageModel
         fields = {
-            'file_name': ['icontains', 'contains', 'exact', 'iexact', 'startswith', 'istartswith', 'endswith', 'iendswith', 'regex', 'iregex', 'in'],
-            'datasize': ['lte', 'gte', 'lt', 'gt', 'exact', 'in'],
-            'created': ['lte', 'gte'],
-            'updated': ['lte', 'gte']
+            "file_name": [
+                "icontains",
+                "contains",
+                "exact",
+                "iexact",
+                "startswith",
+                "istartswith",
+                "endswith",
+                "iendswith",
+                "regex",
+                "iregex",
+                "in",
+            ],
+            "datasize": [
+                "lte",
+                "gte",
+                "lt",
+                "gt",
+                "exact",
+                "in"
+            ],
+            "created": [
+                "lte",
+                "gte"
+            ],
+            "updated": [
+                "lte",
+                "gte"
+            ],
         }

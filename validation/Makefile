@@ -5,4 +5,4 @@ strictlint: pylintrc_strict
 	pylint --rcfile=$< ../Emailkasten
 
 check: mypy.ini
-	mypy --config-file $< Emailkasten/
+	mypy --config-file $< ../Emailkasten/

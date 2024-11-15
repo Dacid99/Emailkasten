@@ -30,6 +30,7 @@ from .MailboxModel import MailboxModel
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
+
 class DaemonModel(models.Model):
     """Database model for the daemon fetching a mailbox."""
 

@@ -55,9 +55,18 @@ class EMailArchiverDaemon:
         try:
             newDaemon = EMailArchiverDaemon(daemonModel)
             newDaemon.cycle()
-            return Response({'status': 'Daemon testrun was successful.', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name, 'info': "Success" })
+            return Response({
+                'status': 'Daemon testrun was successful.',
+                'account': daemonModel.mailbox.account.mail_address,
+                'mailbox': daemonModel.mailbox.name, 'info': "Success"
+                })
         except Exception as e:
-            return Response({'status': 'Daemon testrun failed!', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name, 'info': str(e)})
+            return Response({
+                'status': 'Daemon testrun failed!',
+                'account': daemonModel.mailbox.account.mail_address,
+                'mailbox': daemonModel.mailbox.name,
+                'info': str(e)
+                })
 
 
     @staticmethod
@@ -78,11 +87,24 @@ class EMailArchiverDaemon:
                 EMailArchiverDaemon.runningDaemons[daemonModel.id] = newDaemon
                 daemonModel.is_running = True
                 daemonModel.save()
-                return Response({'status': 'Daemon started', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+                return Response({
+                    'status': 'Daemon started',
+                    'account': daemonModel.mailbox.account.mail_address,
+                    'mailbox': daemonModel.mailbox.name
+                    })
             except Exception:
-                return Response({'status': 'Daemon failed to start!', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+                return Response({
+                    'status': 'Daemon failed to start!',
+                    'account': daemonModel.mailbox.account.mail_address,
+                    'mailbox': daemonModel.mailbox.name
+                    })
         else:
-            return Response({'status': 'Daemon already running', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+            return Response({
+                'status':
+                'Daemon already running',
+                'account': daemonModel.mailbox.account.mail_address,
+                'mailbox': daemonModel.mailbox.name
+                })
 
 
     @staticmethod
@@ -97,13 +119,21 @@ class EMailArchiverDaemon:
             :rest_framework::class:`response.Response`: A response detailing what has been done.
         """
         if daemonModel.id in EMailArchiverDaemon.runningDaemons:
-            oldDaemon = EMailArchiverDaemon.runningDaemons.pop(daemonModel.id)
+            oldDaemon = EMailArchiverDaemon.runningDaemons.pop( daemonModel.id )
             oldDaemon.stop()
             daemonModel.is_running = False
             daemonModel.save()
-            return Response({'status': 'Daemon stopped', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+            return Response({
+                'status': 'Daemon stopped',
+                'account': daemonModel.mailbox.account.mail_address,
+                'mailbox': daemonModel.mailbox.name
+                })
         else:
-            return Response({'status': 'Daemon not running', 'account': daemonModel.mailbox.account.mail_address, 'mailbox': daemonModel.mailbox.name})
+            return Response({
+                'status': 'Daemon not running',
+                'account': daemonModel.mailbox.account.mail_address,
+                'mailbox': daemonModel.mailbox.name
+                })
 
 
     def __init__(self, daemon):
@@ -125,7 +155,6 @@ class EMailArchiverDaemon:
         self.setupLogger()
 
 
-
     def setupLogger(self):
         """Sets up the logger for the daemon with an additional filehandler for its own logfile.
 
@@ -135,7 +164,6 @@ class EMailArchiverDaemon:
         self.logger = logging.getLogger(__name__ + f".daemon_{self.daemon.id}")
         fileHandler = logging.FileHandler(self.daemon.log_filepath)
         self.logger.addHandler(fileHandler)
-
 
 
     def start(self):
@@ -153,7 +181,6 @@ class EMailArchiverDaemon:
             self.logger.info("Successfully started daemon.")
         else:
             self.logger.info("EMailArchiverDaemon is already running.")
-
 
 
     def stop(self):
@@ -186,7 +213,6 @@ class EMailArchiverDaemon:
             self.logger.error("%s crashed! Attempting to restart ...", str(self.daemon), exc_info=True)
             time.sleep(constants.EMailArchiverDaemonConfiguration.RESTART_TIME)
             self.run()
-
 
 
     def cycle(self):
