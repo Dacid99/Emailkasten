@@ -147,7 +147,7 @@ bad-names=foo,
 
 # Bad variable names regexes, separated by a comma. If names match any regex,
 # they will always be refused
-bad-names-rgxs=^.{,3}$
+bad-names-rgxs=^.{,2}$
 
 # Naming style matching correct class attribute names.
 class-attribute-naming-style=camelCase
