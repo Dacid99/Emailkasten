@@ -20,6 +20,8 @@ import imaplib
 
 from .. import constants
 from .IMAPFetcher import IMAPFetcher
+from ..Models.AccountModel import AccountModel
+from ..Models.MailboxModel import MailboxModel
 
 
 class IMAP_SSL_Fetcher(IMAPFetcher):
@@ -38,13 +40,27 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
 
 
     @staticmethod
-    def testAccount(account):
-        """Overrides :func:`Emailkasten.Fetchers.IMAPFetcher.testAccount` to use :class:`imaplib.IMAP4_SSL`."""
+    def testAccount(account: AccountModel) -> int:
+        """Overrides :func:`Emailkasten.Fetchers.IMAPFetcher.testAccount` to use :class:`imaplib.IMAP4_SSL`.
+
+        Args:
+            account: Data of the account to be tested.
+
+        Returns:
+            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
+        """
         with IMAP_SSL_Fetcher(account) as imapsslFetcher:
             return imapsslFetcher.test()
 
     @staticmethod
-    def testMailbox(mailbox):
-        """Overrides :func:`Emailkasten.Fetchers.IMAPFetcher.testMailbox` to use :class:`imaplib.IMAP4_SSL`."""
+    def testMailbox(mailbox: MailboxModel) -> int:
+        """Overrides :func:`Emailkasten.Fetchers.IMAPFetcher.testMailbox` to use :class:`imaplib.IMAP4_SSL`.
+
+        Args:
+            mailbox: Data of the mailbox to be tested.
+
+        Returns:
+            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
+        """
         with IMAP_SSL_Fetcher(mailbox.account) as imapsslFetcher:
             return imapsslFetcher.test(mailbox)
