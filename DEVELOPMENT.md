@@ -15,7 +15,8 @@ pip install -r docs/dependencies.txt
 # Workspace Recommendations
 
 ## VSCode extensions:
-- pylint ( "pylint.args": ["--rcfile=validation/pylintrc_strict"] )
+- pylint ( "pylint.args": ["--rcfile=validation/pylintrc(_strict)"] )
+- mypy ( "mypy-type-checker.args": ["--config-file=validation/mypy.ini"] )
 - isort
 - other python extension packs
 
