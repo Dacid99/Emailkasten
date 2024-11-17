@@ -22,6 +22,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 from ..Filters.CorrespondentFilter import CorrespondentFilter
 from ..Models.CorrespondentModel import CorrespondentModel
@@ -42,7 +43,7 @@ class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return CorrespondentModel.objects.filter(emails__account__user = self.request.user).distinct()
-    
+
     def get_serializer_class(self):
         if self.action == 'list':
             return SimpleCorrespondentSerializer
@@ -50,15 +51,32 @@ class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request, pk=None):
+    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+        """Action method toggling the favorite flag of the correspondent.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the correspondent to toggle favorite. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
         correspondent = self.get_object()
         correspondent.is_favorite = not correspondent.is_favorite
         correspondent.save()
         return Response({'status': 'Correspondent marked as favorite'})
-    
-    
+
+
     @action(detail=False, methods=['get'], url_path='favorites')
-    def favorites(self, request):
+    def favorites(self, request: Request)-> Response:
+        """Action method returning all correspondent with favorite flag.
+
+        Args:
+            request: The request triggering the action.
+
+        Returns:
+            A response containing all correspondents data with favorite flag.
+        """
         favoriteCorrespondents = CorrespondentModel.objects.filter(is_favorite=True)
         serializer = self.get_serializer(favoriteCorrespondents, many=True)
         return Response(serializer.data)

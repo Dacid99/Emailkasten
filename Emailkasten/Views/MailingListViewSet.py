@@ -22,6 +22,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 from ..Filters.MailingListFilter import MailingListFilter
 from ..Models.MailingListModel import MailingListModel
@@ -40,7 +41,7 @@ class MailingListViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return MailingListModel.objects.filter(correspondent__emails__account__user = self.request.user).distinct()
-    
+
     def destroy(self, request, pk=None):
         try:
             instance = self.get_object()
@@ -51,15 +52,32 @@ class MailingListViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request, pk=None):
+    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+        """Action method toggling the favorite flag of the mailinglist.
+
+        Args:
+            request: The request triggering the action.
+            pk: int: The private key of the mailinglist to toggle favorite. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
         mailinglist = self.get_object()
         mailinglist.is_favorite = not mailinglist.is_favorite
         mailinglist.save()
         return Response({'status': 'Mailinglist marked as favorite'})
-    
-    
+
+
     @action(detail=False, methods=['get'], url_path='favorites')
-    def favorites(self, request):
+    def favorites(self, request: Request) -> Response:
+        """Action method returning all mailinglist with favorite flag.
+
+        Args:
+            request: The request triggering the action.
+
+        Returns:
+            A response containing all mailinglist data with favorite flag.
+        """
         favoriteMailinglists = MailingListModel.objects.filter(is_favorite=True)
         serializer = self.get_serializer(favoriteMailinglists, many=True)
         return Response(serializer.data)

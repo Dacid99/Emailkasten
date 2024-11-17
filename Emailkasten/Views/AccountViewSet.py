@@ -23,6 +23,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 from ..Filters.AccountFilter import AccountFilter
 from ..mailProcessing import scanMailboxes, testAccount
@@ -55,7 +56,16 @@ class AccountViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'])
-    def scan_mailboxes(self, request, pk=None):
+    def scan_mailboxes(self, request: Request, pk: int=None) -> Response:
+        """Action method scanning for mailboxes in the account.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the account to scan for mailboxes. Defaults to None.
+
+        Returns:
+            A response containing the updated account data.
+        """
         account = self.get_object()
         scanMailboxes(account)
 
@@ -64,7 +74,16 @@ class AccountViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='test')
-    def test(self, request, pk=None):
+    def test(self, request: Request, pk: int =None) -> Response:
+        """Action method testing the account data.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the account to test. Defaults to None.
+
+        Returns:
+            A response containing the updated account data and the test resultcode.
+        """
         account = self.get_object()
         result = testAccount(account)
 
@@ -73,7 +92,16 @@ class AccountViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request, pk=None):
+    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+        """Action method toggling the favorite flag of the account.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the account to toggle favorite. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
         account = self.get_object()
         account.is_favorite = not account.is_favorite
         account.save()
@@ -81,7 +109,15 @@ class AccountViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=False, methods=['get'], url_path='favorites')
-    def favorites(self, request):
+    def favorites(self, request: Request) -> Response:
+        """Action method returning all accounts with favorite flag.
+
+        Args:
+            request: The request triggering the action.
+
+        Returns:
+            A response containing all account data with favorite flag.
+        """
         favoriteAccounts = AccountModel.objects.filter(is_favorite=True)
         serializer = self.get_serializer(favoriteAccounts, many=True)
         return Response(serializer.data)

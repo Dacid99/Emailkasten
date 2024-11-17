@@ -25,6 +25,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 from ..Filters.EMailFilter import EMailFilter
 from ..Models.EMailModel import EMailModel
@@ -46,7 +47,19 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['get'], url_path='download')
-    def download(self, request, pk=None):
+    def download(self, request: Request, pk: int = None) -> Response:
+        """Action method downloading the eml file of the email.
+
+        Args:
+            request: The request triggering the action.
+            pk: int: The private key of the attachment to download. Defaults to None.
+
+        Raises:
+            Http404: If the filepath is not in the database or it doesnt exist.
+
+        Returns:
+            A fileresponse containing the requested file.
+        """
         email = self.get_object()
 
         filePath = email.eml_filepath
@@ -60,7 +73,19 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['get'], url_path='prerender')
-    def prerender(self, request, pk=None):
+    def prerender(self, request: Request, pk: int = None) -> Response:
+        """Action method downloading the prerender image of the mail.
+
+        Args:
+            request: The request triggering the action.
+            pk: int: The private key of the attachment to download. Defaults to None.
+
+        Raises:
+            Http404: If the filepath is not in the database or it doesnt exist.
+
+        Returns:
+            A fileresponse containing the requested file.
+        """
         email = self.get_object()
 
         prerenderFilePath = email.prerender_filepath
@@ -74,7 +99,16 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request, pk=None):
+    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+        """Action method toggling the favorite flag of the email.
+
+        Args:
+            request: The request triggering the action.
+            pk: int: The private key of the email to toggle favorite. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
         email = self.get_object()
         email.is_favorite = not email.is_favorite
         email.save()
@@ -82,7 +116,15 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=False, methods=['get'], url_path='favorites')
-    def favorites(self, request):
+    def favorites(self, request: Request) -> Response:
+        """Action method returning all emails with favorite flag.
+
+        Args:
+            request: The request triggering the action.
+
+        Returns:
+            A response containing all email data with favorite flag.
+        """
         favoriteEmails = EMailModel.objects.filter(is_favorite=True)
         serializer = self.get_serializer(favoriteEmails, many=True)
         return Response(serializer.data)

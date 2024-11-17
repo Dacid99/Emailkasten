@@ -50,7 +50,7 @@ class MailingListModel(models.Model):
 
     correspondent = models.ForeignKey(CorrespondentModel, related_name='mailinglist', on_delete=models.CASCADE)
     """The correspondent that sends the mailinglist. Unique together with :attr:`list_id`. Deletion of that `correspondent` deletes this mailinglist."""
-    
+
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""
 
@@ -67,5 +67,3 @@ class MailingListModel(models.Model):
 
         unique_together = ("list_id", "correspondent")
         """:attr:`list_id` and :attr:`correspondent` in combination are unique."""
-
-
