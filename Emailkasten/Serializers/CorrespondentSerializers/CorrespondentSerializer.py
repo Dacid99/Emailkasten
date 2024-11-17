@@ -17,16 +17,18 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from rest_framework import serializers
+from rest_framework.utils.serializer_helpers import ReturnDict
 
 from ...Models.CorrespondentModel import CorrespondentModel
 from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from ..EMailCorrespondentsSerializers.CorrespondentEMailSerializer import \
     CorrespondentEMailSerializer
-from ..MailingListSerializers.SimpleMailingListSerializer import SimpleMailingListSerializer
+from ..MailingListSerializers.SimpleMailingListSerializer import \
+    SimpleMailingListSerializer
 
 
 class CorrespondentSerializer(serializers.ModelSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.CorrespondentModel`. 
+    """The standard serializer for a :class:`Emailkasten.Models.CorrespondentModel`.
     Uses all fields including all emails and mailinglists mentioning the correspondent.
     Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
 
@@ -44,15 +46,15 @@ class CorrespondentSerializer(serializers.ModelSerializer):
         """Include all fields."""
 
 
-    def get_emails(self, object):
-        """Serializes the emails connected to the instance to be serialized.  
+    def get_emails(self, object: CorrespondentModel) -> ReturnDict|None:
+        """Serializes the emails connected to the instance to be serialized.
 
         Args:
-            object (:class:`Emailkasten.Models.CorrespondentModel`): The instance being serialized.
+            object: The instance being serialized.
 
         Returns:
-            Optional[:class:`Emailkasten.Serializers.EMailCorrespondentsSerializers.CorrespondentEMailSerializer`]: The serialized emails connected to the instance to be serialized.
-            None if the the user is not authenticated. 
+            The serialized emails connected to the instance to be serialized.
+            None if the the user is not authenticated.
         """
         request = self.context.get('request')
         user = request.user if request else None

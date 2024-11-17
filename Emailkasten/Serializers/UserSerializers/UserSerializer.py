@@ -35,49 +35,48 @@ class UserSerializer(serializers.ModelSerializer):
         """Includes only :django::attr:`contrib.auth.models.User.username`, :attr:`password` and :django::attr:`contrib.auth.models.User.is_staff`."""
 
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> User:
         """Creates a new :django::class:`contrib.auth.models.User` instance with given data.
         Uses :django::func:`contrib.auth.models.UserManager.create_user` to ensure encryption of the password.
 
         Args:
-            validated_data (dict): The validated data to create a new model instance with.
+            validated_data: The validated data to create a new model instance with.
 
         Returns:
-            :django::class:`django.contrib.auth.models.User`: The newly created model instance.
+            The newly created model instance.
         """
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
-            is_staff=validated_data.get('is_staff', False) 
+            is_staff=validated_data.get('is_staff', False)
         )
         return user
 
 
-    def update(self, instance, validated_data):
+    def update(self, instance: User, validated_data: dict) -> User:
         """Overrides :django::func:`serializers.ModelSerializer.update` to ensure correct encryption of password and proper permission changes.
 
         Args:
-            instance (:django::class:`contrib.auth.models.User`): The model instance to be updated.
-            validated_data (dict): The validated data update the model instance with.
+            instance: The model instance to be updated.
+            validated_data: The validated data update the model instance with.
 
         Raises:
             ValidationError: If the user is not staff, and is thus not permitted to make users staff.
 
         Returns:
-            :django::class:`django.contrib.auth.models.User`: The updated model instance.
+            The updated model instance.
         """
         instance.username = validated_data.get('username', instance.username)
 
         if 'password' in validated_data and validated_data['password']:
             instance.set_password(validated_data['password'])
-        
+
         if 'is_staff' in validated_data and validated_data['is_staff']:
             request = self.context.get('request')
             if request.user.is_staff:
                 instance.is_staff = validated_data['is_staff']
             else:
                 raise ValidationError({"detail": "You do not have permissions to perform this action."})  # default permissions message to avoid giving clues to attackers
-        
+
         instance.save()
         return instance
-    

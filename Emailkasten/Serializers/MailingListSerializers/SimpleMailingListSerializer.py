@@ -29,7 +29,7 @@ class SimpleMailingListSerializer(serializers.ModelSerializer):
     email_number = serializers.SerializerMethodField()
     """The number of mails by the mailinglist. Set via :func:`get_email_number`."""
 
-    
+
     class Meta:
         model = MailingListModel
 
@@ -37,14 +37,14 @@ class SimpleMailingListSerializer(serializers.ModelSerializer):
         """Include all fields."""
 
 
-    def get_email_number(self, object):
+    def get_email_number(self, object: MailingListModel) -> int:
         """Gets the number of mails sent by the mailinglist.
 
         Args:
-            object (:class:`Emailkasten.Models.MailingListModel`):  The instance being serialized.
+            object:  The instance being serialized.
 
         Returns:
-            int: The number of mails referencing by the instance.
+           The number of mails referencing by the instance.
         """
         number = object.emails.count()
         return number
