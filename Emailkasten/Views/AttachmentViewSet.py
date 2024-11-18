@@ -16,7 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -25,12 +28,14 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.request import Request
 
 from ..Filters.AttachmentsFilter import AttachmentFilter
 from ..Models.AttachmentModel import AttachmentModel
 from ..Serializers.AttachmentSerializers.AttachmentSerializer import \
     AttachmentSerializer
+
+if TYPE_CHECKING:
+    from rest_framework.request import Request
 
 
 class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
@@ -47,7 +52,7 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['get'], url_path='download')
-    def download(self, request: Request, pk: int = None) -> FileResponse:
+    def download(self, request: Request, pk: int|None = None) -> FileResponse:
         """Action method downloading the attachment.
 
         Args:
@@ -73,7 +78,7 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+    def toggle_favorite(self, request: Request, pk: int|None = None) -> Response:
         """Action method toggling the favorite flag of the attachment.
 
         Args:

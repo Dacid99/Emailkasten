@@ -16,6 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -23,12 +27,23 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from ..permissions import IsAdminOrSelf
 from ..Serializers.UserSerializers.UserSerializer import UserSerializer
 
+if TYPE_CHECKING:
+    from typing import Sequence
+
+    from rest_framework.permissions import _SupportsHasPermission
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    
-    def get_permissions(self):
+
+    def get_permissions(self) -> Sequence[_SupportsHasPermission]:
+        """Gets the permission for different request methods.
+        Allows POST (registration) for all and all others only for authenticated and admin users.
+
+        Returns:
+            The permission class(es) for the request.
+        """
         if self.request.method in ['POST']:
             #use if here to allow blocking of the registration
             return [AllowAny()]
@@ -37,4 +52,3 @@ class UserViewSet(viewsets.ModelViewSet):
 #        elif self.request.method in ['GET']:
 #            return [IsAuthenticated()]
         return super().get_permissions()
-    

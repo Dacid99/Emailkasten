@@ -16,7 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -25,12 +28,14 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.request import Request
 
 from ..Filters.EMailFilter import EMailFilter
 from ..Models.EMailModel import EMailModel
 from ..Serializers.EMailSerializers.FullEMailSerializer import \
     FullEMailSerializer
+
+if TYPE_CHECKING:
+    from rest_framework.request import Request
 
 
 class EMailViewSet(viewsets.ReadOnlyModelViewSet):

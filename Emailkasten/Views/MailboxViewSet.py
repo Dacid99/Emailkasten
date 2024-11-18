@@ -15,7 +15,11 @@
 
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -24,7 +28,6 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.request import Request
 
 from .. import constants
 from ..constants import TestStatusCodes
@@ -34,6 +37,10 @@ from ..mailProcessing import fetchMails, testMailbox
 from ..Models.MailboxModel import MailboxModel
 from ..Serializers.MailboxSerializers.MailboxWithDaemonSerializer import \
     MailboxWithDaemonSerializer
+
+if TYPE_CHECKING:
+    from rest_framework.request import Request
+
 
 
 class MailboxViewSet(viewsets.ModelViewSet):
@@ -51,7 +58,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='test')
-    def test_mailbox(self, request: Request, pk:int = None) -> Response:
+    def test_mailbox(self, request: Request, pk:int|None = None) -> Response:
         """Action method testing the mailbox data.
 
         Args:
@@ -69,31 +76,61 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='daemon/test')
-    def test_daemon(self, request: Request, pk:int = None):
+    def test_daemon(self, request: Request, pk:int|None = None) -> Response:
         """Action method testing the daemon data of the mailbox.
 
         Args:
             request: The request triggering the action.
-            pk: The private key of the account to test. Defaults to None.
+            pk: The private key of the mailbox. Defaults to None.
+
+        Returns:
+            A response detailing the test result for the daemon.
         """
         mailbox = self.get_object()
         return EMailArchiverDaemon.testDaemon(mailbox.daemon)
 
 
     @action(detail=True, methods=['post'], url_path='daemon/start')
-    def start_daemon(self, request, pk=None):
+    def start_daemon(self, request: Request, pk: int|None = None) -> Response:
+        """Action method starting the daemon for the mailbox.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the mailbox. Defaults to None.
+
+        Returns:
+            A response detailing the start result of the daemon.
+        """
         mailbox = self.get_object()
         return EMailArchiverDaemon.startDaemon(mailbox.daemon)
 
 
     @action(detail=True, methods=['post'], url_path='daemon/stop')
-    def stop_daemon(self, request, pk=None):
+    def stop_daemon(self, request: Request, pk: int|None = None) -> Response:
+        """Action method stopping the daemon data of the mailbox.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the mailbox. Defaults to None.
+
+        Returns:
+            A response detailing the stop result for the daemon.
+        """
         mailbox = self.get_object()
         return EMailArchiverDaemon.stopDaemon(mailbox.daemon)
 
 
     @action(detail=True, methods=['post'])
-    def fetch_all(self, request, pk=None):
+    def fetch_all(self, request: Request, pk: int|None = None) -> Response:
+        """Action method fetching all mails from the mailbox.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the mailbox. Defaults to None.
+
+        Returns:
+            A response with the mailbox data.
+        """
         mailbox = self.get_object()
 
         fetchMails(mailbox, mailbox.account, constants.MailFetchingCriteria.ALL)
@@ -103,7 +140,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['get'])
-    def fetching_options(self, request: Request, pk:int = None) -> Response:
+    def fetching_options(self, request: Request, pk: int|None = None) -> Response:
         """Action method returning all fetching options for the mailbox.
 
         Args:
@@ -123,7 +160,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+    def toggle_favorite(self, request: Request, pk: int|None = None) -> Response:
         """Action method toggling the favorite flag of the mailbox.
 
         Args:
@@ -155,7 +192,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['get'], url_path='daemon/log/download')
-    def log_download(self, request: Request, pk:int = None) -> FileResponse:
+    def log_download(self, request: Request, pk: int|None = None) -> FileResponse:
         """Action method downloading the log file of the mailbox daemon.
 
         Args:

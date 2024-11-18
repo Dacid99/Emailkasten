@@ -16,18 +16,24 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.request import Request
 
 from ..Filters.MailingListFilter import MailingListFilter
 from ..Models.MailingListModel import MailingListModel
 from ..Serializers.MailingListSerializers.MailingListSerializer import \
     MailingListSerializer
+
+if TYPE_CHECKING:
+    from rest_framework.request import Request
 
 
 class MailingListViewSet(viewsets.ReadOnlyModelViewSet):
@@ -52,12 +58,12 @@ class MailingListViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+    def toggle_favorite(self, request: Request, pk: int|None = None) -> Response:
         """Action method toggling the favorite flag of the mailinglist.
 
         Args:
             request: The request triggering the action.
-            pk: int: The private key of the mailinglist to toggle favorite. Defaults to None.
+            pk: The private key of the mailinglist to toggle favorite. Defaults to None.
 
         Returns:
             A response detailing the request status.

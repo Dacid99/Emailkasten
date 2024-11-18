@@ -15,6 +15,11 @@
 
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,11 +31,22 @@ from ..Models.CorrespondentModel import CorrespondentModel
 from ..Models.EMailModel import EMailModel
 from ..Models.ImageModel import ImageModel
 
+if TYPE_CHECKING:
+    from rest_framework.request import Request
+
 
 class DatabaseStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request: Request) -> Response:
+        """Gets all the number of entries in the tables of the database.
+
+        Args:
+            request: The get request.
+
+        Returns:
+            A response with the count of the table entries.
+        """
         try:
             email_count = EMailModel.objects.filter(account__user = request.user).count()
             correspondent_count = CorrespondentModel.objects.filter(emails__account__user = request.user).distinct().count()
@@ -46,6 +62,6 @@ class DatabaseStatsView(APIView):
                 'account_count': account_count,
             }
             return Response(data)
-        
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as error:
+            return Response({'error': str(error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

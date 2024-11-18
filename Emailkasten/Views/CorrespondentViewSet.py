@@ -16,13 +16,16 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.request import Request
 
 from ..Filters.CorrespondentFilter import CorrespondentFilter
 from ..Models.CorrespondentModel import CorrespondentModel
@@ -30,6 +33,9 @@ from ..Serializers.CorrespondentSerializers.CorrespondentSerializer import \
     CorrespondentSerializer
 from ..Serializers.CorrespondentSerializers.SimpleCorrespondentSerializer import \
     SimpleCorrespondentSerializer
+
+if TYPE_CHECKING:
+    from rest_framework.request import Request
 
 
 class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
