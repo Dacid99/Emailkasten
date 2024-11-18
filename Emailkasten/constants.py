@@ -24,40 +24,40 @@ class MailFetchingCriteria:
     Note that IMAP does not support time just dates. So we are always refering to full days.
     POP does not support queries at all, so everything will be fetched."""
 
-    RECENT = "RECENT"
-    """Filter by "RECENT" flag."""
+    RECENT: str = "RECENT"
+    """Filter: str by "RECENT" flag."""
 
-    UNSEEN = "UNSEEN"
+    UNSEEN: str = "UNSEEN"
     """Filter by "UNSEEN" flag."""
 
-    ALL = "ALL"
+    ALL: str = "ALL"
     """Filter by "ALL" flag."""
 
-    NEW = "NEW"
+    NEW: str = "NEW"
     """Filter by "NEW" flag."""
 
-    OLD = "OLD"
+    OLD: str = "OLD"
     """Filter by "OLD" flag."""
 
-    FLAGGED = "FLAGGED"
+    FLAGGED: str = "FLAGGED"
     """Filter by "FLAGGED" flag."""
 
-    DRAFT = "DRAFT"
+    DRAFT: str = "DRAFT"
     """Filter by "DRAFT" flag."""
 
-    ANSWERED = "ANSWERED"
+    ANSWERED: str = "ANSWERED"
     """Filter by "ANSWERED" flag."""
 
-    DAILY = "DAILY"
+    DAILY: str = "DAILY"
     """Filter using "SENTSINCE" for mails sent the previous day or later."""
 
-    WEEKLY = "WEEKLY"
+    WEEKLY: str = "WEEKLY"
     """Filter using "SENTSINCE" for mails sent the previous week (counting back from now) or later."""
 
-    MONTHLY = "MONTHLY"
+    MONTHLY: str = "MONTHLY"
     """Filter using "SENTSINCE" for mails sent the previous 4 weeks (counting back from now) or later."""
 
-    ANNUALLY = "ANNUALLY"
+    ANNUALLY: str = "ANNUALLY"
     """Filter using "SENTSINCE" for mails sent the previous 52 weeks (counting back from now) or later."""
 
 
@@ -73,53 +73,56 @@ class MailFetchingCriteria:
 class MailFetchingProtocols:
     """Namespace class for all implemented mail protocols constants."""
 
-    IMAP = "IMAP"
+    IMAP: str = "IMAP"
     """The IMAP4 protocol."""
 
-    IMAP_SSL = "IMAP_SSL"
+    IMAP_SSL: str = "IMAP_SSL"
     """The IMAP4 protocol over SSL."""
 
-    POP3 = "POP3"
+    POP3: str = "POP3"
     """The POP3 protocol."""
 
-    POP3_SSL = "POP3_SSL"
+    POP3_SSL: str = "POP3_SSL"
     """The POP3 protocol over SSL."""
 
-    EXCHANGE = "EXCHANGE"
+    EXCHANGE: str = "EXCHANGE"
     """Microsofts Exchange protocol."""
+
+
 
 class TestStatusCodes:
     """Namespace class for all status codes for the tests of mailaccounts and mailboxes."""
 
-    OK = 0
+    OK: int = 0
     """Everything worked fine"""
 
-    ABORTED = 1
+    ABORTED: int = 1
     """The operation was aborted, try again."""
 
-    BAD_RESPONSE = 2
+    BAD_RESPONSE: int = 2
     """The server did not return status OK."""
 
-    ERROR = 3
+    ERROR: int = 3
     """There was an IMAP error, the account is unhealthy."""
 
-    UNEXPECTED_ERROR = 4
+    UNEXPECTED_ERROR: int = 4
     """An unexpected error occured, try again and check the logs."""
 
-    INFOS = [ "Everything worked as expected." ,
+    INFOS: list[str] = [ "Everything worked as expected." ,
         "The operation was aborted, please try again." ,
         "The server returned a bad status, the unhealthy flag set." ,
         "There was an error, the unhealthy flag set." ,
         "An unexpected error occured, please try again and check the logs." ]
 
 
+
 class EMailArchiverDaemonConfiguration:
     """Namespace class for all configurations constants for the :class:`Emailkasten.EMailArchiverDaemon` instances."""
 
-    CYCLE_PERIOD_DEFAULT = 60
+    CYCLE_PERIOD_DEFAULT: int = 60
     """The default cycle period of the daemons in seconds."""
 
-    RESTART_TIME = 10
+    RESTART_TIME: int = 10
     """The default restart time for the daemons in case of a crash in seconds."""
 
 
@@ -127,13 +130,13 @@ class EMailArchiverDaemonConfiguration:
 class StorageConfiguration:
     """Namespace class for all configurations constants for the :class:`Emailkasten.Models.StorageModel`."""
 
-    MAX_SUBDIRS_PER_DIR = 1000
+    MAX_SUBDIRS_PER_DIR: int = 1000
     """The maximum numbers of subdirectories in one storage unit. Must not exceed 64000 for ext4 filesystem! """
 
-    STORAGE_PATH = "/mnt/archive"
+    STORAGE_PATH: str = "/mnt/archive"
     """The path to the storage for the saved data. Must match the path in the docker-compose.yml to ensure data safety."""
 
-    PRERENDER_IMAGETYPE = 'jpg'
+    PRERENDER_IMAGETYPE: str = 'jpg'
     """The image format for the prerendered eml files."""
 
 
@@ -141,31 +144,31 @@ class StorageConfiguration:
 class LoggerConfiguration:
     """Namespace class for all configurations constants for the application loggers."""
 
-    LOG_DIRECTORY_PATH = "" #/var/log
+    LOG_DIRECTORY_PATH: str = "" #/var/log
     """The path to directory with the logs.  Must match the path in the docker-compose.yml to store the logs outside the container."""
 
-    APP_LOGFILE_NAME = "Emailkasten.log"
+    APP_LOGFILE_NAME: str = "Emailkasten.log"
     """The name of the Emailkasten logfile."""
 
-    DJANGO_LOGFILE_NAME = "django.log"
+    DJANGO_LOGFILE_NAME: str = "django.log"
     """The naeme of the django logfile."""
 
-    APP_LOG_LEVEL = os.environ.get('APP_LOG_LEVEL', 'INFO')
+    APP_LOG_LEVEL: str = os.environ.get('APP_LOG_LEVEL', 'INFO')
     """The loglevel to the Emailkasten logfile. Is being set from an environment variable of the same name."""
 
-    DJANGO_LOG_LEVEL = os.environ.get('DJANGO_LOG_LEVEL', 'INFO')
+    DJANGO_LOG_LEVEL: str = os.environ.get('DJANGO_LOG_LEVEL', 'INFO')
     """The loglevel to the django logfile. Is being set from an environment variable of the same name."""
 
-    ROOT_LOG_LEVEL = os.environ.get('ROOT_LOG_LEVEL', 'INFO')
+    ROOT_LOG_LEVEL: str = os.environ.get('ROOT_LOG_LEVEL', 'INFO')
     """The loglevel to the root console logger. Is being set from an environment variable of the same name."""
 
-    LOGFILE_MAXSIZE = 10 * 1024 * 1024 # 10 MiB
+    LOGFILE_MAXSIZE: int = 10 * 1024 * 1024 # 10 MiB
     """The maximum file size of a logfile."""
 
-    LOGFILE_BACKUP_NUMBER = 3
+    LOGFILE_BACKUP_NUMBER: int = 3
     """The maximum number of backup logfiles to keep."""
 
-    LOG_FORMAT = '{asctime} {levelname} - {name}.{funcName}: {message}'
+    LOG_FORMAT: str = '{asctime} {levelname} - {name}.{funcName}: {message}'
     """The format of the log messages for all loggers."""
 
 
@@ -173,22 +176,22 @@ class LoggerConfiguration:
 class ParsingConfiguration:
     """Namespace class for all configurations constants for the parsing of mails."""
 
-    CHARSET_DEFAULT = 'utf-8'
+    CHARSET_DEFAULT: str = 'utf-8'
     """The default charset used for parsing of text."""
 
-    STRIP_TEXTS = True
+    STRIP_TEXTS: bool = True
     """Whether or not to strip whitespace from textfields like bodytext and subject."""
 
-    THROW_OUT_SPAM = True
+    THROW_OUT_SPAM: bool = True
     """Whether or not to ignore emails that have a spam flag."""
 
-    APPLICATION_TYPES = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+    APPLICATION_TYPES: list[str] = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
     """A list of application types to parse as attachments."""
 
-    DATE_DEFAULT = "1971-01-01 00:00:00"
+    DATE_DEFAULT: str = "1971-01-01 00:00:00"
     """The fallback date to use if none is found in a mail."""
 
-    DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
+    DATE_FORMAT: str = '%Y-%m-%d %H:%M:%S'
     """The mail datetime format as specified in RFC5322. Must match the pattern of :attr:`DATE_DEFAULT`."""
 
 
@@ -196,10 +199,10 @@ class ParsingConfiguration:
 class ProcessingConfiguration:
     """Namespace class for all configurations constants for the processing, especially the prerendering, of mails."""
 
-    DUMP_DIRECTORY = '/tmp/images'
+    DUMP_DIRECTORY: str = '/tmp/images'
     """The directory path where temporary images of the prerendering process will be placed."""
 
-    HTML_FORMAT = """
+    HTML_FORMAT: str = """
         <html>
         <head>
             <style>
@@ -222,13 +225,13 @@ class ProcessingConfiguration:
 class FetchingConfiguration:
     """Namespace class for all configurations constants for the fetching of mails."""
 
-    SAVE_TO_EML_DEFAULT = True
+    SAVE_TO_EML_DEFAULT: bool = True
     """The default setting whether to store mails as eml. Initially set to True."""
 
-    SAVE_ATTACHMENTS_DEFAULT = True
+    SAVE_ATTACHMENTS_DEFAULT: bool = True
     """The default setting whether to store attachments. Initially set to True."""
 
-    SAVE_IMAGES_DEFAULT = True
+    SAVE_IMAGES_DEFAULT: bool = True
     """The default setting whether to store images. Initially set to True."""
 
 
@@ -236,82 +239,82 @@ class FetchingConfiguration:
 class DatabaseConfiguration:
     """Namespace class for all configurations constants for the database."""
 
-    NAME = os.environ.get("DB_NAME", "emailkasten")
+    NAME: str = os.environ.get("DB_NAME", "emailkasten")
     """The name of the database on the mariadb server. Can be set from docker-compose.yml."""
 
-    USER = os.environ.get("DB_USER", "user")
+    USER: str = os.environ.get("DB_USER", "user")
     """The name of the database user. Can be set from docker-compose.yml."""
 
-    PASSWORD = os.environ.get("DB_PASSWORD", "passwd")
+    PASSWORD: str = os.environ.get("DB_PASSWORD", "passwd")
     """The password of the database user. Can be set from docker-compose.yml."""
 
-    RECONNECT_RETRIES = 10
+    RECONNECT_RETRIES: int = 10
     """The number of reconnect attempt in case of database disconnect."""
 
-    RECONNECT_DELAY = 30
+    RECONNECT_DELAY: int = 30
     """The delay between reconnect attempt in case of database disconnect."""
 
 
 
 class ParsedMailKeys:
     #Keys to the dict
-    DATA = "Raw"
-    FULL_MESSAGE = "Full"
-    SIZE = "Size"
-    EML_FILE_PATH = "EmlFilePath"
-    PRERENDER_FILE_PATH = "PrerenderFilePath"
-    ATTACHMENTS = "Attachments"
-    IMAGES = "Images"
-    MAILINGLIST = "Mailinglist"
-    BODYTEXT = "Bodytext"
+    DATA: str = "Raw"
+    FULL_MESSAGE: str = "Full"
+    SIZE: str = "Size"
+    EML_FILE_PATH: str = "EmlFilePath"
+    PRERENDER_FILE_PATH: str = "PrerenderFilePath"
+    ATTACHMENTS: str = "Attachments"
+    IMAGES: str = "Images"
+    MAILINGLIST: str = "Mailinglist"
+    BODYTEXT: str = "Bodytext"
 
     class Header:
         """For existing header fields see https://www.iana.org/assignments/message-headers/message-headers.xhtml."""
-        MESSAGE_ID = "Message-ID"
-        IN_REPLY_TO = "In-Reply-To"
+        MESSAGE_ID: str = "Message-ID"
+        IN_REPLY_TO: str = "In-Reply-To"
 
-        DATE = "Date"
-        SUBJECT = "Subject"
-        COMMENTS = "Comments"
-        KEYWORDS = "Keywords"
+        DATE: str = "Date"
+        SUBJECT: str = "Subject"
+        COMMENTS: str = "Comments"
+        KEYWORDS: str = "Keywords"
 
-        RECEIVED = "Received"
-        IMPORTANCE = "Importance"
-        PRIORITY = "Priority"
-        PRECEDENCE = "Precedence"
+        RECEIVED: str = "Received"
+        IMPORTANCE: str = "Importance"
+        PRIORITY: str = "Priority"
+        PRECEDENCE: str = "Precedence"
 
-        LANGUAGE = "Language"
-        CONTENT_LANGUAGE = "Content-Language"
-        CONTENT_LOCATION = "Content-Location"
-        CONTENT_TYPE = "Content-Type"
+        LANGUAGE: str = "Language"
+        CONTENT_LANGUAGE: str = "Content-Language"
+        CONTENT_LOCATION: str = "Content-Location"
+        CONTENT_TYPE: str = "Content-Type"
 
-        USER_AGENT = "User-Agent"
-        AUTO_SUBMITTED = "Auto-Submitted"
-        ARCHIVED_AT = "Archived-At"
+        USER_AGENT: str = "User-Agent"
+        AUTO_SUBMITTED: str = "Auto-Submitted"
+        ARCHIVED_AT: str = "Archived-At"
 
-        X_PRIORITY = "X-Priority"
-        X_ORIGINATING_CLIENT = "X-Originating-Client"
-        X_SPAM_FLAG = "X-Spam-Flag"
+        X_PRIORITY: str = "X-Priority"
+        X_ORIGINATING_CLIENT: str = "X-Originating-Client"
+        X_SPAM_FLAG: str = "X-Spam-Flag"
 
 
     class Correspondent:
-        FROM = "From"
-        TO = "To"
-        CC = "Cc"
-        BCC = "Bcc"
-        SENDER = "Sender"
-        REPLY_TO = "Reply-To"
-        RESENT_FROM = "Resent-From"
-        RESENT_TO = "Resent-To"
-        RESENT_CC = "Resent-Cc"
-        RESENT_BCC = "Resent-Bcc"
-        RESENT_SENDER = "Resent-Sender"
-        RESENT_REPLY_TO = "Resent-Reply-To"
-        ENVELOPE_TO = "Envelope-To"
-        DELIVERED_TO = "Delivered-To"
-        RETURN_PATH = "Return-Path"
-        RETURN_RECEIPT_TO = "Return-Receipt-To"
-        DISPOSITION_NOTIFICATION_TO = "Disposition-Notification-To"
+        FROM: str = "From"
+        TO: str = "To"
+        CC: str = "Cc"
+        BCC: str = "Bcc"
+        SENDER: str = "Sender"
+        REPLY_TO: str = "Reply-To"
+        RESENT_FROM: str = "Resent-From"
+        RESENT_TO: str = "Resent-To"
+        RESENT_CC: str = "Resent-Cc"
+        RESENT_BCC: str = "Resent-Bcc"
+        RESENT_SENDER: str = "Resent-Sender"
+        RESENT_REPLY_TO: str = "Resent-Reply-To"
+        ENVELOPE_TO: str = "Envelope-To"
+        DELIVERED_TO: str = "Delivered-To"
+        RETURN_PATH: str = "Return-Path"
+        RETURN_RECEIPT_TO: str = "Return-Receipt-To"
+        DISPOSITION_NOTIFICATION_TO: str = "Disposition-Notification-To"
 
         def __iter__(self):
             return iter((attr, value) for attr, value in self.__class__.__dict__.items() if not attr.startswith("__"))
@@ -322,24 +325,24 @@ class ParsedMailKeys:
 
     #attachment keys
     class Attachment:
-        DATA = "AttachmentData"
-        SIZE= "AttachmentSize"
-        FILE_NAME = "AttachmentFileName"
-        FILE_PATH= "AttachmentFilePath"
+        DATA: str = "AttachmentData"
+        SIZE: str = "AttachmentSize"
+        FILE_NAME: str = "AttachmentFileName"
+        FILE_PATH: str = "AttachmentFilePath"
 
     #image keys
     class Image:
-        DATA = "ImageData"
-        SIZE= "ImageSize"
-        FILE_NAME = "ImageFileName"
-        FILE_PATH= "ImageFilePath"
+        DATA: str = "ImageData"
+        SIZE: str = "ImageSize"
+        FILE_NAME: str = "ImageFileName"
+        FILE_PATH: str = "ImageFilePath"
 
     #mailinglist keys
     class MailingList:
-        ID = "List-Id"
-        OWNER = "List-Owner"
-        SUBSCRIBE = "List-Subscribe"
-        UNSUBSCRIBE = "List-Unsubscribe"
-        POST = "List-Post"
-        HELP = "List-Help"
-        ARCHIVE = "List-Archive"
+        ID: str = "List-Id"
+        OWNER: str = "List-Owner"
+        SUBSCRIBE: str = "List-Subscribe"
+        UNSUBSCRIBE: str = "List-Unsubscribe"
+        POST: str = "List-Post"
+        HELP: str = "List-Help"
+        ARCHIVE: str = "List-Archive"
