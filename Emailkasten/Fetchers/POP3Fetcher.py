@@ -150,7 +150,7 @@ class POP3Fetcher:
             if mailbox:
                 self.logger.debug("Testing %s ...", str(mailbox))
 
-                status, response = self._mailhost.list()
+                status, response, _ = self._mailhost.list()
 
                 if status != b'+OK':
                     self.logger.error("Bad response listing %s:\n %s, %s", str(mailbox), status, response)
