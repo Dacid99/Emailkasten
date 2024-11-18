@@ -123,7 +123,7 @@ def post_save_is_healthy(sender: MailboxModel, instance: MailboxModel, **kwargs)
         try:
             oldInstance = MailboxModel.objects.get(pk=instance.pk)
             if oldInstance.is_healthy:
-                logger.debug("%s has become unhealthy, flagging its daemon as unhealthy ...", str(instance))
+                logger.debug("%s has become unhealthy, flagging its daemons as unhealthy ...", str(instance))
                 instance.daemons.update(is_healthy=False)
                 logger.debug("Successfully flagged account as healthy.")
 

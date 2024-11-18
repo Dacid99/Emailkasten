@@ -97,7 +97,8 @@ def post_save_is_healthy(sender: DaemonModel, instance: DaemonModel, **kwargs) -
             oldInstance = DaemonModel.objects.get(pk=instance.pk)
             if not oldInstance.is_healthy:
                 logger.debug("%s has become healthy, flagging its mailbox as healthy ...", str(instance))
-                instance.mailbox.update(is_healthy=True)
+                instance.mailbox.is_healthy=True
+                instance.mailbox.save()
                 logger.debug("Successfully flagged mailbox as healthy.")
 
         except DaemonModel.DoesNotExist:
