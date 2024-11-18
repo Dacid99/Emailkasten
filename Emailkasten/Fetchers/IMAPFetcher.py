@@ -113,7 +113,13 @@ class IMAPFetcher:
         """Logs into the target account using credentials from :attr:`account`.
         """
         self.logger.debug("Logging into %s ...", str(self.account))
-        self._mailhost.login(self.account.mail_address, self.account.password)
+        status, response = self._mailhost.login(self.account.mail_address, self.account.password)
+        if status != "OK":
+            errorMessage = response[0].decode('utf-8') if response and response[0] else "Unknown error"
+            self.logger.error("Bad response logging into %s:\n %s, %s", str(self.account), status, errorMessage)
+            self.account.is_healthy = False
+            self.account.save()
+
         self.logger.debug("Successfully logged into %s.", str(self.account))
 
 
