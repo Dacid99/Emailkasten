@@ -83,7 +83,7 @@ class DaemonModel(models.Model):
 
 @receiver(post_save, sender=DaemonModel)
 def post_save_is_healthy(sender: DaemonModel, instance: DaemonModel, **kwargs) -> None:
-    """Receiver function flagging the mailbox of a daemon as healthy once that mailbox becomes healthy again.
+    """Receiver function flagging the mailbox of a daemon as healthy once that daemon becomes healthy again.
 
     Args:
         sender: The class type that sent the post_save signal.

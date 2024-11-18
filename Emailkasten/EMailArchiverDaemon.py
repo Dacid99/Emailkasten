@@ -189,7 +189,8 @@ class EMailArchiverDaemon:
 
     def run(self) -> None:
         """The looping task execute on :attr:`thread`.
-        Attempts to restart if crashed after time set in :attr:`constants.EMailArchiverDaemonConfiguration.RESTART_TIME`.
+        If crashed tries to restart after time set in :attr:`constants.EMailArchiverDaemonConfiguration.RESTART_TIME`
+        and sets health flag of daemon to `False`.
         """
         try:
             while self.isRunning:
@@ -199,12 +200,15 @@ class EMailArchiverDaemon:
         except Exception:
             self.logger.error("%s crashed! Attempting to restart ...", str(self.daemon), exc_info=True)
             time.sleep(constants.EMailArchiverDaemonConfiguration.RESTART_TIME)
+            self.daemon.is_healthy = False
+            self.daemon.save()
             self.run()
 
 
     def cycle(self) -> None:
         """The routine of this daemon.
         Fetches and saves mails using :func:`Emailkasten.mailProcessing.fetchMails`. Logs the execution time.
+        A successul run sets the daemon to healthy.
 
         Raises:
             Exception: The exception thrown during execution of the routine.
@@ -212,12 +216,10 @@ class EMailArchiverDaemon:
         self.logger.debug("---------------------------------------\nNew cycle")
 
         startTime = time.time()
-        try:
-            fetchMails(self.mailbox, self.account, self.mailbox.fetching_criterion)
-            endtime = time.time()
+        fetchMails(self.mailbox, self.account, self.mailbox.fetching_criterion)
+        endtime = time.time()
 
-        except Exception:
-            self.logger.error("Error during daemon cycle execution!", exc_info=True)
-            raise
+        self.daemon.is_healthy = True
+        self.daemon.save()
 
         self.logger.debug("Cycle complete after %s seconds\n-------------------------------------------", endtime - startTime)
