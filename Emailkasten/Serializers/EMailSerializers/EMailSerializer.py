@@ -17,18 +17,20 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from rest_framework import serializers
+from rest_framework.utils.serializer_helpers import ReturnDict
 
 from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from ...Models.EMailModel import EMailModel
-from ..ImageSerializers.ImageSerializer import ImageSerializer
-from ..MailingListSerializers.SimpleMailingListSerializer import SimpleMailingListSerializer
 from ..AttachmentSerializers.AttachmentSerializer import AttachmentSerializer
 from ..EMailCorrespondentsSerializers.EMailCorrespondentsSerializer import \
     EMailCorrespondentSerializer
+from ..ImageSerializers.ImageSerializer import ImageSerializer
+from ..MailingListSerializers.SimpleMailingListSerializer import \
+    SimpleMailingListSerializer
 
 
 class EMailSerializer(serializers.ModelSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.EMailModel`. 
+    """The standard serializer for a :class:`Emailkasten.Models.EMailModel`.
     Uses the most relevant fields including all correspondents, the mailinglist and all images and attachments.
     Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
 
@@ -49,17 +51,17 @@ class EMailSerializer(serializers.ModelSerializer):
         model = EMailModel
         fields = ['message_id', 'datetime', 'email_subject', 'bodytext', 'is_favorite', 'account', 'created', 'updated']
         """Includes only the most relevant fields."""
-        
 
-    def get_correspondents(self, object):
-        """Serializes the correspondents connected to the instance to be serialized.  
+
+    def get_correspondents(self, object: EMailModel) -> ReturnDict|None:
+        """Serializes the correspondents connected to the instance to be serialized.
 
         Args:
-            object (:class:`Emailkasten.Models.EMailModel`): The instance being serialized.
+            object: The instance being serialized.
 
         Returns:
-            Optional[:class:`Emailkasten.Serializers.EMailCorrespondentsSerializers.EMailCorrespondentSerializer.EMailCorrespondentSerializer`]: The serialized correspondents connected to the instance to be serialized.
-            None if the the user is not authenticated. 
+            The serialized correspondents connected to the instance to be serialized.
+            None if the the user is not authenticated.
         """
         request = self.context.get('request')
         user = request.user if request else None

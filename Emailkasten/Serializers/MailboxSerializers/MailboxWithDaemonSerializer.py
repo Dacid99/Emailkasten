@@ -52,14 +52,14 @@ class MailboxWithDaemonSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-    def validate_fetching_criterion(self, value):
+    def validate_fetching_criterion(self, value: str) -> str:
         """Checks whether the fetching criterion is available for the serialized mailbox.
 
         Args:
-            value (str): The given fetching criterion.
+            value: The given fetching criterion.
 
         Returns:
-            str: The validated fetching criterion.
+            The validated fetching criterion.
 
         Raises:
             :restframework::class:`serializers.ValidationError`: If the given fetching criterion is not available for the mailbox.

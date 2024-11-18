@@ -24,6 +24,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 from .. import constants
 from ..constants import TestStatusCodes
@@ -50,7 +51,16 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='test')
-    def test_mailbox(self, request, pk=None):
+    def test_mailbox(self, request: Request, pk:int = None) -> Response:
+        """Action method testing the mailbox data.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the mailbox to test. Defaults to None.
+
+        Returns:
+            A response containing the updated mailbox data and the test resultcode.
+        """
         mailbox = self.get_object()
         result = testMailbox(mailbox)
 
@@ -59,7 +69,13 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='daemon/test')
-    def test_daemon(self, request, pk=None):
+    def test_daemon(self, request: Request, pk:int = None):
+        """Action method testing the daemon data of the mailbox.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the account to test. Defaults to None.
+        """
         mailbox = self.get_object()
         return EMailArchiverDaemon.testDaemon(mailbox.daemon)
 
@@ -87,7 +103,16 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['get'])
-    def fetching_options(self, request, pk=None):
+    def fetching_options(self, request: Request, pk:int = None) -> Response:
+        """Action method returning all fetching options for the mailbox.
+
+        Args:
+            request: The request triggering the action.
+            pk: int: The private key of the mailbox. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
         mailbox = self.get_object()
 
         availableFetchingOptions = mailbox.getAvailableFetchingCriteria()
@@ -98,7 +123,16 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request, pk=None):
+    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+        """Action method toggling the favorite flag of the mailbox.
+
+        Args:
+            request: The request triggering the action.
+            pk: int: The private key of the mailbox to toggle favorite. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
         mailbox = self.get_object()
         mailbox.is_favorite = not mailbox.is_favorite
         mailbox.save()
@@ -106,14 +140,34 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=False, methods=['get'], url_path='favorites')
-    def favorites(self, request):
+    def favorites(self, request: Request) -> Response:
+        """Action method returning all mailboxes with favorite flag.
+
+        Args:
+            request: The request triggering the action.
+
+        Returns:
+            A response containing all mailbox data with favorite flag.
+        """
         favoriteMailboxes = MailboxModel.objects.filter(is_favorite=True)
         serializer = self.get_serializer(favoriteMailboxes, many=True)
         return Response(serializer.data)
 
 
     @action(detail=True, methods=['get'], url_path='daemon/log/download')
-    def log_download(self, request, pk=None):
+    def log_download(self, request: Request, pk:int = None) -> FileResponse:
+        """Action method downloading the log file of the mailbox daemon.
+
+        Args:
+            request: The request triggering the action.
+            pk: int: The private key of the mailbox. Defaults to None.
+
+        Raises:
+            Http404: If the filepath is not in the database or it doesnt exist.
+
+        Returns:
+            A fileresponse containing the requested file.
+        """
         mailbox = self.get_object()
 
         daemonLogFilepath = mailbox.dameon.log_filepath

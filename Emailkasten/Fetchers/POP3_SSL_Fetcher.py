@@ -20,6 +20,8 @@ import poplib
 
 from .. import constants
 from .POP3Fetcher import POP3Fetcher
+from ..Models.AccountModel import AccountModel
+from ..Models.MailboxModel import MailboxModel
 
 
 class POP3_SSL_Fetcher(POP3Fetcher):
@@ -31,7 +33,7 @@ class POP3_SSL_Fetcher(POP3Fetcher):
     PROTOCOL = constants.MailFetchingProtocols.POP3_SSL
 
 
-    def connectToHost(self):
+    def connectToHost(self) -> None:
         """Overrides :func:`Emailkasten.Fetchers.POP3Fetcher.connectToHost` to use :class:`poplib.POP3_SSL`."""
         self.logger.debug("Connecting to %s ...", str(self.account))
         self._mailhost = poplib.POP3_SSL(host=self.account.mail_host, port=self.account.mail_host_port, context=None, timeout=self.account.timeout)
@@ -39,13 +41,27 @@ class POP3_SSL_Fetcher(POP3Fetcher):
 
 
     @staticmethod
-    def testAccount(account):
-        """Overrides :func:`Emailkasten.Fetchers.POP3Fetcher.testAccount` to use :class:`poplib.POP3_SSL`."""
+    def testAccount(account: AccountModel) -> int:
+        """Overrides :func:`Emailkasten.Fetchers.POP3Fetcher.testAccount` to use :class:`poplib.POP3_SSL`.
+
+        Args:
+            account: Data of the account to be tested.
+
+        Returns:
+            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
+        """
         with POP3_SSL_Fetcher(account) as pop3sslFetcher:
             return pop3sslFetcher.test()
 
     @staticmethod
-    def testMailbox(mailbox):
-        """Overrides :func:`Emailkasten.Fetchers.POP3Fetcher.testMailbox` to use :class:`poplib.POP3_SSL`."""
+    def testMailbox(mailbox: MailboxModel) -> int:
+        """Overrides :func:`Emailkasten.Fetchers.POP3Fetcher.testMailbox` to use :class:`poplib.POP3_SSL`.
+
+        Args:
+            mailbox: Data of the mailboc to be tested.
+
+        Returns:
+            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
+        """
         with POP3_SSL_Fetcher(mailbox.account) as pop3sslFetcher:
             return pop3sslFetcher.test(mailbox=mailbox)

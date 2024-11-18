@@ -46,14 +46,13 @@ class AccountSerializer(serializers.ModelSerializer):
         """The :attr:`Emailkasten.Models.AccountModel.is_healthy`, :attr:`Emailkasten.Models.AccountModel.created`, and :attr:`Emailkasten.Models.AccountModel.updated` fields are read-only."""
 
 
-    def validate_mail_address(self, value):
+    def validate_mail_address(self, value: str) -> str:
         """Validation step, sets the mailaddress to lower case.
 
         Args:
-            value (str): The mail address given by the user.
+            value: The mail address given by the user.
 
         Returns:
-            str: The given mail address in lower case. 
+            The given mail address in lower case.
         """
         return value.lower()
-    

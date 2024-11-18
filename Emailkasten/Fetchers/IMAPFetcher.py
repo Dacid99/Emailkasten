@@ -15,15 +15,22 @@
 
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+from __future__ import annotations
 
 import datetime
 import imaplib
 import logging
+from typing import TYPE_CHECKING
 
 from django.utils import timezone
 
 from .. import constants
 from ..constants import TestStatusCodes
+
+if TYPE_CHECKING:
+    from ..Models.AccountModel import AccountModel
+    from ..Models.MailboxModel import MailboxModel
+
 
 class IMAPFetcher:
     """Maintains a connection to the IMAP server and fetches data using :python::mod:`imaplib`.
@@ -33,7 +40,7 @@ class IMAPFetcher:
 
     Attributes:
         account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
-        logger (:python::class:`logging.Logger`): The logger for this instance.
+        logger (:class:`logging.Logger`): The logger for this instance.
         _mailhost (:python::class:`imaplib.IMAP4`): The IMAP host this instance connects to.
     """
 
@@ -57,16 +64,13 @@ class IMAPFetcher:
     """List of all criteria available for fetching. Refers to :class:`constants.MailFetchingCriteria`. For a list of all existing IMAP criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4."""
 
 
-    def __init__(self, account):
+    def __init__(self, account: AccountModel) -> None:
         """Constructor, starts the IMAP connection and logs into the account.
         If the connection or session could not be established, :attr:`_mailhost` remains None and the `account` is marked as unhealthy.
         If the connection succeeds, the account is flagged as healthy.
 
         Args:
-            account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
-
-        Returns:
-            None
+            account: The model of the account to be fetched from.
         """
         self.account = account
 
@@ -93,11 +97,8 @@ class IMAPFetcher:
 
 
 
-    def connectToHost(self):
+    def connectToHost(self) -> None:
         """Opens the connection to the IMAP server using the credentials from :attr:`account`.
-
-        Returns:
-            None
         """
         self.logger.debug("Connecting to %s ...", str(self.account))
         self._mailhost = imaplib.IMAP4(host=self.account.mail_host, port=self.account.mail_host_port, timeout=None)
@@ -105,23 +106,17 @@ class IMAPFetcher:
 
 
 
-    def login(self):
+    def login(self) -> None:
         """Logs into the target account using credentials from :attr:`account`.
-
-        Returns:
-            None
         """
         self.logger.debug("Logging into %s ...", str(self.account))
         self._mailhost.login(self.account.mail_address, self.account.password)
         self.logger.debug("Successfully logged into %s.", str(self.account))
 
 
-    def close(self):
+    def close(self) -> None:
         """Logs out of the account and closes the connection to the IMAP server if it is open.
         Errors do not flag the account as unhealty.
-
-        Returns:
-            None
         """
         self.logger.debug("Closing connection to %s ...", str(self.account))
         if self._mailhost:
@@ -140,15 +135,15 @@ class IMAPFetcher:
             self.logger.debug("Connection to %s was already closed.", str(self.account))
 
 
-    def test(self, mailbox=None):
+    def test(self, mailbox: MailboxModel|None = None ) -> int:
         """Tests the connection to the mailserver and, if a mailbox is provided, whether it can be opened and listed.
         Sets the The :attr:`Emailkasten.Models.MailboxModel.is_healthy` flag accordingly.
 
         Args:
-            mailbox (:class:`Emailkasten.Models.MailboxModel`, optional): The mailbox to be tested. Default is None.
+            mailbox: The mailbox to be tested. Default is None.
 
         Returns:
-            int: The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
+            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         self.logger.debug("Testing %s ...", str(self.account))
 
@@ -210,44 +205,44 @@ class IMAPFetcher:
 
 
     @staticmethod
-    def testAccount(account):
+    def testAccount(account: AccountModel) -> int:
         """Static method to test the validity of account data.
         The :attr:`Emailkasten.Models.AccountModel.is_healthy` flag is updated accordingly.
 
         Args:
-            account (:class:`Emailkasten.Models.AccountModel`): Data of the account to be tested.
+            account: Data of the account to be tested.
 
         Returns:
-            int: The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
+            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with IMAPFetcher(account) as imapFetcher:
             return imapFetcher.test()
 
 
     @staticmethod
-    def testMailbox(mailbox):
+    def testMailbox(mailbox: MailboxModel) -> int:
         """Static method to test the validity of mailbox data.
         The :attr:`Emailkasten.Models.MailboxModel.is_healthy` flag is updated accordingly.
 
         Args:
-            mailbox (:class:`Emailkasten.Models.MailboxModel`): Data of the mailbox to be tested.
+            mailbox: Data of the mailbox to be tested.
 
         Returns:
-            int: The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
+            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with IMAPFetcher(mailbox.account) as imapFetcher:
             return imapFetcher.test(mailbox=mailbox)
 
 
-    def makeFetchingCriterion(self, criterionName):
+    def makeFetchingCriterion(self, criterionName: str) -> str|None:
         """Returns the formatted criterion for the IMAP request, handles dates in particular.
 
         Args:
-            criterionName (str): The criterion to prepare for the IMAP request.
+            criterionName: The criterion to prepare for the IMAP request.
                 If not in :attr:`AVAILABLE_FETCHING_CRITERIA`, returns None.
 
         Returns:
-            Optional[str]: Formatted criterion to be used in IMAP request;
+            Formatted criterion to be used in IMAP request;
             None if `criterionName` is not in :attr:`AVAILABLE_FETCHING_CRITERIA`.
         """
         if criterionName in IMAPFetcher.AVAILABLE_FETCHING_CRITERIA:
@@ -272,22 +267,22 @@ class IMAPFetcher:
 
 
 
-    def fetchBySearch(self, mailbox, criterion = constants.MailFetchingCriteria.RECENT):
+    def fetchBySearch(self, mailbox: MailboxModel, criterion: str = constants.MailFetchingCriteria.RECENT) -> list[bytes]|None:
         """Fetches and returns maildata from a mailbox based on a given criterion.
         If an :python::class:`imaplib.IMAP4.error` that is not an :python::class:`imaplib.IMAP4.abort` occurs the mailbox is flagged as unhealthy.
         If a bad response is received when opening or searching the mailbox, it is flagged as unhealthy as well.
         In case of success the mailbox is flagged as healthy.
 
         Args:
-            mailbox (:class:`Emailkasten.Models.MailboxModel`): Database model of the mailbox to fetch data from.
+            mailbox: Database model of the mailbox to fetch data from.
                 If a mailbox that is not in the account is given, returns [].
-            criterion (str, optional): Formatted criterion to filter mails in the IMAP request.
+            criterion: Formatted criterion to filter mails in the IMAP request.
                 Defaults to :attr:`Emailkasten.constants.MailFetchingCriteria.RECENT`.
                 If an invalid criterion is given, returns [].
 
         Returns:
-            list: List of :class:`email.message.EmailMessage` mails in the mailbox matching the criterion.
-                Empty if no such messages are found, if there is no connection to the server or if an error occured.
+            List of :class:`email.message.EmailMessage` mails in the mailbox matching the criterion.
+            Empty if no such messages are found, if there is no connection to the server or if an error occured.
         """
         if not self._mailhost:
             self.logger.error("No connection to %s!", str(self.account))
@@ -369,14 +364,14 @@ class IMAPFetcher:
 
 
 
-    def fetchMailboxes(self):
+    def fetchMailboxes(self) -> imaplib._AnyResponseData:
         """Retrieves and returns the data of the mailboxes in the account.
         If an :python::class:`imaplib.IMAP4.error` that is not an :python::class:`imaplib.IMAP4.abort` occurs the account is flagged as unhealthy.
         If a bad response is received when listing the mailboxes, it is flagged as unhealthy as well.
         In case of success the account is flagged as healthy.
 
         Returns:
-            list: List of data of all mailboxes in the account. Empty if none are found.
+            List of data of all mailboxes in the account. Empty if none are found.
         """
         if not self._mailhost:
             self.logger.error("No connection to %s!", str(self.account))
