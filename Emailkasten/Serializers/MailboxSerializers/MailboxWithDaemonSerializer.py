@@ -26,7 +26,7 @@ class MailboxWithDaemonSerializer(serializers.ModelSerializer):
     """The standard serializer for a :class:`Emailkasten.Models.DaemonModel`.
     Uses all fields including the daemon."""
 
-    daemons = DaemonSerializer(many=True, read_only=False)
+    daemons = DaemonSerializer(many=True, read_only=True)
     """The emails are serialized by :class:`Emailkasten.Serializers.DaemonSerializers.DaemonSerializer`."""
 
 
@@ -38,20 +38,6 @@ class MailboxWithDaemonSerializer(serializers.ModelSerializer):
 
         read_only_fields = ['name', 'account', 'created', 'updated']
         """The :attr:`Emailkasten.Models.MailboxModel.name`, :attr:`Emailkasten.Models.MailboxModel.account`, :attr:`Emailkasten.Models.MailboxModel.created`, and :attr:`Emailkasten.Models.MailboxModel.updated` fields are read-only."""
-
-
-    def update(self, instance, validated_data):
-        """Extends :restframework::func:`serializers.ModelSerializer.update` to allow changing the daemon data."""
-        daemonsData = validated_data.pop('daemons', [])
-        for daemonData in daemonsData:
-            daemon_id = daemonData.get('id', None)
-            if daemon_id:
-                daemonInstance = instance.daemons.get(id=daemon_id)
-                for key, value in daemonData.items():
-                    setattr(daemonInstance, key,value)
-                daemonInstance.save()
-
-        return super().update(instance, validated_data)
 
 
     def validate_fetching_criterion(self, value: str) -> str:

@@ -22,15 +22,14 @@ from ...Models.DaemonModel import DaemonModel
 
 
 class DaemonSerializer(serializers.ModelSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.DaemonModel`. 
+    """The standard serializer for a :class:`Emailkasten.Models.DaemonModel`.
     Uses all fields except :attr:`Emailkasten.Models.DaemonModel.mailbox` and :attr:`Emailkasten.Models.DaemonModel.log_filepath` fields."""
 
     class Meta:
         model = DaemonModel
 
-        exclude = ['mailbox', 'log_filepath']
-        """Exclude the :attr:`Emailkasten.Models.DaemonModel.mailbox` and :attr:`Emailkasten.Models.DaemonModel.log_filepath` fields."""
+        exclude = ['log_filepath']
+        """Exclude the :attr:`Emailkasten.Models.DaemonModel.log_filepath` field."""
 
-        read_only_fields = ['is_running', 'created', 'updated']
-        """The :attr:`Emailkasten.Models.DaemonModel.is_running`, :attr:`Emailkasten.Models.DaemonModel.created`, and :attr:`Emailkasten.Models.DaemonModel.updated` fields are read-only."""
-
+        read_only_fields = ['is_running', 'is_healthy', 'created', 'updated']
+        """The :attr:`Emailkasten.Models.DaemonModel.is_running`, :attr:`Emailkasten.Models.DaemonModel.is_healthy`, :attr:`Emailkasten.Models.DaemonModel.created`, and :attr:`Emailkasten.Models.DaemonModel.updated` fields are read-only."""
