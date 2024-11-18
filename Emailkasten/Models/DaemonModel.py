@@ -16,8 +16,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
 import logging
+import os
+import uuid
 
 from django.db import models
 from django.db.models.signals import post_save
@@ -26,7 +27,6 @@ from django.dispatch import receiver
 from .. import constants
 from .MailboxModel import MailboxModel
 
-
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
@@ -34,7 +34,10 @@ logger = logging.getLogger(__name__)
 class DaemonModel(models.Model):
     """Database model for the daemon fetching a mailbox."""
 
-    mailbox = models.OneToOneField(MailboxModel, related_name='daemon', on_delete=models.CASCADE)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    """The uuid of this daemon. Used to create a unique logfile."""
+
+    mailbox = models.ForeignKey(MailboxModel, related_name='daemons', on_delete=models.CASCADE)
     """The mailbox this daemon fetches. Unique. Deletion of that `mailbox` deletes this daemon."""
 
     cycle_interval = models.IntegerField(default=constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT)
@@ -49,7 +52,6 @@ class DaemonModel(models.Model):
     log_filepath = models.FilePathField(
         path=constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
         recursive=True,
-        null=True,
         unique=True)
     """The logfile the daemon logs to. Is automatically set by :func:`save`. Unique."""
 
@@ -73,7 +75,7 @@ class DaemonModel(models.Model):
         """Extended :django::func:`django.models.Model.save` method to create and set :attr:`log_filepath` if it is null."""
 
         if not self.log_filepath:
-            self.log_filepath = os.path.join(constants.LoggerConfiguration.LOG_DIRECTORY_PATH, f"daemon_{self.mailbox.id}.log")
+            self.log_filepath = os.path.join(constants.LoggerConfiguration.LOG_DIRECTORY_PATH, f"daemon_{self.uuid}.log")
             if not os.path.exists(self.log_filepath):
                 with open(self.log_filepath, 'w'):
                     pass
@@ -95,7 +97,7 @@ def post_save_is_healthy(sender: DaemonModel, instance: DaemonModel, **kwargs) -
             oldInstance = DaemonModel.objects.get(pk=instance.pk)
             if not oldInstance.is_healthy:
                 logger.debug("%s has become healthy, flagging its mailbox as healthy ...", str(instance))
-                instance.account.update(is_healthy=True)
+                instance.mailbox.update(is_healthy=True)
                 logger.debug("Successfully flagged mailbox as healthy.")
 
         except DaemonModel.DoesNotExist:

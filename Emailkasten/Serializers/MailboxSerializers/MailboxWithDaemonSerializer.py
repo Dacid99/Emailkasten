@@ -26,7 +26,7 @@ class MailboxWithDaemonSerializer(serializers.ModelSerializer):
     """The standard serializer for a :class:`Emailkasten.Models.DaemonModel`.
     Uses all fields including the daemon."""
 
-    daemon = DaemonSerializer()
+    daemons = DaemonSerializer(many=True, read_only=False)
     """The emails are serialized by :class:`Emailkasten.Serializers.DaemonSerializers.DaemonSerializer`."""
 
 
@@ -42,12 +42,14 @@ class MailboxWithDaemonSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """Extends :restframework::func:`serializers.ModelSerializer.update` to allow changing the daemon data."""
-        daemonData = validated_data.pop('daemon', None)
-        if daemonData:
-            daemonInstance = instance.daemon
-            for key, value in daemonData.items():
-                setattr(daemonInstance, key,value)
-            daemonInstance.save()
+        daemonsData = validated_data.pop('daemons', [])
+        for daemonData in daemonsData:
+            daemon_id = daemonData.get('id', None)
+            if daemon_id:
+                daemonInstance = instance.daemons.get(id=daemon_id)
+                for key, value in daemonData.items():
+                    setattr(daemonInstance, key,value)
+                daemonInstance.save()
 
         return super().update(instance, validated_data)
 
