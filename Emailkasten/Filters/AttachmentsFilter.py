@@ -57,6 +57,9 @@ class AttachmentFilter(django_filters.FilterSet):
             ],
             "created": [
                 "lte",
-                "gte"
+                "gte",
+                "lt",
+                "gt",
+                "exact"
             ],
         }

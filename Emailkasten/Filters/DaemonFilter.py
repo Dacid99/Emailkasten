@@ -152,6 +152,6 @@ class DaemonFilter(django_filters.FilterSet):
             "cycle_interval": ["lte", "gte", "lt", "gt", "exact"],
             "is_running": ["exact"],
             "is_healthy": ["exact"],
-            "created": ["lte", "gte"],
-            "updated": ["lte", "gte"],
+            "created": ["lte", "gte", "lt", "gt", "exact"],
+            "updated": ["lte", "gte", "lt", "gt", "exact"],
         }

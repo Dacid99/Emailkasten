@@ -127,6 +127,6 @@ class MailboxFilter(django_filters.FilterSet):
             "save_attachments": ["exact"],
             "save_images": ["exact"],
             "is_healthy": ["exact"],
-            "created": ["lte", "gte"],
-            "updated": ["lte", "gte"],
+            "created": ["lte", "gte", "lt", "gt", "exact"],
+            "updated": ["lte", "gte", "lt", "gt", "exact"],
         }
