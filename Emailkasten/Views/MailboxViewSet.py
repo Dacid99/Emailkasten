@@ -21,7 +21,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, viewsets
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
@@ -108,26 +108,6 @@ class MailboxViewSet(viewsets.ModelViewSet):
 
         mailboxSerializer = self.get_serializer(mailbox)
         return Response({'status': 'All mails fetched', "mailbox": mailboxSerializer.data})
-
-
-    @action(detail=True, methods=['get'])
-    def fetching_options(self, request: Request, pk: int|None = None) -> Response:
-        """Action method returning all fetching options for the mailbox.
-
-        Args:
-            request: The request triggering the action.
-            pk: int: The private key of the mailbox. Defaults to None.
-
-        Returns:
-            A response detailing the request status.
-        """
-        mailbox = self.get_object()
-
-        availableFetchingOptions = mailbox.getAvailableFetchingCriteria()
-        if availableFetchingOptions:
-            return Response({'options': availableFetchingOptions})
-        else:
-            return Response({'error': "No fetching options available for this mailbox!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')

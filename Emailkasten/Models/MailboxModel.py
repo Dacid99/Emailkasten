@@ -22,7 +22,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from ..constants import FetchingConfiguration, MailFetchingCriteria
+from ..constants import FetchingConfiguration
 from ..Fetchers.IMAPFetcher import IMAPFetcher
 from ..Fetchers.POP3Fetcher import POP3Fetcher
 from .AccountModel import AccountModel
@@ -39,12 +39,6 @@ class MailboxModel(models.Model):
 
     account = models.ForeignKey(AccountModel, related_name="mailboxes", on_delete=models.CASCADE)
     """The mailaccount this mailbox was found in. Unique together with :attr:`name`. Deletion of that `account` deletes this mailbox."""
-
-    FETCHINGCHOICES = dict(MailFetchingCriteria())
-    """The available mail fetching criteria. Refers to :class:`Emailkasten.constants.MailFetchingCriteria`."""
-
-    fetching_criterion = models.CharField(choices=FETCHINGCHOICES, default=MailFetchingCriteria.ALL, max_length=10)
-    """The fetching criterion for this mailbox. One of :attr:`FETCHING_CHOICES`. :attr:`Emailkasten.constants.MailFetchingCriteria.ALL` by default."""
 
     save_attachments = models.BooleanField(default=FetchingConfiguration.SAVE_ATTACHMENTS_DEFAULT)
     """Whether to save attachments of the mails found in this mailbox. :attr:`Emailkasten.constants.FetchingConfiguration.SAVE_ATTACHMENTS_DEFAULT` by default."""

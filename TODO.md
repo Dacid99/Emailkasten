@@ -18,7 +18,6 @@
 - general save decorator in filemanagement
 - refine storage management logging and error correction
 - streamable logs for daemons
-- adding daemons to mailboxes
 - test on insertion
 
 ### Work in progress
@@ -26,6 +25,7 @@
 - type annotations
 
 ## To test
+- daemonsviewset and manual adding
 - logfile for daemons
 - health flagging in fetchers
 - does decodeHeader do anything? If yes it should be used more

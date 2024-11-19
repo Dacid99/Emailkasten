@@ -25,6 +25,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .. import constants
+from ..constants import MailFetchingCriteria
 from .MailboxModel import MailboxModel
 
 logger = logging.getLogger(__name__)
@@ -40,8 +41,14 @@ class DaemonModel(models.Model):
     mailbox = models.ForeignKey(MailboxModel, related_name='daemons', on_delete=models.CASCADE)
     """The mailbox this daemon fetches. Unique. Deletion of that `mailbox` deletes this daemon."""
 
+    FETCHINGCHOICES = dict(MailFetchingCriteria())
+    """The available mail fetching criteria. Refers to :class:`Emailkasten.constants.MailFetchingCriteria`."""
+
+    fetching_criterion = models.CharField(choices=FETCHINGCHOICES, default=MailFetchingCriteria.ALL, max_length=10)
+    """The fetching criterion for this mailbox. One of :attr:`FETCHING_CHOICES`. :attr:`Emailkasten.constants.MailFetchingCriteria.ALL` by default."""
+
     cycle_interval = models.IntegerField(default=constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT)
-    """The interval in which the mailbox is fetched. Set to :attr:`Emailkasten.constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT` by default."""
+    """The period with which the daemon is running. :attr:`Emailkasten.constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT` by default."""
 
     is_running = models.BooleanField(default=False)
     """Flags whether the daemon is active. `False` by default."""

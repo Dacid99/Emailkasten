@@ -23,14 +23,14 @@ from typing import TYPE_CHECKING
 
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..EMailArchiverDaemon import EMailArchiverDaemon
-from ..Filters.MailboxFilter import MailboxFilter
+from ..Filters.DaemonFilter import DaemonFilter
 from ..Models.DaemonModel import DaemonModel
 from ..Serializers.DaemonSerializers.DaemonSerializer import \
     DaemonSerializer
@@ -44,14 +44,34 @@ class DaemonViewSet(viewsets.ModelViewSet):
     queryset = DaemonModel.objects.all()
     serializer_class = DaemonSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]
-    filterset_class = MailboxFilter
+    filterset_class = DaemonFilter
     permission_classes = [IsAuthenticated]
-    ordering_fields = ['is_running', 'is_healthy', 'mailbox__fetching_criterion', 'mailbox__name', 'mailbox__account__mail_address', 'mailbox__account__mail_host', 'mailbox__account__protocol', 'created', 'updated']
+    ordering_fields = ['fetching_criterion', 'is_running', 'is_healthy', 'mailbox__fetching_criterion', 'mailbox__name', 'mailbox__account__mail_address', 'mailbox__account__mail_host', 'mailbox__account__protocol', 'created', 'updated']
     ordering = ['id']
 
 
     def get_queryset(self):
         return DaemonModel.objects.filter(mailbox__account__user = self.request.user)
+
+
+    @action(detail=True, methods=['get'])
+    def fetching_options(self, request: Request, pk: int|None = None) -> Response:
+        """Action method returning all fetching options for the daemon.
+
+        Args:
+            request: The request triggering the action.
+            pk: int: The private key of the daemon. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
+        daemon = self.get_object()
+
+        availableFetchingOptions = daemon.mailbox.getAvailableFetchingCriteria()
+        if availableFetchingOptions:
+            return Response({'options': availableFetchingOptions})
+        else:
+            return Response({'error': "No fetching options available for this mailbox!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
     @action(detail=True, methods=['post'], url_path='test')

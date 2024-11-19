@@ -1,0 +1,157 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Emailkasten - a open-source self-hostable email archiving server
+# Copyright (C) 2024  David & Philipp Aderbauer
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+import django_filters
+
+from ..Models.DaemonModel import DaemonModel
+
+
+class DaemonFilter(django_filters.FilterSet):
+    """The filter class for :class:`Emailkasten.Models.MailboxModel`."""
+
+    mailbox_name__icontains = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="icontains"
+    )
+    mailbox_name__contains = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="contains"
+    )
+    mailbox_name__iexact = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="iexact"
+    )
+    mailbox_name__exact = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="exact"
+    )
+    mailbox_name__startswith = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="startswith"
+    )
+    mailbox_name__istartswith = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="istartswith"
+    )
+    mailbox_name__endswith = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="endswith"
+    )
+    mailbox_name__iendswith = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="iendswith"
+    )
+    mailbox_name__regex = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="regex"
+    )
+    mailbox_name__iregex = django_filters.CharFilter(
+        field_name="mailbox__name", lookup_expr="iregex"
+    )
+    mailbox_name__in = django_filters.BaseInFilter(
+        field_name="mailbox__name", lookup_expr="in"
+    )
+
+    mail_address__icontains = django_filters.CharFilter(
+        field_name="mailbox__account__mail_address", lookup_expr="icontains"
+    )
+    mail_address__contains = django_filters.CharFilter(
+        field_name="mailbox__account__mail_address", lookup_expr="contains"
+    )
+    mail_address__exact = django_filters.CharFilter(
+        field_name="account__mail_address", lookup_expr="exact"
+    )
+    mail_address__iexact = django_filters.CharFilter(
+        field_name="mailbox__account__mail_address", lookup_expr="iexact"
+    )
+    mail_address__startswith = django_filters.CharFilter(
+        field_name="mailbox__account__mail_address", lookup_expr="startswith"
+    )
+    mail_address__istartswith = django_filters.CharFilter(
+        field_name="account__mail_address", lookup_expr="istartswith"
+    )
+    mail_address__endswith = django_filters.CharFilter(
+        field_name="mailbox__account__mail_address", lookup_expr="endswith"
+    )
+    mail_address__iendswith = django_filters.CharFilter(
+        field_name="mailbox__account__mail_address", lookup_expr="iendswith"
+    )
+    mail_address__regex = django_filters.CharFilter(
+        field_name="mailbox__account__mail_address", lookup_expr="regex"
+    )
+    mail_address__iregex = django_filters.CharFilter(
+        field_name="mailbox__account__mail_address", lookup_expr="iregex"
+    )
+    mail_address__in = django_filters.BaseInFilter(
+        field_name="mailbox__account__mail_address", lookup_expr="in"
+    )
+
+    mail_host__icontains = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="icontains"
+    )
+    mail_host__contains = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="contains"
+    )
+    mail_host__exact = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="exact"
+    )
+    mail_host__iexact = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="iexact"
+    )
+    mail_host__startswith = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="startswith"
+    )
+    mail_host__istartswith = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="istartswith"
+    )
+    mail_host__endswith = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="endswith"
+    )
+    mail_host__iendswith = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="iendswith"
+    )
+    mail_host__regex = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="regex"
+    )
+    mail_host__iregex = django_filters.CharFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="iregex"
+    )
+    mail_host__in = django_filters.BaseInFilter(
+        field_name="mailbox__account__mail_host", lookup_expr="in"
+    )
+
+    protocol__iexact = django_filters.CharFilter(
+        field_name="mailbox__account__protocol", lookup_expr="iexact"
+    )
+    protocol__icontains = django_filters.CharFilter(
+        field_name="mailbox__account__protocol", lookup_expr="icontains"
+    )
+    protocol__in = django_filters.BaseInFilter(
+        field_name="mailbox__account__protocol", lookup_expr="in"
+    )
+
+    mailbox_is_healthy__exact = django_filters.BooleanFilter(
+        field_name="mailbox__is_healthy", lookup_expr="exact"
+    )
+
+    account_is_healthy__exact = django_filters.BooleanFilter(
+        field_name="mailbox__account__is_healthy", lookup_expr="exact"
+    )
+
+    class Meta:
+        model = DaemonModel
+        fields = {
+            "uuid": ["exact", "contains"],
+            "fetching_criterion": ["iexact"],
+            "cycle_interval": ["lte", "gte", "lt", "gt", "exact"],
+            "is_running": ["exact"],
+            "is_healthy": ["exact"],
+            "created": ["lte", "gte"],
+            "updated": ["lte", "gte"],
+        }

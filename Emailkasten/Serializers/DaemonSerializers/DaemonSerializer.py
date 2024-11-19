@@ -33,3 +33,20 @@ class DaemonSerializer(serializers.ModelSerializer):
 
         read_only_fields = ['is_running', 'is_healthy', 'created', 'updated']
         """The :attr:`Emailkasten.Models.DaemonModel.is_running`, :attr:`Emailkasten.Models.DaemonModel.is_healthy`, :attr:`Emailkasten.Models.DaemonModel.created`, and :attr:`Emailkasten.Models.DaemonModel.updated` fields are read-only."""
+
+
+    def validate_fetching_criterion(self, value: str) -> str:
+        """Check whether the fetching criterion is available for the mailbox of the serialized daemon.
+
+        Args:
+            value: The given fetching criterion.
+
+        Returns:
+            The validated fetching criterion.
+
+        Raises:
+            :restframework::class:`serializers.ValidationError`: If the given fetching criterion is not available for the daemon.
+        """
+        if self.instance and self.instance.mailbox and value not in self.instance.mailbox.getAvailableFetchingCriteria():
+            raise serializers.ValidationError("Fetching criterion not available for this mailbox!")
+        return value
