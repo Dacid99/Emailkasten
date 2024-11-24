@@ -36,7 +36,16 @@ class POP3_SSL_Fetcher(POP3Fetcher):
     def connectToHost(self) -> None:
         """Overrides :func:`Emailkasten.Fetchers.POP3Fetcher.connectToHost` to use :class:`poplib.POP3_SSL`."""
         self.logger.debug("Connecting to %s ...", str(self.account))
-        self._mailhost = poplib.POP3_SSL(host=self.account.mail_host, port=self.account.mail_host_port, context=None, timeout=self.account.timeout)
+
+        kwargs = {"host": self.account.mail_host,
+                  "context": None}
+        if (port := self.account.mail_host_port):
+            kwargs["port"] = port
+        if (timeout := self.account.timeout):
+            kwargs["timeout"] = timeout
+
+        self._mailhost = poplib.POP3_SSL(**kwargs)
+
         self.logger.debug("Successfully connected to %s.", str(self.account))
 
 
@@ -51,7 +60,8 @@ class POP3_SSL_Fetcher(POP3Fetcher):
             The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with POP3_SSL_Fetcher(account) as pop3sslFetcher:
-            return pop3sslFetcher.test()
+            result = pop3sslFetcher.test()
+        return result
 
     @staticmethod
     def testMailbox(mailbox: MailboxModel) -> int:
@@ -64,4 +74,5 @@ class POP3_SSL_Fetcher(POP3Fetcher):
             The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with POP3_SSL_Fetcher(mailbox.account) as pop3sslFetcher:
-            return pop3sslFetcher.test(mailbox=mailbox)
+            result = pop3sslFetcher.test(mailbox=mailbox)
+        return result

@@ -21,7 +21,7 @@ from __future__ import annotations
 import datetime
 import imaplib
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from django.utils import timezone
 
@@ -82,6 +82,10 @@ class IMAPFetcher:
         try:
             self.connectToHost()
             self.login()
+
+            self.account.is_healthy = True
+            self.account.save(update_fields=['is_healthy'])
+            self.logger.debug("Marked %s as healthy", str(self.account))
         except imaplib.IMAP4.error:
             self.logger.error("An IMAP error occured connecting and logging in to %s!", str(self.account), exc_info=True)
             self.account.is_healthy = False
@@ -98,26 +102,21 @@ class IMAPFetcher:
         """Opens the connection to the IMAP server using the credentials from :attr:`account`.
         """
         self.logger.debug("Connecting to %s ...", str(self.account))
-        self._mailhost = imaplib.IMAP4(host=self.account.mail_host, port=self.account.mail_host_port, timeout=None)
-        self.logger.debug("Successfully connected to %s.", str(self.account))
+        kwargs = {"host": self.account.mail_host}
+        if (port := self.account.mail_host_port):
+            kwargs["port"] = port
+        if (timeout := self.account.timeout):
+            kwargs["timeout"] = timeout
 
+        self._mailhost = imaplib.IMAP4(**kwargs)
+        self.logger.debug("Successfully connected to %s.", str(self.account))
 
 
     def login(self) -> None:
         """Logs into the target account using credentials from :attr:`account`.
-        If the login succeeds, the account is flagged as healthy.
         """
         self.logger.debug("Logging into %s ...", str(self.account))
-        status, response = self._mailhost.login(self.account.mail_address, self.account.password)
-        if status != "OK":
-            errorMessage = response[0].decode('utf-8') if response and response[0] else "Unknown error"
-            self.logger.error("Bad response logging into %s:\n %s, %s", str(self.account), status, errorMessage)
-            self.account.is_healthy = False
-            self.account.save(update_fields=['is_healthy'])
-            return
-
-        self.account.is_healthy = True
-        self.account.save(update_fields=['is_healthy'])
+        self._mailhost.login(self.account.mail_address, self.account.password)
         self.logger.debug("Successfully logged into %s.", str(self.account))
 
 
@@ -232,7 +231,8 @@ class IMAPFetcher:
             The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with IMAPFetcher(account) as imapFetcher:
-            return imapFetcher.test()
+            result = imapFetcher.test()
+        return result
 
 
     @staticmethod
@@ -247,7 +247,8 @@ class IMAPFetcher:
             The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with IMAPFetcher(mailbox.account) as imapFetcher:
-            return imapFetcher.test(mailbox=mailbox)
+            result = imapFetcher.test(mailbox=mailbox)
+        return result
 
 
     def makeFetchingCriterion(self, criterionName: str) -> str|None:
@@ -438,7 +439,7 @@ class IMAPFetcher:
         return self
 
 
-    def __exit__(self, exc_type: BaseException|None, exc_value: BaseException|None, traceback: TracebackType|None) -> True:
+    def __exit__(self, exc_type: BaseException|None, exc_value: BaseException|None, traceback: TracebackType|None) -> Literal[True]:
         """Framework method for use of class in 'with' statement, closes an instance.
 
         Args:

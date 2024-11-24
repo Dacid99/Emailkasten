@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import logging
 import poplib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from .. import constants
 from ..constants import TestStatusCodes
@@ -68,6 +68,9 @@ class POP3Fetcher:
         try:
             self.connectToHost()
             self.login()
+
+            self.account.is_healthy = True
+            self.account.save(update_fields=['is_healthy'])
         except poplib.error_proto:
             self.logger.error("A POP error occured connecting and logging in to %s!", str(self.account), exc_info=True)
             self.account.is_healthy = False
@@ -84,20 +87,22 @@ class POP3Fetcher:
         """Opens the connection to the POP server using the credentials from :attr:`account`.
         """
         self.logger.debug("Connecting to %s ...", str(self.account))
-        self._mailhost = poplib.POP3(host=self.account.mail_host, port=self.account.mail_host_port, timeout=None)
+        kwargs = {"host": self.account.mail_host}
+        if (port := self.account.mail_host_port):
+            kwargs["port"] = port
+        if (timeout := self.account.timeout):
+            kwargs["timeout"] = timeout
+
+        self._mailhost = poplib.POP3(**kwargs)
         self.logger.debug("Successfully connected to %s.", str(self.account))
 
 
     def login(self) -> None:
         """Logs into the target account using credentials from :attr:`account`.
-        If the login succeeds, the account is flagged as healthy.
         """
         self.logger.debug("Logging into %s ...", str(self.account))
         self._mailhost.user(self.account.mail_address)
         self._mailhost.pass_(self.account.password)
-
-        self.account.is_healthy = True
-        self.account.save(update_fields=['is_healthy'])
         self.logger.debug("Successfully logged into %s.", str(self.account))
 
 
@@ -186,7 +191,8 @@ class POP3Fetcher:
             The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with POP3Fetcher(account) as pop3Fetcher:
-            return pop3Fetcher.test()
+            result = pop3Fetcher.test()
+        return result
 
 
     @staticmethod
@@ -201,7 +207,8 @@ class POP3Fetcher:
             The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with POP3Fetcher(mailbox.account) as pop3Fetcher:
-            return pop3Fetcher.test(mailbox=mailbox)
+            result = pop3Fetcher.test(mailbox=mailbox)
+        return result
 
 
     def fetchAll(self, mailbox: MailboxModel) -> list[bytes]:
@@ -280,7 +287,7 @@ class POP3Fetcher:
         return self
 
 
-    def __exit__(self, exc_type: BaseException|None, exc_value: BaseException|None, traceback: TracebackType|None) -> True:
+    def __exit__(self, exc_type: BaseException|None, exc_value: BaseException|None, traceback: TracebackType|None) -> Literal[True]:
         """Framework method for use of class in 'with' statement, closes an instance.
 
         Args:

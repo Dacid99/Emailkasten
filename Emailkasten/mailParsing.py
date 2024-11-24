@@ -299,7 +299,7 @@ def _parseHeader(mailMessage: email.message.Message, headerKey: str) -> str:
     """
     logger.debug("Parsing %s ...", headerKey)
     header = mailMessage.get(headerKey, "")
-    if header is None:
+    if not header:
         logger.debug("No %s found in mail.", headerKey)
     else:
         logger.debug("Successfully parsed %s", headerKey)

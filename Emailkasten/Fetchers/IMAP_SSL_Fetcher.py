@@ -35,7 +35,14 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
     def connectToHost(self):
         """Overrides :func:`Emailkasten.Fetchers.IMAPFetcher.connectToHost` to use :class:`imaplib.IMAP4_SSL`."""
         self.logger.debug("Connecting to %s ...", str(self.account))
-        self._mailhost = imaplib.IMAP4_SSL(host=self.account.mail_host, port=self.account.mail_host_port, ssl_context=None, timeout=self.account.timeout)
+        kwargs = {"host": self.account.mail_host,
+                  "ssl_context": None}
+        if (port := self.account.mail_host_port):
+            kwargs["port"] = port
+        if (timeout := self.account.timeout):
+            kwargs["timeout"] = timeout
+
+        self._mailhost = imaplib.IMAP4_SSL(**kwargs)
         self.logger.debug("Successfully connected to %s.", str(self.account))
 
 
@@ -50,7 +57,9 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
             The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with IMAP_SSL_Fetcher(account) as imapsslFetcher:
-            return imapsslFetcher.test()
+            result = imapsslFetcher.test()
+        return result
+
 
     @staticmethod
     def testMailbox(mailbox: MailboxModel) -> int:
@@ -63,4 +72,5 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
             The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
         """
         with IMAP_SSL_Fetcher(mailbox.account) as imapsslFetcher:
-            return imapsslFetcher.test(mailbox)
+            result = imapsslFetcher.test(mailbox)
+        return result

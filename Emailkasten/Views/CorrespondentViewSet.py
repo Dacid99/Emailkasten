@@ -57,7 +57,7 @@ class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+    def toggle_favorite(self, request: Request, pk: int|None = None) -> Response:
         """Action method toggling the favorite flag of the correspondent.
 
         Args:

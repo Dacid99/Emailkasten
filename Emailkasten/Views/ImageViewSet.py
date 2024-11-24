@@ -51,7 +51,7 @@ class ImageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['get'], url_path='download')
-    def download(self, request: Request, pk: int = None) -> FileResponse:
+    def download(self, request: Request, pk: int|None = None) -> FileResponse:
         """Action method downloading the image.
 
         Args:
@@ -77,7 +77,7 @@ class ImageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
     @action(detail=True, methods=['post'], url_path='toggle_favorite')
-    def toggle_favorite(self, request: Request, pk: int = None) -> Response:
+    def toggle_favorite(self, request: Request, pk: int|None = None) -> Response:
         """Action method toggling the favorite flag of the image.
 
         Args:

@@ -19,7 +19,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import exchangelib
 
@@ -78,7 +78,7 @@ class ExchangeFetcher:
         return self
 
 
-    def __exit__(self, exc_type: BaseException|None, exc_value: BaseException|None, traceback: TracebackType|None) -> True:
+    def __exit__(self, exc_type: BaseException|None, exc_value: BaseException|None, traceback: TracebackType|None) -> Literal[True]:
         """Framework method for use of class in 'with' statement, closes an instance.
 
         Args:
