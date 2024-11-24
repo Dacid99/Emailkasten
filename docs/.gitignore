@@ -1,4 +1,6 @@
 build/*
-source/*.rst
+source/[^i]*.rst
 apidoc/
 *.log
+*.svg
+_static/*

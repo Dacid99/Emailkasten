@@ -373,16 +373,16 @@ deprecated-modules=
 
 # Output a graph (.gv or any supported image format) of external dependencies
 # to the given file (report RP0402 must not be disabled).
-ext-import-graph=docs/external-import-graph.gv
+ext-import-graph=../docs/external-import-graph.svg
 
 # Output a graph (.gv or any supported image format) of all (i.e. internal and
 # external) dependencies to the given file (report RP0402 must not be
 # disabled).
-import-graph=docs/import-graph.gv
+import-graph=../docs/import-graph.svg
 
 # Output a graph (.gv or any supported image format) of internal dependencies
 # to the given file (report RP0402 must not be disabled).
-int-import-graph=docs/internal-import-graph.gv
+int-import-graph=../docs/internal-import-graph.svg
 
 # Force import order to recognize a module as part of the standard
 # compatibility libraries.
@@ -452,7 +452,8 @@ disable=raw-checker-failed,
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once). See also the "--disable" option for examples.
-enable=deprecated_builtins
+enable=deprecated_builtins,
+       imports
 
 
 [METHOD_ARGS]
@@ -507,10 +508,10 @@ msg-template=
 # json2 (improved json format), json (old json format) and msvs (visual
 # studio). You can also give a reporter class, e.g.
 # mypackage.mymodule.MyReporterClass.
-#output-format=
+output-format=colorized
 
 # Tells whether to display a full report or only the messages.
-reports=no
+reports=yes
 
 # Activate the evaluation score.
 score=yes

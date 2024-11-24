@@ -18,6 +18,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 import exchangelib
@@ -32,12 +33,34 @@ if TYPE_CHECKING:
 class ExchangeFetcher:
     PROTOCOL = constants.MailFetchingProtocols.EXCHANGE
 
+    AVAILABLE_FETCHING_CRITERIA = [
+        constants.MailFetchingCriteria.ALL,
+        constants.MailFetchingCriteria.UNSEEN,
+        constants.MailFetchingCriteria.RECENT,
+        constants.MailFetchingCriteria.NEW,
+        constants.MailFetchingCriteria.OLD,
+        constants.MailFetchingCriteria.FLAGGED,
+        constants.MailFetchingCriteria.DRAFT,
+        constants.MailFetchingCriteria.ANSWERED,
+        constants.MailFetchingCriteria.DAILY,
+        constants.MailFetchingCriteria.WEEKLY,
+        constants.MailFetchingCriteria.MONTHLY,
+        constants.MailFetchingCriteria.ANNUALLY
+    ]
+
     def __init__(self, username, password, primary_smtp_address=None, server='outlook.office365.com', fullname=None, access_type=exchangelib.DELEGATE, autodiscover=True, locale=None, default_timezone=None):
+        self.logger = logging.getLogger(__name__)
+
         self.__credentials = exchangelib.Credentials(username, password)
         self.__config = exchangelib.Configuration(server=server, credentials=self.__credentials)
 
         self.__mailhost = exchangelib.Account(
-            primary_smtp_address=primary_smtp_address,fullname=fullname,access_type=access_type,autodiscover=autodiscover,locale=locale,default_timezone=default_timezone
+            primary_smtp_address=primary_smtp_address,
+            fullname=fullname,
+            access_type=access_type,
+            autodiscover=autodiscover,
+            locale=locale,
+            default_timezone=default_timezone
             )
 
     def fetchAllAndPrint(self):
@@ -45,6 +68,9 @@ class ExchangeFetcher:
             mailParser = ExchangeMailParser(message)
             print(mailParser.parseFrom())
 
+
+    def close(self):
+        pass
 
     def __enter__(self) -> ExchangeFetcher:
         """Framework method for use of class in 'with' statement, creates an instance."""
