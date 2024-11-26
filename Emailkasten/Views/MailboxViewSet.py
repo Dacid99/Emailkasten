@@ -30,7 +30,7 @@ from rest_framework.response import Response
 from .. import constants
 from ..constants import TestStatusCodes
 from ..Filters.MailboxFilter import MailboxFilter
-from ..mailProcessing import fetchMails, testMailbox
+from ..mailProcessing import fetchAndProcessMails, testMailbox
 from ..Models.MailboxModel import MailboxModel
 from ..Models.DaemonModel import DaemonModel
 from ..Serializers.MailboxSerializers.MailboxWithDaemonSerializer import \
@@ -38,10 +38,12 @@ from ..Serializers.MailboxSerializers.MailboxWithDaemonSerializer import \
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
-
+    from django.db.models import BaseManager
 
 
 class MailboxViewSet(viewsets.ModelViewSet):
+    """Viewset for the :class:`Emailkasten.Models.MailboxModel.MailboxModel`."""
+
     queryset = MailboxModel.objects.all()
     serializer_class = MailboxWithDaemonSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]
@@ -51,11 +53,15 @@ class MailboxViewSet(viewsets.ModelViewSet):
     ordering = ['id']
 
 
-    def get_queryset(self):
+    def get_queryset(self) -> BaseManager[MailboxModel]:
+        """Filters the data for entries connected to the request user.
+
+        Returns:
+            The mailbox entries matching the request user."""
         return MailboxModel.objects.filter(account__user = self.request.user)
 
 
-    @action(detail=True, methods='POST')
+    @action(detail=True, methods=['POST'])
     def add_daemon(self, request: Request, pk: int|None = None) -> Response:
         """Action method creating a new daemon for the mailbox.
 
@@ -104,7 +110,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
         """
         mailbox = self.get_object()
 
-        fetchMails(mailbox, mailbox.account, constants.MailFetchingCriteria.ALL)
+        fetchAndProcessMails(mailbox, mailbox.account, constants.MailFetchingCriteria.ALL)
 
         mailboxSerializer = self.get_serializer(mailbox)
         return Response({'status': 'All mails fetched', "mailbox": mailboxSerializer.data})

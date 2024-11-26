@@ -111,7 +111,7 @@ class TestStatusCodes:
     UNEXPECTED_ERROR: Final[int] = 4
     """An unexpected error occured, try again and check the logs."""
 
-    INFOS: list[str] = [
+    INFOS: Final[list[str]] = [
         "Everything worked as expected.",
         "The operation was aborted, please try again.",
         "The server returned a bad status, the unhealthy flag set.",
@@ -238,7 +238,7 @@ class LoggerConfiguration:
     Defaults to 5.
 
     Todo:
-        The int cast it not safe!"""
+        The int cast is not safe!"""
 
     LOG_FORMAT: Final[str] = "{asctime} {levelname} - {name}.{funcName}: {message}"
     """The format of the log messages for all loggers."""
@@ -328,6 +328,13 @@ class DatabaseConfiguration:
     """The delay between reconnect attempt in case of database disconnect."""
 
 
+class APIConfiguration:
+    """Namespace class for all configuration constants of the API."""
+
+    DEFAULT_PAGE_SIZE: Final[int] = 20
+    """The default number of entries per paginated response."""
+
+
 class ParsedMailKeys:
     """Namespace class for all keys to the parsedMail dictionary."""
 
@@ -370,7 +377,10 @@ class ParsedMailKeys:
         X_ORIGINATING_CLIENT: Final[str] = "X-Originating-Client"
         X_SPAM_FLAG: Final[str] = "X-Spam-Flag"
 
+
     class Correspondent:
+        """Headers that are treated as correspondents."""
+
         FROM: Final[str] = "From"
         TO: Final[str] = "To"
         CC: Final[str] = "Cc"
@@ -399,22 +409,28 @@ class ParsedMailKeys:
         def __getitem__(self, key):
             return getattr(self, key)
 
-    # attachment keys
+
     class Attachment:
+        """Keys to the attachment sub-dictionary."""
+
         DATA: Final[str] = "AttachmentData"
         SIZE: Final[str] = "AttachmentSize"
         FILE_NAME: Final[str] = "AttachmentFileName"
         FILE_PATH: Final[str] = "AttachmentFilePath"
 
-    # image keys
+
     class Image:
+        """Keys to the image sub-dictionary."""
+
         DATA: Final[str] = "ImageData"
         SIZE: Final[str] = "ImageSize"
         FILE_NAME: Final[str] = "ImageFileName"
         FILE_PATH: Final[str] = "ImageFilePath"
 
-    # mailinglist keys
+
     class MailingList:
+        """Keys to the mailinglist sub-dictionary."""
+
         ID: Final[str] = "List-Id"
         OWNER: Final[str] = "List-Owner"
         SUBSCRIBE: Final[str] = "List-Subscribe"

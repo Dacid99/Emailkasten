@@ -69,7 +69,7 @@ class IMAPFetcher:
 
     def __init__(self, account: AccountModel) -> None:
         """Constructor, starts the IMAP connection and logs into the account.
-        If the connection or session could not be established, :attr:`_mailhost` remains None and the `account` is marked as unhealthy.
+        If the connection or session could not be established and the `account` is marked as unhealthy.
         If the connection succeeds, the account is flagged as healthy.
 
         Args:

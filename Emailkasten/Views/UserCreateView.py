@@ -34,21 +34,24 @@ if TYPE_CHECKING:
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """Viewset to manage users."""
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def get_permissions(self) -> Sequence[_SupportsHasPermission]:
         """Gets the permission for different request methods.
-        Allows POST (registration) for all and all others only for authenticated and admin users.
+        Allows POST (registration) for all
+        and all others only for authenticated and admin users.
+
+        Todo:
+            Option to disable registration for all.
 
         Returns:
             The permission class(es) for the request.
         """
         if self.request.method in ['POST']:
-            #use if here to allow blocking of the registration
             return [AllowAny()]
         elif self.request.method in ['PUT','PATCH','DELETE','GET']:
             return [IsAdminOrSelf(), IsAuthenticated()]
-#        elif self.request.method in ['GET']:
-#            return [IsAuthenticated()]
         return super().get_permissions()

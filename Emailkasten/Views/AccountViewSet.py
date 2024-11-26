@@ -37,9 +37,12 @@ from ..constants import TestStatusCodes
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
+    from django.db.models import BaseManager
 
 
 class AccountViewSet(viewsets.ModelViewSet):
+    """Viewset for the :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+
     queryset = AccountModel.objects.all()
     serializer_class = AccountSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]
@@ -49,11 +52,19 @@ class AccountViewSet(viewsets.ModelViewSet):
     ordering = ['id']
 
 
-    def get_queryset(self):
+    def get_queryset(self) -> BaseManager[AccountModel]:
+        """Filters the data for entries connected to the request user.
+
+        Returns:
+            The account entries matching the request user."""
         return AccountModel.objects.filter(user = self.request.user)
 
 
     def perform_create(self, serializer):
+        """Adds the request user to the serializer data of the create request.
+        Args:
+            serializer: The serializer data of the create request.
+        """
         try:
             serializer.save(user = self.request.user)
             return None

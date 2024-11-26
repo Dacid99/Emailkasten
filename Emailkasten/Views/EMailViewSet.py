@@ -36,9 +36,12 @@ from ..Serializers.EMailSerializers.FullEMailSerializer import \
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
+    from django.db.models import BaseManager
 
 
 class EMailViewSet(viewsets.ReadOnlyModelViewSet):
+    """Viewset for the :class:`Emailkasten.Models.EMailModel.EMailModel`."""
+
     queryset = EMailModel.objects.all()
     serializer_class = FullEMailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
@@ -47,7 +50,11 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['datetime', 'email_subject', 'datasize', 'created', 'updated', 'user_agent', 'language', 'content_language', 'importance', 'priority', 'precedence', 'x_priority', 'x_originated_client']
     ordering = ['id']
 
-    def get_queryset(self):
+    def get_queryset(self) -> BaseManager[EMailModel]:
+        """Filters the data for entries connected to the request user.
+
+        Returns:
+            The email entries matching the request user."""
         return EMailModel.objects.filter(account__user = self.request.user)
 
 

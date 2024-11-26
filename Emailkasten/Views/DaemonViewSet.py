@@ -37,10 +37,12 @@ from ..Serializers.DaemonSerializers.DaemonSerializer import \
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
-
+    from django.db.models import BaseManager
 
 
 class DaemonViewSet(viewsets.ModelViewSet):
+    """Viewset for the :class:`Emailkasten.Models.DaemonModel.DaemonModel`."""
+
     queryset = DaemonModel.objects.all()
     serializer_class = DaemonSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]
@@ -50,7 +52,11 @@ class DaemonViewSet(viewsets.ModelViewSet):
     ordering = ['id']
 
 
-    def get_queryset(self):
+    def get_queryset(self) -> BaseManager[DaemonModel]:
+        """Filters the data for entries connected to the request user.
+
+        Returns:
+            The daemon entries matching the request user."""
         return DaemonModel.objects.filter(mailbox__account__user = self.request.user)
 
 

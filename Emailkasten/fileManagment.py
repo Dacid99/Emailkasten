@@ -97,10 +97,11 @@ def storeMessageAsEML(parsedEMail: dict[str,Any]) -> None:
     logger.debug("Successfully stored mail in .eml file.")
 
 
-
 def storeAttachments(parsedEMail: dict[str,Any]) -> None:
     """Saves all attachments of a mail to the storage.
-    If the file already exists, does not overwrite. If no attachments are found, does nothing. If an error occurs, removes the incomplete file.
+    If the file already exists, does not overwrite.
+    If no attachments are found, does nothing.
+    If an error occurs, removes the incomplete file.
 
     Args:
         parsedEMail: The parsed mail with attachments to be saved.
@@ -158,10 +159,11 @@ def storeAttachments(parsedEMail: dict[str,Any]) -> None:
         logger.debug("Successfully saved attachments to file.")
 
 
-
 def storeImages(parsedEMail: dict[str,Any]) -> None:
     """Saves all inline images of a mail to the storage.
-    If the file already exists, does not overwrite. If no images are found, does nothing. If an error occurs, removes the incomplete file.
+    If the file already exists, does not overwrite.
+    If no images are found, does nothing.
+    If an error occurs, removes the incomplete file.
 
     Args:
         parsedEMail: The parsed mail with inline images to be saved.
@@ -218,7 +220,6 @@ def storeImages(parsedEMail: dict[str,Any]) -> None:
         logger.debug("Successfully saved images to file.")
 
 
-
 def getPrerenderImageStoragePath(parsedMail: dict[str,Any]) -> str:
     """Gets the storage path for a prerender image.
 
@@ -230,6 +231,9 @@ def getPrerenderImageStoragePath(parsedMail: dict[str,Any]) -> str:
     """
     dirPath = StorageModel.getSubdirectory(parsedMail[ParsedMailKeys.Header.MESSAGE_ID])
 
-    filePath = os.path.join(dirPath, f"{parsedMail[ParsedMailKeys.Header.MESSAGE_ID]}.{StorageConfiguration.PRERENDER_IMAGETYPE}")
+    filePath = os.path.join(
+        dirPath,
+        f"{parsedMail[ParsedMailKeys.Header.MESSAGE_ID]}.{StorageConfiguration.PRERENDER_IMAGETYPE}",
+    )
     parsedMail[ParsedMailKeys.PRERENDER_FILE_PATH] = filePath
     return filePath

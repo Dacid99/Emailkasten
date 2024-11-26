@@ -35,9 +35,12 @@ from ..Serializers.ImageSerializers.ImageSerializer import ImageSerializer
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
+    from django.db.models import BaseManager
 
 
 class ImageViewSet(viewsets.ReadOnlyModelViewSet):
+    """Viewset for the :class:`Emailkasten.Models.ImageModel.ImageModel`."""
+
     queryset = ImageModel.objects.all()
     serializer_class = ImageSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
@@ -46,7 +49,11 @@ class ImageViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['file_name', 'datasize', 'email__datetime', 'created', 'updated']
     ordering = ['id']
 
-    def get_queryset(self):
+    def get_queryset(self) -> BaseManager[ImageModel]:
+        """Filters the data for entries connected to the request user.
+
+        Returns:
+            The image entries matching the request user."""
         return ImageModel.objects.filter(email__account__user = self.request.user)
 
 

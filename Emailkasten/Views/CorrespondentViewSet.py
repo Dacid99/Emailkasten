@@ -36,9 +36,12 @@ from ..Serializers.CorrespondentSerializers.SimpleCorrespondentSerializer import
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
+    from django.db.models import BaseManager
 
 
 class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
+    """Viewset for the :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`."""
+
     queryset = CorrespondentModel.objects.all()
     serializer_class = CorrespondentSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
@@ -47,7 +50,11 @@ class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['email_name', 'email_address', 'created']
     ordering = ['id']
 
-    def get_queryset(self):
+    def get_queryset(self) -> BaseManager[CorrespondentModel]:
+        """Filters the data for entries connected to the request user.
+
+        Returns:
+            The correspondent entries matching the request user."""
         return CorrespondentModel.objects.filter(emails__account__user = self.request.user).distinct()
 
     def get_serializer_class(self):

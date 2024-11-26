@@ -17,13 +17,19 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """Provides functions for processing the mails by fetching and storing them.
-Combines functions from :mod:`Emailkasten.emailDBFeeding`, :mod:`Emailkasten.mailParsing` and :mod:`Emailkasten.Fetchers`.
+Combines functions from
+:mod:`Emailkasten.emailDBFeeding`,
+:mod:`Emailkasten.mailParsing` and
+:mod:`Emailkasten.Fetchers`.
 Functions starting with _ are helpers and are used only within the scope of this module.
 
 Functions:
-    :func:`testAccount`: Tests whether the data in an accountmodel is correct and allows connecting and logging in to the mailhost and account.
+    :func:`testAccount`: Tests whether the data in an accountmodel is correct and
+        allows connecting and logging in to the mailhost and account.
     :func:`scanMailboxes`: Scans the given mailaccount for mailboxes, inserts them into the database.
-    :func:`fetchMails`: Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database.
+    :func:`fetchMails`: Fetches maildata from a given mailbox in a mailaccount based on a search criterion.
+    :func:`parseAndStoreMails`: Parses and stores maildata in the database.
+    :func:`fetchAndProcessMails`: Fetches, parses and stores mails in the database.
     :func:`_isSpam`: Checks the spam headers of the parsed mail to decide whether the mail is spam.
 
 Global variables:
@@ -35,8 +41,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from . import constants
-from .constants import TestStatusCodes
+from .constants import ParsedMailKeys, ParsingConfiguration, TestStatusCodes
 from .emailDBFeeding import insertEMail, insertMailbox
 from .Fetchers.ExchangeFetcher import ExchangeFetcher
 from .Fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
@@ -58,8 +63,10 @@ logger = logging.getLogger(__name__)
 
 
 def testAccount(account: AccountModel) -> int:
-    """Tests whether the data in an accountmodel is correct and allows connecting and logging in to the mailhost and account.
-    The :attr:`Emailkasten.Models.AccountModel.is_healthy` flag is set according to the result by the Fetcher class, e.g. :class:`Emailkasten.Fetchers.IMAPFetcher`.
+    """Tests whether the data in an accountmodel is correct
+    and allows connecting and logging in to the mailhost and account.
+    The :attr:`Emailkasten.Models.AccountModel.is_healthy` flag is set according
+    to the result by the Fetcher class, e.g. :class:`Emailkasten.Fetchers.IMAPFetcher`.
     Relies on the `test` static method of the :mod:`Emailkasten.Fetchers` classes.
 
     Args:
@@ -97,8 +104,10 @@ def testAccount(account: AccountModel) -> int:
 
 
 def testMailbox(mailbox: MailboxModel) -> int:
-    """Tests whether the data in a mailboxmodel is correct and allows connecting and opening the account and mailbox.
-    The :attr:`Emailkasten.Models.MailboxModel.is_healthy` flag is set according to the result by the Fetcher class, e.g. :class:`Emailkasten.Fetchers.IMAPFetcher`.
+    """Tests whether the data in a mailboxmodel is correct
+    and allows connecting and opening the account and mailbox.
+    The :attr:`Emailkasten.Models.MailboxModel.is_healthy` flag is set according
+    to the result by the Fetcher class, e.g. :class:`Emailkasten.Fetchers.IMAPFetcher`.
     Relies on the `test` static method of the :mod:`Emailkasten.Fetchers` classes.
 
     Args:
@@ -179,19 +188,23 @@ def scanMailboxes(account: AccountModel) -> None:
     logger.info("Successfully searched mailboxes")
 
 
-def fetchMails(mailbox: MailboxModel, account: AccountModel, criterion: str) -> None:
-    """Fetches maildata from a given mailbox in a mailaccount based on a search criterion and stores them in the database and storage.
+def _fetchMails(mailbox: MailboxModel, account: AccountModel, criterion: str) -> list:
+    """Fetches maildata from a given mailbox in a mailaccount based on a search criterion.
     For POP3 accounts, there is only one mailbox and no options for specific queries, so all messages are fetched.
 
     Note:
-        Relies on :func:`fetchBySearch` and :func:`fetchAll` methods of the :mod:`Emailkasten.Fetchers` classes,
-        the methods from :mod:`Emailkasten.mailParsing` and :mod:`Emailkasten.emailDBFeeding`.
+        Relies on :func:`fetchBySearch` and :func:`fetchAll` methods of the :mod:`Emailkasten.Fetchers` classes.
 
     Args:
         mailbox: The data of the mailbox to fetch from.
         account: The data of the mailaccount to fetch from.
-        criterion: A formatted criterion for message filtering as returned by :func:`Emailkasten.Fetchers.IMAPFetcher.makeFetchingCriterion`.
+        criterion: A formatted criterion for message filtering
+            as returned by :func:`Emailkasten.Fetchers.IMAPFetcher.makeFetchingCriterion`.
             If none is given, defaults to RECENT inside `Emailkasten.Fetchers.IMAPFetcher.fetchBySearch`.
+
+    Returns:
+        The received maildata.
+        Empty if none are are found or the protocol of the `account` is unknown.
     """
 
     logger.info(
@@ -228,9 +241,23 @@ def fetchMails(mailbox: MailboxModel, account: AccountModel, criterion: str) -> 
 
     else:
         logger.error("Can not fetch mails, protocol is not or incorrectly specified!")
-        return
+        return []
 
-    logger.info("Successfully fetched emails")
+    logger.info("Successfully fetched emails.")
+    return mailDataList
+
+
+def _parseAndStoreMails(mailDataList: list, mailbox: MailboxModel, account: AccountModel) -> None:
+    """Parses and stores raw maildata in the database and storage.
+
+    Note:
+        Relies on the methods from :mod:`Emailkasten.mailParsing` and :mod:`Emailkasten.emailDBFeeding`.
+
+    Args:
+        mailDataList: The maildata to parse and store.
+        mailbox: The data of the mailbox the data was fetched from.
+        account: The data of the mailaccount the data was fetched from.
+    """
 
     logger.info("Parsing emails from data and saving to db ...")
     status = True
@@ -238,7 +265,7 @@ def fetchMails(mailbox: MailboxModel, account: AccountModel, criterion: str) -> 
         try:
             parsedMail = parseMail(mailData)
 
-            if constants.ParsingConfiguration.THROW_OUT_SPAM:
+            if ParsingConfiguration.THROW_OUT_SPAM:
                 if _isSpam(parsedMail):
                     logger.debug("Not saving email, it is flagged as spam.")
                     continue
@@ -265,8 +292,8 @@ def fetchMails(mailbox: MailboxModel, account: AccountModel, criterion: str) -> 
             status = False
             logger.error(
                 "Error parsing and saving email with subject %s from %s!",
-                parsedMail[constants.ParsedMailKeys.Header.SUBJECT],
-                parsedMail[constants.ParsedMailKeys.Header.DATE],
+                parsedMail[ParsedMailKeys.Header.SUBJECT],
+                parsedMail[ParsedMailKeys.Header.DATE],
                 exc_info=True,
             )
             continue
@@ -275,6 +302,20 @@ def fetchMails(mailbox: MailboxModel, account: AccountModel, criterion: str) -> 
         logger.info("Successfully parsed emails from data and saved to db.")
     else:
         logger.info("Parsed emails from data and saved to db with an error.")
+
+
+def fetchAndProcessMails(mailbox: MailboxModel, account: AccountModel, criterion: str) -> None:
+    """Parses and stores raw maildata in the database and storage.
+
+    Args:
+        mailbox: The data of the mailbox to fetch from.
+        account: The data of the mailaccount to fetch from.
+        criterion: A formatted criterion for message filtering
+            as returned by :func:`Emailkasten.Fetchers.IMAPFetcher.makeFetchingCriterion`.
+    """
+
+    mailDataList = _fetchMails(mailbox, account, criterion)
+    _parseAndStoreMails(mailDataList, mailbox, account)
 
 
 def _isSpam(parsedMail: dict[str, Any]) -> bool:
@@ -287,6 +328,6 @@ def _isSpam(parsedMail: dict[str, Any]) -> bool:
         Whether the mail is considered spam.
     """
     return (
-        parsedMail[constants.ParsedMailKeys.Header.X_SPAM_FLAG] is not None
-        and parsedMail[constants.ParsedMailKeys.Header.X_SPAM_FLAG] != "NO"
+        parsedMail[ParsedMailKeys.Header.X_SPAM_FLAG] is not None
+        and parsedMail[ParsedMailKeys.Header.X_SPAM_FLAG] != "NO"
     )

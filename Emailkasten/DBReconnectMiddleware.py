@@ -1,28 +1,72 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Emailkasten - a open-source self-hostable email archiving server
+# Copyright (C) 2024  David & Philipp Aderbauer
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+from __future__ import annotations
+
 import time
+from typing import TYPE_CHECKING
 
 from django.db import OperationalError, connection
 
 from .constants import DatabaseConfiguration
 
+if TYPE_CHECKING:
+    from rest_framework.response import Response
+    from rest_framework.request import Request
+
 
 class DBReconnectMiddleware:
+    """Middleware to reconnect to the database.
+    Especially relevant for initial setup.
+    """
+    max_retries = DatabaseConfiguration.RECONNECT_RETRIES
+    """The number of times to retry connecting.
+    Set from :attr:`Emailkasten.constants.DatabaseConfiguration.RECONNECT_RETRIES`."""
+
+    delay = DatabaseConfiguration.RECONNECT_DELAY
+    """The time delay between reconnect attempt.
+    Set from :attr:`Emailkasten.constants.DatabaseConfiguration.RECONNECT_DELAY`."""
+
+
     def __init__(self, get_response):
         self.get_response = get_response
 
-    def __call__(self, request):
-        max_retries = DatabaseConfiguration.RECONNECT_RETRIES  # Set the maximum number of retries
-        delay = DatabaseConfiguration.RECONNECT_DELAY        # Delay in seconds between retries
 
-        for attempt in range(max_retries):
+    def __call__(self, request: Request) -> Response:
+        """Attempts to connect to the database :attr:`max_retries` times.
+
+        Args:
+            request: The request to handle.
+
+        Raises:
+            :class:`django.db.OperationalError`: If no connection attempt is successful.
+
+        Returns:
+            The response to the request.
+        """
+        for attempt in range(self.max_retries):
             try:
-                # Try to connect to the database
                 with connection.cursor():
-                    break  # If connection succeeds, exit the loop
+                    break
             except OperationalError:
-                if attempt == max_retries - 1:
-                    raise  # Raise the error if the maximum retries are exceeded
-                time.sleep(delay)  # Wait before retrying
+                if attempt == self.max_retries - 1:
+                    raise
+                time.sleep(self.delay)
 
-        # Process the request
         response = self.get_response(request)
         return response

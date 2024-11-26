@@ -18,7 +18,7 @@
 - general save decorator in filemanagement
 - refine storage management error correction
 - streamable logs for daemons
-- test on insertion
+- api versioning
 
 ### Work in progress
 - documentation

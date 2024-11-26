@@ -34,9 +34,12 @@ from ..Serializers.MailingListSerializers.MailingListSerializer import \
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
+    from django.db.models import BaseManager
 
 
 class MailingListViewSet(viewsets.ReadOnlyModelViewSet):
+    """Viewset for the :class:`Emailkasten.Models.MailingListModel.MailingListModel`."""
+
     queryset = MailingListModel.objects.all()
     serializer_class = MailingListSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
@@ -45,7 +48,11 @@ class MailingListViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['list_id', 'list_owner', 'list_subscribe', 'list_unsubscribe', 'list_post', 'list_help', 'list_archive', 'correspondent__email_name', 'correspondent__email_address', 'created', 'updated']
     ordering = ['id']
 
-    def get_queryset(self):
+    def get_queryset(self) -> BaseManager[MailingListModel]:
+        """Filters the data for entries connected to the request user.
+
+        Returns:
+            The mailingslist entries matching the request user."""
         return MailingListModel.objects.filter(correspondent__emails__account__user = self.request.user).distinct()
 
     def destroy(self, request, pk=None):

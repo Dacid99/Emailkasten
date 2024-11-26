@@ -55,7 +55,7 @@ class POP3Fetcher:
 
     def __init__(self, account: AccountModel) -> None:
         """Constructor, starts the POP connection and logs into the account.
-        If the connection could not be established, :attr:`_mailhost` remains None and the `account` is marked as unhealthy.
+        If the connection could not be established the :attr:`account` is marked as unhealthy.
         If the connection succeeds, the account is flagged as healthy.
 
         Args:

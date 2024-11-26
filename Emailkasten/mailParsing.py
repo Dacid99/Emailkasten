@@ -48,7 +48,8 @@ logger = logging.getLogger(__name__)
 
 def _decodeText(text: email.message.Message) -> str:
     """Decodes a text encoded as bytes.
-    Checks for a specific charset to use. If none is found uses the default :attr:`Emailkasten.constants.ParsingConfiguration.CHARSET_DEFAULT`.
+    Checks for a specific charset to use.
+    If none is found uses :attr:`Emailkasten.constants.ParsingConfiguration.CHARSET_DEFAULT`.
 
     Args:
         text: The text in bytes format to decode properly.
@@ -81,9 +82,17 @@ def _decodeHeader(header: str) -> str:
     decodedString = ""
     for fragment, charset in decodedFragments:
         if charset is None:
-            decodedString += fragment.decode(ParsingConfiguration.CHARSET_DEFAULT, errors='replace') if isinstance(fragment, bytes) else fragment
+            decodedString += (
+                fragment.decode(ParsingConfiguration.CHARSET_DEFAULT, errors="replace")
+                if isinstance(fragment, bytes)
+                else fragment
+            )
         else:
-            decodedString += fragment.decode(charset, errors='replace') if isinstance(fragment, bytes) else fragment
+            decodedString += (
+                fragment.decode(charset, errors="replace")
+                if isinstance(fragment, bytes)
+                else fragment
+            )
 
     return decodedString
 
@@ -139,7 +148,7 @@ def _parseMessageID(mailMessage: email.message.Message) -> str:
 
 def _parseDate(mailMessage: email.message.Message) -> datetime.datetime:
     """Parses the date header of the given mailmessage.
-    If none is found uses :attr:`Emailkasten.constants.ParsingConfiguration.DATE_DEFAULT` as a fallback.
+    If none is found uses :attr:`Emailkasten.constants.ParsingConfiguration.DATE_DEFAULT` as fallback.
 
     Note:
         Uses :func:`email.utils.parsedate_to_datetime`.
@@ -261,7 +270,8 @@ def _parseImages(mailMessage: email.message.Message) -> list[dict]:
 
 def _parseAttachments(mailMessage: email.message.Message) -> list[dict[str, Any]]:
     """Parses the attachments in the given mailmessage.
-    Looks for elements with content disposition attachment or content type in :attr:`Emailkasten.ParsingConfiguration.APPLICATION_TYPES`.
+    Looks for elements with content disposition attachment or
+    content type in :attr:`Emailkasten.ParsingConfiguration.APPLICATION_TYPES`.
     If no filename is found for a file uses the hash +.attachment.
 
     Args:
@@ -275,8 +285,9 @@ def _parseAttachments(mailMessage: email.message.Message) -> list[dict[str, Any]
     attachments = []
     if mailMessage.is_multipart():
         for part in mailMessage.walk():
-            if part.get_content_disposition() == "attachment" or part.get_content_type() in ParsingConfiguration.APPLICATION_TYPES:
-                attachmentDict: dict[str,Any] = {}
+            if ( part.get_content_disposition() == "attachment"
+                 or part.get_content_type() in ParsingConfiguration.APPLICATION_TYPES):
+                attachmentDict: dict[str, Any] = {}
                 attachmentDict[ParsedMailKeys.Attachment.DATA] = part
                 attachmentDict[ParsedMailKeys.Attachment.SIZE] = len(part.as_bytes())
                 attachmentDict[ParsedMailKeys.Attachment.FILE_NAME] = part.get_filename() or f"{hash(part)}.attachment"
@@ -290,7 +301,6 @@ def _parseAttachments(mailMessage: email.message.Message) -> list[dict[str, Any]
         logger.debug("Successfully parsed attachments")
 
     return attachments
-
 
 
 def _parseHeader(mailMessage: email.message.Message, headerKey: str) -> str:
@@ -314,7 +324,6 @@ def _parseHeader(mailMessage: email.message.Message, headerKey: str) -> str:
     return header
 
 
-
 def _parseMultipleHeader(mailMessage: email.message.Message, headerKey: str) -> str|None:
     """Parses the given header, which may appear multiple times, of the given mailmessage.
 
@@ -336,7 +345,6 @@ def _parseMultipleHeader(mailMessage: email.message.Message, headerKey: str) -> 
     else:
         logger.debug("No %s found in mail.", headerKey)
         return None
-
 
 
 def _parseMailinglist(mailMessage: email.message.Message) -> dict[str, Any]:
@@ -378,7 +386,6 @@ def _parseCorrespondents(mailMessage: email.message.Message, mentionHeaderKey: s
         logger.debug("Successfully parsed %s correspondents.", mentionHeaderKey)
 
     return _separateRFC2822MailAddressFormat(correspondents)
-
 
 
 def parseMail(mailToParse: bytes) -> dict[str, Any]:

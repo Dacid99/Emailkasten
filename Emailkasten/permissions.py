@@ -16,8 +16,32 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""Provides custom permissions classes."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from rest_framework.permissions import IsAuthenticated
 
+if TYPE_CHECKING:
+    from rest_framework.request import Request
+    from rest_framework.views import APIView
+
+
 class IsAdminOrSelf(IsAuthenticated):
-    def has_object_permission(self, request, view, obj):
+    """Permission class to allow access of the user himself and the admins."""
+
+    def has_object_permission(self, request: Request, view: APIView, obj: Any) -> bool:
+        """Checks the permissions for a request.
+
+        Args:
+            request: The request to check.
+            view: The view sending the request.
+            obj: The object to access.
+
+        Returns:
+            True if `request` is sent by a user
+            that is either staff or the owner of `obj`, else false.
+        """
         return bool(request.user and request.user.is_staff) or request.user == obj

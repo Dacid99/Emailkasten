@@ -36,9 +36,12 @@ from ..Serializers.AttachmentSerializers.AttachmentSerializer import \
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
+    from django.db.models import BaseManager
 
 
 class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
+    """Viewset for the :class:`Emailkasten.Models.AttachmentModel.AttachmentModel`."""
+
     queryset = AttachmentModel.objects.all()
     serializer_class = AttachmentSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
@@ -47,7 +50,11 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['file_name', 'datasize', 'email__datetime', 'created']
     ordering = ['id']
 
-    def get_queryset(self):
+    def get_queryset(self) -> BaseManager[AttachmentModel]:
+        """Filters the data for entries connected to the request user.
+
+        Returns:
+            The attachment entries matching the request user."""
         return AttachmentModel.objects.filter(email__account__user = self.request.user)
 
 

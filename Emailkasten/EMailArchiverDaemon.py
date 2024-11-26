@@ -22,8 +22,8 @@ import time
 
 from rest_framework.response import Response
 
-from . import constants
-from .mailProcessing import fetchMails
+from .constants import EMailArchiverDaemonConfiguration
+from .mailProcessing import fetchAndProcessMails
 from .Models.DaemonModel import DaemonModel
 from .Models.AccountModel import AccountModel
 from .Models.MailboxModel import MailboxModel
@@ -61,15 +61,16 @@ class EMailArchiverDaemon:
             return Response({
                 'status': 'Daemon testrun was successful.',
                 'account': daemonModel.mailbox.account.mail_address,
-                'mailbox': daemonModel.mailbox.name, 'info': "Success"
-                })
+                'mailbox': daemonModel.mailbox.name,
+                'info': "Success"
+            })
         except Exception as error:
             return Response({
                 'status': 'Daemon testrun failed!',
                 'account': daemonModel.mailbox.account.mail_address,
                 'mailbox': daemonModel.mailbox.name,
                 'info': str(error)
-                })
+            })
 
 
     @staticmethod
@@ -91,14 +92,13 @@ class EMailArchiverDaemon:
                 'status': 'Daemon started',
                 'account': daemonModel.mailbox.account.mail_address,
                 'mailbox': daemonModel.mailbox.name
-                })
+            })
         else:
             return Response({
-                'status':
-                'Daemon already running',
+                'status': 'Daemon already running',
                 'account': daemonModel.mailbox.account.mail_address,
                 'mailbox': daemonModel.mailbox.name
-                })
+            })
 
 
     @staticmethod
@@ -113,7 +113,7 @@ class EMailArchiverDaemon:
             A response detailing what has been done.
         """
         if daemonModel.id in EMailArchiverDaemon.runningDaemons:
-            oldDaemon = EMailArchiverDaemon.runningDaemons.pop( daemonModel.id )
+            oldDaemon = EMailArchiverDaemon.runningDaemons.pop(daemonModel.id)
             oldDaemon.stop()
             daemonModel.is_running = False
             daemonModel.save(update_fields=['is_running'])
@@ -121,13 +121,13 @@ class EMailArchiverDaemon:
                 'status': 'Daemon stopped',
                 'account': daemonModel.mailbox.account.mail_address,
                 'mailbox': daemonModel.mailbox.name
-                })
+            })
         else:
             return Response({
                 'status': 'Daemon not running',
                 'account': daemonModel.mailbox.account.mail_address,
                 'mailbox': daemonModel.mailbox.name
-                })
+            })
 
 
     def __init__(self, daemon: DaemonModel) -> None:
@@ -140,7 +140,7 @@ class EMailArchiverDaemon:
         self.mailbox: MailboxModel = daemon.mailbox
         self.account: AccountModel = daemon.mailbox.account
 
-        self.thread: threading.Thread|None = None
+        self.thread: threading.Thread | None = None
         self.isRunning: bool = False
 
         self.setupLogger()
@@ -165,7 +165,7 @@ class EMailArchiverDaemon:
             self.daemon.is_running = True
             self.daemon.save(update_fields=['is_running'])
 
-            self.thread = threading.Thread(target = self.run)
+            self.thread = threading.Thread(target=self.run)
             self.thread.start()
             self.logger.info("Successfully started daemon.")
         else:
@@ -199,7 +199,7 @@ class EMailArchiverDaemon:
             self.logger.info("%s finished successfully", str(self.daemon))
         except Exception:
             self.logger.error("%s crashed! Attempting to restart ...", str(self.daemon), exc_info=True)
-            time.sleep(constants.EMailArchiverDaemonConfiguration.RESTART_TIME)
+            time.sleep(EMailArchiverDaemonConfiguration.RESTART_TIME)
             self.daemon.is_healthy = False
             self.daemon.save(update_fields=['is_healthy'])
             self.run()
@@ -207,7 +207,7 @@ class EMailArchiverDaemon:
 
     def cycle(self) -> None:
         """The routine of this daemon.
-        Fetches and saves mails using :func:`Emailkasten.mailProcessing.fetchMails`. Logs the execution time.
+        Fetches and saves mails using :func:`Emailkasten.mailProcessing.fetchAndProcessMails`. Logs the execution time.
         A successul run sets the daemon to healthy.
 
         Raises:
@@ -216,10 +216,11 @@ class EMailArchiverDaemon:
         self.logger.debug("---------------------------------------\nNew cycle")
 
         startTime = time.time()
-        fetchMails(self.mailbox, self.account, self.mailbox.fetching_criterion)
+        fetchAndProcessMails(self.mailbox, self.account, self.mailbox.fetching_criterion)
         endtime = time.time()
 
         self.daemon.is_healthy = True
         self.daemon.save(update_fields=['is_healthy'])
 
-        self.logger.debug("Cycle complete after %s seconds\n-------------------------------------------", endtime - startTime)
+        self.logger.debug("Cycle complete after %s seconds\n-------------------------------------------",
+                          endtime - startTime)
