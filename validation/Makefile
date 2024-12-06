@@ -1,8 +1,11 @@
-lint: pylintrc
-	pylint --rcfile=$< ../Emailkasten | tee reports/pylint.txt
+codelint: pylintrc_code
+	pylint --rcfile=$< ../Emailkasten | tee reports/pylint_code.txt
 
-strictlint: pylintrc_strict
-	pylint --rcfile=$< ../Emailkasten | tee reports/pylint_strict.txt
+docslint: pylintrc_docs
+	pylint --rcfile=$< ../Emailkasten | tee reports/pylint_docs.txt
+
+stylelint: pylintrc_style
+	pylint --rcfile=$< ../Emailkasten | tee reports/pylint_style.txt
 
 check: mypy.ini
 	mypy --config-file $< ../Emailkasten/
