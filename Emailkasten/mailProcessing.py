@@ -301,7 +301,7 @@ def _parseAndStoreMails(mailDataList: list, mailbox: MailboxModel, account: Acco
     if status:
         logger.info("Successfully parsed emails from data and saved to db.")
     else:
-        logger.info("Parsed emails from data and saved to db with an error.")
+        logger.info("Parsed emails from data and saved to db with error.")
 
 
 def fetchAndProcessMails(mailbox: MailboxModel, account: AccountModel, criterion: str) -> None:
