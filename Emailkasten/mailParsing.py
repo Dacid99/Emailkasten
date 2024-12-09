@@ -335,16 +335,13 @@ def _parseMultipleHeader(mailMessage: email.message.Message, headerKey: str) -> 
         The combined header from all occurances.
     """
     logger.debug("Parsing %s ...", headerKey)
-    headers = mailMessage.get_all(headerKey)
-    if headers :
-        combinedHeaders = ""
-        for item in headers:
-            combinedHeaders += item + '\n'
+    headers = mailMessage.get_all(headerKey, '')
+    combinedHeaders = "\n".join(headers)
+    if combinedHeaders:
         logger.debug("Successfully parsed %s", headerKey)
-        return combinedHeaders
     else:
         logger.debug("No %s found in mail.", headerKey)
-        return None
+    return combinedHeaders
 
 
 def _parseMailinglist(mailMessage: email.message.Message) -> dict[str, Any]:
