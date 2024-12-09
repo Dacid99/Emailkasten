@@ -3,3 +3,4 @@ djangorestframework-stubs
 django-filter-stubs
 mypy
 pylint
+pytest-django
