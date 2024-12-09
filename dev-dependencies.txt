@@ -4,3 +4,5 @@ django-filter-stubs
 mypy
 pylint
 pytest-django
+pytest-mock
+pyfakefs
