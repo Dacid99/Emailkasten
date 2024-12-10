@@ -117,7 +117,7 @@ def storeAttachments(parsedEMail: dict[str,Any]) -> None:
     status = True
     dirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
 
-    for attachmentData in parsedEMail[ParsedMailKeys.ATTACHMENTS]:
+    for attachmentData in parsedEMail.get(ParsedMailKeys.ATTACHMENTS, []):
         fileName = attachmentData[ParsedMailKeys.Attachment.FILE_NAME]
         filePath = os.path.join(dirPath, fileName)
 
@@ -186,7 +186,7 @@ def storeImages(parsedEMail: dict[str,Any]) -> None:
     logger.debug("Saving images from mail ...")
     status = True
     dirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
-    for imageData in parsedEMail[ParsedMailKeys.IMAGES]:
+    for imageData in parsedEMail.get(ParsedMailKeys.IMAGES, []):
         fileName = imageData[ParsedMailKeys.Image.FILE_NAME]
         filePath = os.path.join(dirPath, fileName)
 
