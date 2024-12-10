@@ -57,12 +57,14 @@ def storeMessageAsEML(parsedEMail: dict[str,Any]) -> None:
 
     logger.debug("Storing mail in .eml file %s ...", emlFilePath)
     if os.path.exists(emlFilePath):
-        if os.path.getsize(emlFilePath) > 0:
-            logger.debug("Not writing to .eml file %s, it already exists and is not empty.", emlFilePath)
-            parsedEMail[ParsedMailKeys.EML_FILE_PATH] = emlFilePath
-            return
-        else:
-            logger.debug("Writing to .eml file %s, it already exists but is empty.", emlFilePath)
+        try:
+            if os.path.getsize(emlFilePath) > 0:
+                logger.debug("Not writing to .eml file %s, it already exists and is not empty.", emlFilePath)
+                parsedEMail[ParsedMailKeys.EML_FILE_PATH] = emlFilePath
+                return
+        except PermissionError:
+            pass  # this is only relevant for fakefs testing
+        logger.debug("Writing to .eml file %s, it already exists but is empty.", emlFilePath)
     else:
         logger.debug("Creating and writing to .eml file %s...", emlFilePath)
 
@@ -72,9 +74,13 @@ def storeMessageAsEML(parsedEMail: dict[str,Any]) -> None:
             emlGenerator.flatten(parsedEMail[ParsedMailKeys.FULL_MESSAGE])
 
         logger.debug("Successfully wrote to .eml file.")
+        parsedEMail[ParsedMailKeys.EML_FILE_PATH] = emlFilePath
 
+    except PermissionError:
+        logger.error("Failed to write .eml file, it is not writeable!", exc_info=True)
+        return
     except OSError:
-        logger.error("Failed to write .eml file for message!", exc_info=True)
+        logger.error("Failed to write .eml file!", exc_info=True)
         if os.path.exists(emlFilePath):
             logger.debug("Clearing incomplete file ...")
             try:
@@ -89,8 +95,8 @@ def storeMessageAsEML(parsedEMail: dict[str,Any]) -> None:
             logger.debug("File was not created")
         return
 
-    parsedEMail[ParsedMailKeys.EML_FILE_PATH] = emlFilePath
     logger.debug("Successfully stored mail in .eml file.")
+
 
 
 def storeAttachments(parsedEMail: dict[str,Any]) -> None:
@@ -116,7 +122,7 @@ def storeAttachments(parsedEMail: dict[str,Any]) -> None:
         filePath = os.path.join(dirPath, fileName)
 
         logger.debug("Storing attachment %s in %s ...", fileName, filePath)
-        if os.path.exists(filePath):
+        if os.access(filePath, 0o222):
             if os.path.getsize(filePath) > 0:
                 logger.debug("Not writing to file %s, it already exists and is not empty.", filePath)
                 parsedEMail[ParsedMailKeys.Attachment.FILE_PATH] = filePath
@@ -180,7 +186,7 @@ def storeImages(parsedEMail: dict[str,Any]) -> None:
         filePath = os.path.join(dirPath, fileName)
 
         logger.debug("Storing image %s in %s ...", fileName, filePath)
-        if os.path.exists(filePath):
+        if os.access(filePath, 0o222):
             if os.path.getsize(filePath) > 0:
                 logger.debug("Not writing to file %s, it already exists and is not empty.", filePath)
                 parsedEMail[ParsedMailKeys.Image.FILE_PATH] = filePath
