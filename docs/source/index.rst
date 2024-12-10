@@ -14,5 +14,6 @@ EMailkasten documentation
    development
    todo
    Emailkasten
+   test
 
 `Latest mypy report <_static/mypy_report/index.html>`_
