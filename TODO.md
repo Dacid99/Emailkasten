@@ -15,12 +15,11 @@
 - user divided storage to make file_paths unique again
 - some fallback for failed emailaddress parsing is required
 - combined filter for correspondent with mention
-- general save decorator in filemanagement
+- general save function in filemanagement for DRY
 - refine storage management error correction
 - streamable logs for daemons
 - api versioning
 - get non mandatory fields in parsedMail with get
-- add os.access check to filemanagement
 
 ### Work in progress
 - tests

@@ -122,11 +122,14 @@ def storeAttachments(parsedEMail: dict[str,Any]) -> None:
         filePath = os.path.join(dirPath, fileName)
 
         logger.debug("Storing attachment %s in %s ...", fileName, filePath)
-        if os.access(filePath, 0o222):
-            if os.path.getsize(filePath) > 0:
-                logger.debug("Not writing to file %s, it already exists and is not empty.", filePath)
-                parsedEMail[ParsedMailKeys.Attachment.FILE_PATH] = filePath
-                continue
+        if os.path.exists(filePath):
+            try:
+                if os.path.getsize(filePath) > 0:
+                    logger.debug("Not writing to file %s, it already exists and is not empty.", filePath)
+                    attachmentData[ParsedMailKeys.Attachment.FILE_PATH] = filePath
+                    continue
+            except PermissionError:
+                pass # only relevant for fakefs
             else:
                 logger.debug("Writing to file %s, it already exists but is empty.", filePath)
         else:
@@ -136,7 +139,10 @@ def storeAttachments(parsedEMail: dict[str,Any]) -> None:
                 file.write(attachmentData[ParsedMailKeys.Attachment.DATA].get_payload(decode=True))
 
             logger.debug("Successfully wrote to file.")
-
+            attachmentData[ParsedMailKeys.Attachment.FILE_PATH] = filePath
+        except PermissionError:
+            logger.error("Failed to write attachment file, it is not writeable!", exc_info=True)
+            return
         except OSError:
             logger.error("Failed to write attachment file %s to %s!", fileName,  filePath, exc_info=True)
             if os.path.exists(filePath):
@@ -152,7 +158,6 @@ def storeAttachments(parsedEMail: dict[str,Any]) -> None:
                 logger.debug("File was not created")
             continue
 
-        attachmentData[ParsedMailKeys.Attachment.FILE_PATH] = filePath
         logger.debug("Successfully stored attachment.")
 
     if status:
@@ -186,11 +191,14 @@ def storeImages(parsedEMail: dict[str,Any]) -> None:
         filePath = os.path.join(dirPath, fileName)
 
         logger.debug("Storing image %s in %s ...", fileName, filePath)
-        if os.access(filePath, 0o222):
-            if os.path.getsize(filePath) > 0:
-                logger.debug("Not writing to file %s, it already exists and is not empty.", filePath)
-                parsedEMail[ParsedMailKeys.Image.FILE_PATH] = filePath
-                continue
+        if os.path.exists(filePath):
+            try:
+                if os.path.getsize(filePath) > 0:
+                    logger.debug("Not writing to file %s, it already exists and is not empty.", filePath)
+                    imageData[ParsedMailKeys.Image.FILE_PATH] = filePath
+                    continue
+            except PermissionError:
+                pass # only relevant for fakefs
             else:
                 logger.debug("Writing to file %s, it already exists but is empty.", filePath)
         else:
@@ -201,7 +209,9 @@ def storeImages(parsedEMail: dict[str,Any]) -> None:
                 file.write(imageData[ParsedMailKeys.Image.DATA].get_payload(decode=True))
 
             logger.debug("Successfully wrote to file.")
-
+        except PermissionError:
+            logger.error("Failed to write image file, it is not writeable!", exc_info=True)
+            return
         except OSError:
             logger.error("Failed to write image file %s to %s!", fileName,  filePath, exc_info=True)
             status = False
