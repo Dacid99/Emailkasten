@@ -58,11 +58,27 @@ def mock_parsedMailDict() -> dict:
     message.add_header('test', "Test message")
     message.set_payload('This is a test mail message.')
 
-    mock_dict = {
-        ParsedMailKeys.Header.MESSAGE_ID: mock_messageIDValue,
-        ParsedMailKeys.FULL_MESSAGE: message
+    imagePart = email.message.Message()
+    imagePart.set_payload('This is supposed to represent some image.')
+    mock_imageDict = {
+        ParsedMailKeys.Image.FILE_NAME: 'test_imagefilename.png',
+        ParsedMailKeys.Image.DATA: imagePart
     }
-    return mock_dict
+
+    attachmentPart = email.message.Message()
+    attachmentPart.set_payload('This is supposed to represent some attachment.')
+    mock_attachmentDict = {
+        ParsedMailKeys.Attachment.FILE_NAME: 'test_attachmentfilename.pdf',
+        ParsedMailKeys.Attachment.DATA: attachmentPart
+    }
+
+    mock_parsedMailDict = {
+        ParsedMailKeys.Header.MESSAGE_ID: mock_messageIDValue,
+        ParsedMailKeys.FULL_MESSAGE: message,
+        ParsedMailKeys.ATTACHMENTS: [mock_attachmentDict],
+        ParsedMailKeys.IMAGES: [mock_imageDict],
+    }
+    return mock_parsedMailDict
 
 @pytest.fixture
 def mock_filesystem() -> Generator[FakeFilesystem, None, None]:
@@ -176,6 +192,155 @@ def test_storeMessageAsEML(
         assert mock_filesystem.get_object(fakeFile).size == expectedFileSize
 
     assert mock_parsedMailDict.get(ParsedMailKeys.EML_FILE_PATH) == expectedEMLFilePath
+    assert spy_open.call_count == expectedCallsToOpen
+    spy_open.assert_has_calls( [call(fakeFile, "wb")] * expectedCallsToOpen )
+    assert mock_logger.error.call_count == expectedErrors
+
+    mock_logger.debug.assert_called()
+
+
+
+@pytest.mark.parametrize(
+    "fakeFile, expectedFileExists, expectedFileSize, expectedFilePath, expectedCallsToOpen, expectedErrors",
+    [
+        ("/dir/new_file", True, 41, "/dir/new_file", 1, 0),
+        ("/dir/full_file", True, 13, "/dir/full_file", 0, 0),
+        ("/dir/empty_file", True, 41, "/dir/empty_file", 1, 0),
+        ("/dir/broken_file", True, 0, None, 2, 2),
+        ("/dir/no_write_file", True, 0, None, 1, 1),
+        ("/dir/no_read_file", True, 41, "/dir/no_read_file", 1, 0),
+        ("/dir/no_readwrite_file", True, 0, None, 1, 1),
+        ("/dir/no_access_file", True, 0, None, 1, 1),
+        ("/no_access_dir/new_file", False, 0, None, 1, 1),
+        ("/no_access_dir/file", True, 0, None, 1, 1),
+    ],
+)
+@patch(
+    "Emailkasten.fileManagment.StorageModel.getSubdirectory",
+    return_value=patch_getSubDirectory_returnValue,
+)
+def test_storeImages(
+    mock_storageModel: MagicMock,
+    mocker: MockerFixture,
+    mock_logger: MagicMock,
+    mock_filesystem: FakeFilesystem,
+    mock_parsedMailDict: dict,
+    fakeFile: str,
+    expectedFileExists: bool,
+    expectedFileSize: int,
+    expectedFilePath: str,
+    expectedCallsToOpen: int,
+    expectedErrors: int,
+) -> None:
+    """Tests :func:`Emailkasten.fileManagment.storeImages` with the help of a fakefs.
+
+    Args:
+        mock_storageModel: The patched call to :func:`Emailkasten.fileManagment.StorageModel.getSubdirectory`.
+            Returns the constant value set in :attr:`getSubDirectoryReturnValue`.
+        mocker: The general mocker instance.
+        mock_logger: The mocked logger fixture.
+        mock_filesystem : The fakefs fixture.
+        mock_parsedMailDict: The parsedMail dictionary fixture.
+        fakeFile: The fakeFilePath parameter.
+        expectedFileExists: The expectedFileExists parameter.
+        expectedFileSize: The expectedFileSize parameter.
+        expectedFilePath: The expectedFilePath parameter.
+        expectedCallsToOpen: The expectedCallsToOpen parameter.
+        expectedErrors: The expectedErrors parameter.
+
+    Note:
+        Fakefs is overly restrictive with os.path.getsize for no-read files!
+        Cannot test the behaviour for non-empty no-read files.
+    """
+    mock_ospathjoin = mocker.patch('os.path.join', return_value = fakeFile)
+    spy_open = mocker.spy(Emailkasten.fileManagment, 'open')
+
+    Emailkasten.fileManagment.storeImages(mock_parsedMailDict)
+
+    mock_storageModel.assert_called_once()
+    mock_ospathjoin.assert_called_once_with(patch_getSubDirectory_returnValue, 'test_imagefilename.png')
+
+    mock_filesystem.chmod(os.path.dirname(fakeFile), 0o777)
+    assert mock_filesystem.exists(fakeFile) is expectedFileExists
+    if mock_filesystem.exists(fakeFile):
+        mock_filesystem.chmod(fakeFile, 0o666)
+        assert mock_filesystem.get_object(fakeFile).size == expectedFileSize
+
+    assert mock_parsedMailDict[ParsedMailKeys.IMAGES][0].get(ParsedMailKeys.Image.FILE_PATH) == expectedFilePath
+    assert spy_open.call_count == expectedCallsToOpen
+    spy_open.assert_has_calls( [call(fakeFile, "wb")] * expectedCallsToOpen )
+    assert mock_logger.error.call_count == expectedErrors
+
+    mock_logger.debug.assert_called()
+
+
+@pytest.mark.parametrize(
+    "fakeFile, expectedFileExists, expectedFileSize, expectedFilePath, expectedCallsToOpen, expectedErrors",
+    [
+        ("/dir/new_file", True, 46, "/dir/new_file", 1, 0),
+        ("/dir/full_file", True, 13, "/dir/full_file", 0, 0),
+        ("/dir/empty_file", True, 46, "/dir/empty_file", 1, 0),
+        ("/dir/broken_file", True, 0, None, 2, 2),
+        ("/dir/no_write_file", True, 0, None, 1, 1),
+        ("/dir/no_read_file", True, 46, "/dir/no_read_file", 1, 0),
+        ("/dir/no_readwrite_file", True, 0, None, 1, 1),
+        ("/dir/no_access_file", True, 0, None, 1, 1),
+        ("/no_access_dir/new_file", False, 0, None, 1, 1),
+        ("/no_access_dir/file", True, 0, None, 1, 1),
+    ],
+)
+@patch(
+    "Emailkasten.fileManagment.StorageModel.getSubdirectory",
+    return_value=patch_getSubDirectory_returnValue,
+)
+def test_storeAttachments(
+    mock_storageModel: MagicMock,
+    mocker: MockerFixture,
+    mock_logger: MagicMock,
+    mock_filesystem: FakeFilesystem,
+    mock_parsedMailDict: dict,
+    fakeFile: str,
+    expectedFileExists: bool,
+    expectedFileSize: int,
+    expectedFilePath: str,
+    expectedCallsToOpen: int,
+    expectedErrors: int,
+) -> None:
+    """Tests :func:`Emailkasten.fileManagment.storeAttachments` with the help of a fakefs.
+
+    Args:
+        mock_storageModel: The patched call to :func:`Emailkasten.fileManagment.StorageModel.getSubdirectory`.
+            Returns the constant value set in :attr:`getSubDirectoryReturnValue`.
+        mocker: The general mocker instance.
+        mock_logger: The mocked logger fixture.
+        mock_filesystem : The fakefs fixture.
+        mock_parsedMailDict: The parsedMail dictionary fixture.
+        fakeFile: The fakeFilePath parameter.
+        expectedFileExists: The expectedFileExists parameter.
+        expectedFileSize: The expectedFileSize parameter.
+        expectedFilePath: The expectedFilePath parameter.
+        expectedCallsToOpen: The expectedCallsToOpen parameter.
+        expectedErrors: The expectedErrors parameter.
+
+    Note:
+        Fakefs is overly restrictive with os.path.getsize for no-read files!
+        Cannot test the behaviour for non-empty no-read files.
+    """
+    mock_ospathjoin = mocker.patch('os.path.join', return_value = fakeFile)
+    spy_open = mocker.spy(Emailkasten.fileManagment, 'open')
+
+    Emailkasten.fileManagment.storeAttachments(mock_parsedMailDict)
+
+    mock_storageModel.assert_called_once()
+    mock_ospathjoin.assert_called_once_with(patch_getSubDirectory_returnValue, 'test_attachmentfilename.pdf')
+
+    mock_filesystem.chmod(os.path.dirname(fakeFile), 0o777)
+    assert mock_filesystem.exists(fakeFile) is expectedFileExists
+    if mock_filesystem.exists(fakeFile):
+        mock_filesystem.chmod(fakeFile, 0o666)
+        assert mock_filesystem.get_object(fakeFile).size == expectedFileSize
+
+    assert mock_parsedMailDict[ParsedMailKeys.ATTACHMENTS][0].get(ParsedMailKeys.Attachment.FILE_PATH) == expectedFilePath
     assert spy_open.call_count == expectedCallsToOpen
     spy_open.assert_has_calls( [call(fakeFile, "wb")] * expectedCallsToOpen )
     assert mock_logger.error.call_count == expectedErrors
