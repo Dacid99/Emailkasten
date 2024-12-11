@@ -544,3 +544,27 @@ def test_storeAttachments_badDict(
         mock_bad_parsedMailDict[ParsedMailKeys.ATTACHMENTS]
 
     assert spy_open.call_count == 0
+
+
+@pytest.mark.parametrize(
+    'PRERENDER_IMAGETYPE',
+    [
+        ('png'),
+        ('jpg'),
+        ('tiff')
+    ]
+)
+@patch(
+    "Emailkasten.fileManagment.StorageModel.getSubdirectory",
+    return_value=patch_getSubDirectory_returnValue,
+)
+def test_getPrerenderImageStoragePath_goodDict(mock_storageModel, PRERENDER_IMAGETYPE, mocker, mock_good_parsedMailDict):
+    spy_ospathjoin = mocker.spy(os.path, "join")
+    mock_StorageConfiguration = mocker.patch("Emailkasten.fileManagment.StorageConfiguration")
+    mock_StorageConfiguration.PRERENDER_IMAGETYPE = PRERENDER_IMAGETYPE
+    prerenderFilePath = Emailkasten.fileManagment.getPrerenderImageStoragePath(mock_good_parsedMailDict)
+
+    assert prerenderFilePath == f"{patch_getSubDirectory_returnValue}/{mock_messageIDValue}.{PRERENDER_IMAGETYPE}"
+    mock_storageModel.assert_called_once()
+    spy_ospathjoin.assert_called_with(patch_getSubDirectory_returnValue, f"{mock_messageIDValue}.{PRERENDER_IMAGETYPE}")
+    assert mock_good_parsedMailDict[ParsedMailKeys.PRERENDER_FILE_PATH] == prerenderFilePath
