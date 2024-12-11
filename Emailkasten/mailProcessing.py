@@ -51,6 +51,7 @@ from .Fetchers.POP3Fetcher import POP3Fetcher
 from .fileManagment import storeAttachments, storeImages, storeMessageAsEML
 from .mailParsing import parseMail, parseMailbox
 from .mailRendering import prerender
+from .Models.EMailModel import EMailModel
 
 if TYPE_CHECKING:
     from typing import Any
@@ -247,11 +248,63 @@ def _fetchMails(mailbox: MailboxModel, account: AccountModel, criterion: str) ->
     return mailDataList
 
 
+def _saveToEML(parsedMail: dict) -> None:
+    """Save the parsed mail to eml file. Checks the database first.
+
+    Note:
+        Uses :func:`Emailkasten.fileManagment.storeMessageAsEML`
+        and :func:`Emailkasten.mailRendering.prerender`.
+
+    Args:
+        parsedMail: The parsed mail to save as .eml.
+    """
+    try:
+        email = EMailModel.objects.get(message_id = parsedMail[ParsedMailKeys.Header.MESSAGE_ID])
+        if not email.eml_filepath:
+            storeMessageAsEML(parsedMail)
+        if not email.prerender_filepath:
+            prerender(parsedMail)
+    except EMailModel.DoesNotExist:
+        storeMessageAsEML(parsedMail)
+        prerender(parsedMail)
+
+
+def _saveAttachments(parsedMail: dict) -> None:
+    """Save the parsed mail to eml file. Checks the database first.
+
+    Todo:
+        Should also check the db first.
+
+    Note:
+        Relies on :func:`Emailkasten.fileManagment.storeAttachments`.
+
+    Args:
+        parsedMail: The parsed mail to save attachments.
+    """
+    storeAttachments(parsedMail)
+
+
+def _saveImages(parsedMail: dict) -> None:
+    """Save the parsed mail to eml file. Checks the database first.
+
+    Todo:
+        Should also check the db first.
+
+    Note:
+        Relies on :func:`Emailkasten.fileManagment.storeImages`.
+
+    Args:
+        parsedMail: The parsed mail to save images.
+    """
+    storeImages(parsedMail)
+
+
 def _parseAndStoreMails(mailDataList: list, mailbox: MailboxModel, account: AccountModel) -> None:
     """Parses and stores raw maildata in the database and storage.
 
     Note:
-        Relies on the methods from :mod:`Emailkasten.mailParsing` and :mod:`Emailkasten.emailDBFeeding`.
+        Relies on the methods from :mod:`Emailkasten.mailParsing`
+        and :mod:`Emailkasten.emailDBFeeding`.
 
     Args:
         mailDataList: The maildata to parse and store.
@@ -271,18 +324,17 @@ def _parseAndStoreMails(mailDataList: list, mailbox: MailboxModel, account: Acco
                     continue
 
             if mailbox.save_toEML:
-                storeMessageAsEML(parsedMail)
-                prerender(parsedMail)
+                _saveToEML(parsedMail)
             else:
                 logger.debug("Not saving to eml for mailbox %s", mailbox.name)
 
             if mailbox.save_attachments:
-                storeAttachments(parsedMail)
+                _saveAttachments(parsedMail)
             else:
                 logger.debug("Not saving attachments for mailbox %s", mailbox.name)
 
             if mailbox.save_images:
-                storeImages(parsedMail)
+                _saveImages(parsedMail)
             else:
                 logger.debug("Not saving images for mailbox %s", mailbox.name)
 

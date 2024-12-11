@@ -20,7 +20,7 @@
 - streamable logs for daemons
 - api versioning
 - assign elements to parsedMailDict in individual parser functions, leave all Null fields None, but always set all fields
-- check filepath before saving files
+- check database before saving attachments and images
 
 ### Work in progress
 - tests
