@@ -26,13 +26,13 @@ from Emailkasten.Models.DaemonModel import DaemonModel
 from Emailkasten.Models.MailboxModel import MailboxModel
 
 
-@pytest.fixture(autouse=True)
-def mock_getLogger(mocker):
+@pytest.fixture(name='mock_getLogger', autouse=True)
+def fixture_mock_getLogger(mocker):
     mock_logger = mocker.patch('Emailkasten.EMailArchiverDaemon.logging.Logger')
     return mocker.patch('Emailkasten.EMailArchiverDaemon.logging.getLogger', return_value = mock_logger)
 
-@pytest.fixture
-def mock_runningDaemons():
+@pytest.fixture(name='mock_runningDaemons')
+def fixture_mock_runningDaemons():
     return {}
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -68,9 +68,10 @@ class DaemonModelFactory(factory.django.DjangoModelFactory):
 
 
 @pytest.mark.django_db
-@pytest.fixture()
-def mock_daemonModel():
+@pytest.fixture(name='mock_daemonModel')
+def fixture_mock_daemonModel():
     return DaemonModelFactory()
+
 
 @pytest.mark.django_db
 def test___init__(mock_daemonModel):
