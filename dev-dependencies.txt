@@ -7,3 +7,4 @@ pytest-django
 pytest-mock
 pytest-mypy
 pyfakefs
+factory_boy
