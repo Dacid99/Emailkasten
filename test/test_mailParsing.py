@@ -16,19 +16,21 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import pytest
-from unittest.mock import patch
-from email.message import Message
-import Emailkasten.mailParsing
-import Emailkasten.constants
 import datetime
+from email.message import Message
 
-@pytest.fixture
-def mock_logger(mocker):
+import pytest
+
+import Emailkasten.constants
+import Emailkasten.mailParsing
+
+
+@pytest.fixture(name="mock_logger", autouse=True)
+def fixture_mock_logger(mocker):
     return mocker.patch('Emailkasten.mailParsing.logger')
 
-@pytest.fixture(scope='module')
-def mock_good_mailMessage():
+@pytest.fixture(name="mock_good_mailMessage", scope='module')
+def fixture_mock_good_mailMessage():
     testMessage = Message()
     testMessage.add_header("Message-ID", 'abcdefgäöüß§')
     testMessage.add_header("Subject", 'This a test SUBJEcT line äöüß§')
@@ -39,19 +41,19 @@ def mock_good_mailMessage():
     testMessage.add_header("multi", '123456')
     return testMessage
 
-@pytest.fixture(scope='module')
-def mock_special_mailMessage():
+@pytest.fixture(name="mock_special_mailMessage", scope='module')
+def fixture_mock_special_mailMessage():
     testMessage = Message()
     testMessage.add_header("Subject", 'This a test SUBJEcT line äöüß§ \t ')
     return testMessage
 
-@pytest.fixture(scope='module')
-def mock_bad_mailMessage():
+@pytest.fixture(name="mock_bad_mailMessage", scope='module')
+def fixture_mock_bad_mailMessage():
     testMessage = Message()
     return testMessage
 
-@pytest.fixture(scope='module')
-def mock_no_mailMessage():
+@pytest.fixture(name="mock_no_mailMessage", scope='module')
+def fixture_mock_no_mailMessage():
     testMessage = None
     return testMessage
 
@@ -80,6 +82,7 @@ def test__decodeHeader(mock_logger, testHeader, expectedResult):
         ])
 def test__separateRFC2822MailAddressFormat(mock_logger, testMailers, expectedResult, warningCalled):
     separatedMailers = Emailkasten.mailParsing._separateRFC2822MailAddressFormat(testMailers)
+
     assert separatedMailers == expectedResult
 
 
@@ -103,7 +106,7 @@ def test__parseMessageID_emptyMessage(mock_logger, mock_bad_mailMessage, mock_em
 
 def test__parseMessageID_noMessage(mock_no_mailMessage, mock_empty_parsedMailDict):
     with pytest.raises(AttributeError):
-        Emailkasten.mailParsing._parseMessageID(mock_no_mailMessage, mock_empty_parsedMailDict)
+        messageID = Emailkasten.mailParsing._parseMessageID(mock_no_mailMessage)
 
 
 
@@ -134,9 +137,8 @@ def test__parseDate_noMessage(mock_no_mailMessage, mock_empty_parsedMailDict):
     "stripTexts, expectedResult",
     [(True, "This a test SUBJEcT line äöüß§"), (False, "This a test SUBJEcT line äöüß§ \t ")],
 )
-@patch("Emailkasten.mailParsing.ParsingConfiguration")
-@patch("Emailkasten.mailParsing.logger")
-def test__parseSubject_success(mock_logger, mock_parsingConfiguration, stripTexts, expectedResult, mock_special_mailMessage, mock_empty_parsedMailDict):
+def test__parseSubject_success(mock_logger, stripTexts, expectedResult, mocker, mock_special_mailMessage):
+    mock_parsingConfiguration = mocker.patch('Emailkasten.mailParsing.ParsingConfiguration')
     mock_parsingConfiguration.STRIP_TEXTS = stripTexts
     Emailkasten.mailParsing._parseSubject(mock_special_mailMessage, mock_empty_parsedMailDict)
     assert Emailkasten.constants.ParsedMailKeys.Header.SUBJECT in mock_empty_parsedMailDict
@@ -157,7 +159,7 @@ def test__parseSubject_emptyMessage(mock_logger, mock_bad_mailMessage, mock_empt
 
 def test__parseSubject_noMessage(mock_no_mailMessage, mock_empty_parsedMailDict):
     with pytest.raises(AttributeError):
-        Emailkasten.mailParsing._parseSubject(mock_no_mailMessage, mock_empty_parsedMailDict)
+        subject = Emailkasten.mailParsing._parseSubject(mock_no_mailMessage)
 
 
 
@@ -181,7 +183,7 @@ def test__parseHeader_emptyMessage(mock_logger, mock_bad_mailMessage, mock_empty
 
 def test__parseHeader_noMessage(mock_no_mailMessage, mock_empty_parsedMailDict):
     with pytest.raises(AttributeError):
-        Emailkasten.mailParsing._parseHeader(mock_no_mailMessage, "test", mock_empty_parsedMailDict)
+        header = Emailkasten.mailParsing._parseHeader(mock_no_mailMessage, "test")
 
 
 
