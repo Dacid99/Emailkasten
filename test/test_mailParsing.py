@@ -106,7 +106,7 @@ def test__parseMessageID_emptyMessage(mock_logger, mock_bad_mailMessage, mock_em
 
 def test__parseMessageID_noMessage(mock_no_mailMessage, mock_empty_parsedMailDict):
     with pytest.raises(AttributeError):
-        messageID = Emailkasten.mailParsing._parseMessageID(mock_no_mailMessage)
+        messageID = Emailkasten.mailParsing._parseMessageID(mock_no_mailMessage, mock_empty_parsedMailDict)
 
 
 
@@ -159,7 +159,7 @@ def test__parseSubject_emptyMessage(mock_logger, mock_bad_mailMessage, mock_empt
 
 def test__parseSubject_noMessage(mock_no_mailMessage, mock_empty_parsedMailDict):
     with pytest.raises(AttributeError):
-        subject = Emailkasten.mailParsing._parseSubject(mock_no_mailMessage)
+        subject = Emailkasten.mailParsing._parseSubject(mock_no_mailMessage, mock_empty_parsedMailDict)
 
 
 
@@ -183,7 +183,7 @@ def test__parseHeader_emptyMessage(mock_logger, mock_bad_mailMessage, mock_empty
 
 def test__parseHeader_noMessage(mock_no_mailMessage, mock_empty_parsedMailDict):
     with pytest.raises(AttributeError):
-        header = Emailkasten.mailParsing._parseHeader(mock_no_mailMessage, "test")
+        header = Emailkasten.mailParsing._parseHeader(mock_no_mailMessage, "test", mock_empty_parsedMailDict)
 
 
 
