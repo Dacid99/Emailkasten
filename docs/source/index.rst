@@ -12,6 +12,7 @@ EMailkasten documentation
    :caption: Contents:
 
    development
+   db_graph
    todo
    Emailkasten
    test

@@ -7,9 +7,9 @@ source venv/bin/activate
 ```
 Then install the dependencies:
 ```bash
-pip install -r dependencies.txt
-pip install -r dev-dependencies.txt
-pip install -r docs/dependencies.txt
+pip install -rU dependencies.txt
+pip install -rU dev-dependencies.txt
+pip install -rU docs/dependencies.txt
 ```
 
 # Workspace Recommendations
