@@ -24,14 +24,14 @@ class CorrespondentModel(models.Model):
     """Database model for the correspondent data found in a mail."""
 
     email_name = models.CharField(max_length=255, blank=True)
-    """The mailer name. Can be blank is none has been found."""
+    """The mailer name. Can be blank if none has been found."""
 
     email_address = models.CharField(max_length=255, unique=True)
     """The mail address of the correspondent. Unique."""
 
     is_favorite = models.BooleanField(default=False)
     """Flags favorite correspondents. False by default."""
-    
+
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""
 
