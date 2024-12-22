@@ -1,4 +1,5 @@
 django
+django-extensions
 djangorestframework
 django-health-check
 django-filter
