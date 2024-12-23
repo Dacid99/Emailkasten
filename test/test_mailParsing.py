@@ -78,7 +78,7 @@ def fixture_mock_empty_parsedMailDict():
     """Mocks an empty parsedMail :class:`dict` that the mail is parsed into."""
     return {}
 
-
+# pylint: disable=protected-access ; protected members need to be tested as well
 @pytest.mark.parametrize(
     'testHeader, expectedResult',
     [
@@ -245,3 +245,5 @@ def test_parseMail_success(mock_logger, mock_good_mailMessage, mocker):
     mock_logger.debug.assert_called()
     mock_logger.warning.assert_not_called()
     mock_logger.error.assert_not_called()
+
+# pylint: enable=protected-access

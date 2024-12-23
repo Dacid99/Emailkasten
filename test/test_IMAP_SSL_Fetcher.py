@@ -10,8 +10,8 @@ from Emailkasten.Models.AccountModel import \
     AccountModel
 
 
-@pytest.fixture
-def mock_account():
+@pytest.fixture(name='mock_account')
+def fixture_mock_account():
     account = MagicMock(spec=AccountModel)
     account.mail_host = "imap.example.com"
     account.mail_host_port = 993

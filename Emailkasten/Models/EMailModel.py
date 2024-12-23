@@ -16,7 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING
 
 from django.db import models
 
@@ -24,6 +27,10 @@ from .. import constants
 from .AccountModel import AccountModel
 from .MailingListModel import MailingListModel
 
+if TYPE_CHECKING:
+    from django.db.models.manager import RelatedManager
+
+    from .CorrespondentModel import CorrespondentModel
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +83,7 @@ class EMailModel(models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mails. False by default."""
 
-    correspondents = models.ManyToManyField('CorrespondentModel', through='EMailCorrespondentsModel', related_name='emails')
+    correspondents: RelatedManager[CorrespondentModel] = models.ManyToManyField('CorrespondentModel', through='EMailCorrespondentsModel', related_name='emails')
     """The correspondents that are mentioned in this mail. Bridges through :class:`Emailkasten.Models.EMailCorrespondentsModel`."""
 
     mailinglist = models.ForeignKey(MailingListModel, null=True, related_name='emails', on_delete=models.CASCADE)

@@ -416,11 +416,11 @@ def _parseCorrespondents(mailMessage: email.message.Message, mentionHeaderKey: s
     correspondents = mailMessage.get_all(mentionHeaderKey)
     if not correspondents:
         logger.debug("No %s correspondents found in mail!", mentionHeaderKey)
-        return []
+        parsedMail[mentionHeaderKey] = []
     else:
+        parsedMail[mentionHeaderKey] = _separateRFC2822MailAddressFormat(correspondents)
         logger.debug("Successfully parsed %s correspondents.", mentionHeaderKey)
 
-    parsedMail[mentionHeaderKey] = _separateRFC2822MailAddressFormat(correspondents)
 
 
 def parseMail(mailToParse: bytes) -> dict[str, Any]:

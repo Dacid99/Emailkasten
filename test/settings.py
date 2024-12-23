@@ -1,4 +1,4 @@
-from project.settings import *
+from project.settings import *          # pylint: disable=wildcard-import, unused-wildcard-import ; all settings need to be imported
 
 DATABASES = {
     "default": {
