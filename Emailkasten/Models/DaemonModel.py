@@ -22,12 +22,13 @@ import uuid
 
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
 from .. import constants
 from ..constants import MailFetchingCriteria
 from .MailboxModel import MailboxModel
+from ..EMailArchiverDaemon import EMailArchiverDaemon
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
@@ -40,7 +41,7 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
     """The uuid of this daemon. Used to create a unique logfile."""
 
     mailbox = models.ForeignKey(MailboxModel, related_name='daemons', on_delete=models.CASCADE)
-    """The mailbox this daemon fetches. Unique. Deletion of that `mailbox` deletes this daemon."""
+    """The mailbox this daemon fetches. Unique. Deletion of that :attr:`mailbox` deletes this daemon."""
 
     FETCHINGCHOICES = dict(MailFetchingCriteria())
     """The available mail fetching criteria. Refers to :class:`Emailkasten.constants.MailFetchingCriteria`."""
@@ -110,3 +111,10 @@ def post_save_is_healthy(sender: DaemonModel, instance: DaemonModel, created: bo
             instance.mailbox.is_healthy=True
             instance.mailbox.save(update_fields=['is_healthy'])
             logger.debug("Successfully flagged mailbox as healthy.")
+
+
+@receiver(pre_delete, sender=DaemonModel)
+def pre_delete_stop_daemon(sender: DaemonModel, instance: DaemonModel, **kwargs):
+    logger.debug("Stopping daemon of deleted daemon %s ..", str(instance))
+    EMailArchiverDaemon.stopDaemon(instance)
+    logger.debug("Successfully stopped daemon of deleted daemon %s.", str(instance))
