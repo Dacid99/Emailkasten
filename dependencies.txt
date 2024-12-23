@@ -3,6 +3,7 @@ django-extensions
 djangorestframework
 django-health-check
 django-filter
+django-dirtyfields
 drf-spectacular
 mysqlclient
 exchangelib

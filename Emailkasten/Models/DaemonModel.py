@@ -20,6 +20,7 @@ import logging
 import os
 import uuid
 
+from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -32,7 +33,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class DaemonModel(models.Model):
+class DaemonModel(DirtyFieldsMixin, models.Model):
     """Database model for the daemon fetching a mailbox."""
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -91,22 +92,21 @@ class DaemonModel(models.Model):
 
 
 @receiver(post_save, sender=DaemonModel)
-def post_save_is_healthy(sender: DaemonModel, instance: DaemonModel, **kwargs) -> None:
+def post_save_is_healthy(sender: DaemonModel, instance: DaemonModel, created: bool, **kwargs) -> None:
     """Receiver function flagging the mailbox of a daemon as healthy once that daemon becomes healthy again.
 
     Args:
         sender: The class type that sent the post_save signal.
         instance: The instance that has been saved.
+        created: Whether the instance was newly created.
         **kwargs: Other keyword arguments.
     """
-    if instance.is_healthy:
-        try:
-            oldInstance = DaemonModel.objects.get(pk=instance.pk)
-            if not oldInstance.is_healthy:
-                logger.debug("%s has become healthy, flagging its mailbox as healthy ...", str(instance))
-                instance.mailbox.is_healthy=True
-                instance.mailbox.save(update_fields=['is_healthy'])
-                logger.debug("Successfully flagged mailbox as healthy.")
+    if created:
+        return
 
-        except DaemonModel.DoesNotExist:
-            logger.debug("Previous instance of %s not found, no health flag comparison possible.", str(instance))
+    if instance.is_healthy:
+        if 'is_healthy' in instance.get_dirty_fields():
+            logger.debug("%s has become healthy, flagging its mailbox as healthy ...", str(instance))
+            instance.mailbox.is_healthy=True
+            instance.mailbox.save(update_fields=['is_healthy'])
+            logger.debug("Successfully flagged mailbox as healthy.")
