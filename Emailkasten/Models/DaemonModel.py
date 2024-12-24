@@ -24,7 +24,6 @@ from dirtyfields import DirtyFieldsMixin
 from django.db import models
 
 from .. import constants
-from ..constants import MailFetchingCriteria
 from .MailboxModel import MailboxModel
 
 logger = logging.getLogger(__name__)
@@ -40,10 +39,10 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
     mailbox = models.ForeignKey(MailboxModel, related_name='daemons', on_delete=models.CASCADE)
     """The mailbox this daemon fetches. Unique. Deletion of that :attr:`mailbox` deletes this daemon."""
 
-    FETCHINGCHOICES = dict(MailFetchingCriteria())
+    FETCHINGCHOICES = list(constants.MailFetchingCriteria())
     """The available mail fetching criteria. Refers to :class:`Emailkasten.constants.MailFetchingCriteria`."""
 
-    fetching_criterion = models.CharField(choices=FETCHINGCHOICES, default=MailFetchingCriteria.ALL, max_length=10)
+    fetching_criterion = models.CharField(choices=FETCHINGCHOICES, default=constants.MailFetchingCriteria.ALL, max_length=10)
     """The fetching criterion for this mailbox. One of :attr:`FETCHING_CHOICES`. :attr:`Emailkasten.constants.MailFetchingCriteria.ALL` by default."""
 
     cycle_interval = models.IntegerField(default=constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT)

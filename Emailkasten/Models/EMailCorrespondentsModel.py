@@ -32,12 +32,12 @@ class EMailCorrespondentsModel(models.Model):
     correspondent = models.ForeignKey(CorrespondentModel, related_name="correspondentemails", on_delete=models.CASCADE)
     """The correspondent that was mentioned in :attr:`email`. Unique together with :attr:`email` and :attr:`mention`."""
 
-    MENTIONTYPES = dict(ParsedMailKeys.Correspondent())
+    MENTIONTYPES = list(ParsedMailKeys.Correspondent())
     """The available types of correspondent memtions. Refers to :class:`Emailkasten.constants.ParsedMailKeys.Correspondent`."""
 
     mention = models.CharField(choices=MENTIONTYPES, max_length=30)
     """The way that :attr:`correspondent` was mentioned in :attr:`email`. One of :attr:`MENTIONTYPES`.  Unique together with :attr:`email` and :attr:`correspondent`."""
-    
+
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""
 
@@ -47,7 +47,7 @@ class EMailCorrespondentsModel(models.Model):
 
     def __str__(self):
         return f"EMail-Correspondent connection from email {self.email} to correspondent {self.correspondent} with mention {self.mention}"
-    
+
     class Meta:
         db_table = "email_correspondents"
         """The name of the database table for the images."""

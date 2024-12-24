@@ -63,9 +63,12 @@ class MailFetchingCriteria:
     """Filter using "SENTSINCE" for mails sent the previous 52 weeks (counting back from now) or later."""
 
     def __iter__(self):
-        """Method to allow easier referencing of the members by listing."""
+        """Method to allow easier referencing of the members by listing.
+        Note:
+            value must come first in the listed tuples to match the format for field choices.
+        """
         return iter(
-            (attr, value)
+            (value, attr)
             for attr, value in self.__class__.__dict__.items()
             if not attr.startswith("__")
         )
@@ -91,6 +94,20 @@ class MailFetchingProtocols:
 
     EXCHANGE: Final[str] = "EXCHANGE"
     """Microsofts Exchange protocol."""
+
+    def __iter__(self):
+        """Method to allow easier referencing of the members by listing.
+        Note:
+            value must come first in the listed tuples to match the format for field choices.
+        """
+        return iter(
+            (value, attr)
+            for attr, value in self.__class__.__dict__.items()
+            if not attr.startswith("__")
+        )
+
+    def __getitem__(self, key):
+        return getattr(self, key)
 
 
 class TestStatusCodes:
@@ -381,9 +398,12 @@ class ParsedMailKeys:
         X_SPAM_FLAG: Final[str] = "X-Spam-Flag"
 
         def __iter__(self):
-            """Method to allow easier referencing of the members by listing."""
+            """Method to allow easier referencing of the members by listing.
+            Note:
+                value must come first in the listed tuples to match the format for field choices.
+            """
             return iter(
-                (attr, value)
+                (value, attr)
                 for attr, value in self.__class__.__dict__.items()
                 if not attr.startswith("__")
             )
@@ -414,8 +434,12 @@ class ParsedMailKeys:
         DISPOSITION_NOTIFICATION_TO: Final[str] = "Disposition-Notification-To"
 
         def __iter__(self):
+            """Method to allow easier referencing of the members by listing.
+            Note:
+                value must come first in the listed tuples to match the format for field choices.
+            """
             return iter(
-                (attr, value)
+                (value, attr)
                 for attr, value in self.__class__.__dict__.items()
                 if not attr.startswith("__")
             )

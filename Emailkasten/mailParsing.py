@@ -451,7 +451,7 @@ def parseMail(mailToParse: bytes) -> dict[str, Any]:
     _parseDate(mailMessage, parsedEMail)
     _parseBodyText(mailMessage, parsedEMail)
 
-    for _, correspondentHeader in ParsedMailKeys.Correspondent():
+    for correspondentHeader, _ in ParsedMailKeys.Correspondent():
         _parseCorrespondents(mailMessage, correspondentHeader, parsedEMail)
 
     _parseAttachments(mailMessage, parsedEMail)
@@ -461,7 +461,7 @@ def parseMail(mailToParse: bytes) -> dict[str, Any]:
 
     _parseMailinglist(mailMessage, parsedEMail)
 
-    for _, headerName in ParsedMailKeys.Header():
+    for headerName, _ in ParsedMailKeys.Header():
         _parseMultipleHeader(mailMessage, headerName, parsedEMail)
 
     logger.debug("Successfully parsed mail")

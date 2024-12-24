@@ -42,13 +42,7 @@ class AccountModel(DirtyFieldsMixin, models.Model):
     mail_host_port = models.IntegerField(null=True)
     """The port of the mail server. Can be null if the default port of the protocol is used."""
 
-    PROTOCOL_CHOICES = [
-        (constants.MailFetchingProtocols.IMAP, "IMAP"),
-        (constants.MailFetchingProtocols.IMAP_SSL, "IMAP SSL"),
-        (constants.MailFetchingProtocols.POP3, "POP3"),
-        (constants.MailFetchingProtocols.POP3_SSL,  "POP3 SSL"),
-        (constants.MailFetchingProtocols.EXCHANGE, "Exchange")
-    ]
+    PROTOCOL_CHOICES = list(constants.MailFetchingProtocols())
     """The available mail protocols."""
 
     protocol = models.CharField(choices=PROTOCOL_CHOICES, max_length=10)

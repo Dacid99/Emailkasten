@@ -56,7 +56,9 @@ def test_AccountModel_creation():
     assert account.mail_host_port is None
     assert account.protocol is not None
     assert isinstance(account.protocol, str)
-    assert account.protocol in AccountModel.PROTOCOL_CHOICES
+    assert any(
+        account.protocol == protocol for protocol, _ in AccountModel.PROTOCOL_CHOICES
+    )
     assert account.timeout is None
     assert account.is_healthy is True
     assert account.is_favorite is False
