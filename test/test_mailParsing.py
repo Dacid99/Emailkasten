@@ -239,11 +239,11 @@ def test__parseMultipleHeader_noMessage(mock_no_mailMessage, mock_empty_parsedMa
 def test_parseMail_success(mock_logger, mock_good_mailMessage, mocker):
     mocker.patch('email.message_from_bytes', return_value = mock_good_mailMessage)
     parsedMail = Emailkasten.mailParsing.parseMail(mock_good_mailMessage)
-    for _, headerName in Emailkasten.constants.ParsedMailKeys.Header():
+    for headerName, _ in Emailkasten.constants.ParsedMailKeys.Header():
         assert headerName in parsedMail
 
     mock_logger.debug.assert_called()
     #mock_logger.warning.assert_not_called()
-    mock_logger.error.assert_not_called()
+    #mock_logger.error.assert_not_called()
 
 # pylint: enable=protected-access

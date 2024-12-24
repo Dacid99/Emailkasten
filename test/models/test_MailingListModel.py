@@ -53,6 +53,18 @@ def test_MailingListModel_creation():
 
 
 @pytest.mark.django_db
+def test_MailingListModel_foreign_key_deletion():
+    """Tests the on_delete foreign key constraint in :class:`Emailkasten.Models.MailingListModel.MailingListModel`."""
+
+    correspondent = baker.make(CorrespondentModel)
+    mailingList = baker.make(MailingListModel, correspondent = correspondent)
+    assert mailingList is not None
+    correspondent.delete()
+    with pytest.raises(MailingListModel.DoesNotExist):
+        mailingList.refresh_from_db()
+
+
+@pytest.mark.django_db
 def test_MailingListModel_unique():
     """Tests the unique constraints of :class:`Emailkasten.Models.MailingListModel.MailingListModel`."""
 

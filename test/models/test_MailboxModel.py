@@ -26,18 +26,22 @@ from django.db import IntegrityError
 from model_bakery import baker
 
 from Emailkasten import constants
+from Emailkasten.Fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
+from Emailkasten.Fetchers.IMAPFetcher import IMAPFetcher
+from Emailkasten.Fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from Emailkasten.Fetchers.POP3Fetcher import POP3Fetcher
 from Emailkasten.Models.AccountModel import AccountModel
-from Emailkasten.Models.DaemonModel import DaemonModel
 from Emailkasten.Models.MailboxModel import MailboxModel
 
 
 @pytest.mark.django_db
-def MailboxModel_creation():
+def test_MailboxModel_creation():
     """Tests the correct default creation of :class:`Emailkasten.Models.MailboxModel.MailboxModel`."""
 
     mailbox = baker.make(MailboxModel)
     assert mailbox.name is not None
     assert mailbox.account is not None
+    assert isinstance(mailbox.account, AccountModel)
     assert mailbox.save_attachments is constants.FetchingConfiguration.SAVE_ATTACHMENTS_DEFAULT
     assert mailbox.save_images is constants.FetchingConfiguration.SAVE_IMAGES_DEFAULT
     assert mailbox.save_toEML is constants.FetchingConfiguration.SAVE_TO_EML_DEFAULT
@@ -53,7 +57,19 @@ def MailboxModel_creation():
 
 
 @pytest.mark.django_db
-def MailboxModel_unique():
+def test_MailboxModel_foreign_key_deletion():
+    """Tests the on_delete foreign key constraint in :class:`Emailkasten.Models.MailboxModel.MailboxModel`."""
+
+    account = baker.make(AccountModel)
+    mailbox = baker.make(MailboxModel, account = account)
+    assert mailbox is not None
+    account.delete()
+    with pytest.raises(MailboxModel.DoesNotExist):
+        mailbox.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_MailboxModel_unique():
     """Tests the unique constraints of :class:`Emailkasten.Models.MailboxModel.MailboxModel`."""
 
     mailingList_1 = baker.make(MailboxModel, name="abc123")
@@ -61,7 +77,7 @@ def MailboxModel_unique():
     assert mailingList_1.name == mailingList_2.name
     assert mailingList_1.account != mailingList_2.account
 
-    account = baker.maker(AccountModel)
+    account = baker.make(AccountModel)
 
     mailingList_1 = baker.make(MailboxModel, account = account)
     mailingList_2 = baker.make(MailboxModel, account = account)
@@ -84,8 +100,13 @@ def MailboxModel_unique():
             ('EXCHANGE', [])
         ]
 )
-def test_MailboxModel_getAvailableFetchingCriteria(protocol, expectedFetchingCriteria):
-    """Tests :func:`Emailkasten.Models.MailboxModel.MailboxModel.getAvailableFetchingCriteria`."""
+def test_MailboxModel_getAvailableFetchingCriteria(protocol: str, expectedFetchingCriteria: list[str]):
+    """Tests :func:`Emailkasten.Models.MailboxModel.MailboxModel.getAvailableFetchingCriteria`.
+
+    Args:
+        protocol: The protocol parameter.
+        expectedFetchingCriteria: The expected fetchingCriteria result parameter.
+    """
 
     account = baker.make(AccountModel, protocol = protocol)
     mailbox = baker.make(MailboxModel, account = account)

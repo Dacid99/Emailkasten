@@ -28,20 +28,9 @@ from django.db import IntegrityError
 from Emailkasten.Models.CorrespondentModel import CorrespondentModel
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    'email_name, email_address',
-    [
-        ("test name", "test@mail.com"),
-        ("", "äöüß123@mail.sh")
-    ]
-)
-def test_CorrespondentModel_creation(email_name: str, email_address: str):
-    """Tests the correct default creation of :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`.
+def test_CorrespondentModel_creation():
+    """Tests the correct default creation of :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`."""
 
-    Args:
-        email_name: The email_name parameter.
-        email_address: The email_address parameter.
-    """
     correspondent = baker.make(CorrespondentModel)
     assert correspondent.email_name is not None
     assert isinstance(correspondent.email_name, str)
@@ -58,7 +47,8 @@ def test_CorrespondentModel_creation(email_name: str, email_address: str):
 
 @pytest.mark.django_db
 def test_CorrespondentModel_unique():
-    """Tests the unique constraint in :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`"""
+    """Tests the unique constraint in :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`."""
+
     baker.make(CorrespondentModel, email_name="test name", email_address="test@mail.com")
     with pytest.raises(IntegrityError):
         baker.make(CorrespondentModel, email_name="another test", email_address="test@mail.com")

@@ -18,10 +18,7 @@
 
 """Test module for :mod:`Emailkasten.Models.AccountModel`."""
 
-from __future__ import annotations
-
 import datetime
-from typing import TYPE_CHECKING
 
 import pytest
 from django.contrib.auth.models import User
@@ -29,17 +26,6 @@ from django.db import IntegrityError
 from model_bakery import baker
 
 from Emailkasten.Models.AccountModel import AccountModel
-
-if TYPE_CHECKING:
-    from unittest.mock import MagicMock
-
-    from pytest_mock.plugin import MockerFixture
-
-
-@pytest.fixture(name='mock_logger', autouse=True)
-def fixture_mock_logger(mocker: MockerFixture) -> MagicMock:
-    """Mocks :attr:`Emailkasten.fileManagment.logger` of the module."""
-    return mocker.patch('Emailkasten.Models.AccountModel.logger')
 
 
 @pytest.mark.django_db
@@ -75,20 +61,32 @@ def test_AccountModel_creation():
 
 
 @pytest.mark.django_db
+def test_AccountModel_foreign_key_deletion():
+    """Tests the on_delete foreign key constraint in :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+
+    user = baker.make(User)
+    account = baker.make(AccountModel, user = user)
+    assert account is not None
+    user.delete()
+    with pytest.raises(AccountModel.DoesNotExist):
+        account.refresh_from_db()
+
+
+@pytest.mark.django_db
 def test_AccountModel_unique():
     """Tests the unique constraints of :class:`Emailkasten.Models.AccountModel.AccountModel`."""
 
-    mailingList_1 = baker.make(AccountModel, mail_address="abc123")
-    mailingList_2 = baker.make(AccountModel, mail_address="abc123")
-    assert mailingList_1.mail_address == mailingList_2.mail_address
-    assert mailingList_1.user != mailingList_2.user
+    account_1 = baker.make(AccountModel, mail_address="abc123")
+    account_2 = baker.make(AccountModel, mail_address="abc123")
+    assert account_1.mail_address == account_2.mail_address
+    assert account_1.user != account_2.user
 
     user = baker.make(User)
 
-    mailingList_1 = baker.make(AccountModel, user = user)
-    mailingList_2 = baker.make(AccountModel, user = user)
-    assert mailingList_1.mail_address != mailingList_2.mail_address
-    assert mailingList_1.user == mailingList_2.user
+    account_1 = baker.make(AccountModel, user = user)
+    account_2 = baker.make(AccountModel, user = user)
+    assert account_1.mail_address != account_2.mail_address
+    assert account_1.user == account_2.user
 
     baker.make(AccountModel, mail_address="abc123", user = user)
     with pytest.raises(IntegrityError):
