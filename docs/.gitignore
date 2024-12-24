@@ -1,7 +1,9 @@
 build/*
 source/*.rst
 !index.rst
+!import-graph.rst
 !development.rst
+!db-graph.rst
 !todo.rst
 apidoc/
 *.log

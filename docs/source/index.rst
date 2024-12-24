@@ -12,9 +12,12 @@ EMailkasten documentation
    :caption: Contents:
 
    development
-   db_graph
    todo
-   Emailkasten
+   manage
+   project
+   modules
+   import-graph
+   db-graph
    test
 
 `Latest mypy report <_static/mypy_report/index.html>`_

@@ -17,6 +17,8 @@ help:
 source: Makefile
 	sphinx-apidoc -o source ../Emailkasten
 	python3 ../manage.py graph_models -a -g -o $(SOURCEDIR)/db_graph.svg
+	pydeps ../Emailkasten --max-bacon 2 -T svg -L ERROR --rankdir LR --no-show -o $(SOURCEDIR)/import_graph.svg
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile

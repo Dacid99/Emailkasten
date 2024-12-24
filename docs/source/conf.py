@@ -34,6 +34,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.intersphinx',
     'sphinx.ext.autodoc',
+    'sphinx.ext.graphviz',
     'sphinx_autodoc_typehints',
     'sphinxcontrib.apidoc',
     'myst_parser',
