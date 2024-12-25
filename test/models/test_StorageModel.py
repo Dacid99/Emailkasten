@@ -77,3 +77,55 @@ def test_StorageModel_initial_creation(STORAGE_PATH, expectedCritical, mock_logg
     assert storage.directory_number == 0
     assert storage.path == os.path.dirname(subdirectory)
     assert storage.subdirectory_count == 1
+
+
+@pytest.mark.django_db
+def test_health_check_success(mock_logger, mock_filesystem, mocker):
+    """Tests the correct initial allocation of storage by :class:`Emailkasten.Models.StorageModel.StorageModel`."""
+
+    mock_StorageConfiguration = mocker.patch('Emailkasten.Models.StorageModel.StorageConfiguration')
+    mock_StorageConfiguration.STORAGE_PATH = '/empty-storage'
+    mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
+
+    for i in range(0,2*3+1):
+        StorageModel.getSubdirectory(f"test_{i}")
+
+
+    health = StorageModel.healthcheck()
+
+    assert health
+
+
+@pytest.mark.django_db
+def test_health_check_failed_duplicate_current(mock_logger, mock_filesystem, mocker):
+    """Tests the correct initial allocation of storage by :class:`Emailkasten.Models.StorageModel.StorageModel`."""
+
+    mock_StorageConfiguration = mocker.patch('Emailkasten.Models.StorageModel.StorageConfiguration')
+    mock_StorageConfiguration.STORAGE_PATH = '/empty-storage'
+    mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
+
+    for i in range(0,2*3+1):
+        StorageModel.getSubdirectory(f"test_{i}")
+    StorageModel.objects.create(directory_number=10, current=True)
+
+    health = StorageModel.healthcheck()
+
+    assert not health
+    mock_logger.critical.assert_called()
+
+
+@pytest.mark.django_db
+def test_health_check_failed_dirty_storage(mock_logger, mock_filesystem, mocker):
+    """Tests the correct initial allocation of storage by :class:`Emailkasten.Models.StorageModel.StorageModel`."""
+
+    mock_StorageConfiguration = mocker.patch('Emailkasten.Models.StorageModel.StorageConfiguration')
+    mock_StorageConfiguration.STORAGE_PATH = '/conflicting-storage'
+    mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
+
+    for i in range(0,2*3+1):
+        StorageModel.getSubdirectory(f"test_{i}")
+
+    health = StorageModel.healthcheck()
+
+    assert not health
+    mock_logger.critical.assert_called()
