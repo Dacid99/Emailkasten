@@ -43,6 +43,7 @@ if TYPE_CHECKING:
 class ImageViewSet(viewsets.ReadOnlyModelViewSet):
     """Viewset for the :class:`Emailkasten.Models.ImageModel.ImageModel`."""
 
+    BASENAME = 'images'
     queryset = ImageModel.objects.all()
     serializer_class = ImageSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]

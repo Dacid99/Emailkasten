@@ -44,6 +44,7 @@ if TYPE_CHECKING:
 class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
     """Viewset for the :class:`Emailkasten.Models.AttachmentModel.AttachmentModel`."""
 
+    BASENAME = 'attachments'
     queryset = AttachmentModel.objects.all()
     serializer_class = AttachmentSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]

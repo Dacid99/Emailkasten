@@ -45,6 +45,7 @@ if TYPE_CHECKING:
 class DaemonViewSet(viewsets.ModelViewSet):
     """Viewset for the :class:`Emailkasten.Models.DaemonModel.DaemonModel`."""
 
+    BASENAME = 'daemons'
     queryset = DaemonModel.objects.all()
     serializer_class = DaemonSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]

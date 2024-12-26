@@ -44,6 +44,7 @@ if TYPE_CHECKING:
 class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
     """Viewset for the :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`."""
 
+    BASENAME = 'correspondents'
     queryset = CorrespondentModel.objects.all()
     serializer_class = CorrespondentSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]

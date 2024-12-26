@@ -39,6 +39,7 @@ if TYPE_CHECKING:
 class UserViewSet(viewsets.ModelViewSet):
     """Viewset to manage users."""
 
+    BASENAME = 'users'
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

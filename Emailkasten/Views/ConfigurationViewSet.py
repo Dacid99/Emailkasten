@@ -29,6 +29,7 @@ from ..Serializers.ConfigurationSerializers.ConfigurationSerializer import \
 class ConfigurationViewSet(viewsets.ModelViewSet):
     """Viewset for the :class:`Emailkasten.Models.ConfigurationModel.ConfigurationModel`."""
 
+    BASENAME = 'configs'
     queryset = ConfigurationModel.objects.all()
     serializer_class = ConfigurationSerializer
     permission_classes = [IsAdminUser]

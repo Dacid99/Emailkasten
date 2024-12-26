@@ -44,6 +44,7 @@ if TYPE_CHECKING:
 class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     """Viewset for the :class:`Emailkasten.Models.EMailModel.EMailModel`."""
 
+    BASENAME = 'emails'
     queryset = EMailModel.objects.all()
     serializer_class = FullEMailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]

@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
 class DatabaseStatsView(APIView):
     """APIView for the statistics of the database."""
-
+    NAME = 'stats'
     permission_classes = [IsAuthenticated]
 
     def get(self, request: Request) -> Response:

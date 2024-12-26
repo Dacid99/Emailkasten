@@ -44,23 +44,25 @@ from .Views.EMailViewSet import EMailViewSet
 from .Views.ImageViewSet import ImageViewSet
 from .Views.LoginOutView import CSRFCookieView, LoginView, LogoutView
 from .Views.MailboxViewSet import MailboxViewSet
+from .Views.MailingListViewSet import MailingListViewSet
 from .Views.UserCreateView import UserViewSet
 
 router = DefaultRouter()
-router.register(r'accounts', AccountViewSet)
-router.register(r'mailboxes', MailboxViewSet)
-router.register(r'daemons', DaemonViewSet)
-router.register(r'emails', EMailViewSet)
-router.register(r'correspondents', CorrespondentViewSet)
-router.register(r'attachments', AttachmentViewSet)
-router.register(r'images', ImageViewSet)
-router.register(r'config', ConfigurationViewSet)
-router.register(r'users', UserViewSet)
+router.register(rf'{AccountViewSet.BASENAME}', AccountViewSet, basename=AccountViewSet.BASENAME)
+router.register(rf'{MailboxViewSet.BASENAME}', MailboxViewSet, basename=MailboxViewSet.BASENAME)
+router.register(rf'{DaemonViewSet.BASENAME}', DaemonViewSet, basename=DaemonViewSet.BASENAME)
+router.register(rf'{EMailViewSet.BASENAME}', EMailViewSet, basename=EMailViewSet.BASENAME)
+router.register(rf'{CorrespondentViewSet.BASENAME}', CorrespondentViewSet, basename=CorrespondentViewSet.BASENAME)
+router.register(rf'{AttachmentViewSet.BASENAME}', AttachmentViewSet, basename=AttachmentViewSet.BASENAME)
+router.register(rf'{ImageViewSet.BASENAME}', ImageViewSet, basename=ImageViewSet.BASENAME)
+router.register(rf'{ConfigurationViewSet.BASENAME}', ConfigurationViewSet, basename=ConfigurationViewSet.BASENAME)
+router.register(rf'{UserViewSet.BASENAME}', UserViewSet, basename=UserViewSet.BASENAME)
+router.register(rf'{MailingListViewSet.BASENAME}', MailingListViewSet, basename=MailingListViewSet.BASENAME)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('stats/', DatabaseStatsView.as_view(), name = 'stats'),
-    path('login/', LoginView.as_view(), name = 'login'),
-    path('logout/', LogoutView.as_view(), name = 'logout'),
-    path('csrf-token/', CSRFCookieView.as_view(), name = 'csrf-token'),
+    path(f'{DatabaseStatsView.NAME}/', DatabaseStatsView.as_view(), name = DatabaseStatsView.NAME),
+    path(f'{LoginView.NAME}/', LoginView.as_view(), name = LoginView.NAME),
+    path(f'{LogoutView.NAME}/', LogoutView.as_view(), name = LogoutView.NAME),
+    path(f'{CSRFCookieView.NAME}/', CSRFCookieView.as_view(), name = CSRFCookieView.NAME),
 ]

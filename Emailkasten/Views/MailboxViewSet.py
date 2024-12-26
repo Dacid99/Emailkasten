@@ -46,6 +46,7 @@ if TYPE_CHECKING:
 class MailboxViewSet(viewsets.ModelViewSet):
     """Viewset for the :class:`Emailkasten.Models.MailboxModel.MailboxModel`."""
 
+    BASENAME = 'mailboxes'
     queryset = MailboxModel.objects.all()
     serializer_class = MailboxWithDaemonSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]

@@ -46,6 +46,7 @@ if TYPE_CHECKING:
 class AccountViewSet(viewsets.ModelViewSet):
     """Viewset for the :class:`Emailkasten.Models.AccountModel.AccountModel`."""
 
+    BASENAME = 'accounts'
     queryset = AccountModel.objects.all()
     serializer_class = AccountSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]

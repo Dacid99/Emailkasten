@@ -37,6 +37,7 @@ if TYPE_CHECKING:
 
 class LoginView(APIView):
     """APIView for login."""
+    NAME = 'login'
     permission_classes = [AllowAny]
 
     def post(self, request: Request) -> Response:
@@ -81,6 +82,8 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
     """APIView for logout."""
+    NAME = 'logout'
+
     def post(self, request: Request) -> Response:
         """View method to log the user out.
 
@@ -99,6 +102,7 @@ class LogoutView(APIView):
 
 class CSRFCookieView(APIView):
     """APIView for fetching of a new CSRF cookie."""
+    NAME = 'csrf-token'
     permission_classes = [AllowAny]
 
     @ensure_csrf_cookie
