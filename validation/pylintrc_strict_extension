@@ -84,7 +84,8 @@ limit-inference-results=100
 # usually to register additional checkers.
 load-plugins=pylint.extensions.docparams,
              pylint.extensions.bad_builtin,
-             pylintfileheader
+             pylintfileheader,
+             pylint_pytest
 
 # Pickle collected data for later comparisons.
 persistent=yes
@@ -431,7 +432,6 @@ disable=raw-checker-failed,
         no-member,
         no-else-return,
         too-few-public-methods,
-        unused-argument,
         bad-inline-option,
         locally-disabled,
         file-ignored,
@@ -461,7 +461,12 @@ enable=missing-type-doc,
        redundant-returns-doc,
        redundant-yields-doc,
        imports,
-       invalid-file-header
+       invalid-file-header,
+       deprecated-pytest-yield-fixture,
+       useless-pytest-mark-decorator,
+       deprecated-positional-argument-for-pytest-fixture,
+       cannot-enumerate-pytest-fixtures,
+       redefined-outer-name
 
 
 [METHOD_ARGS]
