@@ -20,6 +20,8 @@
 - streamable logs for daemons
 - api versioning
 - check database before saving attachments and images
+- more foreign keys should be read_only
+- post might allow for non owners to write data in some viewsets, check create methods
 
 ### Work in progress
 - tests

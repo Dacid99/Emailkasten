@@ -23,7 +23,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
@@ -33,14 +33,14 @@ from .. import constants
 from ..constants import TestStatusCodes
 from ..Filters.MailboxFilter import MailboxFilter
 from ..mailProcessing import fetchAndProcessMails, testMailbox
-from ..Models.MailboxModel import MailboxModel
 from ..Models.DaemonModel import DaemonModel
+from ..Models.MailboxModel import MailboxModel
 from ..Serializers.MailboxSerializers.MailboxWithDaemonSerializer import \
     MailboxWithDaemonSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.request import Request
     from django.db.models import BaseManager
+    from rest_framework.request import Request
 
 
 class MailboxViewSet(viewsets.ModelViewSet):
@@ -63,6 +63,11 @@ class MailboxViewSet(viewsets.ModelViewSet):
             The mailbox entries matching the request user."""
         return MailboxModel.objects.filter(account__user = self.request.user)
 
+    def create(self, request, *args, **kwargs):
+        return Response(
+            {"detail": "POST method is not allowed on this endpoint."},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
 
     URL_PATH_ADD_DAEMON = 'add-daemon'
     URL_NAME_ADD_DAEMON = 'add-daemon'
