@@ -18,6 +18,7 @@
 
 import pytest
 from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
 from django.urls import reverse
 from model_bakery import baker
 from rest_framework import status
@@ -38,6 +39,14 @@ def fixture_other_user():
 @pytest.fixture(name='accountModel')
 def fixture_accountModel(owner_user):
     return baker.make(AccountModel, user=owner_user)
+
+@pytest.fixture(name='accountPayload')
+def fixture_accountPayload(owner_user):
+    accountData = baker.prepare(AccountModel, user=owner_user)
+    payload = model_to_dict(accountData)
+    payload.pop('id')
+    cleanPayload = {key: value for key, value in payload.items() if value is not None}
+    return cleanPayload
 
 @pytest.fixture(name='list_url')
 def fixture_list_url():
@@ -95,6 +104,8 @@ def test_list_auth_owner(accountModel, owner_apiClient, list_url):
     assert response.status_code == status.HTTP_200_OK
     assert response.data['count'] == 1
     assert len(response.data['results']) == 1
+    with pytest.raises(KeyError):
+        response.data['results'][0]['password']
 
 
 @pytest.mark.django_db
@@ -111,6 +122,8 @@ def test_get_auth_other(accountModel, other_apiClient, detail_url):
     response = other_apiClient.get(detail_url)
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
+    with pytest.raises(KeyError):
+        response.data['password']
 
 
 @pytest.mark.django_db
@@ -120,7 +133,7 @@ def test_get_auth_owner(accountModel, owner_apiClient, detail_url):
     assert response.status_code == status.HTTP_200_OK
     assert response.data['mail_address'] == accountModel.mail_address
     with pytest.raises(KeyError):
-        response['password']
+        response.data['password']
 
 
 @pytest.mark.django_db
@@ -130,6 +143,8 @@ def test_patch_noauth(accountModel, noauth_apiClient, detail_url):
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
         response.data['mail_address']
+    with pytest.raises(KeyError):
+        response.data['password']
 
 
 @pytest.mark.django_db
@@ -137,8 +152,10 @@ def test_patch_auth_other(accountModel, other_apiClient, detail_url):
     response = other_apiClient.patch(detail_url, data={'mail_address': 'test@testmail.com', 'password': 'knvolbs3yhvä234'})
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
+    with pytest.raises(KeyError):
+        response.data['password']
     accountModel.refresh_from_db()
-    assert accountModel.mail_address is not None
+    assert accountModel.mail_address != 'test@testmail.com'
 
 
 @pytest.mark.django_db
@@ -148,9 +165,83 @@ def test_patch_auth_owner(accountModel, owner_apiClient, detail_url):
     assert response.status_code == status.HTTP_200_OK
     assert response.data['mail_address'] == 'test@testmail.com'
     with pytest.raises(KeyError):
-        response['password']
+        response.data['password']
     accountModel.refresh_from_db()
-    assert accountModel.mail_address is not None
+    assert accountModel.mail_address != 'test@testmail.com'
+
+
+@pytest.mark.django_db
+def test_put_noauth(accountModel, noauth_apiClient, accountPayload, detail_url):
+    response = noauth_apiClient.put(detail_url, data=accountPayload)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    with pytest.raises(KeyError):
+        response.data['mail_host']
+    with pytest.raises(KeyError):
+        response.data['password']
+    with pytest.raises(AccountModel.DoesNotExist):
+        accountModel.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_put_auth_other(accountModel, other_apiClient, accountPayload, detail_url):
+    response = other_apiClient.put(detail_url, data=accountPayload)
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    with pytest.raises(KeyError):
+        response.data['password']
+    with pytest.raises(AccountModel.DoesNotExist):
+        accountModel.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_put_auth_owner(accountModel, owner_apiClient, accountPayload, detail_url):
+    response = owner_apiClient.put(detail_url, data=accountPayload)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['mail_host'] == accountPayload['mail_host']
+    with pytest.raises(KeyError):
+        response.data['password']
+    accountModel.refresh_from_db()
+    assert accountModel.mail_host == accountPayload['mail_host']
+
+
+@pytest.mark.django_db
+def test_post_noauth(noauth_apiClient, accountPayload, list_url):
+    response = noauth_apiClient.post(list_url, data=accountPayload)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    with pytest.raises(KeyError):
+        response.data['mail_host']
+    with pytest.raises(KeyError):
+        response.data['password']
+    with pytest.raises(AccountModel.DoesNotExist):
+        AccountModel.objects.get(mail_host = accountPayload['mail_host'])
+
+
+@pytest.mark.django_db
+def test_post_auth_other(other_user, other_apiClient, accountPayload, list_url):
+    response = other_apiClient.post(list_url, data=accountPayload)
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.data['mail_host'] == accountPayload['mail_host']
+    with pytest.raises(KeyError):
+        response.data['password']
+    postedAccountModel = AccountModel.objects.get(mail_host = accountPayload['mail_host'])
+    assert postedAccountModel is not None
+    assert postedAccountModel.user == other_user
+
+
+@pytest.mark.django_db
+def test_post_auth_owner(owner_apiClient, accountPayload, list_url):
+    response = owner_apiClient.post(list_url, data=accountPayload)
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.data['mail_host'] == accountPayload['mail_host']
+    with pytest.raises(KeyError):
+        response.data['password']
+    postedAccountModel = AccountModel.objects.get(mail_host = accountPayload['mail_host'])
+    assert postedAccountModel is not None
 
 
 @pytest.mark.django_db
@@ -189,6 +280,7 @@ def test_scan_mailboxes_noauth(accountModel, noauth_apiClient, custom_detail_act
     mock_scanMailboxes.assert_not_called()
     with pytest.raises(KeyError):
         response.data['mail_address']
+
 
 @pytest.mark.django_db
 def test_scan_mailboxes_auth_other(accountModel, other_apiClient, custom_detail_action_url, mocker):
