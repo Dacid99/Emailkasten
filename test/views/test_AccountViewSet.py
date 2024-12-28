@@ -179,8 +179,8 @@ def test_put_noauth(accountModel, noauth_apiClient, accountPayload, detail_url):
         response.data['mail_host']
     with pytest.raises(KeyError):
         response.data['password']
-    with pytest.raises(AccountModel.DoesNotExist):
-        accountModel.refresh_from_db()
+    accountModel.refresh_from_db()
+    assert accountModel.mail_host != accountPayload['mail_host']
 
 
 @pytest.mark.django_db
@@ -190,8 +190,8 @@ def test_put_auth_other(accountModel, other_apiClient, accountPayload, detail_ur
     assert response.status_code == status.HTTP_404_NOT_FOUND
     with pytest.raises(KeyError):
         response.data['password']
-    with pytest.raises(AccountModel.DoesNotExist):
-        accountModel.refresh_from_db()
+    accountModel.refresh_from_db()
+    assert accountModel.mail_host != accountPayload['mail_host']
 
 
 @pytest.mark.django_db
@@ -274,7 +274,8 @@ def test_delete_auth_owner(accountModel, owner_apiClient, detail_url):
 @pytest.mark.django_db
 def test_scan_mailboxes_noauth(accountModel, noauth_apiClient, custom_detail_action_url, mocker):
     mock_scanMailboxes = mocker.patch('Emailkasten.Views.AccountViewSet.scanMailboxes')
-    response = noauth_apiClient.delete(custom_detail_action_url(AccountViewSet.URL_NAME_SCAN_MAILBOXES))
+
+    response = noauth_apiClient.post(custom_detail_action_url(AccountViewSet.URL_NAME_SCAN_MAILBOXES))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_scanMailboxes.assert_not_called()
@@ -285,6 +286,7 @@ def test_scan_mailboxes_noauth(accountModel, noauth_apiClient, custom_detail_act
 @pytest.mark.django_db
 def test_scan_mailboxes_auth_other(accountModel, other_apiClient, custom_detail_action_url, mocker):
     mock_scanMailboxes = mocker.patch('Emailkasten.Views.AccountViewSet.scanMailboxes')
+
     response = other_apiClient.post(custom_detail_action_url(AccountViewSet.URL_NAME_SCAN_MAILBOXES))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -296,6 +298,7 @@ def test_scan_mailboxes_auth_other(accountModel, other_apiClient, custom_detail_
 @pytest.mark.django_db
 def test_scan_mailboxes_auth_owner(accountModel, owner_apiClient, custom_detail_action_url, mocker):
     mock_scanMailboxes = mocker.patch('Emailkasten.Views.AccountViewSet.scanMailboxes')
+
     response = owner_apiClient.post(custom_detail_action_url(AccountViewSet.URL_NAME_SCAN_MAILBOXES))
 
     assert response.status_code == status.HTTP_200_OK
@@ -306,10 +309,14 @@ def test_scan_mailboxes_auth_owner(accountModel, owner_apiClient, custom_detail_
 @pytest.mark.django_db
 def test_test_noauth(accountModel, noauth_apiClient, custom_detail_action_url, mocker):
     mock_testAccount = mocker.patch('Emailkasten.Views.AccountViewSet.testAccount')
-    response = noauth_apiClient.delete(custom_detail_action_url(AccountViewSet.URL_NAME_TEST))
+    previous_is_healthy = accountModel.is_healthy
+
+    response = noauth_apiClient.post(custom_detail_action_url(AccountViewSet.URL_NAME_TEST))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_testAccount.assert_not_called()
+    accountModel.refresh_from_db()
+    assert accountModel.is_healthy is previous_is_healthy
     with pytest.raises(KeyError):
         response.data['mail_address']
 
@@ -317,16 +324,21 @@ def test_test_noauth(accountModel, noauth_apiClient, custom_detail_action_url, m
 @pytest.mark.django_db
 def test_test_auth_other(accountModel, other_apiClient, custom_detail_action_url, mocker):
     mock_testAccount = mocker.patch('Emailkasten.Views.AccountViewSet.testAccount')
+    previous_is_healthy = accountModel.is_healthy
+
     response = other_apiClient.post(custom_detail_action_url(AccountViewSet.URL_NAME_TEST))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_testAccount.assert_not_called()
+    accountModel.refresh_from_db()
+    assert accountModel.is_healthy is previous_is_healthy
     with pytest.raises(KeyError):
         response.data['mail_address']
 
 @pytest.mark.django_db
 def test_test_auth_owner(accountModel, owner_apiClient, custom_detail_action_url, mocker):
     mock_testAccount = mocker.patch('Emailkasten.Views.AccountViewSet.testAccount')
+
     response = owner_apiClient.post(custom_detail_action_url(AccountViewSet.URL_NAME_TEST))
 
     assert response.status_code == status.HTTP_200_OK
@@ -336,7 +348,7 @@ def test_test_auth_owner(accountModel, owner_apiClient, custom_detail_action_url
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(accountModel, noauth_apiClient, custom_detail_action_url):
-    response = noauth_apiClient.delete(custom_detail_action_url(AccountViewSet.URL_NAME_TOGGLE_FAVORITE))
+    response = noauth_apiClient.post(custom_detail_action_url(AccountViewSet.URL_NAME_TOGGLE_FAVORITE))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     accountModel.refresh_from_db()
@@ -359,33 +371,3 @@ def test_toggle_favorite_auth_owner(accountModel, owner_apiClient, custom_detail
     assert response.status_code == status.HTTP_200_OK
     accountModel.refresh_from_db()
     assert accountModel.is_favorite is True
-
-
-@pytest.mark.django_db
-def test_favorites_noauth(accountModel, noauth_apiClient, custom_list_action_url):
-    response = noauth_apiClient.get(custom_list_action_url(AccountViewSet.URL_NAME_FAVORITES))
-
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert not any(item == 'mail_address' for item in response.data)
-
-
-@pytest.mark.django_db
-def test_favorites_auth_other(accountModel, other_apiClient, custom_list_action_url):
-    accountModel.is_favorite = True
-    accountModel.save()
-
-    response = other_apiClient.get(custom_list_action_url(AccountViewSet.URL_NAME_FAVORITES))
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.data == []
-
-
-@pytest.mark.django_db
-def test_favorites_auth_owner(accountModel, owner_apiClient, custom_list_action_url):
-    accountModel.is_favorite = True
-    accountModel.save()
-
-    response = owner_apiClient.get(custom_list_action_url(AccountViewSet.URL_NAME_FAVORITES))
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.data == AccountViewSet.serializer_class([accountModel], many=True).data
