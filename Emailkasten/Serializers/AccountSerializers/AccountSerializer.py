@@ -48,22 +48,3 @@ class AccountSerializer(serializers.ModelSerializer):
 
         read_only_fields = ['is_healthy', 'created', 'updated']
         """The :attr:`Emailkasten.Models.AccountModel.is_healthy`, :attr:`Emailkasten.Models.AccountModel.created`, and :attr:`Emailkasten.Models.AccountModel.updated` fields are read-only."""
-
-        validators = [
-            UniqueTogetherValidator(
-                queryset=AccountModel.objects.all(),
-                fields=['mail_address', 'user'],
-                message='This account already exists!'
-            )
-        ]
-
-    def validate_mail_address(self, value: str) -> str:
-        """Validation step, sets the mailaddress to lower case.
-
-        Args:
-            value: The mail address given by the user.
-
-        Returns:
-            The given mail address in lower case.
-        """
-        return value.lower()
