@@ -52,7 +52,12 @@ class ConfigurationModel(models.Model):
         db_table = "config"
         """The name of the database table for the configuations."""
 
-        unique_together = ('category', 'key')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['category', 'key'],
+                name='configuration_unique_together_category_key'
+            )
+        ]
         """:attr:`category` and :attr:`key` in combination are unique."""
 
 

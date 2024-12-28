@@ -68,5 +68,10 @@ class ImageModel(models.Model):
         db_table = "images"
         """The name of the database table for the images."""
 
-        unique_together = ("file_path", "email")
+        constraints = [
+            models.UniqueConstraint(
+                fields=['file_path', 'email'],
+                name='image_unique_together_file_path_email'
+            )
+        ]
         """:attr:`file_path` and :attr:`email` in combination are unique."""

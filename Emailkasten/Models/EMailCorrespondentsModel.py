@@ -56,5 +56,10 @@ class EMailCorrespondentsModel(models.Model):
         db_table = "email_correspondents"
         """The name of the database table for the images."""
 
-        unique_together = ('email', 'correspondent', 'mention')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['email', 'correspondent', 'mention'],
+                name='emailcorrespondents_unique_together_email_correspondent_mention'
+            )
+        ]
         """:attr:`email`, :attr:`correspondent` and :attr:`mention` in combination are unique."""

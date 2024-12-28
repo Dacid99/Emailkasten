@@ -152,5 +152,10 @@ class EMailModel(models.Model):
         db_table = "emails"
         """The name of the database table for the emails."""
 
-        unique_together = ("message_id", "account")
+        constraints = [
+            models.UniqueConstraint(
+                fields=['message_id', 'account'],
+                name='email_unique_together_message_id_account'
+            )
+        ]
         """`message_id` and :attr:`account` in combination are unique."""

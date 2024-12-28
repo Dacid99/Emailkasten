@@ -81,5 +81,10 @@ class AccountModel(DirtyFieldsMixin, models.Model):
         db_table = "accounts"
         """The name of the database table for the mail accounts."""
 
-        unique_together = ("mail_address", "user")
+        constraints = [
+            models.UniqueConstraint(
+                fields=['mail_address', 'user'],
+                name='account_unique_together_mail_address_user'
+            )
+        ]
         """`mail_address` and :attr:`user` in combination are unique fields."""

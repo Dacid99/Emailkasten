@@ -70,5 +70,10 @@ class AttachmentModel(models.Model):
         db_table = "attachments"
         """The name of the database table for the attachments."""
 
-        unique_together = ("file_path", "email")
+        constraints = [
+            models.UniqueConstraint(
+                fields=['file_path', 'email'],
+                name='attachment_unique_together_file_path_email'
+            )
+        ]
         """:attr:`file_path` and :attr:`email` in combination are unique."""

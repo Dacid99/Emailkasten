@@ -69,5 +69,10 @@ class MailingListModel(models.Model):
         db_table = "mailinglists"
         """The name of the database table for the mailinglists."""
 
-        unique_together = ("list_id", "correspondent")
+        constraints = [
+            models.UniqueConstraint(
+                fields=['list_id', 'correspondent'],
+                name='mailinglist_unique_together_list_id_correspondent'
+            )
+        ]
         """:attr:`list_id` and :attr:`correspondent` in combination are unique."""
