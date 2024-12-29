@@ -16,7 +16,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""File with fixtures required for all viewset tests. Automatically imported to test_ files."""
+"""File with fixtures required for all viewset tests. Automatically imported to test_ files.
+
+Fixtures:
+    :func:`fixture_owner_user`: Creates a user that represents the owner of the data.
+    :func:`fixture_other_user`: Creates a user that represents another user that is not the owner of the data.
+    :func:`fixture_noauth_apiClient`: Creates an unauthenticated :class:`rest_framework.test.APIClient` instance.
+    :func:`fixture_auth_other_apiClient`: Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as `other_user`.
+    :func:`fixture_auth_owner_apiClient`: Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as `owner_user`.
+"""
 
 from __future__ import annotations
 
@@ -24,7 +32,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from django.contrib.auth.models import User
-from django.urls import reverse
 from model_bakery import baker
 from rest_framework.test import APIClient
 

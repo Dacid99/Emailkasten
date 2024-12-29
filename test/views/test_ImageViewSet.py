@@ -19,19 +19,14 @@
 """Test module for :mod:`Emailkasten.Views.ImageViewSet`.
 
 Fixtures:
-    :func:`fixture_owner_user`: Creates a user that represents the owner of the data.
-    :func:`fixture_other_user`: Creates a user that represents another user that is not the owner of the data.
     :func:`fixture_accountModel`: Creates an account owned by `owner_user`.
-    :func:`fixture_imageModel`: Creates an email in `accountModel`.
+    :func:`fixture_emailModel`: Creates an email in `accountModel`.
     :func:`fixture_imageModel`: Creates an image in `emailModel`.
     :func:`fixture_emailPayload`: Creates clean :class:`Emailkasten.Models.ImageModel.ImageModel` payload for a post or put request.
     :func:`fixture_list_url`: Gets the viewsets url for list actions.
     :func:`fixture_detail_url`: Gets the viewsets url for detail actions.
     :func:`fixture_custom_detail_list_url`: Gets the viewsets url for custom list actions.
     :func:`fixture_custom_detail_action_url`: Gets the viewsets url for custom detail actions.
-    :func:`fixture_noauth_apiClient`: Creates an unauthenticated :class:`rest_framework.test.APIClient` instance.
-    :func:`fixture_auth_other_apiClient`: Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as `other_user`.
-    :func:`fixture_auth_owner_apiClient`: Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as `owner_user`.
 """
 
 from __future__ import annotations
