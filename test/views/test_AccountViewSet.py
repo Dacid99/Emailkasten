@@ -262,6 +262,8 @@ def test_patch_auth_other(accountModel, other_apiClient, detail_url):
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     with pytest.raises(KeyError):
+        response.data['mail_address']
+    with pytest.raises(KeyError):
         response.data['password']
     accountModel.refresh_from_db()
     assert accountModel.mail_address != 'test@testmail.com'
@@ -300,6 +302,8 @@ def test_put_auth_other(accountModel, other_apiClient, accountPayload, detail_ur
     response = other_apiClient.put(detail_url, data=accountPayload)
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
+    with pytest.raises(KeyError):
+        response.data['mail_host']
     with pytest.raises(KeyError):
         response.data['password']
     accountModel.refresh_from_db()
@@ -348,7 +352,7 @@ def test_post_auth_other(other_user, other_apiClient, accountPayload, list_url):
 
 
 @pytest.mark.django_db
-def test_post_auth_owner(owner_apiClient, accountPayload, list_url):
+def test_post_auth_owner(owner_user, owner_apiClient, accountPayload, list_url):
     """Tests the post method with the authenticated owner user client."""
     response = owner_apiClient.post(list_url, data=accountPayload)
 
@@ -358,6 +362,7 @@ def test_post_auth_owner(owner_apiClient, accountPayload, list_url):
         response.data['password']
     postedAccountModel = AccountModel.objects.get(mail_host = accountPayload['mail_host'])
     assert postedAccountModel is not None
+    assert postedAccountModel.user == owner_user
 
 
 @pytest.mark.django_db

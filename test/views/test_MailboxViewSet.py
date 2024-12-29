@@ -258,7 +258,8 @@ def test_patch_noauth(mailboxModel, noauth_apiClient, detail_url):
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
         response.data['save_attachments']
-
+    mailboxModel.refresh_from_db()
+    assert mailboxModel.save_attachments is True
 
 @pytest.mark.django_db
 def test_patch_auth_other(mailboxModel, other_apiClient, detail_url):
@@ -266,6 +267,8 @@ def test_patch_auth_other(mailboxModel, other_apiClient, detail_url):
     response = other_apiClient.patch(detail_url, data={'save_attachments': False})
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
+    with pytest.raises(KeyError):
+        response.data['save_attachments']
     mailboxModel.refresh_from_db()
     assert mailboxModel.save_attachments is True
 
@@ -337,7 +340,6 @@ def test_post_auth_other(other_apiClient, mailboxPayload, list_url):
         response.data['save_attachments']
     with pytest.raises(MailboxModel.DoesNotExist):
         MailboxModel.objects.get(save_attachments = mailboxPayload['save_attachments'])
-
 
 
 @pytest.mark.django_db
