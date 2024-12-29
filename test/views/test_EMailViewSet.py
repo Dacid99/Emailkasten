@@ -1,0 +1,522 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Emailkasten - a open-source self-hostable email archiving server
+# Copyright (C) 2024  David & Philipp Aderbauer
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+"""Test module for :mod:`Emailkasten.Views.EMailViewSet`.
+
+Fixtures:
+    :func:`fixture_owner_user`: Creates a user that represents the owner of the data.
+    :func:`fixture_other_user`: Creates a user that represents another user that is not the owner of the data.
+    :func:`fixture_accountModel`: Creates an account owned by `owner_user`.
+    :func:`fixture_emailModel`: Creates an email in `accountModel`.
+    :func:`fixture_emailPayload`: Creates clean :class:`Emailkasten.Models.EMailModel.EMailModel` payload for a post or put request.
+    :func:`fixture_list_url`: Gets the viewsets url for list actions.
+    :func:`fixture_detail_url`: Gets the viewsets url for detail actions.
+    :func:`fixture_custom_detail_list_url`: Gets the viewsets url for custom list actions.
+    :func:`fixture_custom_detail_action_url`: Gets the viewsets url for custom detail actions.
+    :func:`fixture_noauth_apiClient`: Creates an unauthenticated :class:`rest_framework.test.APIClient` instance.
+    :func:`fixture_auth_other_apiClient`: Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as `other_user`.
+    :func:`fixture_auth_owner_apiClient`: Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as `owner_user`.
+"""
+
+from __future__ import annotations
+
+import os
+from typing import TYPE_CHECKING
+
+import pytest
+from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
+from django.urls import reverse
+from faker import Faker
+from model_bakery import baker
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from Emailkasten.Models.AccountModel import AccountModel
+from Emailkasten.Models.EMailModel import EMailModel
+from Emailkasten.Views.EMailViewSet import EMailViewSet
+
+if TYPE_CHECKING:
+    from typing import Any, Callable
+
+@pytest.fixture(name='owner_user')
+def fixture_owner_user() -> User:
+    """Creates a :class:`django.contrib.auth.models.User` that represents the owner of the data.
+    Invoked as owner_user.
+
+    Returns:
+        The owner user instance.
+    """
+    return baker.make(User)
+
+@pytest.fixture(name='other_user')
+def fixture_other_user() -> User:
+    """Creates a :class:`django.contrib.auth.models.User` that represents another user that is not the owner of the data.
+    Invoked as other_user.
+
+    Returns:
+       The other user instance.
+    """
+    return baker.make(User)
+
+@pytest.fixture(name='accountModel')
+def fixture_accountModel(owner_user) -> AccountModel:
+    """Creates an :class:`Emailkasten.Models.AccountModel.AccountModel` owned by :attr:`owner_user`.
+
+    Args:
+        owner_user: Depends on :func:`fixture_owner_user`.
+
+    Returns:
+        The account instance for testing.
+    """
+    return baker.make(AccountModel, user = owner_user)
+
+@pytest.fixture(name='emailModel')
+def fixture_emailModel(accountModel) -> EMailModel:
+    """Creates an :class:`Emailkasten.Models.EMailModel.EMailModel` owned by :attr:`owner_user`.
+
+    Args:
+        accountModel: Depends on :func:`fixture_accountModel`.
+
+    Returns:
+        The email instance for testing.
+    """
+    return baker.make(EMailModel, account=accountModel, eml_filepath=Faker().file_path(extension='eml'), prerender_filepath=Faker().file_path(extension='png'))
+
+@pytest.fixture(name='emailPayload')
+def fixture_emailPayload(accountModel) -> dict[str, Any]:
+    """Creates clean :class:`Emailkasten.Models.EMailModel.EMailModel` payload for a post or put request.
+
+    Args:
+        owner_user: Depends on :func:`fixture_owner_user`.
+
+    Returns:
+        The clean payload.
+    """
+    emailData = baker.prepare(EMailModel, account=accountModel)
+    payload = model_to_dict(emailData)
+    payload.pop('id')
+    cleanPayload = {key: value for key, value in payload.items() if value is not None}
+    return cleanPayload
+
+@pytest.fixture(name='list_url')
+def fixture_list_url() -> str:
+    """Gets the viewsets url for list actions.
+
+    Returns:
+        The list url.
+    """
+    return reverse(f'{EMailViewSet.BASENAME}-list')
+
+@pytest.fixture(name='detail_url')
+def fixture_detail_url(emailModel) -> str:
+    """Gets the viewsets url for detail actions.
+
+    Args:
+        emailModel: Depends on :func:`fixture_emailModel`.
+
+    Returns:
+        The detail url."""
+    return reverse(f'{EMailViewSet.BASENAME}-detail', args=[emailModel.id])
+
+@pytest.fixture(name='custom_list_action_url')
+def fixture_custom_list_action_url() -> Callable[[str],str]:
+    """Gets the viewsets url for custom list actions.
+
+    Returns:
+        A callable that gets the list url of the viewset from the custom action name.
+    """
+    return lambda custom_list_action_url_name: reverse(f'{EMailViewSet.BASENAME}-{custom_list_action_url_name}')
+
+@pytest.fixture(name='custom_detail_action_url')
+def fixture_custom_detail_action_url(emailModel)-> Callable[[str],str]:
+    """Gets the viewsets url for custom detail actions.
+
+    Args:
+        emailModel: Depends on :func:`fixture_emailModel`.
+
+    Returns:
+        A callable that gets the detail url of the viewset from the custom action name.
+    """
+    return lambda custom_detail_action_url_name: reverse(f'{EMailViewSet.BASENAME}-{custom_detail_action_url_name}', args=[emailModel.id])
+
+@pytest.fixture(name='noauth_apiClient')
+def fixture_noauth_apiClient() -> APIClient:
+    """Creates an unauthenticated :class:`rest_framework.test.APIClient` instance.
+
+    Returns:
+        The unauthenticated APIClient.
+    """
+    return APIClient()
+
+@pytest.fixture(name='other_apiClient')
+def fixture_other_apiClient(noauth_apiClient, other_user) -> APIClient:
+    """Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as :attr:`other_user`.
+
+    Args:
+        noauth_apiClient: Depends on :func:`fixture_noauth_apiClient`.
+        other_user: Depends on :func:`fixture_other_user`.
+
+    Returns:
+        The authenticated APIClient.
+    """
+    noauth_apiClient.force_authenticate(user=other_user)
+    return noauth_apiClient
+
+@pytest.fixture(name='owner_apiClient')
+def fixture_owner_apiClient(noauth_apiClient, owner_user) -> APIClient:
+    """Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as :attr:`owner_user`.
+
+    Args:
+        noauth_apiClient: Depends on :func:`fixture_noauth_apiClient`.
+        owner_user: Depends on :func:`fixture_owner_user`.
+
+    Returns:
+        The authenticated APIClient.
+    """
+    noauth_apiClient.force_authenticate(user=owner_user)
+    return noauth_apiClient
+
+
+@pytest.mark.django_db
+def test_list_noauth(emailModel, noauth_apiClient, list_url):
+    """Tests the list method with an unauthenticated user client."""
+    response = noauth_apiClient.get(list_url)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    with pytest.raises(KeyError):
+        response.data['results']
+
+
+@pytest.mark.django_db
+def test_list_auth_other(emailModel, other_apiClient, list_url):
+    """Tests the list method with the authenticated other user client."""
+    response = other_apiClient.get(list_url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['count'] == 0
+    assert response.data['results'] == []
+
+
+@pytest.mark.django_db
+def test_list_auth_owner(emailModel, owner_apiClient, list_url):
+    """Tests the list method with the authenticated owner user client."""
+    response = owner_apiClient.get(list_url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['count'] == 1
+    assert len(response.data['results']) == 1
+
+
+@pytest.mark.django_db
+def test_get_noauth(emailModel, noauth_apiClient, detail_url):
+    """Tests the get method with an unauthenticated user client."""
+    response = noauth_apiClient.get(detail_url)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    with pytest.raises(KeyError):
+        response.data['message_id']
+
+
+@pytest.mark.django_db
+def test_get_auth_other(emailModel, other_apiClient, detail_url):
+    """Tests the get method with the authenticated other user client."""
+    response = other_apiClient.get(detail_url)
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    with pytest.raises(KeyError):
+        response.data['message_id']
+
+@pytest.mark.django_db
+def test_get_auth_owner(emailModel, owner_apiClient, detail_url):
+    """Tests the list method with the authenticated owner user client."""
+    response = owner_apiClient.get(detail_url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['message_id'] == emailModel.message_id
+
+
+@pytest.mark.django_db
+def test_patch_noauth(emailModel, noauth_apiClient, detail_url):
+    """Tests the patch method with an unauthenticated user client."""
+    response = noauth_apiClient.patch(detail_url, data={'message_id': 'abc123'})
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    with pytest.raises(KeyError):
+        response.data['message_id']
+    emailModel.refresh_from_db()
+    assert emailModel.message_id is not 'abc123'
+
+
+@pytest.mark.django_db
+def test_patch_auth_other(emailModel, other_apiClient, detail_url):
+    """Tests the patch method with the authenticated other user client."""
+    response = other_apiClient.patch(detail_url, data={'message_id': 'abc123'})
+
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    with pytest.raises(KeyError):
+        response.data['message_id']
+    emailModel.refresh_from_db()
+    assert emailModel.message_id is not 'abc123'
+
+
+@pytest.mark.django_db
+def test_patch_auth_owner(emailModel, owner_apiClient, detail_url):
+    """Tests the patch method with the authenticated owner user client."""
+    response = owner_apiClient.patch(detail_url, data={'message_id': 'abc123'})
+
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    with pytest.raises(KeyError):
+        response.data['message_id']
+    emailModel.refresh_from_db()
+    assert emailModel.message_id is not 'abc123'
+
+
+@pytest.mark.django_db
+def test_put_noauth(emailModel, noauth_apiClient, emailPayload, detail_url):
+    """Tests the put method with an unauthenticated user client."""
+    response = noauth_apiClient.put(detail_url, data=emailPayload)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    with pytest.raises(KeyError):
+        response.data['message_id']
+    emailModel.refresh_from_db()
+    assert emailModel.message_id != emailPayload['message_id']
+
+
+@pytest.mark.django_db
+def test_put_auth_other(emailModel, other_apiClient, emailPayload, detail_url):
+    """Tests the put method with the authenticated other user client."""
+    response = other_apiClient.put(detail_url, data=emailPayload)
+
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    with pytest.raises(KeyError):
+        response.data['message_id']
+    emailModel.refresh_from_db()
+    assert emailModel.message_id != emailPayload['message_id']
+
+
+@pytest.mark.django_db
+def test_put_auth_owner(emailModel, owner_apiClient, emailPayload, detail_url):
+    """Tests the put method with the authenticated owner user client."""
+    response = owner_apiClient.put(detail_url, data=emailPayload)
+
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    with pytest.raises(KeyError):
+        response.data['message_id']
+    emailModel.refresh_from_db()
+    assert emailModel.message_id != emailPayload['message_id']
+
+
+@pytest.mark.django_db
+def test_post_noauth(noauth_apiClient, emailPayload, list_url):
+    """Tests the post method with an unauthenticated user client."""
+    response = noauth_apiClient.post(list_url, data=emailPayload)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    with pytest.raises(KeyError):
+        response.data['message_id']
+    with pytest.raises(EMailModel.DoesNotExist):
+        EMailModel.objects.get(message_id = emailPayload['message_id'])
+
+
+@pytest.mark.django_db
+def test_post_auth_other(other_apiClient, emailPayload, list_url):
+    """Tests the post method with the authenticated other user client."""
+    response = other_apiClient.post(list_url, data=emailPayload)
+
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    with pytest.raises(KeyError):
+        response.data['message_id']
+    with pytest.raises(EMailModel.DoesNotExist):
+        EMailModel.objects.get(message_id = emailPayload['message_id'])
+
+
+@pytest.mark.django_db
+def test_post_auth_owner(owner_apiClient, emailPayload, list_url):
+    """Tests the post method with the authenticated owner user client."""
+    response = owner_apiClient.post(list_url, data=emailPayload)
+
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    with pytest.raises(KeyError):
+        response.data['message_id']
+    with pytest.raises(EMailModel.DoesNotExist):
+        EMailModel.objects.get(message_id = emailPayload['message_id'])
+
+
+@pytest.mark.django_db
+def test_delete_noauth(emailModel, noauth_apiClient, detail_url):
+    """Tests the delete method with an unauthenticated user client."""
+    response = noauth_apiClient.delete(detail_url)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    emailModel.refresh_from_db()
+    assert emailModel.message_id is not None
+
+
+@pytest.mark.django_db
+def test_delete_auth_other(emailModel, other_apiClient, detail_url):
+    """Tests the delete method with the authenticated other user client."""
+    response = other_apiClient.delete(detail_url)
+
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    emailModel.refresh_from_db()
+    assert emailModel.message_id is not None
+
+
+@pytest.mark.django_db
+def test_delete_auth_owner(emailModel, owner_apiClient, detail_url):
+    """Tests the delete method with the authenticated owner user client."""
+    response = owner_apiClient.delete(detail_url)
+
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    emailModel.refresh_from_db()
+    assert emailModel.message_id is not None
+
+
+
+@pytest.mark.django_db
+def test_download_noauth(emailModel, noauth_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.download` action with an unauthenticated user client."""
+    mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+
+    response = noauth_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_DOWNLOAD))
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    mock_open.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_download_auth_other(emailModel, other_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.download` action with the authenticated other user client."""
+    mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+
+    response = other_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_DOWNLOAD))
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    mock_open.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_download_no_file_auth_owner(emailModel, owner_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.download` action with the authenticated owner user client."""
+    mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+
+    response = owner_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_DOWNLOAD))
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    mock_open.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_download_auth_owner(emailModel, owner_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.download` action with the authenticated owner user client."""
+    mockedFileContent = b'This is a 24 bytes file.'
+    mock_open = mocker.mock_open(read_data=mockedFileContent)
+    mocker.patch('Emailkasten.Views.EMailViewSet.open', mock_open)
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.EMailViewSet.os.path.exists', return_value=True)
+
+    response = owner_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_DOWNLOAD))
+
+    assert response.status_code == status.HTTP_200_OK
+    mock_os_path_exists.assert_called_once()
+    mock_open.assert_called_once_with(emailModel.eml_filepath, 'rb')
+    assert 'Content-Disposition' in response.headers
+    assert f'filename="{os.path.basename(emailModel.eml_filepath)}"' in response['Content-Disposition']
+    assert b''.join(response.streaming_content) == mockedFileContent
+
+
+@pytest.mark.django_db
+def test_prerender_noauth(emailModel, noauth_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.prerender` action with an unauthenticated user client."""
+    mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+
+    response = noauth_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_PRERENDER))
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    mock_open.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_prerender_auth_other(emailModel, other_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.prerender` action with the authenticated other user client."""
+    mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+
+    response = other_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_PRERENDER))
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    mock_open.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_prerender_no_file_auth_owner(emailModel, owner_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.prerender` action with the authenticated owner user client."""
+    mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+
+    response = owner_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_PRERENDER))
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    mock_open.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_prerender_auth_owner(emailModel, owner_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.prerender` action with the authenticated owner user client."""
+    mockedFileContent = b'This is a 24 bytes file.'
+    mock_open = mocker.mock_open(read_data=mockedFileContent)
+    mocker.patch('Emailkasten.Views.EMailViewSet.open', mock_open)
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.EMailViewSet.os.path.exists', return_value=True)
+
+    response = owner_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_PRERENDER))
+
+    assert response.status_code == status.HTTP_200_OK
+    mock_os_path_exists.assert_called_once()
+    mock_open.assert_called_once_with(emailModel.prerender_filepath, 'rb')
+    assert 'Content-Disposition' in response.headers
+    assert f'filename="{os.path.basename(emailModel.prerender_filepath)}"' in response['Content-Disposition']
+    assert b''.join(response.streaming_content) == mockedFileContent
+
+
+@pytest.mark.django_db
+def test_toggle_favorite_noauth(emailModel, noauth_apiClient, custom_detail_action_url):
+    """Tests the post method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.toggle_favorite` action with an unauthenticated user client."""
+    response = noauth_apiClient.post(custom_detail_action_url(EMailViewSet.URL_NAME_TOGGLE_FAVORITE))
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    emailModel.refresh_from_db()
+    assert emailModel.is_favorite is False
+
+
+@pytest.mark.django_db
+def test_toggle_favorite_auth_other(emailModel, other_apiClient, custom_detail_action_url):
+    """Tests the post method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.toggle_favorite` action with the authenticated other user client."""
+    response = other_apiClient.post(custom_detail_action_url(EMailViewSet.URL_NAME_TOGGLE_FAVORITE))
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    emailModel.refresh_from_db()
+    assert emailModel.is_favorite is False
+
+
+@pytest.mark.django_db
+def test_toggle_favorite_auth_owner(emailModel, owner_apiClient, custom_detail_action_url):
+    """Tests the post method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.toggle_favorite` action with the authenticated owner user client."""
+    response = owner_apiClient.post(custom_detail_action_url(EMailViewSet.URL_NAME_TOGGLE_FAVORITE))
+
+    assert response.status_code == status.HTTP_200_OK
+    emailModel.refresh_from_db()
+    assert emailModel.is_favorite is True
