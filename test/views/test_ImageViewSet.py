@@ -365,11 +365,13 @@ def test_download_noauth(imageModel, noauth_apiClient, custom_detail_action_url,
     with an unauthenticated user client.
     """
     mock_open = mocker.patch('Emailkasten.Views.ImageViewSet.open')
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.ImageViewSet.os.path.exists', return_value=True)
 
     response = noauth_apiClient.get(custom_detail_action_url(ImageViewSet.URL_NAME_DOWNLOAD))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_open.assert_not_called()
+    mock_os_path_exists.assert_not_called()
 
 
 @pytest.mark.django_db
@@ -378,11 +380,13 @@ def test_download_auth_other(imageModel, other_apiClient, custom_detail_action_u
     with the authenticated other user client.
     """
     mock_open = mocker.patch('Emailkasten.Views.ImageViewSet.open')
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.ImageViewSet.os.path.exists', return_value=True)
 
     response = other_apiClient.get(custom_detail_action_url(ImageViewSet.URL_NAME_DOWNLOAD))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
+    mock_os_path_exists.assert_not_called()
 
 
 @pytest.mark.django_db
@@ -391,11 +395,13 @@ def test_download_no_file_auth_owner(imageModel, owner_apiClient, custom_detail_
     with the authenticated owner user client.
     """
     mock_open = mocker.patch('Emailkasten.Views.ImageViewSet.open')
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.ImageViewSet.os.path.exists', return_value=False)
 
     response = owner_apiClient.get(custom_detail_action_url(ImageViewSet.URL_NAME_DOWNLOAD))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
+    mock_os_path_exists.assert_called_once()
 
 
 @pytest.mark.django_db

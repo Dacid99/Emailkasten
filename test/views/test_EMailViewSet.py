@@ -332,33 +332,39 @@ def test_delete_auth_owner(emailModel, owner_apiClient, detail_url):
 def test_download_noauth(emailModel, noauth_apiClient, custom_detail_action_url, mocker):
     """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.download` action with an unauthenticated user client."""
     mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.EMailViewSet.os.path.exists', return_value=False)
 
     response = noauth_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_DOWNLOAD))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_open.assert_not_called()
+    mock_os_path_exists.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_download_auth_other(emailModel, other_apiClient, custom_detail_action_url, mocker):
     """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.download` action with the authenticated other user client."""
     mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.EMailViewSet.os.path.exists', return_value=False)
 
     response = other_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_DOWNLOAD))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
+    mock_os_path_exists.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_download_no_file_auth_owner(emailModel, owner_apiClient, custom_detail_action_url, mocker):
     """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.download` action with the authenticated owner user client."""
     mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.EMailViewSet.os.path.exists', return_value=False)
 
     response = owner_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_DOWNLOAD))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
+    mock_os_path_exists.assert_called_once()
 
 
 @pytest.mark.django_db
@@ -383,33 +389,39 @@ def test_download_auth_owner(emailModel, owner_apiClient, custom_detail_action_u
 def test_prerender_noauth(emailModel, noauth_apiClient, custom_detail_action_url, mocker):
     """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.prerender` action with an unauthenticated user client."""
     mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.EMailViewSet.os.path.exists', return_value=True)
 
     response = noauth_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_PRERENDER))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_open.assert_not_called()
+    mock_os_path_exists.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_prerender_auth_other(emailModel, other_apiClient, custom_detail_action_url, mocker):
     """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.prerender` action with the authenticated other user client."""
     mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.EMailViewSet.os.path.exists', return_value=True)
 
     response = other_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_PRERENDER))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
+    mock_os_path_exists.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_prerender_no_file_auth_owner(emailModel, owner_apiClient, custom_detail_action_url, mocker):
     """Tests the get method :func:`Emailkasten.Views.EMailViewSet.EMailViewSet.prerender` action with the authenticated owner user client."""
     mock_open = mocker.patch('Emailkasten.Views.EMailViewSet.open')
+    mock_os_path_exists = mocker.patch('Emailkasten.Views.EMailViewSet.os.path.exists', return_value=False)
 
     response = owner_apiClient.get(custom_detail_action_url(EMailViewSet.URL_NAME_PRERENDER))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
+    mock_os_path_exists.assert_called_once()
 
 
 @pytest.mark.django_db
