@@ -23,10 +23,7 @@ Fixtures:
     :func:`fixture_emailModel`: Creates an email in `accountModel`.
     :func:`fixture_imageModel`: Creates an image in `emailModel`.
     :func:`fixture_emailPayload`: Creates clean :class:`Emailkasten.Models.ImageModel.ImageModel` payload for a patch, post or put request.
-    :func:`fixture_list_url`: Gets the viewsets url for list actions.
-    :func:`fixture_detail_url`: Gets the viewsets url for detail actions.
-    :func:`fixture_custom_detail_list_url`: Gets the viewsets url for custom list actions.
-    :func:`fixture_custom_detail_action_url`: Gets the viewsets url for custom detail actions.
+
 """
 
 from __future__ import annotations
@@ -35,7 +32,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from django.forms.models import model_to_dict
-from django.urls import reverse
 from faker import Faker
 from model_bakery import baker
 from rest_framework import status
@@ -46,7 +42,7 @@ from Emailkasten.Models.ImageModel import ImageModel
 from Emailkasten.Views.ImageViewSet import ImageViewSet
 
 if TYPE_CHECKING:
-    from typing import Any, Callable
+    from typing import Any
 
 
 @pytest.fixture(name='imageModel')

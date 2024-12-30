@@ -22,10 +22,7 @@ Fixtures:
     :func:`fixture_accountModel`: Creates an account owned by `owner_user`.
     :func:`fixture_correspondentModel`: Creates an email in `accountModel`.
     :func:`fixture_correspondentPayload`: Creates clean :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel` payload for a patch, post or put request.
-    :func:`fixture_list_url`: Gets the viewsets url for list actions.
-    :func:`fixture_detail_url`: Gets the viewsets url for detail actions.
-    :func:`fixture_custom_detail_list_url`: Gets the viewsets url for custom list actions.
-    :func:`fixture_custom_detail_action_url`: Gets the viewsets url for custom detail actions.
+
 """
 
 from __future__ import annotations
@@ -34,7 +31,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from django.forms.models import model_to_dict
-from django.urls import reverse
 from model_bakery import baker
 from rest_framework import status
 from test_AccountViewSet import fixture_accountModel
@@ -46,7 +42,7 @@ from Emailkasten.Serializers.CorrespondentSerializers.SimpleCorrespondentSeriali
 from Emailkasten.Views.CorrespondentViewSet import CorrespondentViewSet
 
 if TYPE_CHECKING:
-    from typing import Any, Callable
+    from typing import Any
 
 
 @pytest.fixture(name='correspondentModel')
