@@ -43,6 +43,6 @@ class ImageFilter(django_filters.FilterSet):
             "file_name": FilterSetups.TEXT,
             "datasize": FilterSetups.INT,
             "is_favorite": FilterSetups.BOOL,
-            "created": FilterSetups.FLOAT,
-            "updated": FilterSetups.FLOAT,
+            "created": FilterSetups.DATETIME,
+            "updated": FilterSetups.DATETIME,
         }

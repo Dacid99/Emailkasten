@@ -353,7 +353,7 @@ class EMailFilter(django_filters.FilterSet):
         model = EMailModel
         fields = {
             "message_id": FilterSetups.TEXT,
-            "datetime": FilterSetups.FLOAT,
+            "datetime": FilterSetups.DATETIME,
             "email_subject": FilterSetups.TEXT,
             "bodytext": FilterSetups.TEXT,
             "datasize": FilterSetups.INT,
@@ -371,6 +371,6 @@ class EMailFilter(django_filters.FilterSet):
             "x_originated_client": FilterSetups.TEXT,
             "x_spam": FilterSetups.TEXT,
             "is_favorite": FilterSetups.BOOL,
-            "created": FilterSetups.FLOAT,
-            "updated": FilterSetups.FLOAT,
+            "created": FilterSetups.DATETIME,
+            "updated": FilterSetups.DATETIME,
         }

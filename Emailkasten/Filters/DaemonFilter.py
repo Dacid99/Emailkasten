@@ -157,6 +157,6 @@ class DaemonFilter(django_filters.FilterSet):
             "cycle_interval": FilterSetups.INT,
             "is_running": FilterSetups.BOOL,
             "is_healthy": FilterSetups.BOOL,
-            "created": FilterSetups.FLOAT,
-            "updated": FilterSetups.FLOAT,
+            "created": FilterSetups.DATETIME,
+            "updated": FilterSetups.DATETIME,
         }
