@@ -91,8 +91,8 @@ def test_ImageModel_unique():
 
     email = baker.make(EMailModel)
 
-    image_1 = baker.make(ImageModel, email = email)
-    image_2 = baker.make(ImageModel, email = email)
+    image_1 = baker.make(ImageModel, file_path="path_1", email = email)
+    image_2 = baker.make(ImageModel, file_path="path_2", email = email)
     assert image_1.file_path != image_2.file_path
     assert image_1.email == image_2.email
 

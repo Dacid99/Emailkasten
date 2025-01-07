@@ -89,8 +89,8 @@ def test_AttachmentModel_unique():
 
     email = baker.make(EMailModel)
 
-    attachment_1 = baker.make(AttachmentModel, email = email)
-    attachment_2 = baker.make(AttachmentModel, email = email)
+    attachment_1 = baker.make(AttachmentModel, file_path="path_1", email = email)
+    attachment_2 = baker.make(AttachmentModel, file_path="path_2", email = email)
     assert attachment_1.file_path != attachment_2.file_path
     assert attachment_1.email == attachment_2.email
 
