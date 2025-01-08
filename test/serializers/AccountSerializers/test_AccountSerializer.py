@@ -35,7 +35,7 @@ def test_output(account):
     assert 'mail_address' in serializerData
     assert serializerData['mail_address'] == account.mail_address
     assert 'mailboxes' in serializerData
-    assert isinstance(serializerData['mailboxes'], list)
+    assert serializerData['mailboxes'] == []
     assert 'mail_host' in serializerData
     assert serializerData['mail_host'] == account.mail_host
     assert 'mail_host_port' in serializerData
@@ -49,9 +49,9 @@ def test_output(account):
     assert 'is_favorite' in serializerData
     assert serializerData['is_favorite'] == account.is_favorite
     assert 'created' in serializerData
-    assert serializerData['created'] == account.created.isoformat()
+    assert serializerData['created'].replace('Z', '+00:00') == account.created.isoformat()
     assert 'updated' in serializerData
-    assert serializerData['updated'] == account.updated.isoformat()
+    assert serializerData['updated'].replace('Z', '+00:00') == account.updated.isoformat()
     assert 'user' not in serializerData
     assert len(serializerData) == 11
 
@@ -64,14 +64,21 @@ def test_input(account):
 
     assert 'id' not in serializerData
     assert 'password' in serializerData
+    assert serializerData['password'] == account.password
     assert 'mail_address' in serializerData
+    assert serializerData['mail_address'] == account.mail_address
     assert 'mailboxes' not in serializerData
     assert 'mail_host' in serializerData
+    assert serializerData['mail_host'] == account.mail_host
     assert 'mail_host_port' in serializerData
+    assert serializerData['mail_host_port'] == account.mail_host_port
     assert 'protocol' in serializerData
+    assert serializerData['protocol'] == account.protocol
     assert 'timeout' in serializerData
+    assert serializerData['timeout'] == account.timeout
     assert 'is_healthy' not in serializerData
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == account.is_favorite
     assert 'created' not in serializerData
     assert 'updated' not in serializerData
     assert 'user' not in serializerData

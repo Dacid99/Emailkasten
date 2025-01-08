@@ -27,13 +27,20 @@ def test_output(image):
     serializerData = BaseImageSerializer(instance=image).data
 
     assert 'id' in serializerData
+    assert serializerData['id'] == image.id
     assert 'file_path' not in serializerData
     assert 'file_name' in serializerData
+    assert serializerData['file_name'] == image.file_name
     assert 'datasize' in serializerData
+    assert serializerData['datasize'] == image.datasize
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == image.is_favorite
     assert 'email' in serializerData
+    assert serializerData['email'] == image.email.id
     assert 'created' in serializerData
+    assert serializerData['created'].replace('Z', '+00:00') == image.created.isoformat()
     assert 'updated' in serializerData
+    assert serializerData['updated'].replace('Z', '+00:00') == image.updated.isoformat()
     assert len(serializerData) == 7
 
 
@@ -48,6 +55,7 @@ def test_input(image):
     assert 'file_name' not in serializerData
     assert 'datasize' not in serializerData
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == image.is_favorite
     assert 'email' not in serializerData
     assert 'created' not in serializerData
     assert 'updated' not in serializerData

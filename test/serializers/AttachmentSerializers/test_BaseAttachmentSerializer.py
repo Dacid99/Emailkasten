@@ -29,13 +29,20 @@ def test_output(attachment):
     serializerData = BaseAttachmentSerializer(instance=attachment).data
 
     assert 'id' in serializerData
+    assert serializerData['id'] == attachment.id
     assert 'file_path' not in serializerData
     assert 'file_name' in serializerData
+    assert serializerData['file_name'] == attachment.file_name
     assert 'datasize' in serializerData
+    assert serializerData['datasize'] == attachment.datasize
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == attachment.is_favorite
     assert 'email' in serializerData
+    assert serializerData['email'] == attachment.email.id
     assert 'created' in serializerData
+    assert serializerData['created'].replace('Z', '+00:00') == attachment.created.isoformat()
     assert 'updated' in serializerData
+    assert serializerData['updated'].replace('Z', '+00:00') == attachment.updated.isoformat()
     assert len(serializerData) == 7
 
 
@@ -50,6 +57,7 @@ def test_input(attachment):
     assert 'file_name' not in serializerData
     assert 'datasize' not in serializerData
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == attachment.is_favorite
     assert 'email' not in serializerData
     assert 'created' not in serializerData
     assert 'updated' not in serializerData

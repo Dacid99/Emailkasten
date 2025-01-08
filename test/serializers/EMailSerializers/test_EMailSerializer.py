@@ -29,20 +29,35 @@ def test_output(email):
     serializerData = EMailSerializer(instance=email).data
 
     assert 'id' in serializerData
+    assert serializerData['id'] == email.id
     assert 'message_id' in serializerData
+    assert serializerData['message_id'] == email.message_id
     assert 'datetime' in serializerData
+    assert serializerData['datetime'].replace('Z', '+00:00') == email.datetime.isoformat()
     assert 'email_subject' in serializerData
+    assert serializerData['email_subject'] == email.email_subject
     assert 'bodytext' in serializerData
+    assert serializerData['bodytext'] == email.bodytext
     assert 'inReplyTo' in serializerData
+    assert serializerData['inReplyTo'] is None
     assert 'datasize' in serializerData
+    assert serializerData['datasize'] == email.datasize
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == email.is_favorite
     assert 'account' in serializerData
+    assert serializerData['account'] == email.account.id
     assert 'created' in serializerData
+    assert serializerData['created'].replace('Z', '+00:00') == email.created.isoformat()
     assert 'updated' in serializerData
+    assert serializerData['updated'].replace('Z', '+00:00') == email.updated.isoformat()
     assert 'attachments' in serializerData
+    assert serializerData['attachments'] == []
     assert 'images' in serializerData
+    assert serializerData['images'] == []
     assert 'mailinglist' in serializerData
+    assert serializerData['mailinglist'] is None
     assert 'correspondents' in serializerData
+    assert serializerData['correspondents'] == []
     assert len(serializerData) == 15
 
 
@@ -60,6 +75,7 @@ def test_input(email):
     assert 'inReplyTo' not in serializerData
     assert 'datasize' not in serializerData
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == email.is_favorite
     assert 'account' not in serializerData
     assert 'created' not in serializerData
     assert 'updated' not in serializerData

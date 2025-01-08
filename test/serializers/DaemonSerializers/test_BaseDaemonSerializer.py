@@ -29,15 +29,24 @@ def test_output(daemon):
     serializerData = BaseDaemonSerializer(instance=daemon).data
 
     assert 'id' in serializerData
+    assert serializerData['id'] == daemon.id
     assert 'log_filepath' not in serializerData
     assert 'uuid' in serializerData
+    assert serializerData['uuid'] == str(daemon.uuid)
     assert 'mailbox' in serializerData
+    assert serializerData['mailbox'] == daemon.mailbox.id
     assert 'fetching_criterion' in serializerData
+    assert serializerData['fetching_criterion'] == daemon.fetching_criterion
     assert 'cycle_interval' in serializerData
+    assert serializerData['cycle_interval'] == daemon.cycle_interval
     assert 'is_running' in serializerData
+    assert serializerData['is_running'] == daemon.is_running
     assert 'is_healthy' in serializerData
+    assert serializerData['is_healthy'] == daemon.is_healthy
     assert 'created' in serializerData
+    assert serializerData['created'].replace('Z', '+00:00') == daemon.created.isoformat()
     assert 'updated' in serializerData
+    assert serializerData['updated'].replace('Z', '+00:00') == daemon.updated.isoformat()
     assert len(serializerData) == 9
 
 
@@ -52,7 +61,9 @@ def test_input(daemon):
     assert 'uuid' not in serializerData
     assert 'mailbox' not in serializerData
     assert 'fetching_criterion' in serializerData
+    assert serializerData['fetching_criterion'] == daemon.fetching_criterion
     assert 'cycle_interval' in serializerData
+    assert serializerData['cycle_interval'] == daemon.cycle_interval
     assert 'is_running' not in serializerData
     assert 'is_healthy' not in serializerData
     assert 'created' not in serializerData

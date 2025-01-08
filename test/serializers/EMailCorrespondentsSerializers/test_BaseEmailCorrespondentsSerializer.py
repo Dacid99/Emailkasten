@@ -30,11 +30,17 @@ def test_output(emailCorrespondent):
     serializerData = BaseEMailCorrespondentSerializer(instance=emailCorrespondent).data
 
     assert 'id' in serializerData
+    assert serializerData['id'] == emailCorrespondent.id
     assert 'email' in serializerData
+    assert serializerData['email'] == emailCorrespondent.email.id
     assert 'correspondent' in serializerData
+    assert serializerData['correspondent'] == emailCorrespondent.correspondent.id
     assert 'mention' in serializerData
+    assert serializerData['mention'] == emailCorrespondent.mention
     assert 'created' in serializerData
+    assert serializerData['created'].replace('Z', '+00:00') == emailCorrespondent.created.isoformat()
     assert 'updated' in serializerData
+    assert serializerData['updated'].replace('Z', '+00:00') == emailCorrespondent.updated.isoformat()
     assert len(serializerData) == 6
 
 

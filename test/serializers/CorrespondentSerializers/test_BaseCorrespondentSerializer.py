@@ -29,13 +29,19 @@ def test_output(correspondent):
     serializerData = BaseCorrespondentSerializer(instance=correspondent).data
 
     assert 'id' in serializerData
+    assert serializerData['id'] == correspondent.id
     assert 'emails' not in serializerData
     assert 'mailinglist' not in serializerData
     assert 'email_name' in serializerData
+    assert serializerData['email_name'] == correspondent.email_name
     assert 'email_address' in serializerData
+    assert serializerData['email_address'] == correspondent.email_address
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == correspondent.is_favorite
     assert 'created' in serializerData
+    assert serializerData['created'].replace('Z', '+00:00') == correspondent.created.isoformat()
     assert 'updated' in serializerData
+    assert serializerData['updated'].replace('Z', '+00:00') == correspondent.updated.isoformat()
     assert len(serializerData) == 6
 
 
@@ -49,8 +55,10 @@ def test_input(correspondent):
     assert 'emails' not in serializerData
     assert 'mailinglist' not in serializerData
     assert 'email_name' in serializerData
+    assert serializerData['email_name'] == correspondent.email_name
     assert 'email_address' not in serializerData
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == correspondent.is_favorite
     assert 'created' not in serializerData
     assert 'updated' not in serializerData
     assert len(serializerData) == 2

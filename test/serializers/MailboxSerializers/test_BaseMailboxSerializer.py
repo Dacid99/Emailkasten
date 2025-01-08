@@ -29,15 +29,25 @@ def test_output(mailbox):
     serializerData = BaseMailboxSerializer(instance=mailbox).data
 
     assert 'id' in serializerData
+    assert serializerData['id'] == mailbox.id
     assert 'name' in serializerData
+    assert serializerData['name'] == mailbox.name
     assert 'account' in serializerData
+    assert serializerData['account'] == mailbox.account.id
     assert 'save_attachments' in serializerData
+    assert serializerData['save_attachments'] == mailbox.save_attachments
     assert 'save_images' in serializerData
+    assert serializerData['save_images'] == mailbox.save_images
     assert 'save_toEML' in serializerData
+    assert serializerData['save_toEML'] == mailbox.save_toEML
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == mailbox.is_favorite
     assert 'is_healthy' in serializerData
+    assert serializerData['is_healthy'] == mailbox.is_healthy
     assert 'created' in serializerData
+    assert serializerData['created'].replace('Z', '+00:00') == mailbox.created.isoformat()
     assert 'updated' in serializerData
+    assert serializerData['updated'].replace('Z', '+00:00') == mailbox.updated.isoformat()
     assert len(serializerData) == 10
 
 
@@ -51,9 +61,13 @@ def test_input(mailbox):
     assert 'name' not in serializerData
     assert 'account' not in serializerData
     assert 'save_attachments' in serializerData
+    assert serializerData['save_attachments'] == mailbox.save_attachments
     assert 'save_images' in serializerData
+    assert serializerData['save_images'] == mailbox.save_images
     assert 'save_toEML' in serializerData
+    assert serializerData['save_toEML'] == mailbox.save_toEML
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == mailbox.is_favorite
     assert 'is_healthy' not in serializerData
     assert 'created' not in serializerData
     assert 'updated' not in serializerData

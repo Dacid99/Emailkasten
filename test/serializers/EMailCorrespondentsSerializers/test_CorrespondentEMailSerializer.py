@@ -31,8 +31,10 @@ def test_output(emailCorrespondent):
 
     assert 'id' not in serializerData
     assert 'email' in serializerData
+    assert isinstance(serializerData['email'], dict)
     assert 'correspondent' not in serializerData
     assert 'mention' in serializerData
+    assert serializerData['mention'] == emailCorrespondent.mention
     assert 'created' not in serializerData
     assert 'updated' not in serializerData
     assert len(serializerData) == 2

@@ -30,16 +30,26 @@ def test_output(account):
     serializerData = BaseAccountSerializer(instance=account).data
 
     assert 'id' in serializerData
+    assert serializerData['id'] == account.id
     assert 'password' not in serializerData
     assert 'mail_address' in serializerData
+    assert serializerData['mail_address'] == account.mail_address
     assert 'mail_host' in serializerData
+    assert serializerData['mail_host'] == account.mail_host
     assert 'mail_host_port' in serializerData
+    assert serializerData['mail_host_port'] == account.mail_host_port
     assert 'protocol' in serializerData
+    assert serializerData['protocol'] == account.protocol
     assert 'timeout' in serializerData
+    assert serializerData['timeout'] == account.timeout
     assert 'is_healthy' in serializerData
+    assert serializerData['is_healthy'] == account.is_healthy
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == account.is_favorite
     assert 'created' in serializerData
+
     assert 'updated' in serializerData
+
     assert 'user' not in serializerData
     assert len(serializerData) == 10
 
@@ -52,13 +62,20 @@ def test_input(account):
 
     assert 'id' not in serializerData
     assert 'password' in serializerData
+    assert serializerData['password'] == account.password
     assert 'mail_address' in serializerData
+    assert serializerData['mail_address'] == account.mail_address
     assert 'mail_host' in serializerData
+    assert serializerData['mail_host'] == account.mail_host
     assert 'mail_host_port' in serializerData
+    assert serializerData['mail_host_port'] == account.mail_host_port
     assert 'protocol' in serializerData
+    assert serializerData['protocol'] == account.protocol
     assert 'timeout' in serializerData
+    assert serializerData['timeout'] == account.timeout
     assert 'is_healthy' not in serializerData
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == account.is_favorite
     assert 'created' not in serializerData
     assert 'updated' not in serializerData
     assert 'user' not in serializerData

@@ -29,19 +29,32 @@ def test_output(mailingList):
     serializerData = SimpleMailingListSerializer(instance=mailingList).data
 
     assert 'id' in serializerData
+    assert serializerData['id'] == mailingList.id
     assert 'list_id' in serializerData
+    assert serializerData['list_id'] == mailingList.list_id
     assert 'list_owner' in serializerData
+    assert serializerData['list_owner'] == mailingList.list_owner
     assert 'list_subscribe' in serializerData
+    assert serializerData['list_subscribe'] == mailingList.list_subscribe
     assert 'list_unsubscribe' in serializerData
+    assert serializerData['list_unsubscribe'] == mailingList.list_unsubscribe
     assert 'list_post' in serializerData
+    assert serializerData['list_post'] == mailingList.list_post
     assert 'list_help' in serializerData
+    assert serializerData['list_help'] == mailingList.list_help
     assert 'list_archive' in serializerData
+    assert serializerData['list_archive'] == mailingList.list_archive
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == mailingList.is_favorite
     assert 'correspondent' in serializerData
+    assert serializerData['correspondent'] == mailingList.correspondent.id
     assert 'created' in serializerData
+    assert serializerData['created'].replace('Z', '+00:00') == mailingList.created.isoformat()
     assert 'updated' in serializerData
+    assert serializerData['updated'].replace('Z', '+00:00') == mailingList.updated.isoformat()
     assert 'emails' not in serializerData
     assert 'email_number' in serializerData
+    assert serializerData['email_number'] == 0
     assert len(serializerData) == 13
 
 
@@ -60,6 +73,7 @@ def test_input(mailingList):
     assert 'list_help' not in serializerData
     assert 'list_archive' not in serializerData
     assert 'is_favorite' in serializerData
+    assert serializerData['is_favorite'] == mailingList.is_favorite
     assert 'correspondent' not in serializerData
     assert 'created' not in serializerData
     assert 'updated' not in serializerData
