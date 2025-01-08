@@ -19,49 +19,22 @@
 """Module with the :class:`SimpleMailingListSerializer` serializer class."""
 
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 from ...Models.MailingListModel import MailingListModel
+from .BaseMailingListSerializer import BaseMailingListSerializer
 
 
-class SimpleMailingListSerializer(serializers.ModelSerializer):
+class SimpleMailingListSerializer(BaseMailingListSerializer):
     """A reduced serializer for a :class:`Emailkasten.Models.MailingListModel`.
-    Uses all fields excluding the mails and the correspondent.
-    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
+    Includes a method field for the count of elements in :attr:`Emailkasten.Models.MailingList.MailingList.emails`.
+    """
 
-    email_number = serializers.SerializerMethodField()
+    email_number = serializers.SerializerMethodField(read_only=True)
     """The number of mails by the mailinglist. Set via :func:`get_email_number`."""
 
 
-    class Meta:
+    class Meta(BaseMailingListSerializer.Meta):
         """Metadata class for the serializer."""
-
-        model = MailingListModel
-
-        fields = '__all__'
-        """Include all fields."""
-
-        read_only_fields = [
-            'list_id',
-            'list_owner',
-            'list_subscribe',
-            'list_unsubscribe',
-            'list_post',
-            'list_help',
-            'list_archive',
-            'correspondent',
-            'created',
-            'updated',
-            'email_number'
-        ]
-
-        validators = [
-            UniqueTogetherValidator(
-                queryset=MailingListModel.objects.all(),
-                fields=['list_id', 'correspondent'],
-                message='This mailinglist already exists!'
-            )
-        ]
 
 
     def get_email_number(self, object: MailingListModel) -> int:

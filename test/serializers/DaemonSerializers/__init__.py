@@ -16,28 +16,4 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`SimpleCorrespondentSerializer` serializer class."""
-
-from rest_framework import serializers
-
-from ...Models.CorrespondentModel import CorrespondentModel
-
-
-class SimpleCorrespondentSerializer(serializers.ModelSerializer):
-    """A simplified serializer for a :class:`Emailkasten.Models.CorrespondentModel`.
-    Uses all fields except for the emails mentioning the correspondent.
-    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
-
-    class Meta:
-        """Metadata class for the serializer."""
-
-        model = CorrespondentModel
-
-        fields = '__all__'
-        """Include all fields."""
-
-        read_only_fields = [
-                'email_address',
-                'created',
-                'updated'
-            ]
+"""Test package for the :mod:`Emailkasten.Serializers.DaemonSerializers` package."""

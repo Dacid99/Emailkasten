@@ -16,22 +16,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`AccountSerializer` serializer class."""
+import pytest
+from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
 
-from .BaseAccountSerializer import BaseAccountSerializer
-from ..MailboxSerializers.BaseMailboxSerializer import BaseMailboxSerializer
-
-
-class AccountSerializer(BaseAccountSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.AccountModel`.
-    Includes a nested serializer for the related field `mailboxes`.
-    """
-
-    mailboxes = BaseMailboxSerializer(many=True, read_only=True)
-    """The mailboxes of the account are serialized
-    by :class:`Emailkasten.Models.MailboxSerializers.BaseMailboxSerializer.BaseMailboxSerializer`.
-    """
-
-
-    class Meta(BaseAccountSerializer.Meta):
-        """Metadata class for the serializer."""
+from Emailkasten.Serializers.UserSerializers.UserSerializer import \
+    UserSerializer

@@ -19,31 +19,31 @@
 """Module with the :class:`SimpleEMailSerializer` serializer class."""
 
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 from ...Models.EMailModel import EMailModel
 
 
-class SimpleEMailSerializer(serializers.ModelSerializer):
-    """A reduced serializer for a :class:`Emailkasten.Models.EMailModel`.
-    Uses all fields excluding including the correspondents, the mailinglist and all images and attachments..
-    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
+class BaseEMailSerializer(serializers.ModelSerializer):
+    """The base serializer for :class:`Emailkasten.Models.EMailModel.EMailModel`.
+    Includes all viable fields from the model.
+    Sets all constraints that must be implemented in all serializers.
+    Other serializers for :class:`Emailkasten.Models.EMailModel.EMailModel` should inherit from this.
+    """
 
     class Meta:
-        """Metadata class for the serializer."""
+        """Metadata class for the base serializer.
+        Contains constraints that must be implemented by all serializers.
+        Other serializer metaclasses should inherit from this.
+        The read_only_fields must not be shortened in subclasses.
+        """
 
         model = EMailModel
+        """The model to serialize."""
 
         exclude = ['eml_filepath', 'prerender_filepath']
-        """Exclude the :attr:`Emailkasten.Models.EMailModel.eml_filepath` and :attr:`Emailkasten.Models.EMailModel.prerender_filepath` fields."""
-
-        validators = [
-            UniqueTogetherValidator(
-                queryset=EMailModel.objects.all(),
-                fields=['message_id', 'account'],
-                message='This email already exists!'
-            )
-        ]
+        """Exclude the :attr:`Emailkasten.Models.EMailModel.EMailModel.eml_filepath`
+        and :attr:`Emailkasten.Models.EMailModel.EMailModel.prerender_filepath` fields.
+        """
 
         read_only_fields = [
             'message_id',
@@ -52,7 +52,8 @@ class SimpleEMailSerializer(serializers.ModelSerializer):
             'bodytext',
             'inReplyTo',
             'datasize',
-            'is_favorite',
+            'correspondents',
+            'mailinglist',
             'account',
             'comments',
             'keywords',
@@ -71,3 +72,6 @@ class SimpleEMailSerializer(serializers.ModelSerializer):
             'created',
             'updated'
         ]
+        """All fields except for :attr:`Emailkasten.Models.EMailModel.EMailModel.is_favorite`
+        are read-only.
+        """

@@ -20,82 +20,50 @@
 
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
-from rest_framework.validators import UniqueTogetherValidator
 
 from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from ...Models.EMailModel import EMailModel
-from ..AttachmentSerializers.AttachmentSerializer import AttachmentSerializer
+from ..AttachmentSerializers.BaseAttachmentSerializer import \
+    BaseAttachmentSerializer
 from ..EMailCorrespondentsSerializers.EMailCorrespondentsSerializer import \
     EMailCorrespondentSerializer
-from ..ImageSerializers.ImageSerializer import ImageSerializer
+from ..ImageSerializers.BaseImageSerializer import BaseImageSerializer
 from ..MailingListSerializers.SimpleMailingListSerializer import \
     SimpleMailingListSerializer
+from .BaseEMailSerializer import BaseEMailSerializer
 
 
-class FullEMailSerializer(serializers.ModelSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.EMailModel`.
-    Uses all fields including all correspondents and mailinglists mentioning the correspondent as well as all images and attachments.
-    Use exclusively in a :restframework::class:`viewsets.ReadOnlyModelViewSet`."""
+class FullEMailSerializer(BaseEMailSerializer):
+    """A complete serializer for a :class:`Emailkasten.Models.EMailModel`.
+    Includes nested serializers for the :attr:`Emailkasten.Models.EMailModel.EMailModel.attachments`,
+    :attr:`Emailkasten.Models.EMailModel.EMailModel.images`,
+    :attr:`Emailkasten.Models.EMailModel.EMailModel.mailinglist` and
+    :attr:`Emailkasten.Models.EMailModel.EMailModel.correspondents` foreign key fields.
+    """
 
-    attachments = AttachmentSerializer(many=True, read_only=True)
-    """The attachments are serialized by :class:`Emailkasten.AttachmentSerializers.AttachmentSerializer.AttachmentSerializer`."""
+    attachments = BaseAttachmentSerializer(many=True, read_only=True)
+    """The attachments are serialized
+    by :class:`Emailkasten.AttachmentSerializers.BaseAttachmentSerializer.BaseAttachmentSerializer`.
+    """
 
-    images = ImageSerializer(many=True, read_only=True)
-    """The images are serialized by :class:`Emailkasten.ImageSerializers.ImageSerializer.ImageSerializer`."""
+    images = BaseImageSerializer(many=True, read_only=True)
+    """The images are serialized
+    by :class:`Emailkasten.ImageSerializers.BaseImageSerializer.BaseImageSerializer`.
+    """
 
     mailinglist = SimpleMailingListSerializer(read_only=True)
-    """The attachments are serialized by :class:`Emailkasten.MailingListSerializers.SimpleMailingListSerializer.SimpleMailingListSerializer`."""
+    """The attachments are serialized
+    by :class:`Emailkasten.MailingListSerializers.SimpleMailingListSerializer.SimpleMailingListSerializer`.
+    """
 
     correspondents = serializers.SerializerMethodField(read_only=True)
-    """The emails are set from the :class:`Emailkasten.Models.EMailCorrespondentsModel` via :func:`get_emails`."""
+    """The emails are set from the
+    :class:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel`
+    via :func:`get_emails`.
+    """
 
-
-    class Meta:
+    class Meta(BaseEMailSerializer.Meta):
         """Metadata class for the serializer."""
-
-        model = EMailModel
-
-        exclude = ['eml_filepath', 'prerender_filepath']
-        """Exclude the :attr:`Emailkasten.Models.EMailModel.eml_filepath` and :attr:`Emailkasten.Models.EMailModel.prerender_filepath` fields."""
-
-        validators = [
-            UniqueTogetherValidator(
-                queryset=EMailModel.objects.all(),
-                fields=['message_id', 'account'],
-                message='This email already exists!'
-            )
-        ]
-
-        read_only_fields = [
-            'message_id',
-            'datetime',
-            'email_subject',
-            'bodytext',
-            'inReplyTo',
-            'datasize',
-            'is_favorite',
-            'account',
-            'comments',
-            'keywords',
-            'importance',
-            'priority',
-            'precedence',
-            'received',
-            'user_agent',
-            'auto_submitted',
-            'content_type',
-            'content_language',
-            'content_location',
-            'x_priority',
-            'x_originated_client',
-            'x_spam',
-            'created',
-            'updated',
-            'attachments',
-            'images',
-            'mailinglist',
-            'correspondents'
-        ]
 
 
     def get_correspondents(self, object: EMailModel) -> ReturnDict|None:
@@ -106,7 +74,7 @@ class FullEMailSerializer(serializers.ModelSerializer):
 
         Returns:
             The serialized correspondents connected to the instance to be serialized.
-            None if the the user is not authenticated.
+            An empty list if the the user is not authenticated.
         """
         request = self.context.get('request')
         user = request.user if request else None
@@ -114,4 +82,4 @@ class FullEMailSerializer(serializers.ModelSerializer):
             emailcorrespondents = EMailCorrespondentsModel.objects.filter(email=object, email__account__user=user).distinct()
             return EMailCorrespondentSerializer(emailcorrespondents, many=True, read_only=True).data
         else:
-            return None
+            return []
