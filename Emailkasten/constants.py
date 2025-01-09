@@ -353,7 +353,7 @@ class APIConfiguration:
     DEFAULT_PAGE_SIZE: Final[int] = 20
     """The default number of entries per paginated response."""
 
-    REGISTRATION_ENABLED: Final[bool] = True
+    REGISTRATION_ENABLED: Final[bool] = os.environ.get("REGISTRATION_ENABLED", False)
     """Whether reegistration of new users is enabled."""
 
 

@@ -15,13 +15,11 @@
 - user divided storage to make file_paths unique again
 - some fallback for failed emailaddress parsing is required
 - combined filter for correspondent with mention
-- general save function in filemanagement for DRY
 - refine storage management error correction
 - streamable logs for daemons
 - api versioning
 - check database before saving attachments and images
-- more foreign keys should be read_only
-- post might allow for non owners to write data in some viewsets, check create methods
+- registration toggling
 
 ### Work in progress
 - tests

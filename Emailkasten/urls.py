@@ -42,7 +42,6 @@ from .Views.DaemonViewSet import DaemonViewSet
 from .Views.DatabaseStatsView import DatabaseStatsView
 from .Views.EMailViewSet import EMailViewSet
 from .Views.ImageViewSet import ImageViewSet
-from .Views.LoginOutView import CSRFCookieView, LoginView, LogoutView
 from .Views.MailboxViewSet import MailboxViewSet
 from .Views.MailingListViewSet import MailingListViewSet
 from .Views.UserViewSet import UserViewSet
@@ -62,7 +61,4 @@ router.register(rf'{MailingListViewSet.BASENAME}', MailingListViewSet, basename=
 urlpatterns = [
     path('', include(router.urls)),
     path(f'{DatabaseStatsView.NAME}/', DatabaseStatsView.as_view(), name = DatabaseStatsView.NAME),
-    path(f'{LoginView.NAME}/', LoginView.as_view(), name = LoginView.NAME),
-    path(f'{LogoutView.NAME}/', LogoutView.as_view(), name = LogoutView.NAME),
-    path(f'{CSRFCookieView.NAME}/', CSRFCookieView.as_view(), name = CSRFCookieView.NAME),
 ]

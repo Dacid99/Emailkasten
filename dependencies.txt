@@ -4,6 +4,8 @@ djangorestframework
 django-health-check
 django-filter
 django-dirtyfields
+django-allauth
+dj-rest-auth
 drf-spectacular
 mysqlclient
 exchangelib
