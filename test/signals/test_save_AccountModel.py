@@ -24,28 +24,38 @@ from model_bakery import baker
 from Emailkasten.Models.AccountModel import AccountModel
 from Emailkasten.Models.MailboxModel import MailboxModel
 
+
+@pytest.fixture(name='mock_logger', autouse=True)
+def fixture_mock_logger(mocker):
+    """Mocks :attr:`Emailkasten.signals.save_AccountModel.logger` of the module."""
+    return mocker.patch('Emailkasten.signals.save_AccountModel.logger')
+
+
 @pytest.mark.django_db
-def test_AccountModel_post_save_is_healthy():
+def test_AccountModel_post_save_is_healthy_from_healthy(mock_logger):
     """Tests the post_save function of :class:`Emailkasten.Models.AccountModel.AccountModel`."""
 
-    account = baker.make(AccountModel)
-
-    mailbox_1 = baker.make(MailboxModel, account=account)
-    mailbox_2 = baker.make(MailboxModel, account=account)
-
-    assert mailbox_1.is_healthy is True
-    assert mailbox_2.is_healthy is True
+    account = baker.make(AccountModel, is_healthy=True)
+    baker.make(MailboxModel, account=account, is_healthy=True, _quantity=2)
 
     account.is_healthy = False
     account.save(update_fields = ['is_healthy'])
-    mailbox_1.refresh_from_db()
-    mailbox_2.refresh_from_db()
-    assert mailbox_1.is_healthy is False
-    assert mailbox_2.is_healthy is False
+
+    for mailbox in account.mailboxes.all():
+        assert mailbox.is_healthy is False
+    mock_logger.debug.assert_called()
+
+
+@pytest.mark.django_db
+def test_AccountModel_post_save_is_healthy_from_unhealthy(mock_logger):
+    """Tests the post_save function of :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+
+    account = baker.make(AccountModel, is_healthy=False)
+    baker.make(MailboxModel, account=account, is_healthy=False, _quantity=2)
 
     account.is_healthy = True
     account.save(update_fields = ['is_healthy'])
-    mailbox_1.refresh_from_db()
-    mailbox_2.refresh_from_db()
-    assert mailbox_1.is_healthy is False
-    assert mailbox_2.is_healthy is False
+
+    for mailbox in account.mailboxes.all():
+        assert mailbox.is_healthy is False
+    mock_logger.debug.assert_not_called()
