@@ -39,7 +39,10 @@ def post_save_is_healthy(sender: MailboxModel, instance: MailboxModel, created: 
         sender: The class type that sent the post_save signal.
         instance: The instance that has been saved.
         created: Whether the instance was newly created.
-        **kwargs: Other keyword arguments.
+        **kwargs: Other keyword arguments
+
+    Note:
+        Using the batch `update` for the daemons does not trigger their post_save!
     """
     if created:
         return
@@ -47,7 +50,8 @@ def post_save_is_healthy(sender: MailboxModel, instance: MailboxModel, created: 
     if instance.is_healthy:
         if 'is_healthy' in instance.get_dirty_fields():
             logger.debug("%s has become healthy, flagging its account as healthy ...", str(instance))
-            instance.account.update(is_healthy=True)
+            instance.account.is_healthy=True
+            instance.account.save(update_fields=['is_healthy'])
             logger.debug("Successfully flagged account as healthy.")
     else:
         if 'is_healthy' in instance.get_dirty_fields():
