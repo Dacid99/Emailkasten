@@ -20,4 +20,6 @@ EMailkasten documentation
    db-graph
    test
 
-`Latest mypy report <_static/mypy_report/index.html>`_
+`Latest mypy report <mypy_report/index.html>`_
+
+`Latest pytest coverage report <pytest-cov/index.html>`_

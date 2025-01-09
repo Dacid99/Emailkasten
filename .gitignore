@@ -10,3 +10,5 @@ django.log
 Emailkasten.log
 daemon*.log
 reports/
+.coverage
+pytest-cov/
