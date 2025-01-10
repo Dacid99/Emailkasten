@@ -80,11 +80,11 @@ def test_StorageModel_initial_single_creation(STORAGE_PATH, expectedCritical, mo
 
 
 @pytest.mark.django_db
-def test_StorageModel_initial_many_creation(STORAGE_PATH, expectedCritical, mock_logger, mock_filesystem, mocker):
+def test_StorageModel_initial_many_creation(mock_logger, mock_filesystem, mocker):
     """Tests the correct initial allocation of storage by :class:`Emailkasten.Models.StorageModel.StorageModel`."""
 
     mock_StorageConfiguration = mocker.patch('Emailkasten.Models.StorageModel.StorageConfiguration')
-    mock_StorageConfiguration.STORAGE_PATH = STORAGE_PATH
+    mock_StorageConfiguration.STORAGE_PATH = 'empty-storage'
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 
     for i in range(0,2*3+1):
