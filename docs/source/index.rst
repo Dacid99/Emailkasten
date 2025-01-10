@@ -22,4 +22,5 @@ EMailkasten documentation
 
 `Latest mypy report <mypy_report/index.html>`_
 
-`Latest pytest coverage report <pytest-cov/index.html>`_
+`Latest pytest report <pytest/report.html>`_
+`Latest pytest coverage report <pytest/cov/index.html>`_
