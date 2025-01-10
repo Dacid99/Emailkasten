@@ -17,8 +17,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import pytest
-from .models.test_DaemonModel import fixture_daemon
-
+from ..models.test_DaemonModel import fixture_daemonModel
+from Emailkasten.Models.DaemonModel import DaemonModel
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker):
@@ -27,7 +27,7 @@ def fixture_mock_logger(mocker):
 
 @pytest.mark.django_db
 def test_pre_delete_stop_daemon(mocker, mock_logger, daemon):
-    mock_EMailArchiverDaemon_stopDaemon = mocker.patch('Emailkasten.EMailArchiverDaemon.stopDaemon')
+    mock_EMailArchiverDaemon_stopDaemon = mocker.patch('Emailkasten.EMailArchiverDaemon.EMailArchiverDaemon.stopDaemon')
 
     daemon.delete()
 
