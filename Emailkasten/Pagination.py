@@ -33,26 +33,6 @@ class Pagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     """The query parameter for the page size."""
 
-    page_query_param = 'page'
-    """The query parameter for the page number."""
-
-
-    def get_page_size(self, request):
-        """Extends :func:`rest_framework.pagination.PageNumberPagination.get_page_size`.
-            to add an 'all' option to the query.
-
-        Note:
-            May be unnecessary.
-        """
-        if request.query_params.get('all') == 'true':
-            return 1
-        return super().get_page_size(request)
-
-
-    def paginate_queryset(self, queryset, request, view=None):
-        """Extends :func:`rest_framework.pagination.PageNumberPagination.paginate_queryset`.
-            to add an 'all' option to the query.
-        """
-        if request.query_params.get('all') == 'true':
-            return list(queryset)
-        return super().paginate_queryset(queryset, request, view)
+    max_page_size = APIConfiguration.MAX_PAGE_SIZE
+    """The maximal number of results per page.
+        Set from :attr:`Emailkasten.constants.APIConfiguration.MAX_PAGE_SIZE`."""
