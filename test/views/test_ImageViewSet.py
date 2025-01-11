@@ -323,7 +323,7 @@ def test_download_no_file_auth_owner(imageModel, owner_apiClient, custom_detail_
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
-    mock_os_path_exists.assert_called_once()
+    mock_os_path_exists.assert_called_once_with(imageModel.file_path)
 
 
 @pytest.mark.django_db
@@ -339,7 +339,7 @@ def test_download_auth_owner(imageModel, owner_apiClient, custom_detail_action_u
     response = owner_apiClient.get(custom_detail_action_url(ImageViewSet, ImageViewSet.URL_NAME_DOWNLOAD, imageModel))
 
     assert response.status_code == status.HTTP_200_OK
-    mock_os_path_exists.assert_called_once()
+    mock_os_path_exists.assert_called_once_with(imageModel.file_path)
     mock_open.assert_called_once_with(imageModel.file_path, 'rb')
     assert 'Content-Disposition' in response.headers
     assert f'filename="{imageModel.file_name}"' in response['Content-Disposition']

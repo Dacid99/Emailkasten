@@ -26,3 +26,40 @@ DATABASES = {
         "NAME": ":memory:",
     }
 }
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        "default": {
+            'format': constants.LoggerConfiguration.LOG_FORMAT,
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        },
+        'null': {
+            'class': 'logging.NullHandler'
+        }
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'ERROR',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        "Emailkasten": {
+            'handlers': ['null'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

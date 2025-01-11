@@ -68,3 +68,15 @@ def test_testMailbox_success(mocker, mock_logger, mailbox, protocol, expected_ca
     assert result == 1
     mock_testAccount.assert_called_once_with(mailbox)
     mock_logger.info.assert_called()
+
+
+@pytest.mark.django_db
+def test_testAccount_failure(mocker, mock_logger, account):
+    account.protocol = 'OTHER'
+
+    result = Emailkasten.mailProcessing.testAccount(account)
+
+    assert result == 3
+    account.refresh_from_db()
+    assert account.is_healthy is False
+    mock_logger.error.assert_called()

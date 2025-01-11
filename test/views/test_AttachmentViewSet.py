@@ -278,7 +278,6 @@ def test_delete_auth_owner(attachmentModel, owner_apiClient, detail_url):
     assert attachmentModel.file_name is not None
 
 
-
 @pytest.mark.django_db
 def test_download_noauth(attachmentModel, noauth_apiClient, custom_detail_action_url, mocker):
     """Tests the get method :func:`Emailkasten.Views.AttachmentViewSet.AttachmentViewSet.download` action
@@ -321,7 +320,7 @@ def test_download_no_file_auth_owner(attachmentModel, owner_apiClient, custom_de
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
-    mock_os_path_exists.assert_called_once()
+    mock_os_path_exists.assert_called_once_with(attachmentModel.file_path)
 
 
 @pytest.mark.django_db
@@ -337,7 +336,7 @@ def test_download_auth_owner(attachmentModel, owner_apiClient, custom_detail_act
     response = owner_apiClient.get(custom_detail_action_url(AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, attachmentModel))
 
     assert response.status_code == status.HTTP_200_OK
-    mock_os_path_exists.assert_called_once()
+    mock_os_path_exists.assert_called_once_with(attachmentModel.file_path)
     mock_open.assert_called_once_with(attachmentModel.file_path, 'rb')
     assert 'Content-Disposition' in response.headers
     assert f'filename="{attachmentModel.file_name}"' in response['Content-Disposition']

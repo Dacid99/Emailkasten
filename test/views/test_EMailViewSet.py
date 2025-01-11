@@ -310,7 +310,7 @@ def test_download_no_file_auth_owner(emailModel, owner_apiClient, custom_detail_
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
-    mock_os_path_exists.assert_called_once()
+    mock_os_path_exists.assert_called_once_with(emailModel.eml_filepath)
 
 
 @pytest.mark.django_db
@@ -324,7 +324,7 @@ def test_download_auth_owner(emailModel, owner_apiClient, custom_detail_action_u
     response = owner_apiClient.get(custom_detail_action_url(EMailViewSet, EMailViewSet.URL_NAME_DOWNLOAD, emailModel))
 
     assert response.status_code == status.HTTP_200_OK
-    mock_os_path_exists.assert_called_once()
+    mock_os_path_exists.assert_called_once_with(emailModel.eml_filepath)
     mock_open.assert_called_once_with(emailModel.eml_filepath, 'rb')
     assert 'Content-Disposition' in response.headers
     assert f'filename="{os.path.basename(emailModel.eml_filepath)}"' in response['Content-Disposition']
@@ -367,7 +367,7 @@ def test_prerender_no_file_auth_owner(emailModel, owner_apiClient, custom_detail
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
-    mock_os_path_exists.assert_called_once()
+    mock_os_path_exists.assert_called_once_with(emailModel.prerender_filepath)
 
 
 @pytest.mark.django_db
@@ -381,7 +381,7 @@ def test_prerender_auth_owner(emailModel, owner_apiClient, custom_detail_action_
     response = owner_apiClient.get(custom_detail_action_url(EMailViewSet, EMailViewSet.URL_NAME_PRERENDER, emailModel))
 
     assert response.status_code == status.HTTP_200_OK
-    mock_os_path_exists.assert_called_once()
+    mock_os_path_exists.assert_called_once_with(emailModel.prerender_filepath)
     mock_open.assert_called_once_with(emailModel.prerender_filepath, 'rb')
     assert 'Content-Disposition' in response.headers
     assert f'filename="{os.path.basename(emailModel.prerender_filepath)}"' in response['Content-Disposition']

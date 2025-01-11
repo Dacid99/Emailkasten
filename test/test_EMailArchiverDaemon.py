@@ -20,6 +20,7 @@
 
 import pytest
 from model_bakery import baker
+from faker import Faker
 
 import Emailkasten.EMailArchiverDaemon
 from Emailkasten.Models.DaemonModel import DaemonModel
@@ -38,7 +39,7 @@ def fixture_mock_runningDaemons():
 @pytest.mark.django_db
 @pytest.fixture(name='mock_daemonModel')
 def fixture_mock_daemonModel():
-    return baker.make(DaemonModel)
+    return baker.make(DaemonModel, log_filepath=Faker().file_path(extension='log'))
 
 
 @pytest.mark.django_db
