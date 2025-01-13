@@ -18,8 +18,10 @@
 
 """Module with the :class:`EMailArchiverDaemonRegistry class."""
 
-from .Models.DaemonModel import DaemonModel
+import logging
+
 from .EMailArchiverDaemon import EMailArchiverDaemon
+from .Models.DaemonModel import DaemonModel
 
 
 class EMailArchiverDaemonRegistry:
@@ -28,6 +30,9 @@ class EMailArchiverDaemonRegistry:
     _runningDaemons: dict = {}
     """A static dictionary of all active daemon instances with their database IDs as keys."""
 
+    logger: logging.Logger = logging.getLogger(__name__)
+    """The logger instance for this singleton."""
+
     @classmethod
     def isRunning(cls, daemonModel: DaemonModel) -> bool:
         return daemonModel.id in cls._runningDaemons
@@ -35,9 +40,9 @@ class EMailArchiverDaemonRegistry:
     @classmethod
     def updateDaemon(cls, daemonModel: DaemonModel):
         if cls.isRunning(daemonModel):
-            daemonInstance = cls._running_daemons[daemonModel.id]
+            daemonInstance = cls._runningDaemons[daemonModel.id]
             daemonInstance.update()
-            daemonInstance.logger.debug('Daemon updated')
+            cls.logger.debug('Updated daemon %s', str(daemonModel))
 
     @classmethod
     def testDaemon(cls, daemonModel: DaemonModel) -> bool:
@@ -51,12 +56,13 @@ class EMailArchiverDaemonRegistry:
         """
         try:
             newDaemon = EMailArchiverDaemon(daemonModel)
-            newDaemon.logger.debug("Testing daemon %s ...", str(daemonModel))
+            cls.logger.debug("Testing daemon %s ...", str(daemonModel))
             newDaemon.cycle()
-            newDaemon.logger.debug("Successfully tested daemon %s.", str(daemonModel))
+            cls.logger.debug("Successfully tested daemon %s.", str(daemonModel))
+            daemonModel.refresh_from_db()
             return daemonModel.is_healthy
         except Exception:
-            newDaemon.logger.error("Error while testing daemon %s!", str(daemonModel), exc_info=True)
+            cls.logger.error("Failed to test daemon %s !", str(daemonModel), exc_info=True)
             return False
 
 
@@ -72,11 +78,14 @@ class EMailArchiverDaemonRegistry:
             `True` if the daemon was started, `False` if it was already running.
         """
         if not cls.isRunning(daemonModel):
+            cls.logger.debug("Starting daemon %s ...", str(daemonModel))
             newDaemon = EMailArchiverDaemon(daemonModel)
             newDaemon.start()
             cls._runningDaemons[daemonModel.id] = newDaemon
+            cls.logger.debug("Successfully started daemon %s .", str(daemonModel))
             return True
         else:
+            cls.logger.debug("Did not start daemon %s, it was already running.", str(daemonModel))
             return False
 
 
@@ -92,11 +101,11 @@ class EMailArchiverDaemonRegistry:
             `True` if the daemon was stopped, `False` if it wasnt running.
         """
         if cls.isRunning(daemonModel):
+            cls.logger.debug("Stopping daemon %s ...", str(daemonModel))
             daemon = cls._runningDaemons.pop(daemonModel.id)
-            try:
-                daemon.stop()
-            except RuntimeError:
-                daemon.logger.error("Daemon was already stopped!", exc_info=True)
+            daemon.stop()
+            cls.logger.debug("Successfully stopped daemon %s .", str(daemonModel))
             return True
         else:
+            cls.logger.debug("Did not stop daemon %s, it was not running.", str(daemonModel))
             return False
