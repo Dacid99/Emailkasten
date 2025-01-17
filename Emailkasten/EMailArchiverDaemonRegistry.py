@@ -25,7 +25,7 @@ from .Models.DaemonModel import DaemonModel
 
 
 class EMailArchiverDaemonRegistry:
-    """Daemon registry for managment of the running :class:`Emailkasten.EMailArchiverDaemon.EMailArchiverDaemon`s."""
+    """Daemon registry for managment of the running :class:`Emailkasten.EMailArchiverDaemon.EMailArchiverDaemon` instances."""
 
     _runningDaemons: dict = {}
     """A static dictionary of all active daemon instances with their database IDs as keys."""
@@ -35,10 +35,23 @@ class EMailArchiverDaemonRegistry:
 
     @classmethod
     def isRunning(cls, daemonModel: DaemonModel) -> bool:
+        """Class method to check whether a daemon is active.
+
+        Args:
+            daemonModel: The data for the daemon to check.
+
+        Returns:
+            Whether the daemon is active.
+        """
         return daemonModel.id in cls._runningDaemons
 
     @classmethod
     def updateDaemon(cls, daemonModel: DaemonModel):
+        """Class method to update a daemon instance.
+
+        Args:
+            daemonModel: The data for the daemon to update.
+        """
         if cls.isRunning(daemonModel):
             daemonInstance = cls._runningDaemons[daemonModel.id]
             daemonInstance.update()
@@ -46,7 +59,7 @@ class EMailArchiverDaemonRegistry:
 
     @classmethod
     def testDaemon(cls, daemonModel: DaemonModel) -> bool:
-        """Static method to test data for a daemon.
+        """Class method to test data for a daemon.
 
         Args:
             daemonModel: The data for the daemon to be tested.
@@ -68,8 +81,7 @@ class EMailArchiverDaemonRegistry:
 
     @classmethod
     def startDaemon(cls, daemonModel: DaemonModel) -> bool:
-        """Static method to create, start and add a new daemon to :attr:`runningDaemons`.
-        If it is already in the dict does nothing.
+        """Class method to create, start and add a new daemon to :attr:`_runningDaemons`.
 
         Args:
             daemonModel: The data for the daemon.
@@ -91,8 +103,7 @@ class EMailArchiverDaemonRegistry:
 
     @classmethod
     def stopDaemon(cls, daemonModel: DaemonModel) -> bool:
-        """Static method to stop and remove a daemon from :attr:`runningDaemons`.
-        If it is not in the dict does nothing.
+        """Class method to stop and remove a daemon from :attr:`_runningDaemons`.
 
         Args:
             daemonModel: The data of the daemon.

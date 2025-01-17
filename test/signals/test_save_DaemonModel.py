@@ -28,6 +28,9 @@ from Emailkasten.Models.MailboxModel import MailboxModel
 
 @pytest.fixture(name='mock_updateDaemon')
 def fixture_mock_updateDaemon(mocker):
+    """Patches the :func:`Emailkasten.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.updateDaemon`
+    function called in the signal.
+    """
     return mocker.patch('Emailkasten.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.updateDaemon')
 
 @pytest.fixture(name='mock_logger', autouse=True)
@@ -38,7 +41,9 @@ def fixture_mock_logger(mocker):
 
 @pytest.mark.django_db
 def test_MailboxModel_post_save_daemon_from_healthy(mock_logger, mock_updateDaemon):
-    """Tests behaviour of :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`."""
+    """Tests :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`
+    for an initially healthy daemon.
+    """
     mailbox = baker.make(MailboxModel, is_healthy=True)
     daemon = baker.make(DaemonModel, mailbox=mailbox, is_healthy=True, log_filepath=Faker().file_path(extension='log'))
 
@@ -53,7 +58,9 @@ def test_MailboxModel_post_save_daemon_from_healthy(mock_logger, mock_updateDaem
 
 @pytest.mark.django_db
 def test_MailboxModel_post_save_daemon_from_unhealthy(mock_logger, mock_updateDaemon):
-    """Tests behaviour of :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`."""
+    """Tests :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`
+    for an initially unhealthy daemon.
+    """
     mailbox = baker.make(MailboxModel, is_healthy=False)
     daemon = baker.make(DaemonModel, mailbox=mailbox, is_healthy=False, log_filepath=Faker().file_path(extension='log'))
 

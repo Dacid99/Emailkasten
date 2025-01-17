@@ -74,6 +74,7 @@ class DaemonViewSet(viewsets.ModelViewSet):
         return DaemonModel.objects.filter(mailbox__account__user = self.request.user)
 
     def create(self, request, *args, **kwargs):
+        """Disables the POST method for this viewset."""
         return Response(
             {"detail": "POST method is not allowed on this endpoint."},
             status=status.HTTP_405_METHOD_NOT_ALLOWED

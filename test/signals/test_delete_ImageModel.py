@@ -32,6 +32,9 @@ def fixture_mock_logger(mocker):
 
 @pytest.mark.django_db
 def test_post_delete_image_success(mocker, mock_logger, image):
+    """Tests :func:`Emailkasten.signals.deleteImageModel.post_delete_image`
+    if the file removal is successful.
+    """
     mock_os_remove = mocker.patch('Emailkasten.signals.delete_ImageModel.os.remove')
     file_path = image.file_path
 
@@ -58,6 +61,9 @@ def test_post_delete_image_success(mocker, mock_logger, image):
     ]
 )
 def test_post_delete_image_failure(mocker, image, mock_logger, side_effect):
+    """Tests :func:`Emailkasten.signals.deleteImageModel.post_delete_image`
+    if the file removal throws an exception.
+    """
     mock_os_remove = mocker.patch('Emailkasten.signals.delete_ImageModel.os.remove', side_effect=side_effect)
     file_path = image.file_path
 

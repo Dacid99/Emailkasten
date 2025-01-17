@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""Test module for :mod:`Emailkasten.Serializers.MailingListSerializers.BaseMailingListSerializer`."""
+
 import pytest
 from django.forms.models import model_to_dict
 
@@ -26,6 +28,7 @@ from ...models.test_MailingListModel import fixture_mailingListModel
 
 @pytest.mark.django_db
 def test_output(mailingList):
+    """Tests for the expected output of the serializer."""
     serializerData = BaseMailingListSerializer(instance=mailingList).data
 
     assert 'id' in serializerData
@@ -57,6 +60,7 @@ def test_output(mailingList):
 
 @pytest.mark.django_db
 def test_input(mailingList):
+    """Tests for the expected input of the serializer."""
     serializer = BaseMailingListSerializer(data=model_to_dict(mailingList))
     assert serializer.is_valid()
     serializerData = serializer.validated_data

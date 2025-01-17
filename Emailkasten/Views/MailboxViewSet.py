@@ -75,6 +75,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
         return MailboxModel.objects.filter(account__user = self.request.user)
 
     def create(self, request, *args, **kwargs):
+        """Disables the POST method for this viewset."""
         return Response(
             {"detail": "POST method is not allowed on this endpoint."},
             status=status.HTTP_405_METHOD_NOT_ALLOWED

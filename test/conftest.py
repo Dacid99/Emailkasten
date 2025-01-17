@@ -16,9 +16,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""File with fixtures and configurations required for all tests. Automatically imported to test_ files."""
 
 import os
 
 def pytest_configure(config):
+    """Configures the path for pytest
+    to be the directory of this file for consistent relative paths.
+    """
     pytest_ini_dir = os.path.dirname(os.path.abspath(config.inifile))
     os.chdir(pytest_ini_dir)

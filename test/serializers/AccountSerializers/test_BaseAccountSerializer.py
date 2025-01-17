@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""Test module for :mod:`Emailkasten.Serializers.AccountSerializers.BaseAccountSerializer`."""
+
 import pytest
 from django.forms.models import model_to_dict
 
@@ -27,6 +29,7 @@ from ...models.test_AccountModel import fixture_accountModel
 
 @pytest.mark.django_db
 def test_output(account):
+    """Tests for the expected output of the serializer."""
     serializerData = BaseAccountSerializer(instance=account).data
 
     assert 'id' in serializerData
@@ -56,6 +59,7 @@ def test_output(account):
 
 @pytest.mark.django_db
 def test_input(account):
+    """Tests for the expected input of the serializer."""
     serializer = BaseAccountSerializer(data=model_to_dict(account))
     assert serializer.is_valid()
     serializerData = serializer.validated_data

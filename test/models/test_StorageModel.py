@@ -1,10 +1,29 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Emailkasten - a open-source self-hostable email archiving server
+# Copyright (C) 2024  David & Philipp Aderbauer
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+"""Test module for :mod:`Emailkasten.Models.StorageModel`."""
+
 from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
 
 import pytest
-from model_bakery import baker
 from pyfakefs.fake_filesystem_unittest import Patcher
 
 from Emailkasten.Models.StorageModel import StorageModel
@@ -87,8 +106,8 @@ def test_StorageModel_initial_many_creation(mock_logger, mock_filesystem, mocker
     mock_StorageConfiguration.STORAGE_PATH = 'empty-storage'
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 
-    for i in range(0,2*3+1):
-        StorageModel.getSubdirectory(f"test_{i}")
+    for number in range(0,2*3+1):
+        StorageModel.getSubdirectory(f"test_{number}")
 
     mock_logger.critical.assert_not_called()
     mock_logger.info.assert_called()
@@ -111,8 +130,8 @@ def test_health_check_success(mock_logger, mock_filesystem, mocker):
     mock_StorageConfiguration.STORAGE_PATH = '/empty-storage'
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 
-    for i in range(0,2*3+1):
-        StorageModel.getSubdirectory(f"test_{i}")
+    for number in range(0,2*3+1):
+        StorageModel.getSubdirectory(f"test_{number}")
 
 
     health = StorageModel.healthcheck()
@@ -128,8 +147,8 @@ def test_health_check_failed_duplicate_current(mock_logger, mock_filesystem, moc
     mock_StorageConfiguration.STORAGE_PATH = '/empty-storage'
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 
-    for i in range(0,2*3+1):
-        StorageModel.getSubdirectory(f"test_{i}")
+    for number in range(0,2*3+1):
+        StorageModel.getSubdirectory(f"test_{number}")
     StorageModel.objects.create(directory_number=10, current=True)
 
     health = StorageModel.healthcheck()
@@ -146,8 +165,8 @@ def test_health_check_failed_dirty_storage(mock_logger, mock_filesystem, mocker)
     mock_StorageConfiguration.STORAGE_PATH = '/conflicting-storage'
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 
-    for i in range(0,2*3+1):
-        StorageModel.getSubdirectory(f"test_{i}")
+    for number in range(0,2*3+1):
+        StorageModel.getSubdirectory(f"test_{number}")
 
     health = StorageModel.healthcheck()
 

@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""Test module for :mod:`Emailkasten.Serializers.DaemonSerializers.BaseDaemonSerializer`."""
+
 import pytest
 from django.forms.models import model_to_dict
 
@@ -26,6 +28,7 @@ from ...models.test_DaemonModel import fixture_daemonModel
 
 @pytest.mark.django_db
 def test_output(daemon):
+    """Tests for the expected output of the serializer."""
     serializerData = BaseDaemonSerializer(instance=daemon).data
 
     assert 'id' in serializerData
@@ -52,6 +55,7 @@ def test_output(daemon):
 
 @pytest.mark.django_db
 def test_input(daemon):
+    """Tests for the expected input of the serializer."""
     serializer = BaseDaemonSerializer(data=model_to_dict(daemon))
     assert serializer.is_valid()
     serializerData = serializer.validated_data

@@ -23,10 +23,7 @@ Fixtures:
     :func:`fixture_emailModel`: Creates an email in `accountModel`.
     :func:`fixture_attachmentModel`: Creates an attachment in `emailModel`.
     :func:`fixture_emailPayload`: Creates clean :class:`Emailkasten.Models.AttachmentModel.AttachmentModel` payload for a patch, post or put request.
-    :func:`fixture_list_url`: Gets the viewsets url for list actions.
-    :func:`fixture_detail_url`: Gets the viewsets url for detail actions.
-    :func:`fixture_custom_detail_list_url`: Gets the viewsets url for custom list actions.
-    :func:`fixture_custom_detail_action_url`: Gets the viewsets url for custom detail actions.
+
 """
 
 from __future__ import annotations
@@ -45,7 +42,7 @@ from Emailkasten.Models.AttachmentModel import AttachmentModel
 from Emailkasten.Views.AttachmentViewSet import AttachmentViewSet
 
 if TYPE_CHECKING:
-    from typing import Any, Callable
+    from typing import Any
 
 
 @pytest.fixture(name='attachmentModel')

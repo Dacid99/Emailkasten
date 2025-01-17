@@ -23,9 +23,9 @@ Fixtures:
 """
 
 import datetime
+from uuid import UUID
 
 import pytest
-from uuid import UUID
 from django.db import IntegrityError
 from faker import Faker
 from model_bakery import baker

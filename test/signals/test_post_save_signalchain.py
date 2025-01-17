@@ -31,6 +31,7 @@ from .test_save_DaemonModel import fixture_mock_updateDaemon
 
 @pytest.fixture(name='mailbox')
 def fixture_mailbox():
+    """Fixture for a :class:`Emailkasten.Models.MailboxModel.MailboxModel` with daemons and a account."""
     account = baker.make(AccountModel)
     mailbox = baker.make(MailboxModel, account=account)
     baker.make(DaemonModel, mailbox=mailbox, log_filepath=Faker().file_path(extension='log'))
@@ -49,6 +50,7 @@ def fixture_mailbox():
     ]
 )
 def test_illegal_states(mailbox, mock_updateDaemon, account_is_healthy, mailbox_is_healthy, daemons_is_healthy):
+    """Tests for existance of states that are impossible under the is_healthy signal chain."""
     mailbox.account.is_healthy = account_is_healthy
     mailbox.account.save(update_fields=['is_healthy'])
     mailbox.refresh_from_db()
@@ -77,7 +79,9 @@ def test_illegal_states(mailbox, mock_updateDaemon, account_is_healthy, mailbox_
     ]
 )
 def test_toggle_AccountModel_is_healthy(mailbox, mock_updateDaemon, account_is_healthy_start, mailbox_is_healthy_start, daemons_is_healthy_start, account_is_healthy_end, mailbox_is_healthy_end, daemons_is_healthy_end):
-    """Tests behaviour of :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`."""
+    """Tests the expected propagation of health states through the models
+    if :attr:`Emailkasten.Models.AccountModel.AccountModel.is_healthy` is changed.
+    """
     mailbox.account.is_healthy = account_is_healthy_start
     mailbox.account.save(update_fields=['is_healthy'])
     mailbox.refresh_from_db()
@@ -114,7 +118,9 @@ def test_toggle_AccountModel_is_healthy(mailbox, mock_updateDaemon, account_is_h
     ]
 )
 def test_toggle_MailboxModel_is_healthy(mailbox, mock_updateDaemon, account_is_healthy_start, mailbox_is_healthy_start, daemons_is_healthy_start, account_is_healthy_end, mailbox_is_healthy_end, daemons_is_healthy_end):
-    """Tests behaviour of :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`."""
+    """Tests the expected propagation of health states through the models
+    if :attr:`Emailkasten.Models.MailboxModel.MailboxModel.is_healthy` is changed.
+    """
     mailbox.account.is_healthy = account_is_healthy_start
     mailbox.account.save(update_fields=['is_healthy'])
     mailbox.refresh_from_db()
@@ -151,7 +157,9 @@ def test_toggle_MailboxModel_is_healthy(mailbox, mock_updateDaemon, account_is_h
     ]
 )
 def test_toggle_DaemonModel_is_healthy(mailbox, mock_updateDaemon, account_is_healthy_start, mailbox_is_healthy_start, daemons_is_healthy_start, account_is_healthy_end, mailbox_is_healthy_end, daemons_is_healthy_end):
-    """Tests behaviour of :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`."""
+    """Tests the expected propagation of health states through the models
+    if :attr:`Emailkasten.Models.DaemonModel.DaemonModel.is_healthy` is changed.
+    """
     mailbox.account.is_healthy = account_is_healthy_start
     mailbox.account.save(update_fields=['is_healthy'])
     mailbox.refresh_from_db()

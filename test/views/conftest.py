@@ -24,6 +24,10 @@ Fixtures:
     :func:`fixture_noauth_apiClient`: Creates an unauthenticated :class:`rest_framework.test.APIClient` instance.
     :func:`fixture_auth_other_apiClient`: Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as `other_user`.
     :func:`fixture_auth_owner_apiClient`: Creates a :class:`rest_framework.test.APIClient` instance that is authenticated as `owner_user`.
+    :func:`fixture_list_url`: Gets the viewsets url for list actions.
+    :func:`fixture_detail_url`: Gets the viewsets url for detail actions.
+    :func:`fixture_custom_detail_list_url`: Gets the viewsets url for custom list actions.
+    :func:`fixture_custom_detail_action_url`: Gets the viewsets url for custom detail actions.
 """
 
 from __future__ import annotations

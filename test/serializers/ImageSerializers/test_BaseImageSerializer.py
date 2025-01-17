@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""Test module for :mod:`Emailkasten.Serializers.ImageSerializers.BaseImageSerializer`."""
+
 import pytest
 from django.forms.models import model_to_dict
 
@@ -24,6 +26,7 @@ from ...models.test_ImageModel import fixture_imageModel
 
 @pytest.mark.django_db
 def test_output(image):
+    """Tests for the expected output of the serializer."""
     serializerData = BaseImageSerializer(instance=image).data
 
     assert 'id' in serializerData
@@ -46,6 +49,7 @@ def test_output(image):
 
 @pytest.mark.django_db
 def test_input(image):
+    """Tests for the expected input of the serializer."""
     serializer = BaseImageSerializer(data=model_to_dict(image))
     assert serializer.is_valid()
     serializerData = serializer.validated_data
