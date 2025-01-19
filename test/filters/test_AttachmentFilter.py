@@ -17,31 +17,13 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import pytest
-from freezegun import freeze_time
-from model_bakery import baker
 
 from Emailkasten.Filters.AttachmentFilter import AttachmentFilter
-from Emailkasten.Models.AttachmentModel import AttachmentModel
 
-from .conftest import (BOOL_TEST_ITEMS, BOOL_TEST_PARAMETERS,
-                       DATETIME_TEST_ITEMS, DATETIME_TEST_PARAMETERS,
-                       INT_TEST_ITEMS, INT_TEST_PARAMETERS,
-                       TEXT_TEST_ITEMS, TEXT_TEST_PARAMETERS)
-
-
-@pytest.fixture(name='queryset')
-def fixture_queryset():
-    for number in range(0,len(TEXT_TEST_ITEMS)):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                AttachmentModel,
-                file_path='/path/' + TEXT_TEST_ITEMS[number],
-                file_name=TEXT_TEST_ITEMS[number],
-                datasize=INT_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number]
-            )
-
-    return AttachmentModel.objects.all()
+from .conftest import ( BOOL_TEST_PARAMETERS,
+                        DATETIME_TEST_PARAMETERS,
+                        INT_TEST_PARAMETERS,
+                        TEXT_TEST_PARAMETERS)
 
 
 @pytest.mark.django_db

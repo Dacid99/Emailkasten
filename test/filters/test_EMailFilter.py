@@ -16,55 +16,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import datetime
-
 import pytest
-from freezegun import freeze_time
-from model_bakery import baker
 
 from Emailkasten.Filters.EMailFilter import EMailFilter
-from Emailkasten.Models.EMailModel import EMailModel
 
-from .conftest import (BOOL_TEST_ITEMS, BOOL_TEST_PARAMETERS,
-                       DATETIME_TEST_ITEMS, DATETIME_TEST_PARAMETERS,
-                       INT_TEST_ITEMS, INT_TEST_PARAMETERS, TEXT_TEST_ITEMS,
+from .conftest import ( BOOL_TEST_PARAMETERS,
+                        DATETIME_TEST_PARAMETERS,
+                        INT_TEST_PARAMETERS,
                        TEXT_TEST_PARAMETERS)
-from .test_AccountFilter import fixture_account_queryset
-from .test_CorrespondentFilter import fixture_correspondent_queryset
-from .test_MailingListFilter import fixture_mailinglist_queryset
-
-
-@pytest.fixture(name='email_queryset')
-def fixture_email_queryset(account_queryset, mailinglist_queryset):
-    for number in range(0,len(TEXT_TEST_ITEMS)):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                EMailModel,
-                message_id=TEXT_TEST_ITEMS[number],
-                datetime=datetime.datetime.now(tz=datetime.UTC),
-                email_subject=TEXT_TEST_ITEMS[number],
-                bodytext=TEXT_TEST_ITEMS[number],
-                datasize=INT_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number],
-                account=account_queryset.get(id=number+1),
-                mailinglist=mailinglist_queryset.get(id=number+1),
-                comments = TEXT_TEST_ITEMS[number],
-                keywords = TEXT_TEST_ITEMS[number],
-                importance = TEXT_TEST_ITEMS[number],
-                priority = TEXT_TEST_ITEMS[number],
-                precedence = TEXT_TEST_ITEMS[number],
-                received = TEXT_TEST_ITEMS[number],
-                user_agent = TEXT_TEST_ITEMS[number],
-                auto_submitted = TEXT_TEST_ITEMS[number],
-                content_type = TEXT_TEST_ITEMS[number],
-                content_language = TEXT_TEST_ITEMS[number],
-                content_location = TEXT_TEST_ITEMS[number],
-                x_priority = TEXT_TEST_ITEMS[number],
-                x_originated_client = TEXT_TEST_ITEMS[number],
-                x_spam = TEXT_TEST_ITEMS[number]
-            )
-
-    return EMailModel.objects.all()
 
 
 @pytest.mark.django_db
@@ -448,6 +407,36 @@ def test_mailinglist__list_id_filter(email_queryset, lookup_expr, filterquery, e
 )
 def test_mailinglist__list_owner_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     filter = {'mailinglist__list_owner'+lookup_expr: filterquery}
+
+    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+
+    assert filtered_data.distinct().count() == filtered_data.count()
+    assert filtered_data.count() == len(expected_indices)
+    for data in filtered_data:
+        assert data.id - 1 in expected_indices
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
+)
+def test_correspondents__email_name_filter(email_queryset, lookup_expr, filterquery, expected_indices):
+    filter = {'correspondents__email_name'+lookup_expr: filterquery}
+
+    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+
+    assert filtered_data.distinct().count() == filtered_data.count()
+    assert filtered_data.count() == len(expected_indices)
+    for data in filtered_data:
+        assert data.id - 1 in expected_indices
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
+)
+def test_correspondents__email_address_filter(email_queryset, lookup_expr, filterquery, expected_indices):
+    filter = {'correspondents__email_address'+lookup_expr: filterquery}
 
     filtered_data = EMailFilter(filter, queryset=email_queryset).qs
 

@@ -17,34 +17,12 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import pytest
-from freezegun import freeze_time
-from model_bakery import baker
 
 from Emailkasten.Filters.MailboxFilter import MailboxFilter
-from Emailkasten.Models.MailboxModel import MailboxModel
 
-from .conftest import (BOOL_TEST_ITEMS, BOOL_TEST_PARAMETERS,
-                       DATETIME_TEST_ITEMS, DATETIME_TEST_PARAMETERS,
-                       TEXT_TEST_ITEMS, TEXT_TEST_PARAMETERS)
-from .test_AccountFilter import fixture_account_queryset
-
-
-@pytest.fixture(name='mailbox_queryset')
-def fixture_mailbox_queryset(account_queryset):
-    for number in range(0,len(TEXT_TEST_ITEMS)):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                MailboxModel,
-                name=TEXT_TEST_ITEMS[number],
-                save_toEML=BOOL_TEST_ITEMS[number],
-                save_attachments=BOOL_TEST_ITEMS[number],
-                save_images=BOOL_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number],
-                is_healthy=BOOL_TEST_ITEMS[number],
-                account=account_queryset.get(id=number+1)
-            )
-
-    return MailboxModel.objects.all()
+from .conftest import ( BOOL_TEST_PARAMETERS,
+                        DATETIME_TEST_PARAMETERS,
+                        TEXT_TEST_PARAMETERS)
 
 
 @pytest.mark.django_db

@@ -1,6 +1,22 @@
-from datetime import datetime
+import datetime
 
-def datetime_quarter(datetime: datetime) -> int:
+import pytest
+from freezegun import freeze_time
+from model_bakery import baker
+from faker import Faker
+
+from Emailkasten.Models.AccountModel import AccountModel
+from Emailkasten.Models.AttachmentModel import AttachmentModel
+from Emailkasten.Models.CorrespondentModel import CorrespondentModel
+from Emailkasten.Models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from Emailkasten.Models.ImageModel import ImageModel
+from Emailkasten.Models.MailingListModel import MailingListModel
+from Emailkasten.Models.MailboxModel import MailboxModel
+from Emailkasten.Models.EMailModel import EMailModel
+from Emailkasten.Models.DaemonModel import DaemonModel
+
+
+def datetime_quarter(datetime: datetime.datetime) -> int:
     return (datetime.month - 1) // 3 + 1
 
 INT_TEST_ITEMS = [
@@ -93,13 +109,13 @@ TEXT_TEST_PARAMETERS = [
     ]
 
 DATETIME_TEST_ITEMS = [
-    datetime(2001,3,7,10,20,20),
-    datetime(2002,6,13,11,30,30),
-    datetime(2003,8,15,12,40,40)
+    datetime.datetime(2001,3,7,10,20,20),
+    datetime.datetime(2002,6,13,11,30,30),
+    datetime.datetime(2003,8,15,12,40,40)
 ]
-LESSER_DATETIME = datetime(1990,2,5,5,10,10)
-GREATER_DATETIME = datetime(2020,10,24,20,50,50)
-DISJOINT_DATETIME_RANGE = [datetime(2020,10,24,20,50,50), datetime(2021,11,28,21,55,55)]
+LESSER_DATETIME = datetime.datetime(1990,2,5,5,10,10)
+GREATER_DATETIME = datetime.datetime(2020,10,24,20,50,50)
+DISJOINT_DATETIME_RANGE = [datetime.datetime(2020,10,24,20,50,50), datetime.datetime(2021,11,28,21,55,55)]
 
 DATETIME_TEST_PARAMETERS = [
     ("__date", DATETIME_TEST_ITEMS[1], [1]),
@@ -256,6 +272,156 @@ DATETIME_TEST_PARAMETERS = [
     ("__second__gt", GREATER_DATETIME.second, []),
     ("__second__lt", LESSER_DATETIME.second, []),
     ("__second__in", [item.second for item in DISJOINT_DATETIME_RANGE], []),
-    ("__second__range", [item.second for item in DISJOINT_DATETIME_RANGE], []),
-
+    ("__second__range", [item.second for item in DISJOINT_DATETIME_RANGE], [])
 ]
+
+
+@pytest.fixture(name='account_queryset')
+def fixture_account_queryset():
+    for number in range(0,len(TEXT_TEST_ITEMS)):
+        with freeze_time(DATETIME_TEST_ITEMS[number]):
+            baker.make(
+                AccountModel,
+                mail_address=TEXT_TEST_ITEMS[number],
+                mail_host=TEXT_TEST_ITEMS[number],
+                mail_host_port=INT_TEST_ITEMS[number],
+                timeout=FLOAT_TEST_ITEMS[number],
+                is_favorite=BOOL_TEST_ITEMS[number],
+                is_healthy=BOOL_TEST_ITEMS[number]
+            )
+
+    return AccountModel.objects.all()
+
+
+@pytest.fixture(name='mailbox_queryset')
+def fixture_mailbox_queryset(account_queryset):
+    for number in range(0,len(TEXT_TEST_ITEMS)):
+        with freeze_time(DATETIME_TEST_ITEMS[number]):
+            baker.make(
+                MailboxModel,
+                name=TEXT_TEST_ITEMS[number],
+                save_toEML=BOOL_TEST_ITEMS[number],
+                save_attachments=BOOL_TEST_ITEMS[number],
+                save_images=BOOL_TEST_ITEMS[number],
+                is_favorite=BOOL_TEST_ITEMS[number],
+                is_healthy=BOOL_TEST_ITEMS[number],
+                account=account_queryset.get(id=number+1)
+            )
+
+    return MailboxModel.objects.all()
+
+
+@pytest.fixture(name='daemon_queryset')
+def fixture_daemon_queryset(mailbox_queryset):
+    for number in range(0,len(INT_TEST_ITEMS)):
+        with freeze_time(DATETIME_TEST_ITEMS[number]):
+            baker.make(
+                DaemonModel,
+                cycle_interval=INT_TEST_ITEMS[number],
+                is_running=BOOL_TEST_ITEMS[number],
+                is_healthy=BOOL_TEST_ITEMS[number],
+                mailbox=mailbox_queryset.get(id=number+1),
+                log_filepath=Faker().file_path()
+            )
+
+    return DaemonModel.objects.all()
+
+
+@pytest.fixture(name='correspondent_queryset')
+def fixture_correspondent_queryset():
+    for number in range(0,len(TEXT_TEST_ITEMS)):
+        with freeze_time(DATETIME_TEST_ITEMS[number]):
+            baker.make(
+                CorrespondentModel,
+                email_name=TEXT_TEST_ITEMS[number],
+                email_address=TEXT_TEST_ITEMS[number],
+                is_favorite=BOOL_TEST_ITEMS[number]
+            )
+
+    return CorrespondentModel.objects.all()
+
+
+@pytest.fixture(name='mailinglist_queryset')
+def fixture_mailinglist_queryset(correspondent_queryset):
+    for number in range(0,len(TEXT_TEST_ITEMS)):
+        with freeze_time(DATETIME_TEST_ITEMS[number]):
+            baker.make(
+                MailingListModel,
+                list_id=TEXT_TEST_ITEMS[number],
+                list_owner=TEXT_TEST_ITEMS[number],
+                list_subscribe=TEXT_TEST_ITEMS[number],
+                list_unsubscribe=TEXT_TEST_ITEMS[number],
+                list_post=TEXT_TEST_ITEMS[number],
+                list_help=TEXT_TEST_ITEMS[number],
+                list_archive=TEXT_TEST_ITEMS[number],
+                is_favorite=BOOL_TEST_ITEMS[number],
+                correspondent=correspondent_queryset.get(id=number+1)
+            )
+
+    return MailingListModel.objects.all()
+
+
+@pytest.fixture(name='email_queryset')
+def fixture_email_queryset(account_queryset, correspondent_queryset, mailinglist_queryset):
+    for number in range(0,len(TEXT_TEST_ITEMS)):
+        with freeze_time(DATETIME_TEST_ITEMS[number]):
+            new_email = baker.make(
+                EMailModel,
+                message_id=TEXT_TEST_ITEMS[number],
+                datetime=datetime.datetime.now(tz=datetime.UTC),
+                email_subject=TEXT_TEST_ITEMS[number],
+                bodytext=TEXT_TEST_ITEMS[number],
+                datasize=INT_TEST_ITEMS[number],
+                is_favorite=BOOL_TEST_ITEMS[number],
+                account=account_queryset.get(id=number+1),
+                mailinglist=mailinglist_queryset.get(id=number+1),
+                comments = TEXT_TEST_ITEMS[number],
+                keywords = TEXT_TEST_ITEMS[number],
+                importance = TEXT_TEST_ITEMS[number],
+                priority = TEXT_TEST_ITEMS[number],
+                precedence = TEXT_TEST_ITEMS[number],
+                received = TEXT_TEST_ITEMS[number],
+                user_agent = TEXT_TEST_ITEMS[number],
+                auto_submitted = TEXT_TEST_ITEMS[number],
+                content_type = TEXT_TEST_ITEMS[number],
+                content_language = TEXT_TEST_ITEMS[number],
+                content_location = TEXT_TEST_ITEMS[number],
+                x_priority = TEXT_TEST_ITEMS[number],
+                x_originated_client = TEXT_TEST_ITEMS[number],
+                x_spam = TEXT_TEST_ITEMS[number]
+            )
+            baker.make(EMailCorrespondentsModel, email=new_email, correspondent=correspondent_queryset.get(id=number+1))
+
+    return EMailModel.objects.all()
+
+
+@pytest.fixture(name='attachment_queryset')
+def fixture_attachment_queryset(email_queryset):
+    for number in range(0,len(TEXT_TEST_ITEMS)):
+        with freeze_time(DATETIME_TEST_ITEMS[number]):
+            baker.make(
+                AttachmentModel,
+                file_path='/path/' + TEXT_TEST_ITEMS[number],
+                file_name=TEXT_TEST_ITEMS[number],
+                datasize=INT_TEST_ITEMS[number],
+                is_favorite=BOOL_TEST_ITEMS[number],
+                email=email_queryset.get(id=number+1)
+            )
+
+    return AttachmentModel.objects.all()
+
+
+@pytest.fixture(name='image_queryset')
+def fixture_image_queryset(email_queryset):
+    for number in range(0,len(TEXT_TEST_ITEMS)):
+        with freeze_time(DATETIME_TEST_ITEMS[number]):
+            baker.make(
+                ImageModel,
+                file_path='/path/' + TEXT_TEST_ITEMS[number],
+                file_name=TEXT_TEST_ITEMS[number],
+                datasize=INT_TEST_ITEMS[number],
+                is_favorite=BOOL_TEST_ITEMS[number],
+                email=email_queryset.get(id=number+1)
+            )
+
+    return ImageModel.objects.all()

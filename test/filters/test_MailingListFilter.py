@@ -17,36 +17,12 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import pytest
-from freezegun import freeze_time
-from model_bakery import baker
 
 from Emailkasten.Filters.MailingListFilter import MailingListFilter
-from Emailkasten.Models.MailingListModel import MailingListModel
 
-from .conftest import (BOOL_TEST_ITEMS, BOOL_TEST_PARAMETERS,
-                       DATETIME_TEST_ITEMS, DATETIME_TEST_PARAMETERS,
-                       TEXT_TEST_ITEMS, TEXT_TEST_PARAMETERS)
-from .test_CorrespondentFilter import fixture_correspondent_queryset
-
-
-@pytest.fixture(name='mailinglist_queryset')
-def fixture_mailinglist_queryset(correspondent_queryset):
-    for number in range(0,len(TEXT_TEST_ITEMS)):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                MailingListModel,
-                list_id=TEXT_TEST_ITEMS[number],
-                list_owner=TEXT_TEST_ITEMS[number],
-                list_subscribe=TEXT_TEST_ITEMS[number],
-                list_unsubscribe=TEXT_TEST_ITEMS[number],
-                list_post=TEXT_TEST_ITEMS[number],
-                list_help=TEXT_TEST_ITEMS[number],
-                list_archive=TEXT_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number],
-                correspondent=correspondent_queryset.get(id=number+1)
-            )
-
-    return MailingListModel.objects.all()
+from .conftest import ( BOOL_TEST_PARAMETERS,
+                        DATETIME_TEST_PARAMETERS,
+                        TEXT_TEST_PARAMETERS)
 
 
 @pytest.mark.django_db

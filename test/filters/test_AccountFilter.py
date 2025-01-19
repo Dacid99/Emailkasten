@@ -17,33 +17,14 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import pytest
-from freezegun import freeze_time
-from model_bakery import baker
 
 from Emailkasten.Filters.AccountFilter import AccountFilter
-from Emailkasten.Models.AccountModel import AccountModel
 
-from .conftest import (BOOL_TEST_ITEMS, BOOL_TEST_PARAMETERS,
-                       DATETIME_TEST_ITEMS, DATETIME_TEST_PARAMETERS,
-                       INT_TEST_ITEMS, INT_TEST_PARAMETERS, TEXT_TEST_ITEMS,
-                       TEXT_TEST_PARAMETERS, FLOAT_TEST_ITEMS, FLOAT_TEST_PARAMETERS)
-
-
-@pytest.fixture(name='account_queryset')
-def fixture_account_queryset():
-    for number in range(0,len(TEXT_TEST_ITEMS)):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                AccountModel,
-                mail_address=TEXT_TEST_ITEMS[number],
-                mail_host=TEXT_TEST_ITEMS[number],
-                mail_host_port=INT_TEST_ITEMS[number],
-                timeout=FLOAT_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number],
-                is_healthy=BOOL_TEST_ITEMS[number]
-            )
-
-    return AccountModel.objects.all()
+from .conftest import (BOOL_TEST_PARAMETERS,
+                       DATETIME_TEST_PARAMETERS,
+                       INT_TEST_PARAMETERS,
+                       TEXT_TEST_PARAMETERS,
+                       FLOAT_TEST_PARAMETERS)
 
 
 @pytest.mark.django_db
