@@ -254,7 +254,7 @@ def test_delete_auth_other(emailModel, other_apiClient, detail_url):
     """Tests the delete method with the authenticated other user client."""
     response = other_apiClient.delete(detail_url(EMailViewSet, emailModel))
 
-    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    assert response.status_code == status.HTTP_404_NOT_FOUND
     emailModel.refresh_from_db()
     assert emailModel.message_id is not None
 
@@ -264,10 +264,22 @@ def test_delete_auth_owner(emailModel, owner_apiClient, detail_url):
     """Tests the delete method with the authenticated owner user client."""
     response = owner_apiClient.delete(detail_url(EMailViewSet, emailModel))
 
-    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    with pytest.raises(EMailModel.DoesNotExist):
+        emailModel.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_delete_nonexistant_auth_owner(emailModel, owner_apiClient, detail_url):
+    """Tests the delete method with the authenticated owner user client."""
+    old_id = emailModel.id
+    emailModel.id = 10
+    response = owner_apiClient.delete(detail_url(EMailViewSet, emailModel))
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    emailModel.id = old_id
     emailModel.refresh_from_db()
     assert emailModel.message_id is not None
-
 
 
 @pytest.mark.django_db

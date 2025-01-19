@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
@@ -37,8 +37,8 @@ from ..Serializers.EMailSerializers.FullEMailSerializer import \
     FullEMailSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.request import Request
     from django.db.models import BaseManager
+    from rest_framework.request import Request
 
 
 class EMailViewSet(viewsets.ReadOnlyModelViewSet):
@@ -58,6 +58,16 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
         Returns:
             The email entries matching the request user."""
         return EMailModel.objects.filter(account__user = self.request.user)
+
+
+    def destroy(self, request: Request, pk: int|None = None) -> Response:
+        """Adds the `delete` action to the viewset."""
+        try:
+            instance = self.get_object()
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except EMailModel.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
     URL_PATH_DOWNLOAD = 'download'
