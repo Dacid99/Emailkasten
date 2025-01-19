@@ -22,13 +22,12 @@ import django_filters
 
 from ..constants import FilterSetups
 from ..Models.EMailModel import EMailModel
-from .AccountFilter import AccountFilter
 
 
 class EMailFilter(django_filters.FilterSet):
     """The filter class for :class:`Emailkasten.Models.EMailModel`."""
 
-    correspondent_mention__exact = django_filters.CharFilter(
+    correspondent_mention = django_filters.CharFilter(
         field_name="emailcorrespondents__mention", lookup_expr="exact"
     )
 

@@ -32,7 +32,7 @@ class DaemonFilter(django_filters.FilterSet):
     mail_address__contains = django_filters.CharFilter(
         field_name="mailbox__account__mail_address", lookup_expr="contains"
     )
-    mail_address__exact = django_filters.CharFilter(
+    mail_address = django_filters.CharFilter(
         field_name="mailbox__account__mail_address", lookup_expr="exact"
     )
     mail_address__iexact = django_filters.CharFilter(
@@ -66,7 +66,7 @@ class DaemonFilter(django_filters.FilterSet):
     mail_host__contains = django_filters.CharFilter(
         field_name="mailbox__account__mail_host", lookup_expr="contains"
     )
-    mail_host__exact = django_filters.CharFilter(
+    mail_host = django_filters.CharFilter(
         field_name="mailbox__account__mail_host", lookup_expr="exact"
     )
     mail_host__iexact = django_filters.CharFilter(
@@ -104,7 +104,7 @@ class DaemonFilter(django_filters.FilterSet):
         field_name="mailbox__account__protocol", lookup_expr="in"
     )
 
-    account_is_healthy__exact = django_filters.BooleanFilter(
+    account__is_healthy = django_filters.BooleanFilter(
         field_name="mailbox__account__is_healthy", lookup_expr="exact"
     )
 
