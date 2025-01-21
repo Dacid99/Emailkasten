@@ -53,6 +53,7 @@ class DaemonViewSet(viewsets.ModelViewSet):
     ordering_fields = [
         'fetching_criterion',
         'cycle_interval',
+        'restart_time',
         'is_running',
         'is_healthy',
         'mailbox__fetching_criterion',

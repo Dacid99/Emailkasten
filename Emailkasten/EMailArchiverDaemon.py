@@ -22,7 +22,6 @@ import logging
 import threading
 import time
 
-from .constants import EMailArchiverDaemonConfiguration
 from .mailProcessing import fetchAndProcessMails
 from .Models.DaemonModel import DaemonModel
 
@@ -92,8 +91,8 @@ class EMailArchiverDaemon(threading.Thread):
 
 
     def run(self) -> None:
-        """The looping task execute on :attr:`thread`.
-        If crashed tries to restart after time set in :attr:`constants.EMailArchiverDaemonConfiguration.RESTART_TIME`
+        """The looping task execute on the daemon thread.
+        If crashed tries to restart after time set in :attr:`_daemonModel.restart_time`
         and sets health flag of daemon to `False`.
         """
         try:
@@ -103,7 +102,7 @@ class EMailArchiverDaemon(threading.Thread):
             self.logger.info("%s finished successfully", str(self._daemonModel))
         except Exception:
             self.logger.error("%s crashed! Attempting to restart ...", str(self._daemonModel), exc_info=True)
-            time.sleep(EMailArchiverDaemonConfiguration.RESTART_TIME)
+            time.sleep(self._daemonModel.restart_time)
             self._daemonModel.is_healthy = False
             self._daemonModel.save(update_fields=['is_healthy'])
             self.run()

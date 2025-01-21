@@ -279,7 +279,7 @@ class EMailArchiverDaemonConfiguration:
     CYCLE_PERIOD_DEFAULT: Final[int] = 60
     """The default cycle period of the daemons in seconds."""
 
-    RESTART_TIME: Final[int] = 10
+    RESTART_TIME_DEFAULT: Final[int] = 10
     """The default restart time for the daemons in case of a crash in seconds."""
 
 

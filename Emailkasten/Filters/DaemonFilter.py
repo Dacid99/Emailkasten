@@ -116,6 +116,7 @@ class DaemonFilter(django_filters.FilterSet):
             "uuid": ["exact", "contains"],
             "fetching_criterion": FilterSetups.CHOICE,
             "cycle_interval": FilterSetups.INT,
+            "restart_time": FilterSetups.INT,
             "is_running": FilterSetups.BOOL,
             "is_healthy": FilterSetups.BOOL,
             "created": FilterSetups.DATETIME,

@@ -45,6 +45,8 @@ def test_output(daemon):
     assert serializerData['fetching_criterion'] == daemon.fetching_criterion
     assert 'cycle_interval' in serializerData
     assert serializerData['cycle_interval'] == daemon.cycle_interval
+    assert 'restart_time' in serializerData
+    assert serializerData['restart_time'] == daemon.restart_time
     assert 'is_running' in serializerData
     assert serializerData['is_running'] == daemon.is_running
     assert 'is_healthy' in serializerData
@@ -53,7 +55,7 @@ def test_output(daemon):
     assert datetime.fromisoformat(serializerData['created']) == daemon.created
     assert 'updated' in serializerData
     assert datetime.fromisoformat(serializerData['updated']) == daemon.updated
-    assert len(serializerData) == 9
+    assert len(serializerData) == 10
 
 
 @pytest.mark.django_db
@@ -71,11 +73,13 @@ def test_input(daemon):
     assert serializerData['fetching_criterion'] == daemon.fetching_criterion
     assert 'cycle_interval' in serializerData
     assert serializerData['cycle_interval'] == daemon.cycle_interval
+    assert 'restart_time' in serializerData
+    assert serializerData['restart_time'] == daemon.restart_time
     assert 'is_running' not in serializerData
     assert 'is_healthy' not in serializerData
     assert 'created' not in serializerData
     assert 'updated' not in serializerData
-    assert len(serializerData) == 2
+    assert len(serializerData) == 3
 
 
 @pytest.mark.django_db

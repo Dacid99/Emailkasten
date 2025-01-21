@@ -50,6 +50,9 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
     cycle_interval = models.IntegerField(default=constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT)
     """The period with which the daemon is running. :attr:`Emailkasten.constants.EMailArchiverDaemonConfiguration.CYCLE_PERIOD_DEFAULT` by default."""
 
+    restart_time = models.IntegerField(default=constants.EMailArchiverDaemonConfiguration.RESTART_TIME_DEFAULT)
+    """The time after which a crashed daemon restarts. :attr:`Emailkasten.constants.EMailArchiverDaemonConfiguration.RESTART_TIME_DEFAULT` by default."""
+
     is_running = models.BooleanField(default=False)
     """Flags whether the daemon is active. `False` by default.
 
