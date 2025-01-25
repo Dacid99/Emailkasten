@@ -40,7 +40,7 @@ from typing import TYPE_CHECKING
 import imgkit
 from PIL import Image
 
-from .constants import ParsingConfiguration, ProcessingConfiguration
+from core.constants import ParsingConfiguration, ProcessingConfiguration
 from .fileManagment import getPrerenderImageStoragePath
 from .mailParsing import ParsedMailKeys
 

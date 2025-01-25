@@ -29,7 +29,7 @@ import pytest
 from django.db import IntegrityError
 from model_bakery import baker
 
-from Emailkasten import constants
+from core import constants
 from Emailkasten.Fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
 from Emailkasten.Fetchers.IMAPFetcher import IMAPFetcher
 from Emailkasten.Fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher

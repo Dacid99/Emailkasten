@@ -32,7 +32,7 @@ import os.path
 from builtins import open  # required for testing
 from typing import TYPE_CHECKING
 
-from .constants import StorageConfiguration
+from core.constants import StorageConfiguration
 from .mailParsing import ParsedMailKeys
 from core.models.StorageModel import StorageModel
 

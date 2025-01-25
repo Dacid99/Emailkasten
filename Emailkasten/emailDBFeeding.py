@@ -40,7 +40,7 @@ from typing import TYPE_CHECKING
 
 import django.db
 
-from .constants import ParsedMailKeys
+from core.constants import ParsedMailKeys
 from core.models.AttachmentModel import AttachmentModel
 from core.models.CorrespondentModel import CorrespondentModel
 from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel

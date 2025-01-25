@@ -30,7 +30,7 @@ from django.db import IntegrityError
 from faker import Faker
 from model_bakery import baker
 
-from Emailkasten import constants
+from core import constants
 from core.models.DaemonModel import DaemonModel
 from core.models.MailboxModel import MailboxModel
 

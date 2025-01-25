@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the constant values for the :mod:`Emailkasten` modules."""
+"""Module with the constant values for the :mod:`core` app."""
 
 import os
 from typing import Final
@@ -139,138 +139,6 @@ class TestStatusCodes:
     ]
 
 
-class FilterSetups:
-    """Namespace class for all filter setups for different field types."""
-
-    TEXT: Final[list[str]] = [
-        "icontains",
-        "contains",
-        "exact",
-        "iexact",
-        "startswith",
-        "istartswith",
-        "endswith",
-        "iendswith",
-        "regex",
-        "iregex",
-        "in"
-    ]
-    """Standard filter options for text fields."""
-
-    DATETIME: Final[list[str]] = [
-        "date",
-        "date__gte",
-        "date__lte",
-        "date__gt",
-        "date__lt",
-        "date__in",
-        "date__range",
-        "time",
-        "time__gte",
-        "time__lte",
-        "time__gt",
-        "time__lt",
-        "time__in",
-        "time__range",
-        "iso_year",
-        "iso_year",
-        "iso_year__gte",
-        "iso_year__lte",
-        "iso_year__gt",
-        "iso_year__lt",
-        "iso_year__in",
-        "iso_year__range",
-        "month",
-        "month__gte",
-        "month__lte",
-        "month__gt",
-        "month__lt",
-        "month__in",
-        "month__range",
-        "quarter",
-        "quarter__gte",
-        "quarter__lte",
-        "quarter__gt",
-        "quarter__lt",
-        "quarter__in",
-        "quarter__range",
-        "week",
-        "week__gte",
-        "week__lte",
-        "week__gt",
-        "week__lt",
-        "week__in",
-        "week__range",
-        "iso_week_day",
-        "iso_week_day__gte",
-        "iso_week_day__lte",
-        "iso_week_day__gt",
-        "iso_week_day__lt",
-        "iso_week_day__in",
-        "iso_week_day__range",
-        "day",
-        "day__gte",
-        "day__lte",
-        "day__gt",
-        "day__lt",
-        "day__in",
-        "day__range",
-        "hour",
-        "hour__gte",
-        "hour__lte",
-        "hour__gt",
-        "hour__lt",
-        "hour__in",
-        "hour__range",
-        "minute",
-        "minute__gte",
-        "minute__lte",
-        "minute__gt",
-        "minute__lt",
-        "minute__in",
-        "minute__range",
-        "second",
-        "second__gte",
-        "second__lte",
-        "second__gt",
-        "second__lt",
-        "second__in",
-        "second__range",
-    ]
-
-    FLOAT: Final[list[str]] = [
-        "lte",
-        "gte",
-        "range"
-    ]
-    """Standard filter options for float fields."""
-
-
-    INT: Final[list[str]] = [
-        "lte",
-        "gte",
-        "lt",
-        "gt",
-        "exact",
-        "in",
-        "range"
-    ]
-    """Standard filter options for integer fields."""
-
-
-    BOOL: Final[list[str]] = ["exact"]
-    """Standard filter options for boolean fields."""
-
-
-    CHOICE: Final[list[str]] = [
-        "icontains",
-        "iexact",
-        "in"
-    ]
-    """Standard filter options for fields with constant choices."""
-
-
-
 # Configurations
 
 class EMailArchiverDaemonConfiguration:
@@ -294,56 +162,6 @@ class StorageConfiguration:
 
     PRERENDER_IMAGETYPE: Final[str] = "jpg"
     """The image format for the prerendered eml files."""
-
-
-class LoggerConfiguration:
-    """Namespace class for all configurations constants for the application loggers."""
-
-    LOG_DIRECTORY_PATH: Final[str] = ""  # /var/log
-    """The path to directory with the logs.
-    Must match the path in the docker-compose.yml to store the logs outside the container."""
-
-    APP_LOGFILE_NAME: Final[str] = "Emailkasten.log"
-    """The name of the Emailkasten logfile."""
-
-    DJANGO_LOGFILE_NAME: Final[str] = "django.log"
-    """The name of the django logfile."""
-
-    APP_LOG_LEVEL: Final[str] = os.environ.get("APP_LOG_LEVEL", "INFO")
-    """The loglevel to the Emailkasten logfile.
-    Is being set from an environment variable of the same name.
-    Defaults to INFO."""
-
-    DJANGO_LOG_LEVEL: Final[str] = os.environ.get("DJANGO_LOG_LEVEL", "INFO")
-    """The loglevel to the django logfile.
-    Is being set from an environment variable of the same name.
-    Defaults to INFO."""
-
-    ROOT_LOG_LEVEL: Final[str] = os.environ.get("ROOT_LOG_LEVEL", "INFO")
-    """The loglevel to the root console logger.
-    Is being set from an environment variable of the same name.
-    Defaults to INFO."""
-
-    LOGFILE_MAXSIZE: Final[int] = int(
-        os.environ.get("LOGFILE_MAXSIZE", 10 * 1024 * 1024)
-    )
-    """The maximum file size of a logfile.
-    Is being set from an environment variable of the same name.
-    Defaults to 10 MB.
-
-    Todo:
-        The int cast it not safe!"""
-
-    LOGFILE_BACKUP_NUMBER: Final[int] = int(os.environ.get("LOGFILE_BACKUP_NUMBER", 5))
-    """The maximum number of backup logfiles to keep.
-    Is being set from an environment variable of the same name.
-    Defaults to 5.
-
-    Todo:
-        The int cast is not safe!"""
-
-    LOG_FORMAT: Final[str] = "{asctime} {levelname} - {name}.{funcName}: {message}"
-    """The format of the log messages for all loggers."""
 
 
 class ParsingConfiguration:
@@ -409,38 +227,6 @@ class FetchingConfiguration:
 
     SAVE_IMAGES_DEFAULT: Final[bool] = True
     """The default setting whether to store images. Initially set to True."""
-
-
-class DatabaseConfiguration:
-    """Namespace class for all configurations constants for the database."""
-
-    NAME: Final[str] = os.environ.get("DB_NAME", "emailkasten")
-    """The name of the database on the mariadb server. Can be set from docker-compose.yml."""
-
-    USER: Final[str] = os.environ.get("DB_USER", "user")
-    """The name of the database user. Can be set from docker-compose.yml."""
-
-    PASSWORD: Final[str] = os.environ.get("DB_PASSWORD", "passwd")
-    """The password of the database user. Can be set from docker-compose.yml."""
-
-    RECONNECT_RETRIES: Final[int] = 10
-    """The number of reconnect attempt in case of database disconnect."""
-
-    RECONNECT_DELAY: Final[int] = 30
-    """The delay between reconnect attempt in case of database disconnect."""
-
-
-class APIConfiguration:
-    """Namespace class for all configuration constants of the API."""
-
-    DEFAULT_PAGE_SIZE: Final[int] = 20
-    """The default number of entries per paginated response."""
-
-    MAX_PAGE_SIZE: Final[int] = 200
-    """The maximal number of entries per paginated response."""
-
-    REGISTRATION_ENABLED: Final[bool] = os.environ.get("REGISTRATION_ENABLED", False)
-    """Whether reegistration of new users is enabled."""
 
 
 class ParsedMailKeys:

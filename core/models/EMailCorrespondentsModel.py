@@ -20,7 +20,7 @@
 
 from django.db import models
 
-from Emailkasten.constants import ParsedMailKeys
+from core.constants import ParsedMailKeys
 from .CorrespondentModel import CorrespondentModel
 from .EMailModel import EMailModel
 

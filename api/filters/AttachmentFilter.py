@@ -20,7 +20,7 @@
 
 import django_filters
 
-from Emailkasten.constants import FilterSetups
+from api.constants import FilterSetups
 from core.models.AttachmentModel import AttachmentModel
 
 class AttachmentFilter(django_filters.FilterSet):

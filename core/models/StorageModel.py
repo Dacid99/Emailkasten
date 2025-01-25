@@ -23,7 +23,7 @@ import os
 
 from django.db import models
 
-from Emailkasten.constants import StorageConfiguration
+from core.constants import StorageConfiguration
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""

@@ -27,8 +27,8 @@ from typing import TYPE_CHECKING, Literal
 
 from django.utils import timezone
 
-from .. import constants
-from ..constants import TestStatusCodes
+from core import constants
+from core.constants import TestStatusCodes
 
 if TYPE_CHECKING:
     from types import TracebackType

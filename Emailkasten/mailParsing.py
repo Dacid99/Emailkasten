@@ -37,7 +37,7 @@ from typing import TYPE_CHECKING
 import email_validator
 from imap_tools.imap_utf7 import utf7_decode
 
-from .constants import ParsedMailKeys, ParsingConfiguration
+from core.constants import ParsedMailKeys, ParsingConfiguration
 
 if TYPE_CHECKING:
     from typing import Any

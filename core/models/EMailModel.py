@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 
 from django.db import models
 
-from Emailkasten import constants
+from core import constants
 from .AccountModel import AccountModel
 from .MailingListModel import MailingListModel
 

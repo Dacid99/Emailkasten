@@ -20,7 +20,7 @@
 
 import poplib
 
-from .. import constants
+from core import constants
 from .POP3Fetcher import POP3Fetcher
 from core.models.AccountModel import AccountModel
 from core.models.MailboxModel import MailboxModel

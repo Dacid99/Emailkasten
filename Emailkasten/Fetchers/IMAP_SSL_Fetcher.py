@@ -20,7 +20,7 @@
 
 import imaplib
 
-from .. import constants
+from core import constants
 from .IMAPFetcher import IMAPFetcher
 from core.models.AccountModel import AccountModel
 from core.models.MailboxModel import MailboxModel

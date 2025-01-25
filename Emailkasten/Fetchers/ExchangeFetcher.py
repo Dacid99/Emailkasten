@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING, Literal
 
 import exchangelib
 
-from .. import constants
+from core import constants
 from ..ExchangeMailParser import ExchangeMailParser
 
 if TYPE_CHECKING:

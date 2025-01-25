@@ -30,7 +30,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from Emailkasten.constants import TestStatusCodes
+from core.constants import TestStatusCodes
 from api.filters.AccountFilter import AccountFilter
 from Emailkasten.mailProcessing import scanMailboxes, testAccount
 from core.models.AccountModel import AccountModel

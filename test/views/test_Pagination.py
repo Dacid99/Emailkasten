@@ -20,7 +20,7 @@ import pytest
 from model_bakery import baker
 from test_AccountViewSet import fixture_accountModel
 
-from Emailkasten.constants import APIConfiguration
+from api.constants import APIConfiguration
 from api.views.EMailViewSet import EMailViewSet
 from core.models.EMailModel import EMailModel
 
@@ -60,7 +60,7 @@ def test_Pagination(emails, list_url, owner_apiClient, page_query, page_size_que
 
 @pytest.mark.django_db
 def test_Pagination_max(monkeypatch, emails, list_url, owner_apiClient):
-    monkeypatch.setattr("Emailkasten.Pagination.Pagination.max_page_size", len(emails)//2)
+    monkeypatch.setattr("api.pagination.Pagination.max_page_size", len(emails)//2)
     query = {'page': 1, 'page_size': len(emails)}
 
     response = owner_apiClient.get(list_url(EMailViewSet), query)

@@ -30,7 +30,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
-from Emailkasten import constants
+import project.constants
+import api.constants
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,7 +78,7 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'Emailkasten.Pagination.Pagination',
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.Pagination',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -133,9 +134,9 @@ SITE_ID = 1
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": constants.DatabaseConfiguration.NAME,
-        "USER": constants.DatabaseConfiguration.USER,
-        "PASSWORD": constants.DatabaseConfiguration.PASSWORD,
+        "NAME": project.constants.DatabaseConfiguration.NAME,
+        "USER": project.constants.DatabaseConfiguration.USER,
+        "PASSWORD": project.constants.DatabaseConfiguration.PASSWORD,
         "HOST": "db",
         "PORT": '3306',
         "OPTIONS": {
@@ -171,7 +172,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-REGISTRATION_ENABLED = constants.APIConfiguration.REGISTRATION_ENABLED
+REGISTRATION_ENABLED = api.constants.APIConfiguration.REGISTRATION_ENABLED
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -196,7 +197,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         "default": {
-            'format': constants.LoggerConfiguration.LOG_FORMAT,
+            'format': project.constants.LoggerConfiguration.LOG_FORMAT,
             'style': '{',
         },
     },
@@ -210,38 +211,38 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(
-                constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
-                constants.LoggerConfiguration.DJANGO_LOGFILE_NAME
+                project.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
+                project.constants.LoggerConfiguration.DJANGO_LOGFILE_NAME
             ),
-            'maxBytes': constants.LoggerConfiguration.LOGFILE_MAXSIZE,
-            'backupCount': constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
+            'maxBytes': project.constants.LoggerConfiguration.LOGFILE_MAXSIZE,
+            'backupCount': project.constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
             'formatter': 'default',
         },
         'app_logfile': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(
-                constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
-                constants.LoggerConfiguration.APP_LOGFILE_NAME
+                project.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
+                project.constants.LoggerConfiguration.APP_LOGFILE_NAME
             ),
-            'maxBytes': constants.LoggerConfiguration.LOGFILE_MAXSIZE,
-            'backupCount': constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
+            'maxBytes': project.constants.LoggerConfiguration.LOGFILE_MAXSIZE,
+            'backupCount': project.constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
             'formatter': 'default',
         },
     },
     'root': {
         'handlers': ['console'],
-        'level': constants.LoggerConfiguration.ROOT_LOG_LEVEL,
+        'level': project.constants.LoggerConfiguration.ROOT_LOG_LEVEL,
     },
     'loggers': {
         'django': {
             'handlers': ['django_logfile'],
-            'level': constants.LoggerConfiguration.DJANGO_LOG_LEVEL,
+            'level': project.constants.LoggerConfiguration.DJANGO_LOG_LEVEL,
             'propagate': True,
         },
         "Emailkasten": {
             'handlers': ['app_logfile'],
-            'level': constants.LoggerConfiguration.APP_LOG_LEVEL,
+            'level': project.constants.LoggerConfiguration.APP_LOG_LEVEL,
             'propagate': True,
         },
     },

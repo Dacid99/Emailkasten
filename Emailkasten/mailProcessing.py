@@ -41,7 +41,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from .constants import ParsedMailKeys, ParsingConfiguration, TestStatusCodes
+from core.constants import ParsedMailKeys, ParsingConfiguration, TestStatusCodes
 from .emailDBFeeding import insertEMail, insertMailbox
 from .Fetchers.ExchangeFetcher import ExchangeFetcher
 from .Fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher

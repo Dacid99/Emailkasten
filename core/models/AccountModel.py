@@ -24,7 +24,7 @@ from dirtyfields import DirtyFieldsMixin
 from django.contrib.auth.models import User
 from django.db import models
 
-from Emailkasten import constants
+from core import constants
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""

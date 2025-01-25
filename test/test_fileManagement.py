@@ -37,7 +37,7 @@ import pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
 import Emailkasten.fileManagment
-from Emailkasten.constants import ParsedMailKeys
+from core.constants import ParsedMailKeys
 
 if TYPE_CHECKING:
     from typing import Generator

@@ -29,8 +29,8 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from Emailkasten import constants
-from Emailkasten.constants import TestStatusCodes
+from core import constants
+from core.constants import TestStatusCodes
 from api.filters.MailboxFilter import MailboxFilter
 from Emailkasten.mailProcessing import fetchAndProcessMails, testMailbox
 from core.models.DaemonModel import DaemonModel
