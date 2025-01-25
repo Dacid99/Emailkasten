@@ -23,9 +23,9 @@ import logging
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 
-from ..constants import FetchingConfiguration
-from ..Fetchers.IMAPFetcher import IMAPFetcher
-from ..Fetchers.POP3Fetcher import POP3Fetcher
+from Emailkasten.constants import FetchingConfiguration
+from Emailkasten.Fetchers.IMAPFetcher import IMAPFetcher
+from Emailkasten.Fetchers.POP3Fetcher import POP3Fetcher
 from .AccountModel import AccountModel
 
 logger = logging.getLogger(__name__)
@@ -54,8 +54,8 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
 
     is_healthy = models.BooleanField(default=True)
     """Flags whether the mailbox can be accessed and read. True by default.
-    When the :attr:`Emailkasten.Models.AccountModel.is_healthy` field changes to `False`, this field is updated accordingly.
-    When this field becomes `True` after being `False`, the :attr:`Emailkasten.Models.AccountModel.is_healthy` field of :attr:`account` will be set to `True` as well."""
+    When the :attr:`core.models.AccountModel.is_healthy` field changes to `False`, this field is updated accordingly.
+    When this field becomes `True` after being `False`, the :attr:`core.models.AccountModel.is_healthy` field of :attr:`account` will be set to `True` as well."""
 
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""

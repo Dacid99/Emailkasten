@@ -20,14 +20,14 @@
 
 from rest_framework import serializers
 
-from ...Models.MailingListModel import MailingListModel
+from core.models.MailingListModel import MailingListModel
 
 
 class BaseMailingListSerializer(serializers.ModelSerializer):
-    """The base serializer for :class:`Emailkasten.Models.MailingListModel.MailingListModel`.
+    """The base serializer for :class:`core.models.MailingListModel.MailingListModel`.
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`Emailkasten.Models.MailingListModel.MailingListModel` should inherit from this.
+    Other serializers for :class:`core.models.MailingListModel.MailingListModel` should inherit from this.
     """
 
     class Meta:
@@ -57,6 +57,6 @@ class BaseMailingListSerializer(serializers.ModelSerializer):
             'email_number'
         ]
         """All fields except for
-        :attr:`Emailkasten.Models.MailingListModel.MailingListModel.is_favorite`
+        :attr:`core.models.MailingListModel.MailingListModel.is_favorite`
         are read-only.
         """

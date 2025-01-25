@@ -21,13 +21,13 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser
 
-from ..Models.ConfigurationModel import ConfigurationModel
+from core.models.ConfigurationModel import ConfigurationModel
 from ..Serializers.ConfigurationSerializers.ConfigurationSerializer import \
     ConfigurationSerializer
 
 
 class ConfigurationViewSet(viewsets.ModelViewSet):
-    """Viewset for the :class:`Emailkasten.Models.ConfigurationModel.ConfigurationModel`."""
+    """Viewset for the :class:`core.models.ConfigurationModel.ConfigurationModel`."""
 
     BASENAME = 'configs'
     queryset = ConfigurationModel.objects.all()

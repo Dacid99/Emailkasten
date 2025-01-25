@@ -22,7 +22,7 @@ Fixtures:
     :func:`fixture_accountModel`: Creates an account owned by `owner_user`.
     :func:`fixture_emailModel`: Creates an email in `accountModel`.
     :func:`fixture_imageModel`: Creates an image in `emailModel`.
-    :func:`fixture_emailPayload`: Creates clean :class:`Emailkasten.Models.ImageModel.ImageModel` payload for a patch, post or put request.
+    :func:`fixture_emailPayload`: Creates clean :class:`core.models.ImageModel.ImageModel` payload for a patch, post or put request.
 
 """
 
@@ -38,7 +38,7 @@ from rest_framework import status
 from test_AccountViewSet import fixture_accountModel
 from test_EMailViewSet import fixture_emailModel
 
-from Emailkasten.Models.ImageModel import ImageModel
+from core.models.ImageModel import ImageModel
 from Emailkasten.Views.ImageViewSet import ImageViewSet
 
 if TYPE_CHECKING:
@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture(name='imageModel')
 def fixture_imageModel(emailModel) -> ImageModel:
-    """Creates an :class:`Emailkasten.Models.ImageModel.ImageModel`
+    """Creates an :class:`core.models.ImageModel.ImageModel`
     owned by :attr:`owner_user`.
 
     Args:
@@ -64,7 +64,7 @@ def fixture_imageModel(emailModel) -> ImageModel:
 
 @pytest.fixture(name='imagePayload')
 def fixture_imagePayload(emailModel) -> dict[str, Any]:
-    """Creates clean :class:`Emailkasten.Models.ImageModel.ImageModel` payload
+    """Creates clean :class:`core.models.ImageModel.ImageModel` payload
     for a post or put request.
 
     Args:

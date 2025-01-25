@@ -20,14 +20,14 @@
 
 from rest_framework import serializers
 
-from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 
 
 class BaseEMailCorrespondentSerializer(serializers.ModelSerializer):
-    """The base serializer for :class:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel`.
+    """The base serializer for :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`.
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel` should inherit from this.
+    Other serializers for :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` should inherit from this.
     """
 
     class Meta:

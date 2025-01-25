@@ -21,8 +21,8 @@
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from ...Models.EMailModel import EMailModel
+from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.EMailModel import EMailModel
 from ..AttachmentSerializers.BaseAttachmentSerializer import \
     BaseAttachmentSerializer
 from ..EMailCorrespondentsSerializers.EMailCorrespondentsSerializer import \
@@ -34,12 +34,12 @@ from .BaseEMailSerializer import BaseEMailSerializer
 
 
 class EMailSerializer(BaseEMailSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.EMailModel`.
+    """The standard serializer for a :class:`core.models.EMailModel`.
     Includes only the most relevant model fields.
-    Includes nested serializers for the :attr:`Emailkasten.Models.EMailModel.EMailModel.attachments`,
-    :attr:`Emailkasten.Models.EMailModel.EMailModel.images`,
-    :attr:`Emailkasten.Models.EMailModel.EMailModel.mailinglist` and
-    :attr:`Emailkasten.Models.EMailModel.EMailModel.correspondents` foreign key fields.
+    Includes nested serializers for the :attr:`core.models.EMailModel.EMailModel.attachments`,
+    :attr:`core.models.EMailModel.EMailModel.images`,
+    :attr:`core.models.EMailModel.EMailModel.mailinglist` and
+    :attr:`core.models.EMailModel.EMailModel.correspondents` foreign key fields.
     """
 
     attachments = BaseAttachmentSerializer(many=True, read_only=True)
@@ -59,7 +59,7 @@ class EMailSerializer(BaseEMailSerializer):
 
     correspondents = serializers.SerializerMethodField(read_only=True)
     """The emails are set from the
-    :class:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel`
+    :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`
     via :func:`get_emails`.
     """
 

@@ -33,8 +33,8 @@ from .. import constants
 from ..constants import TestStatusCodes
 from ..Filters.MailboxFilter import MailboxFilter
 from ..mailProcessing import fetchAndProcessMails, testMailbox
-from ..Models.DaemonModel import DaemonModel
-from ..Models.MailboxModel import MailboxModel
+from core.models.DaemonModel import DaemonModel
+from core.models.MailboxModel import MailboxModel
 from ..Serializers.MailboxSerializers.MailboxWithDaemonSerializer import \
     MailboxWithDaemonSerializer
 
@@ -44,7 +44,7 @@ if TYPE_CHECKING:
 
 
 class MailboxViewSet(viewsets.ModelViewSet):
-    """Viewset for the :class:`Emailkasten.Models.MailboxModel.MailboxModel`."""
+    """Viewset for the :class:`core.models.MailboxModel.MailboxModel`."""
 
     BASENAME = 'mailboxes'
     serializer_class = MailboxWithDaemonSerializer

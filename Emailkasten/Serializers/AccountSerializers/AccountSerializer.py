@@ -23,13 +23,13 @@ from ..MailboxSerializers.BaseMailboxSerializer import BaseMailboxSerializer
 
 
 class AccountSerializer(BaseAccountSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.AccountModel`.
+    """The standard serializer for a :class:`core.models.AccountModel`.
     Includes a nested serializer for the related field `mailboxes`.
     """
 
     mailboxes = BaseMailboxSerializer(many=True, read_only=True)
     """The mailboxes of the account are serialized
-    by :class:`Emailkasten.Models.MailboxSerializers.BaseMailboxSerializer.BaseMailboxSerializer`.
+    by :class:`core.models.MailboxSerializers.BaseMailboxSerializer.BaseMailboxSerializer`.
     """
 
 

@@ -23,7 +23,7 @@ Fixtures:
     :func:`fixture_mock_good_parsedMailDict`: Mocks a valid parsedMail dictionary used to transport the mail data.
     :func:`fixture_mock_empty_parsedMailDict`: Mocks a valid parsedMail dictionary without images or attachments.
     :func:`fixture_mock_empty_parsedMailDict`: Mocks an invalid parsedMail dictionary.
-    :func:`fixture_mock_getSubdirectory`: Mocks the :func:`Emailkasten.Models.StorageModel.getSubdirectory` function call.
+    :func:`fixture_mock_getSubdirectory`: Mocks the :func:`core.models.StorageModel.getSubdirectory` function call.
     :func:`fixture_mock_filesystem`: Mocks a Linux filesystem for realistic testing.
 """
 from __future__ import annotations
@@ -107,7 +107,7 @@ def fixture_mock_bad_parsedMailDict() -> dict:
 
 @pytest.fixture(name='mock_getSubdirectory', autouse=True)
 def fixture_mock_getSubdirectory(mocker: MockerFixture) -> MagicMock:
-    """Mocks the :func:`Emailkasten.Models.StorageModel.StorageModel.getSubdirectory` function."""
+    """Mocks the :func:`core.models.StorageModel.StorageModel.getSubdirectory` function."""
     return mocker.patch('Emailkasten.fileManagment.StorageModel.getSubdirectory', return_value = patch_getSubDirectory_returnValue)
 
 @pytest.fixture(name='mock_filesystem', autouse=True)

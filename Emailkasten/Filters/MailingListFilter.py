@@ -21,11 +21,11 @@
 import django_filters
 
 from ..constants import FilterSetups
-from ..Models.MailingListModel import MailingListModel
+from core.models.MailingListModel import MailingListModel
 
 
 class MailingListFilter(django_filters.FilterSet):
-    """The filter class for :class:`Emailkasten.Models.MailingListModel`."""
+    """The filter class for :class:`core.models.MailingListModel`."""
 
     class Meta:
         """Metadata class for the filter."""

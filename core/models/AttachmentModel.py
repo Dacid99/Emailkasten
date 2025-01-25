@@ -22,7 +22,7 @@ import logging
 
 from django.db import models
 
-from .. import constants
+from Emailkasten import constants
 from .EMailModel import EMailModel
 
 

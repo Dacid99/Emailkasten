@@ -22,8 +22,8 @@ import imaplib
 
 from .. import constants
 from .IMAPFetcher import IMAPFetcher
-from ..Models.AccountModel import AccountModel
-from ..Models.MailboxModel import MailboxModel
+from core.models.AccountModel import AccountModel
+from core.models.MailboxModel import MailboxModel
 
 
 class IMAP_SSL_Fetcher(IMAPFetcher):

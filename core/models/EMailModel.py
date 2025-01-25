@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 
 from django.db import models
 
-from .. import constants
+from Emailkasten import constants
 from .AccountModel import AccountModel
 from .MailingListModel import MailingListModel
 
@@ -86,7 +86,7 @@ class EMailModel(models.Model):
     """Flags favorite mails. False by default."""
 
     correspondents: RelatedManager[CorrespondentModel] = models.ManyToManyField('CorrespondentModel', through='EMailCorrespondentsModel', related_name='emails')
-    """The correspondents that are mentioned in this mail. Bridges through :class:`Emailkasten.Models.EMailCorrespondentsModel`."""
+    """The correspondents that are mentioned in this mail. Bridges through :class:`core.models.EMailCorrespondentsModel`."""
 
     mailinglist = models.ForeignKey(MailingListModel, null=True, related_name='emails', on_delete=models.CASCADE)
     """The mailinglist that this mail has been sent from. Can be null. Deletion of that `mailinglist` deletes this mail."""

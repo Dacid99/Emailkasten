@@ -33,7 +33,7 @@ from rest_framework.response import Response
 
 from ..EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
 from ..Filters.DaemonFilter import DaemonFilter
-from ..Models.DaemonModel import DaemonModel
+from core.models.DaemonModel import DaemonModel
 from ..Serializers.DaemonSerializers.BaseDaemonSerializer import \
     BaseDaemonSerializer
 
@@ -43,7 +43,7 @@ if TYPE_CHECKING:
 
 
 class DaemonViewSet(viewsets.ModelViewSet):
-    """Viewset for the :class:`Emailkasten.Models.DaemonModel.DaemonModel`."""
+    """Viewset for the :class:`core.models.DaemonModel.DaemonModel`."""
 
     BASENAME = 'daemons'
     serializer_class = BaseDaemonSerializer

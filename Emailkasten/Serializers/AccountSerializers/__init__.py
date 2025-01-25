@@ -18,5 +18,5 @@
 
 """Emailkasten.Serializers.AccountSerializers
 
-Package containing different serializers for the :mod:`Emailkasten.Models.AccountModel` data
+Package containing different serializers for the :mod:`core.models.AccountModel` data
 """

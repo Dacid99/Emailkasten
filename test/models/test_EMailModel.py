@@ -17,10 +17,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
-"""Test module for :mod:`Emailkasten.Models.EMailModel`.
+"""Test module for :mod:`core.models.EMailModel`.
 
 Fixtures:
-    :func:`fixture_emailModel`: Creates an :class:`Emailkasten.Models.EMailModel.EMailModel` instance for testing.
+    :func:`fixture_emailModel`: Creates an :class:`core.models.EMailModel.EMailModel` instance for testing.
 """
 
 import datetime
@@ -29,13 +29,13 @@ import pytest
 from django.db import IntegrityError
 from model_bakery import baker
 
-from Emailkasten.Models.AccountModel import AccountModel
-from Emailkasten.Models.EMailModel import EMailModel
-from Emailkasten.Models.MailingListModel import MailingListModel
+from core.models.AccountModel import AccountModel
+from core.models.EMailModel import EMailModel
+from core.models.MailingListModel import MailingListModel
 
 @pytest.fixture(name='email')
 def fixture_emailModel() -> EMailModel:
-    """Creates an :class:`Emailkasten.Models.EMailModel.EMailModel`.
+    """Creates an :class:`core.models.EMailModel.EMailModel`.
 
     Returns:
         The email instance for testing.
@@ -44,7 +44,7 @@ def fixture_emailModel() -> EMailModel:
 
 @pytest.mark.django_db
 def test_EMailModel_creation(email):
-    """Tests the correct default creation of :class:`Emailkasten.Models.EMailModel.EMailModel`."""
+    """Tests the correct default creation of :class:`core.models.EMailModel.EMailModel`."""
 
     assert email.message_id is not None
     assert isinstance(email.message_id, str)
@@ -92,7 +92,7 @@ def test_EMailModel_creation(email):
 
 @pytest.mark.django_db
 def test_EMailModel_foreign_key_account_deletion(email):
-    """Tests the on_delete foreign key constraint on account in :class:`Emailkasten.Models.EMailModel.EMailModel`."""
+    """Tests the on_delete foreign key constraint on account in :class:`core.models.EMailModel.EMailModel`."""
 
     email.account.delete()
 
@@ -102,7 +102,7 @@ def test_EMailModel_foreign_key_account_deletion(email):
 
 @pytest.mark.django_db
 def test_EMailModel_foreign_key_mailingList_deletion(email):
-    """Tests the on_delete foreign key constraint on mailinglist in :class:`Emailkasten.Models.EMailModel.EMailModel`."""
+    """Tests the on_delete foreign key constraint on mailinglist in :class:`core.models.EMailModel.EMailModel`."""
 
     mailingList = baker.make(MailingListModel)
     email.mailinglist = mailingList
@@ -116,7 +116,7 @@ def test_EMailModel_foreign_key_mailingList_deletion(email):
 
 @pytest.mark.django_db
 def test_EMailModel_unique():
-    """Tests the unique constraints of :class:`Emailkasten.Models.EMailModel.EMailModel`."""
+    """Tests the unique constraints of :class:`core.models.EMailModel.EMailModel`."""
 
     email_1 = baker.make(EMailModel, message_id="abc123")
     email_2 = baker.make(EMailModel, message_id="abc123")

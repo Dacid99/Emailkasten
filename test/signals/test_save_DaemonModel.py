@@ -22,8 +22,8 @@ import pytest
 from faker import Faker
 from model_bakery import baker
 
-from Emailkasten.Models.DaemonModel import DaemonModel
-from Emailkasten.Models.MailboxModel import MailboxModel
+from core.models.DaemonModel import DaemonModel
+from core.models.MailboxModel import MailboxModel
 
 
 @pytest.fixture(name='mock_updateDaemon')

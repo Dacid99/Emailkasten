@@ -21,7 +21,7 @@
 import pytest
 from faker import Faker
 
-from Emailkasten.Models.EMailModel import EMailModel
+from core.models.EMailModel import EMailModel
 
 from ..models.test_EMailModel import fixture_emailModel
 

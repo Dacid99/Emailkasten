@@ -20,7 +20,7 @@
 
 from rest_framework import serializers
 
-from ...Models.MailingListModel import MailingListModel
+from core.models.MailingListModel import MailingListModel
 from ..CorrespondentSerializers.BaseCorrespondentSerializer import \
     BaseCorrespondentSerializer
 from ..EMailSerializers.BaseEMailSerializer import BaseEMailSerializer
@@ -28,10 +28,10 @@ from .BaseMailingListSerializer import BaseMailingListSerializer
 
 
 class MailingListSerializer(BaseMailingListSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.MailingList`.
-    Includes nested serializers for the :attr:`Emailkasten.Models.MailingList.MailingList.emails`,
-    :attr:`Emailkasten.Models.MailingList.MailingList.correspondent` foreign key fields
-    as well as a method field for the count of elements in :attr:`Emailkasten.Models.MailingList.MailingList.emails`.
+    """The standard serializer for a :class:`core.models.MailingList`.
+    Includes nested serializers for the :attr:`core.models.MailingList.MailingList.emails`,
+    :attr:`core.models.MailingList.MailingList.correspondent` foreign key fields
+    as well as a method field for the count of elements in :attr:`core.models.MailingList.MailingList.emails`.
     """
 
     emails = BaseEMailSerializer(many=True, read_only=True)

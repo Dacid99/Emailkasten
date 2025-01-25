@@ -21,7 +21,7 @@
 Fixtures:
     :func:`fixture_accountModel`: Creates an account owned by `owner_user`.
     :func:`fixture_mailingListModel`: Creates an email in `accountModel`.
-    :func:`fixture_mailingListPayload`: Creates clean :class:`Emailkasten.Models.MailingListModel.MailingListModel` payload for a patch, post or put request.
+    :func:`fixture_mailingListPayload`: Creates clean :class:`core.models.MailingListModel.MailingListModel` payload for a patch, post or put request.
 
 """
 
@@ -37,7 +37,7 @@ from test_AccountViewSet import fixture_accountModel
 from test_EMailViewSet import fixture_emailModel
 from test_CorrespondentViewSet import fixture_correspondentModel
 
-from Emailkasten.Models.MailingListModel import MailingListModel
+from core.models.MailingListModel import MailingListModel
 from Emailkasten.Views.MailingListViewSet import MailingListViewSet
 
 if TYPE_CHECKING:
@@ -46,7 +46,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture(name='mailingListModel')
 def fixture_mailingListModel(correspondentModel, emailModel) -> MailingListModel:
-    """Creates an :class:`Emailkasten.Models.MailingListModel.MailingListModel` owned by :attr:`owner_user`.
+    """Creates an :class:`core.models.MailingListModel.MailingListModel` owned by :attr:`owner_user`.
 
     Args:
         correspondentModel: Depends on :func:`fixture_correspondentModel`.
@@ -59,7 +59,7 @@ def fixture_mailingListModel(correspondentModel, emailModel) -> MailingListModel
 
 @pytest.fixture(name='mailingListPayload')
 def fixture_mailingListPayload(correspondentModel, emailModel) -> dict[str, Any]:
-    """Creates clean :class:`Emailkasten.Models.MailingListModel.MailingListModel` payload for a patch, post or put request.
+    """Creates clean :class:`core.models.MailingListModel.MailingListModel` payload for a patch, post or put request.
 
     Args:
         correspondentModel: Depends on :func:`fixture_correspondentModel`.

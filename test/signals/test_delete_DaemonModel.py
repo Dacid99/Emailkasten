@@ -20,7 +20,7 @@
 
 import pytest
 
-from Emailkasten.Models.DaemonModel import DaemonModel
+from core.models.DaemonModel import DaemonModel
 
 from ..models.test_DaemonModel import fixture_daemonModel
 

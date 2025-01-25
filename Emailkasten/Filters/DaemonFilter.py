@@ -21,10 +21,10 @@
 import django_filters
 
 from ..constants import FilterSetups
-from ..Models.DaemonModel import DaemonModel
+from core.models.DaemonModel import DaemonModel
 
 class DaemonFilter(django_filters.FilterSet):
-    """The filter class for :class:`Emailkasten.Models.MailboxModel`."""
+    """The filter class for :class:`core.models.MailboxModel`."""
 
     mail_address__icontains = django_filters.CharFilter(
         field_name="mailbox__account__mail_address", lookup_expr="icontains"

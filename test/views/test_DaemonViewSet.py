@@ -21,7 +21,7 @@
 Fixtures:
     :func:`fixture_accountModel`: Creates an account owned by `owner_user`.
     :func:`fixture_daemonModel`: Creates an mailbox in `accountModel`.
-    :func:`fixture_mailboxPayload`: Creates clean :class:`Emailkasten.Models.DaemonModel.DaemonModel` payload for a patch, post or put request.
+    :func:`fixture_mailboxPayload`: Creates clean :class:`core.models.DaemonModel.DaemonModel` payload for a patch, post or put request.
 
 """
 
@@ -38,7 +38,7 @@ from rest_framework import status
 from test_AccountViewSet import fixture_accountModel
 from test_MailboxViewSet import fixture_mailboxModel
 
-from Emailkasten.Models.DaemonModel import DaemonModel
+from core.models.DaemonModel import DaemonModel
 from Emailkasten.Views.DaemonViewSet import DaemonViewSet
 
 if TYPE_CHECKING:
@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture(name='daemonModel')
 def fixture_daemonModel(mailboxModel) -> DaemonModel:
-    """Creates an :class:`Emailkasten.Models.DaemonModel.DaemonModel` owned by :attr:`owner_user`.
+    """Creates an :class:`core.models.DaemonModel.DaemonModel` owned by :attr:`owner_user`.
 
     Args:
         mailboxModel: Depends on :func:`fixture_mailboxModel`.
@@ -59,7 +59,7 @@ def fixture_daemonModel(mailboxModel) -> DaemonModel:
 
 @pytest.fixture(name='daemonPayload')
 def fixture_daemonPayload(mailboxModel) -> dict[str, Any]:
-    """Creates clean :class:`Emailkasten.Models.DaemonModel.DaemonModel` payload for a patch, post or put request.
+    """Creates clean :class:`core.models.DaemonModel.DaemonModel` payload for a patch, post or put request.
 
     Args:
         mailboxModel: Depends on :func:`fixture_mailboxModel`.
@@ -275,7 +275,7 @@ def test_delete_auth_owner(daemonModel, owner_apiClient, detail_url):
 @pytest.mark.django_db
 def test_fetching_options_noauth(daemonModel, noauth_apiClient, custom_detail_action_url, mocker):
     """Tests the post method :func:`Emailkasten.Views.DaemonViewSet.DaemonViewSet.fetching_options` action with an unauthenticated user client."""
-    mocker.patch('Emailkasten.Models.MailboxModel.MailboxModel.getAvailableFetchingCriteria', return_value = ['ALL'])
+    mocker.patch('core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria', return_value = ['ALL'])
 
     response = noauth_apiClient.get(custom_detail_action_url(DaemonViewSet, DaemonViewSet.URL_NAME_FETCHING_OPTIONS, daemonModel))
 
@@ -285,7 +285,7 @@ def test_fetching_options_noauth(daemonModel, noauth_apiClient, custom_detail_ac
 @pytest.mark.django_db
 def test_fetching_options_auth_other(daemonModel, other_apiClient, custom_detail_action_url, mocker):
     """Tests the post method :func:`Emailkasten.Views.DaemonViewSet.DaemonViewSet.fetching_options` action with the authenticated other user client."""
-    mocker.patch('Emailkasten.Models.MailboxModel.MailboxModel.getAvailableFetchingCriteria', return_value = ['ALL'])
+    mocker.patch('core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria', return_value = ['ALL'])
 
     response = other_apiClient.get(custom_detail_action_url(DaemonViewSet, DaemonViewSet.URL_NAME_FETCHING_OPTIONS, daemonModel))
 
@@ -296,7 +296,7 @@ def test_fetching_options_auth_other(daemonModel, other_apiClient, custom_detail
 def test_fetching_options_auth_owner(daemonModel, owner_apiClient, custom_detail_action_url, mocker):
     """Tests the post method :func:`Emailkasten.Views.DaemonViewSet.DaemonViewSet.fetching_options` action with the authenticated owner user client."""
     mock_fetchingCriteria = ['ALL']
-    mocker.patch('Emailkasten.Models.MailboxModel.MailboxModel.getAvailableFetchingCriteria', return_value = mock_fetchingCriteria)
+    mocker.patch('core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria', return_value = mock_fetchingCriteria)
 
     response = owner_apiClient.get(custom_detail_action_url(DaemonViewSet, DaemonViewSet.URL_NAME_FETCHING_OPTIONS, daemonModel))
 
@@ -307,7 +307,7 @@ def test_fetching_options_auth_owner(daemonModel, owner_apiClient, custom_detail
 def test_fetching_options_error_auth_owner(daemonModel, owner_apiClient, custom_detail_action_url, mocker):
     """Tests the post method :func:`Emailkasten.Views.DaemonViewSet.DaemonViewSet.fetching_options` action with the authenticated owner user client."""
     mock_fetchingCriteria = []
-    mocker.patch('Emailkasten.Models.MailboxModel.MailboxModel.getAvailableFetchingCriteria', return_value = mock_fetchingCriteria)
+    mocker.patch('core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria', return_value = mock_fetchingCriteria)
 
     response = owner_apiClient.get(custom_detail_action_url(DaemonViewSet, DaemonViewSet.URL_NAME_FETCHING_OPTIONS, daemonModel))
 

@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`Emailkasten.Models.AttachmentModel`.
+"""Test module for :mod:`core.models.AttachmentModel`.
 
 Fixtures:
-    :func:`fixture_attachmentModel`: Creates an :class:`Emailkasten.Models.AttachmentModel.AttachmentModel` instance for testing.
+    :func:`fixture_attachmentModel`: Creates an :class:`core.models.AttachmentModel.AttachmentModel` instance for testing.
 """
 
 import datetime
@@ -29,13 +29,13 @@ from django.db import IntegrityError
 from faker import Faker
 from model_bakery import baker
 
-from Emailkasten.Models.AttachmentModel import AttachmentModel
-from Emailkasten.Models.EMailModel import EMailModel
+from core.models.AttachmentModel import AttachmentModel
+from core.models.EMailModel import EMailModel
 
 
 @pytest.fixture(name='attachment')
 def fixture_attachmentModel() -> AttachmentModel:
-    """Creates an :class:`Emailkasten.Models.AttachmentModel.AttachmentModel` owned by :attr:`owner_user`.
+    """Creates an :class:`core.models.AttachmentModel.AttachmentModel` owned by :attr:`owner_user`.
 
     Returns:
         The attachment instance for testing.
@@ -47,7 +47,7 @@ def fixture_attachmentModel() -> AttachmentModel:
 
 @pytest.mark.django_db
 def test_AttachmentModel_creation(attachment):
-    """Tests the correct default creation of :class:`Emailkasten.Models.AttachmentModel.AttachmentModel`."""
+    """Tests the correct default creation of :class:`core.models.AttachmentModel.AttachmentModel`."""
 
     assert attachment.file_name is not None
     assert isinstance(attachment.file_name, str)
@@ -69,7 +69,7 @@ def test_AttachmentModel_creation(attachment):
 
 @pytest.mark.django_db
 def test_AttachmentModel_foreign_key_deletion(attachment):
-    """Tests the on_delete foreign key constraint in :class:`Emailkasten.Models.AttachmentModel.AttachmentModel`."""
+    """Tests the on_delete foreign key constraint in :class:`core.models.AttachmentModel.AttachmentModel`."""
 
     assert attachment is not None
     attachment.email.delete()
@@ -79,7 +79,7 @@ def test_AttachmentModel_foreign_key_deletion(attachment):
 
 @pytest.mark.django_db
 def test_AttachmentModel_unique():
-    """Tests the unique constraints of :class:`Emailkasten.Models.AttachmentModel.AttachmentModel`."""
+    """Tests the unique constraints of :class:`core.models.AttachmentModel.AttachmentModel`."""
 
     attachment_1 = baker.make(AttachmentModel, file_path="test")
     attachment_2 = baker.make(AttachmentModel, file_path="test")

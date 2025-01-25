@@ -5,15 +5,15 @@ from freezegun import freeze_time
 from model_bakery import baker
 from faker import Faker
 
-from Emailkasten.Models.AccountModel import AccountModel
-from Emailkasten.Models.AttachmentModel import AttachmentModel
-from Emailkasten.Models.CorrespondentModel import CorrespondentModel
-from Emailkasten.Models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from Emailkasten.Models.ImageModel import ImageModel
-from Emailkasten.Models.MailingListModel import MailingListModel
-from Emailkasten.Models.MailboxModel import MailboxModel
-from Emailkasten.Models.EMailModel import EMailModel
-from Emailkasten.Models.DaemonModel import DaemonModel
+from core.models.AccountModel import AccountModel
+from core.models.AttachmentModel import AttachmentModel
+from core.models.CorrespondentModel import CorrespondentModel
+from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.ImageModel import ImageModel
+from core.models.MailingListModel import MailingListModel
+from core.models.MailboxModel import MailboxModel
+from core.models.EMailModel import EMailModel
+from core.models.DaemonModel import DaemonModel
 
 
 def datetime_quarter(datetime: datetime.datetime) -> int:

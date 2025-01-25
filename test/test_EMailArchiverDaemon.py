@@ -22,7 +22,7 @@ import pytest
 from django.db.models.signals import post_save
 from Emailkasten.signals.save_DaemonModel import post_save_daemon
 from Emailkasten.EMailArchiverDaemon import EMailArchiverDaemon
-from Emailkasten.Models.DaemonModel import DaemonModel
+from core.models.DaemonModel import DaemonModel
 from Emailkasten.constants import EMailArchiverDaemonConfiguration
 
 from .models.test_DaemonModel import fixture_daemonModel

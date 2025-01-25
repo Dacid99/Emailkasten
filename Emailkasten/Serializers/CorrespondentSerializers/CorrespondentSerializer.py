@@ -21,8 +21,8 @@
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from ...Models.CorrespondentModel import CorrespondentModel
-from ...Models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.CorrespondentModel import CorrespondentModel
+from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from ..EMailCorrespondentsSerializers.CorrespondentEMailSerializer import \
     CorrespondentEMailSerializer
 from ..MailingListSerializers.SimpleMailingListSerializer import \
@@ -31,15 +31,15 @@ from .BaseCorrespondentSerializer import BaseCorrespondentSerializer
 
 
 class CorrespondentSerializer(BaseCorrespondentSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.CorrespondentModel`.
+    """The standard serializer for a :class:`core.models.CorrespondentModel`.
     Includes a nested serializer for
-    the :attr:`Emailkasten.Models.CorrespondentModel.CorrespondentModel.emails`
-    and :attr:`Emailkasten.Models.CorrespondentModel.CorrespondentModel.mailinglist` fields.
+    the :attr:`core.models.CorrespondentModel.CorrespondentModel.emails`
+    and :attr:`core.models.CorrespondentModel.CorrespondentModel.mailinglist` fields.
     """
 
     emails = serializers.SerializerMethodField(read_only=True)
     """The emails are set from the
-    :class:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel`
+    :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`
     via :func:`get_emails`.
     """
 

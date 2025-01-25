@@ -71,7 +71,8 @@ INSTALLED_APPS = [
     "health_check.db",
     "health_check.storage",
     "health_check.cache",
-    "Emailkasten"
+    "Emailkasten",
+    "core"
 ]
 
 REST_FRAMEWORK = {

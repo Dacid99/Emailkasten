@@ -18,5 +18,5 @@
 
 """Emailkasten.Serializers.AttachmentSerializers
 
-Package containing different serializers for the :mod:`Emailkasten.Models.AttachmentModel` data
+Package containing different serializers for the :mod:`core.models.AttachmentModel` data
 """

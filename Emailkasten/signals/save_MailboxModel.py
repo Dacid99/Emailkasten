@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Delete signal receivers for the :class:`Emailkasten.Models.MailboxModel.MailboxModel` model."""
+"""Delete signal receivers for the :class:`core.models.MailboxModel.MailboxModel` model."""
 
 import logging
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from ..Models.MailboxModel import MailboxModel
+from core.models.MailboxModel import MailboxModel
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""

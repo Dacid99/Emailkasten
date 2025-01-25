@@ -20,14 +20,14 @@
 
 from rest_framework import serializers
 
-from ...Models.AttachmentModel import AttachmentModel
+from core.models.AttachmentModel import AttachmentModel
 
 
 class BaseAttachmentSerializer(serializers.ModelSerializer):
-    """The base serializer for :class:`Emailkasten.Models.AttachmentModel.AttachmentModel`.
+    """The base serializer for :class:`core.models.AttachmentModel.AttachmentModel`.
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`Emailkasten.Models.AttachmentModel.AttachmentModel` should inherit from this.
+    Other serializers for :class:`core.models.AttachmentModel.AttachmentModel` should inherit from this.
     """
 
     class Meta:
@@ -41,7 +41,7 @@ class BaseAttachmentSerializer(serializers.ModelSerializer):
         """The model to serialize."""
 
         exclude = ['file_path']
-        """Exclude the :attr:`Emailkasten.Models.AttachmentModel.AttachmentModel.file_path` field."""
+        """Exclude the :attr:`core.models.AttachmentModel.AttachmentModel.file_path` field."""
 
         read_only_fields = [
                 'file_name',
@@ -50,9 +50,9 @@ class BaseAttachmentSerializer(serializers.ModelSerializer):
                 'created',
                 'updated'
             ]
-        """The :attr:`Emailkasten.Models.AttachmentModel.AttachmentModel.is_healthy`,
-        :attr:`Emailkasten.Models.AttachmentModel.AttachmentModel.datasize`,
-        :attr:`Emailkasten.Models.AttachmentModel.AttachmentModel.email`,
-        :attr:`Emailkasten.Models.AttachmentModel.AttachmentModel.created` and
-        :attr:`Emailkasten.Models.AttachmentModel.AttachmentModel.updated` fields are read-only.
+        """The :attr:`core.models.AttachmentModel.AttachmentModel.is_healthy`,
+        :attr:`core.models.AttachmentModel.AttachmentModel.datasize`,
+        :attr:`core.models.AttachmentModel.AttachmentModel.email`,
+        :attr:`core.models.AttachmentModel.AttachmentModel.created` and
+        :attr:`core.models.AttachmentModel.AttachmentModel.updated` fields are read-only.
         """

@@ -22,12 +22,12 @@ from test_AccountViewSet import fixture_accountModel
 
 from Emailkasten.constants import APIConfiguration
 from Emailkasten.Views.EMailViewSet import EMailViewSet
-from Emailkasten.Models.EMailModel import EMailModel
+from core.models.EMailModel import EMailModel
 
 
 @pytest.fixture(name='emails')
 def fixture_emails(accountModel):
-    """Create a bunch of :class:`Emailkasten.Models.EMailModel.EMailModel`s owned by :attr:`owner_user`.
+    """Create a bunch of :class:`core.models.EMailModel.EMailModel`s owned by :attr:`owner_user`.
 
     Args:
         accountModel: Depends on :func:`fixture_accountModel`.

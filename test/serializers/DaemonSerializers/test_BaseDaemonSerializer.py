@@ -84,7 +84,7 @@ def test_input(daemon):
 
 @pytest.mark.django_db
 def test_validation_failure(daemon):
-    """Tests validation of :attr:`Emailkasten.Models.DaemonModel.DaemonModel.fetching_criterion`."""
+    """Tests validation of :attr:`core.models.DaemonModel.DaemonModel.fetching_criterion`."""
     daemon.fetching_criterion = 'OTHER'
     serializer = BaseDaemonSerializer(data=model_to_dict(daemon))
     assert not serializer.is_valid()

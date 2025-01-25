@@ -30,7 +30,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..Filters.CorrespondentFilter import CorrespondentFilter
-from ..Models.CorrespondentModel import CorrespondentModel
+from core.models.CorrespondentModel import CorrespondentModel
 from ..Serializers.CorrespondentSerializers.CorrespondentSerializer import \
     CorrespondentSerializer
 from ..Serializers.CorrespondentSerializers.BaseCorrespondentSerializer import \
@@ -42,7 +42,7 @@ if TYPE_CHECKING:
 
 
 class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
-    """Viewset for the :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`."""
+    """Viewset for the :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     BASENAME = 'correspondents'
     serializer_class = CorrespondentSerializer

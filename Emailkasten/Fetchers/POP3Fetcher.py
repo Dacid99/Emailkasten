@@ -30,8 +30,8 @@ from ..constants import TestStatusCodes
 if TYPE_CHECKING:
     from types import TracebackType
 
-    from ..Models.AccountModel import AccountModel
-    from ..Models.MailboxModel import MailboxModel
+    from core.models.AccountModel import AccountModel
+    from core.models.MailboxModel import MailboxModel
 
 
 class POP3Fetcher:
@@ -41,7 +41,7 @@ class POP3Fetcher:
     Allows fetching of mails and mailboxes from an account on an POP host.
 
     Attributes:
-        account (:class:`Emailkasten.Models.AccountModel`): The model of the account to be fetched from.
+        account (:class:`core.models.AccountModel`): The model of the account to be fetched from.
         logger (:class:`logging.Logger`): The logger for this instance.
         _mailhost (:class:`poplib.POP3`): The POP host this instance connects to.
     """
@@ -126,7 +126,7 @@ class POP3Fetcher:
 
     def test(self, mailbox: MailboxModel|None = None) -> int:
         """Tests the connection to the mailserver and, if a mailbox is provided, whether messages can be listed.
-        Sets the The :attr:`Emailkasten.Models.MailboxModel.is_healthy` flag accordingly.
+        Sets the The :attr:`core.models.MailboxModel.is_healthy` flag accordingly.
 
         Args:
             mailbox: The mailbox to be tested. Default is None.
@@ -184,7 +184,7 @@ class POP3Fetcher:
     @staticmethod
     def testAccount(account: AccountModel) -> int:
         """Static method to test the validity of account data.
-        The :attr:`Emailkasten.Models.AccountModel.is_healthy` flag is updated accordingly.
+        The :attr:`core.models.AccountModel.is_healthy` flag is updated accordingly.
 
         Args:
             account: Data of the account to be tested.
@@ -200,7 +200,7 @@ class POP3Fetcher:
     @staticmethod
     def testMailbox(mailbox: MailboxModel) -> int:
         """Static method to test the validity of mailbox data.
-        The :attr:`Emailkasten.Models.MailboxModel.is_healthy` flag is updated accordingly.
+        The :attr:`core.models.MailboxModel.is_healthy` flag is updated accordingly.
 
         Args:
             mailbox: Data of the mailbox to be tested.

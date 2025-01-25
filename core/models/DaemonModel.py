@@ -25,7 +25,7 @@ import uuid
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 
-from .. import constants
+from Emailkasten import constants
 from .MailboxModel import MailboxModel
 
 logger = logging.getLogger(__name__)

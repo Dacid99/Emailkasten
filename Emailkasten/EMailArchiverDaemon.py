@@ -23,7 +23,7 @@ import threading
 import time
 
 from .mailProcessing import fetchAndProcessMails
-from .Models.DaemonModel import DaemonModel
+from core.models.DaemonModel import DaemonModel
 
 
 class EMailArchiverDaemon(threading.Thread):
@@ -32,7 +32,7 @@ class EMailArchiverDaemon(threading.Thread):
     Attributes:
         logger (:class:`logging.Logger`): Logger for this instance with a filehandler for the daemons own logfile.
         _stopEvent (:class:`threading.Event`): Event flag to control whether this daemon instance is running.
-        _daemon (:class:`Emailkasten.Models.DaemonModel`): The database model of this daemon.
+        _daemon (:class:`core.models.DaemonModel`): The database model of this daemon.
     """
 
 

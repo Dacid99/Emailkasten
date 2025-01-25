@@ -20,7 +20,7 @@
 
 Fixtures:
     :func:`fixture_accountModel`: Creates an account owned by `owner_user`.
-    :func:`fixture_accountPayload`: Creates clean :class:`Emailkasten.Models.AccountModel.AccountModel` payload for a patch, post or put request.
+    :func:`fixture_accountPayload`: Creates clean :class:`core.models.AccountModel.AccountModel` payload for a patch, post or put request.
 
 """
 
@@ -33,7 +33,7 @@ from django.forms.models import model_to_dict
 from model_bakery import baker
 from rest_framework import status
 
-from Emailkasten.Models.AccountModel import AccountModel
+from core.models.AccountModel import AccountModel
 from Emailkasten.Views.AccountViewSet import AccountViewSet
 
 if TYPE_CHECKING:
@@ -42,7 +42,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture(name='accountModel')
 def fixture_accountModel(owner_user) -> AccountModel:
-    """Creates an :class:`Emailkasten.Models.AccountModel.AccountModel` owned by :attr:`owner_user`.
+    """Creates an :class:`core.models.AccountModel.AccountModel` owned by :attr:`owner_user`.
 
     Args:
         owner_user: Depends on :func:`fixture_owner_user`.
@@ -54,7 +54,7 @@ def fixture_accountModel(owner_user) -> AccountModel:
 
 @pytest.fixture(name='accountPayload')
 def fixture_accountPayload(owner_user) -> dict[str, Any]:
-    """Creates clean :class:`Emailkasten.Models.AccountModel.AccountModel` payload for a patch, post or put request.
+    """Creates clean :class:`core.models.AccountModel.AccountModel` payload for a patch, post or put request.
 
     Args:
         owner_user: Depends on :func:`fixture_owner_user`.

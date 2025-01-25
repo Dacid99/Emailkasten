@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`Emailkasten.Models.AccountModel`.
+"""Test module for :mod:`core.models.AccountModel`.
 
 Fixtures:
-    :func:`fixture_accountModel`: Creates an :class:`Emailkasten.Models.AccountModel.AccountModel` instance for testing.
+    :func:`fixture_accountModel`: Creates an :class:`core.models.AccountModel.AccountModel` instance for testing.
 """
 
 import datetime
@@ -29,11 +29,11 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from model_bakery import baker
 
-from Emailkasten.Models.AccountModel import AccountModel
+from core.models.AccountModel import AccountModel
 
 @pytest.fixture(name='account')
 def fixture_accountModel() -> AccountModel:
-    """Creates an :class:`Emailkasten.Models.AccountModel.AccountModel` .
+    """Creates an :class:`core.models.AccountModel.AccountModel` .
 
     Returns:
         The account instance for testing.
@@ -42,7 +42,7 @@ def fixture_accountModel() -> AccountModel:
 
 @pytest.mark.django_db
 def test_AccountModel_creation(account):
-    """Tests the correct default creation of :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+    """Tests the correct default creation of :class:`core.models.AccountModel.AccountModel`."""
 
     assert account.mail_address is not None
     assert isinstance(account.mail_address, str)
@@ -73,7 +73,7 @@ def test_AccountModel_creation(account):
 
 @pytest.mark.django_db
 def test_AccountModel_foreign_key_deletion(account):
-    """Tests the on_delete foreign key constraint in :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+    """Tests the on_delete foreign key constraint in :class:`core.models.AccountModel.AccountModel`."""
 
     assert account is not None
     account.user.delete()
@@ -83,7 +83,7 @@ def test_AccountModel_foreign_key_deletion(account):
 
 @pytest.mark.django_db
 def test_AccountModel_unique():
-    """Tests the unique constraints of :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+    """Tests the unique constraints of :class:`core.models.AccountModel.AccountModel`."""
 
     account_1 = baker.make(AccountModel, mail_address="abc123")
     account_2 = baker.make(AccountModel, mail_address="abc123")

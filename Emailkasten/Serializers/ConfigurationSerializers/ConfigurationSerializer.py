@@ -21,11 +21,11 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from ...Models.ConfigurationModel import ConfigurationModel
+from core.models.ConfigurationModel import ConfigurationModel
 
 
 class ConfigurationSerializer(serializers.ModelSerializer):
-    """The standard serializer for a :class:`Emailkasten.Models.AccountModel`."""
+    """The standard serializer for a :class:`core.models.AccountModel`."""
 
     class Meta:
         """Metadata class for the serializer."""
@@ -36,7 +36,7 @@ class ConfigurationSerializer(serializers.ModelSerializer):
         """Include all fields."""
 
         read_only_fields = ['created', 'updated']
-        """The :attr:`Emailkasten.Models.AccountModel.created`, and :attr:`Emailkasten.Models.AccountModel.updated` fields are read-only."""
+        """The :attr:`core.models.AccountModel.created`, and :attr:`core.models.AccountModel.updated` fields are read-only."""
 
         validators = [
             UniqueTogetherValidator(

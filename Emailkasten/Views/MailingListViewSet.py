@@ -30,7 +30,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..Filters.MailingListFilter import MailingListFilter
-from ..Models.MailingListModel import MailingListModel
+from core.models.MailingListModel import MailingListModel
 from ..Serializers.MailingListSerializers.MailingListSerializer import \
     MailingListSerializer
 
@@ -40,7 +40,7 @@ if TYPE_CHECKING:
 
 
 class MailingListViewSet(viewsets.ReadOnlyModelViewSet):
-    """Viewset for the :class:`Emailkasten.Models.MailingListModel.MailingListModel`."""
+    """Viewset for the :class:`core.models.MailingListModel.MailingListModel`."""
 
     BASENAME = 'mailinglists'
     serializer_class = MailingListSerializer

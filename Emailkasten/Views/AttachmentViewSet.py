@@ -32,7 +32,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..Filters.AttachmentFilter import AttachmentFilter
-from ..Models.AttachmentModel import AttachmentModel
+from core.models.AttachmentModel import AttachmentModel
 from ..Serializers.AttachmentSerializers.BaseAttachmentSerializer import \
     BaseAttachmentSerializer
 
@@ -42,7 +42,7 @@ if TYPE_CHECKING:
 
 
 class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
-    """Viewset for the :class:`Emailkasten.Models.AttachmentModel.AttachmentModel`."""
+    """Viewset for the :class:`core.models.AttachmentModel.AttachmentModel`."""
 
     BASENAME = 'attachments'
     serializer_class = BaseAttachmentSerializer

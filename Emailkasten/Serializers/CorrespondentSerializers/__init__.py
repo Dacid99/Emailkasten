@@ -18,5 +18,5 @@
 
 """Emailkasten.Serializers.CorrespondentSerializers
 
-Package containing different serializers for the :mod:`Emailkasten.Models.CorrespondentModel` data
+Package containing different serializers for the :mod:`core.models.CorrespondentModel` data
 """

@@ -20,14 +20,14 @@
 
 from rest_framework import serializers
 
-from ...Models.EMailModel import EMailModel
+from core.models.EMailModel import EMailModel
 
 
 class BaseEMailSerializer(serializers.ModelSerializer):
-    """The base serializer for :class:`Emailkasten.Models.EMailModel.EMailModel`.
+    """The base serializer for :class:`core.models.EMailModel.EMailModel`.
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`Emailkasten.Models.EMailModel.EMailModel` should inherit from this.
+    Other serializers for :class:`core.models.EMailModel.EMailModel` should inherit from this.
     """
 
     class Meta:
@@ -41,8 +41,8 @@ class BaseEMailSerializer(serializers.ModelSerializer):
         """The model to serialize."""
 
         exclude = ['eml_filepath', 'prerender_filepath']
-        """Exclude the :attr:`Emailkasten.Models.EMailModel.EMailModel.eml_filepath`
-        and :attr:`Emailkasten.Models.EMailModel.EMailModel.prerender_filepath` fields.
+        """Exclude the :attr:`core.models.EMailModel.EMailModel.eml_filepath`
+        and :attr:`core.models.EMailModel.EMailModel.prerender_filepath` fields.
         """
 
         read_only_fields = [
@@ -72,6 +72,6 @@ class BaseEMailSerializer(serializers.ModelSerializer):
             'created',
             'updated'
         ]
-        """All fields except for :attr:`Emailkasten.Models.EMailModel.EMailModel.is_favorite`
+        """All fields except for :attr:`core.models.EMailModel.EMailModel.is_favorite`
         are read-only.
         """

@@ -34,7 +34,7 @@ from typing import TYPE_CHECKING
 
 from .constants import StorageConfiguration
 from .mailParsing import ParsedMailKeys
-from .Models.StorageModel import StorageModel
+from core.models.StorageModel import StorageModel
 
 if TYPE_CHECKING:
     from typing import Any, Callable

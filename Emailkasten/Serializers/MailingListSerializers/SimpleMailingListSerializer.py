@@ -20,13 +20,13 @@
 
 from rest_framework import serializers
 
-from ...Models.MailingListModel import MailingListModel
+from core.models.MailingListModel import MailingListModel
 from .BaseMailingListSerializer import BaseMailingListSerializer
 
 
 class SimpleMailingListSerializer(BaseMailingListSerializer):
-    """A reduced serializer for a :class:`Emailkasten.Models.MailingListModel`.
-    Includes a method field for the count of elements in :attr:`Emailkasten.Models.MailingList.MailingList.emails`.
+    """A reduced serializer for a :class:`core.models.MailingListModel`.
+    Includes a method field for the count of elements in :attr:`core.models.MailingList.MailingList.emails`.
     """
 
     email_number = serializers.SerializerMethodField(read_only=True)

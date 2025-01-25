@@ -17,10 +17,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
-"""Test module for :mod:`Emailkasten.Models.CorrespondentModel`.
+"""Test module for :mod:`core.models.CorrespondentModel`.
 
 Fixtures:
-    :func:`fixture_correspondentModel`: Creates an :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel` instance for testing.
+    :func:`fixture_correspondentModel`: Creates an :class:`core.models.CorrespondentModel.CorrespondentModel` instance for testing.
 """
 
 import datetime
@@ -29,11 +29,11 @@ import pytest
 
 from django.db import IntegrityError
 
-from Emailkasten.Models.CorrespondentModel import CorrespondentModel
+from core.models.CorrespondentModel import CorrespondentModel
 
 @pytest.fixture(name='correspondent')
 def fixture_correspondentModel() -> CorrespondentModel:
-    """Creates an :class:`Emailkasten.Models.EMailModel.EMailModel` instance for testing.
+    """Creates an :class:`core.models.EMailModel.EMailModel` instance for testing.
 
     Returns:
         The email instance for testing.
@@ -42,7 +42,7 @@ def fixture_correspondentModel() -> CorrespondentModel:
 
 @pytest.mark.django_db
 def test_CorrespondentModel_creation(correspondent):
-    """Tests the correct default creation of :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`."""
+    """Tests the correct default creation of :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     assert correspondent.email_name is not None
     assert isinstance(correspondent.email_name, str)
@@ -59,7 +59,7 @@ def test_CorrespondentModel_creation(correspondent):
 
 @pytest.mark.django_db
 def test_CorrespondentModel_unique(correspondent):
-    """Tests the unique constraint in :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`."""
+    """Tests the unique constraint in :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     with pytest.raises(IntegrityError):
         baker.make(CorrespondentModel, email_name=correspondent.email_name, email_address=correspondent.email_address)

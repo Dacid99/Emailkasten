@@ -21,11 +21,11 @@
 import django_filters
 
 from ..constants import FilterSetups
-from ..Models.ImageModel import ImageModel
+from core.models.ImageModel import ImageModel
 
 
 class ImageFilter(django_filters.FilterSet):
-    """The filter class for :class:`Emailkasten.Models.ImageModel`."""
+    """The filter class for :class:`core.models.ImageModel`."""
 
     class Meta:
         """Metadata class for the filter."""

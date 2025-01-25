@@ -41,18 +41,18 @@ from typing import TYPE_CHECKING
 import django.db
 
 from .constants import ParsedMailKeys
-from .Models.AttachmentModel import AttachmentModel
-from .Models.CorrespondentModel import CorrespondentModel
-from .Models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from .Models.EMailModel import EMailModel
-from .Models.ImageModel import ImageModel
-from .Models.MailboxModel import MailboxModel
-from .Models.MailingListModel import MailingListModel
+from core.models.AttachmentModel import AttachmentModel
+from core.models.CorrespondentModel import CorrespondentModel
+from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.EMailModel import EMailModel
+from core.models.ImageModel import ImageModel
+from core.models.MailboxModel import MailboxModel
+from core.models.MailingListModel import MailingListModel
 
 if TYPE_CHECKING:
     from typing import Any
 
-    from .Models.AccountModel import AccountModel
+    from core.models.AccountModel import AccountModel
 
 
 logger = logging.getLogger(__name__)

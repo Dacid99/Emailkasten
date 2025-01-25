@@ -24,7 +24,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from Emailkasten.Fetchers.IMAPFetcher import IMAPFetcher
-from Emailkasten.Models.AccountModel import AccountModel
+from core.models.AccountModel import AccountModel
 
 
 @pytest.fixture(name='mock_account')

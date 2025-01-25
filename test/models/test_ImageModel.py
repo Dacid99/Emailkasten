@@ -17,10 +17,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
-"""Test module for :mod:`Emailkasten.Models.ImageModel`.
+"""Test module for :mod:`core.models.ImageModel`.
 
 Fixtures:
-    :func:`fixture_imageModel`: Creates an :class:`Emailkasten.Models.ImageModel.ImageModel` instance for testing.
+    :func:`fixture_imageModel`: Creates an :class:`core.models.ImageModel.ImageModel` instance for testing.
 """
 
 import datetime
@@ -30,13 +30,13 @@ from django.db import IntegrityError
 from faker import Faker
 from model_bakery import baker
 
-from Emailkasten.Models.EMailModel import EMailModel
-from Emailkasten.Models.ImageModel import ImageModel
+from core.models.EMailModel import EMailModel
+from core.models.ImageModel import ImageModel
 
 
 @pytest.fixture(name='image')
 def fixture_imageModel() -> ImageModel:
-    """Creates an :class:`Emailkasten.Models.ImageModel.ImageModel` instance for testing.
+    """Creates an :class:`core.models.ImageModel.ImageModel` instance for testing.
 
 
     Returns:
@@ -50,7 +50,7 @@ def fixture_imageModel() -> ImageModel:
 
 @pytest.mark.django_db
 def test_ImageModel_creation(image):
-    """Tests the correct default creation of :class:`Emailkasten.Models.ImageModel.ImageModel`."""
+    """Tests the correct default creation of :class:`core.models.ImageModel.ImageModel`."""
 
     assert image.file_name is not None
     assert isinstance(image.file_name, str)
@@ -72,7 +72,7 @@ def test_ImageModel_creation(image):
 
 @pytest.mark.django_db
 def test_ImageModel_foreign_key_deletion(image):
-    """Tests the on_delete foreign key constraint in :class:`Emailkasten.Models.ImageModel.ImageModel`."""
+    """Tests the on_delete foreign key constraint in :class:`core.models.ImageModel.ImageModel`."""
 
     assert image is not None
     image.email.delete()
@@ -82,7 +82,7 @@ def test_ImageModel_foreign_key_deletion(image):
 
 @pytest.mark.django_db
 def test_ImageModel_unique():
-    """Tests the unique constraints of :class:`Emailkasten.Models.ImageModel.ImageModel`."""
+    """Tests the unique constraints of :class:`core.models.ImageModel.ImageModel`."""
 
     image_1 = baker.make(ImageModel, file_path="test")
     image_2 = baker.make(ImageModel, file_path="test")

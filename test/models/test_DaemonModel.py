@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`Emailkasten.Models.DaemonModel`.
+"""Test module for :mod:`core.models.DaemonModel`.
 
 Fixtures:
-    :func:`fixture_daemonModel`: Creates an :class:`Emailkasten.Models.DaemonModel.DaemonModel` instance for testing.
+    :func:`fixture_daemonModel`: Creates an :class:`core.models.DaemonModel.DaemonModel` instance for testing.
 """
 
 import datetime
@@ -31,13 +31,13 @@ from faker import Faker
 from model_bakery import baker
 
 from Emailkasten import constants
-from Emailkasten.Models.DaemonModel import DaemonModel
-from Emailkasten.Models.MailboxModel import MailboxModel
+from core.models.DaemonModel import DaemonModel
+from core.models.MailboxModel import MailboxModel
 
 
 @pytest.fixture(name='daemon')
 def fixture_daemonModel() -> DaemonModel:
-    """Creates an :class:`Emailkasten.Models.DaemonModel.DaemonModel`.
+    """Creates an :class:`core.models.DaemonModel.DaemonModel`.
 
     Returns:
         The daemon instance for testing.
@@ -47,7 +47,7 @@ def fixture_daemonModel() -> DaemonModel:
 
 @pytest.mark.django_db
 def test_DaemonModel_creation(daemon):
-    """Tests the correct default creation of :class:`Emailkasten.Models.DaemonModel.DaemonModel`."""
+    """Tests the correct default creation of :class:`core.models.DaemonModel.DaemonModel`."""
 
     assert daemon.uuid is not None
     assert isinstance(daemon.uuid, UUID)
@@ -71,7 +71,7 @@ def test_DaemonModel_creation(daemon):
 
 @pytest.mark.django_db
 def test_MailboxModel_foreign_key_deletion(daemon):
-    """Tests the on_delete foreign key constraint in :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+    """Tests the on_delete foreign key constraint in :class:`core.models.AccountModel.AccountModel`."""
 
     assert daemon is not None
     daemon.mailbox.delete()
@@ -81,7 +81,7 @@ def test_MailboxModel_foreign_key_deletion(daemon):
 
 @pytest.mark.django_db
 def test_DaemonModel_unique(daemon):
-    """Tests the unique constraints of :class:`Emailkasten.Models.DaemonModel.DaemonModel`."""
+    """Tests the unique constraints of :class:`core.models.DaemonModel.DaemonModel`."""
 
     with pytest.raises(IntegrityError):
         baker.make(DaemonModel, log_filepath=daemon.log_filepath)

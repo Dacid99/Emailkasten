@@ -20,14 +20,14 @@
 
 from rest_framework import serializers
 
-from ...Models.DaemonModel import DaemonModel
+from core.models.DaemonModel import DaemonModel
 
 
 class BaseDaemonSerializer(serializers.ModelSerializer):
-    """The base serializer for :class:`Emailkasten.Models.DaemonModel.DaemonModel`.
+    """The base serializer for :class:`core.models.DaemonModel.DaemonModel`.
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`Emailkasten.Models.DaemonModel.DaemonModel` should inherit from this.
+    Other serializers for :class:`core.models.DaemonModel.DaemonModel` should inherit from this.
     """
 
     class Meta:
@@ -41,7 +41,7 @@ class BaseDaemonSerializer(serializers.ModelSerializer):
         """The model to serialize."""
 
         exclude = ['log_filepath']
-        """Exclude the :attr:`Emailkasten.Models.DaemonModel.log_filepath` field."""
+        """Exclude the :attr:`core.models.DaemonModel.log_filepath` field."""
 
         read_only_fields = [
                 'uuid',
@@ -51,12 +51,12 @@ class BaseDaemonSerializer(serializers.ModelSerializer):
                 'created',
                 'updated'
             ]
-        """The :attr:`Emailkasten.Models.DaemonModel.DaemonModel.uuid`,
-        :attr:`Emailkasten.Models.DaemonModel.DaemonModel.mailbox`,
-        :attr:`Emailkasten.Models.DaemonModel.DaemonModel.is_running`,
-        :attr:`Emailkasten.Models.DaemonModel.DaemonModel.is_healthy`,
-        :attr:`Emailkasten.Models.DaemonModel.DaemonModel.created` and
-        :attr:`Emailkasten.Models.DaemonModel.DaemonModel.updated` fields are read-only.
+        """The :attr:`core.models.DaemonModel.DaemonModel.uuid`,
+        :attr:`core.models.DaemonModel.DaemonModel.mailbox`,
+        :attr:`core.models.DaemonModel.DaemonModel.is_running`,
+        :attr:`core.models.DaemonModel.DaemonModel.is_healthy`,
+        :attr:`core.models.DaemonModel.DaemonModel.created` and
+        :attr:`core.models.DaemonModel.DaemonModel.updated` fields are read-only.
         """
 
 

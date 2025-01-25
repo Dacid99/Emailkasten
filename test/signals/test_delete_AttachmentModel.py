@@ -20,7 +20,7 @@
 
 import pytest
 
-from Emailkasten.Models.AttachmentModel import AttachmentModel
+from core.models.AttachmentModel import AttachmentModel
 
 from ..models.test_AttachmentModel import fixture_attachmentModel
 

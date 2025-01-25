@@ -284,7 +284,7 @@ class EMailArchiverDaemonConfiguration:
 
 
 class StorageConfiguration:
-    """Namespace class for all configurations constants for the :class:`Emailkasten.Models.StorageModel`."""
+    """Namespace class for all configurations constants for the :class:`core.models.StorageModel`."""
 
     MAX_SUBDIRS_PER_DIR: Final[int] = 1000
     """The maximum numbers of subdirectories in one storage unit. Must not exceed 64000 for ext4 filesystem! """

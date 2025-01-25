@@ -17,24 +17,24 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
-"""Test module for :mod:`Emailkasten.Models.EMailCorrespondentsModel`.
+"""Test module for :mod:`core.models.EMailCorrespondentsModel`.
 
 Fixtures:
-    :func:`fixture_emailCorrespondentsModel`: Creates an :class:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel` instance for testing.
+    :func:`fixture_emailCorrespondentsModel`: Creates an :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` instance for testing.
 """
 
 import pytest
 from django.db import IntegrityError
 from model_bakery import baker
 
-from Emailkasten.Models.CorrespondentModel import CorrespondentModel
-from Emailkasten.Models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from Emailkasten.Models.EMailModel import EMailModel
+from core.models.CorrespondentModel import CorrespondentModel
+from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.EMailModel import EMailModel
 
 
 @pytest.fixture(name='emailCorrespondent')
 def fixture_emailCorrespondentsModel() -> EMailCorrespondentsModel:
-    """Creates an :class:`Emailkasten.Models.EMailModel.EMailModel` instance for testing.
+    """Creates an :class:`core.models.EMailModel.EMailModel` instance for testing.
 
     Returns:
         The emailCorrespondent instance for testing.
@@ -44,7 +44,7 @@ def fixture_emailCorrespondentsModel() -> EMailCorrespondentsModel:
 
 @pytest.mark.django_db
 def test_CorrespondentModel_creation(emailCorrespondent):
-    """Tests the correct default creation of :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`."""
+    """Tests the correct default creation of :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     assert emailCorrespondent.email is not None
     assert isinstance(emailCorrespondent.email, EMailModel)
@@ -61,7 +61,7 @@ def test_CorrespondentModel_creation(emailCorrespondent):
 
 @pytest.mark.django_db
 def test_EMailModel_foreign_key_email_deletion(emailCorrespondent):
-    """Tests the on_delete foreign key constraint on email in :class:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel`."""
+    """Tests the on_delete foreign key constraint on email in :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`."""
 
     emailCorrespondent.email.delete()
 
@@ -71,7 +71,7 @@ def test_EMailModel_foreign_key_email_deletion(emailCorrespondent):
 
 @pytest.mark.django_db
 def test_EMailModel_foreign_key_correspondent_deletion(emailCorrespondent):
-    """Tests the on_delete foreign key constraint on correspondent in :class:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel`."""
+    """Tests the on_delete foreign key constraint on correspondent in :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`."""
 
     emailCorrespondent.correspondent.delete()
 
@@ -81,7 +81,7 @@ def test_EMailModel_foreign_key_correspondent_deletion(emailCorrespondent):
 
 @pytest.mark.django_db
 def test_CorrespondentModel_unique(emailCorrespondent):
-    """Tests the unique constraint in :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`."""
+    """Tests the unique constraint in :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     with pytest.raises(IntegrityError):
         baker.make(EMailCorrespondentsModel, email=emailCorrespondent.email, correspondent=emailCorrespondent.correspondent, mention=emailCorrespondent.mention)

@@ -21,11 +21,11 @@
 import django_filters
 
 from ..constants import FilterSetups
-from ..Models.AccountModel import AccountModel
+from core.models.AccountModel import AccountModel
 
 
 class AccountFilter(django_filters.FilterSet):
-    """The filter class for :class:`Emailkasten.Models.AccountModel`."""
+    """The filter class for :class:`core.models.AccountModel`."""
 
     class Meta:
         """Metadata class for the filter."""

@@ -21,8 +21,8 @@
 import pytest
 from model_bakery import baker
 
-from Emailkasten.Models.AccountModel import AccountModel
-from Emailkasten.Models.MailboxModel import MailboxModel
+from core.models.AccountModel import AccountModel
+from core.models.MailboxModel import MailboxModel
 
 
 @pytest.fixture(name='mock_logger', autouse=True)
@@ -33,7 +33,7 @@ def fixture_mock_logger(mocker):
 
 @pytest.mark.django_db
 def test_AccountModel_post_save_is_healthy_from_healthy(mock_logger):
-    """Tests the post_save function of :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+    """Tests the post_save function of :class:`core.models.AccountModel.AccountModel`."""
 
     account = baker.make(AccountModel, is_healthy=True)
     baker.make(MailboxModel, account=account, is_healthy=True, _quantity=2)
@@ -48,7 +48,7 @@ def test_AccountModel_post_save_is_healthy_from_healthy(mock_logger):
 
 @pytest.mark.django_db
 def test_AccountModel_post_save_is_healthy_from_unhealthy(mock_logger):
-    """Tests the post_save function of :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+    """Tests the post_save function of :class:`core.models.AccountModel.AccountModel`."""
 
     account = baker.make(AccountModel, is_healthy=False)
     baker.make(MailboxModel, account=account, is_healthy=False, _quantity=2)

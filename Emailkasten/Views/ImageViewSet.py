@@ -32,7 +32,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..Filters.ImageFilter import ImageFilter
-from ..Models.ImageModel import ImageModel
+from core.models.ImageModel import ImageModel
 from ..Serializers.ImageSerializers.BaseImageSerializer import BaseImageSerializer
 
 if TYPE_CHECKING:
@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 
 
 class ImageViewSet(viewsets.ReadOnlyModelViewSet):
-    """Viewset for the :class:`Emailkasten.Models.ImageModel.ImageModel`."""
+    """Viewset for the :class:`core.models.ImageModel.ImageModel`."""
 
     BASENAME = 'images'
     serializer_class = BaseImageSerializer

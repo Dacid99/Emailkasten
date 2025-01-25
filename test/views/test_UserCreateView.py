@@ -20,7 +20,7 @@
 
 Fixtures:
     :func:`fixture_owner_user`: Creates an account owned by `owner_user`.
-    :func:`fixture_userPayload`: Creates clean :class:`Emailkasten.Models.User.User` payload for a patch, post or put request.
+    :func:`fixture_userPayload`: Creates clean :class:`core.models.User.User` payload for a patch, post or put request.
     :func:`fixture_list_url`: Gets the viewsets url for list actions.
     :func:`fixture_detail_url`: Gets the viewsets url for detail actions.
     :func:`fixture_custom_detail_list_url`: Gets the viewsets url for custom list actions.

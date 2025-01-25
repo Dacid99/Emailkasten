@@ -22,9 +22,9 @@ import pytest
 from model_bakery import baker
 from faker import Faker
 
-from Emailkasten.Models.DaemonModel import DaemonModel
-from Emailkasten.Models.MailboxModel import MailboxModel
-from Emailkasten.Models.AccountModel import AccountModel
+from core.models.DaemonModel import DaemonModel
+from core.models.MailboxModel import MailboxModel
+from core.models.AccountModel import AccountModel
 
 
 @pytest.fixture(name='mock_logger', autouse=True)

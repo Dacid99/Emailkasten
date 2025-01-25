@@ -33,7 +33,7 @@ from rest_framework.response import Response
 from ..constants import TestStatusCodes
 from ..Filters.AccountFilter import AccountFilter
 from ..mailProcessing import scanMailboxes, testAccount
-from ..Models.AccountModel import AccountModel
+from core.models.AccountModel import AccountModel
 from ..Serializers.AccountSerializers.AccountSerializer import \
     AccountSerializer
 
@@ -44,7 +44,7 @@ if TYPE_CHECKING:
 
 
 class AccountViewSet(viewsets.ModelViewSet):
-    """Viewset for the :class:`Emailkasten.Models.AccountModel.AccountModel`."""
+    """Viewset for the :class:`core.models.AccountModel.AccountModel`."""
 
     BASENAME = 'accounts'
     serializer_class = AccountSerializer

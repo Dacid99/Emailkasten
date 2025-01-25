@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`Emailkasten.Models.MailingListModel`.
+"""Test module for :mod:`core.models.MailingListModel`.
 
 Fixtures:
-    :func:`fixture_mailingListModel`: Creates an :class:`Emailkasten.Models.MailingListModel.MailingListModel` instance for testing.
+    :func:`fixture_mailingListModel`: Creates an :class:`core.models.MailingListModel.MailingListModel` instance for testing.
 """
 
 import datetime
@@ -28,12 +28,12 @@ import pytest
 from django.db import IntegrityError
 from model_bakery import baker
 
-from Emailkasten.Models.CorrespondentModel import CorrespondentModel
-from Emailkasten.Models.MailingListModel import MailingListModel
+from core.models.CorrespondentModel import CorrespondentModel
+from core.models.MailingListModel import MailingListModel
 
 @pytest.fixture(name='mailingList')
 def fixture_mailingListModel() -> MailingListModel:
-    """Creates an :class:`Emailkasten.Models.MailboxModel.MailboxModel`.
+    """Creates an :class:`core.models.MailboxModel.MailboxModel`.
 
     Returns:
         The mailingList instance for testing.
@@ -43,7 +43,7 @@ def fixture_mailingListModel() -> MailingListModel:
 
 @pytest.mark.django_db
 def test_MailingListModel_creation(mailingList):
-    """Tests the correct default creation of :class:`Emailkasten.Models.MailingListModel.MailingListModel`."""
+    """Tests the correct default creation of :class:`core.models.MailingListModel.MailingListModel`."""
 
     assert mailingList.list_id is not None
     assert isinstance(mailingList.list_id, str)
@@ -66,7 +66,7 @@ def test_MailingListModel_creation(mailingList):
 
 @pytest.mark.django_db
 def test_MailingListModel_foreign_key_deletion(mailingList):
-    """Tests the on_delete foreign key constraint in :class:`Emailkasten.Models.MailingListModel.MailingListModel`."""
+    """Tests the on_delete foreign key constraint in :class:`core.models.MailingListModel.MailingListModel`."""
 
     assert mailingList is not None
     mailingList.correspondent.delete()
@@ -76,7 +76,7 @@ def test_MailingListModel_foreign_key_deletion(mailingList):
 
 @pytest.mark.django_db
 def test_MailingListModel_unique():
-    """Tests the unique constraints of :class:`Emailkasten.Models.MailingListModel.MailingListModel`."""
+    """Tests the unique constraints of :class:`core.models.MailingListModel.MailingListModel`."""
 
     mailingList_1 = baker.make(MailingListModel, list_id="abc123")
     mailingList_2 = baker.make(MailingListModel, list_id="abc123")

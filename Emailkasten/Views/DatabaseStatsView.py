@@ -27,11 +27,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..Models.AccountModel import AccountModel
-from ..Models.AttachmentModel import AttachmentModel
-from ..Models.CorrespondentModel import CorrespondentModel
-from ..Models.EMailModel import EMailModel
-from ..Models.ImageModel import ImageModel
+from core.models.AccountModel import AccountModel
+from core.models.AttachmentModel import AttachmentModel
+from core.models.CorrespondentModel import CorrespondentModel
+from core.models.EMailModel import EMailModel
+from core.models.ImageModel import ImageModel
 
 if TYPE_CHECKING:
     from rest_framework.request import Request

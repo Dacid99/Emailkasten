@@ -22,8 +22,8 @@ import poplib
 
 from .. import constants
 from .POP3Fetcher import POP3Fetcher
-from ..Models.AccountModel import AccountModel
-from ..Models.MailboxModel import MailboxModel
+from core.models.AccountModel import AccountModel
+from core.models.MailboxModel import MailboxModel
 
 
 class POP3_SSL_Fetcher(POP3Fetcher):

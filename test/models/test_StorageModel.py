@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`Emailkasten.Models.StorageModel`."""
+"""Test module for :mod:`core.models.StorageModel`."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from typing import TYPE_CHECKING
 import pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
-from Emailkasten.Models.StorageModel import StorageModel
+from core.models.StorageModel import StorageModel
 
 if TYPE_CHECKING:
     from typing import Generator
@@ -37,8 +37,8 @@ if TYPE_CHECKING:
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker: MockerFixture) -> MagicMock:
-    """Mocks :attr:`Emailkasten.Models.StorageModel.logger` of the module."""
-    return mocker.patch('Emailkasten.Models.StorageModel.logger')
+    """Mocks :attr:`core.models.StorageModel.logger` of the module."""
+    return mocker.patch('core.models.StorageModel.logger')
 
 @pytest.fixture(name='mock_filesystem', autouse=True)
 def fixture_mock_filesystem() -> Generator[FakeFilesystem, None, None]:
@@ -78,9 +78,9 @@ def fixture_mock_filesystem() -> Generator[FakeFilesystem, None, None]:
     ]
 )
 def test_StorageModel_initial_single_creation(STORAGE_PATH, expectedCritical, mock_logger, mock_filesystem, mocker):
-    """Tests the correct initial allocation of storage by :class:`Emailkasten.Models.StorageModel.StorageModel`."""
+    """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
-    mock_StorageConfiguration = mocker.patch('Emailkasten.Models.StorageModel.StorageConfiguration')
+    mock_StorageConfiguration = mocker.patch('core.models.StorageModel.StorageConfiguration')
     mock_StorageConfiguration.STORAGE_PATH = STORAGE_PATH
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 
@@ -100,9 +100,9 @@ def test_StorageModel_initial_single_creation(STORAGE_PATH, expectedCritical, mo
 
 @pytest.mark.django_db
 def test_StorageModel_initial_many_creation(mock_logger, mock_filesystem, mocker):
-    """Tests the correct initial allocation of storage by :class:`Emailkasten.Models.StorageModel.StorageModel`."""
+    """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
-    mock_StorageConfiguration = mocker.patch('Emailkasten.Models.StorageModel.StorageConfiguration')
+    mock_StorageConfiguration = mocker.patch('core.models.StorageModel.StorageConfiguration')
     mock_StorageConfiguration.STORAGE_PATH = 'empty-storage'
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 
@@ -124,9 +124,9 @@ def test_StorageModel_initial_many_creation(mock_logger, mock_filesystem, mocker
 
 @pytest.mark.django_db
 def test_health_check_success(mock_logger, mock_filesystem, mocker):
-    """Tests the correct initial allocation of storage by :class:`Emailkasten.Models.StorageModel.StorageModel`."""
+    """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
-    mock_StorageConfiguration = mocker.patch('Emailkasten.Models.StorageModel.StorageConfiguration')
+    mock_StorageConfiguration = mocker.patch('core.models.StorageModel.StorageConfiguration')
     mock_StorageConfiguration.STORAGE_PATH = '/empty-storage'
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 
@@ -141,9 +141,9 @@ def test_health_check_success(mock_logger, mock_filesystem, mocker):
 
 @pytest.mark.django_db
 def test_health_check_failed_duplicate_current(mock_logger, mock_filesystem, mocker):
-    """Tests the correct initial allocation of storage by :class:`Emailkasten.Models.StorageModel.StorageModel`."""
+    """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
-    mock_StorageConfiguration = mocker.patch('Emailkasten.Models.StorageModel.StorageConfiguration')
+    mock_StorageConfiguration = mocker.patch('core.models.StorageModel.StorageConfiguration')
     mock_StorageConfiguration.STORAGE_PATH = '/empty-storage'
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 
@@ -159,9 +159,9 @@ def test_health_check_failed_duplicate_current(mock_logger, mock_filesystem, moc
 
 @pytest.mark.django_db
 def test_health_check_failed_dirty_storage(mock_logger, mock_filesystem, mocker):
-    """Tests the correct initial allocation of storage by :class:`Emailkasten.Models.StorageModel.StorageModel`."""
+    """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
-    mock_StorageConfiguration = mocker.patch('Emailkasten.Models.StorageModel.StorageConfiguration')
+    mock_StorageConfiguration = mocker.patch('core.models.StorageModel.StorageConfiguration')
     mock_StorageConfiguration.STORAGE_PATH = '/conflicting-storage'
     mock_StorageConfiguration.MAX_SUBDIRS_PER_DIR = 3
 

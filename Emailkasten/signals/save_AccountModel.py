@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Save signal receivers for the :class:`Emailkasten.Models.AccoutModel.AccountModel` model."""
+"""Save signal receivers for the :class:`core.models.AccoutModel.AccountModel` model."""
 
 import logging
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from ..Models.AccountModel import AccountModel
+from core.models.AccountModel import AccountModel
 
 logger = logging.getLogger(__name__)
 

@@ -24,7 +24,7 @@ from dirtyfields import DirtyFieldsMixin
 from django.contrib.auth.models import User
 from django.db import models
 
-from .. import constants
+from Emailkasten import constants
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
@@ -55,8 +55,8 @@ class AccountModel(DirtyFieldsMixin, models.Model):
 
     is_healthy = models.BooleanField(default=True)
     """Flags whether the account can be accessed using the data. True by default.
-    When this field changes to `False`, all mailboxes :attr:`Emailkasten.Models.MailboxModel.is_healthy` field will be updated accordingly.
-    When the :attr:`Emailkasten.Models.MailboxModel.is_healthy` field of one of the mailboxes referencing this entry via :attr:`Emailkasten.Models.MailboxModel.account`
+    When this field changes to `False`, all mailboxes :attr:`core.models.MailboxModel.is_healthy` field will be updated accordingly.
+    When the :attr:`core.models.MailboxModel.is_healthy` field of one of the mailboxes referencing this entry via :attr:`core.models.MailboxModel.account`
     becomes `True` after being `False`, this field will be set to `True` as well."""
 
     is_favorite = models.BooleanField(default=False)

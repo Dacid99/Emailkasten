@@ -18,5 +18,5 @@
 
 """Emailkasten.Serializers.DaemonSerializers
 
-Package containing different serializers for the :mod:`Emailkasten.Models.DaemonModel` data
+Package containing different serializers for the :mod:`core.models.DaemonModel` data
 """

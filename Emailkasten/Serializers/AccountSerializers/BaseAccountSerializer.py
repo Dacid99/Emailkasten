@@ -20,23 +20,23 @@
 
 from rest_framework import serializers
 
-from ...Models.AccountModel import AccountModel
+from core.models.AccountModel import AccountModel
 
 
 class BaseAccountSerializer(serializers.ModelSerializer):
-    """The base serializer for :class:`Emailkasten.Models.AccountModel.AccountModel`.
+    """The base serializer for :class:`core.models.AccountModel.AccountModel`.
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`Emailkasten.Models.AccountModel.AccountModel` should inherit from this.
+    Other serializers for :class:`core.models.AccountModel.AccountModel` should inherit from this.
     """
 
     password = serializers.CharField(max_length=255, write_only=True)
-    """The :attr:`Emailkasten.Models.AccountModel.AccountModel.password` field
+    """The :attr:`core.models.AccountModel.AccountModel.password` field
     is set to write-only for security reasons.
     """
 
     mail_address = serializers.EmailField()
-    """The :attr:`Emailkasten.Models.AccountModel.AccountModel.mail_address` field
+    """The :attr:`core.models.AccountModel.AccountModel.mail_address` field
     is a :restframework::class:`serializers.EmailField` for automatic validation of input.
     """
 
@@ -51,10 +51,10 @@ class BaseAccountSerializer(serializers.ModelSerializer):
         """The model to serialize."""
 
         exclude = ['user']
-        """Exclude the :attr:`Emailkasten.Models.AccountModel.AccountModel.user` field."""
+        """Exclude the :attr:`core.models.AccountModel.AccountModel.user` field."""
 
         read_only_fields = ['is_healthy', 'created', 'updated']
-        """The :attr:`Emailkasten.Models.AccountModel.AccountModel.is_healthy`,
-        :attr:`Emailkasten.Models.AccountModel.AccountModel.created` and
-        :attr:`Emailkasten.Models.AccountModel.AccountModel.updated` fields are read-only.
+        """The :attr:`core.models.AccountModel.AccountModel.is_healthy`,
+        :attr:`core.models.AccountModel.AccountModel.created` and
+        :attr:`core.models.AccountModel.AccountModel.updated` fields are read-only.
         """

@@ -51,13 +51,13 @@ from .Fetchers.POP3Fetcher import POP3Fetcher
 from .fileManagment import storeAttachments, storeImages, storeMessageAsEML
 from .mailParsing import parseMail, parseMailbox
 from .mailRendering import prerender
-from .Models.EMailModel import EMailModel
+from core.models.EMailModel import EMailModel
 
 if TYPE_CHECKING:
     from typing import Any
 
-    from .Models.AccountModel import AccountModel
-    from .Models.MailboxModel import MailboxModel
+    from core.models.AccountModel import AccountModel
+    from core.models.MailboxModel import MailboxModel
 
 
 logger = logging.getLogger(__name__)
@@ -66,7 +66,7 @@ logger = logging.getLogger(__name__)
 def testAccount(account: AccountModel) -> int:
     """Tests whether the data in an accountmodel is correct
     and allows connecting and logging in to the mailhost and account.
-    The :attr:`Emailkasten.Models.AccountModel.is_healthy` flag is set according
+    The :attr:`core.models.AccountModel.is_healthy` flag is set according
     to the result by the Fetcher class, e.g. :class:`Emailkasten.Fetchers.IMAPFetcher`.
     Relies on the `test` static method of the :mod:`Emailkasten.Fetchers` classes.
 
@@ -107,7 +107,7 @@ def testAccount(account: AccountModel) -> int:
 def testMailbox(mailbox: MailboxModel) -> int:
     """Tests whether the data in a mailboxmodel is correct
     and allows connecting and opening the account and mailbox.
-    The :attr:`Emailkasten.Models.MailboxModel.is_healthy` flag is set according
+    The :attr:`core.models.MailboxModel.is_healthy` flag is set according
     to the result by the Fetcher class, e.g. :class:`Emailkasten.Fetchers.IMAPFetcher`.
     Relies on the `test` static method of the :mod:`Emailkasten.Fetchers` classes.
 

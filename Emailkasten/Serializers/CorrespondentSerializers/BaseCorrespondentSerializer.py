@@ -20,14 +20,14 @@
 
 from rest_framework import serializers
 
-from ...Models.CorrespondentModel import CorrespondentModel
+from core.models.CorrespondentModel import CorrespondentModel
 
 
 class BaseCorrespondentSerializer(serializers.ModelSerializer):
-    """The base serializer for :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel`.
+    """The base serializer for :class:`core.models.CorrespondentModel.CorrespondentModel`.
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`Emailkasten.Models.CorrespondentModel.CorrespondentModel` should inherit from this.
+    Other serializers for :class:`core.models.CorrespondentModel.CorrespondentModel` should inherit from this.
     """
 
     class Meta:
@@ -48,7 +48,7 @@ class BaseCorrespondentSerializer(serializers.ModelSerializer):
                 'created',
                 'updated'
             ]
-        """The :attr:`Emailkasten.Models.CorrespondentModel.CorrespondentModel.email_address`,
-        :attr:`Emailkasten.Models.CorrespondentModel.CorrespondentModel.created` and
-        :attr:`Emailkasten.Models.CorrespondentModel.CorrespondentModel.updated` fields are read-only.
+        """The :attr:`core.models.CorrespondentModel.CorrespondentModel.email_address`,
+        :attr:`core.models.CorrespondentModel.CorrespondentModel.created` and
+        :attr:`core.models.CorrespondentModel.CorrespondentModel.updated` fields are read-only.
         """

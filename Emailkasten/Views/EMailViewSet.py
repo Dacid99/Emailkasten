@@ -32,7 +32,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..Filters.EMailFilter import EMailFilter
-from ..Models.EMailModel import EMailModel
+from core.models.EMailModel import EMailModel
 from ..Serializers.EMailSerializers.FullEMailSerializer import \
     FullEMailSerializer
 
@@ -42,7 +42,7 @@ if TYPE_CHECKING:
 
 
 class EMailViewSet(viewsets.ReadOnlyModelViewSet):
-    """Viewset for the :class:`Emailkasten.Models.EMailModel.EMailModel`."""
+    """Viewset for the :class:`core.models.EMailModel.EMailModel`."""
 
     BASENAME = 'emails'
     serializer_class = FullEMailSerializer

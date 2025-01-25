@@ -24,7 +24,7 @@ from .BaseEMailCorrespondentSerializer import BaseEMailCorrespondentSerializer
 
 
 class EMailCorrespondentSerializer(BaseEMailCorrespondentSerializer):
-    """The serializer for correspondents from :class:`Emailkasten.Models.EMailCorrespondentsModel`.
+    """The serializer for correspondents from :class:`core.models.EMailCorrespondentsModel`.
     Used to serialize the correspondent belonging to an email. Does not include that email.
     """
 
@@ -38,6 +38,6 @@ class EMailCorrespondentSerializer(BaseEMailCorrespondentSerializer):
 
         fields = ['correspondent', 'mention']
         """Includes only
-        :attr:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel.correspondent`
-        and :attr:`Emailkasten.Models.EMailCorrespondentsModel.EMailCorrespondentsModel.mention`.
+        :attr:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel.correspondent`
+        and :attr:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel.mention`.
         """

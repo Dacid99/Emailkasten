@@ -20,7 +20,7 @@
 
 import pytest
 
-from Emailkasten.Models.ImageModel import ImageModel
+from core.models.ImageModel import ImageModel
 
 from ..models.test_ImageModel import fixture_imageModel
 

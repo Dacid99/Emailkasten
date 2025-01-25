@@ -17,10 +17,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
-"""Test module for :mod:`Emailkasten.Models.MailboxModel`.
+"""Test module for :mod:`core.models.MailboxModel`.
 
 Fixtures:
-    :func:`fixture_mailboxModel`: Creates an :class:`Emailkasten.Models.MailboxModel.MailboxModel` instance for testing.
+    :func:`fixture_mailboxModel`: Creates an :class:`core.models.MailboxModel.MailboxModel` instance for testing.
 """
 
 import datetime
@@ -34,13 +34,13 @@ from Emailkasten.Fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
 from Emailkasten.Fetchers.IMAPFetcher import IMAPFetcher
 from Emailkasten.Fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
 from Emailkasten.Fetchers.POP3Fetcher import POP3Fetcher
-from Emailkasten.Models.AccountModel import AccountModel
-from Emailkasten.Models.MailboxModel import MailboxModel
+from core.models.AccountModel import AccountModel
+from core.models.MailboxModel import MailboxModel
 
 
 @pytest.fixture(name='mailbox')
 def fixture_mailboxModel() -> MailboxModel:
-    """Creates an :class:`Emailkasten.Models.MailboxModel.MailboxModel`.
+    """Creates an :class:`core.models.MailboxModel.MailboxModel`.
 
     Returns:
         The mailbox instance for testing.
@@ -50,7 +50,7 @@ def fixture_mailboxModel() -> MailboxModel:
 
 @pytest.mark.django_db
 def test_MailboxModel_creation(mailbox):
-    """Tests the correct default creation of :class:`Emailkasten.Models.MailboxModel.MailboxModel`."""
+    """Tests the correct default creation of :class:`core.models.MailboxModel.MailboxModel`."""
 
     assert mailbox.name is not None
     assert mailbox.account is not None
@@ -71,7 +71,7 @@ def test_MailboxModel_creation(mailbox):
 
 @pytest.mark.django_db
 def test_MailboxModel_foreign_key_deletion(mailbox):
-    """Tests the on_delete foreign key constraint in :class:`Emailkasten.Models.MailboxModel.MailboxModel`."""
+    """Tests the on_delete foreign key constraint in :class:`core.models.MailboxModel.MailboxModel`."""
 
     assert mailbox is not None
     mailbox.account.delete()
@@ -81,7 +81,7 @@ def test_MailboxModel_foreign_key_deletion(mailbox):
 
 @pytest.mark.django_db
 def test_MailboxModel_unique():
-    """Tests the unique constraints of :class:`Emailkasten.Models.MailboxModel.MailboxModel`."""
+    """Tests the unique constraints of :class:`core.models.MailboxModel.MailboxModel`."""
 
     mailingList_1 = baker.make(MailboxModel, name="abc123")
     mailingList_2 = baker.make(MailboxModel, name="abc123")
@@ -112,7 +112,7 @@ def test_MailboxModel_unique():
         ]
 )
 def test_MailboxModel_getAvailableFetchingCriteria(mailbox, protocol: str, expectedFetchingCriteria: list[str]):
-    """Tests :func:`Emailkasten.Models.MailboxModel.MailboxModel.getAvailableFetchingCriteria`.
+    """Tests :func:`core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria`.
 
     Args:
         protocol: The protocol parameter.

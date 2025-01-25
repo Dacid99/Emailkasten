@@ -16,22 +16,4 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`MailboxWithDaemonsSerializer` serializer class."""
-
-from ..DaemonSerializers.BaseDaemonSerializer import BaseDaemonSerializer
-from .BaseMailboxSerializer import BaseMailboxSerializer
-
-
-class MailboxWithDaemonSerializer(BaseMailboxSerializer):
-    """The standard serializer for a :class:`core.models.DaemonModel`.
-    Includes a nested serializer for the :attr:`core.models.DaemonModel.DaemonModel.daemons` related field.
-    """
-
-    daemons = BaseDaemonSerializer(many=True, read_only=True)
-    """The emails are serialized by
-    :class:`Emailkasten.Serializers.DaemonSerializers.BaseDaemonSerializer.BaseDaemonSerializer`.
-    """
-
-
-    class Meta(BaseMailboxSerializer.Meta):
-        """Metadata class for the serializer."""
+"""Core app module for Emailkasten."""

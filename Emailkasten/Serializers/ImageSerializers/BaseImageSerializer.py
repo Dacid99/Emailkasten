@@ -20,14 +20,14 @@
 
 from rest_framework import serializers
 
-from ...Models.ImageModel import ImageModel
+from core.models.ImageModel import ImageModel
 
 
 class BaseImageSerializer(serializers.ModelSerializer):
-    """The base serializer for :class:`Emailkasten.Models.ImageModel.ImageModel`.
+    """The base serializer for :class:`core.models.ImageModel.ImageModel`.
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`Emailkasten.Models.ImageModel.ImageModel` should inherit from this.
+    Other serializers for :class:`core.models.ImageModel.ImageModel` should inherit from this.
     """
 
     class Meta:
@@ -41,7 +41,7 @@ class BaseImageSerializer(serializers.ModelSerializer):
         """The model to serialize."""
 
         exclude = ['file_path']
-        """Exclude the :attr:`Emailkasten.Models.ImageModel.ImageModel.file_path` field."""
+        """Exclude the :attr:`core.models.ImageModel.ImageModel.file_path` field."""
 
         read_only_fields = [
                 'file_name',
@@ -50,9 +50,9 @@ class BaseImageSerializer(serializers.ModelSerializer):
                 'created',
                 'updated'
             ]
-        """The :attr:`Emailkasten.Models.ImageModel.ImageModel.is_healthy`,
-        :attr:`Emailkasten.Models.ImageModel.ImageModel.datasize`,
-        :attr:`Emailkasten.Models.ImageModel.ImageModel.email`,
-        :attr:`Emailkasten.Models.ImageModel.ImageModel.created` and
-        :attr:`Emailkasten.Models.ImageModel.ImageModel.updated` fields are read-only.
+        """The :attr:`core.models.ImageModel.ImageModel.is_healthy`,
+        :attr:`core.models.ImageModel.ImageModel.datasize`,
+        :attr:`core.models.ImageModel.ImageModel.email`,
+        :attr:`core.models.ImageModel.ImageModel.created` and
+        :attr:`core.models.ImageModel.ImageModel.updated` fields are read-only.
         """

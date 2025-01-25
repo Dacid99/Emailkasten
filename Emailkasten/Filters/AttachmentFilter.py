@@ -21,10 +21,10 @@
 import django_filters
 
 from ..constants import FilterSetups
-from ..Models.AttachmentModel import AttachmentModel
+from core.models.AttachmentModel import AttachmentModel
 
 class AttachmentFilter(django_filters.FilterSet):
-    """The filter class for :class:`Emailkasten.Models.AttachmentModel`."""
+    """The filter class for :class:`core.models.AttachmentModel`."""
 
     class Meta:
         """Metadata class for the filter."""

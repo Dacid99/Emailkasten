@@ -21,7 +21,7 @@
 Fixtures:
     :func:`fixture_accountModel`: Creates an account owned by `owner_user`.
     :func:`fixture_emailModel`: Creates an email in `accountModel`.
-    :func:`fixture_emailPayload`: Creates clean :class:`Emailkasten.Models.EMailModel.EMailModel` payload for a patch, post or put request.
+    :func:`fixture_emailPayload`: Creates clean :class:`core.models.EMailModel.EMailModel` payload for a patch, post or put request.
 
 """
 
@@ -37,7 +37,7 @@ from model_bakery import baker
 from rest_framework import status
 from test_AccountViewSet import fixture_accountModel
 
-from Emailkasten.Models.EMailModel import EMailModel
+from core.models.EMailModel import EMailModel
 from Emailkasten.Views.EMailViewSet import EMailViewSet
 
 if TYPE_CHECKING:
@@ -46,7 +46,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture(name='emailModel')
 def fixture_emailModel(accountModel) -> EMailModel:
-    """Creates an :class:`Emailkasten.Models.EMailModel.EMailModel` owned by :attr:`owner_user`.
+    """Creates an :class:`core.models.EMailModel.EMailModel` owned by :attr:`owner_user`.
 
     Args:
         accountModel: Depends on :func:`fixture_accountModel`.
@@ -58,7 +58,7 @@ def fixture_emailModel(accountModel) -> EMailModel:
 
 @pytest.fixture(name='emailPayload')
 def fixture_emailPayload(accountModel) -> dict[str, Any]:
-    """Creates clean :class:`Emailkasten.Models.EMailModel.EMailModel` payload for a patch, post or put request.
+    """Creates clean :class:`core.models.EMailModel.EMailModel` payload for a patch, post or put request.
 
     Args:
         accountModel: Depends on :func:`fixture_accountModel`.
