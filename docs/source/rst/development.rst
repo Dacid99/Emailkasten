@@ -1,7 +1,7 @@
 Development Guide
 =================
 
-.. include:: ../../CONTRIBUTING.md
+.. include:: ../../../CONTRIBUTING.md
     :parser: myst_parser.sphinx_
-.. include:: ../../DEVELOPMENT.md
+.. include:: ../../../DEVELOPMENT.md
    :parser: myst_parser.sphinx_

@@ -15,9 +15,9 @@ help:
 .PHONY: help Makefile
 
 source: Makefile
-	sphinx-apidoc -o source ../Emailkasten
-	python3 ../manage.py graph_models -a -g -o $(SOURCEDIR)/db_graph.svg
-	pydeps ../Emailkasten --max-bacon 2 -T svg -L ERROR --rankdir LR --no-show -o $(SOURCEDIR)/import_graph.svg
+	sphinx-apidoc -o $(SOURCEDIR)/rst/ ../
+	python3 ../manage.py graph_models -a -g -o $(SOURCEDIR)/images/db_graph.svg
+	pydeps ../ --max-bacon 2 -T svg -L ERROR --rankdir LR --no-show -o $(SOURCEDIR)/images/import_graph.svg
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).

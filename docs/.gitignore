@@ -1,5 +1,7 @@
 build/*
-source/*.rst
+source/rst/*
+source/images/*
+*.rst
 !index.rst
 !import-graph.rst
 !development.rst

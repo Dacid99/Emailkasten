@@ -11,14 +11,11 @@ EMailkasten documentation
    :maxdepth: 1
    :caption: Contents:
 
-   development
-   todo
-   manage
-   project
-   modules
-   import-graph
-   db-graph
-   test
+   rst/development
+   rst/todo
+   rst/modules
+   rst/import-graph
+   rst/db-graph
 
 `Latest mypy report <mypy_report/index.html>`_
 

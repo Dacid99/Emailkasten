@@ -3,4 +3,4 @@ Emailkasten import graph
 
 A graphical overview of the internal dependencies of the Emailkasten package
 
-.. image:: import_graph.svg
+.. image:: ../images/import_graph.svg
