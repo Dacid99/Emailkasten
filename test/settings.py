@@ -18,7 +18,7 @@
 
 """Settings for testing of the django project."""
 
-from project.settings import *  # pylint: disable=wildcard-import, unused-wildcard-import ; all settings need to be imported
+from Emailkasten.settings import *  # pylint: disable=wildcard-import, unused-wildcard-import ; all settings need to be imported
 
 DATABASES = {
     "default": {
@@ -33,7 +33,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         "default": {
-            'format': project.constants.LoggerConfiguration.LOG_FORMAT,
+            'format': Emailkasten.constants.LoggerConfiguration.LOG_FORMAT,
             'style': '{',
         },
     },

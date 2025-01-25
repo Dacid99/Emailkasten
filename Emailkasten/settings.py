@@ -30,7 +30,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
-import project.constants
+import Emailkasten.constants
 import api.constants
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -106,7 +106,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 
-ROOT_URLCONF = "project.urls"
+ROOT_URLCONF = "Emailkasten.urls"
 
 TEMPLATES = [
     {
@@ -124,7 +124,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "project.wsgi.application"
+WSGI_APPLICATION = "Emailkasten.wsgi.application"
 
 SITE_ID = 1
 
@@ -134,9 +134,9 @@ SITE_ID = 1
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": project.constants.DatabaseConfiguration.NAME,
-        "USER": project.constants.DatabaseConfiguration.USER,
-        "PASSWORD": project.constants.DatabaseConfiguration.PASSWORD,
+        "NAME": Emailkasten.constants.DatabaseConfiguration.NAME,
+        "USER": Emailkasten.constants.DatabaseConfiguration.USER,
+        "PASSWORD": Emailkasten.constants.DatabaseConfiguration.PASSWORD,
         "HOST": "db",
         "PORT": '3306',
         "OPTIONS": {
@@ -197,7 +197,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         "default": {
-            'format': project.constants.LoggerConfiguration.LOG_FORMAT,
+            'format': Emailkasten.constants.LoggerConfiguration.LOG_FORMAT,
             'style': '{',
         },
     },
@@ -211,38 +211,38 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(
-                project.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
-                project.constants.LoggerConfiguration.DJANGO_LOGFILE_NAME
+                Emailkasten.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
+                Emailkasten.constants.LoggerConfiguration.DJANGO_LOGFILE_NAME
             ),
-            'maxBytes': project.constants.LoggerConfiguration.LOGFILE_MAXSIZE,
-            'backupCount': project.constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
+            'maxBytes': Emailkasten.constants.LoggerConfiguration.LOGFILE_MAXSIZE,
+            'backupCount': Emailkasten.constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
             'formatter': 'default',
         },
         'app_logfile': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(
-                project.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
-                project.constants.LoggerConfiguration.APP_LOGFILE_NAME
+                Emailkasten.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
+                Emailkasten.constants.LoggerConfiguration.APP_LOGFILE_NAME
             ),
-            'maxBytes': project.constants.LoggerConfiguration.LOGFILE_MAXSIZE,
-            'backupCount': project.constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
+            'maxBytes': Emailkasten.constants.LoggerConfiguration.LOGFILE_MAXSIZE,
+            'backupCount': Emailkasten.constants.LoggerConfiguration.LOGFILE_BACKUP_NUMBER,
             'formatter': 'default',
         },
     },
     'root': {
         'handlers': ['console'],
-        'level': project.constants.LoggerConfiguration.ROOT_LOG_LEVEL,
+        'level': Emailkasten.constants.LoggerConfiguration.ROOT_LOG_LEVEL,
     },
     'loggers': {
         'django': {
             'handlers': ['django_logfile'],
-            'level': project.constants.LoggerConfiguration.DJANGO_LOG_LEVEL,
+            'level': Emailkasten.constants.LoggerConfiguration.DJANGO_LOG_LEVEL,
             'propagate': True,
         },
         "Emailkasten": {
             'handlers': ['app_logfile'],
-            'level': project.constants.LoggerConfiguration.APP_LOG_LEVEL,
+            'level': Emailkasten.constants.LoggerConfiguration.APP_LOG_LEVEL,
             'propagate': True,
         },
     },

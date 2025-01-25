@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 
 from django.db import OperationalError, connection
 
-from project.constants import DatabaseConfiguration
+from Emailkasten.constants import DatabaseConfiguration
 
 if TYPE_CHECKING:
     from rest_framework.response import Response

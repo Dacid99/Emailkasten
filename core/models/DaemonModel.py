@@ -25,7 +25,7 @@ import uuid
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 
-import project.constants
+import Emailkasten.constants
 from .. import constants
 from .MailboxModel import MailboxModel
 
@@ -65,7 +65,7 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
     """Flags whether the daemon is healthy. `True` by default."""
 
     log_filepath = models.FilePathField(
-        path=project.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
+        path=Emailkasten.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
         recursive=True,
         unique=True)
     """The logfile the daemon logs to. Is automatically set by :func:`save`. Unique."""
@@ -92,7 +92,7 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
         """Extended :django::func:`django.models.Model.save` method to create and set :attr:`log_filepath` if it is null."""
 
         if not self.log_filepath:
-            self.log_filepath = os.path.join(project.constants.LoggerConfiguration.LOG_DIRECTORY_PATH, f"daemon_{self.uuid}.log")
+            self.log_filepath = os.path.join(Emailkasten.constants.LoggerConfiguration.LOG_DIRECTORY_PATH, f"daemon_{self.uuid}.log")
             if not os.path.exists(self.log_filepath):
                 with open(self.log_filepath, 'w'):
                     pass
