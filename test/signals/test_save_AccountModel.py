@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`Emailkasten.signals.save_AccountModel`."""
+"""Test module for :mod:`core.signals.save_AccountModel`."""
 
 import pytest
 from model_bakery import baker
@@ -27,8 +27,8 @@ from core.models.MailboxModel import MailboxModel
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker):
-    """Mocks :attr:`Emailkasten.signals.save_AccountModel.logger` of the module."""
-    return mocker.patch('Emailkasten.signals.save_AccountModel.logger')
+    """Mocks :attr:`core.signals.save_AccountModel.logger` of the module."""
+    return mocker.patch('core.signals.save_AccountModel.logger')
 
 
 @pytest.mark.django_db

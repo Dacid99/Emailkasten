@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`Emailkasten.signals.delete_DaemonModel`."""
+"""Test module for :mod:`core.signals.delete_DaemonModel`."""
 
 import pytest
 
@@ -27,12 +27,12 @@ from ..models.test_DaemonModel import fixture_daemonModel
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker):
-    """Mocks :attr:`Emailkasten.signals.save_AccountModel.logger` of the module."""
-    return mocker.patch('Emailkasten.signals.delete_DaemonModel.logger')
+    """Mocks :attr:`core.signals.save_AccountModel.logger` of the module."""
+    return mocker.patch('core.signals.delete_DaemonModel.logger')
 
 @pytest.mark.django_db
 def test_pre_delete_stop_daemon(mocker, mock_logger, daemon):
-    """Tests :func:`Emailkasten.signals.deleteDaemonModel.pre_delete_stop_daemon`."""
+    """Tests :func:`core.signals.deleteDaemonModel.pre_delete_stop_daemon`."""
     mock_EMailArchiverDaemon_stopDaemon = mocker.patch('Emailkasten.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.stopDaemon')
 
     daemon.delete()

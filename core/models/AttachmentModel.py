@@ -42,7 +42,7 @@ class AttachmentModel(models.Model):
     """The path where the attachment is stored. Unique together with :attr:`email`.
     Can be null if the attachment has not been saved (null does not collide with the unique constraint.).
     Must contain :attr:`Emailkasten.constants.StorageConfiguration.STORAGE_PATH`.
-    When this entry is deleted, the file will be removed by :func:`Emailkasten.signals.delete_AttachmentModel.post_delete_attachment`."""
+    When this entry is deleted, the file will be removed by :func:`core.signals.delete_AttachmentModel.post_delete_attachment`."""
 
     datasize = models.IntegerField()
     """The filesize of the attachment."""

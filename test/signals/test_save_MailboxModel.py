@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test file for :mod:`Emailkasten.signals.save_MailboxModel`."""
+"""Test file for :mod:`core.signals.save_MailboxModel`."""
 
 import pytest
 from model_bakery import baker
@@ -29,13 +29,13 @@ from core.models.AccountModel import AccountModel
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker):
-    """Mocks :attr:`Emailkasten.signals.save_MailboxModel.logger` of the module."""
-    return mocker.patch('Emailkasten.signals.save_MailboxModel.logger')
+    """Mocks :attr:`core.signals.save_MailboxModel.logger` of the module."""
+    return mocker.patch('core.signals.save_MailboxModel.logger')
 
 
 @pytest.mark.django_db
 def test_MailboxModel_post_save_from_healthy(mock_logger):
-    """Tests behaviour of :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`."""
+    """Tests behaviour of :func:`core.signals.saveMailboxModel.post_save_is_healthy`."""
     account = baker.make(AccountModel, is_healthy=True)
     mailbox = baker.make(MailboxModel, account=account, is_healthy=True)
     baker.make(DaemonModel, mailbox=mailbox, is_healthy=True, log_filepath=Faker().file_path(extension='log'))
@@ -52,7 +52,7 @@ def test_MailboxModel_post_save_from_healthy(mock_logger):
 
 @pytest.mark.django_db
 def test_MailboxModel_post_save_from_unhealthy(mock_logger):
-    """Tests behaviour of :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`."""
+    """Tests behaviour of :func:`core.signals.saveMailboxModel.post_save_is_healthy`."""
     account = baker.make(AccountModel, is_healthy=False)
     mailbox = baker.make(MailboxModel, account=account, is_healthy=False)
     baker.make(DaemonModel, mailbox=mailbox, is_healthy=False, log_filepath=Faker().file_path(extension='log'))

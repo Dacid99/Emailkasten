@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test file for :mod:`Emailkasten.signals.delete_EMailModel`."""
+"""Test file for :mod:`core.signals.delete_EMailModel`."""
 
 import pytest
 from faker import Faker
@@ -28,15 +28,15 @@ from ..models.test_EMailModel import fixture_emailModel
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker):
-    """Mocks :attr:`Emailkasten.signals.delete_EMailModel.logger` of the module."""
-    return mocker.patch('Emailkasten.signals.delete_EMailModel.logger')
+    """Mocks :attr:`core.signals.delete_EMailModel.logger` of the module."""
+    return mocker.patch('core.signals.delete_EMailModel.logger')
 
 @pytest.mark.django_db
 def test_post_delete_email_success(mocker, mock_logger, email):
-    """Tests :func:`Emailkasten.signals.deleteEMailModel.post_delete_email`
+    """Tests :func:`core.signals.deleteEMailModel.post_delete_email`
     if the file removal is successful.
     """
-    mock_os_remove = mocker.patch('Emailkasten.signals.delete_EMailModel.os.remove')
+    mock_os_remove = mocker.patch('core.signals.delete_EMailModel.os.remove')
     email.eml_filepath = Faker().file_path(extension='eml')
     email.prerender_filepath = Faker().file_path(extension='png')
     email.save()
@@ -65,10 +65,10 @@ def test_post_delete_email_success(mocker, mock_logger, email):
     ]
 )
 def test_post_delete_email_failure(mocker, email, mock_logger, side_effects):
-    """Tests :func:`Emailkasten.signals.deleteEMailModel.post_delete_email`
+    """Tests :func:`core.signals.deleteEMailModel.post_delete_email`
     if the file removal throws an exception.
     """
-    mock_os_remove = mocker.patch('Emailkasten.signals.delete_EMailModel.os.remove', side_effect=side_effects)
+    mock_os_remove = mocker.patch('core.signals.delete_EMailModel.os.remove', side_effect=side_effects)
     email.eml_filepath = Faker().file_path(extension='eml')
     email.prerender_filepath = Faker().file_path(extension='png')
     email.save()

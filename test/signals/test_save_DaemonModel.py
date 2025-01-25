@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test file for :mod:`Emailkasten.signals.save_DaemonModel`."""
+"""Test file for :mod:`core.signals.save_DaemonModel`."""
 
 import pytest
 from faker import Faker
@@ -35,13 +35,13 @@ def fixture_mock_updateDaemon(mocker):
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker):
-    """Mocks :attr:`Emailkasten.signals.save_DaemonModel.logger` of the module."""
-    return mocker.patch('Emailkasten.signals.save_DaemonModel.logger')
+    """Mocks :attr:`core.signals.save_DaemonModel.logger` of the module."""
+    return mocker.patch('core.signals.save_DaemonModel.logger')
 
 
 @pytest.mark.django_db
 def test_MailboxModel_post_save_daemon_from_healthy(mock_logger, mock_updateDaemon):
-    """Tests :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`
+    """Tests :func:`core.signals.saveMailboxModel.post_save_is_healthy`
     for an initially healthy daemon.
     """
     mailbox = baker.make(MailboxModel, is_healthy=True)
@@ -58,7 +58,7 @@ def test_MailboxModel_post_save_daemon_from_healthy(mock_logger, mock_updateDaem
 
 @pytest.mark.django_db
 def test_MailboxModel_post_save_daemon_from_unhealthy(mock_logger, mock_updateDaemon):
-    """Tests :func:`Emailkasten.signals.saveMailboxModel.post_save_is_healthy`
+    """Tests :func:`core.signals.saveMailboxModel.post_save_is_healthy`
     for an initially unhealthy daemon.
     """
     mailbox = baker.make(MailboxModel, is_healthy=False)

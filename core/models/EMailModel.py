@@ -67,7 +67,7 @@ class EMailModel(models.Model):
     """The path where the mail is stored in .eml format.
     Can be null if the mail has not been saved.
     Must contain :attr:`Emailkasten.constants.StorageConfiguration.STORAGE_PATH` and end on .eml .
-    When this entry is deleted, the file will be removed by :func:`Emailkasten.signals.delete_EMailModel.post_delete_email_files`.
+    When this entry is deleted, the file will be removed by :func:`core.signals.delete_EMailModel.post_delete_email_files`.
     """
 
     prerender_filepath = models.FilePathField(
@@ -80,7 +80,7 @@ class EMailModel(models.Model):
     """The path where the prerender image of the mail is stored.
     Can be null if the prerendering process was no successful.
     Must contain :attr:`Emailkasten.constants.StorageConfiguration.STORAGE_PATH` and end on :attr:`Emailkasten.constants.StorageConfiguration.PRERENDER_IMAGETYPE`.
-    When this entry is deleted, the file will be removed by :func:`Emailkasten.signals.delete_EMailModel.post_delete_email_files`."""
+    When this entry is deleted, the file will be removed by :func:`core.signals.delete_EMailModel.post_delete_email_files`."""
 
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mails. False by default."""

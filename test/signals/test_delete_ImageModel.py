@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test file for :mod:`Emailkasten.signals.delete_ImageModel`."""
+"""Test file for :mod:`core.signals.delete_ImageModel`."""
 
 import pytest
 
@@ -27,15 +27,15 @@ from ..models.test_ImageModel import fixture_imageModel
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker):
-    """Mocks :attr:`Emailkasten.signals.delete_ImageModel.logger` of the module."""
-    return mocker.patch('Emailkasten.signals.delete_ImageModel.logger')
+    """Mocks :attr:`core.signals.delete_ImageModel.logger` of the module."""
+    return mocker.patch('core.signals.delete_ImageModel.logger')
 
 @pytest.mark.django_db
 def test_post_delete_image_success(mocker, mock_logger, image):
-    """Tests :func:`Emailkasten.signals.deleteImageModel.post_delete_image`
+    """Tests :func:`core.signals.deleteImageModel.post_delete_image`
     if the file removal is successful.
     """
-    mock_os_remove = mocker.patch('Emailkasten.signals.delete_ImageModel.os.remove')
+    mock_os_remove = mocker.patch('core.signals.delete_ImageModel.os.remove')
     file_path = image.file_path
 
     image.delete()
@@ -61,10 +61,10 @@ def test_post_delete_image_success(mocker, mock_logger, image):
     ]
 )
 def test_post_delete_image_failure(mocker, image, mock_logger, side_effect):
-    """Tests :func:`Emailkasten.signals.deleteImageModel.post_delete_image`
+    """Tests :func:`core.signals.deleteImageModel.post_delete_image`
     if the file removal throws an exception.
     """
-    mock_os_remove = mocker.patch('Emailkasten.signals.delete_ImageModel.os.remove', side_effect=side_effect)
+    mock_os_remove = mocker.patch('core.signals.delete_ImageModel.os.remove', side_effect=side_effect)
     file_path = image.file_path
 
     image.delete()

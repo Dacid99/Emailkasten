@@ -24,7 +24,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from core.models.DaemonModel import DaemonModel
-from ..EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
+from Emailkasten.EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
 
 logger = logging.getLogger(__name__)
 

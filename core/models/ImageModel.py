@@ -41,7 +41,7 @@ class ImageModel(models.Model):
     """The path where the image is stored. Unique together with :attr:`email`.
     Can be null if the image has not been saved (null does not collide with the unique constraint.).
     Must contain :attr:`Emailkasten.constants.StorageConfiguration.STORAGE_PATH`.
-    When this entry is deleted, the file will be removed by :func:`Emailkasten.signals.delete_ImageModel.post_delete_image`."""
+    When this entry is deleted, the file will be removed by :func:`core.signals.delete_ImageModel.post_delete_image`."""
 
     datasize = models.IntegerField()
     """The filesize of the image."""

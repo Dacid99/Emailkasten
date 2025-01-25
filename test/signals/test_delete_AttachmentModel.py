@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test file for :mod:`Emailkasten.signals.delete_AttachmentModel`."""
+"""Test file for :mod:`core.signals.delete_AttachmentModel`."""
 
 import pytest
 
@@ -27,15 +27,15 @@ from ..models.test_AttachmentModel import fixture_attachmentModel
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker):
-    """Mocks :attr:`Emailkasten.signals.delete_AttachmentModel.logger` of the module."""
-    return mocker.patch('Emailkasten.signals.delete_AttachmentModel.logger')
+    """Mocks :attr:`core.signals.delete_AttachmentModel.logger` of the module."""
+    return mocker.patch('core.signals.delete_AttachmentModel.logger')
 
 @pytest.mark.django_db
 def test_post_delete_attachment_success(mocker, mock_logger, attachment):
-    """Tests :func:`Emailkasten.signals.deleteAttachmentModel.post_delete_attachment`
+    """Tests :func:`core.signals.deleteAttachmentModel.post_delete_attachment`
     if the file removal is successful.
     """
-    mock_os_remove = mocker.patch('Emailkasten.signals.delete_AttachmentModel.os.remove')
+    mock_os_remove = mocker.patch('core.signals.delete_AttachmentModel.os.remove')
     file_path = attachment.file_path
 
     attachment.delete()
@@ -59,10 +59,10 @@ def test_post_delete_attachment_success(mocker, mock_logger, attachment):
     ]
 )
 def test_post_delete_attachment_failure(mocker, attachment, mock_logger, side_effect):
-    """Tests :func:`Emailkasten.signals.deleteAttachmentModel.post_delete_attachment`
+    """Tests :func:`core.signals.deleteAttachmentModel.post_delete_attachment`
     if the file removal throws an exception.
     """
-    mock_os_remove = mocker.patch('Emailkasten.signals.delete_AttachmentModel.os.remove', side_effect=side_effect)
+    mock_os_remove = mocker.patch('core.signals.delete_AttachmentModel.os.remove', side_effect=side_effect)
     file_path = attachment.file_path
 
     attachment.delete()

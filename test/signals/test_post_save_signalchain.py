@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test file for :mod:`Emailkasten.signals.save_MailboxModel`."""
+"""Test file for :mod:`core.signals.save_MailboxModel`."""
 
 import pytest
 from faker import Faker
