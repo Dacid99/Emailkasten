@@ -35,7 +35,7 @@ from Emailkasten.Filters.MailboxFilter import MailboxFilter
 from Emailkasten.mailProcessing import fetchAndProcessMails, testMailbox
 from core.models.DaemonModel import DaemonModel
 from core.models.MailboxModel import MailboxModel
-from Emailkasten.Serializers.MailboxSerializers.MailboxWithDaemonSerializer import \
+from api.serializers.mailbox_serializers.MailboxWithDaemonSerializer import \
     MailboxWithDaemonSerializer
 
 if TYPE_CHECKING:

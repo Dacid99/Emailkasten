@@ -31,9 +31,9 @@ from rest_framework.response import Response
 
 from Emailkasten.Filters.CorrespondentFilter import CorrespondentFilter
 from core.models.CorrespondentModel import CorrespondentModel
-from Emailkasten.Serializers.CorrespondentSerializers.CorrespondentSerializer import \
+from api.serializers.correspondent_serializers.CorrespondentSerializer import \
     CorrespondentSerializer
-from Emailkasten.Serializers.CorrespondentSerializers.BaseCorrespondentSerializer import \
+from api.serializers.correspondent_serializers.BaseCorrespondentSerializer import \
     BaseCorrespondentSerializer
 
 if TYPE_CHECKING:

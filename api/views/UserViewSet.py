@@ -29,7 +29,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from Emailkasten.constants import APIConfiguration
 from Emailkasten.Pagination import Pagination
 from Emailkasten.permissions import IsAdminOrSelf
-from Emailkasten.Serializers.UserSerializers.UserSerializer import UserSerializer
+from api.serializers.user_serializers.UserSerializer import UserSerializer
 
 if TYPE_CHECKING:
     from typing import Sequence

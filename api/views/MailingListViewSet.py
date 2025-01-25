@@ -31,7 +31,7 @@ from rest_framework.response import Response
 
 from Emailkasten.Filters.MailingListFilter import MailingListFilter
 from core.models.MailingListModel import MailingListModel
-from Emailkasten.Serializers.MailingListSerializers.MailingListSerializer import \
+from api.serializers.mailinglist_serializers.MailingListSerializer import \
     MailingListSerializer
 
 if TYPE_CHECKING:

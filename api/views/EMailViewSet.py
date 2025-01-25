@@ -33,7 +33,7 @@ from rest_framework.response import Response
 
 from Emailkasten.Filters.EMailFilter import EMailFilter
 from core.models.EMailModel import EMailModel
-from Emailkasten.Serializers.EMailSerializers.FullEMailSerializer import \
+from api.serializers.email_serializers.FullEMailSerializer import \
     FullEMailSerializer
 
 if TYPE_CHECKING:

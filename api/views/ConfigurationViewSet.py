@@ -22,7 +22,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser
 
 from core.models.ConfigurationModel import ConfigurationModel
-from Emailkasten.Serializers.ConfigurationSerializers.ConfigurationSerializer import \
+from api.serializers.configuration_serializers.ConfigurationSerializer import \
     ConfigurationSerializer
 
 

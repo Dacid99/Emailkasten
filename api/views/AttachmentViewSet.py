@@ -33,7 +33,7 @@ from rest_framework.response import Response
 
 from Emailkasten.Filters.AttachmentFilter import AttachmentFilter
 from core.models.AttachmentModel import AttachmentModel
-from Emailkasten.Serializers.AttachmentSerializers.BaseAttachmentSerializer import \
+from api.serializers.attachment_serializers.BaseAttachmentSerializer import \
     BaseAttachmentSerializer
 
 if TYPE_CHECKING:

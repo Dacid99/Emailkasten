@@ -34,7 +34,7 @@ from rest_framework.response import Response
 from Emailkasten.EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
 from Emailkasten.Filters.DaemonFilter import DaemonFilter
 from core.models.DaemonModel import DaemonModel
-from Emailkasten.Serializers.DaemonSerializers.BaseDaemonSerializer import \
+from api.serializers.daemon_serializers.BaseDaemonSerializer import \
     BaseDaemonSerializer
 
 if TYPE_CHECKING:

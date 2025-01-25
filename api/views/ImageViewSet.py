@@ -33,7 +33,7 @@ from rest_framework.response import Response
 
 from Emailkasten.Filters.ImageFilter import ImageFilter
 from core.models.ImageModel import ImageModel
-from Emailkasten.Serializers.ImageSerializers.BaseImageSerializer import BaseImageSerializer
+from api.serializers.image_serializers.BaseImageSerializer import BaseImageSerializer
 
 if TYPE_CHECKING:
     from rest_framework.request import Request

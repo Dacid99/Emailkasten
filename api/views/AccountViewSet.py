@@ -34,7 +34,7 @@ from Emailkasten.constants import TestStatusCodes
 from Emailkasten.Filters.AccountFilter import AccountFilter
 from Emailkasten.mailProcessing import scanMailboxes, testAccount
 from core.models.AccountModel import AccountModel
-from Emailkasten.Serializers.AccountSerializers.AccountSerializer import \
+from api.serializers.account_serializers.AccountSerializer import \
     AccountSerializer
 
 if TYPE_CHECKING:

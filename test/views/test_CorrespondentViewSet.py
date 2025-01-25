@@ -37,7 +37,7 @@ from test_AccountViewSet import fixture_accountModel
 from test_EMailViewSet import fixture_emailModel
 
 from core.models.CorrespondentModel import CorrespondentModel
-from Emailkasten.Serializers.CorrespondentSerializers.BaseCorrespondentSerializer import \
+from api.serializers.correspondent_serializers.BaseCorrespondentSerializer import \
     BaseCorrespondentSerializer
 from api.views.CorrespondentViewSet import CorrespondentViewSet
 
