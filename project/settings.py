@@ -94,7 +94,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
-    "Emailkasten.DBReconnectMiddleware.DBReconnectMiddleware",
+    "core.middleware.DBReconnectMiddleware.DBReconnectMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

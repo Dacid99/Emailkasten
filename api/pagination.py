@@ -16,24 +16,23 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""The apps module for Emailkasten with the app config."""
+"""Module with the extended custom :class:`Pagination` class."""
 
-from django.apps import AppConfig
+from rest_framework.pagination import PageNumberPagination
 
-class EmailkastenConfig(AppConfig):
-    """App config for Emailkasten."""
+from api.constants import APIConfiguration
 
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'Emailkasten'
 
-    def ready(self):
-        # pylint: disable=import-outside-toplevel, unused-import ; this is the way it is intended by django
-        from core.signals import (
-            delete_AttachmentModel,
-            delete_DaemonModel,
-            delete_EMailModel,
-            delete_ImageModel,
-            save_AccountModel,
-            save_DaemonModel,
-            save_MailboxModel
-        )
+class Pagination(PageNumberPagination):
+    """Extended pagination for the API."""
+
+    page_size = APIConfiguration.DEFAULT_PAGE_SIZE
+    """The number of results per page.
+        Set from :attr:`Emailkasten.constants.APIConfiguration.DEFAULT_PAGE_SIZE`."""
+
+    page_size_query_param = 'page_size'
+    """The query parameter for the page size."""
+
+    max_page_size = APIConfiguration.MAX_PAGE_SIZE
+    """The maximal number of results per page.
+        Set from :attr:`Emailkasten.constants.APIConfiguration.MAX_PAGE_SIZE`."""

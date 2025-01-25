@@ -16,23 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the extended custom :class:`Pagination` class."""
+"""The apps module for :mod:`api`."""
 
-from rest_framework.pagination import PageNumberPagination
-
-from .constants import APIConfiguration
+from django.apps import AppConfig
 
 
-class Pagination(PageNumberPagination):
-    """Extended pagination for the API."""
-
-    page_size = APIConfiguration.DEFAULT_PAGE_SIZE
-    """The number of results per page.
-        Set from :attr:`Emailkasten.constants.APIConfiguration.DEFAULT_PAGE_SIZE`."""
-
-    page_size_query_param = 'page_size'
-    """The query parameter for the page size."""
-
-    max_page_size = APIConfiguration.MAX_PAGE_SIZE
-    """The maximal number of results per page.
-        Set from :attr:`Emailkasten.constants.APIConfiguration.MAX_PAGE_SIZE`."""
+class APIConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'api'
