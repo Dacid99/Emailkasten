@@ -34,9 +34,13 @@ from core import constants
 from core.models.DaemonModel import DaemonModel
 from core.models.MailboxModel import MailboxModel
 
+@pytest.fixture(name='mock_open')
+def fixture_mock_open(mocker):
+    return mocker.patch('core.models.DaemonModel.open', mocker.mock_open())
+
 
 @pytest.fixture(name='daemon')
-def fixture_daemonModel() -> DaemonModel:
+def fixture_daemonModel(mock_open) -> DaemonModel:
     """Creates an :class:`core.models.DaemonModel.DaemonModel`.
 
     Returns:
@@ -85,3 +89,13 @@ def test_DaemonModel_unique(daemon):
 
     with pytest.raises(IntegrityError):
         baker.make(DaemonModel, log_filepath=daemon.log_filepath)
+
+
+@pytest.mark.django_db
+def test_DaemonModel_save_logfileCreation(mock_open, daemon):
+    daemon.log_filepath = None
+
+    daemon.save()
+
+    daemon.refresh_from_db()
+    mock_open.assert_called_with(daemon.log_filepath, 'w')
