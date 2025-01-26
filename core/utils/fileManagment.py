@@ -32,13 +32,13 @@ import os.path
 from builtins import open  # required for testing
 from typing import TYPE_CHECKING
 
-from core.constants import StorageConfiguration
+from ..constants import StorageConfiguration
+from ..models.StorageModel import StorageModel
 from .mailParsing import ParsedMailKeys
-from core.models.StorageModel import StorageModel
 
 if TYPE_CHECKING:
-    from typing import Any, Callable
     from io import BufferedWriter
+    from typing import Any, Callable
 
 
 logger = logging.getLogger(__name__)

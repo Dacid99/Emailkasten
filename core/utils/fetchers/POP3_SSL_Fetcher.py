@@ -20,10 +20,10 @@
 
 import poplib
 
-from core import constants
+from ... import constants
+from ...models.AccountModel import AccountModel
+from ...models.MailboxModel import MailboxModel
 from .POP3Fetcher import POP3Fetcher
-from core.models.AccountModel import AccountModel
-from core.models.MailboxModel import MailboxModel
 
 
 class POP3_SSL_Fetcher(POP3Fetcher):

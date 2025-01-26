@@ -16,8 +16,8 @@ from core.models.EMailModel import EMailModel
 from core.models.DaemonModel import DaemonModel
 
 
-def datetime_quarter(datetime: datetime.datetime) -> int:
-    return (datetime.month - 1) // 3 + 1
+def datetime_quarter(datetimeObject: datetime.datetime) -> int:
+    return (datetimeObject.month - 1) // 3 + 1
 
 INT_TEST_ITEMS = [
     0,
@@ -278,12 +278,12 @@ DATETIME_TEST_PARAMETERS = [
 
 @pytest.fixture(name='account_queryset')
 def fixture_account_queryset():
-    for number in range(0,len(TEXT_TEST_ITEMS)):
+    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
             baker.make(
                 AccountModel,
-                mail_address=TEXT_TEST_ITEMS[number],
-                mail_host=TEXT_TEST_ITEMS[number],
+                mail_address=text_test_item,
+                mail_host=text_test_item,
                 mail_host_port=INT_TEST_ITEMS[number],
                 timeout=FLOAT_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
@@ -295,11 +295,11 @@ def fixture_account_queryset():
 
 @pytest.fixture(name='mailbox_queryset')
 def fixture_mailbox_queryset(account_queryset):
-    for number in range(0,len(TEXT_TEST_ITEMS)):
+    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
             baker.make(
                 MailboxModel,
-                name=TEXT_TEST_ITEMS[number],
+                name=text_test_item,
                 save_toEML=BOOL_TEST_ITEMS[number],
                 save_attachments=BOOL_TEST_ITEMS[number],
                 save_images=BOOL_TEST_ITEMS[number],
@@ -313,11 +313,11 @@ def fixture_mailbox_queryset(account_queryset):
 
 @pytest.fixture(name='daemon_queryset')
 def fixture_daemon_queryset(mailbox_queryset):
-    for number in range(0,len(INT_TEST_ITEMS)):
+    for number, int_test_item in enumerate(INT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
             baker.make(
                 DaemonModel,
-                cycle_interval=INT_TEST_ITEMS[number],
+                cycle_interval=int_test_item,
                 is_running=BOOL_TEST_ITEMS[number],
                 is_healthy=BOOL_TEST_ITEMS[number],
                 mailbox=mailbox_queryset.get(id=number+1),
@@ -329,12 +329,12 @@ def fixture_daemon_queryset(mailbox_queryset):
 
 @pytest.fixture(name='correspondent_queryset')
 def fixture_correspondent_queryset():
-    for number in range(0,len(TEXT_TEST_ITEMS)):
+    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
             baker.make(
                 CorrespondentModel,
-                email_name=TEXT_TEST_ITEMS[number],
-                email_address=TEXT_TEST_ITEMS[number],
+                email_name=text_test_item,
+                email_address=text_test_item,
                 is_favorite=BOOL_TEST_ITEMS[number]
             )
 
@@ -343,17 +343,17 @@ def fixture_correspondent_queryset():
 
 @pytest.fixture(name='mailinglist_queryset')
 def fixture_mailinglist_queryset(correspondent_queryset):
-    for number in range(0,len(TEXT_TEST_ITEMS)):
+    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
             baker.make(
                 MailingListModel,
-                list_id=TEXT_TEST_ITEMS[number],
-                list_owner=TEXT_TEST_ITEMS[number],
-                list_subscribe=TEXT_TEST_ITEMS[number],
-                list_unsubscribe=TEXT_TEST_ITEMS[number],
-                list_post=TEXT_TEST_ITEMS[number],
-                list_help=TEXT_TEST_ITEMS[number],
-                list_archive=TEXT_TEST_ITEMS[number],
+                list_id=text_test_item,
+                list_owner=text_test_item,
+                list_subscribe=text_test_item,
+                list_unsubscribe=text_test_item,
+                list_post=text_test_item,
+                list_help=text_test_item,
+                list_archive=text_test_item,
                 is_favorite=BOOL_TEST_ITEMS[number],
                 correspondent=correspondent_queryset.get(id=number+1)
             )
@@ -363,32 +363,32 @@ def fixture_mailinglist_queryset(correspondent_queryset):
 
 @pytest.fixture(name='email_queryset')
 def fixture_email_queryset(account_queryset, correspondent_queryset, mailinglist_queryset):
-    for number in range(0,len(TEXT_TEST_ITEMS)):
+    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
             new_email = baker.make(
                 EMailModel,
-                message_id=TEXT_TEST_ITEMS[number],
+                message_id=text_test_item,
                 datetime=datetime.datetime.now(tz=datetime.datetime.UTC),
-                email_subject=TEXT_TEST_ITEMS[number],
-                bodytext=TEXT_TEST_ITEMS[number],
+                email_subject=text_test_item,
+                bodytext=text_test_item,
                 datasize=INT_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 account=account_queryset.get(id=number+1),
                 mailinglist=mailinglist_queryset.get(id=number+1),
-                comments = TEXT_TEST_ITEMS[number],
-                keywords = TEXT_TEST_ITEMS[number],
-                importance = TEXT_TEST_ITEMS[number],
-                priority = TEXT_TEST_ITEMS[number],
-                precedence = TEXT_TEST_ITEMS[number],
-                received = TEXT_TEST_ITEMS[number],
-                user_agent = TEXT_TEST_ITEMS[number],
-                auto_submitted = TEXT_TEST_ITEMS[number],
-                content_type = TEXT_TEST_ITEMS[number],
-                content_language = TEXT_TEST_ITEMS[number],
-                content_location = TEXT_TEST_ITEMS[number],
-                x_priority = TEXT_TEST_ITEMS[number],
-                x_originated_client = TEXT_TEST_ITEMS[number],
-                x_spam = TEXT_TEST_ITEMS[number]
+                comments = text_test_item,
+                keywords = text_test_item,
+                importance = text_test_item,
+                priority = text_test_item,
+                precedence = text_test_item,
+                received = text_test_item,
+                user_agent = text_test_item,
+                auto_submitted = text_test_item,
+                content_type = text_test_item,
+                content_language = text_test_item,
+                content_location = text_test_item,
+                x_priority = text_test_item,
+                x_originated_client = text_test_item,
+                x_spam = text_test_item
             )
             baker.make(EMailCorrespondentsModel, email=new_email, correspondent=correspondent_queryset.get(id=number+1))
 
@@ -397,12 +397,12 @@ def fixture_email_queryset(account_queryset, correspondent_queryset, mailinglist
 
 @pytest.fixture(name='attachment_queryset')
 def fixture_attachment_queryset(email_queryset):
-    for number in range(0,len(TEXT_TEST_ITEMS)):
+    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
             baker.make(
                 AttachmentModel,
-                file_path='/path/' + TEXT_TEST_ITEMS[number],
-                file_name=TEXT_TEST_ITEMS[number],
+                file_path='/path/' + text_test_item,
+                file_name=text_test_item,
                 datasize=INT_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 email=email_queryset.get(id=number+1)
@@ -413,12 +413,12 @@ def fixture_attachment_queryset(email_queryset):
 
 @pytest.fixture(name='image_queryset')
 def fixture_image_queryset(email_queryset):
-    for number in range(0,len(TEXT_TEST_ITEMS)):
+    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
             baker.make(
                 ImageModel,
-                file_path='/path/' + TEXT_TEST_ITEMS[number],
-                file_name=TEXT_TEST_ITEMS[number],
+                file_path='/path/' + text_test_item,
+                file_name=text_test_item,
                 datasize=INT_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 email=email_queryset.get(id=number+1)

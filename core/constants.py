@@ -18,7 +18,6 @@
 
 """Module with the constant values for the :mod:`core` app."""
 
-import os
 from typing import Final
 
 

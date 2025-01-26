@@ -32,14 +32,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
-from api.v1.filters.DaemonFilter import DaemonFilter
 from core.models.DaemonModel import DaemonModel
-from api.v1.serializers.daemon_serializers.BaseDaemonSerializer import \
+
+from ..filters.DaemonFilter import DaemonFilter
+from ..serializers.daemon_serializers.BaseDaemonSerializer import \
     BaseDaemonSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.request import Request
     from django.db.models import BaseManager
+    from rest_framework.request import Request
 
 
 class DaemonViewSet(viewsets.ModelViewSet):

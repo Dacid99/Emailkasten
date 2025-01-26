@@ -31,14 +31,15 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from api.v1.filters.AttachmentFilter import AttachmentFilter
 from core.models.AttachmentModel import AttachmentModel
-from api.v1.serializers.attachment_serializers.BaseAttachmentSerializer import \
+
+from ..filters.AttachmentFilter import AttachmentFilter
+from ..serializers.attachment_serializers.BaseAttachmentSerializer import \
     BaseAttachmentSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.request import Request
     from django.db.models import BaseManager
+    from rest_framework.request import Request
 
 
 class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):

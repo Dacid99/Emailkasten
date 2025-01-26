@@ -30,9 +30,9 @@ from .conftest import ( BOOL_TEST_PARAMETERS,
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_email_name_filter(correspondent_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'email_name'+lookup_expr: filterquery}
+    query = {'email_name'+lookup_expr: filterquery}
 
-    filtered_data = CorrespondentFilter(filter, queryset=correspondent_queryset).qs
+    filtered_data = CorrespondentFilter(query, queryset=correspondent_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -45,9 +45,9 @@ def test_email_name_filter(correspondent_queryset, lookup_expr, filterquery, exp
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_email_address_filter(correspondent_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'email_address'+lookup_expr: filterquery}
+    query = {'email_address'+lookup_expr: filterquery}
 
-    filtered_data = CorrespondentFilter(filter, queryset=correspondent_queryset).qs
+    filtered_data = CorrespondentFilter(query, queryset=correspondent_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -60,9 +60,9 @@ def test_email_address_filter(correspondent_queryset, lookup_expr, filterquery, 
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_is_favorite_filter(correspondent_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'is_favorite'+lookup_expr: filterquery}
+    query = {'is_favorite'+lookup_expr: filterquery}
 
-    filtered_data = CorrespondentFilter(filter, queryset=correspondent_queryset).qs
+    filtered_data = CorrespondentFilter(query, queryset=correspondent_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -75,9 +75,9 @@ def test_is_favorite_filter(correspondent_queryset, lookup_expr, filterquery, ex
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(correspondent_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'created' + lookup_expr: filterquery}
+    query = {'created' + lookup_expr: filterquery}
 
-    filtered_data = CorrespondentFilter(filter, queryset=correspondent_queryset).qs
+    filtered_data = CorrespondentFilter(query, queryset=correspondent_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -90,9 +90,9 @@ def test_created_filter(correspondent_queryset, lookup_expr, filterquery, expect
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_updated_filter(correspondent_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'updated' + lookup_expr: filterquery}
+    query = {'updated' + lookup_expr: filterquery}
 
-    filtered_data = CorrespondentFilter(filter, queryset=correspondent_queryset).qs
+    filtered_data = CorrespondentFilter(query, queryset=correspondent_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)

@@ -31,11 +31,12 @@ from rest_framework.response import Response
 
 from core import constants
 from core.constants import TestStatusCodes
-from api.v1.filters.MailboxFilter import MailboxFilter
-from core.utils.mailProcessing import fetchAndProcessMails, testMailbox
 from core.models.DaemonModel import DaemonModel
 from core.models.MailboxModel import MailboxModel
-from api.v1.serializers.mailbox_serializers.MailboxWithDaemonSerializer import \
+from core.utils.mailProcessing import fetchAndProcessMails, testMailbox
+
+from ..filters.MailboxFilter import MailboxFilter
+from ..serializers.mailbox_serializers.MailboxWithDaemonSerializer import \
     MailboxWithDaemonSerializer
 
 if TYPE_CHECKING:

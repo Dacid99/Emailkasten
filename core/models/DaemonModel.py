@@ -26,6 +26,7 @@ from dirtyfields import DirtyFieldsMixin
 from django.db import models
 
 import Emailkasten.constants
+
 from .. import constants
 from .MailboxModel import MailboxModel
 

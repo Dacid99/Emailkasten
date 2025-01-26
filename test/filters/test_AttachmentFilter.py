@@ -31,9 +31,9 @@ from .conftest import ( BOOL_TEST_PARAMETERS,
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_file_name_filter(attachment_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'file_name'+lookup_expr: filterquery}
+    query = {'file_name'+lookup_expr: filterquery}
 
-    filtered_data = AttachmentFilter(filter, queryset=attachment_queryset).qs
+    filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -46,9 +46,9 @@ def test_file_name_filter(attachment_queryset, lookup_expr, filterquery, expecte
     'lookup_expr, filterquery, expected_indices', INT_TEST_PARAMETERS
 )
 def test_datasize_filter(attachment_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'datasize'+lookup_expr: filterquery}
+    query = {'datasize'+lookup_expr: filterquery}
 
-    filtered_data = AttachmentFilter(filter, queryset=attachment_queryset).qs
+    filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -61,9 +61,9 @@ def test_datasize_filter(attachment_queryset, lookup_expr, filterquery, expected
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_is_favorite_filter(attachment_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'is_favorite'+lookup_expr: filterquery}
+    query = {'is_favorite'+lookup_expr: filterquery}
 
-    filtered_data = AttachmentFilter(filter, queryset=attachment_queryset).qs
+    filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -76,9 +76,9 @@ def test_is_favorite_filter(attachment_queryset, lookup_expr, filterquery, expec
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(attachment_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'created' + lookup_expr: filterquery}
+    query = {'created' + lookup_expr: filterquery}
 
-    filtered_data = AttachmentFilter(filter, queryset=attachment_queryset).qs
+    filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -91,9 +91,9 @@ def test_created_filter(attachment_queryset, lookup_expr, filterquery, expected_
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_updated_filter(attachment_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'updated' + lookup_expr: filterquery}
+    query = {'updated' + lookup_expr: filterquery}
 
-    filtered_data = AttachmentFilter(filter, queryset=attachment_queryset).qs
+    filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -106,9 +106,9 @@ def test_updated_filter(attachment_queryset, lookup_expr, filterquery, expected_
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_email__datetime_filter(attachment_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'email__datetime' + lookup_expr: filterquery}
+    query = {'email__datetime' + lookup_expr: filterquery}
 
-    filtered_data = AttachmentFilter(filter, queryset=attachment_queryset).qs
+    filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)

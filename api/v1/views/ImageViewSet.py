@@ -31,13 +31,15 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from api.v1.filters.ImageFilter import ImageFilter
 from core.models.ImageModel import ImageModel
-from api.v1.serializers.image_serializers.BaseImageSerializer import BaseImageSerializer
+
+from ..filters.ImageFilter import ImageFilter
+from ..serializers.image_serializers.BaseImageSerializer import \
+    BaseImageSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.request import Request
     from django.db.models import BaseManager
+    from rest_framework.request import Request
 
 
 class ImageViewSet(viewsets.ReadOnlyModelViewSet):

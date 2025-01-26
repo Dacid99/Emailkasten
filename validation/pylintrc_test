@@ -82,9 +82,8 @@ limit-inference-results=100
 
 # List of plugins (as comma separated values of python module names) to load,
 # usually to register additional checkers.
-load-plugins=pylint.extensions.bad_builtin,
-            # pylint_pytest
-
+load-plugins=pylint.extensions.bad_builtin
+             pylint_pytest
 
 # Pickle collected data for later comparisons.
 persistent=yes
@@ -428,26 +427,35 @@ confidence=HIGH,
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
 disable=raw-checker-failed,
-        no-member,
+        line-too-long,
+        trailing-whitespace,
+        trailing-newlines,
+        missing-final-newline,
+        invalid-name,
         no-else-return,
+        no-member,
+        missing-docstring,
         too-few-public-methods,
         unused-argument,
-        bad-inline-option,
         locally-disabled,
         file-ignored,
-        missing-docstring,
         deprecated-pragma,
-        suppressed-message,
-        useless-suppression,
         use-implicit-booleaness-not-comparison-to-string,
         use-implicit-booleaness-not-comparison-to-zero,
         use-symbolic-message-instead,
-        invalid-name
+        similarities
+
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once). See also the "--disable" option for examples.
-enable=
+enable=deprecated_builtins,
+       imports,
+       deprecated-pytest-yield-fixture,
+       useless-pytest-mark-decorator,
+       deprecated-positional-argument-for-pytest-fixture,
+       cannot-enumerate-pytest-fixtures,
+
 
 
 [METHOD_ARGS]

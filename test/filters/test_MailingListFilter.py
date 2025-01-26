@@ -30,9 +30,9 @@ from .conftest import ( BOOL_TEST_PARAMETERS,
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_list_id_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'list_id'+lookup_expr: filterquery}
+    query = {'list_id'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -45,9 +45,9 @@ def test_list_id_filter(mailinglist_queryset, lookup_expr, filterquery, expected
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_list_owner_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'list_owner'+lookup_expr: filterquery}
+    query = {'list_owner'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -60,9 +60,9 @@ def test_list_owner_filter(mailinglist_queryset, lookup_expr, filterquery, expec
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_list_subscribe_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'list_subscribe'+lookup_expr: filterquery}
+    query = {'list_subscribe'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -75,9 +75,9 @@ def test_list_subscribe_filter(mailinglist_queryset, lookup_expr, filterquery, e
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_list_unsubscribe_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'list_unsubscribe'+lookup_expr: filterquery}
+    query = {'list_unsubscribe'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -90,9 +90,9 @@ def test_list_unsubscribe_filter(mailinglist_queryset, lookup_expr, filterquery,
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_list_post_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'list_post'+lookup_expr: filterquery}
+    query = {'list_post'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -105,9 +105,9 @@ def test_list_post_filter(mailinglist_queryset, lookup_expr, filterquery, expect
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_list_help_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'list_help'+lookup_expr: filterquery}
+    query = {'list_help'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -120,9 +120,9 @@ def test_list_help_filter(mailinglist_queryset, lookup_expr, filterquery, expect
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_list_archive_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'list_archive'+lookup_expr: filterquery}
+    query = {'list_archive'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -136,9 +136,9 @@ def test_list_archive_filter(mailinglist_queryset, lookup_expr, filterquery, exp
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_is_favorite_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'is_favorite'+lookup_expr: filterquery}
+    query = {'is_favorite'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -151,9 +151,9 @@ def test_is_favorite_filter(mailinglist_queryset, lookup_expr, filterquery, expe
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'created' + lookup_expr: filterquery}
+    query = {'created' + lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -166,9 +166,9 @@ def test_created_filter(mailinglist_queryset, lookup_expr, filterquery, expected
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_updated_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'updated' + lookup_expr: filterquery}
+    query = {'updated' + lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -181,9 +181,9 @@ def test_updated_filter(mailinglist_queryset, lookup_expr, filterquery, expected
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_correspondent__email_name_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'correspondent__email_name'+lookup_expr: filterquery}
+    query = {'correspondent__email_name'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -196,9 +196,9 @@ def test_correspondent__email_name_filter(mailinglist_queryset, lookup_expr, fil
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_correspondent__email_address_filter(mailinglist_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'correspondent__email_address'+lookup_expr: filterquery}
+    query = {'correspondent__email_address'+lookup_expr: filterquery}
 
-    filtered_data = MailingListFilter(filter, queryset=mailinglist_queryset).qs
+    filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)

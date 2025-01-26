@@ -24,8 +24,8 @@ import logging
 import poplib
 from typing import TYPE_CHECKING, Literal
 
-from core import constants
-from core.constants import TestStatusCodes
+from ... import constants
+from ...constants import TestStatusCodes
 
 if TYPE_CHECKING:
     from types import TracebackType

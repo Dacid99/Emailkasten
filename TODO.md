@@ -9,7 +9,6 @@
 - autostart daemons on restart
 - custom additional healthchecks
 - parsing walks multiple times, could be more efficient
-- more spam flags
 - exceptions while fetching parsing and inserting for appropriate api response
 - handling if filename is none in parsing
 - user divided storage to make file_paths unique again
@@ -22,7 +21,6 @@
 - get rid of parsedmaildict, use models directly
 - disable all signals in tests
 - threadsafe db operations in daemons
-- more foreign keys should be read_only
 - filtertest for choices
 - move signals to models where appropriate
 
@@ -32,13 +30,8 @@
 - type annotations
 
 ## To test
-- restructured project files
-- filters set dynamically
-- daemonsviewset and manual adding
-- logfile for daemons
 - health flagging in fetchers
 - does decodeHeader do anything? If yes it should be used more
-- fileresponse with
 
 ## To fix
 - 'Decoding this mime part returned error' for paypal in prerender

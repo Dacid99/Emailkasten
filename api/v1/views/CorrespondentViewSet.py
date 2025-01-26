@@ -29,16 +29,17 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from api.v1.filters.CorrespondentFilter import CorrespondentFilter
 from core.models.CorrespondentModel import CorrespondentModel
-from api.v1.serializers.correspondent_serializers.CorrespondentSerializer import \
-    CorrespondentSerializer
-from api.v1.serializers.correspondent_serializers.BaseCorrespondentSerializer import \
+
+from ..filters.CorrespondentFilter import CorrespondentFilter
+from ..serializers.correspondent_serializers.BaseCorrespondentSerializer import \
     BaseCorrespondentSerializer
+from ..serializers.correspondent_serializers.CorrespondentSerializer import \
+    CorrespondentSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.request import Request
     from django.db.models import BaseManager
+    from rest_framework.request import Request
 
 
 class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):

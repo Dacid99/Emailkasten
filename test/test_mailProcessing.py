@@ -18,10 +18,13 @@
 
 
 import pytest
+
 import core.utils.mailProcessing
+from core.constants import MailFetchingProtocols
+
 from .models.test_AccountModel import fixture_accountModel
 from .models.test_MailboxModel import fixture_mailboxModel
-from core.constants import MailFetchingProtocols
+
 
 @pytest.fixture(name='mock_logger', autouse=True)
 def fixture_mock_logger(mocker):

@@ -31,9 +31,9 @@ from .conftest import ( BOOL_TEST_PARAMETERS,
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_message_id_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'message_id'+lookup_expr: filterquery}
+    query = {'message_id'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -46,9 +46,9 @@ def test_message_id_filter(email_queryset, lookup_expr, filterquery, expected_in
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_datetime_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'datetime'+lookup_expr: filterquery}
+    query = {'datetime'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -61,9 +61,9 @@ def test_datetime_filter(email_queryset, lookup_expr, filterquery, expected_indi
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_email_subject_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'email_subject'+lookup_expr: filterquery}
+    query = {'email_subject'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -76,9 +76,9 @@ def test_email_subject_filter(email_queryset, lookup_expr, filterquery, expected
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_bodytext_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'bodytext'+lookup_expr: filterquery}
+    query = {'bodytext'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -91,9 +91,9 @@ def test_bodytext_filter(email_queryset, lookup_expr, filterquery, expected_indi
     'lookup_expr, filterquery, expected_indices', INT_TEST_PARAMETERS
 )
 def test_datasize_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'datasize'+lookup_expr: filterquery}
+    query = {'datasize'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -106,9 +106,9 @@ def test_datasize_filter(email_queryset, lookup_expr, filterquery, expected_indi
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_is_favorite_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'is_favorite'+lookup_expr: filterquery}
+    query = {'is_favorite'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -121,9 +121,9 @@ def test_is_favorite_filter(email_queryset, lookup_expr, filterquery, expected_i
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_comments_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'comments'+lookup_expr: filterquery}
+    query = {'comments'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -136,9 +136,9 @@ def test_comments_filter(email_queryset, lookup_expr, filterquery, expected_indi
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_keywords_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'keywords'+lookup_expr: filterquery}
+    query = {'keywords'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -151,9 +151,9 @@ def test_keywords_filter(email_queryset, lookup_expr, filterquery, expected_indi
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_importance_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'importance'+lookup_expr: filterquery}
+    query = {'importance'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -166,9 +166,9 @@ def test_importance_filter(email_queryset, lookup_expr, filterquery, expected_in
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_priority_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'priority'+lookup_expr: filterquery}
+    query = {'priority'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -181,9 +181,9 @@ def test_priority_filter(email_queryset, lookup_expr, filterquery, expected_indi
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_precedence_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'precedence'+lookup_expr: filterquery}
+    query = {'precedence'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -196,9 +196,9 @@ def test_precedence_filter(email_queryset, lookup_expr, filterquery, expected_in
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_received_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'received'+lookup_expr: filterquery}
+    query = {'received'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -211,9 +211,9 @@ def test_received_filter(email_queryset, lookup_expr, filterquery, expected_indi
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_user_agent_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'user_agent'+lookup_expr: filterquery}
+    query = {'user_agent'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -226,9 +226,9 @@ def test_user_agent_filter(email_queryset, lookup_expr, filterquery, expected_in
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_auto_submitted_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'auto_submitted'+lookup_expr: filterquery}
+    query = {'auto_submitted'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -241,9 +241,9 @@ def test_auto_submitted_filter(email_queryset, lookup_expr, filterquery, expecte
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_content_type_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'content_type'+lookup_expr: filterquery}
+    query = {'content_type'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -256,9 +256,9 @@ def test_content_type_filter(email_queryset, lookup_expr, filterquery, expected_
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_content_language_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'content_language'+lookup_expr: filterquery}
+    query = {'content_language'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -271,9 +271,9 @@ def test_content_language_filter(email_queryset, lookup_expr, filterquery, expec
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_content_location_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'content_location'+lookup_expr: filterquery}
+    query = {'content_location'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -286,9 +286,9 @@ def test_content_location_filter(email_queryset, lookup_expr, filterquery, expec
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_x_priority_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'x_priority'+lookup_expr: filterquery}
+    query = {'x_priority'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -301,9 +301,9 @@ def test_x_priority_filter(email_queryset, lookup_expr, filterquery, expected_in
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_x_originated_client_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'x_originated_client'+lookup_expr: filterquery}
+    query = {'x_originated_client'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -316,9 +316,9 @@ def test_x_originated_client_filter(email_queryset, lookup_expr, filterquery, ex
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_x_spam_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'x_spam'+lookup_expr: filterquery}
+    query = {'x_spam'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -331,9 +331,9 @@ def test_x_spam_filter(email_queryset, lookup_expr, filterquery, expected_indice
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'created'+lookup_expr: filterquery}
+    query = {'created'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -346,9 +346,9 @@ def test_created_filter(email_queryset, lookup_expr, filterquery, expected_indic
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_updated_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'updated'+lookup_expr: filterquery}
+    query = {'updated'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -361,9 +361,9 @@ def test_updated_filter(email_queryset, lookup_expr, filterquery, expected_indic
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_account__mail_address_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'account__mail_address'+lookup_expr: filterquery}
+    query = {'account__mail_address'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -376,9 +376,9 @@ def test_account__mail_address_filter(email_queryset, lookup_expr, filterquery, 
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_account__mail_host_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'account__mail_host'+lookup_expr: filterquery}
+    query = {'account__mail_host'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -391,9 +391,9 @@ def test_account__mail_host_filter(email_queryset, lookup_expr, filterquery, exp
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_mailinglist__list_id_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'mailinglist__list_id'+lookup_expr: filterquery}
+    query = {'mailinglist__list_id'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -406,9 +406,9 @@ def test_mailinglist__list_id_filter(email_queryset, lookup_expr, filterquery, e
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_mailinglist__list_owner_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'mailinglist__list_owner'+lookup_expr: filterquery}
+    query = {'mailinglist__list_owner'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -421,9 +421,9 @@ def test_mailinglist__list_owner_filter(email_queryset, lookup_expr, filterquery
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_correspondents__email_name_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'correspondents__email_name'+lookup_expr: filterquery}
+    query = {'correspondents__email_name'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -436,9 +436,9 @@ def test_correspondents__email_name_filter(email_queryset, lookup_expr, filterqu
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_correspondents__email_address_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'correspondents__email_address'+lookup_expr: filterquery}
+    query = {'correspondents__email_address'+lookup_expr: filterquery}
 
-    filtered_data = EMailFilter(filter, queryset=email_queryset).qs
+    filtered_data = EMailFilter(query, queryset=email_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)

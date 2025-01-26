@@ -27,14 +27,14 @@ from typing import TYPE_CHECKING, Literal
 
 from django.utils import timezone
 
-from core import constants
-from core.constants import TestStatusCodes
+from ... import constants
+from ...constants import TestStatusCodes
 
 if TYPE_CHECKING:
     from types import TracebackType
 
-    from core.models.AccountModel import AccountModel
-    from core.models.MailboxModel import MailboxModel
+    from ...models.AccountModel import AccountModel
+    from ...models.MailboxModel import MailboxModel
 
 
 class IMAPFetcher:

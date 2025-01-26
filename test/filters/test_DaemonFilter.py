@@ -31,9 +31,9 @@ from .conftest import ( BOOL_TEST_PARAMETERS,
     'lookup_expr, filterquery, expected_indices', INT_TEST_PARAMETERS
 )
 def test_cycle_interval_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'cycle_interval'+lookup_expr: filterquery}
+    query = {'cycle_interval'+lookup_expr: filterquery}
 
-    filtered_data = DaemonFilter(filter, queryset=daemon_queryset).qs
+    filtered_data = DaemonFilter(query, queryset=daemon_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -46,9 +46,9 @@ def test_cycle_interval_filter(daemon_queryset, lookup_expr, filterquery, expect
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'is_healthy'+lookup_expr: filterquery}
+    query = {'is_healthy'+lookup_expr: filterquery}
 
-    filtered_data = DaemonFilter(filter, queryset=daemon_queryset).qs
+    filtered_data = DaemonFilter(query, queryset=daemon_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -61,9 +61,9 @@ def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_i
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'is_running'+lookup_expr: filterquery}
+    query = {'is_running'+lookup_expr: filterquery}
 
-    filtered_data = DaemonFilter(filter, queryset=daemon_queryset).qs
+    filtered_data = DaemonFilter(query, queryset=daemon_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -76,9 +76,9 @@ def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_i
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'created' + lookup_expr: filterquery}
+    query = {'created' + lookup_expr: filterquery}
 
-    filtered_data = DaemonFilter(filter, queryset=daemon_queryset).qs
+    filtered_data = DaemonFilter(query, queryset=daemon_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -91,9 +91,9 @@ def test_created_filter(daemon_queryset, lookup_expr, filterquery, expected_indi
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_updated_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'updated' + lookup_expr: filterquery}
+    query = {'updated' + lookup_expr: filterquery}
 
-    filtered_data = DaemonFilter(filter, queryset=daemon_queryset).qs
+    filtered_data = DaemonFilter(query, queryset=daemon_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -106,9 +106,9 @@ def test_updated_filter(daemon_queryset, lookup_expr, filterquery, expected_indi
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_mailbox__is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'mailbox__is_healthy' + lookup_expr: filterquery}
+    query = {'mailbox__is_healthy' + lookup_expr: filterquery}
 
-    filtered_data = DaemonFilter(filter, queryset=daemon_queryset).qs
+    filtered_data = DaemonFilter(query, queryset=daemon_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -121,9 +121,9 @@ def test_mailbox__is_healthy_filter(daemon_queryset, lookup_expr, filterquery, e
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_mail_address_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'mail_address' + lookup_expr: filterquery}
+    query = {'mail_address' + lookup_expr: filterquery}
 
-    filtered_data = DaemonFilter(filter, queryset=daemon_queryset).qs
+    filtered_data = DaemonFilter(query, queryset=daemon_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -136,9 +136,9 @@ def test_mail_address_filter(daemon_queryset, lookup_expr, filterquery, expected
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_mail_host_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'mail_host' + lookup_expr: filterquery}
+    query = {'mail_host' + lookup_expr: filterquery}
 
-    filtered_data = DaemonFilter(filter, queryset=daemon_queryset).qs
+    filtered_data = DaemonFilter(query, queryset=daemon_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -151,9 +151,9 @@ def test_mail_host_filter(daemon_queryset, lookup_expr, filterquery, expected_in
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_account__is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'account__is_healthy' + lookup_expr: filterquery}
+    query = {'account__is_healthy' + lookup_expr: filterquery}
 
-    filtered_data = DaemonFilter(filter, queryset=daemon_queryset).qs
+    filtered_data = DaemonFilter(query, queryset=daemon_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)

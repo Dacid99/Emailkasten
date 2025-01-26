@@ -21,7 +21,7 @@
 import logging
 
 from .EMailArchiverDaemon import EMailArchiverDaemon
-from core.models.DaemonModel import DaemonModel
+from .models.DaemonModel import DaemonModel
 
 
 class EMailArchiverDaemonRegistry:

@@ -41,23 +41,23 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from core.constants import ParsedMailKeys, ParsingConfiguration, TestStatusCodes
+from ..constants import ParsedMailKeys, ParsingConfiguration, TestStatusCodes
+from ..models.EMailModel import EMailModel
+from ..utils.fetchers.ExchangeFetcher import ExchangeFetcher
+from ..utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
+from ..utils.fetchers.IMAPFetcher import IMAPFetcher
+from ..utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from ..utils.fetchers.POP3Fetcher import POP3Fetcher
 from .emailDBFeeding import insertEMail, insertMailbox
-from core.utils.fetchers.ExchangeFetcher import ExchangeFetcher
-from core.utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
-from core.utils.fetchers.IMAPFetcher import IMAPFetcher
-from core.utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
-from core.utils.fetchers.POP3Fetcher import POP3Fetcher
 from .fileManagment import storeAttachments, storeImages, storeMessageAsEML
 from .mailParsing import parseMail, parseMailbox
 from .mailRendering import prerender
-from core.models.EMailModel import EMailModel
 
 if TYPE_CHECKING:
     from typing import Any
 
-    from core.models.AccountModel import AccountModel
-    from core.models.MailboxModel import MailboxModel
+    from ..models.AccountModel import AccountModel
+    from ..models.MailboxModel import MailboxModel
 
 
 logger = logging.getLogger(__name__)

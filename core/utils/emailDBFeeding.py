@@ -40,19 +40,19 @@ from typing import TYPE_CHECKING
 
 import django.db
 
-from core.constants import ParsedMailKeys
-from core.models.AttachmentModel import AttachmentModel
-from core.models.CorrespondentModel import CorrespondentModel
-from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from core.models.EMailModel import EMailModel
-from core.models.ImageModel import ImageModel
-from core.models.MailboxModel import MailboxModel
-from core.models.MailingListModel import MailingListModel
+from ..constants import ParsedMailKeys
+from ..models.AttachmentModel import AttachmentModel
+from ..models.CorrespondentModel import CorrespondentModel
+from ..models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from ..models.EMailModel import EMailModel
+from ..models.ImageModel import ImageModel
+from ..models.MailboxModel import MailboxModel
+from ..models.MailingListModel import MailingListModel
 
 if TYPE_CHECKING:
     from typing import Any
 
-    from core.models.AccountModel import AccountModel
+    from ..models.AccountModel import AccountModel
 
 
 logger = logging.getLogger(__name__)

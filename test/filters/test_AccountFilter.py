@@ -32,9 +32,9 @@ from .conftest import (BOOL_TEST_PARAMETERS,
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_mail_address_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'mail_address'+lookup_expr: filterquery}
+    query = {'mail_address'+lookup_expr: filterquery}
 
-    filtered_data = AccountFilter(filter, queryset=account_queryset).qs
+    filtered_data = AccountFilter(query, queryset=account_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -47,9 +47,9 @@ def test_mail_address_filter(account_queryset, lookup_expr, filterquery, expecte
     'lookup_expr, filterquery, expected_indices', TEXT_TEST_PARAMETERS
 )
 def test_mail_host_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'mail_host'+lookup_expr: filterquery}
+    query = {'mail_host'+lookup_expr: filterquery}
 
-    filtered_data = AccountFilter(filter, queryset=account_queryset).qs
+    filtered_data = AccountFilter(query, queryset=account_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -62,9 +62,9 @@ def test_mail_host_filter(account_queryset, lookup_expr, filterquery, expected_i
     'lookup_expr, filterquery, expected_indices', INT_TEST_PARAMETERS
 )
 def test_mail_host_port_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'mail_host_port'+lookup_expr: filterquery}
+    query = {'mail_host_port'+lookup_expr: filterquery}
 
-    filtered_data = AccountFilter(filter, queryset=account_queryset).qs
+    filtered_data = AccountFilter(query, queryset=account_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -77,9 +77,9 @@ def test_mail_host_port_filter(account_queryset, lookup_expr, filterquery, expec
     'lookup_expr, filterquery, expected_indices', FLOAT_TEST_PARAMETERS
 )
 def test_timeout_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'timeout'+lookup_expr: filterquery}
+    query = {'timeout'+lookup_expr: filterquery}
 
-    filtered_data = AccountFilter(filter, queryset=account_queryset).qs
+    filtered_data = AccountFilter(query, queryset=account_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -92,9 +92,9 @@ def test_timeout_filter(account_queryset, lookup_expr, filterquery, expected_ind
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_is_healthy_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'is_healthy'+lookup_expr: filterquery}
+    query = {'is_healthy'+lookup_expr: filterquery}
 
-    filtered_data = AccountFilter(filter, queryset=account_queryset).qs
+    filtered_data = AccountFilter(query, queryset=account_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -107,9 +107,9 @@ def test_is_healthy_filter(account_queryset, lookup_expr, filterquery, expected_
     'lookup_expr, filterquery, expected_indices', BOOL_TEST_PARAMETERS
 )
 def test_is_favorite_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'is_favorite'+lookup_expr: filterquery}
+    query = {'is_favorite'+lookup_expr: filterquery}
 
-    filtered_data = AccountFilter(filter, queryset=account_queryset).qs
+    filtered_data = AccountFilter(query, queryset=account_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -122,9 +122,9 @@ def test_is_favorite_filter(account_queryset, lookup_expr, filterquery, expected
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'created' + lookup_expr: filterquery}
+    query = {'created' + lookup_expr: filterquery}
 
-    filtered_data = AccountFilter(filter, queryset=account_queryset).qs
+    filtered_data = AccountFilter(query, queryset=account_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)
@@ -137,9 +137,9 @@ def test_created_filter(account_queryset, lookup_expr, filterquery, expected_ind
     'lookup_expr, filterquery, expected_indices', DATETIME_TEST_PARAMETERS
 )
 def test_updated_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    filter = {'updated' + lookup_expr: filterquery}
+    query = {'updated' + lookup_expr: filterquery}
 
-    filtered_data = AccountFilter(filter, queryset=account_queryset).qs
+    filtered_data = AccountFilter(query, queryset=account_queryset).qs
 
     assert filtered_data.distinct().count() == filtered_data.count()
     assert filtered_data.count() == len(expected_indices)

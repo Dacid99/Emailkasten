@@ -22,8 +22,8 @@ import logging
 import threading
 import time
 
+from .models.DaemonModel import DaemonModel
 from .utils.mailProcessing import fetchAndProcessMails
-from core.models.DaemonModel import DaemonModel
 
 
 class EMailArchiverDaemon(threading.Thread):
