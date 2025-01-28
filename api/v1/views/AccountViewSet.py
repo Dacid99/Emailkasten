@@ -24,8 +24,9 @@ from typing import TYPE_CHECKING
 
 from django.db import IntegrityError
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, viewsets
+from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -82,9 +83,8 @@ class AccountViewSet(viewsets.ModelViewSet):
         """
         try:
             serializer.save(user = self.request.user)
-            return None
         except IntegrityError:
-            return Response({'detail': 'This account already exists!'}, status=status.HTTP_409_CONFLICT)
+            raise ValidationError({'detail': 'This account already exists!'})
 
 
     URL_PATH_SCAN_MAILBOXES = 'scan-mailboxes'

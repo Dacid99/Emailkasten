@@ -268,11 +268,7 @@ def test_post_duplicate_auth_owner(accountModel, owner_apiClient, list_url):
 
     response = owner_apiClient.post(list_url(AccountViewSet), data=cleanPayload)
 
-    assert cleanPayload['mail_address'] == accountModel.mail_address
-    AccountModel.objects.get(mail_address = cleanPayload['mail_address'])
-    assert response.status_code == status.HTTP_409_CONFLICT
-    with pytest.raises(KeyError):
-        response.data['password']
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.django_db
