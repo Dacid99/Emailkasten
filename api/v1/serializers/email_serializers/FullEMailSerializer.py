@@ -35,11 +35,14 @@ from .BaseEMailSerializer import BaseEMailSerializer
 
 class FullEMailSerializer(BaseEMailSerializer):
     """A complete serializer for a :class:`core.models.EMailModel`.
-    Includes nested serializers for the :attr:`core.models.EMailModel.EMailModel.attachments`,
+    Includes nested serializers for the :attr:`core.models.EMailModel.EMailModel.replies`,
+    :attr:`core.models.EMailModel.EMailModel.attachments`,
     :attr:`core.models.EMailModel.EMailModel.images`,
     :attr:`core.models.EMailModel.EMailModel.mailinglist` and
-    :attr:`core.models.EMailModel.EMailModel.correspondents` foreign key fields.
+    :attr:`core.models.EMailModel.EMailModel.correspondents` foreign key and related fields.
     """
+    replies = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    """The replies mails are included by id only to prevent recursion."""
 
     attachments = BaseAttachmentSerializer(many=True, read_only=True)
     """The attachments are serialized

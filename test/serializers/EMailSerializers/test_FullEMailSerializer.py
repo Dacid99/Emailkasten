@@ -85,6 +85,8 @@ def test_output(email):
     assert datetime.fromisoformat(serializerData['created']) == email.created
     assert 'updated' in serializerData
     assert datetime.fromisoformat(serializerData['updated']) == email.updated
+    assert 'replies' in serializerData
+    assert serializerData['replies'] == []
     assert 'attachments' in serializerData
     assert serializerData['attachments'] == []
     assert 'images' in serializerData
@@ -94,7 +96,7 @@ def test_output(email):
     assert 'correspondents' in serializerData
     assert serializerData['correspondents'] == []
 
-    assert len(serializerData) == 29
+    assert len(serializerData) == 30
 
 
 @pytest.mark.django_db
@@ -132,6 +134,7 @@ def test_input(email):
     assert 'x_spam' not in serializerData
     assert 'created' not in serializerData
     assert 'updated' not in serializerData
+    assert 'replies' not in serializerData
     assert 'attachments' not in serializerData
     assert 'images' not in serializerData
     assert 'mailinglist' not in serializerData
