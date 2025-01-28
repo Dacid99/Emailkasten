@@ -397,6 +397,76 @@ def test_prerender_auth_owner(emailModel, owner_apiClient, custom_detail_action_
 
 
 @pytest.mark.django_db
+def test_subConversation_noauth(emailModel, noauth_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with an unauthenticated user client."""
+    mock_subConversation = mocker.patch('api.v1.views.EMailViewSet.EMailModel.subConversation')
+
+    response = noauth_apiClient.get(custom_detail_action_url(EMailViewSet, EMailViewSet.URL_NAME_SUBCONVERSATION, emailModel))
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    mock_subConversation.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_subConversation_auth_other(emailModel, other_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated other user client."""
+    mock_subConversation = mocker.patch('api.v1.views.EMailViewSet.EMailModel.subConversation')
+
+    response = other_apiClient.get(custom_detail_action_url(EMailViewSet, EMailViewSet.URL_NAME_SUBCONVERSATION, emailModel))
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    mock_subConversation.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_subConversation_auth_owner(emailModel, owner_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated owner user client."""
+    mock_subConversation = mocker.patch('api.v1.views.EMailViewSet.EMailModel.subConversation', return_value=[emailModel])
+
+    response = owner_apiClient.get(custom_detail_action_url(EMailViewSet, EMailViewSet.URL_NAME_SUBCONVERSATION, emailModel))
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data['emails']) == 1
+    assert response.data['emails'][0]['id'] == emailModel.id
+    mock_subConversation.assert_called_once_with()
+
+
+@pytest.mark.django_db
+def test_fullConversation_noauth(emailModel, noauth_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with an unauthenticated user client."""
+    mock_fullConversation = mocker.patch('api.v1.views.EMailViewSet.EMailModel.fullConversation')
+
+    response = noauth_apiClient.get(custom_detail_action_url(EMailViewSet, EMailViewSet.URL_NAME_FULLCONVERSATION, emailModel))
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    mock_fullConversation.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_fullConversation_auth_other(emailModel, other_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated other user client."""
+    mock_fullConversation = mocker.patch('api.v1.views.EMailViewSet.EMailModel.fullConversation')
+
+    response = other_apiClient.get(custom_detail_action_url(EMailViewSet, EMailViewSet.URL_NAME_FULLCONVERSATION, emailModel))
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    mock_fullConversation.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_fullConversation_auth_owner(emailModel, owner_apiClient, custom_detail_action_url, mocker):
+    """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated owner user client."""
+    mock_fullConversation = mocker.patch('api.v1.views.EMailViewSet.EMailModel.fullConversation', return_value=[emailModel])
+
+    response = owner_apiClient.get(custom_detail_action_url(EMailViewSet, EMailViewSet.URL_NAME_FULLCONVERSATION, emailModel))
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data['emails']) == 1
+    assert response.data['emails'][0]['id'] == emailModel.id
+    mock_fullConversation.assert_called_once_with()
+
+
+@pytest.mark.django_db
 def test_toggle_favorite_noauth(emailModel, noauth_apiClient, custom_detail_action_url):
     """Tests the post method :func:`api.v1.views.EMailViewSet.EMailViewSet.toggle_favorite` action with an unauthenticated user client."""
     response = noauth_apiClient.post(custom_detail_action_url(EMailViewSet, EMailViewSet.URL_NAME_TOGGLE_FAVORITE, emailModel))

@@ -34,6 +34,7 @@ from rest_framework.response import Response
 from core.models.EMailModel import EMailModel
 
 from ..filters.EMailFilter import EMailFilter
+from ..serializers.email_serializers.EMailSerializer import EMailSerializer
 from ..serializers.email_serializers.FullEMailSerializer import \
     FullEMailSerializer
 
@@ -79,7 +80,7 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
 
         Args:
             request: The request triggering the action.
-            pk: int: The private key of the attachment to download. Defaults to None.
+            pk: The private key of the attachment to download. Defaults to None.
 
         Raises:
             Http404: If the filepath is not in the database or it doesnt exist.
@@ -107,7 +108,7 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
 
         Args:
             request: The request triggering the action.
-            pk: int: The private key of the attachment to download. Defaults to None.
+            pk: The private key of the attachment to download. Defaults to None.
 
         Raises:
             Http404: If the filepath is not in the database or it doesnt exist.
@@ -127,6 +128,44 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
             return response
 
 
+    URL_PATH_FULLCONVERSATION = 'full-conversation'
+    URL_NAME_FULLCONVERSATION = 'full-conversation'
+    @action(detail=True, methods=['get'], url_path=URL_PATH_FULLCONVERSATION, url_name=URL_NAME_FULLCONVERSATION)
+    def fullConversation(self, request: Request, pk: int|None = None) -> Response:
+        """Action method getting the complete conversation a mail is part of.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the email to get the complete conversation it belongs to. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
+        email = self.get_object()
+        conversation = email.fullConversation()
+        conversationSerializer = EMailSerializer(conversation, many=True)
+        return Response({'emails': conversationSerializer.data})
+
+
+    URL_PATH_SUBCONVERSATION = 'sub-conversation'
+    URL_NAME_SUBCONVERSATION = 'sub-conversation'
+    @action(detail=True, methods=['get'], url_path=URL_PATH_SUBCONVERSATION, url_name=URL_NAME_SUBCONVERSATION)
+    def subConversation(self, request: Request, pk: int|None = None) -> Response:
+        """Action method getting the subconversation in reply to this email.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the email to get the subconversation in its wake. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
+        email = self.get_object()
+        conversation = email.subConversation()
+        conversationSerializer = EMailSerializer(conversation, many=True)
+        return Response({'emails': conversationSerializer.data})
+
+
     URL_PATH_TOGGLE_FAVORITE = 'toggle_favorite'
     URL_NAME_TOGGLE_FAVORITE = 'toggle-favorite'
     @action(detail=True, methods=['post'], url_path=URL_PATH_TOGGLE_FAVORITE, url_name=URL_NAME_TOGGLE_FAVORITE)
@@ -135,7 +174,7 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
 
         Args:
             request: The request triggering the action.
-            pk: int: The private key of the email to toggle favorite. Defaults to None.
+            pk: The private key of the email to toggle favorite. Defaults to None.
 
         Returns:
             A response detailing the request status.

@@ -50,6 +50,15 @@ def fixture_emailModel() -> EMailModel:
     """
     return baker.make(EMailModel)
 
+
+@pytest.fixture(name='emailConversation')
+def fixture_emailConversation(email):
+    replyMails = baker.make(EMailModel, inReplyTo=email, _quantity=3)
+    baker.make(EMailModel, inReplyTo=replyMails[1], _quantity=2)
+    replyReplyMail = baker.make(EMailModel, inReplyTo=replyMails[0])
+    baker.make(EMailModel, inReplyTo=replyReplyMail)
+
+
 @pytest.mark.django_db
 def test_EMailModel_creation(email):
     """Tests the correct default creation of :class:`core.models.EMailModel.EMailModel`."""
@@ -106,6 +115,22 @@ def test_EMailModel_foreign_key_account_deletion(email):
 
     with pytest.raises(EMailModel.DoesNotExist):
         email.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_EMailModel_foreign_key_inReplyTo_deletion(email):
+    """Tests the on_delete foreign key constraint on account in :class:`core.models.EMailModel.EMailModel`."""
+
+    inReplyToEmail = baker.make(EMailModel)
+    email.inReplyTo = inReplyToEmail
+    email.save()
+
+    email.inReplyTo.delete()
+
+    email.refresh_from_db()
+    assert email.inReplyTo is None
+    with pytest.raises(EMailModel.DoesNotExist):
+        inReplyToEmail.refresh_from_db()
 
 
 @pytest.mark.django_db
@@ -197,3 +222,42 @@ def test_post_delete_email_failure(mocker, email, mock_logger, side_effects):
     mock_logger.warning.assert_not_called()
     mock_logger.error.assert_called()
     mock_logger.critical.assert_not_called()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    'start_id, expected_len',
+    [
+        (1, 8),
+        (2, 3),
+        (3, 3),
+        (4, 1),
+        (5, 1),
+        (6, 1),
+        (7, 2),
+        (8, 1)
+    ]
+)
+def test_EMailModel_subConversation(emailConversation, start_id, expected_len):
+    """Tests the on_delete foreign key constraint on account in :class:`core.models.EMailModel.EMailModel`."""
+    startEmail = EMailModel.objects.get(id=start_id)
+
+    subConversationEmails = startEmail.subConversation()
+
+    assert len(subConversationEmails) == expected_len
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    'start_id',
+    [
+        1, 2, 3, 4, 5, 6, 7, 8
+    ]
+)
+def test_EMailModel_fullConversation(emailConversation, start_id):
+    """Tests the on_delete foreign key constraint on account in :class:`core.models.EMailModel.EMailModel`."""
+    startEmail = EMailModel.objects.get(id=start_id)
+
+    subConversationEmails = startEmail.fullConversation()
+
+    assert len(subConversationEmails) == 8

@@ -192,3 +192,17 @@ class EMailModel(models.Model):
                 logger.error("An unexpected error occured removing %s!", self.prerender_filepath, exc_info=True)
 
         super().delete(*args, **kwargs)
+
+
+    def subConversation(self) -> list:
+        subConversationEmails = [self]
+        for replyEmail in self.replies.all():
+            subConversationEmails.extend(replyEmail.subConversation())
+        return subConversationEmails
+
+
+    def fullConversation(self) -> list:
+        rootEmail= self
+        while rootEmail.inReplyTo:
+            rootEmail = rootEmail.inReplyTo
+        return rootEmail.subConversation()

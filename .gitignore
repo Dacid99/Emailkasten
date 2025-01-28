@@ -12,3 +12,4 @@ daemon*.log
 reports/
 .coverage
 pytest-cov/
+test.py
