@@ -22,6 +22,7 @@ import pytest
 
 from core.models.DaemonModel import DaemonModel
 
+from ..models.test_DaemonModel import fixture_mock_open
 from ..models.test_DaemonModel import fixture_daemonModel
 
 

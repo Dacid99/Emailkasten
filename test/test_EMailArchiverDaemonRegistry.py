@@ -19,6 +19,7 @@
 import pytest
 from core.EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
 
+from .models.test_DaemonModel import fixture_mock_open
 from .models.test_DaemonModel import fixture_daemonModel
 
 @pytest.fixture(name='mock_logger')

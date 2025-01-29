@@ -13,3 +13,4 @@ reports/
 .coverage
 pytest-cov/
 test.py
+htmlcov/

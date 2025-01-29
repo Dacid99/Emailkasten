@@ -7,3 +7,9 @@ omit =
     */docker/*
     */.venv/*
     */manage.py
+[report]
+format=total
+[html]
+directory = ../docs/build/html/pytest/cov
+show_contexts=True
+skip_empty=True

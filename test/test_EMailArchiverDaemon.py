@@ -23,8 +23,8 @@ from django.db.models.signals import post_save
 from core.signals.save_DaemonModel import post_save_daemon
 from core.EMailArchiverDaemon import EMailArchiverDaemon
 from core.models.DaemonModel import DaemonModel
-from core.constants import EMailArchiverDaemonConfiguration
 
+from .models.test_DaemonModel import fixture_mock_open
 from .models.test_DaemonModel import fixture_daemonModel
 
 

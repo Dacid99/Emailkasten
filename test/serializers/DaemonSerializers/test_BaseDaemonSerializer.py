@@ -26,6 +26,7 @@ from django.forms.models import model_to_dict
 from api.v1.serializers.daemon_serializers.BaseDaemonSerializer import \
     BaseDaemonSerializer
 
+from ...models.test_DaemonModel import fixture_mock_open
 from ...models.test_DaemonModel import fixture_daemonModel
 
 
