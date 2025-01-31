@@ -32,6 +32,8 @@ import os.path
 from builtins import open  # required for testing
 from typing import TYPE_CHECKING
 
+import pytest
+
 from Emailkasten.utils import get_config
 
 from ..models.StorageModel import StorageModel
@@ -201,7 +203,7 @@ def storeImages(parsedEMail: dict[str,Any]) -> None:
     else:
         logger.debug("Saved images to file with error.")
 
-
+@pytest.mark.django_db
 def getPrerenderImageStoragePath(parsedMail: dict[str,Any]) -> str:
     """Gets the storage path for a prerender image.
 

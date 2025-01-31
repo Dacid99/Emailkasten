@@ -25,6 +25,7 @@ from django.forms.models import model_to_dict
 
 from api.v1.serializers.attachment_serializers.BaseAttachmentSerializer import BaseAttachmentSerializer
 
+from ...models.test_AttachmentModel import fixture_mock_os_remove
 from ...models.test_AttachmentModel import fixture_attachmentModel
 
 

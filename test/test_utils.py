@@ -64,7 +64,7 @@ def test_get_config_workaround_success(mock_logger, mock_getattr, mock_constance
 def test_get_config_workaround_failure(mock_logger, mock_getattr):
     mock_getattr.side_effect = ValueError('Constance value not found')
 
-    with pytest.raises(ValueError) as exc:
+    with pytest.raises(KeyError) as exc:
         get_config('TEST_CONFIG')
 
         assert str(exc) == 'Constance value not found'

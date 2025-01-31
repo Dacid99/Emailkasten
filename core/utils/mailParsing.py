@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 def _decodeText(text: email.message.Message) -> str:
     """Decodes a text encoded as bytes.
     Checks for a specific charset to use.
-    If none is found uses :attr:`constance.get_config('CHARSET_DEFAULT')`.
+    If none is found uses :attr:`constance.config.DEFAULT_CHARSET`.
 
     Args:
         text: The text in bytes format to decode properly.
@@ -58,7 +58,7 @@ def _decodeText(text: email.message.Message) -> str:
     Returns:
         The decoded text. Blank if none is present.
     """
-    charset = text.get_content_charset() or get_config('CHARSET_DEFAULT')
+    charset = text.get_content_charset() or get_config('DEFAULT_CHARSET')
     if isinstance(textPayload := text.get_payload(decode=True), bytes):
         return textPayload.decode(charset, errors='replace')
     else:
@@ -68,7 +68,7 @@ def _decodeText(text: email.message.Message) -> str:
 def _decodeHeader(header: str) -> str:
     """Decodes an email header field encoded as bytes.
     Checks for a specific charset to use.
-    If none is found uses the default :attr:`Emailkasten.constants.Mailget_config('CHARSET_DEFAULT')`.
+    If none is found uses the default :attr:`Emailkasten.constants.Mailget_config('DEFAULT_CHARSET')`.
 
     Note:
         Uses :func:`email.header.decode_header`.
@@ -84,7 +84,7 @@ def _decodeHeader(header: str) -> str:
     for fragment, charset in decodedFragments:
         if not charset:
             decodedString += (
-                fragment.decode(get_config('CHARSET_DEFAULT'), errors="replace")
+                fragment.decode(get_config('DEFAULT_CHARSET'), errors="replace")
                 if isinstance(fragment, bytes)
                 else fragment
             )

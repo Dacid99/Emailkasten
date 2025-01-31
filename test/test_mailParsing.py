@@ -150,14 +150,15 @@ def test__parseDate_noMessage(mock_no_mailMessage, mock_empty_parsedMailDict):
         core.utils.mailParsing._parseDate(mock_no_mailMessage, mock_empty_parsedMailDict)
 
 
+@pytest.mark.django_db
 @pytest.mark.parametrize(
     "stripTexts, expectedResult",
     [(True, "This a test SUBJEcT line äöüß§"), (False, "This a test SUBJEcT line äöüß§ \t ")],
 )
-def test__parseSubject_success(mock_logger, stripTexts, expectedResult, mocker, mock_special_mailMessage, mock_empty_parsedMailDict):
-    mock_parsingConfiguration = mocker.patch('core.utils.mailParsing.ParsingConfiguration')
-    mock_parsingConfiguration.STRIP_TEXTS = stripTexts
-    core.utils.mailParsing._parseSubject(mock_special_mailMessage, mock_empty_parsedMailDict)
+def test__parseSubject_success(mock_logger, stripTexts, expectedResult, override_config, mock_special_mailMessage, mock_empty_parsedMailDict):
+    with override_config(STRIP_TEXTS=stripTexts):
+        core.utils.mailParsing._parseSubject(mock_special_mailMessage, mock_empty_parsedMailDict)
+
     assert core.constants.ParsedMailKeys.Header.SUBJECT in mock_empty_parsedMailDict
     assert mock_empty_parsedMailDict[core.constants.ParsedMailKeys.Header.SUBJECT] == expectedResult
     mock_logger.debug.assert_called()
@@ -238,7 +239,9 @@ def test__parseMultipleHeader_noMessage(mock_no_mailMessage, mock_empty_parsedMa
 
 def test_parseMail_success(mock_logger, mock_good_mailMessage, mocker):
     mocker.patch('email.message_from_bytes', return_value = mock_good_mailMessage)
+
     parsedMail = core.utils.mailParsing.parseMail(mock_good_mailMessage)
+
     for headerName, _ in core.constants.ParsedMailKeys.Header():
         assert headerName in parsedMail
 

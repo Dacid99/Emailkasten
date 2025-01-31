@@ -111,7 +111,7 @@ def prerender(parsedMail: dict) -> None:
 
         if not part.get_content_disposition():
             mimeType = part.get_content_type()
-            charset = part.get_content_charset() or get_config('CHARSET_DEFAULT')
+            charset = part.get_content_charset() or get_config('DEFAULT_CHARSET')
 
             logger.debug("Found MIME part: %s", mimeType)
             if mimeType.startswith('text/'):
