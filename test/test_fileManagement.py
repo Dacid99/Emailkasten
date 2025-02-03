@@ -47,33 +47,35 @@ if TYPE_CHECKING:
     from pytest_mock.plugin import MockerFixture
 
 
-patch_getSubDirectory_returnValue = 'subDirInStorage'
-mock_messageIDValue = 'abc123'
+patch_getSubDirectory_returnValue = "subDirInStorage"
+mock_messageIDValue = "abc123"
 
-@pytest.fixture(name='mock_logger', autouse=True)
+
+@pytest.fixture(name="mock_logger", autouse=True)
 def fixture_mock_logger(mocker: MockerFixture) -> MagicMock:
     """Mocks :attr:`core.utils.fileManagment.logger` of the module."""
-    return mocker.patch('core.utils.fileManagment.logger')
+    return mocker.patch("core.utils.fileManagment.logger")
 
-@pytest.fixture(name='mock_good_parsedMailDict')
+
+@pytest.fixture(name="mock_good_parsedMailDict")
 def fixture_mock_good_parsedMailDict() -> dict:
     """Mocks the parsedMail dictionary used to transport the mail data."""
     message = email.message.Message()
-    message.add_header('test', "Test message")
-    message.set_payload('This is a test mail message.')
+    message.add_header("test", "Test message")
+    message.set_payload("This is a test mail message.")
 
     imagePart = email.message.Message()
-    imagePart.set_payload('This is supposed to represent some image.')
+    imagePart.set_payload("This is supposed to represent some image.")
     mock_imageDict = {
-        ParsedMailKeys.Image.FILE_NAME: 'test_imagefilename.png',
-        ParsedMailKeys.Image.DATA: imagePart
+        ParsedMailKeys.Image.FILE_NAME: "test_imagefilename.png",
+        ParsedMailKeys.Image.DATA: imagePart,
     }
 
     attachmentPart = email.message.Message()
-    attachmentPart.set_payload('This is supposed to represent some attachment.')
+    attachmentPart.set_payload("This is supposed to represent some attachment.")
     mock_attachmentDict = {
-        ParsedMailKeys.Attachment.FILE_NAME: 'test_attachmentfilename.pdf',
-        ParsedMailKeys.Attachment.DATA: attachmentPart
+        ParsedMailKeys.Attachment.FILE_NAME: "test_attachmentfilename.pdf",
+        ParsedMailKeys.Attachment.DATA: attachmentPart,
     }
 
     mock_parsedMailDict = {
@@ -85,12 +87,12 @@ def fixture_mock_good_parsedMailDict() -> dict:
     return mock_parsedMailDict
 
 
-@pytest.fixture(name='mock_empty_parsedMailDict')
+@pytest.fixture(name="mock_empty_parsedMailDict")
 def fixture_mock_empty_parsedMailDict() -> dict:
     """Mocks the parsedMail dictionary used to transport the mail data."""
     message = email.message.Message()
-    message.add_header('test', "Test message")
-    message.set_payload('This is a test mail message.')
+    message.add_header("test", "Test message")
+    message.set_payload("This is a test mail message.")
 
     mock_parsedMailDict = {
         ParsedMailKeys.Header.MESSAGE_ID: mock_messageIDValue,
@@ -100,17 +102,23 @@ def fixture_mock_empty_parsedMailDict() -> dict:
     }
     return mock_parsedMailDict
 
-@pytest.fixture(name='mock_bad_parsedMailDict')
+
+@pytest.fixture(name="mock_bad_parsedMailDict")
 def fixture_mock_bad_parsedMailDict() -> dict:
     """Mocks the parsedMail dictionary used to transport the mail data."""
     return {}
 
-@pytest.fixture(name='mock_getSubdirectory', autouse=True)
+
+@pytest.fixture(name="mock_getSubdirectory", autouse=True)
 def fixture_mock_getSubdirectory(mocker: MockerFixture) -> MagicMock:
     """Mocks the :func:`core.models.StorageModel.StorageModel.getSubdirectory` function."""
-    return mocker.patch('core.utils.fileManagment.StorageModel.getSubdirectory', return_value = patch_getSubDirectory_returnValue)
+    return mocker.patch(
+        "core.utils.fileManagment.StorageModel.getSubdirectory",
+        return_value=patch_getSubDirectory_returnValue,
+    )
 
-@pytest.fixture(name='mock_filesystem', autouse=True)
+
+@pytest.fixture(name="mock_filesystem", autouse=True)
 def fixture_mock_filesystem() -> Generator[FakeFilesystem, None, None]:
     """Mocks a Linux filesystem for realistic testing.
     Contains different files with various permission settings for the 'other' users and contents .
@@ -134,7 +142,10 @@ def fixture_mock_filesystem() -> Generator[FakeFilesystem, None, None]:
 
         def brokenFileSideEffect(file):
             raise OSError
-        patcher.fs.create_file("/dir/broken_file", contents="", side_effect=brokenFileSideEffect)
+
+        patcher.fs.create_file(
+            "/dir/broken_file", contents="", side_effect=brokenFileSideEffect
+        )
 
         patcher.fs.create_file("/dir/no_write_file", contents="")
         patcher.fs.chmod("/dir/no_write_file", 0o555)
@@ -203,14 +214,18 @@ def test_storeMessageAsEML_goodDict(
         Fakefs is overly restrictive with os.path.getsize for no-read files!
         Cannot test the behaviour for non-empty no-read files.
     """
-    mock_ospathjoin = mocker.patch('core.utils.fileManagment.os.path.join', return_value = fakeFile)
-    spy_open = mocker.spy(core.utils.fileManagment, 'open')
-    spy_saveStore = mocker.spy(core.utils.fileManagment, '_saveStore')
+    mock_ospathjoin = mocker.patch(
+        "core.utils.fileManagment.os.path.join", return_value=fakeFile
+    )
+    spy_open = mocker.spy(core.utils.fileManagment, "open")
+    spy_saveStore = mocker.spy(core.utils.fileManagment, saveStore)
     core.utils.fileManagment.storeMessageAsEML(mock_good_parsedMailDict)
 
     spy_saveStore.assert_called_once()
     mock_getSubdirectory.assert_called_once()
-    mock_ospathjoin.assert_called_once_with(patch_getSubDirectory_returnValue, mock_messageIDValue + '.eml')
+    mock_ospathjoin.assert_called_once_with(
+        patch_getSubDirectory_returnValue, mock_messageIDValue + ".eml"
+    )
 
     mock_filesystem.chmod(os.path.dirname(fakeFile), 0o777)
     assert mock_filesystem.exists(fakeFile) is expectedFileExists
@@ -218,13 +233,15 @@ def test_storeMessageAsEML_goodDict(
         mock_filesystem.chmod(fakeFile, 0o666)
         assert mock_filesystem.get_object(fakeFile).size == expectedFileSize
 
-    assert mock_good_parsedMailDict.get(ParsedMailKeys.EML_FILE_PATH) == expectedEMLFilePath
+    assert (
+        mock_good_parsedMailDict.get(ParsedMailKeys.EML_FILE_PATH)
+        == expectedEMLFilePath
+    )
     assert spy_open.call_count == expectedCallsToOpen
-    spy_open.assert_has_calls( [call(fakeFile, "wb")] * expectedCallsToOpen )
+    spy_open.assert_has_calls([call(fakeFile, "wb")] * expectedCallsToOpen)
     assert mock_logger.error.call_count == expectedErrors
 
     mock_logger.debug.assert_called()
-
 
 
 @pytest.mark.parametrize(
@@ -275,15 +292,19 @@ def test_storeImages_goodDict(
         Fakefs is overly restrictive with os.path.getsize for no-read files!
         Cannot test the behaviour for non-empty no-read files.
     """
-    mock_ospathjoin = mocker.patch('core.utils.fileManagment.os.path.join', return_value = fakeFile)
-    spy_saveStore = mocker.spy(core.utils.fileManagment, '_saveStore')
-    spy_open = mocker.spy(core.utils.fileManagment, 'open')
+    mock_ospathjoin = mocker.patch(
+        "core.utils.fileManagment.os.path.join", return_value=fakeFile
+    )
+    spy_saveStore = mocker.spy(core.utils.fileManagment, saveStore)
+    spy_open = mocker.spy(core.utils.fileManagment, "open")
 
     core.utils.fileManagment.storeImages(mock_good_parsedMailDict)
 
     spy_saveStore.assert_called_once()
     mock_getSubdirectory.assert_called_once()
-    mock_ospathjoin.assert_called_once_with(patch_getSubDirectory_returnValue, 'test_imagefilename.png')
+    mock_ospathjoin.assert_called_once_with(
+        patch_getSubDirectory_returnValue, "test_imagefilename.png"
+    )
 
     mock_filesystem.chmod(os.path.dirname(fakeFile), 0o777)
     assert mock_filesystem.exists(fakeFile) is expectedFileExists
@@ -291,9 +312,14 @@ def test_storeImages_goodDict(
         mock_filesystem.chmod(fakeFile, 0o666)
         assert mock_filesystem.get_object(fakeFile).size == expectedFileSize
 
-    assert mock_good_parsedMailDict[ParsedMailKeys.IMAGES][0].get(ParsedMailKeys.Image.FILE_PATH) == expectedFilePath
+    assert (
+        mock_good_parsedMailDict[ParsedMailKeys.IMAGES][0].get(
+            ParsedMailKeys.Image.FILE_PATH
+        )
+        == expectedFilePath
+    )
     assert spy_open.call_count == expectedCallsToOpen
-    spy_open.assert_has_calls( [call(fakeFile, "wb")] * expectedCallsToOpen )
+    spy_open.assert_has_calls([call(fakeFile, "wb")] * expectedCallsToOpen)
     assert mock_logger.error.call_count == expectedErrors
 
     mock_logger.debug.assert_called()
@@ -304,7 +330,7 @@ def test_storeImages_emptyDict(
     mock_logger: MagicMock,
     mock_empty_parsedMailDict: dict,
     mock_getSubdirectory: MagicMock,
-    mock_filesystem: FakeFilesystem
+    mock_filesystem: FakeFilesystem,
 ) -> None:
     """Tests :func:`core.utils.fileManagment.storeImages` with the help of a fakefs.
 
@@ -320,10 +346,12 @@ def test_storeImages_emptyDict(
         Fakefs is overly restrictive with os.path.getsize for no-read files!
         Cannot test the behaviour for non-empty no-read files.
     """
-    fakeFile = '/dir/new_file'
-    mock_ospathjoin = mocker.patch('core.utils.fileManagment.os.path.join', return_value = fakeFile)
-    spy_open = mocker.spy(core.utils.fileManagment, 'open')
-    spy_saveStore = mocker.spy(core.utils.fileManagment, '_saveStore')
+    fakeFile = "/dir/new_file"
+    mock_ospathjoin = mocker.patch(
+        "core.utils.fileManagment.os.path.join", return_value=fakeFile
+    )
+    spy_open = mocker.spy(core.utils.fileManagment, "open")
+    spy_saveStore = mocker.spy(core.utils.fileManagment, saveStore)
 
     core.utils.fileManagment.storeImages(mock_empty_parsedMailDict)
 
@@ -345,7 +373,7 @@ def test_storeImages_badDict(
     mock_logger: MagicMock,
     mock_bad_parsedMailDict: dict,
     mock_getSubdirectory: MagicMock,
-    mock_filesystem: FakeFilesystem
+    mock_filesystem: FakeFilesystem,
 ) -> None:
     """Tests :func:`core.utils.fileManagment.storeImages` with the help of a fakefs.
 
@@ -361,11 +389,13 @@ def test_storeImages_badDict(
         Fakefs is overly restrictive with os.path.getsize for no-read files!
         Cannot test the behaviour for non-empty no-read files.
     """
-    fakeFile = '/dir/new_file'
-    mock_ospathjoin = mocker.patch('core.utils.fileManagment.os.path.join', return_value = fakeFile)
+    fakeFile = "/dir/new_file"
+    mock_ospathjoin = mocker.patch(
+        "core.utils.fileManagment.os.path.join", return_value=fakeFile
+    )
 
-    spy_open = mocker.spy(core.utils.fileManagment, 'open')
-    spy_saveStore = mocker.spy(core.utils.fileManagment, '_saveStore')
+    spy_open = mocker.spy(core.utils.fileManagment, "open")
+    spy_saveStore = mocker.spy(core.utils.fileManagment, saveStore)
 
     with pytest.raises(KeyError):
         core.utils.fileManagment.storeImages(mock_bad_parsedMailDict)
@@ -430,14 +460,18 @@ def test_storeAttachments_goodDict(
         Fakefs is overly restrictive with os.path.getsize for no-read files!
         Cannot test the behaviour for non-empty no-read files.
     """
-    mock_ospathjoin = mocker.patch('core.utils.fileManagment.os.path.join', return_value = fakeFile)
-    spy_open = mocker.spy(core.utils.fileManagment, 'open')
-    spy_saveStore = mocker.spy(core.utils.fileManagment, '_saveStore')
+    mock_ospathjoin = mocker.patch(
+        "core.utils.fileManagment.os.path.join", return_value=fakeFile
+    )
+    spy_open = mocker.spy(core.utils.fileManagment, "open")
+    spy_saveStore = mocker.spy(core.utils.fileManagment, saveStore)
 
     core.utils.fileManagment.storeAttachments(mock_good_parsedMailDict)
 
     mock_getSubdirectory.assert_called_once()
-    mock_ospathjoin.assert_called_once_with(patch_getSubDirectory_returnValue, 'test_attachmentfilename.pdf')
+    mock_ospathjoin.assert_called_once_with(
+        patch_getSubDirectory_returnValue, "test_attachmentfilename.pdf"
+    )
     spy_saveStore.assert_called_once()
 
     mock_filesystem.chmod(os.path.dirname(fakeFile), 0o777)
@@ -446,9 +480,14 @@ def test_storeAttachments_goodDict(
         mock_filesystem.chmod(fakeFile, 0o666)
         assert mock_filesystem.get_object(fakeFile).size == expectedFileSize
 
-    assert mock_good_parsedMailDict[ParsedMailKeys.ATTACHMENTS][0].get(ParsedMailKeys.Attachment.FILE_PATH) == expectedFilePath
+    assert (
+        mock_good_parsedMailDict[ParsedMailKeys.ATTACHMENTS][0].get(
+            ParsedMailKeys.Attachment.FILE_PATH
+        )
+        == expectedFilePath
+    )
     assert spy_open.call_count == expectedCallsToOpen
-    spy_open.assert_has_calls( [call(fakeFile, "wb")] * expectedCallsToOpen )
+    spy_open.assert_has_calls([call(fakeFile, "wb")] * expectedCallsToOpen)
     assert mock_logger.error.call_count == expectedErrors
 
     mock_logger.debug.assert_called()
@@ -459,7 +498,7 @@ def test_storeAttachments_emptyDict(
     mock_logger: MagicMock,
     mock_empty_parsedMailDict: dict,
     mock_getSubdirectory: MagicMock,
-    mock_filesystem: FakeFilesystem
+    mock_filesystem: FakeFilesystem,
 ) -> None:
     """Tests :func:`core.utils.fileManagment.storeAttachments` with the help of a fakefs.
 
@@ -475,10 +514,12 @@ def test_storeAttachments_emptyDict(
         Fakefs is overly restrictive with os.path.getsize for no-read files!
         Cannot test the behaviour for non-empty no-read files.
     """
-    fakeFile = '/dir/new_file'
-    mock_ospathjoin = mocker.patch('core.utils.fileManagment.os.path.join', return_value = fakeFile)
-    spy_open = mocker.spy(core.utils.fileManagment, 'open')
-    spy_saveStore = mocker.spy(core.utils.fileManagment, '_saveStore')
+    fakeFile = "/dir/new_file"
+    mock_ospathjoin = mocker.patch(
+        "core.utils.fileManagment.os.path.join", return_value=fakeFile
+    )
+    spy_open = mocker.spy(core.utils.fileManagment, "open")
+    spy_saveStore = mocker.spy(core.utils.fileManagment, saveStore)
 
     core.utils.fileManagment.storeAttachments(mock_empty_parsedMailDict)
 
@@ -499,7 +540,7 @@ def test_storeAttachments_badDict(
     mock_logger: MagicMock,
     mock_bad_parsedMailDict: dict,
     mock_getSubdirectory: MagicMock,
-    mock_filesystem: FakeFilesystem
+    mock_filesystem: FakeFilesystem,
 ) -> None:
     """Tests :func:`core.utils.fileManagment.storeAttachments` with the help of a fakefs.
 
@@ -515,10 +556,12 @@ def test_storeAttachments_badDict(
         Fakefs is overly restrictive with os.path.getsize for no-read files!
         Cannot test the behaviour for non-empty no-read files.
     """
-    fakeFile = '/dir/new_file'
-    mock_ospathjoin = mocker.patch('core.utils.fileManagment.os.path.join', return_value = fakeFile)
-    spy_saveStore = mocker.spy(core.utils.fileManagment, '_saveStore')
-    spy_open = mocker.spy(core.utils.fileManagment, 'open')
+    fakeFile = "/dir/new_file"
+    mock_ospathjoin = mocker.patch(
+        "core.utils.fileManagment.os.path.join", return_value=fakeFile
+    )
+    spy_saveStore = mocker.spy(core.utils.fileManagment, saveStore)
+    spy_open = mocker.spy(core.utils.fileManagment, "open")
 
     with pytest.raises(KeyError):
         core.utils.fileManagment.storeAttachments(mock_bad_parsedMailDict)
@@ -535,16 +578,16 @@ def test_storeAttachments_badDict(
     assert ParsedMailKeys.ATTACHMENTS not in mock_bad_parsedMailDict
 
 
-
-@pytest.mark.parametrize(
-    'PRERENDER_IMAGETYPE',
-    [
-        ('png'),
-        ('jpg'),
-        ('tiff')
-    ]
-)
-def test_getPrerenderImageStoragePath_goodDict(mock_logger: MagicMock, mock_getSubdirectory: MagicMock, PRERENDER_IMAGETYPE: str, mocker: MockerFixture, override_config, mock_good_parsedMailDict: dict):
+@pytest.mark.django_db
+@pytest.mark.parametrize("PRERENDER_IMAGETYPE", [("png"), ("jpg"), ("tiff")])
+def test_getPrerenderImageStoragePath_goodDict(
+    mock_logger: MagicMock,
+    mock_getSubdirectory: MagicMock,
+    PRERENDER_IMAGETYPE: str,
+    mocker: MockerFixture,
+    override_config,
+    mock_good_parsedMailDict: dict,
+):
     """Tests :func:`core.utils.fileManagment.getPrerenderImageStoragePath`.
 
     Args:
@@ -558,16 +601,33 @@ def test_getPrerenderImageStoragePath_goodDict(mock_logger: MagicMock, mock_getS
     spy_ospathjoin = mocker.spy(os.path, "join")
 
     with override_config(PRERENDER_IMAGETYPE=PRERENDER_IMAGETYPE):
-        prerenderFilePath = core.utils.fileManagment.getPrerenderImageStoragePath(mock_good_parsedMailDict)
+        prerenderFilePath = core.utils.fileManagment.getPrerenderImageStoragePath(
+            mock_good_parsedMailDict
+        )
 
-    assert prerenderFilePath == f"{patch_getSubDirectory_returnValue}/{mock_messageIDValue}.{PRERENDER_IMAGETYPE}"
+    assert (
+        prerenderFilePath
+        == f"{patch_getSubDirectory_returnValue}/{mock_messageIDValue}.{PRERENDER_IMAGETYPE}"
+    )
     mock_getSubdirectory.assert_called_once()
-    spy_ospathjoin.assert_called_with(patch_getSubDirectory_returnValue, f"{mock_messageIDValue}.{PRERENDER_IMAGETYPE}")
-    assert mock_good_parsedMailDict[ParsedMailKeys.PRERENDER_FILE_PATH] == prerenderFilePath
+    spy_ospathjoin.assert_called_with(
+        patch_getSubDirectory_returnValue,
+        f"{mock_messageIDValue}.{PRERENDER_IMAGETYPE}",
+    )
+    assert (
+        mock_good_parsedMailDict[ParsedMailKeys.PRERENDER_FILE_PATH]
+        == prerenderFilePath
+    )
     mock_logger.debug.assert_called()
 
 
-def test_getPrerenderImageStoragePath_badDict(mock_logger: MagicMock, mock_getSubdirectory: MagicMock, mocker: MockerFixture, mock_bad_parsedMailDict: dict):
+@pytest.mark.django_db
+def test_getPrerenderImageStoragePath_badDict(
+    mock_logger: MagicMock,
+    mock_getSubdirectory: MagicMock,
+    mocker: MockerFixture,
+    mock_bad_parsedMailDict: dict,
+):
     """Tests :func:`core.utils.fileManagment.getPrerenderImageStoragePath`.
 
     Args:
@@ -580,7 +640,9 @@ def test_getPrerenderImageStoragePath_badDict(mock_logger: MagicMock, mock_getSu
     spy_ospathjoin = mocker.spy(os.path, "join")
 
     with pytest.raises(KeyError):
-        prerenderFilePath = core.utils.fileManagment.getPrerenderImageStoragePath(mock_bad_parsedMailDict)
+        prerenderFilePath = core.utils.fileManagment.getPrerenderImageStoragePath(
+            mock_bad_parsedMailDict
+        )
 
     mock_getSubdirectory.assert_not_called()
     spy_ospathjoin.assert_not_called()
