@@ -20,8 +20,6 @@
 
 from django.db import models
 
-from .CorrespondentModel import CorrespondentModel
-
 
 class MailingListModel(models.Model):
     """Database model for a mailinglist."""
@@ -50,7 +48,9 @@ class MailingListModel(models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mailingslists. False by default."""
 
-    correspondent = models.ForeignKey(CorrespondentModel, related_name='mailinglist', on_delete=models.CASCADE)
+    correspondent = models.ForeignKey(
+        "CorrespondentModel", related_name="mailinglist", on_delete=models.CASCADE
+    )
     """The correspondent that sends the mailinglist. Unique together with :attr:`list_id`. Deletion of that `correspondent` deletes this mailinglist."""
 
     created = models.DateTimeField(auto_now_add=True)
@@ -58,7 +58,6 @@ class MailingListModel(models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
-
 
     def __str__(self):
         return f"Mailinglist {self.list_id}"
@@ -71,8 +70,8 @@ class MailingListModel(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=['list_id', 'correspondent'],
-                name='mailinglist_unique_together_list_id_correspondent'
+                fields=["list_id", "correspondent"],
+                name="mailinglist_unique_together_list_id_correspondent",
             )
         ]
         """:attr:`list_id` and :attr:`correspondent` in combination are unique."""

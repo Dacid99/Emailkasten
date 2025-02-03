@@ -285,36 +285,6 @@ class IMAPFetcher:
             )
             return TestStatusCodes.UNEXPECTED_ERROR
 
-    @staticmethod
-    def testAccount(account: AccountModel) -> int:
-        """Static method to test the validity of account data.
-        The :attr:`core.models.AccountModel.is_healthy` flag is updated accordingly.
-
-        Args:
-            account: Data of the account to be tested.
-
-        Returns:
-            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
-        """
-        with IMAPFetcher(account) as imapFetcher:
-            result = imapFetcher.test()
-        return result
-
-    @staticmethod
-    def testMailbox(mailbox: MailboxModel) -> int:
-        """Static method to test the validity of mailbox data.
-        The :attr:`core.models.MailboxModel.is_healthy` flag is updated accordingly.
-
-        Args:
-            mailbox: Data of the mailbox to be tested.
-
-        Returns:
-            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
-        """
-        with IMAPFetcher(mailbox.account) as imapFetcher:
-            result = imapFetcher.test(mailbox=mailbox)
-        return result
-
     def makeFetchingCriterion(self, criterionName: str) -> str | None:
         """Returns the formatted criterion for the IMAP request, handles dates in particular.
 

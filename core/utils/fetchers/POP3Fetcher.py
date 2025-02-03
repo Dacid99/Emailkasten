@@ -206,36 +206,6 @@ class POP3Fetcher:
             )
             return TestStatusCodes.UNEXPECTED_ERROR
 
-    @staticmethod
-    def testAccount(account: AccountModel) -> int:
-        """Static method to test the validity of account data.
-        The :attr:`core.models.AccountModel.is_healthy` flag is updated accordingly.
-
-        Args:
-            account: Data of the account to be tested.
-
-        Returns:
-            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
-        """
-        with POP3Fetcher(account) as pop3Fetcher:
-            result = pop3Fetcher.test()
-        return result
-
-    @staticmethod
-    def testMailbox(mailbox: MailboxModel) -> int:
-        """Static method to test the validity of mailbox data.
-        The :attr:`core.models.MailboxModel.is_healthy` flag is updated accordingly.
-
-        Args:
-            mailbox: Data of the mailbox to be tested.
-
-        Returns:
-            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
-        """
-        with POP3Fetcher(mailbox.account) as pop3Fetcher:
-            result = pop3Fetcher.test(mailbox=mailbox)
-        return result
-
     def fetchMailboxes(self) -> list[bytes]:
         """Returns the data of the mailboxes. For POP3 there is only one mailbox.
 

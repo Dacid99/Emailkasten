@@ -82,14 +82,14 @@ class AccountViewSet(viewsets.ModelViewSet):
         except IntegrityError:
             raise ValidationError({"detail": "This account already exists!"})
 
-    URL_PATH_SCAN_MAILBOXES = "scan-mailboxes"
-    URL_NAME_SCAN_MAILBOXES = "scan-mailboxes"
+    URL_PATH_UPDATE_MAILBOXES = "update-mailboxes"
+    URL_NAME_UPDATE_MAILBOXES = "update-mailboxes"
 
     @action(
         detail=True,
         methods=["post"],
-        url_path=URL_PATH_SCAN_MAILBOXES,
-        url_name=URL_NAME_SCAN_MAILBOXES,
+        url_path=URL_PATH_UPDATE_MAILBOXES,
+        url_name=URL_NAME_UPDATE_MAILBOXES,
     )
     def scan_mailboxes(self, request: Request, pk: int | None = None) -> Response:
         """Action method scanning for mailboxes in the account.

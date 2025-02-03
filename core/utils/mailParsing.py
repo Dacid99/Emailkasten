@@ -35,10 +35,10 @@ import logging
 from typing import TYPE_CHECKING
 
 import email_validator
-from Emailkasten.utils import get_config
 from imap_tools.imap_utf7 import utf7_decode
 
 from core.constants import ParsedMailKeys, ParsingConfiguration
+from Emailkasten.utils import get_config
 
 if TYPE_CHECKING:
     from typing import Any
@@ -58,9 +58,9 @@ def _decodeText(text: email.message.Message) -> str:
     Returns:
         The decoded text. Blank if none is present.
     """
-    charset = text.get_content_charset() or get_config('DEFAULT_CHARSET')
+    charset = text.get_content_charset() or get_config("DEFAULT_CHARSET")
     if isinstance(textPayload := text.get_payload(decode=True), bytes):
-        return textPayload.decode(charset, errors='replace')
+        return textPayload.decode(charset, errors="replace")
     else:
         return ""
 
@@ -84,7 +84,7 @@ def _decodeHeader(header: str) -> str:
     for fragment, charset in decodedFragments:
         if not charset:
             decodedString += (
-                fragment.decode(get_config('DEFAULT_CHARSET'), errors="replace")
+                fragment.decode(get_config("DEFAULT_CHARSET"), errors="replace")
                 if isinstance(fragment, bytes)
                 else fragment
             )
@@ -98,7 +98,7 @@ def _decodeHeader(header: str) -> str:
     return decodedString
 
 
-def _separateRFC2822MailAddressFormat(mailers: list[str]) -> list[tuple[str,str]]:
+def _separateRFC2822MailAddressFormat(mailers: list[str]) -> list[tuple[str, str]]:
     """Splits the RFC2822 address fiels into the mailer name mail address.
 
     Note:
@@ -122,7 +122,7 @@ def _separateRFC2822MailAddressFormat(mailers: list[str]) -> list[tuple[str,str]
         except email_validator.EmailNotValidError:
             logger.warning("Mailaddress is invalid for %s, %s!", mailName, mailAddress)
 
-        separatedMailers.append( (mailName, mailAddress) )
+        separatedMailers.append((mailName, mailAddress))
     return separatedMailers
 
 
@@ -167,11 +167,12 @@ def _parseDate(mailMessage: email.message.Message, parsedMail: dict):
     date = mailMessage.get(ParsedMailKeys.Header.DATE)
     if not date:
         logger.warning("No DATE found in mail, resorting to default!")
-        parsedDate = datetime.datetime.strptime(get_config('DEFAULT_MAILDATE'), ParsingConfiguration.DATE_FORMAT)
+        parsedDate = datetime.datetime.strptime(
+            get_config("DEFAULT_MAILDATE"), ParsingConfiguration.DATE_FORMAT
+        )
     else:
         parsedDate = email.utils.parsedate_to_datetime(_decodeHeader(date))
     parsedMail[ParsedMailKeys.Header.DATE] = parsedDate
-
 
 
 def _parseSubject(mailMessage: email.message.Message, parsedMail: dict):
@@ -190,7 +191,7 @@ def _parseSubject(mailMessage: email.message.Message, parsedMail: dict):
     logger.debug("Parsing subject ...")
     if subject := mailMessage.get(ParsedMailKeys.Header.SUBJECT):
         decodedSubject = _decodeHeader(subject)
-        if get_config('STRIP_TEXTS'):
+        if get_config("STRIP_TEXTS"):
             parsedSubject = decodedSubject.strip()
         else:
             parsedSubject = decodedSubject
@@ -199,7 +200,6 @@ def _parseSubject(mailMessage: email.message.Message, parsedMail: dict):
         logger.warning("No SUBJECT found in mail!")
         parsedSubject = ""
     parsedMail[ParsedMailKeys.Header.SUBJECT] = parsedSubject
-
 
 
 def _parseBodyText(mailMessage: email.message.Message, parsedMail: dict):
@@ -221,7 +221,7 @@ def _parseBodyText(mailMessage: email.message.Message, parsedMail: dict):
         for part in mailMessage.walk():
             if part.get_content_disposition():
                 continue
-            if part.get_content_type().startswith('text/'):
+            if part.get_content_type().startswith("text/"):
                 mailBodyText += _decodeText(part)
     else:
         mailBodyText = _decodeText(mailMessage)
@@ -230,14 +230,13 @@ def _parseBodyText(mailMessage: email.message.Message, parsedMail: dict):
     else:
         logger.debug("Successfully parsed bodytext")
 
-    if get_config('STRIP_TEXTS'):
+    if get_config("STRIP_TEXTS"):
         parsedBodyText = mailBodyText.strip()
         logger.debug("Stripped bodytext")
     else:
         parsedBodyText = mailBodyText
 
     parsedMail[ParsedMailKeys.BODYTEXT] = parsedBodyText
-
 
 
 def _parseImages(mailMessage: email.message.Message, parsedMail: dict):
@@ -263,11 +262,11 @@ def _parseImages(mailMessage: email.message.Message, parsedMail: dict):
         for part in mailMessage.walk():
             if part.get_content_disposition() == "attachment":
                 continue
-            if part.get_content_type().startswith('image/'):
+            if part.get_content_type().startswith("image/"):
                 # imageFileName = part.get_filename()
                 # if not imageFileName:
                 #     imageFileName =
-                imagesDict: dict[str,Any] = {}
+                imagesDict: dict[str, Any] = {}
                 imagesDict[ParsedMailKeys.Image.DATA] = part
                 imagesDict[ParsedMailKeys.Image.SIZE] = len(part.as_bytes())
                 imagesDict[ParsedMailKeys.Image.FILE_NAME] = part.get_filename()
@@ -281,7 +280,6 @@ def _parseImages(mailMessage: email.message.Message, parsedMail: dict):
         logger.debug("Successfully parsed images")
 
     parsedMail[ParsedMailKeys.IMAGES] = images
-
 
 
 def _parseAttachments(mailMessage: email.message.Message, parsedMail: dict):
@@ -302,12 +300,16 @@ def _parseAttachments(mailMessage: email.message.Message, parsedMail: dict):
     attachments = []
     if mailMessage.is_multipart():
         for part in mailMessage.walk():
-            if ( part.get_content_disposition() == "attachment"
-                 or part.get_content_type() in ParsingConfiguration.APPLICATION_TYPES):
+            if (
+                part.get_content_disposition() == "attachment"
+                or part.get_content_type() in ParsingConfiguration.APPLICATION_TYPES
+            ):
                 attachmentDict: dict[str, Any] = {}
                 attachmentDict[ParsedMailKeys.Attachment.DATA] = part
                 attachmentDict[ParsedMailKeys.Attachment.SIZE] = len(part.as_bytes())
-                attachmentDict[ParsedMailKeys.Attachment.FILE_NAME] = part.get_filename() or f"{hash(part)}.attachment"
+                attachmentDict[ParsedMailKeys.Attachment.FILE_NAME] = (
+                    part.get_filename() or f"{hash(part)}.attachment"
+                )
                 attachmentDict[ParsedMailKeys.Attachment.FILE_PATH] = None
 
                 attachments.append(attachmentDict)
@@ -318,7 +320,6 @@ def _parseAttachments(mailMessage: email.message.Message, parsedMail: dict):
         logger.debug("Successfully parsed attachments")
 
     parsedMail[ParsedMailKeys.ATTACHMENTS] = attachments
-
 
 
 def _parseHeader(mailMessage: email.message.Message, headerKey: str, parsedMail: dict):
@@ -350,8 +351,9 @@ def _parseHeader(mailMessage: email.message.Message, headerKey: str, parsedMail:
     parsedMail[headerKey] = header
 
 
-
-def _parseMultipleHeader(mailMessage: email.message.Message, headerKey: str, parsedMail: dict):
+def _parseMultipleHeader(
+    mailMessage: email.message.Message, headerKey: str, parsedMail: dict
+):
     """Parses the given header, which may appear multiple times, of the given mailmessage.
     The combination of the results is included in the parsedMail dict.
 
@@ -367,14 +369,13 @@ def _parseMultipleHeader(mailMessage: email.message.Message, headerKey: str, par
         None, the parsed header is appended to the parsedMail dict.
     """
     logger.debug("Parsing %s ...", headerKey)
-    headers = mailMessage.get_all(headerKey, '')
+    headers = mailMessage.get_all(headerKey, "")
     combinedHeaders = "\n".join(headers)
     if combinedHeaders:
         logger.debug("Successfully parsed %s", headerKey)
     else:
         logger.debug("No %s found in mail.", headerKey)
     parsedMail[headerKey] = combinedHeaders
-
 
 
 def _parseMailinglist(mailMessage: email.message.Message, parsedMail: dict):
@@ -400,8 +401,9 @@ def _parseMailinglist(mailMessage: email.message.Message, parsedMail: dict):
     parsedMail[ParsedMailKeys.MAILINGLIST] = mailinglistDict
 
 
-
-def _parseCorrespondents(mailMessage: email.message.Message, mentionHeaderKey: str, parsedMail: dict):
+def _parseCorrespondents(
+    mailMessage: email.message.Message, mentionHeaderKey: str, parsedMail: dict
+):
     """Parses the correspondents that are mentioned in a given way.
     The result is included in the parsedMail dict.
 
@@ -423,7 +425,6 @@ def _parseCorrespondents(mailMessage: email.message.Message, mentionHeaderKey: s
         logger.debug("Successfully parsed %s correspondents.", mentionHeaderKey)
 
 
-
 def parseMail(mailToParse: bytes) -> dict[str, Any]:
     """Parses a mail returned by a mail server for its features.
     Uses the various private functions in :mod:`core.utils.mailParsing`.
@@ -439,7 +440,10 @@ def parseMail(mailToParse: bytes) -> dict[str, Any]:
     """
     mailMessage = email.message_from_bytes(mailToParse)
 
-    logger.debug("Parsing email with messageID %s ...", mailMessage.get(ParsedMailKeys.Header.MESSAGE_ID))
+    logger.debug(
+        "Parsing email with messageID %s ...",
+        mailMessage.get(ParsedMailKeys.Header.MESSAGE_ID),
+    )
 
     parsedEMail: dict[str, Any] = {}
     parsedEMail[ParsedMailKeys.DATA] = mailToParse
@@ -470,7 +474,7 @@ def parseMail(mailToParse: bytes) -> dict[str, Any]:
 
 
 def parseMailbox(mailboxBytes: bytes) -> str:
-    """Parses the mailbox name as received by the scanMailboxes method in :mod:`core.utils.fetchers`.
+    """Parses the mailbox name as received by the `fetchMailboxes` method in :mod:`core.utils.fetchers`.
 
     Note:
         Uses :func:`imap_tools.imap_utf7.utf7_decode` to decode IMAPs modified utf7 encoding.
@@ -482,7 +486,7 @@ def parseMailbox(mailboxBytes: bytes) -> str:
         The name of the mailbox independent of its parent folders
     """
     mailbox = utf7_decode(mailboxBytes)
-    mailboxName = mailbox.split("\"/\"")[1].strip()
+    mailboxName = mailbox.split('"/"')[1].strip()
     if mailboxName == "":
-        mailboxName = mailbox.split("\" \"")[1].strip()
+        mailboxName = mailbox.split('" "')[1].strip()
     return mailboxName

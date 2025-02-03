@@ -319,17 +319,17 @@ def test_scan_mailboxes_noauth(
     accountModel, noauth_apiClient, custom_detail_action_url, mocker
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.scan_mailboxes` action with an unauthenticated user client."""
-    mock_scanMailboxes = mocker.patch(
+    mock_update_mailboxes = mocker.patch(
         "core.models.AccountModel.AccountModel.update_mailboxes"
     )
     response = noauth_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_SCAN_MAILBOXES, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, accountModel
         )
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    mock_scanMailboxes.assert_not_called()
+    mock_update_mailboxes.assert_not_called()
     with pytest.raises(KeyError):
         response.data["mail_address"]
 
@@ -339,18 +339,18 @@ def test_scan_mailboxes_auth_other(
     accountModel, other_apiClient, custom_detail_action_url, mocker
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.scan_mailboxes` action with the authenticated other user client."""
-    mock_scanMailboxes = mocker.patch(
+    mock_update_mailboxes = mocker.patch(
         "core.models.AccountModel.AccountModel.update_mailboxes"
     )
 
     response = other_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_SCAN_MAILBOXES, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, accountModel
         )
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    mock_scanMailboxes.assert_not_called()
+    mock_update_mailboxes.assert_not_called()
     with pytest.raises(KeyError):
         response.data["mail_address"]
 
@@ -360,13 +360,13 @@ def test_scan_mailboxes_auth_owner(
     accountModel, owner_apiClient, custom_detail_action_url, mocker
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.scan_mailboxes` action with the authenticated owner user client."""
-    mock_scanMailboxes = mocker.patch(
+    mock_update_mailboxes = mocker.patch(
         "api.v1.views.AccountViewSet.AccountModel.update_mailboxes"
     )
 
     response = owner_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_SCAN_MAILBOXES, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, accountModel
         )
     )
 
@@ -374,7 +374,7 @@ def test_scan_mailboxes_auth_owner(
     assert (
         response.data["account"] == AccountViewSet.serializer_class(accountModel).data
     )
-    mock_scanMailboxes.assert_called_once_with()
+    mock_update_mailboxes.assert_called_once_with()
 
 
 @pytest.mark.django_db
