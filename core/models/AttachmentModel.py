@@ -18,16 +18,25 @@
 
 """Module with the :class:`AttachmentModel` model class."""
 
+from __future__ import annotations
+
 import logging
 import os
+from typing import TYPE_CHECKING
 
 from django.db import models
 
+from core.utils.fileManagment import saveStore
 from Emailkasten.utils import get_config
 
-from .EMailModel import EMailModel
+from .StorageModel import StorageModel
+
+if TYPE_CHECKING:
+    from io import BufferedWriter
+    from typing import Any, Callable
 
 logger = logging.getLogger(__name__)
+
 
 class AttachmentModel(models.Model):
     """Database model for an attachment file in a mail."""
@@ -36,10 +45,8 @@ class AttachmentModel(models.Model):
     """The filename of the attachment."""
 
     file_path = models.FilePathField(
-        path=get_config('STORAGE_PATH'),
-        max_length=511,
-        recursive=True,
-        null=True)
+        path=get_config("STORAGE_PATH"), max_length=511, recursive=True, null=True
+    )
     """The path where the attachment is stored. Unique together with :attr:`email`.
     Can be null if the attachment has not been saved (null does not collide with the unique constraint.).
     Must contain :attr:`constance.get_config('STORAGE_PATH')`.
@@ -51,7 +58,9 @@ class AttachmentModel(models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite attachments. False by default."""
 
-    email = models.ForeignKey(EMailModel, related_name="attachments", on_delete=models.CASCADE)
+    email = models.ForeignKey(
+        "EMailModel", related_name="attachments", on_delete=models.CASCADE
+    )
     """The mail that the attachment was found in.  Deletion of that `email` deletes this attachment."""
 
     created = models.DateTimeField(auto_now_add=True)
@@ -60,10 +69,8 @@ class AttachmentModel(models.Model):
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
 
-
     def __str__(self):
         return f"Attachment {self.file_name} from {str(self.email)}"
-
 
     class Meta:
         """Metadata class for the model."""
@@ -73,12 +80,11 @@ class AttachmentModel(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=['file_path', 'email'],
-                name='attachment_unique_together_file_path_email'
+                fields=["file_path", "email"],
+                name="attachment_unique_together_file_path_email",
             )
         ]
         """:attr:`file_path` and :attr:`email` in combination are unique."""
-
 
     def delete(self, *args, **kwargs):
         """Extended :django::func:`django.models.Model.delete` method to delete :attr:`file_path` file on deletion."""
@@ -88,10 +94,48 @@ class AttachmentModel(models.Model):
             logger.debug("Removing %s from storage ...", str(self))
             try:
                 os.remove(self.file_path)
-                logger.debug("Successfully removed the attachment file from storage.", exc_info=True)
+                logger.debug(
+                    "Successfully removed the attachment file from storage.",
+                    exc_info=True,
+                )
             except FileNotFoundError:
                 logger.error("%s was not found!", self.file_path, exc_info=True)
             except OSError:
-                logger.error("An OS error occured removing %s!", self.file_path, exc_info=True)
+                logger.error(
+                    "An OS error occured removing %s!", self.file_path, exc_info=True
+                )
             except Exception:
-                logger.error("An unexpected error occured removing %s!", self.file_path, exc_info=True)
+                logger.error(
+                    "An unexpected error occured removing %s!",
+                    self.file_path,
+                    exc_info=True,
+                )
+
+    def save_to_storage(self, attachmentData):
+        """Saves the attachment file to the storage.
+        If the file already exists, does not overwrite.
+        If an error occurs, removes the incomplete file.
+
+        Note:
+            Uses :func:`core.utils.fileManagment.saveStore` to wrap the storing process.
+
+        Args:
+            attachmentData: The data of the attachment to be saved.
+        """
+        if self.file_path:
+            logger.debug("%s is already stored.", self)
+            return
+
+        @saveStore
+        def writeAttachment(file: BufferedWriter, attachmentData) -> None:
+            file.write(attachmentData.get_payload(decode=True))
+
+        logger.debug("Storing attachment %s ...", self)
+
+        dirPath = StorageModel.getSubdirectory(self.email.message_id)
+        preliminary_file_path = os.path.join(dirPath, self.file_name)
+
+        self.file_path = writeAttachment(preliminary_file_path, attachmentData)
+        self.save(update_fields=["file_path"])
+
+        logger.debug("Successfully stored attachment.")

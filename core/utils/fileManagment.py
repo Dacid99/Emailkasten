@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _saveStore(storingFunc: Callable) -> Callable:
+def saveStore(storingFunc: Callable) -> Callable:
     """Decorator to ensure no files are overwriten and errors are handled when storing files.
 
     Args:
@@ -56,15 +56,21 @@ def _saveStore(storingFunc: Callable) -> Callable:
     Returns:
         saveStoringFunc: The wrapped function.
     """
-    def saveStoringFunc(filePath: str, *args: Any, **kwargs: Any) -> str|None:
+
+    def saveStoringFunc(filePath: str, *args: Any, **kwargs: Any) -> str | None:
         if os.path.exists(filePath):
             try:
                 if os.path.getsize(filePath) > 0:
-                    logger.debug("Not writing to file %s, it already exists and is not empty.", filePath)
+                    logger.debug(
+                        "Not writing to file %s, it already exists and is not empty.",
+                        filePath,
+                    )
                     return filePath
             except PermissionError:
                 pass  # this is only relevant for fakefs testing
-            logger.debug("Writing to file %s, it already exists but is empty.", filePath)
+            logger.debug(
+                "Writing to file %s, it already exists but is empty.", filePath
+            )
         else:
             logger.debug("Creating and writing to file %s...", filePath)
 
@@ -76,7 +82,11 @@ def _saveStore(storingFunc: Callable) -> Callable:
             return filePath
 
         except PermissionError:
-            logger.error("Failed to write to file %s, it is not writeable!", filePath, exc_info=True)
+            logger.error(
+                "Failed to write to file %s, it is not writeable!",
+                filePath,
+                exc_info=True,
+            )
             return None
         except OSError:
             logger.error("Failed to write to file %s!", filePath, exc_info=True)
@@ -97,7 +107,7 @@ def _saveStore(storingFunc: Callable) -> Callable:
     return saveStoringFunc
 
 
-def storeMessageAsEML(parsedEMail: dict[str,Any]) -> None:
+def storeMessageAsEML(parsedEMail: dict[str, Any]) -> None:
     """Saves an entire mail as a .eml file in the storage.
     The files name is given by the unique messageID.
     If the file already exists, does not overwrite. If an error occurs, removes the incomplete file.
@@ -105,15 +115,20 @@ def storeMessageAsEML(parsedEMail: dict[str,Any]) -> None:
     Args:
         parsedEMail: The parsed mail to be saved.
     """
-    @_saveStore
+
+    @saveStore
     def writeMessageToEML(emlFile: BufferedWriter) -> None:
         emlGenerator = email.generator.BytesGenerator(emlFile)
         emlGenerator.flatten(parsedEMail[ParsedMailKeys.FULL_MESSAGE])
 
     logger.debug("Saving mail in .eml format.")
 
-    emlDirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
-    emlFilePath = os.path.join(emlDirPath, parsedEMail[ParsedMailKeys.Header.MESSAGE_ID] + ".eml")
+    emlDirPath = StorageModel.getSubdirectory(
+        parsedEMail[ParsedMailKeys.Header.MESSAGE_ID]
+    )
+    emlFilePath = os.path.join(
+        emlDirPath, parsedEMail[ParsedMailKeys.Header.MESSAGE_ID] + ".eml"
+    )
     logger.debug("Storing mail in .eml file %s ...", emlFilePath)
 
     storageFilePath = writeMessageToEML(emlFilePath)
@@ -125,7 +140,7 @@ def storeMessageAsEML(parsedEMail: dict[str,Any]) -> None:
         logger.debug("Saved mail in .eml format with error.")
 
 
-def storeAttachments(parsedEMail: dict[str,Any]) -> None:
+def storeAttachments(parsedEMail: dict[str, Any]) -> None:
     """Saves all attachments of a mail to the storage.
     If the file already exists, does not overwrite.
     If no attachments are found, does nothing.
@@ -134,9 +149,12 @@ def storeAttachments(parsedEMail: dict[str,Any]) -> None:
     Args:
         parsedEMail: The parsed mail with attachments to be saved.
     """
-    @_saveStore
+
+    @saveStore
     def writeAttachment(file: BufferedWriter, attachmentData: dict) -> None:
-        file.write(attachmentData[ParsedMailKeys.Attachment.DATA].get_payload(decode=True))
+        file.write(
+            attachmentData[ParsedMailKeys.Attachment.DATA].get_payload(decode=True)
+        )
 
     logger.debug("Saving attachments from mail ...")
 
@@ -145,7 +163,9 @@ def storeAttachments(parsedEMail: dict[str,Any]) -> None:
         return
 
     status = True
-    dirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
+    dirPath = StorageModel.getSubdirectory(
+        parsedEMail[ParsedMailKeys.Header.MESSAGE_ID]
+    )
     for attachmentData in parsedEMail[ParsedMailKeys.ATTACHMENTS]:
         fileName = attachmentData[ParsedMailKeys.Attachment.FILE_NAME]
         filePath = os.path.join(dirPath, fileName)
@@ -163,7 +183,7 @@ def storeAttachments(parsedEMail: dict[str,Any]) -> None:
         logger.debug("Saved images to file with error.")
 
 
-def storeImages(parsedEMail: dict[str,Any]) -> None:
+def storeImages(parsedEMail: dict[str, Any]) -> None:
     """Saves all inline images of a mail to the storage.
     If the file already exists, does not overwrite.
     If no images are found, does nothing.
@@ -175,7 +195,8 @@ def storeImages(parsedEMail: dict[str,Any]) -> None:
     Args:
         parsedEMail: The parsed mail with inline images to be saved.
     """
-    @_saveStore
+
+    @saveStore
     def writeImage(file: BufferedWriter, imageData: dict) -> None:
         file.write(imageData[ParsedMailKeys.Image.DATA].get_payload(decode=True))
 
@@ -186,7 +207,9 @@ def storeImages(parsedEMail: dict[str,Any]) -> None:
         return
 
     status = True
-    dirPath = StorageModel.getSubdirectory(parsedEMail[ParsedMailKeys.Header.MESSAGE_ID])
+    dirPath = StorageModel.getSubdirectory(
+        parsedEMail[ParsedMailKeys.Header.MESSAGE_ID]
+    )
     for imageData in parsedEMail[ParsedMailKeys.IMAGES]:
         fileName = imageData[ParsedMailKeys.Image.FILE_NAME]
         filePath = os.path.join(dirPath, fileName)
@@ -203,8 +226,8 @@ def storeImages(parsedEMail: dict[str,Any]) -> None:
     else:
         logger.debug("Saved images to file with error.")
 
-@pytest.mark.django_db
-def getPrerenderImageStoragePath(parsedMail: dict[str,Any]) -> str:
+
+def getPrerenderImageStoragePath(parsedMail: dict[str, Any]) -> str:
     """Gets the storage path for a prerender image.
 
     Args:

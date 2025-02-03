@@ -20,23 +20,31 @@
 
 from __future__ import annotations
 
+import email
+import email.generator
 import logging
 import os
 from typing import TYPE_CHECKING
 
 from django.db import models
 
+from core.utils.fileManagment import saveStore
 from Emailkasten.utils import get_config
 
-from .AccountModel import AccountModel
 from .MailingListModel import MailingListModel
+from .StorageModel import StorageModel
 
 if TYPE_CHECKING:
+    from io import BufferedWriter
+    from typing import Any, Callable
+
     from django.db.models.manager import RelatedManager
 
     from .CorrespondentModel import CorrespondentModel
 
+
 logger = logging.getLogger(__name__)
+
 
 class EMailModel(models.Model):
     """Database model for an email."""
@@ -53,18 +61,20 @@ class EMailModel(models.Model):
     bodytext = models.TextField()
     """The bodytext of the mail."""
 
-    inReplyTo = models.ForeignKey('self', null=True, related_name='replies', on_delete=models.SET_NULL)
+    inReplyTo = models.ForeignKey(
+        "self", null=True, related_name="replies", on_delete=models.SET_NULL
+    )
     """The mail that this mail is a response to. Can be null. Deletion of that replied-to mail sets this field to NULL."""
 
     datasize = models.IntegerField()
     """The bytes size of the mail."""
 
     eml_filepath = models.FilePathField(
-        path=get_config('STORAGE_PATH'),
+        path=get_config("STORAGE_PATH"),
         max_length=255,
         recursive=True,
         match=r".*\.eml$",
-        null=True
+        null=True,
     )
     """The path where the mail is stored in .eml format.
     Can be null if the mail has not been saved.
@@ -73,11 +83,11 @@ class EMailModel(models.Model):
     """
 
     prerender_filepath = models.FilePathField(
-        path=get_config('STORAGE_PATH'),
+        path=get_config("STORAGE_PATH"),
         max_length=255,
         recursive=True,
         match=rf".*\.{get_config('PRERENDER_IMAGETYPE')}$",
-        null=True
+        null=True,
     )
     """The path where the prerender image of the mail is stored.
     Can be null if the prerendering process was no successful.
@@ -87,13 +97,19 @@ class EMailModel(models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mails. False by default."""
 
-    correspondents: RelatedManager[CorrespondentModel] = models.ManyToManyField('CorrespondentModel', through='EMailCorrespondentsModel', related_name='emails')
+    correspondents: RelatedManager[CorrespondentModel] = models.ManyToManyField(
+        "CorrespondentModel", through="EMailCorrespondentsModel", related_name="emails"
+    )
     """The correspondents that are mentioned in this mail. Bridges through :class:`core.models.EMailCorrespondentsModel`."""
 
-    mailinglist = models.ForeignKey(MailingListModel, null=True, related_name='emails', on_delete=models.CASCADE)
+    mailinglist = models.ForeignKey(
+        MailingListModel, null=True, related_name="emails", on_delete=models.CASCADE
+    )
     """The mailinglist that this mail has been sent from. Can be null. Deletion of that `mailinglist` deletes this mail."""
 
-    account = models.ForeignKey(AccountModel, related_name="emails", on_delete=models.CASCADE)
+    account = models.ForeignKey(
+        "AccountModel", related_name="emails", on_delete=models.CASCADE
+    )
     """The account that this mail has been found in. Unique together with :attr:`message_id`. Deletion of that `account` deletes this mail."""
 
     comments = models.CharField(max_length=255, null=True)
@@ -144,7 +160,6 @@ class EMailModel(models.Model):
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
 
-
     def __str__(self):
         return f"Email with ID {self.message_id}, received on {self.datetime} with subject {self.email_subject} from {str(self.account)}"
 
@@ -156,12 +171,11 @@ class EMailModel(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=['message_id', 'account'],
-                name='email_unique_together_message_id_account'
+                fields=["message_id", "account"],
+                name="email_unique_together_message_id_account",
             )
         ]
         """`message_id` and :attr:`account` in combination are unique."""
-
 
     def delete(self, *args, **kwargs):
         """Extended :django::func:`django.models.Model.delete` method
@@ -173,26 +187,77 @@ class EMailModel(models.Model):
             logger.debug("Removing %s from storage ...", str(self))
             try:
                 os.remove(self.eml_filepath)
-                logger.debug("Successfully removed the image file from storage.", exc_info=True)
+                logger.debug(
+                    "Successfully removed the image file from storage.", exc_info=True
+                )
             except FileNotFoundError:
                 logger.error("%s was not found!", self.eml_filepath, exc_info=True)
             except OSError:
-                logger.error("An OS error occured removing %s!", self.file_peml_filepathath, exc_info=True)
+                logger.error(
+                    "An OS error occured removing %s!",
+                    self.file_peml_filepathath,
+                    exc_info=True,
+                )
             except Exception:
-                logger.error("An unexpected error occured removing %s!", self.eml_filepath, exc_info=True)
+                logger.error(
+                    "An unexpected error occured removing %s!",
+                    self.eml_filepath,
+                    exc_info=True,
+                )
 
         if self.prerender_filepath:
             logger.debug("Removing %s from storage ...", str(self))
             try:
                 os.remove(self.prerender_filepath)
-                logger.debug("Successfully removed the image file from storage.", exc_info=True)
+                logger.debug(
+                    "Successfully removed the image file from storage.", exc_info=True
+                )
             except FileNotFoundError:
-                logger.error("%s was not found!", self.prerender_filepath, exc_info=True)
+                logger.error(
+                    "%s was not found!", self.prerender_filepath, exc_info=True
+                )
             except OSError:
-                logger.error("An OS error occured removing %s!", self.prerender_filepath, exc_info=True)
+                logger.error(
+                    "An OS error occured removing %s!",
+                    self.prerender_filepath,
+                    exc_info=True,
+                )
             except Exception:
-                logger.error("An unexpected error occured removing %s!", self.prerender_filepath, exc_info=True)
+                logger.error(
+                    "An unexpected error occured removing %s!",
+                    self.prerender_filepath,
+                    exc_info=True,
+                )
 
+    def save_to_storage(self, emailData):
+        """Saves the email to the storage in eml format.
+        If the file already exists, does not overwrite.
+        If an error occurs, removes the incomplete file.
+
+        Note:
+            Uses :func:`core.utils.fileManagment.saveStore` to wrap the storing process.
+
+        Args:
+            emailData: The data of the email to be saved.
+        """
+        if self.eml_filepath:
+            logger.debug("Email %s is already stored as eml.", self)
+            return
+
+        @saveStore
+        def writeMessageToEML(emlFile: BufferedWriter, emailData) -> None:
+            emlGenerator = email.generator.BytesGenerator(emlFile)
+            emlGenerator.flatten(emailData)
+
+        logger.debug("Storing images %s ...", self)
+
+        dirPath = StorageModel.getSubdirectory(self.message_id)
+        preliminary_file_path = os.path.join(dirPath, self.message_id + ".eml")
+
+        self.eml_filepath = writeMessageToEML(preliminary_file_path, emailData)
+        self.save(update_fields=["eml_filepath"])
+
+        logger.debug("Successfully stored image.")
 
     def subConversation(self) -> list:
         subConversationEmails = [self]
@@ -200,9 +265,8 @@ class EMailModel(models.Model):
             subConversationEmails.extend(replyEmail.subConversation())
         return subConversationEmails
 
-
     def fullConversation(self) -> list:
-        rootEmail= self
+        rootEmail = self
         while rootEmail.inReplyTo:
             rootEmail = rootEmail.inReplyTo
         return rootEmail.subConversation()
