@@ -29,9 +29,15 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from model_bakery import baker
 
+from core.constants import MailFetchingProtocols
 from core.models.AccountModel import AccountModel
+from core.utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
+from core.utils.fetchers.IMAPFetcher import IMAPFetcher
+from core.utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from core.utils.fetchers.POP3Fetcher import POP3Fetcher
 
-@pytest.fixture(name='account')
+
+@pytest.fixture(name="account")
 def fixture_accountModel() -> AccountModel:
     """Creates an :class:`core.models.AccountModel.AccountModel` .
 
@@ -39,6 +45,7 @@ def fixture_accountModel() -> AccountModel:
         The account instance for testing.
     """
     return baker.make(AccountModel)
+
 
 @pytest.mark.django_db
 def test_AccountModel_creation(account):
@@ -92,11 +99,37 @@ def test_AccountModel_unique():
 
     user = baker.make(User)
 
-    account_1 = baker.make(AccountModel, user = user)
-    account_2 = baker.make(AccountModel, user = user)
+    account_1 = baker.make(AccountModel, user=user)
+    account_2 = baker.make(AccountModel, user=user)
     assert account_1.mail_address != account_2.mail_address
     assert account_1.user == account_2.user
 
-    baker.make(AccountModel, mail_address="abc123", user = user)
+    baker.make(AccountModel, mail_address="abc123", user=user)
     with pytest.raises(IntegrityError):
-        baker.make(AccountModel, mail_address="abc123", user = user)
+        baker.make(AccountModel, mail_address="abc123", user=user)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "protocol, expectedFetcherClass",
+    [
+        (MailFetchingProtocols.IMAP, IMAPFetcher),
+        (MailFetchingProtocols.IMAP_SSL, IMAP_SSL_Fetcher),
+        (MailFetchingProtocols.POP3, POP3Fetcher),
+        (MailFetchingProtocols.POP3_SSL, POP3_SSL_Fetcher),
+    ],
+)
+def test_get_fetcher_success(account, protocol, expectedFetcherClass):
+    account.protocol = protocol
+
+    fetcher = account.get_fetcher()
+
+    assert isinstance(fetcher, expectedFetcherClass)
+
+
+@pytest.mark.django_db
+def test_get_fetcher_failure(account):
+    account.protocol = "OTHER"
+
+    with pytest.raises(ValueError):
+        fetcher = account.get_fetcher()

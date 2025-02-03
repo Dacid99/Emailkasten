@@ -27,10 +27,9 @@ from core.utils.fetchers.IMAPFetcher import IMAPFetcher
 from core.utils.fetchers.POP3Fetcher import POP3Fetcher
 from Emailkasten.utils import get_config
 
-from .AccountModel import AccountModel
-
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
+
 
 class MailboxModel(DirtyFieldsMixin, models.Model):
     """Database model for a mailbox in a mail account."""
@@ -38,16 +37,20 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
     name = models.CharField(max_length=255)
     """The mailaccount internal name of the mailbox. Unique together with :attr:`account`."""
 
-    account = models.ForeignKey(AccountModel, related_name="mailboxes", on_delete=models.CASCADE)
+    account = models.ForeignKey(
+        "AccountModel", related_name="mailboxes", on_delete=models.CASCADE
+    )
     """The mailaccount this mailbox was found in. Unique together with :attr:`name`. Deletion of that `account` deletes this mailbox."""
 
-    save_attachments = models.BooleanField(default=get_config('DEFAULT_SAVE_ATTACHMENTS'))
+    save_attachments = models.BooleanField(
+        default=get_config("DEFAULT_SAVE_ATTACHMENTS")
+    )
     """Whether to save attachments of the mails found in this mailbox. :attr:`constance.get_config('DEFAULT_SAVE_ATTACHMENTS')` by default."""
 
-    save_images = models.BooleanField(default=get_config('DEFAULT_SAVE_IMAGES'))
+    save_images = models.BooleanField(default=get_config("DEFAULT_SAVE_IMAGES"))
     """Whether to save images of the mails found in this mailbox. :attr:`constance.get_config('DEFAULT_SAVE_IMAGES')` by default."""
 
-    save_toEML = models.BooleanField(default=get_config('DEFAULT_SAVE_TO_EML'))
+    save_toEML = models.BooleanField(default=get_config("DEFAULT_SAVE_TO_EML"))
     """Whether to save the mails found in this mailbox as .eml files. :attr:`constance.get_config('DEFAULT_SAVE_TO_EML')` by default."""
 
     is_favorite = models.BooleanField(default=False)
@@ -63,7 +66,6 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
-
 
     def __str__(self):
         return f"Mailbox {self.name} of {self.account}"
@@ -83,7 +85,6 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
             availableFetchingOptions = []
         return availableFetchingOptions
 
-
     class Meta:
         """Metadata class for the model."""
 
@@ -92,8 +93,7 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=['name', 'account'],
-                name='mailbox_unique_together_name_account'
+                fields=["name", "account"], name="mailbox_unique_together_name_account"
             )
         ]
         """:attr:`name` and :attr:`account` in combination are unique."""

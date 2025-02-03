@@ -20,14 +20,26 @@
 
 import logging
 
+import django.db
 from dirtyfields import DirtyFieldsMixin
 from django.contrib.auth.models import User
 from django.db import models
 
 from core import constants
 
+from ..utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
+from ..utils.fetchers.IMAPFetcher import IMAPFetcher
+from ..utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from ..utils.fetchers.POP3Fetcher import POP3Fetcher
+from ..utils.mailParsing import parseMailbox
+from .MailboxModel import MailboxModel
+
+# from utils.fetchers.ExchangeFetcher import ExchangeFetcher
+
+
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
+
 
 class AccountModel(DirtyFieldsMixin, models.Model):
     """Database model for the account data of a mail account."""
@@ -62,7 +74,7 @@ class AccountModel(DirtyFieldsMixin, models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite accounts. False by default."""
 
-    user = models.ForeignKey(User, related_name='accounts', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="accounts", on_delete=models.CASCADE)
     """The user this account belongs to. Deletion of that `user` deletes this correspondent."""
 
     created = models.DateTimeField(auto_now_add=True)
@@ -70,7 +82,6 @@ class AccountModel(DirtyFieldsMixin, models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
-
 
     def __str__(self):
         return f"Account {self.mail_address} at host {self.mail_host} with protocol {self.protocol}"
@@ -83,8 +94,59 @@ class AccountModel(DirtyFieldsMixin, models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=['mail_address', 'user'],
-                name='account_unique_together_mail_address_user'
+                fields=["mail_address", "user"],
+                name="account_unique_together_mail_address_user",
             )
         ]
         """`mail_address` and :attr:`user` in combination are unique fields."""
+
+    def get_fetcher(self):
+        """Instantiates the fetcher from :class:`core.utils.fetchers` corresponding to :attr:`protocol`."""
+
+        if self.protocol == IMAPFetcher.PROTOCOL:
+            return IMAPFetcher(self)
+        elif self.protocol == IMAP_SSL_Fetcher.PROTOCOL:
+            return IMAP_SSL_Fetcher(self)
+        elif self.protocol == POP3Fetcher.PROTOCOL:
+            return POP3Fetcher(self)
+        elif self.protocol == POP3_SSL_Fetcher.PROTOCOL:
+            return POP3_SSL_Fetcher(self)
+        # elif self.protocol == ExchangeFetcher.PROTOCOL:
+        #     return ExchangeFetcher(self)
+        else:
+            raise ValueError(
+                "The requested protocol is not implemented in a fetcher class!"
+            )
+
+    def update_mailboxes(self):
+        """Scans the given mailaccount for unknown mailboxes,
+        parses and inserts them into the database.
+        """
+        logger.info("Updating mailboxes in %s...", self)
+
+        with self.get_fetcher() as fetcher:
+            mailboxList = fetcher.fetchMailboxes()
+
+        for mailbox in mailboxList:
+            parsedMailbox = parseMailbox(mailbox)
+            logger.debug("Saving mailbox %s from %s to db ...", parsedMailbox, self)
+            try:
+                with django.db.transaction.atomic():
+
+                    mailboxEntry, created = MailboxModel.objects.get_or_create(
+                        name=parsedMailbox, account=self
+                    )
+                    if created:
+                        logger.debug("Entry for %s created", str(mailboxEntry))
+                    else:
+                        logger.debug("Entry for %s already exists", str(mailboxEntry))
+
+            except django.db.IntegrityError:
+                logger.error(
+                    "Error while writing to database, rollback to last state",
+                    exc_info=True,
+                )
+
+            logger.debug("Successfully saved mailbox to db ...")
+
+        logger.info("Successfully updated mailboxes.")
