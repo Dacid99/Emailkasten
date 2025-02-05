@@ -98,12 +98,12 @@ def _decodeHeader(header: str) -> str:
     return decodedString
 
 
-def _separateRFC2822MailAddressFormat(mailers: list[str]) -> list[tuple[str, str]]:
+def separateRFC2822MailAddressFormat(mailers: list[str]) -> list[tuple[str, str]]:
     """Splits the RFC2822 address fiels into the mailer name mail address.
 
     Note:
         Uses :func:`email.utils.getaddresses` to seperate and :func:`email_validator.validate_email` to validate.
-
+        :func:`email.utils.getaddresses` can be replaced by :func:`email.utils.parseaddr` for single addresses.
     Todo:
         If no valid mailaddress is found uses the entire address as fallback.
 
@@ -421,7 +421,7 @@ def _parseCorrespondents(
         logger.debug("No %s correspondents found in mail!", mentionHeaderKey)
         parsedMail[mentionHeaderKey] = []
     else:
-        parsedMail[mentionHeaderKey] = _separateRFC2822MailAddressFormat(correspondents)
+        parsedMail[mentionHeaderKey] = separateRFC2822MailAddressFormat(correspondents)
         logger.debug("Successfully parsed %s correspondents.", mentionHeaderKey)
 
 

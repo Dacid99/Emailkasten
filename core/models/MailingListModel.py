@@ -17,8 +17,17 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """Module with the :class:`MailingListModel` model class."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from django.db import models
+
+from ..constants import ParsedMailKeys
+from ..utils.mailParsing import _parseHeader
+
+if TYPE_CHECKING:
+    from email.message import Message
 
 
 class MailingListModel(models.Model):
@@ -75,3 +84,29 @@ class MailingListModel(models.Model):
             )
         ]
         """:attr:`list_id` and :attr:`correspondent` in combination are unique."""
+
+    @staticmethod
+    def fromMessage(emailMessage: Message) -> MailingListModel | None:
+        if not (list_id := emailMessage.get(ParsedMailKeys.MailingList.ID, None)):
+            return None
+
+        new_mailinglist = MailingListModel(list_id=list_id)
+        new_mailinglist.list_owner = emailMessage.get(
+            ParsedMailKeys.MailingList.ID, None
+        )
+        new_mailinglist.list_subscribe = emailMessage.get(
+            ParsedMailKeys.MailingList.SUBSCRIBE, None
+        )
+        new_mailinglist.list_unsubscribe = emailMessage.get(
+            ParsedMailKeys.MailingList.UNSUBSCRIBE, None
+        )
+        new_mailinglist.list_post = emailMessage.get(
+            ParsedMailKeys.MailingList.POST, None
+        )
+        new_mailinglist.list_help = emailMessage.get(
+            ParsedMailKeys.MailingList.HELP, None
+        )
+        new_mailinglist.list_archive = emailMessage.get(
+            ParsedMailKeys.MailingList.ARCHIVE, None
+        )
+        return new_mailinglist

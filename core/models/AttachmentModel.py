@@ -26,14 +26,18 @@ from typing import TYPE_CHECKING
 
 from django.db import models
 
-from core.utils.fileManagment import saveStore
 from Emailkasten.utils import get_config
 
+from ..utils.fileManagment import saveStore
 from .StorageModel import StorageModel
 
 if TYPE_CHECKING:
+    from email.message import Message
     from io import BufferedWriter
     from typing import Any, Callable
+
+    from .EMailModel import EMailModel
+
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +62,7 @@ class AttachmentModel(models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite attachments. False by default."""
 
-    email = models.ForeignKey(
+    email: models.ForeignKey[EMailModel] = models.ForeignKey(
         "EMailModel", related_name="attachments", on_delete=models.CASCADE
     )
     """The mail that the attachment was found in.  Deletion of that `email` deletes this attachment."""
@@ -111,7 +115,7 @@ class AttachmentModel(models.Model):
                     exc_info=True,
                 )
 
-    def save_to_storage(self, attachmentData):
+    def save_to_storage(self, attachmentData: Message[str, str]):
         """Saves the attachment file to the storage.
         If the file already exists, does not overwrite.
         If an error occurs, removes the incomplete file.
@@ -127,7 +131,7 @@ class AttachmentModel(models.Model):
             return
 
         @saveStore
-        def writeAttachment(file: BufferedWriter, attachmentData) -> None:
+        def writeAttachment(file: BufferedWriter, attachmentData: Message[str, str]):
             file.write(attachmentData.get_payload(decode=True))
 
         logger.debug("Storing attachment %s ...", self)
@@ -139,3 +143,12 @@ class AttachmentModel(models.Model):
         self.save(update_fields=["file_path"])
 
         logger.debug("Successfully stored attachment.")
+
+    @staticmethod
+    def fromData(attachmentData: Message[str, str]) -> AttachmentModel:
+        new_attachment = AttachmentModel()
+
+        new_attachment.file_name = attachmentData.get_filename()
+        new_attachment.datasize = len(attachmentData.as_bytes())
+
+        return new_attachment

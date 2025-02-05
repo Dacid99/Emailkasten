@@ -23,6 +23,11 @@
 - filtertest for choices
 - move all signals into models
 - user validation for serializers to avoid leakage
+- first found in mailbox fk
+- allow modification of email_name in correspondent, its arbitrary anyway
+- upload eml action with parsing
+- headers into json field
+- html and plain body
 
 ### Work in progress
 - tests

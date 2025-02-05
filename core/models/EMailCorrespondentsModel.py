@@ -17,21 +17,28 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """Module with the :class:`EMailCorrespondentsModel` model class."""
+from __future__ import annotations
 
 from django.db import models
 
 from core.constants import ParsedMailKeys
+
 from .CorrespondentModel import CorrespondentModel
-from .EMailModel import EMailModel
 
 
 class EMailCorrespondentsModel(models.Model):
     """Database model for connecting emails and their correspondents."""
 
-    email = models.ForeignKey(EMailModel, related_name="emailcorrespondents", on_delete=models.CASCADE)
+    email = models.ForeignKey(
+        "EMailModel", related_name="emailcorrespondents", on_delete=models.CASCADE
+    )
     """The email :attr:`correspondent` was mentioned in. Unique together with :attr:`correspondent` and :attr:`mention`."""
 
-    correspondent = models.ForeignKey(CorrespondentModel, related_name="correspondentemails", on_delete=models.CASCADE)
+    correspondent = models.ForeignKey(
+        "CorrespondentModel",
+        related_name="correspondentemails",
+        on_delete=models.CASCADE,
+    )
     """The correspondent that was mentioned in :attr:`email`. Unique together with :attr:`email` and :attr:`mention`."""
 
     MENTIONTYPES = list(ParsedMailKeys.Correspondent())
@@ -46,7 +53,6 @@ class EMailCorrespondentsModel(models.Model):
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
 
-
     def __str__(self):
         return f"EMail-Correspondent connection from email {self.email} to correspondent {self.correspondent} with mention {self.mention}"
 
@@ -58,8 +64,20 @@ class EMailCorrespondentsModel(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=['email', 'correspondent', 'mention'],
-                name='emailcorrespondents_unique_together_email_correspondent_mention'
+                fields=["email", "correspondent", "mention"],
+                name="emailcorrespondents_unique_together_email_correspondent_mention",
             )
         ]
         """:attr:`email`, :attr:`correspondent` and :attr:`mention` in combination are unique."""
+
+    @staticmethod
+    def fromHeader(
+        header: str, headerName: str, email=None
+    ) -> EMailCorrespondentsModel | None:
+        new_correspondent = CorrespondentModel.fromHeader(header)
+        if not new_correspondent:
+            return None
+        new_emailCorrespondent = EMailCorrespondentsModel(
+            correspondent=new_correspondent, email=email, mention=headerName
+        )
+        return new_emailCorrespondent

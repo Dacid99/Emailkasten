@@ -26,15 +26,17 @@ from typing import TYPE_CHECKING
 
 from django.db import models
 
-from core.utils.fileManagment import saveStore
 from Emailkasten.utils import get_config
 
+from ..utils.fileManagment import saveStore
 from .StorageModel import StorageModel
 
 if TYPE_CHECKING:
+    from email.message import Message
     from io import BufferedWriter
     from typing import Any, Callable
 
+    from .EMailModel import EMailModel
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +61,7 @@ class ImageModel(models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite images. False by default."""
 
-    email = models.ForeignKey(
+    email: models.ForeignKey[EMailModel] = models.ForeignKey(
         "EMailModel", related_name="images", on_delete=models.CASCADE
     )
     """The mail that the image was found in. Deletion of that `email` deletes this image."""
@@ -111,7 +113,7 @@ class ImageModel(models.Model):
                     exc_info=True,
                 )
 
-    def save_to_storage(self, imageData):
+    def save_to_storage(self, imageData: Message[str, str]):
         """Saves the image file to the storage.
         If the file already exists, does not overwrite.
         If an error occurs, removes the incomplete file.
@@ -127,7 +129,7 @@ class ImageModel(models.Model):
             return
 
         @saveStore
-        def writeImage(file: BufferedWriter, imageData) -> None:
+        def writeImage(file: BufferedWriter, imageData: Message[str, str]):
             file.write(imageData.get_payload(decode=True))
 
         logger.debug("Storing image %s ...", self)
@@ -139,3 +141,12 @@ class ImageModel(models.Model):
         self.save(update_fields=["file_path"])
 
         logger.debug("Successfully stored image.")
+
+    @staticmethod
+    def fromData(imageData: Message[str, str]) -> ImageModel:
+        new_image = ImageModel()
+
+        new_image.file_name = imageData.get_filename()
+        new_image.datasize = len(imageData.as_bytes())
+
+        return new_image

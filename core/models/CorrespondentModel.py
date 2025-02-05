@@ -18,7 +18,16 @@
 
 """Module with the :class:`CorrespondentModel` model class."""
 
+from __future__ import annotations
+
+import logging
+
 from django.db import models
+
+from core.utils import mailParsing
+
+logger = logging.getLogger(__name__)
+"""The logger instance for the module."""
 
 
 class CorrespondentModel(models.Model):
@@ -47,3 +56,21 @@ class CorrespondentModel(models.Model):
 
         db_table = "correspondents"
         """The name of the database table for the correspondents."""
+
+    @staticmethod
+    def fromHeader(header: str) -> CorrespondentModel | None:
+        ((name, address),) = mailParsing.separateRFC2822MailAddressFormat([header])
+        if address:
+            try:
+                CorrespondentModel.objects.get(email_address=address)
+                logger.debug(
+                    "Skipping correspondent with mailaddress %s, it already exists in the db.",
+                    address,
+                )
+                return None
+            except CorrespondentModel.DoesNotExist:
+                pass
+        else:
+            return None
+
+        return CorrespondentModel(email_address=address, email_name=name)

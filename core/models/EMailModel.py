@@ -24,26 +24,29 @@ import email
 import email.generator
 import logging
 import os
+from hashlib import md5
 from typing import TYPE_CHECKING
 
 from django.db import models
+from django.utils import timezone
 
+from core.constants import ParsedMailKeys
 from core.utils.fileManagment import saveStore
 from Emailkasten.utils import get_config
 
-from .MailingListModel import MailingListModel
 from .StorageModel import StorageModel
 
 if TYPE_CHECKING:
+    from email.message import Message
     from io import BufferedWriter
-    from typing import Any, Callable
 
-    from django.db.models.manager import RelatedManager
-
+    from .AccountModel import AccountModel
     from .CorrespondentModel import CorrespondentModel
+    from .MailingListModel import MailingListModel
 
 
 logger = logging.getLogger(__name__)
+"""The logger instance for this module."""
 
 
 class EMailModel(models.Model):
@@ -55,13 +58,13 @@ class EMailModel(models.Model):
     datetime = models.DateTimeField()
     """The Date header of the mail."""
 
-    email_subject = models.CharField(max_length=255)
+    email_subject = models.CharField(max_length=255, null=True)
     """The subject header of the mail."""
 
     bodytext = models.TextField()
     """The bodytext of the mail."""
 
-    inReplyTo = models.ForeignKey(
+    inReplyTo: models.ForeignKey[EMailModel] = models.ForeignKey(
         "self", null=True, related_name="replies", on_delete=models.SET_NULL
     )
     """The mail that this mail is a response to. Can be null. Deletion of that replied-to mail sets this field to NULL."""
@@ -97,17 +100,17 @@ class EMailModel(models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mails. False by default."""
 
-    correspondents: RelatedManager[CorrespondentModel] = models.ManyToManyField(
+    correspondents: models.ManyToManyField[CorrespondentModel] = models.ManyToManyField(
         "CorrespondentModel", through="EMailCorrespondentsModel", related_name="emails"
     )
     """The correspondents that are mentioned in this mail. Bridges through :class:`core.models.EMailCorrespondentsModel`."""
 
-    mailinglist = models.ForeignKey(
-        MailingListModel, null=True, related_name="emails", on_delete=models.CASCADE
+    mailinglist: models.ForeignKey[MailingListModel] = models.ForeignKey(
+        "MailingListModel", null=True, related_name="emails", on_delete=models.CASCADE
     )
     """The mailinglist that this mail has been sent from. Can be null. Deletion of that `mailinglist` deletes this mail."""
 
-    account = models.ForeignKey(
+    account: models.ForeignKey[AccountModel] = models.ForeignKey(
         "AccountModel", related_name="emails", on_delete=models.CASCADE
     )
     """The account that this mail has been found in. Unique together with :attr:`message_id`. Deletion of that `account` deletes this mail."""
@@ -203,7 +206,7 @@ class EMailModel(models.Model):
             except OSError:
                 logger.error(
                     "An OS error occured removing %s!",
-                    self.file_peml_filepathath,
+                    self.eml_filepath,
                     exc_info=True,
                 )
             except Exception:
@@ -286,3 +289,68 @@ class EMailModel(models.Model):
             Whether the mail is considered spam.
         """
         return bool(self.x_spam) and self.x_spam != "NO"
+
+    @staticmethod
+    def fromMessage(emailMessage: Message) -> EMailModel | None:
+        message_id = emailMessage.get(ParsedMailKeys.Header.MESSAGE_ID, None)
+        if not message_id:
+            message_id = md5(emailMessage.as_bytes()).hexdigest()
+
+        try:
+            EMailModel.objects.get(message_id=message_id)
+            logger.debug(
+                "Skipping email with Message-ID %s, it already exists in the db.",
+                message_id,
+            )
+            return None
+        except EMailModel.DoesNotExist:
+            logger.debug("Parsing email with Message-ID %s ...", message_id)
+
+        new_email = EMailModel(message_id=message_id)
+        new_email.datetime = emailMessage.get(
+            ParsedMailKeys.Header.DATE, timezone.now()
+        )
+        new_email.email_subject = emailMessage.get(ParsedMailKeys.Header.SUBJECT, None)
+        if inReplyTo_message_id := emailMessage.get(
+            ParsedMailKeys.Header.IN_REPLY_TO, None
+        ):
+            try:
+                new_email.inReplyTo = EMailModel.objects.get(
+                    message_id=inReplyTo_message_id
+                )
+            except EMailModel.DoesNotExist:
+                new_email.inReplyTo = None
+        new_email.comments = emailMessage.get(ParsedMailKeys.Header.COMMENTS, None)
+        new_email.keywords = emailMessage.get(ParsedMailKeys.Header.KEYWORDS, None)
+        new_email.importance = emailMessage.get(ParsedMailKeys.Header.IMPORTANCE, None)
+        new_email.priority = emailMessage.get(ParsedMailKeys.Header.PRIORITY, None)
+        new_email.precedence = emailMessage.get(ParsedMailKeys.Header.PRECEDENCE, None)
+        new_email.received = (
+            "\n".join(emailMessage.get_all(ParsedMailKeys.Header.RECEIVED, [])) or None
+        )
+        new_email.user_agent = emailMessage.get(ParsedMailKeys.Header.USER_AGENT, None)
+        new_email.auto_submitted = emailMessage.get(
+            ParsedMailKeys.Header.AUTO_SUBMITTED, None
+        )
+        new_email.content_type = emailMessage.get(
+            ParsedMailKeys.Header.CONTENT_TYPE, None
+        )
+        new_email.content_language = emailMessage.get(
+            ParsedMailKeys.Header.CONTENT_LANGUAGE, None
+        )
+        new_email.content_location = emailMessage.get(
+            ParsedMailKeys.Header.CONTENT_LOCATION, None
+        )
+        new_email.x_priority = emailMessage.get(ParsedMailKeys.Header.X_PRIORITY, None)
+        new_email.x_originated_client = emailMessage.get(
+            ParsedMailKeys.Header.X_ORIGINATING_CLIENT, None
+        )
+        new_email.x_spam = emailMessage.get(ParsedMailKeys.Header.X_SPAM_FLAG, None)
+
+        if emailMessage.is_multipart():
+            for part in emailMessage.walk():
+                pass
+
+        logger.debug("Successfully parsed email.")
+
+        return new_email
