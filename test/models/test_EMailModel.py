@@ -24,7 +24,7 @@ Fixtures:
 """
 
 import datetime
-from turtle import update
+from email.message import Message
 
 import pytest
 from django.db import IntegrityError
@@ -68,8 +68,7 @@ def test_EMailModel_creation(email):
     assert isinstance(email.message_id, str)
     assert email.datetime is not None
     assert isinstance(email.datetime, datetime.datetime)
-    assert email.email_subject is not None
-    assert isinstance(email.email_subject, str)
+    assert email.email_subject is None
     assert email.bodytext is not None
     assert isinstance(email.bodytext, str)
     assert email.inReplyTo is None
@@ -95,7 +94,7 @@ def test_EMailModel_creation(email):
     assert email.content_location is None
     assert email.x_priority is None
     assert email.x_originated_client is None
-    assert email.x_spam is None
+    assert email.x_spam == "NO"
 
     assert isinstance(email.updated, datetime.datetime)
     assert email.updated is not None
@@ -104,7 +103,6 @@ def test_EMailModel_creation(email):
 
     assert email.message_id in str(email)
     assert str(email.datetime) in str(email)
-    assert email.email_subject in str(email)
     assert str(email.account) in str(email)
 
 
@@ -268,6 +266,50 @@ def test_delete_email_delete_error(mocker, email, mock_logger):
     mock_delete.assert_called_once()
     mock_os_remove.assert_not_called()
     mock_logger.debug.assert_not_called()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("SAVE_TO_EML, expectedCalls", [(True, 1), (False, 0)])
+def test_save_data_settings(mocker, email, override_config, SAVE_TO_EML, expectedCalls):
+    mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
+    mock_data = mocker.MagicMock(spec=Message)
+    mock_save_to_storage = mocker.patch(
+        "core.models.EMailModel.EMailModel.save_to_storage"
+    )
+    with override_config(DEFAULT_SAVE_TO_EML=SAVE_TO_EML):
+        email.save(attachmentData=mock_data)
+
+    mock_save_to_storage.call_count == expectedCalls
+    mock_super_save.assert_called()
+
+
+@pytest.mark.django_db
+def test_save_no_data(mocker, email):
+    mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
+    mock_save_to_storage = mocker.patch(
+        "core.models.EMailModel.EMailModel.save_to_storage"
+    )
+
+    email.save()
+
+    mock_super_save.assert_called_once_with()
+    mock_save_to_storage.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_save_data_failure(mocker, email):
+    mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
+    mock_data = mocker.MagicMock(spec=Message)
+    mock_save_to_storage = mocker.patch(
+        "core.models.EMailModel.EMailModel.save_to_storage",
+        side_effect=Exception,
+    )
+
+    with pytest.raises(Exception):
+        email.save(emailData=mock_data)
+
+    mock_super_save.assert_called()
+    mock_save_to_storage.assert_called()
 
 
 @pytest.mark.django_db

@@ -91,12 +91,6 @@ def fixture_no_emailMessage():
     return testMessage
 
 
-@pytest.fixture(name="mock_timezone_now")
-def fixture_mock_timezone(mocker, faker):
-    """Mocks :func:`django.utils.timezone.now`."""
-    return mocker.patch("django.utils.timezone.now", return_value=faker.date_time())
-
-
 @pytest.mark.parametrize(
     "header, expectedResult",
     [
@@ -169,32 +163,109 @@ def test_getHeader_failure(no_emailMessage, fake_single_header):
         )
 
 
-def test_getDatetimeHeader_success(
-    emailMessage, mock_logger, mock_timezone_now, fake_date_header
-):
-    result = core.utils.mailParsing.getDatetimeHeader(emailMessage)
+def test_parseDatetimeHeader_success(faker, mock_logger):
+    fake_date_headervalue = format_datetime(
+        faker.date_time(tzinfo=zoneinfo.ZoneInfo(faker.timezone()))
+    )
+
+    result = core.utils.mailParsing.parseDatetimeHeader(fake_date_headervalue)
+
     mock_logger.warning.assert_not_called()
-    mock_timezone_now.assert_not_called()
     assert isinstance(result, datetime)
-    assert format_datetime(result) == format_datetime(fake_date_header[1])
+    assert format_datetime(result) == fake_date_headervalue
 
 
-def test_getDatetimeHeader_fallback(empty_emailMessage, mock_logger, mock_timezone_now):
-    result = core.utils.mailParsing.getDatetimeHeader(empty_emailMessage)
+def test_parseDatetimeHeader_fallback(mocker, faker, mock_logger):
+    mock_timezone_now = mocker.patch(
+        "django.utils.timezone.now", return_value=faker.date_time()
+    )
+
+    result = core.utils.mailParsing.parseDatetimeHeader("no datetime header")
+
     mock_logger.warning.assert_called()
     mock_timezone_now.assert_called()
     assert isinstance(result, datetime)
     assert format_datetime(result) == format_datetime(mock_timezone_now.return_value)
 
 
-def test_getDatetimeHeader_badHeader_fallback(
-    bad_emailMessage, mock_logger, mock_timezone_now
+def test_parseDatetimeHeader_no_header(mocker, faker, mock_logger):
+    mock_timezone_now = mocker.patch(
+        "django.utils.timezone.now", return_value=faker.date_time()
+    )
+
+    result = core.utils.mailParsing.parseDatetimeHeader(None)
+
+    mock_logger.warning.assert_called()
+    mock_timezone_now.assert_called()
+    assert isinstance(result, datetime)
+    assert format_datetime(result) == format_datetime(mock_timezone_now.return_value)
+
+
+@pytest.mark.parametrize(
+    "header, expectedResult",
+    [
+        ("test <test@test.org>", ("test", "test@test.org")),
+        ("someone@somedomain.us", ("", "someone@somedomain.us")),
+        ("<the@dude.eu>", ("", "the@dude.eu")),
+        ("abc<alpha@beta.de>", ("abc", "alpha@beta.de")),
+        ("a <addr@sub.dom.tld>", ("a", "addr@sub.dom.tld")),
+    ],
+)
+def test_parseCorrespondentHeader_success(mocker, mock_logger, header, expectedResult):
+    spy_validate_email = mocker.spy(
+        core.utils.mailParsing.email_validator, "validate_email"
+    )
+
+    result = core.utils.mailParsing.parseCorrespondentHeader(header)
+
+    assert result == expectedResult
+    mock_logger.warning.assert_not_called()
+    spy_validate_email.assert_called_once()
+
+
+def test_parseCorrespondentHeader_no_address(mocker, mock_logger):
+    spy_validate_email = mocker.spy(
+        core.utils.mailParsing.email_validator, "validate_email"
+    )
+
+    result = core.utils.mailParsing.parseCorrespondentHeader("no address <>")
+
+    assert result == ("no address", "no address <>")
+    mock_logger.warning.assert_called()
+    spy_validate_email.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "invalidHeader, expectedResult",
+    [
+        ("noone@somedomain", ("", "noone@somedomain")),
+        ("abc", ("", "abc")),
+    ],
+)
+def test_parseCorrespondentHeader_invalid_address(
+    mocker, mock_logger, invalidHeader, expectedResult
 ):
-    result = core.utils.mailParsing.getDatetimeHeader(bad_emailMessage)
+    spy_validate_email = mocker.spy(
+        core.utils.mailParsing.email_validator, "validate_email"
+    )
+
+    result = core.utils.mailParsing.parseCorrespondentHeader(invalidHeader)
+
+    assert result == expectedResult
     mock_logger.warning.assert_called()
-    mock_timezone_now.assert_called()
-    assert isinstance(result, datetime)
-    assert format_datetime(result) == format_datetime(mock_timezone_now.return_value)
+    spy_validate_email.assert_called_once()
+
+
+def test_parseCorrespondentHeader_no_header(mocker, mock_logger):
+    spy_validate_email = mocker.spy(
+        core.utils.mailParsing.email_validator, "validate_email"
+    )
+
+    result = core.utils.mailParsing.parseCorrespondentHeader(None)
+
+    assert result == ("", None)
+    mock_logger.warning.assert_called()
+    spy_validate_email.assert_not_called()
 
 
 @pytest.mark.parametrize(

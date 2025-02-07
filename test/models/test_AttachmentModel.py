@@ -23,6 +23,7 @@ Fixtures:
 """
 
 import datetime
+from email.message import Message
 
 import pytest
 from django.db import IntegrityError
@@ -163,3 +164,63 @@ def test_delete_attachmentfile_delete_error(mocker, attachment, mock_logger):
     mock_delete.assert_called_once()
     mock_os_remove.assert_not_called()
     mock_logger.debug.assert_not_called()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("SAVE_ATTACHMENTS, expectedCalls", [(True, 1), (False, 0)])
+def test_save_data_settings(
+    mocker, attachment, override_config, SAVE_ATTACHMENTS, expectedCalls
+):
+    mock_super_save = mocker.patch("core.models.AttachmentModel.models.Model.save")
+    mock_data = mocker.MagicMock(spec=Message)
+    mock_save_to_storage = mocker.patch(
+        "core.models.AttachmentModel.AttachmentModel.save_to_storage"
+    )
+    with override_config(DEFAULT_SAVE_ATTACHMENTS=SAVE_ATTACHMENTS):
+        attachment.save(attachmentData=mock_data)
+
+    mock_save_to_storage.call_count == expectedCalls
+    mock_super_save.assert_called()
+
+
+@pytest.mark.django_db
+def test_save_no_data(mocker, attachment):
+    mock_super_save = mocker.patch("core.models.AttachmentModel.models.Model.save")
+    mock_save_to_storage = mocker.patch(
+        "core.models.AttachmentModel.AttachmentModel.save_to_storage"
+    )
+
+    attachment.save()
+
+    mock_super_save.assert_called_once_with()
+    mock_save_to_storage.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_save_data_failure(mocker, attachment):
+    mock_super_save = mocker.patch("core.models.AttachmentModel.models.Model.save")
+    mock_data = mocker.MagicMock(spec=Message)
+    mock_save_to_storage = mocker.patch(
+        "core.models.AttachmentModel.AttachmentModel.save_to_storage",
+        side_effect=Exception,
+    )
+
+    with pytest.raises(Exception):
+        attachment.save(attachmentData=mock_data)
+
+    mock_super_save.assert_called()
+    mock_save_to_storage.assert_called()
+
+
+@pytest.mark.django_db
+def test_fromData(mocker):
+    mock_data = mocker.MagicMock(spec=Message)
+
+    result = AttachmentModel.fromData(mock_data)
+
+    mock_data.get_filename.assert_called_once_with()
+    mock_data.as_bytes.assert_called_once_with()
+    mock_data.as_bytes.return_value.__len__.assert_called_once()
+    assert isinstance(result, AttachmentModel)
+    assert result.file_name == mock_data.get_filename.return_value
+    assert result.datasize == mock_data.as_bytes.return_value.__len__.return_value

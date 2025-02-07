@@ -24,6 +24,7 @@ Fixtures:
 """
 
 import datetime
+from email.message import Message
 
 import pytest
 from django.db import IntegrityError
@@ -32,6 +33,7 @@ from model_bakery import baker
 
 from core.models.EMailModel import EMailModel
 from core.models.ImageModel import ImageModel
+from Emailkasten.utils import get_config
 
 
 @pytest.fixture(name="mock_logger", autouse=True)
@@ -161,3 +163,60 @@ def test_delete_imagefile_delete_error(mocker, image, mock_logger):
     mock_delete.assert_called_once()
     mock_os_remove.assert_not_called()
     mock_logger.debug.assert_not_called()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("SAVE_IMAGES, expectedCalls", [(True, 1), (False, 0)])
+def test_save_data_settings(mocker, image, override_config, SAVE_IMAGES, expectedCalls):
+    mock_super_save = mocker.patch("core.models.ImageModel.models.Model.save")
+    mock_data = mocker.MagicMock(spec=Message)
+    mock_save_to_storage = mocker.patch(
+        "core.models.ImageModel.ImageModel.save_to_storage"
+    )
+    with override_config(DEFAULT_SAVE_IMAGES=SAVE_IMAGES):
+        image.save(imageData=mock_data)
+
+    mock_save_to_storage.call_count == expectedCalls
+    mock_super_save.assert_called()
+
+
+@pytest.mark.django_db
+def test_save_no_data(mocker, image):
+    mock_super_save = mocker.patch("core.models.ImageModel.models.Model.save")
+    mock_save_to_storage = mocker.patch(
+        "core.models.ImageModel.ImageModel.save_to_storage"
+    )
+
+    image.save()
+
+    mock_super_save.assert_called_once_with()
+    mock_save_to_storage.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_save_data_failure(mocker, image):
+    mock_super_save = mocker.patch("core.models.ImageModel.models.Model.save")
+    mock_data = mocker.MagicMock(spec=Message)
+    mock_save_to_storage = mocker.patch(
+        "core.models.ImageModel.ImageModel.save_to_storage", side_effect=Exception
+    )
+
+    with pytest.raises(Exception):
+        image.save(imageData=mock_data)
+
+    mock_super_save.assert_called()
+    mock_save_to_storage.assert_called()
+
+
+@pytest.mark.django_db
+def test_fromData(mocker):
+    mock_data = mocker.MagicMock(spec=Message)
+
+    result = ImageModel.fromData(mock_data)
+
+    mock_data.get_filename.assert_called_once_with()
+    mock_data.as_bytes.assert_called_once_with()
+    mock_data.as_bytes.return_value.__len__.assert_called_once()
+    assert isinstance(result, ImageModel)
+    assert result.file_name == mock_data.get_filename.return_value
+    assert result.datasize == mock_data.as_bytes.return_value.__len__.return_value
