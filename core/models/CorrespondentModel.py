@@ -21,10 +21,10 @@
 from __future__ import annotations
 
 import logging
-from email.utils import parseaddr
 
-import email_validator
 from django.db import models
+
+from core.utils.mailParsing import parseCorrespondentHeader
 
 logger = logging.getLogger(__name__)
 """The logger instance for the module."""
@@ -59,22 +59,15 @@ class CorrespondentModel(models.Model):
 
     @staticmethod
     def fromHeader(header: str) -> CorrespondentModel | None:
-        name, address = parseaddr(header)
+        name, address = parseCorrespondentHeader(header)
         if not address:
-            address = header
-        try:
-            email_validator.validate_email(address, check_deliverability=False)
-        except email_validator.EmailNotValidError:
-            logger.warning("Mailaddress is invalid for %s, %s!", name, address)
-            address = header
-
-        try:
-            CorrespondentModel.objects.get(email_address=address)
             logger.debug(
-                "Skipping correspondent with mailaddress %s, it already exists in the db.",
+                "Skipping correspondent with empty mailaddress %s.",
                 address,
             )
             return None
+        try:
+            return CorrespondentModel.objects.get(email_address=address)
         except CorrespondentModel.DoesNotExist:
             pass
 

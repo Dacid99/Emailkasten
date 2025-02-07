@@ -19,6 +19,7 @@
 """Module with the :class:`MailingListModel` model class."""
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 from django.db import models
@@ -27,7 +28,11 @@ from ..constants import ParsedMailKeys
 from ..utils.mailParsing import getHeader
 
 if TYPE_CHECKING:
-    from email.message import Message
+    from email.message import EmailMessage
+
+    from core.models.CorrespondentModel import CorrespondentModel
+
+logger = logging.getLogger(__name__)
 
 
 class MailingListModel(models.Model):
@@ -57,7 +62,7 @@ class MailingListModel(models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mailingslists. False by default."""
 
-    correspondent = models.ForeignKey(
+    correspondent: models.ForeignKey[CorrespondentModel] = models.ForeignKey(
         "CorrespondentModel", related_name="mailinglist", on_delete=models.CASCADE
     )
     """The correspondent that sends the mailinglist. Unique together with :attr:`list_id`. Deletion of that `correspondent` deletes this mailinglist."""
@@ -86,15 +91,23 @@ class MailingListModel(models.Model):
         """:attr:`list_id` and :attr:`correspondent` in combination are unique."""
 
     @staticmethod
-    def fromMessage(
-        emailMessage: Message, correspondent=None
+    def fromEmailMessage(
+        emailMessage: EmailMessage, correspondent=None
     ) -> MailingListModel | None:
         if not (list_id := getHeader(emailMessage, ParsedMailKeys.MailingList.ID)):
+            logger.debug(
+                "Skipping mailinglist with empty list id %s.",
+                list_id,
+            )
             return None
+        try:
+            return MailingListModel.objects.get(list_id=list_id)
+        except MailingListModel.DoesNotExist:
+            pass
 
         new_mailinglist = MailingListModel(list_id=list_id)
         new_mailinglist.list_owner = getHeader(
-            emailMessage, ParsedMailKeys.MailingList.ID
+            emailMessage, ParsedMailKeys.MailingList.OWNER
         )
         new_mailinglist.list_subscribe = getHeader(
             emailMessage, ParsedMailKeys.MailingList.SUBSCRIBE

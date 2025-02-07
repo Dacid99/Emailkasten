@@ -32,8 +32,10 @@ import email.header
 import email.message
 import email.utils
 import logging
-from typing import TYPE_CHECKING, Callable
+from email.utils import parseaddr
+from typing import TYPE_CHECKING, Any, Callable
 
+import email_validator
 import imap_tools.imap_utf7
 from django.utils import timezone
 
@@ -81,14 +83,16 @@ def getHeader(
     emailMessage: EmailMessage,
     headerName: str,
     joiningString=", ",
-    fallbackCallable: Callable[[], str] = lambda: None,
-) -> str:
+    fallbackCallable: Callable[[], str | None] = lambda: None,
+) -> str | None:
     """Shorthand to safely get a header from a :class:`email.message.EmailMessage`.
+
     Args:
         emailMessage: The message to get the header from.
         headerName: The name of the header field.
         fallbackCallable: A callable that provides a fallback if the field is not found.
             Is only executed if required. Defaults to `lambda: None`.
+
     Returns:
         The decoded header field as a string if found
         else the return of the :attr:`fallbackCallable`.
@@ -99,8 +103,8 @@ def getHeader(
     return joiningString.join([decodeHeader(header) for header in encoded_header])
 
 
-def getDatetimeHeader(mailMessage: EmailMessage) -> datetime.datetime:
-    """Parses the date header of the given mailmessage.
+def parseDatetimeHeader(dateHeader: str | None) -> datetime.datetime:
+    """Parses the date header into a datetime object.
     If an error occurs uses the current time as fallback.
 
     Note:
@@ -108,25 +112,40 @@ def getDatetimeHeader(mailMessage: EmailMessage) -> datetime.datetime:
         and :func:`django.utils.timezone.now`.
 
     Args:
-        mailMessage: The mailmessage to get the datetime header from.
+        dateHeader: The datetime header to parse.
 
     Returns:
-        The datetime header.
+        The datetime version of the header.
+        The current time in case of an invalid date header.
     """
-    date = getHeader(mailMessage, ParsedMailKeys.Header.DATE)
-    if not date:
-        logger.warning("No Date header found in mail, resorting to current time!")
+    try:
+        parsedDatetime = email.utils.parsedate_to_datetime(dateHeader)
+    except ValueError:
+        logger.warning(
+            "No parseable Date header found in mail, resorting to current time!",
+            exc_info=True,
+        )
         return timezone.now()
-    else:
-        try:
-            parsedDatetime = email.utils.parsedate_to_datetime(date)
-        except ValueError:
-            logger.warning(
-                "No parseable Date header found in mail, resorting to current time!",
-                exc_info=True,
-            )
-            return timezone.now()
-        return parsedDatetime
+    return parsedDatetime
+
+
+def parseCorrespondentHeader(correspondentHeader: str) -> tuple[str, str]:
+    name, address = parseaddr(correspondentHeader)
+    if not address:
+        logger.warning(
+            "No mailaddress in header %s! Falling back to full header.",
+            correspondentHeader,
+        )
+        return name, correspondentHeader
+    try:
+        email_validator.validate_email(address, check_deliverability=False)
+    except email_validator.EmailNotValidError:
+        logger.warning(
+            "Invalid mailadress in %s! Falling back to full header.",
+            correspondentHeader,
+        )
+        return name, correspondentHeader
+    return name, address
 
 
 def parseMailboxName(mailboxBytes: bytes) -> str:
