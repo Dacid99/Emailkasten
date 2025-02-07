@@ -28,7 +28,6 @@ Fixtures:
 """
 from __future__ import annotations
 
-import email.message
 import os
 from typing import TYPE_CHECKING
 from unittest.mock import call
@@ -114,6 +113,70 @@ def fixture_mock_filesystem() -> Generator[FakeFilesystem, None, None]:
         yield patcher.fs
 
 
+@pytest.mark.parametrize(
+    "fakeFile, expectedFileExists, expectedFileSize, expectedCallsToOpen, expectedErrors",
+    [
+        ("/dir/new_file", True, 28, 1, 0),
+        ("/dir/full_file", True, 13, 0, 0),
+        ("/dir/empty_file", True, 28, 1, 0),
+        ("/dir/broken_file", True, 0, 2, 2),
+        ("/dir/no_write_file", True, 0, 1, 1),
+        ("/dir/no_read_file", True, 28, 1, 0),
+        ("/dir/no_readwrite_file", True, 0, 1, 1),
+        ("/dir/no_access_file", True, 0, 1, 1),
+        ("/no_access_dir/new_file", False, 0, 1, 1),
+        ("/no_access_dir/file", True, 0, 1, 1),
+    ],
+)
+def test_saveStore(
+    mocker: MockerFixture,
+    mock_logger: MagicMock,
+    mock_filesystem: FakeFilesystem,
+    fakeFile: str,
+    expectedFileExists: bool,
+    expectedFileSize: int,
+    expectedCallsToOpen: int,
+    expectedErrors: int,
+) -> None:
+    """Tests :func:`core.utils.fileManagment.saveStore` with the help of a fakefs.
+
+    Args:
+        mocker: The general mocker instance.
+        mock_logger: The mocked logger fixture.
+        mock_filesystem: The fakefs fixture.
+        fakeFile: The fakeFilePath parameter.
+        expectedFileExists: The expectedFileExists parameter.
+        expectedFileSize: The expectedFileSize parameter.
+        expectedEMLFilePath: The expectedEMLFilePath parameter.
+        expectedCallsToOpen: The expectedCallsToOpen parameter.
+        expectedErrors: The expectedErrors parameter.
+
+    Note:
+        Fakefs is overly restrictive with os.path.getsize for no-read files!
+        Cannot test the behaviour for non-empty no-read files.
+    """
+    spy_open = mocker.spy(core.utils.fileManagment, "open")
+    content = b"This is 28bytes for testing."
+
+    @core.utils.fileManagment.saveStore
+    def test_save(file):
+        file.write(content)
+
+    test_save(fakeFile)
+
+    mock_filesystem.chmod(os.path.dirname(fakeFile), 0o777)
+    assert mock_filesystem.exists(fakeFile) is expectedFileExists
+    if mock_filesystem.exists(fakeFile):
+        mock_filesystem.chmod(fakeFile, 0o666)
+        assert mock_filesystem.get_object(fakeFile).size == expectedFileSize
+
+    assert spy_open.call_count == expectedCallsToOpen
+    spy_open.assert_has_calls([call(fakeFile, "wb")] * expectedCallsToOpen)
+    assert mock_logger.error.call_count == expectedErrors
+
+    mock_logger.debug.assert_called()
+
+
 @pytest.mark.django_db
 @pytest.mark.parametrize("PRERENDER_IMAGETYPE", [("png"), ("jpg"), ("tiff")])
 def test_getPrerenderImageStoragePath_goodDict(
@@ -176,9 +239,7 @@ def test_getPrerenderImageStoragePath_badDict(
     spy_ospathjoin = mocker.spy(os.path, "join")
 
     with pytest.raises(KeyError):
-        prerenderFilePath = core.utils.fileManagment.getPrerenderImageStoragePath(
-            mock_bad_parsedMailDict
-        )
+        core.utils.fileManagment.getPrerenderImageStoragePath(mock_bad_parsedMailDict)
 
     mock_getSubdirectory.assert_not_called()
     spy_ospathjoin.assert_not_called()
