@@ -34,24 +34,20 @@ import email.utils
 import logging
 from typing import TYPE_CHECKING, Callable
 
-import charset_normalizer
+import imap_tools.imap_utf7
 from django.utils import timezone
-from imap_tools.imap_utf7 import utf7_decode
 
 from core.constants import ParsedMailKeys
-from Emailkasten.utils import get_config
 
 if TYPE_CHECKING:
+    from email.header import Header
     from email.message import EmailMessage
-
 
 logger = logging.getLogger(__name__)
 
 
-def _decodeHeader(header: str) -> str:
-    """Decodes an email header field encoded as bytes.
-    Checks for a specific charset to use.
-    If none is found uses the default :attr:`Emailkasten.constants.Mailget_config('DEFAULT_CHARSET')`.
+def decodeHeader(header: Header | str) -> str:
+    """Decodes an email header field.
 
     Note:
         Uses :func:`email.header.decode_header`.
@@ -66,16 +62,11 @@ def _decodeHeader(header: str) -> str:
     decodedString = ""
     for fragment, charset in decodedFragments:
         if not charset:
-            if isinstance(fragment, bytes):
-                charsetMatch = charset_normalizer.from_bytes(fragment).best()
-                encoding = (
-                    charsetMatch.encoding
-                    if charsetMatch
-                    else get_config("DEFAULT_CHARSET")
-                )
-                decodedString += fragment.decode(encoding, errors="replace")
-            else:
-                decodedString += fragment
+            decodedString += (
+                fragment.decode(errors="replace")
+                if isinstance(fragment, bytes)
+                else fragment
+            )
         else:
             decodedString += (
                 fragment.decode(charset, errors="replace")
@@ -102,41 +93,39 @@ def getHeader(
         The decoded header field as a string if found
         else the return of the :attr:`fallbackCallable`.
     """
-    encoded_header = emailMessage.get_all(headerName, [])
+    encoded_header = emailMessage.get_all(headerName)
     if not encoded_header:
         return fallbackCallable()
-    return joiningString.join([_decodeHeader(header) for header in encoded_header])
+    return joiningString.join([decodeHeader(header) for header in encoded_header])
 
 
-def getDatetimeHeader(mailMessage: email.message.Message) -> datetime.datetime:
+def getDatetimeHeader(mailMessage: EmailMessage) -> datetime.datetime:
     """Parses the date header of the given mailmessage.
     If an error occurs uses the current time as fallback.
-    No timezone info in the header is interpreted as UTC.
 
     Note:
         Uses :func:`email.utils.parsedate_to_datetime`
-        and :func:`django.utils.timezone.make_aware`.
+        and :func:`django.utils.timezone.now`.
 
     Args:
         mailMessage: The mailmessage to get the datetime header from.
 
     Returns:
-        The timezone aware datetime header.
+        The datetime header.
     """
-    logger.debug("Parsing date ...")
-    date = getHeader(mailMessage, ParsedMailKeys.Header.DATE, lambda: None)
+    date = getHeader(mailMessage, ParsedMailKeys.Header.DATE)
     if not date:
-        logger.warning("No DATE found in mail, resorting to default!")
+        logger.warning("No Date header found in mail, resorting to current time!")
         return timezone.now()
     else:
         try:
             parsedDatetime = email.utils.parsedate_to_datetime(date)
         except ValueError:
+            logger.warning(
+                "No parseable Date header found in mail, resorting to current time!",
+                exc_info=True,
+            )
             return timezone.now()
-        try:
-            timezone.make_aware(parsedDatetime, timezone.utc)
-        except ValueError:
-            pass
         return parsedDatetime
 
 
@@ -152,8 +141,9 @@ def parseMailboxName(mailboxBytes: bytes) -> str:
     Returns:
         The name of the mailbox independent of its parent folders
     """
-    mailbox = utf7_decode(mailboxBytes)
-    mailboxName = mailbox.split('"/"')[1].strip()
-    if mailboxName == "":
-        mailboxName = mailbox.split('" "')[1].strip()
-    return mailboxName
+    mailbox = imap_tools.imap_utf7.utf7_decode(mailboxBytes)
+    # if "/" in mailbox:
+    #     mailboxName = mailbox.split('"/"')[1].strip()
+    # if mailboxName == "":
+    #     mailboxName = mailbox.split('" "')[1].strip()
+    return mailbox

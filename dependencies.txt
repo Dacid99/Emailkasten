@@ -14,4 +14,3 @@ pillow
 imgkit
 email-validator
 imap-tools
-charset-normalizer
