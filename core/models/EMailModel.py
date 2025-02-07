@@ -36,7 +36,7 @@ from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from core.utils.fileManagment import saveStore
 from Emailkasten.utils import get_config
 
-from ..utils.mailParsing import getDatetimeHeader, getHeader
+from ..utils.mailParsing import getHeader, parseDatetimeHeader
 from .AttachmentModel import AttachmentModel
 from .ImageModel import ImageModel
 from .MailingListModel import MailingListModel
@@ -172,7 +172,7 @@ class EMailModel(models.Model):
     """The datetime this entry was last updated. Is set automatically."""
 
     def __str__(self):
-        return f"Email with ID {self.message_id}, received on {self.datetime} with subject {self.email_subject} from {str(self.account)}"
+        return f"Email with ID {self.message_id}, received on {self.datetime} from {str(self.account)}"
 
     class Meta:
         """Metadata class for the model."""
@@ -246,9 +246,10 @@ class EMailModel(models.Model):
         """
         if self.isSpam() and get_config("THROW_OUT_SPAM"):
             return
+        emailData = kwargs.pop("emailData", None)
         super().save(*args, **kwargs)
-        if "emailData" in kwargs and get_config("SAVE_TO_EML"):
-            self.save_to_storage(kwargs["emailData"])
+        if emailData is not None and get_config("DEFAULT_SAVE_TO_EML"):
+            self.save_to_storage(emailData)
 
     def save_to_storage(self, emailData):
         """Saves the email to the storage in eml format.
@@ -323,7 +324,7 @@ class EMailModel(models.Model):
             logger.debug("Parsing email with Message-ID %s ...", message_id)
 
         new_email = EMailModel(message_id=message_id, account=account)
-        new_email.datetime = getDatetimeHeader(emailMessage)
+        new_email.datetime = parseDatetimeHeader(getHeader(emailMessage))
         new_email.email_subject = getHeader(emailMessage, ParsedMailKeys.Header.SUBJECT)
         new_email.datasize = len(emailBytes)
         if inReplyTo_message_id := getHeader(
@@ -362,7 +363,7 @@ class EMailModel(models.Model):
         )
         new_email.x_spam = getHeader(emailMessage, ParsedMailKeys.Header.X_SPAM_FLAG)
 
-        new_email.mailinglist = MailingListModel.fromMessage(emailMessage)
+        new_email.mailinglist = MailingListModel.fromEmailMessage(emailMessage)
         emailCorrespondents = []
         for mention in ParsedMailKeys.Correspondent():
             correspondentHeader = getHeader(emailMessage, mention)
@@ -410,13 +411,13 @@ class EMailModel(models.Model):
         try:
             with transaction.atomic():
                 for emailCorrespondent in emailCorrespondents:
-                    if emailCorrespondent:
+                    if emailCorrespondent is not None:
                         emailCorrespondent.correspondent.save()
                 if new_email.mailinglist:
                     new_email.mailinglist.save()
                 new_email.save(emailData=emailBytes)
                 for emailCorrespondent in emailCorrespondents:
-                    if emailCorrespondent:
+                    if emailCorrespondent is not None:
                         emailCorrespondent.save()
                 for attachment, data in attachments.items():
                     attachment.save(attachmentData=data)

@@ -38,6 +38,7 @@ if TYPE_CHECKING:
 
     from .EMailModel import EMailModel
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -117,9 +118,10 @@ class ImageModel(models.Model):
         """Extended :django::func:`django.models.Model.save` method
         to save the data to storage if configured.
         """
+        imageData = kwargs.pop("imageData", None)
         super().save(*args, **kwargs)
-        if "imageData" in kwargs and get_config("SAVE_IMAGES"):
-            self.save_to_storage(kwargs["imageData"])
+        if imageData is not None and get_config("DEFAULT_SAVE_IMAGES"):
+            self.save_to_storage(imageData)
 
     def save_to_storage(self, imageData: Message[str, str]):
         """Saves the image file to the storage.
