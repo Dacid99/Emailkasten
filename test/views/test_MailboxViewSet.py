@@ -35,8 +35,8 @@ from model_bakery import baker
 from rest_framework import status
 from test_AccountViewSet import fixture_accountModel
 
-import api.v1.views.MailboxViewSet
 from api.v1.views.MailboxViewSet import MailboxViewSet
+from core.constants import MailFetchingCriteria
 from core.models.DaemonModel import DaemonModel
 from core.models.EMailModel import EMailModel
 from core.models.MailboxModel import MailboxModel
@@ -409,8 +409,8 @@ def test_fetch_all_noauth(
     mailboxModel, noauth_apiClient, custom_detail_action_url, mocker
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch_all` action with an unauthenticated user client."""
-    mock_fetchAndProcessMails = mocker.patch(
-        "api.v1.views.MailboxViewSet.fetchAndProcessMails"
+    mock_MailboxModel_fetch = mocker.patch(
+        "api.v1.views.MailboxViewSet.MailboxModel.fetch"
     )
 
     response = noauth_apiClient.post(
@@ -420,7 +420,7 @@ def test_fetch_all_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    mock_fetchAndProcessMails.assert_not_called()
+    mock_MailboxModel_fetch.assert_not_called()
     assert EMailModel.objects.all().count() == 0
     with pytest.raises(KeyError):
         response.data["name"]
@@ -431,8 +431,8 @@ def test_fetch_all_auth_other(
     mailboxModel, other_apiClient, custom_detail_action_url, mocker
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch_all` action with the authenticated other user client."""
-    mock_fetchAndProcessMails = mocker.patch(
-        "api.v1.views.MailboxViewSet.fetchAndProcessMails"
+    mock_MailboxModel_fetch = mocker.patch(
+        "api.v1.views.MailboxViewSet.MailboxModel.fetch"
     )
 
     response = other_apiClient.post(
@@ -442,7 +442,7 @@ def test_fetch_all_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    mock_fetchAndProcessMails.assert_not_called()
+    mock_MailboxModel_fetch.assert_not_called()
     assert EMailModel.objects.all().count() == 0
     with pytest.raises(KeyError):
         response.data["name"]
@@ -453,8 +453,8 @@ def test_fetch_all_auth_owner(
     mailboxModel, owner_apiClient, custom_detail_action_url, mocker
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch_all` action with the authenticated owner user client."""
-    mock_fetchAndProcessMails = mocker.patch(
-        "api.v1.views.MailboxViewSet.fetchAndProcessMails"
+    mock_MailboxModel_fetch = mocker.patch(
+        "api.v1.views.MailboxViewSet.MailboxModel.fetch"
     )
 
     response = owner_apiClient.post(
@@ -467,11 +467,7 @@ def test_fetch_all_auth_owner(
     assert (
         response.data["mailbox"] == MailboxViewSet.serializer_class(mailboxModel).data
     )
-    mock_fetchAndProcessMails.assert_called_once_with(
-        mailboxModel,
-        mailboxModel.account,
-        api.v1.views.MailboxViewSet.constants.MailFetchingCriteria.ALL,
-    )
+    mock_MailboxModel_fetch.assert_called_once_with(MailFetchingCriteria.ALL)
 
 
 @pytest.mark.django_db
