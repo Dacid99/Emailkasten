@@ -125,12 +125,7 @@ class EMailArchiverDaemon(threading.Thread):
         self.logger.debug("---------------------------------------\nNew cycle")
 
         startTime = time.time()
-        with self._daemonModel.mailbox.account.get_fetcher() as fetcher:
-            fetchedEmailBytes = fetcher.fetch(
-                self._daemonModel.mailbox, self._daemonModel.fetching_criterion
-            )
-        for emailBytes in fetchedEmailBytes:
-            EMailModel.createFromEmailBytes(emailBytes)
+        self._daemonModel.mailbox.fetch(self._daemonModel.fetching_criterion)
         endtime = time.time()
 
         self._daemonModel.is_healthy = True

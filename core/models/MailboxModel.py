@@ -24,8 +24,9 @@ import logging
 from typing import TYPE_CHECKING
 
 from dirtyfields import DirtyFieldsMixin
-from django.db import models
+from django.db import IntegrityError, models
 
+from core.models.EMailModel import EMailModel
 from Emailkasten.utils import get_config
 
 from ..constants import TestStatusCodes
@@ -125,8 +126,6 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
 
         except ValueError:
             logger.error("Account %s has unknown protocol!", self)
-            self.is_healthy = False
-            self.save(update_fields=["is_healthy"])
             result = TestStatusCodes.ERROR
 
         logger.info("Successfully tested account to be %s.", result)
@@ -137,7 +136,15 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
         with self.account.get_fetcher() as fetcher:
             fetchedMails = fetcher.fetchEmails(self, criterion)
         logger.info("Successfully fetched emails.")
-        return fetchedMails
+        logger.info("Saving fetched emails ...")
+        for fetchedMail in fetchedMails:
+            try:
+                EMailModel.createFromEmailBytes(fetchedMail)
+                logger.info("Successfully saved fetched emails.")
+            except IntegrityError:
+                logger.error(
+                    "Email already exists in db, preprocessing apparently failed!"
+                )
 
     @staticmethod
     def fromData(mailboxData, account=None):
