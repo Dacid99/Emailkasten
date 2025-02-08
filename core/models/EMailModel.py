@@ -324,7 +324,9 @@ class EMailModel(models.Model):
             logger.debug("Parsing email with Message-ID %s ...", message_id)
 
         new_email = EMailModel(message_id=message_id, account=account)
-        new_email.datetime = parseDatetimeHeader(getHeader(emailMessage))
+        new_email.datetime = parseDatetimeHeader(
+            getHeader(emailMessage, ParsedMailKeys.Header.DATE)
+        )
         new_email.email_subject = getHeader(emailMessage, ParsedMailKeys.Header.SUBJECT)
         new_email.datasize = len(emailBytes)
         if inReplyTo_message_id := getHeader(
@@ -370,7 +372,9 @@ class EMailModel(models.Model):
             if correspondentHeader:
                 for header in correspondentHeader.split(","):
                     emailCorrespondents.append(
-                        EMailCorrespondentsModel.fromHeader(header, mention)
+                        EMailCorrespondentsModel.fromHeader(
+                            header, mention, email=new_email
+                        )
                     )
                     if correspondentHeader == ParsedMailKeys.Correspondent.FROM:
                         new_email.mailinglist.correspondent = emailCorrespondents[-1]

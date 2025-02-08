@@ -153,16 +153,11 @@ def parseMailboxName(mailboxBytes: bytes) -> str:
 
     Note:
         Uses :func:`imap_tools.imap_utf7.utf7_decode` to decode IMAPs modified utf7 encoding.
-
+        The result must not be changed afterwards, otherwise opening the mailbox via this name is not possible!
     Args:
         mailboxBytes: The mailbox name in bytes as received from the mail server.
 
     Returns:
-        The name of the mailbox independent of its parent folders
+        The serverside name of the mailbox
     """
-    mailbox = imap_tools.imap_utf7.utf7_decode(mailboxBytes)
-    # if "/" in mailbox:
-    #     mailboxName = mailbox.split('"/"')[1].strip()
-    # if mailboxName == "":
-    #     mailboxName = mailbox.split('" "')[1].strip()
-    return mailbox
+    return imap_tools.imap_utf7.utf7_decode(mailboxBytes)

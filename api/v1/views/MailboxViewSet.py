@@ -30,9 +30,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core import constants
-from core.constants import ParsedMailKeys, TestStatusCodes
+from core.constants import TestStatusCodes
 from core.models.DaemonModel import DaemonModel
-from core.models.EMailModel import EMailModel
 from core.models.MailboxModel import MailboxModel
 
 from ..filters.MailboxFilter import MailboxFilter

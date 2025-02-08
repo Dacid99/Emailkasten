@@ -114,6 +114,11 @@ class AccountModel(DirtyFieldsMixin, models.Model):
         # elif self.protocol == ExchangeFetcher.PROTOCOL:
         #     return ExchangeFetcher(self)
         else:
+            logger.error(
+                "The protocol %s is not implemented in a fetcher class!", self.protocol
+            )
+            self.is_healthy = False
+            self.save(update_fields=["is_healthy"])
             raise ValueError(
                 "The requested protocol is not implemented in a fetcher class!"
             )
@@ -127,16 +132,12 @@ class AccountModel(DirtyFieldsMixin, models.Model):
         Returns:
             The resultcode of the test.
         """
-
         logger.info("Testing %s ...", self)
         try:
             with self.get_fetcher() as fetcher:
                 result = fetcher.test()
-
         except ValueError:
             logger.error("Account %s has unknown protocol!", self)
-            self.is_healthy = False
-            self.save(update_fields=["is_healthy"])
             result = TestStatusCodes.ERROR
 
         logger.info("Successfully tested account to be %s.", result)

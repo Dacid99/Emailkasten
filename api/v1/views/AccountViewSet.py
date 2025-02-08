@@ -79,9 +79,8 @@ class AccountViewSet(viewsets.ModelViewSet):
         """
         try:
             serializer.save(user=self.request.user)
-        except (
-            IntegrityError
-        ):  # pylint: disable-next=raise-missing-from ; raising with from is unnecessary here
+        except IntegrityError:
+            # pylint: disable-next=raise-missing-from ; raising with from is unnecessary here
             raise ValidationError({"detail": "This account already exists!"})
 
     URL_PATH_UPDATE_MAILBOXES = "update-mailboxes"
@@ -93,8 +92,8 @@ class AccountViewSet(viewsets.ModelViewSet):
         url_path=URL_PATH_UPDATE_MAILBOXES,
         url_name=URL_NAME_UPDATE_MAILBOXES,
     )
-    def scan_mailboxes(self, request: Request, pk: int | None = None) -> Response:
-        """Action method scanning for mailboxes in the account.
+    def update_mailboxes(self, request: Request, pk: int | None = None) -> Response:
+        """Action method updating the mailboxes in the account.
 
         Args:
             request: The request triggering the action.
@@ -108,7 +107,7 @@ class AccountViewSet(viewsets.ModelViewSet):
 
         accountSerializer = self.get_serializer(account)
         return Response(
-            data={"status": "Scanned for mailboxes", "account": accountSerializer.data}
+            data={"status": "Updated mailboxes", "account": accountSerializer.data}
         )
 
     URL_PATH_TEST = "test"
