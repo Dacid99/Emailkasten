@@ -66,11 +66,11 @@ class EMailModel(models.Model):
     email_subject = models.CharField(max_length=255, null=True)
     """The subject header of the mail."""
 
-    bodytext = models.TextField()
+    plain_bodytext = models.TextField()
     """The plain bodytext of the mail."""
 
-    # html_bodytext = models.TextField()
-    # """The html bodytext of the mail."""
+    html_bodytext = models.TextField()
+    """The html bodytext of the mail."""
 
     inReplyTo: models.ForeignKey[EMailModel] = models.ForeignKey(
         "self", null=True, related_name="replies", on_delete=models.SET_NULL
@@ -379,8 +379,8 @@ class EMailModel(models.Model):
                     if correspondentHeader == ParsedMailKeys.Correspondent.FROM:
                         new_email.mailinglist.correspondent = emailCorrespondents[-1]
 
-        new_email.bodytext = ""
-        # new_email.html_bodytext = ""
+        new_email.plain_bodytext = ""
+        new_email.html_bodytext = ""
         attachments = {}
         images = {}
 
@@ -392,11 +392,11 @@ class EMailModel(models.Model):
             if contentType == "text/plain":
                 payload = part.get_payload(decode=True)
                 encoding = part.get_content_charset("utf-8")
-                new_email.bodytext += payload.decode(encoding, errors="replace")
-            # elif contentType == "text/html":
-            #     payload = part.get_payload(decode=True)
-            #     encoding = part.get_content_charset("utf-8")
-            #     new_email.html_bodytext += payload.decode(encoding, errors="replace")
+                new_email.plain_bodytext += payload.decode(encoding, errors="replace")
+            elif contentType == "text/html":
+                payload = part.get_payload(decode=True)
+                encoding = part.get_content_charset("utf-8")
+                new_email.html_bodytext += payload.decode(encoding, errors="replace")
             # attachments must be before images to avoid doubling
             elif contentDisposition == "attachment":
                 attachments[AttachmentModel.fromData(part, email=new_email)] = part

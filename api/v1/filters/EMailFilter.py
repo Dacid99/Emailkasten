@@ -47,7 +47,8 @@ class EMailFilter(django_filters.FilterSet):
             "message_id": FilterSetups.TEXT,
             "datetime": FilterSetups.DATETIME,
             "email_subject": FilterSetups.TEXT,
-            "bodytext": FilterSetups.TEXT,
+            "plain_bodytext": FilterSetups.TEXT,
+            "html_bodytext": FilterSetups.TEXT,
             "datasize": FilterSetups.INT,
             "comments": FilterSetups.TEXT,
             "keywords": FilterSetups.TEXT,
@@ -72,5 +73,5 @@ class EMailFilter(django_filters.FilterSet):
             "account__mail_address": FilterSetups.TEXT,
             "account__mail_host": FilterSetups.TEXT,
             "mailinglist__list_id": FilterSetups.TEXT,
-            "mailinglist__list_owner": FilterSetups.TEXT
+            "mailinglist__list_owner": FilterSetups.TEXT,
         }

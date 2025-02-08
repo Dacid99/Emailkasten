@@ -69,8 +69,10 @@ def test_EMailModel_creation(email):
     assert email.datetime is not None
     assert isinstance(email.datetime, datetime.datetime)
     assert email.email_subject is None
-    assert email.bodytext is not None
-    assert isinstance(email.bodytext, str)
+    assert email.plain_bodytext is not None
+    assert isinstance(email.plain_bodytext, str)
+    assert email.html_bodytext is not None
+    assert isinstance(email.html_bodytext, str)
     assert email.inReplyTo is None
     assert email.datasize is not None
     assert isinstance(email.datasize, int)
@@ -181,12 +183,12 @@ def test_save_email(
     mocker, override_config, email, config_throw_out_spam, isSpam, expectedSaveCalled
 ):
     mocker.patch("core.models.EMailModel.EMailModel.isSpam", return_value=isSpam)
-    email.bodytext = "Saved!"
+    email.plain_bodytext = "Saved!"
     with override_config(THROW_OUT_SPAM=config_throw_out_spam):
         email.save()
 
     email.refresh_from_db()
-    assert (email.bodytext == "Saved!") is expectedSaveCalled
+    assert (email.plain_bodytext == "Saved!") is expectedSaveCalled
 
 
 @pytest.mark.django_db
