@@ -7,7 +7,6 @@
 - autostart daemons on restart
 - custom additional healthchecks
 - exceptions while fetching parsing and inserting for appropriate api response
-- handling if filename is none in parsing
 - user divided storage to make file_paths unique again
 - combined filter for correspondent with mention
 - refine storage management error correction

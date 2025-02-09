@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import logging
 import os
+from hashlib import md5
 from typing import TYPE_CHECKING
 
 from django.db import models
@@ -159,7 +160,9 @@ class AttachmentModel(models.Model):
     def fromData(attachmentData: Message[str, str], email=None) -> AttachmentModel:
         new_attachment = AttachmentModel()
 
-        new_attachment.file_name = attachmentData.get_filename()
+        new_attachment.file_name = (
+            attachmentData.get_filename() or md5(attachmentData).hexdigest()
+        )
         new_attachment.datasize = len(attachmentData.as_bytes())
         new_attachment.email = email
 
