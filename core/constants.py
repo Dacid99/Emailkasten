@@ -147,7 +147,7 @@ class HeaderFields:
     IN_REPLY_TO: Final[str] = "In-Reply-To"
     DATE: Final[str] = "Date"
     SUBJECT: Final[str] = "Subject"
-    X_SPAM_FLAG: Final[str] = "X-Spam-Flag"
+    X_SPAM: Final[str] = "X-Spam-Flag"
 
     class MailingList:
         """Headers that are included in the mailinglists table."""

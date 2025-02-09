@@ -237,28 +237,6 @@ def test_delete_email_delete_error(mocker, email, mock_logger):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    "config_throw_out_spam, isSpam, expectedSaveCalled",
-    [
-        (True, True, False),
-        (False, True, True),
-        (True, False, True),
-        (False, False, True),
-    ],
-)
-def test_save_email(
-    mocker, override_config, email, config_throw_out_spam, isSpam, expectedSaveCalled
-):
-    mocker.patch("core.models.EMailModel.EMailModel.isSpam", return_value=isSpam)
-    email.plain_bodytext = "Saved!"
-    with override_config(THROW_OUT_SPAM=config_throw_out_spam):
-        email.save()
-
-    email.refresh_from_db()
-    assert (email.plain_bodytext == "Saved!") is expectedSaveCalled
-
-
-@pytest.mark.django_db
 @pytest.mark.parametrize("save_to_eml, expectedCalls", [(True, 1), (False, 0)])
 def test_save_data_settings(mocker, email, save_to_eml, expectedCalls):
     mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")

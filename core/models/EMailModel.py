@@ -25,6 +25,7 @@ import email.parser
 import logging
 import os
 from email import policy
+from email.header import Header
 from hashlib import md5
 from logging import config
 from typing import TYPE_CHECKING
@@ -207,11 +208,8 @@ class EMailModel(models.Model):
 
     def save(self, *args, **kwargs):
         """Extended :django::func:`django.models.Model.save` method
-        to throw out spam and save the data to eml if configured.
+        to render and save the data to eml if configured.
         """
-        if self.isSpam() and get_config("THROW_OUT_SPAM"):
-            return
-
         emailData = kwargs.pop("emailData", None)
         super().save(*args, **kwargs)
         if emailData is not None:
@@ -309,26 +307,32 @@ class EMailModel(models.Model):
         emailBytes: bytes, mailbox: MailboxModel = None
     ) -> EMailModel | None:
         emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)
+
         message_id = getHeader(
             emailMessage,
             HeaderFields.MESSAGE_ID,
             lambda: md5(emailBytes).hexdigest(),
         )
 
-        try:
-            EMailModel.objects.get(message_id=message_id, mailbox=mailbox)
+        if x_spam := getHeader(emailMessage, HeaderFields.X_SPAM) and get_config(
+            "THROW_OUT_SPAM"
+        ):
+            logger.debug(
+                "Skipping email with Message-ID %s in %s, it is flagged as spam.",
+                message_id,
+                mailbox,
+            )
+            return None
+
+        if EMailModel.objects.filter(message_id=message_id, mailbox=mailbox).count():
             logger.debug(
                 "Skipping email with Message-ID %s in %s, it already exists in the db.",
                 message_id,
                 mailbox,
             )
             return None
-        except EMailModel.DoesNotExist:
-            logger.debug(
-                "Parsing email with Message-ID %s in %s ...", message_id, mailbox
-            )
 
-        new_email = EMailModel(message_id=message_id, mailbox=mailbox)
+        new_email = EMailModel(message_id=message_id, mailbox=mailbox, x_spam=x_spam)
         new_email.datetime = parseDatetimeHeader(
             getHeader(emailMessage, HeaderFields.DATE)
         )
@@ -341,8 +345,6 @@ class EMailModel(models.Model):
                 )
             except EMailModel.DoesNotExist:
                 new_email.inReplyTo = None
-
-        new_email.x_spam = getHeader(emailMessage, HeaderFields.X_SPAM_FLAG)
 
         headerDict = {}
         for headerName in emailMessage.keys():
