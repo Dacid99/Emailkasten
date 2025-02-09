@@ -20,7 +20,6 @@
 - upload eml action with parsing
 - mailinglist.correspondent is redundant
 - enforce choices via constraint
-- rewrite mailrendering
 - throw out spam is misplaced
 - references header
 

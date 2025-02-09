@@ -26,16 +26,19 @@ import logging
 import os
 from email import policy
 from hashlib import md5
+from logging import config
 from typing import TYPE_CHECKING
 
 from django.db import models, transaction
 
 from core.constants import HeaderFields
 from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.signals.delete_DaemonModel import pre_delete_stop_daemon
 from core.utils.fileManagment import saveStore
 from Emailkasten.utils import get_config
 
 from ..utils.mailParsing import getHeader, parseDatetimeHeader
+from ..utils.mailRendering import renderEmailData
 from .AttachmentModel import AttachmentModel
 from .MailingListModel import MailingListModel
 from .StorageModel import StorageModel
@@ -211,8 +214,10 @@ class EMailModel(models.Model):
 
         emailData = kwargs.pop("emailData", None)
         super().save(*args, **kwargs)
-        if emailData is not None and self.mailbox.save_toEML:
-            self.save_to_storage(emailData)
+        if emailData is not None:
+            if self.mailbox.save_toEML:
+                self.save_to_storage(emailData)
+            self.render_to_storage(emailData)
 
     def save_to_storage(self, emailData):
         """Saves the email to the storage in eml format.
@@ -244,6 +249,40 @@ class EMailModel(models.Model):
             logger.debug("Successfully stored email as eml.")
         else:
             logger.error("Failed to store %s as eml!", self)
+
+    def render_to_storage(self, emailData):
+        """Renders the email and writes the resulting image
+        to the storage.
+        If the file already exists, does not overwrite.
+        If an error occurs, removes the incomplete file.
+
+        Note:
+            Uses :func:`core.utils.fileManagment.saveStore` to wrap the storing process.
+
+        Args:
+            emailData: The data of the email to be rendered.
+        """
+        if self.prerender_filepath:
+            logger.debug("%s is already stored as prerender image.", self)
+            return
+
+        imageType = get_config("PRERENDER_IMAGETYPE")
+
+        @saveStore
+        def renderAndStoreMessage(prerenderFile: BufferedWriter, emailData) -> None:
+            renderedMessage = renderEmailData(emailData)
+            renderedMessage.save(prerenderFile, format=imageType)
+
+        logger.debug("Rendering and storing %s  ...", self)
+
+        dirPath = StorageModel.getSubdirectory(self.message_id)
+        preliminary_file_path = os.path.join(dirPath, self.message_id + "." + imageType)
+        if file_path := renderAndStoreMessage(preliminary_file_path, emailData):
+            self.prerender_filepath = file_path
+            self.save(update_fields=["prerender_filepath"])
+            logger.debug("Successfully rendered and stored email.")
+        else:
+            logger.error("Failed to render and store %s!", self)
 
     def subConversation(self) -> list:
         subConversationEmails = [self]
@@ -335,12 +374,12 @@ class EMailModel(models.Model):
             # Rare email parts should be in the back
             if contentType == "text/plain":
                 payload = part.get_payload(decode=True)
-                encoding = part.get_content_charset("utf-8")
-                new_email.plain_bodytext += payload.decode(encoding, errors="replace")
+                charset = part.get_content_charset("utf-8")
+                new_email.plain_bodytext += payload.decode(charset, errors="replace")
             elif contentType == "text/html":
                 payload = part.get_payload(decode=True)
-                encoding = part.get_content_charset("utf-8")
-                new_email.html_bodytext += payload.decode(encoding, errors="replace")
+                charset = part.get_content_charset("utf-8")
+                new_email.html_bodytext += payload.decode(charset, errors="replace")
             elif contentDisposition is not None:
                 attachments[AttachmentModel.fromData(part, email=new_email)] = part
             elif any(

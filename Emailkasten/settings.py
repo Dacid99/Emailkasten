@@ -331,11 +331,6 @@ CONSTANCE_CONFIG = {
         ),
         str,
     ),
-    "PRERENDER_IMAGETYPE": (
-        "jpg",
-        _("The image format for the prerendered eml files"),
-        str,
-    ),
     "THROW_OUT_SPAM": (
         True,
         _("Whether or not to ignore emails that have a spam flag"),
@@ -390,6 +385,23 @@ CONSTANCE_CONFIG = {
         "The html template to wrap around plain text before prerendering",
         str,
     ),
+    "PRERENDER_IMAGETYPE": (
+        "JPEG",
+        _(
+            "The image format for the prerendered eml files. Must be supported by PILLOW, see https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html."
+        ),
+        str,
+    ),
+    "PRERENDER_IMAGE_BACKGROUND_COLOR": (
+        "#ffffff",
+        _("The background color for the prerender images."),
+        str,
+    ),
+    "PRERENDER_IMGKIT_OPTIONS": (
+        {"load-error-handling": "skip"},
+        _("The imgkit options for prerendering the images."),
+        dict,
+    ),
     "DEFAULT_SAVE_TO_EML": (
         True,
         _("The default mailbox setting whether to store mails as eml"),
@@ -408,7 +420,6 @@ CONSTANCE_FIELDSETS = (
         (
             "DEFAULT_SAVE_TO_EML",
             "DEFAULT_SAVE_ATTACHMENTS",
-            "DEFAULT_MAILDATE",
             "DAEMON_CYCLE_PERIOD_DEFAULT",
             "DAEMON_RESTART_TIME_DEFAULT",
         ),
@@ -419,7 +430,8 @@ CONSTANCE_FIELDSETS = (
             "THROW_OUT_SPAM",
             "HTML_WRAPPER",
             "PRERENDER_IMAGETYPE",
-            "DEFAULT_CHARSET",
+            "PRERENDER_IMAGE_BACKGROUND_COLOR",
+            "PRERENDER_IMGKIT_OPTIONS",
             "SAVE_CONTENT_TYPE_PREFIXES",
             "DONT_SAVE_CONTENT_TYPE_SUFFIXES",
         ),

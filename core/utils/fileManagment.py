@@ -83,7 +83,7 @@ def saveStore(storingFunc: Callable) -> Callable:
                 exc_info=True,
             )
             return None
-        except OSError:
+        except Exception:
             logger.error("Failed to write to file %s!", filePath, exc_info=True)
             if os.path.exists(filePath):
                 logger.debug("Clearing incomplete file ...")
@@ -100,25 +100,3 @@ def saveStore(storingFunc: Callable) -> Callable:
             return None
 
     return saveStoringFunc
-
-
-def getPrerenderImageStoragePath(parsedMail: dict[str, Any]) -> str:
-    """Gets the storage path for a prerender image.
-
-    Args:
-        parsedMail: The parsed mail to be prerendered.
-
-    Returns:
-        The path in the storage where the prerender image should be saved.
-    """
-    logger.debug("Getting storage path for prerender image ...")
-    dirPath = StorageModel.getSubdirectory(parsedMail[HeaderFields.MESSAGE_ID])
-
-    filePath = os.path.join(
-        dirPath,
-        f"{parsedMail[HeaderFields.MESSAGE_ID]}.{get_config('PRERENDER_IMAGETYPE')}",
-    )
-    parsedMail[""] = filePath
-    logger.debug("Successfully got storage path for prerender image.")
-
-    return filePath
