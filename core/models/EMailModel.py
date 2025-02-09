@@ -211,7 +211,7 @@ class EMailModel(models.Model):
 
         emailData = kwargs.pop("emailData", None)
         super().save(*args, **kwargs)
-        if emailData is not None and get_config("DEFAULT_SAVE_TO_EML"):
+        if emailData is not None and self.mailbox.save_toEML:
             self.save_to_storage(emailData)
 
     def save_to_storage(self, emailData):

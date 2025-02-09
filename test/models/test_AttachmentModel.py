@@ -167,17 +167,16 @@ def test_delete_attachmentfile_delete_error(mocker, attachment, mock_logger):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("SAVE_ATTACHMENTS, expectedCalls", [(True, 1), (False, 0)])
-def test_save_data_settings(
-    mocker, attachment, override_config, SAVE_ATTACHMENTS, expectedCalls
-):
+@pytest.mark.parametrize("save_attachments, expectedCalls", [(True, 1), (False, 0)])
+def test_save_data_settings(mocker, attachment, save_attachments, expectedCalls):
     mock_super_save = mocker.patch("core.models.AttachmentModel.models.Model.save")
-    mock_data = mocker.MagicMock(spec=Message)
     mock_save_to_storage = mocker.patch(
         "core.models.AttachmentModel.AttachmentModel.save_to_storage"
     )
-    with override_config(DEFAULT_SAVE_ATTACHMENTS=SAVE_ATTACHMENTS):
-        attachment.save(attachmentData=mock_data)
+    attachment.email.mailbox.save_attachments = save_attachments
+    mock_data = mocker.MagicMock(spec=Message)
+
+    attachment.save(attachmentData=mock_data)
 
     mock_save_to_storage.call_count == expectedCalls
     mock_super_save.assert_called()
@@ -189,6 +188,7 @@ def test_save_no_data(mocker, attachment):
     mock_save_to_storage = mocker.patch(
         "core.models.AttachmentModel.AttachmentModel.save_to_storage"
     )
+    attachment.email.mailbox.save_attachments = True
 
     attachment.save()
 
@@ -199,11 +199,12 @@ def test_save_no_data(mocker, attachment):
 @pytest.mark.django_db
 def test_save_data_failure(mocker, attachment):
     mock_super_save = mocker.patch("core.models.AttachmentModel.models.Model.save")
-    mock_data = mocker.MagicMock(spec=Message)
     mock_save_to_storage = mocker.patch(
         "core.models.AttachmentModel.AttachmentModel.save_to_storage",
         side_effect=Exception,
     )
+    attachment.email.mailbox.save_attachments = True
+    mock_data = mocker.MagicMock(spec=Message)
 
     with pytest.raises(Exception):
         attachment.save(attachmentData=mock_data)

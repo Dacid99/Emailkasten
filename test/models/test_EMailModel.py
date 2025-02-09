@@ -158,28 +158,6 @@ def test_EMailModel_unique():
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    "config_throw_out_spam, isSpam, expectedSaveCalled",
-    [
-        (True, True, False),
-        (False, True, True),
-        (True, False, True),
-        (False, False, True),
-    ],
-)
-def test_save_email(
-    mocker, override_config, email, config_throw_out_spam, isSpam, expectedSaveCalled
-):
-    mocker.patch("core.models.EMailModel.EMailModel.isSpam", return_value=isSpam)
-    email.plain_bodytext = "Saved!"
-    with override_config(THROW_OUT_SPAM=config_throw_out_spam):
-        email.save()
-
-    email.refresh_from_db()
-    assert (email.plain_bodytext == "Saved!") is expectedSaveCalled
-
-
-@pytest.mark.django_db
 def test_delete_email_success(mocker, mock_logger, email):
     """Tests :func:`core.models.EMailModel.EMailModel.delete`
     if the file removal is successful.
@@ -259,15 +237,38 @@ def test_delete_email_delete_error(mocker, email, mock_logger):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("SAVE_TO_EML, expectedCalls", [(True, 1), (False, 0)])
-def test_save_data_settings(mocker, email, override_config, SAVE_TO_EML, expectedCalls):
+@pytest.mark.parametrize(
+    "config_throw_out_spam, isSpam, expectedSaveCalled",
+    [
+        (True, True, False),
+        (False, True, True),
+        (True, False, True),
+        (False, False, True),
+    ],
+)
+def test_save_email(
+    mocker, override_config, email, config_throw_out_spam, isSpam, expectedSaveCalled
+):
+    mocker.patch("core.models.EMailModel.EMailModel.isSpam", return_value=isSpam)
+    email.plain_bodytext = "Saved!"
+    with override_config(THROW_OUT_SPAM=config_throw_out_spam):
+        email.save()
+
+    email.refresh_from_db()
+    assert (email.plain_bodytext == "Saved!") is expectedSaveCalled
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("save_to_eml, expectedCalls", [(True, 1), (False, 0)])
+def test_save_data_settings(mocker, email, save_to_eml, expectedCalls):
     mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
-    mock_data = mocker.MagicMock(spec=Message)
     mock_save_to_storage = mocker.patch(
         "core.models.EMailModel.EMailModel.save_to_storage"
     )
-    with override_config(DEFAULT_SAVE_TO_EML=SAVE_TO_EML):
-        email.save(attachmentData=mock_data)
+    email.mailbox.save_toEML = save_to_eml
+    mock_data = mocker.MagicMock(spec=Message)
+
+    email.save(attachmentData=mock_data)
 
     mock_save_to_storage.call_count == expectedCalls
     mock_super_save.assert_called()
@@ -279,6 +280,7 @@ def test_save_no_data(mocker, email):
     mock_save_to_storage = mocker.patch(
         "core.models.EMailModel.EMailModel.save_to_storage"
     )
+    email.mailbox.save_toEML = True
 
     email.save()
 
@@ -289,11 +291,12 @@ def test_save_no_data(mocker, email):
 @pytest.mark.django_db
 def test_save_data_failure(mocker, email):
     mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
-    mock_data = mocker.MagicMock(spec=Message)
     mock_save_to_storage = mocker.patch(
         "core.models.EMailModel.EMailModel.save_to_storage",
         side_effect=Exception,
     )
+    email.mailbox.save_toEML = True
+    mock_data = mocker.MagicMock(spec=Message)
 
     with pytest.raises(Exception):
         email.save(emailData=mock_data)

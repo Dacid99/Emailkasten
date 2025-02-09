@@ -127,7 +127,7 @@ class AttachmentModel(models.Model):
         """
         attachmentData = kwargs.pop("attachmentData", None)
         super().save(*args, **kwargs)
-        if attachmentData is not None and get_config("DEFAULT_SAVE_ATTACHMENTS"):
+        if attachmentData is not None and self.email.mailbox.save_attachments:
             self.save_to_storage(attachmentData)
 
     def save_to_storage(self, attachmentData: Message[str, str]):
