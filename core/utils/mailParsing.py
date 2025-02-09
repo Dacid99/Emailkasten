@@ -39,6 +39,8 @@ import email_validator
 import imap_tools.imap_utf7
 from django.utils import timezone
 
+from Emailkasten.utils import get_config
+
 if TYPE_CHECKING:
     from email.header import Header
     from email.message import EmailMessage

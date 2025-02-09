@@ -336,13 +336,6 @@ CONSTANCE_CONFIG = {
         _("The image format for the prerendered eml files"),
         str,
     ),
-    "STRIP_TEXTS": (
-        True,
-        _(
-            "Whether or not to strip whitespace from textfields like bodytext and subject"
-        ),
-        bool,
-    ),
     "THROW_OUT_SPAM": (
         True,
         _("Whether or not to ignore emails that have a spam flag"),
@@ -424,7 +417,6 @@ CONSTANCE_FIELDSETS = (
         _("Processing Settings"),
         (
             "THROW_OUT_SPAM",
-            "STRIP_TEXTS",
             "HTML_WRAPPER",
             "PRERENDER_IMAGETYPE",
             "DEFAULT_CHARSET",

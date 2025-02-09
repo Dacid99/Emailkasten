@@ -208,6 +208,7 @@ class EMailModel(models.Model):
         """
         if self.isSpam() and get_config("THROW_OUT_SPAM"):
             return
+
         emailData = kwargs.pop("emailData", None)
         super().save(*args, **kwargs)
         if emailData is not None and get_config("DEFAULT_SAVE_TO_EML"):
