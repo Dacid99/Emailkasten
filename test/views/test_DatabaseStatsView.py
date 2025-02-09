@@ -27,8 +27,8 @@ from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 from test_AccountViewSet import fixture_accountModel
-from test_EMailViewSet import fixture_emailModel
 from test_AttachmentViewSet import fixture_attachmentModel
+from test_EMailViewSet import fixture_emailModel
 
 from api.v1.views.DatabaseStatsView import DatabaseStatsView
 
@@ -38,14 +38,14 @@ if TYPE_CHECKING:
     from rest_framework.viewsets import ModelViewSet
 
 
-@pytest.fixture(name='url')
-def fixture_url() -> Callable[[type[ModelViewSet]],str]:
+@pytest.fixture(name="url")
+def fixture_url() -> Callable[[type[ModelViewSet]], str]:
     """Gets the viewsets url for list actions.
 
     Returns:
         The list url.
     """
-    return lambda viewClass: reverse(f'{viewClass.NAME}')
+    return lambda viewClass: reverse(f"{viewClass.NAME}")
 
 
 @pytest.mark.django_db
@@ -55,7 +55,7 @@ def test_list_noauth(attachmentModel, noauth_apiClient, url):
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
-        response.data['email_count']
+        response.data["email_count"]
 
 
 @pytest.mark.django_db
@@ -64,11 +64,10 @@ def test_list_auth_other(attachmentModel, other_apiClient, url):
     response = other_apiClient.get(url(DatabaseStatsView))
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data['email_count'] == 0
-    assert response.data['correspondent_count'] == 0
-    assert response.data['attachment_count'] == 0
-    assert response.data['images_count'] == 0
-    assert response.data['account_count'] == 0
+    assert response.data["email_count"] == 0
+    assert response.data["correspondent_count"] == 0
+    assert response.data["attachment_count"] == 0
+    assert response.data["account_count"] == 0
 
 
 @pytest.mark.django_db
@@ -77,11 +76,10 @@ def test_list_auth_owner(attachmentModel, owner_apiClient, url):
     response = owner_apiClient.get(url(DatabaseStatsView))
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data['email_count'] == 1
-    assert response.data['correspondent_count'] == 0
-    assert response.data['attachment_count'] == 1
-    assert response.data['images_count'] == 0
-    assert response.data['account_count'] == 1
+    assert response.data["email_count"] == 1
+    assert response.data["correspondent_count"] == 0
+    assert response.data["attachment_count"] == 1
+    assert response.data["account_count"] == 1
 
 
 @pytest.mark.django_db
@@ -91,7 +89,7 @@ def test_post_noauth(noauth_apiClient, url):
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
-        response.data['email_count']
+        response.data["email_count"]
 
 
 @pytest.mark.django_db
@@ -101,7 +99,7 @@ def test_post_auth_other(other_user, other_apiClient, url):
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
-        response.data['email_count']
+        response.data["email_count"]
 
 
 @pytest.mark.django_db
@@ -111,4 +109,4 @@ def test_post_auth_owner(owner_user, owner_apiClient, url):
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
-        response.data['email_count']
+        response.data["email_count"]

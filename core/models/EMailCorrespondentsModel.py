@@ -60,7 +60,7 @@ class EMailCorrespondentsModel(models.Model):
         """Metadata class for the model."""
 
         db_table = "email_correspondents"
-        """The name of the database table for the images."""
+        """The name of the database bridge table for the emails and correspondents."""
 
         constraints = [
             models.UniqueConstraint(

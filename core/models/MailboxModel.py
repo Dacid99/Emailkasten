@@ -58,9 +58,6 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
     )
     """Whether to save attachments of the mails found in this mailbox. :attr:`constance.get_config('DEFAULT_SAVE_ATTACHMENTS')` by default."""
 
-    save_images = models.BooleanField(default=get_config("DEFAULT_SAVE_IMAGES"))
-    """Whether to save images of the mails found in this mailbox. :attr:`constance.get_config('DEFAULT_SAVE_IMAGES')` by default."""
-
     save_toEML = models.BooleanField(default=get_config("DEFAULT_SAVE_TO_EML"))
     """Whether to save the mails found in this mailbox as .eml files. :attr:`constance.get_config('DEFAULT_SAVE_TO_EML')` by default."""
 

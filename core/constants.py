@@ -140,14 +140,27 @@ class TestStatusCodes:
 
 # Configurations
 
+
 class ParsingConfiguration:
     """Namespace class for all configurations constants for the parsing of mails."""
 
-    APPLICATION_TYPES: Final[list[str]] = [
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    SAVE_CONTENT_TYPE_PREFIXES: Final[list[str]] = [
+        "image/",
+        "audio/",
+        "video/",
+        "model/",
+        "font/",
+        "application/",
     ]
-    """A list of application types to parse as attachments."""
+    """A list of content types prefixes to parse as files even if they are not marked as such.
+    For an exhaustive list of all available types see https://www.iana.org/assignments/media-types/media-types.xhtml#text"""
+
+    DONT_SAVE_CONTENT_TYPE_SUFFIXES: Final[list[str]] = [
+        "/plain",
+        "/html",
+    ]
+    """A list of content types prefixes to not parse as files even if they are not marked as such.
+    Overrides elements in :attr:`SAVE_CONTENT_TYPE_PREFIXES`."""
 
     DATE_FORMAT: Final[str] = "%Y-%m-%d %H:%M:%S"
     """The mail datetime format as specified in RFC5322. Must match the pattern of :attr:`DEFAULT_MAILDATE`."""
@@ -209,7 +222,6 @@ class ParsedMailKeys:
         def __getitem__(self, key):
             return getattr(self, key)
 
-
     class Correspondent:
         """Headers that are treated as correspondents."""
 
@@ -245,7 +257,6 @@ class ParsedMailKeys:
         def __getitem__(self, key):
             return getattr(self, key)
 
-
     class Attachment:
         """Keys to the attachment sub-dictionary."""
 
@@ -254,7 +265,6 @@ class ParsedMailKeys:
         FILE_NAME: Final[str] = "AttachmentFileName"
         FILE_PATH: Final[str] = "AttachmentFilePath"
 
-
     class Image:
         """Keys to the image sub-dictionary."""
 
@@ -262,7 +272,6 @@ class ParsedMailKeys:
         SIZE: Final[str] = "ImageSize"
         FILE_NAME: Final[str] = "ImageFileName"
         FILE_PATH: Final[str] = "ImageFilePath"
-
 
     class MailingList:
         """Keys to the mailinglist sub-dictionary."""

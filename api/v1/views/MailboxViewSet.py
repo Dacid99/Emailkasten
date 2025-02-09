@@ -58,7 +58,6 @@ class MailboxViewSet(viewsets.ModelViewSet):
         "account__mail_host",
         "account__protocol",
         "save_attachments",
-        "save_images",
         "save_toEML",
         "is_favorite",
         "is_healthy",

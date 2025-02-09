@@ -11,7 +11,6 @@ from core.models.CorrespondentModel import CorrespondentModel
 from core.models.DaemonModel import DaemonModel
 from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from core.models.EMailModel import EMailModel
-from core.models.ImageModel import ImageModel
 from core.models.MailboxModel import MailboxModel
 from core.models.MailingListModel import MailingListModel
 
@@ -335,7 +334,6 @@ def fixture_mailbox_queryset(account_queryset):
                 name=text_test_item,
                 save_toEML=BOOL_TEST_ITEMS[number],
                 save_attachments=BOOL_TEST_ITEMS[number],
-                save_images=BOOL_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 is_healthy=BOOL_TEST_ITEMS[number],
                 account=account_queryset.get(id=number + 1),
@@ -436,19 +434,3 @@ def fixture_attachment_queryset(email_queryset):
             )
 
     return AttachmentModel.objects.all()
-
-
-@pytest.fixture(name="image_queryset")
-def fixture_image_queryset(email_queryset):
-    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                ImageModel,
-                file_path="/path/" + text_test_item,
-                file_name=text_test_item,
-                datasize=INT_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number],
-                email=email_queryset.get(id=number + 1),
-            )
-
-    return ImageModel.objects.all()

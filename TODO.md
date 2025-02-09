@@ -19,7 +19,6 @@
 - user validation for serializers to avoid leakage
 - first found in mailbox fk
 - upload eml action with parsing
-- get rid of imagemodel again, attachmentmodel suffices
 - mailinglist.correspondent is redundant
 - enforce choices via constraint
 - rewrite mailrendering

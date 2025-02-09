@@ -35,7 +35,6 @@ from .StorageModel import StorageModel
 if TYPE_CHECKING:
     from email.message import Message
     from io import BufferedWriter
-    from typing import Any, Callable
 
     from .EMailModel import EMailModel
 
@@ -56,6 +55,12 @@ class AttachmentModel(models.Model):
     Can be null if the attachment has not been saved (null does not collide with the unique constraint.).
     Must contain :attr:`constance.get_config('STORAGE_PATH')`.
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_AttachmentModel.post_delete_attachment`."""
+
+    content_disposition = models.CharField(null=True, max_length=255)
+    """The disposition of the file. Typically 'attachment', 'inline' or NULL."""
+
+    content_type = models.CharField(max_length=255)
+    """The type of the file."""
 
     datasize = models.IntegerField()
     """The filesize of the attachment."""
@@ -163,6 +168,8 @@ class AttachmentModel(models.Model):
         new_attachment.file_name = (
             attachmentData.get_filename() or md5(attachmentData).hexdigest()
         )
+        new_attachment.content_disposition = attachmentData.get_content_disposition()
+        new_attachment.content_type = attachmentData.get_content_type()
         new_attachment.datasize = len(attachmentData.as_bytes())
         new_attachment.email = email
 

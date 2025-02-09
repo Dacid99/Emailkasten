@@ -73,7 +73,6 @@ def test_MailboxModel_creation(mailbox):
     assert mailbox.account is not None
     assert isinstance(mailbox.account, AccountModel)
     assert mailbox.save_attachments is get_config("DEFAULT_SAVE_ATTACHMENTS")
-    assert mailbox.save_images is get_config("DEFAULT_SAVE_IMAGES")
     assert mailbox.save_toEML is get_config("DEFAULT_SAVE_TO_EML")
     assert mailbox.is_favorite is False
     assert mailbox.is_healthy is True

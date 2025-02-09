@@ -61,13 +61,11 @@ def test_output(email):
     assert serializerData["replies"] == []
     assert "attachments" in serializerData
     assert serializerData["attachments"] == []
-    assert "images" in serializerData
-    assert serializerData["images"] == []
     assert "mailinglist" in serializerData
     assert serializerData["mailinglist"] is None
     assert "correspondents" in serializerData
     assert serializerData["correspondents"] == []
-    assert len(serializerData) == 17
+    assert len(serializerData) == 16
 
 
 @pytest.mark.django_db
@@ -92,7 +90,6 @@ def test_input(email):
     assert "updated" not in serializerData
     assert "replies" not in serializerData
     assert "attachments" not in serializerData
-    assert "images" not in serializerData
     assert "mailinglist" not in serializerData
     assert "correspondents" not in serializerData
     assert len(serializerData) == 1

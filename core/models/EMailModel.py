@@ -39,7 +39,6 @@ from Emailkasten.utils import get_config
 
 from ..utils.mailParsing import getHeader, parseDatetimeHeader
 from .AttachmentModel import AttachmentModel
-from .ImageModel import ImageModel
 from .MailingListModel import MailingListModel
 from .StorageModel import StorageModel
 
@@ -164,7 +163,7 @@ class EMailModel(models.Model):
             try:
                 os.remove(self.eml_filepath)
                 logger.debug(
-                    "Successfully removed the image file from storage.", exc_info=True
+                    "Successfully removed the eml file from storage.", exc_info=True
                 )
             except FileNotFoundError:
                 logger.error("%s was not found!", self.eml_filepath, exc_info=True)
@@ -186,7 +185,8 @@ class EMailModel(models.Model):
             try:
                 os.remove(self.prerender_filepath)
                 logger.debug(
-                    "Successfully removed the image file from storage.", exc_info=True
+                    "Successfully removed the prerender image file from storage.",
+                    exc_info=True,
                 )
             except FileNotFoundError:
                 logger.error(
@@ -328,7 +328,6 @@ class EMailModel(models.Model):
         new_email.plain_bodytext = ""
         new_email.html_bodytext = ""
         attachments = {}
-        images = {}
 
         for part in emailMessage.walk():
             contentType = part.get_content_type()
@@ -343,16 +342,19 @@ class EMailModel(models.Model):
                 payload = part.get_payload(decode=True)
                 encoding = part.get_content_charset("utf-8")
                 new_email.html_bodytext += payload.decode(encoding, errors="replace")
-            # attachments must be before images to avoid doubling
-            elif contentDisposition == "attachment":
+            elif contentDisposition is not None:
                 attachments[AttachmentModel.fromData(part, email=new_email)] = part
-            elif contentType.startswith("image/"):
-                images[ImageModel.fromData(part, email=new_email)] = part
-            elif contentType in constants.ParsingConfiguration.APPLICATION_TYPES:
+            elif any(
+                contentType.startswith(type_to_save)
+                for type_to_save in constants.ParsingConfiguration.SAVE_CONTENT_TYPE_PREFIXES
+            ) and not any(
+                contentType.endswith(type_to_skip)
+                for type_to_skip in constants.ParsingConfiguration.DONT_SAVE_CONTENT_TYPE_SUFFIXES
+            ):
                 attachments[AttachmentModel.fromData(part, email=new_email)] = part
             else:
                 logger.debug(
-                    "Part %s with disposition %s of email %s were not parsed.",
+                    "Part %s with disposition %s of email %s was not parsed.",
                     contentType,
                     contentDisposition,
                     new_email.message_id,
@@ -371,8 +373,6 @@ class EMailModel(models.Model):
                         emailCorrespondent.save()
                 for attachment, data in attachments.items():
                     attachment.save(attachmentData=data)
-                for image, data in images.items():
-                    image.save(imageData=data)
         except Exception:
             return None
         return new_email

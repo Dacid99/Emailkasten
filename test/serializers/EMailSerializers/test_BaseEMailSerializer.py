@@ -64,7 +64,6 @@ def test_output(email):
     assert "updated" in serializerData
     assert datetime.fromisoformat(serializerData["updated"]) == email.updated
     assert "attachments" not in serializerData
-    assert "images" not in serializerData
     assert "mailinglist" in serializerData
     assert serializerData["mailinglist"] is None
     assert "correspondents" in serializerData
@@ -98,7 +97,6 @@ def test_input(email):
     assert "created" not in serializerData
     assert "updated" not in serializerData
     assert "attachments" not in serializerData
-    assert "images" not in serializerData
     assert "mailinglist" not in serializerData
     assert "correspondents" not in serializerData
 
