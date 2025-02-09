@@ -43,7 +43,6 @@ from .MailingListModel import MailingListModel
 from .StorageModel import StorageModel
 
 if TYPE_CHECKING:
-    from email.message import EmailMessage
     from io import BufferedWriter
 
     from .AccountModel import AccountModel
@@ -308,7 +307,7 @@ class EMailModel(models.Model):
 
         headerDict = {}
         for headerName in emailMessage.keys():
-            headerDict[header] = getHeader(headerName)
+            headerDict[headerName] = getHeader(emailMessage, headerName)
         new_email.headers = headerDict
 
         new_email.mailinglist = MailingListModel.fromEmailMessage(emailMessage)
