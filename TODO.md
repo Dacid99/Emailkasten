@@ -21,7 +21,6 @@
 - mailinglist.correspondent is redundant
 - enforce choices via constraint
 - references header
-- rendering intermediated to memory instead of disk
 
 ### Work in progress
 - tests
@@ -31,8 +30,6 @@
 ## To test
 
 ## To fix
-- 'Decoding this mime part returned error' for paypal in prerender
-- google notifcations not formatted in prerender
 
 # Remember
 - new migration must include setting of defaults

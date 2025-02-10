@@ -16,26 +16,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-
-# The following code is a modified version of code from xme's emlrender project https://github.com/xme/emlrender.
-# Original code by Xavier Mertens, licensed under the GNU General Public License version 3 (GPLv3).
-# Modifications by David & Philipp Aderbauer, licensed under the GNU Affero General Public License version 3 (AGPLv3).
-# This modified code is part of an AGPLv3 project. See the LICENSE file for details.
-
 """Provides functions to render images from .eml files.
 Functions starting with _ are helpers and are used only within the scope of this module.
 """
 
 from __future__ import annotations
 
-import base64
 import email
 import email.header
-import hashlib
 import logging
-import os
-import quopri
+from base64 import b64encode
 from email import policy
+from io import BytesIO
 from typing import TYPE_CHECKING
 
 import imgkit
@@ -44,137 +36,124 @@ from PIL import Image
 from Emailkasten.utils import get_config
 
 if TYPE_CHECKING:
-    from email.message import EmailMessage
-
-    from PIL import ImageFile
+    from email.message import EmailMessage, Message
 
 
 logger = logging.getLogger(__name__)
 
 
-def _combineImages(imagesList: list[str]) -> Image.Image:
-    """Combining multiple images into one with attention to their sizes.
-
-    Args:
-        imagesList: The list of images to combine.
-
-    Returns:
-        The combined image.
-    """
-    logger.debug("Combining image parts ...")
-    imageFileList = list(map(Image.open, imagesList))
-
-    backgroundColor = get_config("PRERENDER_IMAGE_BACKGROUND_COLOR")
-    widths, heights = zip(*(imageFile.size for imageFile in imageFileList))
-
-    newImage = Image.new("RGB", (max(widths), sum(heights)), color=backgroundColor)
-    offset = 0
-    for imageFile in imageFileList:
-        # xCoordinate = int((new_width - im.size[0])/2)
-        xCoordinate = 0
-        newImage.paste(imageFile, (xCoordinate, offset))
-        offset += imageFile.size[1]
-
-    logger.debug("Successfully combined image parts.")
-    return newImage
-
-
-def renderEmailData(emailBytes: bytes) -> Image.Image | None:
-    """Creates a prerender image of an email.
-
-    Args:
-        emailBytes: The data of the mail to be prerendered.
-    """
-    logger.debug("Generating prerender image for mail ...")
-
-    dumpDir = get_config("TEMPORARY_STORAGE_DIRECTORY")
-    # Create the dump directory if not existing yet
-    if not os.path.isdir(dumpDir):
-        os.makedirs(dumpDir)
-        logger.debug("Created dump directory %s", dumpDir)
-
-    emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)
-
-    dirtyHTMLChars = ["\n", "\\n", "\t", "\\t", "\r", "\\r"]
-
-    imgkitOptions = get_config("PRERENDER_IMGKIT_OPTIONS")
-
-    imagePathList = []
-    attachmentsList = []
-
-    for part in emailMessage.walk():
-        if not part.get_content_disposition():
-            contentType = part.get_content_type()
+def _addHtmlContent(
+    part: Message,
+    html: str,
+    cidContent: list,
+    attachmentsFooter: str,
+    ignorePlainText: bool,
+):
+    content_maintype = part.get_content_maintype()
+    content_subtype = part.get_content_subtype()
+    content_disposition = part.get_content_disposition()
+    # The order of the conditions is crucial
+    if content_maintype == "text":
+        if content_subtype == "html":
             charset = part.get_content_charset("utf-8")
+            html += part.get_payload(decode=True).decode(charset, errors="replace")
+        elif not ignorePlainText:
+            charset = part.get_content_charset("utf-8")
+            text = part.get_payload(decode=True).decode(charset, errors="replace")
+            html += get_config("HTML_WRAPPER") % text
 
-            logger.debug("Found MIME part: %s", contentType)
-            if contentType.startswith("text/"):
-                text = part.get_payload(decode=True).decode(charset, errors="replace")
+    elif content_maintype == "image":
+        if cid := part.get("Content-ID", None):
+            cidContent[cid.strip("<>")] = part
 
-                if contentType == "text/html":
-                    for char in dirtyHTMLChars:
-                        text = text.replace(char, "")
-                else:
-                    text = get_config("HTML_WRAPPER") % text
-
-                imagePath = os.path.join(dumpDir, hash(text) + ".png")
-                try:
-                    imgkit.from_string(
-                        text, os.path.join(dumpDir, imagePath), options=imgkitOptions
-                    )
-                    imagePathList.append(imagePath)
-                except Exception:
-                    logger.warning(
-                        "Decoding MIME part of type %s returned error!",
-                        contentType,
-                        exc_info=True,
-                    )
-            elif contentType.startswith("image/"):
-                imageData = part.get_payload(decode=True).decode(
-                    charset, errors="replace"
-                )
-                imageType = contentType.split("/")[1]
-                imagePath = os.path.join(dumpDir, hash(imageData) + "." + imageType)
-                try:
-                    with open(imagePath, "wb") as dumpImageFile:
-                        dumpImageFile.write(imageData)
-                    logger.debug("Decoded %s", imagePath)
-                    imagePathList.append(imagePath)
-                except Exception:
-                    logger.warning(
-                        "Decoding MIME part of type %s returned error!",
-                        contentType,
-                        exc_info=True,
-                    )
-            else:
-                fileName = part.get_filename() or f"{hash(part)}.attachment"
-                attachmentsList.append(f"{fileName} ({contentType})")
-                logger.debug(
-                    "Added attachment %s of MIME type %s", fileName, contentType
-                )
+    elif content_disposition == "inline":
+        if cid := part.get("Content-ID", None):
+            cidContent[cid.strip("<>")] = part
         else:
-            fileName = part.get_filename() or f"{hash(part)}.attachment"
-            attachmentsList.append(f"{fileName} ({contentType})")
-            logger.debug("Added attachment %s of MIME type %s", fileName, contentType)
+            fileName = (
+                part.get_filename() or f"{hash(part)}.{part.get_content_subtype()}"
+            )
+            attachmentsFooter += "<li>" + fileName + "</li>"
 
-    if attachmentsList:
-        footer = "<p><hr><p><b>Attached Files:</b><p><ul>"
-        for attachment in attachmentsList:
-            footer = footer + "<li>" + attachment + "</li>"
-        footer += "</ul>"
-        imagePath = os.path.join(dumpDir, hash(footer) + ".png")
-        try:
-            imgkit.from_string(footer, imagePath, options=imgkitOptions)
-            logger.debug("Created footer %s", imagePath)
-            imagePathList.append(imagePath)
-        except Exception:
-            logger.warning("Creation of footer failed with error!", exc_info=True)
-    else:
-        logger.debug("No attachments found for rendering.")
+    elif content_disposition == "attachment":
+        fileName = part.get_filename() or f"{hash(part)}.{part.get_content_subtype()}"
+        attachmentsFooter += "<li>" + fileName + "</li>"
 
-    if imagePathList:
-        combinedImage = _combineImages(imagePathList)
-        return combinedImage
-    else:
-        logger.debug("No images rendered.")
-        return None
+
+def eml2html(emailBytes: bytes) -> str:
+    """Creates a html presentation of an email.
+
+    Args:
+        emailBytes: The data of the mail to be converted.
+    """
+    emailMessage: EmailMessage = email.message_from_bytes(
+        emailBytes, policy=policy.default
+    )
+    ignorePlainText = False  # ignores too broadly!
+
+    htmlWrapper = get_config("HTML_WRAPPER")
+    html = ""
+    cidContent = {}
+    attachmentsFooter = ""
+    for part in emailMessage.walk():
+        if part.get_content_subtype() == "alternative":
+            ignorePlainText = True
+            continue
+        content_maintype = part.get_content_maintype()
+        content_subtype = part.get_content_subtype()
+        content_disposition = part.get_content_disposition()
+        # The order of the conditions is crucial
+        if content_maintype == "text":
+            if content_subtype == "html":
+                charset = part.get_content_charset("utf-8")
+                html += part.get_payload(decode=True).decode(charset, errors="replace")
+            elif not ignorePlainText:
+                charset = part.get_content_charset("utf-8")
+                text = part.get_payload(decode=True).decode(charset, errors="replace")
+                html += htmlWrapper % text
+        elif content_maintype == "image":
+            if cid := part.get("Content-ID", None):
+                cidContent[cid.strip("<>")] = part
+
+        elif content_disposition == "inline":
+            if cid := part.get("Content-ID", None):
+                cidContent[cid.strip("<>")] = part
+            else:
+                fileName = (
+                    part.get_filename() or f"{hash(part)}.{part.get_content_subtype()}"
+                )
+                attachmentsFooter += "<li>" + fileName + "</li>"
+
+        elif content_disposition == "attachment":
+            fileName = (
+                part.get_filename() or f"{hash(part)}.{part.get_content_subtype()}"
+            )
+            attachmentsFooter += "<li>" + fileName + "</li>"
+
+    for cid, part in cidContent.items():
+        partBytes = part.get_payload(decode=True)
+        content_type = part.get_content_type()
+        base64part = b64encode(partBytes).decode("utf-8")
+        html = html.replace(
+            f'src="cid:{cid}"', f'src="data:{content_type};base64,{base64part}"'
+        )
+    if attachmentsFooter:
+        html = html.replace(
+            "</html>",
+            f"<p><hr><p><b>Attached Files:</b><p><ul>{attachmentsFooter}</ul></html>",
+        )
+    return html
+
+
+def renderHtml(html: str) -> Image.Image:
+    imgkitOptions = get_config("PRERENDER_IMGKIT_OPTIONS")
+    try:
+        imageBytes = imgkit.from_string(html, None, options=imgkitOptions)
+    except Exception:
+        logger.warning("Error with imgkit!", exc_info=True)
+    return Image.open(BytesIO(imageBytes))
+
+
+def renderEML(emlData: bytes) -> Image.Image:
+    html = eml2html(emlData)
+    return renderHtml(html)

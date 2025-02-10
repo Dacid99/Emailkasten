@@ -25,21 +25,18 @@ import email.parser
 import logging
 import os
 from email import policy
-from email.header import Header
 from hashlib import md5
-from logging import config
 from typing import TYPE_CHECKING
 
 from django.db import models, transaction
 
 from core.constants import HeaderFields
 from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from core.signals.delete_DaemonModel import pre_delete_stop_daemon
 from core.utils.fileManagment import saveStore
 from Emailkasten.utils import get_config
 
 from ..utils.mailParsing import getHeader, parseDatetimeHeader
-from ..utils.mailRendering import renderEmailData
+from ..utils.mailRendering import renderEML
 from .AttachmentModel import AttachmentModel
 from .MailingListModel import MailingListModel
 from .StorageModel import StorageModel
@@ -268,7 +265,7 @@ class EMailModel(models.Model):
 
         @saveStore
         def renderAndStoreMessage(prerenderFile: BufferedWriter, emailData) -> None:
-            renderedMessage = renderEmailData(emailData)
+            renderedMessage = renderEML(emailData)
             renderedMessage.save(prerenderFile, format=imageType)
 
         logger.debug("Rendering and storing %s  ...", self)
