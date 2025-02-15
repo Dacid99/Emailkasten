@@ -21,6 +21,8 @@
 from __future__ import annotations
 
 import logging
+import os
+from mailbox import mbox
 from typing import TYPE_CHECKING
 
 from dirtyfields import DirtyFieldsMixin
@@ -148,6 +150,16 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
                 logger.error(
                     "Email already exists in db, preprocessing apparently failed!"
                 )
+
+    def addFromMBOX(self, mbox_data):
+        mbox_filepath = os.path.join(
+            get_config("TEMPORARY_STORAGE_DIRECTORY"), str(hash(mbox_data)) + ".mbox"
+        )
+        with open(mbox_filepath, "bw") as file:
+            file.write(mbox_data)
+        mboxFile = mbox(mbox_filepath)
+        for key in mboxFile.iterkeys():
+            EMailModel.createFromEmailBytes(mboxFile.get_bytes(key), self)
 
     @staticmethod
     def fromData(mailboxData: bytes, account: AccountModel) -> MailboxModel:

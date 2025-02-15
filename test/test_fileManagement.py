@@ -30,7 +30,6 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
-from unittest.mock import call
 
 import pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
@@ -171,7 +170,7 @@ def test_saveStore(
         assert mock_filesystem.get_object(fakeFile).size == expectedFileSize
 
     assert spy_open.call_count == expectedCallsToOpen
-    spy_open.assert_has_calls([call(fakeFile, "wb")] * expectedCallsToOpen)
+    spy_open.assert_has_calls([mocker.call(fakeFile, "wb")] * expectedCallsToOpen)
     assert mock_logger.error.call_count == expectedErrors
 
     mock_logger.debug.assert_called()

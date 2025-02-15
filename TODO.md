@@ -17,7 +17,8 @@
 - filtertest for choices
 - move all signals into models
 - user validation for serializers to avoid leakage
-- upload eml action with parsing
+- upload eml with parsing
+- support other uploads than mbox in mailbox
 - mailinglist.correspondent is redundant
 - enforce choices via constraint
 - references header

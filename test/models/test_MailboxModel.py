@@ -25,7 +25,9 @@ Fixtures:
 from __future__ import annotations
 
 import datetime
+import os
 from typing import TYPE_CHECKING
+from unittest.mock import call
 
 import pytest
 from django.db import IntegrityError
@@ -242,6 +244,29 @@ def test_fetch_exception(mocker, mock_logger, mailbox):
     mock_EMailModel_createFromBytes.assert_not_called()
     mock_logger.info.assert_called()
     mock_logger.error.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_addFromMBOX(mocker, faker, mailbox, override_config):
+    mock_open = mocker.mock_open()
+    mocker.patch("core.models.MailboxModel.open", mock_open)
+    mock_mbox = mocker.patch("core.models.MailboxModel.mbox")
+    mock_EMailModel_createFromEmailBytes = mocker.patch(
+        "core.models.EMailModel.EMailModel.createFromEmailBytes"
+    )
+    fake_mbox = bytes(faker.sentence(7), encoding="utf-8")
+
+    with override_config(TEMPORARY_STORAGE_DIRECTORY="/tmp/"):
+        mailbox.addFromMBOX(fake_mbox)
+
+    mock_open.assert_called_once_with(
+        os.path.join("/tmp/", str(hash(fake_mbox)) + ".mbox"), "bw"
+    )
+    mock_open.return_value.write.assert_called_once_with(fake_mbox)
+    mock_mbox.assert_called_once_with(
+        os.path.join("/tmp/", str(hash(fake_mbox)) + ".mbox")
+    )
+    mock_EMailModel_createFromEmailBytes.call_count == 2
 
 
 def test_fromData(mocker):

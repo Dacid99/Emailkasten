@@ -161,6 +161,41 @@ class MailboxViewSet(viewsets.ModelViewSet):
             {"detail": "All mails fetched", "mailbox": mailboxSerializer.data}
         )
 
+    URL_PATH_UPLOAD = "upload"
+    URL_NAME_UPLOAD = "upload"
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path=URL_PATH_UPLOAD,
+        url_name=URL_NAME_UPLOAD,
+    )
+    def upload_mbox(self, request: Request, pk: int | None = None) -> Response:
+        """Action method toggling the favorite flag of the mailbox.
+
+        Args:
+            request: The request triggering the action.
+            pk: int: The private key of the mailbox to upload to. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
+        uploaded_mbox_file = request.FILES.get("mbox", None)
+        if uploaded_mbox_file is None:
+            return Response(
+                {"detail": "MBOX file missing in request!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        mailbox = self.get_object()
+        mailbox.addFromMBOX(uploaded_mbox_file.read())
+        mailboxSerializer = self.get_serializer(mailbox)
+        return Response(
+            {
+                "detail": "Successfully uploaded mbox file",
+                "mailbox": mailboxSerializer.data,
+            }
+        )
+
     URL_PATH_TOGGLE_FAVORITE = "toggle-favorite"
     URL_NAME_TOGGLE_FAVORITE = "toggle-favorite"
 
