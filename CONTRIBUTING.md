@@ -10,7 +10,7 @@ To make it easier for me to read and understand your pull requests please follow
 
 - The variable names should be comprehensive and the code self-explanatory. Use comments only where required for structure, comprehension or warning.
 
-- Avoid suppressing warnings (e.g. by pylint) by annotations, this only hides potential issues. If such a warning is raised either fix it or explain why you cant in a comment. Only if the correct way to do something raises a warning a suppression should be used. Every suppression needs a comment why it is inevitable.
+- Avoid suppressing warnings (e.g. by pylint and ruff) by annotations, this only hides potential issues. If such a warning is raised either fix it or explain why you cant in a comment. Only if the correct way to do something raises a warning a suppression should be used. Every suppression needs a comment why it is inevitable.
 
 - Commits should have a clear commit message prefaced with a keyword of what has been done.
   Examples:

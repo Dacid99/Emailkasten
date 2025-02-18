@@ -10,8 +10,14 @@ stylelint: pylintrc_style
 testlint: pylintrc_style
 	pylint --rcfile=$< ../test/ | tee reports/pylint_test.ansi
 
+rufflint: ruff.toml
+	ruff check --config=$< ../Emailkasten ../core/ ../api/ ../web/ ../test/ | tee reports/ruff.ansi
+
 check: mypy.ini
-	mypy --config-file $< ../Emailkasten ../test/ ../core/ ../api/ ../web/
+	mypy --config-file $< ../Emailkasten ../test/ ../core/ ../api/ ../web/ | tee reports/mypy/mypy.ansi
+
+types:
+	python3 -m autotyping --safe ../Emailkasten ../test/ ../core/ ../api/ ../web/
 
 clean:
-	rm -f reports/* ../docs/mypy_report.html ../docs/*.svg
+	rm -f reports/* ../docs/build/html/mypy_report/*

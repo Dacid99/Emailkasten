@@ -2,6 +2,7 @@ django-stubs
 djangorestframework-stubs
 django-filter-stubs
 mypy
+lxml
 pylint
 pylint-pytest
 pytest-django
@@ -16,3 +17,5 @@ pylintfileheader
 freezegun
 black
 isort
+ruff
+autotyping
