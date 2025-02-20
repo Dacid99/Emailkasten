@@ -38,13 +38,13 @@ from Emailkasten.utils import get_config
 from ..utils.mailParsing import getHeader, parseDatetimeHeader
 from ..utils.mailRendering import renderEML
 from .AttachmentModel import AttachmentModel
+from .CorrespondentModel import CorrespondentModel
 from .MailingListModel import MailingListModel
 from .StorageModel import StorageModel
 
 if TYPE_CHECKING:
     from io import BufferedWriter
 
-    from .CorrespondentModel import CorrespondentModel
     from .MailboxModel import MailboxModel
 
 
@@ -374,22 +374,9 @@ class EMailModel(models.Model):
             headerDict[headerName] = getHeader(emailMessage, headerName)
         new_email.headers = headerDict
 
-        emailCorrespondents = []
-        for mention, __ in HeaderFields.Correspondents():
-            correspondentHeader = getHeader(emailMessage, mention)
-            if correspondentHeader:
-                for header in correspondentHeader.split(","):
-
-                    emailCorrespondents.append(
-                        EMailCorrespondentsModel.fromHeader(
-                            header, mention, email=new_email
-                        )
-                    )
-
         new_email.plain_bodytext = ""
         new_email.html_bodytext = ""
         attachments = []
-
         for part in emailMessage.walk():
             contentType = part.get_content_type()
             contentDisposition = part.get_content_disposition()
@@ -427,18 +414,20 @@ class EMailModel(models.Model):
         logger.debug("Successfully parsed email.")
         try:
             with transaction.atomic():
-                for emailCorrespondent in emailCorrespondents:
-                    if emailCorrespondent is not None:
-                        emailCorrespondent.correspondent.save()
                 if new_email.mailinglist:
                     new_email.mailinglist.save()
                 new_email.save(emailData=emailBytes)
-                for emailCorrespondent in emailCorrespondents:
-                    if emailCorrespondent is not None:
-                        emailCorrespondent.save()
+                for mention, __ in HeaderFields.Correspondents():
+                    correspondentHeader = getHeader(emailMessage, mention)
+                    if correspondentHeader:
+                        EMailCorrespondentsModel.createFromHeader(
+                            correspondentHeader, mention, new_email
+                        )
                 for attachment, data in attachments:
                     attachment.save(attachmentData=data)
-        except Exception as error:
-            print(error)
+        except Exception:
+            logger.exception(
+                "Failed creating email from bytes: Error while saving email to db!"
+            )
             return None
         return new_email

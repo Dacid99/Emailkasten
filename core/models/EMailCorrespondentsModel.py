@@ -76,7 +76,7 @@ class EMailCorrespondentsModel(models.Model):
         """:attr:`email`, :attr:`correspondent` and :attr:`mention` in combination are unique."""
 
     @staticmethod
-    def fromHeader(
+    def createFromHeader(
         header: str, headerName: str, email: EMailModel
     ) -> EMailCorrespondentsModel | None:
         """Prepares a :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`
@@ -92,10 +92,14 @@ class EMailCorrespondentsModel(models.Model):
             If the correspondent already exists in the db uses that version.
             None if the correspondent could not be parsed.
         """
+        if email.pk is None:
+            raise ValueError("Email is not in the db!")
         new_correspondent = CorrespondentModel.fromHeader(header)
-        if not new_correspondent:
+        if new_correspondent is None:
             return None
+        new_correspondent.save()
         new_emailCorrespondent = EMailCorrespondentsModel(
             correspondent=new_correspondent, email=email, mention=headerName
         )
+        new_emailCorrespondent.save()
         return new_emailCorrespondent

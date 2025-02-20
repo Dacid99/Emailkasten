@@ -23,8 +23,6 @@ Fixtures:
     :func:`fixture_emailCorrespondentsModel`: Creates an :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` instance for testing.
 """
 
-from curses.ascii import EM
-
 import pytest
 from django.db import IntegrityError
 from model_bakery import baker
@@ -32,6 +30,8 @@ from model_bakery import baker
 from core.models.CorrespondentModel import CorrespondentModel
 from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from core.models.EMailModel import EMailModel
+
+from .test_EMailModel import fixture_emailModel
 
 
 @pytest.fixture(name="emailCorrespondent")
@@ -98,23 +98,31 @@ def test_EMailCorrespondentsModel_unique(emailCorrespondent):
 
 
 @pytest.mark.django_db
-def test_fromHeader_success(mocker, faker):
+def test_createFromHeader_success(mocker, faker, email):
+    fake_CorrespondentModel = CorrespondentModel(email_address=faker.email())
     mock_CorrespondentModel_fromHeader = mocker.patch(
         "core.models.EMailCorrespondentsModel.CorrespondentModel.fromHeader",
-        return_value=CorrespondentModel(),
+        return_value=fake_CorrespondentModel,
     )
     fake_header = faker.words(3)
     fake_headername = faker.word()
 
-    result = EMailCorrespondentsModel.fromHeader(fake_header, fake_headername, None)
+    result = EMailCorrespondentsModel.createFromHeader(
+        fake_header, fake_headername, email
+    )
 
     assert isinstance(result, EMailCorrespondentsModel)
+    assert result.pk is not None
+    assert result.correspondent is fake_CorrespondentModel
+    assert result.email is email
+    assert result.mention is fake_headername
+
     mock_CorrespondentModel_fromHeader.assert_called_once_with(fake_header)
     assert result.mention == fake_headername
 
 
 @pytest.mark.django_db
-def test_fromHeader_no_correspondent(mocker, faker):
+def test_createFromHeader_no_correspondent(mocker, faker, email):
     mock_CorrespondentModel_fromHeader = mocker.patch(
         "core.models.EMailCorrespondentsModel.CorrespondentModel.fromHeader",
         return_value=None,
@@ -122,7 +130,26 @@ def test_fromHeader_no_correspondent(mocker, faker):
     fake_header = faker.words(3)
     fake_headername = faker.word()
 
-    result = EMailCorrespondentsModel.fromHeader(fake_header, fake_headername, None)
+    result = EMailCorrespondentsModel.createFromHeader(
+        fake_header, fake_headername, email
+    )
 
     assert result is None
     mock_CorrespondentModel_fromHeader.assert_called_once_with(fake_header)
+
+
+@pytest.mark.django_db
+def test_createFromHeader_no_email(mocker, faker):
+    mock_CorrespondentModel_fromHeader = mocker.patch(
+        "core.models.EMailCorrespondentsModel.CorrespondentModel.fromHeader",
+        return_value=None,
+    )
+    fake_header = faker.words(3)
+    fake_headername = faker.word()
+
+    with pytest.raises(ValueError):
+        EMailCorrespondentsModel.createFromHeader(
+            fake_header, fake_headername, EMailModel()
+        )
+
+    mock_CorrespondentModel_fromHeader.assert_not_called()
