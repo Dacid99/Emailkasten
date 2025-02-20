@@ -35,6 +35,7 @@ from core.models.EMailModel import EMailModel
 from core.models.MailboxModel import MailboxModel
 from core.models.MailingListModel import MailingListModel
 
+from ..conftest import TEST_EMAIL_PARAMETERS
 from .test_MailboxModel import fixture_mailboxModel
 
 
@@ -322,8 +323,26 @@ def test_EMailModel_isSpam(email, x_spam, expectedResult):
     assert result is expectedResult
 
 
-@pytest.mark.django_db(transaction=True)
-def test_EMailModel_createFromEmailBytes(mocker, attachmentEmailData, mailbox):
+@pytest.mark.django_db()
+@pytest.mark.parametrize(
+    "test_email, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count",
+    TEST_EMAIL_PARAMETERS,
+)
+def test_EMailModel_createFromEmailBytes_success(
+    mocker,
+    mock_logger,
+    mailbox,
+    test_email,
+    message_id,
+    subject,
+    attachments_count,
+    correspondents_count,
+    emailcorrespondents_count,
+    x_spam,
+    plain_bodytext,
+    html_bodytext,
+    header_count,
+):
     mock_EMailModel_save_to_storage = mocker.patch(
         "core.models.EMailModel.EMailModel.save_to_storage"
     )
@@ -334,15 +353,103 @@ def test_EMailModel_createFromEmailBytes(mocker, attachmentEmailData, mailbox):
         "core.models.EMailModel.AttachmentModel.save_to_storage"
     )
 
-    email = EMailModel.createFromEmailBytes(attachmentEmailData, mailbox=mailbox)
+    email = EMailModel.createFromEmailBytes(test_email, mailbox=mailbox)
 
-    assert email.message_id == "<e047e14d-2397-435b-baf6-8e8b7423f860@out.de>"
-    assert email.email_subject == "Whats up"
-    assert email.x_spam == "NO"
-    assert email.plain_bodytext == "this a test to see how ur doin\n\n\n\n\n"
-    assert email.html_bodytext == ""
-    assert email.attachments.count() == 1
-    assert email.correspondents.count() == 5
-    mock_AttachmentModel_save_to_storage.assert_called()
+    assert isinstance(email, EMailModel)
+    assert email.message_id == message_id
+    assert email.email_subject == subject
+    assert email.x_spam == x_spam
+    assert email.plain_bodytext == plain_bodytext
+    assert email.html_bodytext == html_bodytext
+    assert email.attachments.count() == attachments_count
+    assert email.correspondents.distinct().count() == correspondents_count
+    assert email.correspondents.count() == emailcorrespondents_count
+    for key, header in email.headers.items():
+        print(key + ":\t" + header)
+    assert len(email.headers) == header_count
+    assert email.mailbox == mailbox
+    if attachments_count > 0:
+        mock_AttachmentModel_save_to_storage.assert_called()
     mock_EMailModel_save_to_storage.assert_called()
     mock_EMailModel_render_to_storage.assert_called()
+    mock_logger.debug.assert_called()
+    mock_logger.warning.assert_not_called()
+    mock_logger.error.assert_not_called()
+    mock_logger.critical.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_EMailModel_createFromEmailBytes_duplicate(mocker, mock_logger, email):
+    mock_EMailModel_save_to_storage = mocker.patch(
+        "core.models.EMailModel.EMailModel.save_to_storage"
+    )
+    mock_EMailModel_render_to_storage = mocker.patch(
+        "core.models.EMailModel.EMailModel.render_to_storage"
+    )
+    mock_AttachmentModel_save_to_storage = mocker.patch(
+        "core.models.EMailModel.AttachmentModel.save_to_storage"
+    )
+
+    result = EMailModel.createFromEmailBytes(
+        f"Message-ID: {email.message_id}".encode("utf-8"), email.mailbox
+    )
+
+    assert result is None
+    mock_AttachmentModel_save_to_storage.assert_not_called()
+    mock_EMailModel_save_to_storage.assert_not_called()
+    mock_EMailModel_render_to_storage.assert_not_called()
+    mock_logger.debug.assert_called()
+    mock_logger.warning.assert_not_called()
+    mock_logger.error.assert_not_called()
+    mock_logger.critical.assert_not_called()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "X_Spam_Flag, THROW_OUT_SPAM, expected_isNone",
+    [
+        ("YES", True, True),
+        ("NO", True, False),
+        ("YES", False, False),
+        ("NO", False, False),
+    ],
+)
+def test_EMailModel_createFromEmailBytes_spam(
+    mocker,
+    mock_logger,
+    override_config,
+    mailbox,
+    X_Spam_Flag,
+    THROW_OUT_SPAM,
+    expected_isNone,
+):
+    mocker.patch("core.models.EMailModel.EMailModel.save_to_storage")
+    mocker.patch("core.models.EMailModel.EMailModel.render_to_storage")
+    mocker.patch("core.models.EMailModel.AttachmentModel.save_to_storage")
+
+    with override_config(THROW_OUT_SPAM=THROW_OUT_SPAM):
+        result = EMailModel.createFromEmailBytes(
+            f"X-Spam-Flag: {X_Spam_Flag}".encode("utf-8"), mailbox
+        )
+
+    assert (result is None) is expected_isNone
+    mock_logger.debug.assert_called()
+    mock_logger.warning.assert_not_called()
+    mock_logger.error.assert_not_called()
+    mock_logger.critical.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_EMailModel_createFromEmailBytes_dberror(mocker, mock_logger, mailbox):
+    mock_EMailModel_save = mocker.patch(
+        "core.models.EMailModel.EMailModel.save", side_effect=IntegrityError
+    )
+
+    result = EMailModel.createFromEmailBytes(b"Message-ID: something", mailbox)
+
+    assert result is None
+    mock_EMailModel_save.assert_called()
+    mock_logger.debug.assert_called()
+    mock_logger.warning.assert_not_called()
+    mock_logger.exception.assert_called()
+    mock_logger.critical.assert_not_called()

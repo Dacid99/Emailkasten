@@ -325,7 +325,7 @@ class EMailModel(models.Model):
         Returns:
             The :class:`core.models.EMailModel.EMailModel` instance with data from the bytes.
             If the email already exists in the db returns None.
-            None if there is no List-ID header in :attr:`emailMessage` or the mail is spam and is supposed to be thrown out.
+            None if there is no Message-ID header in :attr:`emailMessage` or the mail is spam and is supposed to be thrown out.
         """
         emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)
 
@@ -335,7 +335,7 @@ class EMailModel(models.Model):
             fallbackCallable=lambda: md5(emailBytes).hexdigest(),
         )
         x_spam = getHeader(emailMessage, HeaderFields.X_SPAM)
-        if x_spam != "NO" and get_config("THROW_OUT_SPAM"):
+        if x_spam is not None and x_spam != "NO" and get_config("THROW_OUT_SPAM"):
             logger.debug(
                 "Skipping email with Message-ID %s in %s, it is flagged as spam.",
                 message_id,
