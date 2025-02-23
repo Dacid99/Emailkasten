@@ -22,7 +22,10 @@ from __future__ import annotations
 
 import poplib
 
+from typing_extensions import override
+
 from ... import constants
+from .exceptions import MailAccountError
 from .POP3Fetcher import POP3Fetcher
 
 
@@ -35,6 +38,7 @@ class POP3_SSL_Fetcher(POP3Fetcher):
     PROTOCOL = constants.MailFetchingProtocols.POP3_SSL
     """Name of the used protocol, refers to :attr:`constants.MailFetchingProtocols.POP3_SSL`."""
 
+    @override
     def connectToHost(self) -> None:
         """Overrides :func:`core.utils.fetchers.POP3Fetcher.connectToHost` to use :class:`poplib.POP3_SSL`."""
         self.logger.debug("Connecting to %s ...", str(self.account))
@@ -45,6 +49,12 @@ class POP3_SSL_Fetcher(POP3Fetcher):
         if timeout := self.account.timeout:
             kwargs["timeout"] = timeout
 
-        self._mailhost = poplib.POP3_SSL(**kwargs)
-
+        try:
+            self._mailhost = poplib.POP3_SSL(**kwargs)
+        except Exception as error:
+            self.logger.exception(
+                "A POP error occured connecting to %s!",
+                self.account,
+            )
+            raise MailAccountError from error
         self.logger.debug("Successfully connected to %s.", str(self.account))

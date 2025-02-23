@@ -22,20 +22,17 @@ from __future__ import annotations
 
 import logging
 import poplib
-from typing import TYPE_CHECKING, Final, Literal
+from typing import TYPE_CHECKING, Final
 
 from typing_extensions import override
 
 from core.utils.fetchers.BaseFetcher import BaseFetcher
 
-from ... import constants
-from ...constants import TestStatusCodes
-from .exceptions import MailAccountError, MailboxError
+from ...constants import MailFetchingCriteria, MailFetchingProtocols
+from .exceptions import FetcherError, MailAccountError
 
 
 if TYPE_CHECKING:
-    from types import TracebackType
-
     from ...models.AccountModel import AccountModel
     from ...models.MailboxModel import MailboxModel
 
@@ -46,17 +43,19 @@ class POP3Fetcher(BaseFetcher):
     Opens a connection to the POP server on construction and is preferably used in a 'with' environment.
     Allows fetching of mails and mailboxes from an account on an POP host.
 
+    Since POP does not have any mailboxes, none of the methods should raise a `MailboxError`.
+
     Attributes:
         account (:class:`core.models.AccountModel`): The model of the account to be fetched from.
         logger (:class:`logging.Logger`): The logger for this instance.
         _mailhost (:class:`poplib.POP3`): The POP host this instance connects to.
     """
 
-    PROTOCOL = constants.MailFetchingProtocols.POP3
-    """Name of the used protocol, refers to :attr:`constants.MailFetchingProtocols.POP3`."""
+    PROTOCOL = MailFetchingProtocols.POP3
+    """Name of the used protocol, refers to :attr:`MailFetchingProtocols.POP3`."""
 
-    AVAILABLE_FETCHING_CRITERIA: Final[list[str]] = [constants.MailFetchingCriteria.ALL]
-    """List of all criteria available for fetching. Refers to :class:`constants.MailFetchingCriteria`."""
+    AVAILABLE_FETCHING_CRITERIA: Final[list[str]] = [MailFetchingCriteria.ALL]
+    """List of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`."""
 
     @override
     def __init__(self, account: AccountModel) -> None:
@@ -71,62 +70,57 @@ class POP3Fetcher(BaseFetcher):
 
         self.connectToHost()
         try:
-            self._mailhost.user(self.account.mail_address)
-            self._mailhost.pass_(self.account.password)
-        except poplib.error_proto:
+            response = self._mailhost.user(self.account.mail_address)
+            self._checkResponse(response, MailAccountError)
+            response = self._mailhost.pass_(self.account.password)
+            self._checkResponse(response, MailAccountError)
+        except poplib.error_proto as error:
             self.logger.exception(
-                "A POP error occured connecting and logging in to %s!",
+                "A POP error occured logging in to %s!",
                 self.account,
             )
+            raise MailAccountError from error
 
     @override
     def connectToHost(self) -> None:
-        """Opens the connection to the POP server using the credentials from :attr:`account`."""
+        """Opens the connection to the POP server using the credentials from :attr:`account`.
+
+        Raises:
+            MailAccountError: If an error occurs or a bad response is returned.
+        """
         self.logger.debug("Connecting to %s ...", str(self.account))
+
         kwargs = {"host": self.account.mail_host}
         if port := self.account.mail_host_port:
             kwargs["port"] = port
         if timeout := self.account.timeout:
             kwargs["timeout"] = timeout
+
         try:
             self._mailhost = poplib.POP3(**kwargs)
         except Exception as error:
             self.logger.exception(
-                "An IMAP error occured connecting to %s!",
+                "A POP error occured connecting to %s!",
                 self.account,
             )
             raise MailAccountError from error
         self.logger.debug("Successfully connected to %s.", str(self.account))
 
     @override
-    def close(self) -> None:
-        """Logs out of the account and closes the connection to the POP server if it is open."""
-        self.logger.debug("Closing connection to %s ...", str(self.account))
-        if self._mailhost:
-            try:
-                self._mailhost.quit()
-                self.logger.info(
-                    "Successfully closed connection to %s.", str(self.account)
-                )
-            except Exception:
-                self.logger.exception(
-                    "An unexpected error occured closing connection to %s!",
-                    self.account,
-                )
-        else:
-            self.logger.debug("Connection to %s was already closed.", str(self.account))
-
-    @override
-    def test(self, mailbox: MailboxModel | None = None) -> int:
+    def test(self, mailbox: MailboxModel | None = None) -> None:
         """Tests the connection to the mailserver and, if a mailbox is provided, whether messages can be listed.
 
         Args:
             mailbox: The mailbox to be tested. Default is None.
 
         Returns:
-            The test status in form of a code from :class:`Emailkasten.constants.TestStatusCodes`.
+            The test result.
+
+        Raises:
+            ValueError: If the :attr:`mailbox` does not belong to :attr:`self.account`.
+            MailAccountError: If an error occurs or a bad response is returned.
         """
-        if mailbox.account != self.account:
+        if mailbox is not None and mailbox.account != self.account:
             self.logger.error("%s is not a mailbox of %s!", str(mailbox), self.account)
             raise ValueError(f"{mailbox} is not in {self.account}!")
 
@@ -134,59 +128,50 @@ class POP3Fetcher(BaseFetcher):
         try:
             response = self._mailhost.noop()
             self._checkResponse(response)
-            self.logger.debug("Successfully tested %s.", str(self.account))
         except poplib.error_proto as error:
             self.logger.exception(
-                "An IMAP error occured during test of %s!",
+                "A POP error occured testing %s!",
                 self.account,
             )
             raise MailAccountError from error
+        self.logger.debug("Successfully tested %s.", str(self.account))
 
         if mailbox is not None:
             self.logger.debug("Testing %s ...", str(mailbox))
-
             try:
                 response = self._mailhost.list()
                 self._checkResponse(response)
             except poplib.error_proto as error:
                 self.logger.exception(
-                    "An IMAP error occured during test of %s!",
-                    self.account,
+                    "A POP error occured testing %s!",
+                    mailbox,
                 )
-                raise MailboxError from error
-
-    @override
-    def fetchMailboxes(self) -> list[bytes]:
-        """Returns the data of the mailboxes. For POP3 there is only one mailbox.
-
-        Note:
-            This method is built to match the methods from other fetcherclasses.
-
-        Returns:
-            The name of the mailbox in the account in a list.
-        """
-        return [b"INBOX"]
+                raise MailAccountError from error
+            self.logger.debug("Successfully tested %s.", str(mailbox))
 
     @override
     def fetchEmails(
         self,
         mailbox: MailboxModel,
-        criterion: str = constants.MailFetchingCriteria.ALL,
+        criterion: str = MailFetchingCriteria.ALL,
     ) -> list[bytes]:
         """Fetches and returns all maildata from the server.
 
         Args:
             mailbox: Database model of the mailbox to fetch data from.
-                If a mailbox that is not in the account is given, returns [].
             criterion: POP only support ALL lookups.
-                Defaults to :attr:`Emailkasten.constants.MailFetchingCriteria.ALL`.
+                Defaults to :attr:`Emailkasten.MailFetchingCriteria.ALL`.
                 Returns [] if a different value is passed.
                 This arg ensures compatibility with the other fetchers.
 
         Returns:
-            List of :class:`email.message.EmailMessage` mails in the mailbox. Empty if no messages are found or if an error occured.
+            List of :class:`email.message.EmailMessage` mails in the mailbox.
+
+        Raises:
+            ValueError: If the :attr:`mailbox` does not belong to :attr:`self.account`.
+            MailAccountError: If an error occurs or a bad response is returned.
         """
-        if criterion != "ALL":
+        if criterion not in POP3Fetcher.AVAILABLE_FETCHING_CRITERIA:
             return []
 
         if mailbox.account != self.account:
@@ -197,63 +182,64 @@ class POP3Fetcher(BaseFetcher):
 
         self.logger.debug("Listing all messages in %s ...", str(mailbox))
         try:
-            status, messageNumbersList, _ = self._mailhost.list()
-            if status != b"+OK":
-                self.logger.error(
-                    "Bad response listing mails in %s:\n %s, %s!",
-                    str(mailbox),
-                    status,
-                    messageNumbersList,
-                )
-                mailbox.is_healthy = False
-                mailbox.save(update_fields=["is_healthy"])
-                return []
+            status, messageNumbersList, __ = self._mailhost.list()
+            self._checkResponse((status, messageNumbersList), MailAccountError, "list")
 
             messageCount = len(messageNumbersList)
             self.logger.debug("Found %s messages in %s.", messageCount, str(mailbox))
 
             self.logger.debug("Retrieving all messages in %s ...", str(mailbox))
             mailDataList = []
-
             for number in range(messageCount):
-                status, messageData, _ = self._mailhost.retr(number + 1)
-                if status != b"+OK":
-                    self.logger.error(
-                        "Bad response retrieving mail %s in %s:\n %s, %s",
-                        number,
-                        str(mailbox),
-                        status,
-                        messageData,
-                    )
+                status, messageData, __ = self._mailhost.retr(number + 1)
+                try:
+                    self._checkResponse((status, messageData), commandName="retr")
+                except FetcherError:
                     continue
 
                 fullMessage = b"\n".join(messageData)
                 mailDataList.append(fullMessage)
-
             self.logger.debug(
                 "Successfully retrieved all messages in %s.", str(mailbox)
             )
 
-        except poplib.error_proto:
-            self.logger.error(
+        except poplib.error_proto as error:
+            self.logger.exception(
                 "A POP error occured retrieving all messages in %s!",
-                str(mailbox),
-                exc_info=True,
+                mailbox,
             )
-            mailbox.is_healthy = False
-            mailbox.save(update_fields=["is_healthy"])
-            return []
-        except Exception:
-            self.logger.error(
-                "An unexpected error occured retrieving all messages in %s!",
-                str(mailbox),
-                exc_info=True,
-            )
-            return []
+            raise MailAccountError from error
 
         self.logger.debug("Successfully fetched all messages in %s.", str(mailbox))
 
-        mailbox.is_healthy = True
-        mailbox.save(update_fields=["is_healthy"])
-
         return mailDataList
+
+    @override
+    def fetchMailboxes(self) -> list[bytes]:
+        """Returns the data of the mailboxes. For POP3 there is only one mailbox named 'INBOX'.
+
+        Note:
+            This method is built to match the methods from other fetcherclasses.
+
+        Returns:
+            The name of the mailbox in the account in a list.
+        """
+        return [b"INBOX"]
+
+    @override
+    def close(self) -> None:
+        """Logs out of the account and closes the connection to the POP server if it is open.
+
+        Ignores all exceptions that occur on logout.
+        Otherwise a broken connection would raise additional exceptions, shadowing the cause of the exit.
+        """
+        super().close()
+        try:
+            response = self._mailhost.quit()
+            self._checkResponse(response, commandName="quit")  # called for logging
+            self.logger.info("Successfully closed connection to %s.", str(self.account))
+        except Exception:
+            self.logger.exception(
+                "An error occured closing connection to %s!",
+                self.account,
+            )

@@ -21,6 +21,7 @@
 - references header
 - database statistics
 - replace daemons with celery
+- mailbox info from list (e.g. b'(\\Archive \\HasChildren) "/" Archiv', b'(\\HasNoChildren) "/" Archiv/2024', b'(\\Drafts \\HasNoChildren) "/" Entw&APw-rfe', b'(\\Sent \\HasNoChildren) "/" "Gesendete Objekte"', b'(\\HasNoChildren) "/" INBOX', b'(\\Trash \\HasNoChildren) "/" Papierkorb', b'(\\Junk \\HasNoChildren) "/" Spam')
 
 ### Work in progress
 - tests
@@ -31,6 +32,7 @@
 - mailboxserializer with correspondents
 
 ## To fix
+- mailbox names parsing doesnt match IMAP format
 
 # Remember
 - new migration must include setting of defaults

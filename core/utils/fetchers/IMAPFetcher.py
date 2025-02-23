@@ -108,9 +108,6 @@ class IMAPFetcher(BaseFetcher):
     def __init__(self, account: AccountModel) -> None:
         """Constructor, starts the IMAP connection and logs into the account.
 
-        If the connection or session could not be established and the `account` is marked as unhealthy.
-        If the connection succeeds, the account is flagged as healthy.
-
         Args:
             account: The model of the account to be fetched from.
         """
@@ -155,7 +152,7 @@ class IMAPFetcher(BaseFetcher):
         self.logger.debug("Successfully connected to %s.", str(self.account))
 
     @override
-    def test(self, mailbox: MailboxModel | None = None) -> bool:
+    def test(self, mailbox: MailboxModel | None = None) -> None:
         """Tests the connection to the mailserver and, if a mailbox is provided, whether it can be opened and listed.
 
         Args:
@@ -165,6 +162,7 @@ class IMAPFetcher(BaseFetcher):
             The test result.
 
         Raises:
+            ValueError: If the :attr:`mailbox` does not belong to :attr:`self.account`.
             MailAccountError: If an error occurs or a bad response is returned testing the account.
             MailboxError: If an error occurs or a bad response is returned testing the mailbox.
         """
@@ -178,7 +176,12 @@ class IMAPFetcher(BaseFetcher):
             response = self._mailhost.noop()
             self._checkResponse(response, MailAccountError, "noop")
         except imaplib.IMAP4.error as error:
+            self.logger.exception(
+                "An IMAP error occured testing %s!",
+                self.account,
+            )
             raise MailAccountError from error
+        self.logger.debug("Successfully tested %s.", self.account)
 
         if mailbox is not None:
             self.logger.debug("Testing %s ...", str(mailbox))
@@ -186,16 +189,15 @@ class IMAPFetcher(BaseFetcher):
                 response = self._mailhost.select(mailbox.name, readonly=True)
                 self._checkResponse(response, MailboxError, "select")
 
-                response = self._mailhost.list()
-                self._checkResponse(response, MailboxError, "list")
-
                 response = self._mailhost.unselect()
                 self._checkResponse(response, MailboxError, "unselect")
             except imaplib.IMAP4.error as error:
+                self.logger.exception(
+                    "An IMAP error occured testing %s!",
+                    mailbox,
+                )
                 raise MailboxError from error
-            else:
-                self.logger.debug("Successfully tested %s.", str(mailbox))
-        return True
+            self.logger.debug("Successfully tested %s.", str(mailbox))
 
     @override
     def fetchEmails(
@@ -222,19 +224,18 @@ class IMAPFetcher(BaseFetcher):
             ValueError: If the :attr:`mailbox` does not belong to :attr:`self.account`.
             MailboxError: If an error occurs or a bad response is returned.
         """
-        if mailbox.account != self.account:
-            self.logger.error("%s is not a mailbox of %s!", mailbox, self.account)
-            raise ValueError(f"{mailbox} is not in {self.account}!")
-
         searchCriterion = self.makeFetchingCriterion(criterion)
         if not searchCriterion:
             return []
 
+        if mailbox.account != self.account:
+            self.logger.error("%s is not a mailbox of %s!", mailbox, self.account)
+            raise ValueError(f"{mailbox} is not in {self.account}!")
+
         self.logger.debug(
-            "Searching and fetching %s messages in %s of %s ...",
+            "Searching and fetching %s messages in %s...",
             searchCriterion,
             str(mailbox),
-            str(self.account),
         )
         try:
             self.logger.debug("Opening mailbox %s ...", str(mailbox))
@@ -321,12 +322,12 @@ class IMAPFetcher(BaseFetcher):
 
     @override
     def close(self) -> None:
-        """Logs out of the account and closes the connection to the IMAP server.
+        """Logs out of the account and closes the connection to the IMAP server if it is open.
 
         Ignores all exceptions that occur on logout.
         Otherwise a broken connection would raise additional exceptions, shadowing the cause of the exit.
         """
-        self.logger.debug("Closing connection to %s ...", str(self.account))
+        super().close()
         try:
             response = self._mailhost.logout()
             self._checkResponse(

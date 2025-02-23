@@ -30,7 +30,7 @@ from django.db import models
 
 from core import constants
 
-from ..constants import TestStatusCodes
+from ..utils.fetchers.exceptions import MailAccountError
 from ..utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
 from ..utils.fetchers.IMAPFetcher import IMAPFetcher
 from ..utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
@@ -40,8 +40,7 @@ from .MailboxModel import MailboxModel
 
 # from utils.fetchers.ExchangeFetcher import ExchangeFetcher
 if TYPE_CHECKING:
-    from imaplib import IMAP4
-    from poplib import POP3
+    from ..utils.fetchers.BaseFetcher import BaseFetcher
 
 
 logger = logging.getLogger(__name__)
@@ -114,7 +113,7 @@ class AccountModel(DirtyFieldsMixin, models.Model):
         """
         return f"Account {self.mail_address} at host {self.mail_host} with protocol {self.protocol}"
 
-    def get_fetcher(self) -> IMAP4 | POP3:
+    def get_fetcher(self) -> BaseFetcher:
         """Instantiates the fetcher from :class:`core.utils.fetchers` corresponding to :attr:`protocol`.
 
         Returns:
@@ -145,34 +144,35 @@ class AccountModel(DirtyFieldsMixin, models.Model):
             "The requested protocol is not implemented in a fetcher class!"
         )
 
-    def test_connection(self) -> int:
+    def test_connection(self) -> None:
         """Tests whether the data in the model is correct.
 
         Tests connecting and logging in to the mailhost and account.
         The :attr:`core.models.AccountModel.is_healthy` flag is set accordingly.
         Relies on the `test` method of the :mod:`core.utils.fetchers` classes.
-
-        Returns:
-            The resultcode of the test.
         """
         logger.info("Testing %s ...", self)
         try:
             with self.get_fetcher() as fetcher:
-                result = fetcher.test()
-        except ValueError:
-            logger.exception("Account %s has unknown protocol!", self)
-            result = TestStatusCodes.ERROR
+                fetcher.test()
+        except MailAccountError:
+            self.is_healthy = False
+            self.save(update_fields=["is_healthy"])
+            raise
 
-        logger.info("Successfully tested account to be %s.", result)
-        return result
+        logger.info("Successfully tested account.")
 
     def update_mailboxes(self) -> None:
         """Scans the given mailaccount for unknown mailboxes, parses and inserts them into the database."""
 
         logger.info("Updating mailboxes in %s...", self)
-
-        with self.get_fetcher() as fetcher:
-            mailboxList = fetcher.fetchMailboxes()
+        try:
+            with self.get_fetcher() as fetcher:
+                mailboxList = fetcher.fetchMailboxes()
+        except MailAccountError:
+            self.is_healthy = False
+            self.save(update_fields=["is_healthy"])
+            raise
 
         for mailboxData in mailboxList:
             mailbox = MailboxModel.fromData(mailboxData, self)

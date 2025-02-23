@@ -20,11 +20,13 @@
 
 
 from __future__ import annotations
-from ...constants import MailFetchingCriteria
+
 import logging
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Literal
 
 from core.utils.fetchers.exceptions import FetcherError
+
+from ...constants import MailFetchingCriteria
 
 
 if TYPE_CHECKING:
@@ -42,14 +44,14 @@ class BaseFetcher:
         response: tuple[str | bytes],
         exception: type[FetcherError] = FetcherError,
         commandName: str = "",
-        expectedStatus: str = "OK",
+        expectedStatus: str | tuple[str] = ("OK", "+OK"),
     ) -> None:
         status = (
             response[0].decode("utf-8", errors="replace")
             if isinstance(response[0], bytes)
             else response[0]
         )
-        if status != expectedStatus:
+        if not status.startswith(expectedStatus):
             serverMessage = (
                 response[1].decode("utf-8", errors="replace")
                 if response[1] and isinstance(response[1], bytes)
@@ -64,11 +66,15 @@ class BaseFetcher:
             raise exception(f"Bad server response for {commandName}:\n{serverMessage}")
         self.logger.debug("Server responded %s as expected.", status)
 
-    def __init__(self, mailboxModel: MailboxModel):
+    def __init__(self, account: AccountModel):
         self.logger = logging.getLogger(__name__)
+        self._mailHost = None
         raise NotImplementedError
 
-    def connectToHost(self, accountModel: AccountModel) -> None:
+    def connectToHost(self) -> None:
+        pass
+
+    def test(self, mailboxModel: MailboxModel) -> None:
         pass
 
     def fetchEmails(
@@ -81,11 +87,11 @@ class BaseFetcher:
     def fetchMailboxes(self) -> list[bytes]:
         pass
 
-    def test(self, mailboxModel: MailboxModel) -> bool:
-        pass
-
     def close(self) -> None:
-        pass
+        self.logger.debug("Closing connection to %s ...", str(self.account))
+        if self._mailhost is None:
+            self.logger.debug("Connection to %s is already closed.", str(self.account))
+            return
 
     def __enter__(self) -> BaseFetcher:
         """Framework method for use of class in 'with' statement, creates an instance.
