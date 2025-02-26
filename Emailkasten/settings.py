@@ -32,7 +32,6 @@ from pathlib import Path
 
 from django.utils.translation import gettext_lazy as _
 
-import api.constants
 import Emailkasten.constants
 
 
@@ -169,21 +168,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Authentication
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_LOGIN_METHODS = {"username"}
-ACCOUNT_EMAIL_VERIFICATION = "none"
-REGISTRATION_ENABLED = api.constants.APIv1Configuration.REGISTRATION_ENABLED
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-
-REST_USE_JWT = False
-REST_AUTH_TOKEN_MODEL = "rest_framework.authtoken.models.Token"
 
 SESSION_COOKIE_AGE = 1209600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
@@ -196,8 +188,20 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
 
 
-# logging
+# django-allauth
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_LOGIN_METHODS = {"username"}
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_SESSION_REMEMBER = None
 
+# dj-api-auth
+REST_AUTH = {
+    "USE_JWT": False,
+}
+
+
+# Logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -297,6 +301,11 @@ CONSTANCE_CONFIG = {
         200,
         _("The maximum page size for paginated API response data"),
         int,
+    ),
+    "API_REGISTRATION_ENABLED": (
+        False,
+        _("Whether registration via the API is enabled"),
+        bool,
     ),
     "DAEMON_CYCLE_PERIOD_DEFAULT": (
         60,
@@ -441,5 +450,5 @@ CONSTANCE_FIELDSETS = (
         _("Storage Settings"),
         ("STORAGE_PATH", "STORAGE_MAX_SUBDIRS_PER_DIR", "TEMPORARY_STORAGE_DIRECTORY"),
     ),
-    (_("API Settings"), ("API_DEFAULT_PAGE_SIZE", "API_MAX_PAGE_SIZE")),
+    (_("API Settings"), ("API_REGISTRATION_ENABLED", "API_DEFAULT_PAGE_SIZE", "API_MAX_PAGE_SIZE")),
 )

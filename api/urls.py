@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
-"""URL configuration for Emailkasten project.
+"""URL configuration for api app.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -33,18 +33,30 @@ Including another URLconf
 """
 from __future__ import annotations
 
-from django.contrib import admin
 from django.urls import include, path
+
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
 
-
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("health/", include("health_check.urls")),
-    path("accounts/", include("allauth.urls")),
-    path("api/", include("api.urls")),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    path(
+        "schema/redoc/",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc",
+    ),
+    path("browsable/", include("rest_framework.urls", namespace="rest_framework")),
+
+    path("auth/", include("dj_rest_auth.urls")),
+    path("auth/registration/", include("dj_rest_auth.registration.urls")),
+
+    path("v1/", include("api.v1.urls"))
 ]
