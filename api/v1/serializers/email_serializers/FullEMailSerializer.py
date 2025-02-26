@@ -67,7 +67,7 @@ class FullEMailSerializer(BaseEMailSerializer):
     correspondents = serializers.SerializerMethodField(read_only=True)
     """The emails are set from the
     :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`
-    via :func:`get_emails`.
+    via :func:`get_correspondents`.
     """
 
     def get_correspondents(self, object: EMailModel) -> ReturnDict | None:

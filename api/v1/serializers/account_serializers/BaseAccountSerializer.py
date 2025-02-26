@@ -44,11 +44,6 @@ class BaseAccountSerializer(serializers.ModelSerializer):
     is set to write-only for security reasons.
     """
 
-    mail_address = serializers.EmailField()
-    """The :attr:`core.models.AccountModel.AccountModel.mail_address` field
-    is a :restframework::class:`serializers.EmailField` for automatic validation of input.
-    """
-
     class Meta:
         """Metadata class for the base serializer.
 
