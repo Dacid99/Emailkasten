@@ -99,11 +99,11 @@ parametrize-values-type = "list"
 "/**/test/**" = [  # ignores for all test files
   "SLF001", # private accessed
   "PLR2004", # magic numbers
+  "ANN",  # no type annotations in tests needed
 ]
 
 [lint.extend-per-file-ignores]
 "/**/test/**/test_**.py" = [  # extend ignores for test_* files, so excluding conftests
   "S101", # asserts
   "F401", # unused import
-  "ANN2",  # missing return type doc
 ]

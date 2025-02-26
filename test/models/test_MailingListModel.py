@@ -59,7 +59,7 @@ def fixture_mailingListModel() -> MailingListModel:
 
 
 @pytest.mark.django_db
-def test_MailingListModel_creation(mailingList) -> None:
+def test_MailingListModel_creation(mailingList):
     """Tests the correct default creation of :class:`core.models.MailingListModel.MailingListModel`."""
 
     assert mailingList.list_id is not None
@@ -86,14 +86,14 @@ def test_MailingListModel_creation(mailingList) -> None:
 
 
 @pytest.mark.django_db
-def test_MailingListModel_unique(mailingList) -> None:
+def test_MailingListModel_unique(mailingList):
     """Tests the unique constraints of :class:`core.models.MailingListModel.MailingListModel`."""
     with pytest.raises(IntegrityError):
         baker.make(MailingListModel, list_id=mailingList.list_id)
 
 
 @pytest.mark.django_db
-def test_MailingListModel_fromEmailMessage(mocker) -> None:
+def test_MailingListModel_fromEmailMessage(mocker):
     emailMessage = EmailMessage()
     mock_getHeader = mocker.patch(
         "core.models.MailingListModel.getHeader", return_value="list header"
@@ -124,7 +124,7 @@ def test_MailingListModel_fromEmailMessage(mocker) -> None:
 
 
 @pytest.mark.django_db
-def test_fromHeader_duplicate(mocker, mailingList) -> None:
+def test_fromHeader_duplicate(mocker, mailingList):
     emailMessage = EmailMessage()
     mock_getHeader = mocker.patch(
         "core.models.MailingListModel.getHeader", return_value=mailingList.list_id
@@ -137,7 +137,7 @@ def test_fromHeader_duplicate(mocker, mailingList) -> None:
 
 
 @pytest.mark.django_db
-def test_MailingListModel_fromEmailMessage_no_list_id(mocker, mock_logger) -> None:
+def test_MailingListModel_fromEmailMessage_no_list_id(mocker, mock_logger):
     emailMessage = EmailMessage()
     mock_getHeader = mocker.patch(
         "core.models.MailingListModel.getHeader", return_value=None

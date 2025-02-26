@@ -64,7 +64,7 @@ def fixture_emailConversation(email) -> None:
 
 
 @pytest.mark.django_db
-def test_EMailModel_creation(email) -> None:
+def test_EMailModel_creation(email):
     """Tests the correct default creation of :class:`core.models.EMailModel.EMailModel`."""
 
     assert email.message_id is not None
@@ -102,7 +102,7 @@ def test_EMailModel_creation(email) -> None:
 
 
 @pytest.mark.django_db
-def test_EMailModel_foreign_key_mailbox_deletion(email) -> None:
+def test_EMailModel_foreign_key_mailbox_deletion(email):
     """Tests the on_delete foreign key constraint on mailbox in :class:`core.models.EMailModel.EMailModel`."""
 
     email.mailbox.delete()
@@ -112,7 +112,7 @@ def test_EMailModel_foreign_key_mailbox_deletion(email) -> None:
 
 
 @pytest.mark.django_db
-def test_EMailModel_foreign_key_inReplyTo_deletion(email) -> None:
+def test_EMailModel_foreign_key_inReplyTo_deletion(email):
     """Tests the on_delete foreign key constraint on inReplyTo in :class:`core.models.EMailModel.EMailModel`."""
 
     inReplyToEmail = baker.make(EMailModel, x_spam="NO")
@@ -128,7 +128,7 @@ def test_EMailModel_foreign_key_inReplyTo_deletion(email) -> None:
 
 
 @pytest.mark.django_db
-def test_EMailModel_foreign_key_mailingList_deletion(email) -> None:
+def test_EMailModel_foreign_key_mailingList_deletion(email):
     """Tests the on_delete foreign key constraint on mailinglist in :class:`core.models.EMailModel.EMailModel`."""
 
     mailingList = baker.make(MailingListModel)
@@ -142,7 +142,7 @@ def test_EMailModel_foreign_key_mailingList_deletion(email) -> None:
 
 
 @pytest.mark.django_db
-def test_EMailModel_unique() -> None:
+def test_EMailModel_unique():
     """Tests the unique constraints of :class:`core.models.EMailModel.EMailModel`."""
 
     email_1 = baker.make(EMailModel, x_spam="NO", message_id="abc123")
@@ -163,7 +163,7 @@ def test_EMailModel_unique() -> None:
 
 
 @pytest.mark.django_db
-def test_delete_email_success(faker, mocker, mock_logger, email) -> None:
+def test_delete_email_success(faker, mocker, mock_logger, email):
     """Tests :func:`core.models.EMailModel.EMailModel.delete`
     if the file removal is successful.
     """
@@ -223,7 +223,7 @@ def test_delete_email_remove_error(
 
 
 @pytest.mark.django_db
-def test_delete_email_delete_error(mocker, faker, email, mock_logger) -> None:
+def test_delete_email_delete_error(mocker, faker, email, mock_logger):
     """Tests :func:`core.models.EMailModel.EMailModel.delete`
     if delete throws an exception.
     """
@@ -245,7 +245,7 @@ def test_delete_email_delete_error(mocker, faker, email, mock_logger) -> None:
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("save_to_eml, expectedCalls", [(True, 1), (False, 0)])
-def test_save_data_settings(mocker, email, save_to_eml, expectedCalls) -> None:
+def test_save_data_settings(mocker, email, save_to_eml, expectedCalls):
     mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
     mock_save_to_storage = mocker.patch(
         "core.models.EMailModel.EMailModel.save_to_storage"
@@ -260,7 +260,7 @@ def test_save_data_settings(mocker, email, save_to_eml, expectedCalls) -> None:
 
 
 @pytest.mark.django_db
-def test_save_no_data(mocker, email) -> None:
+def test_save_no_data(mocker, email):
     mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
     mock_save_to_storage = mocker.patch(
         "core.models.EMailModel.EMailModel.save_to_storage"
@@ -274,7 +274,7 @@ def test_save_no_data(mocker, email) -> None:
 
 
 @pytest.mark.django_db
-def test_save_data_failure(mocker, email) -> None:
+def test_save_data_failure(mocker, email):
     mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
     mock_save_to_storage = mocker.patch(
         "core.models.EMailModel.EMailModel.save_to_storage",
@@ -295,7 +295,7 @@ def test_save_data_failure(mocker, email) -> None:
     "start_id, expected_len",
     [(1, 8), (2, 3), (3, 3), (4, 1), (5, 1), (6, 1), (7, 2), (8, 1)],
 )
-def test_EMailModel_subConversation(emailConversation, start_id, expected_len) -> None:
+def test_EMailModel_subConversation(emailConversation, start_id, expected_len):
     """Tests the on_delete foreign key constraint on account in :class:`core.models.EMailModel.EMailModel`."""
     startEmail = EMailModel.objects.get(id=start_id)
 
@@ -306,7 +306,7 @@ def test_EMailModel_subConversation(emailConversation, start_id, expected_len) -
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("start_id", [1, 2, 3, 4, 5, 6, 7, 8])
-def test_EMailModel_fullConversation(emailConversation, start_id) -> None:
+def test_EMailModel_fullConversation(emailConversation, start_id):
     """Tests the on_delete foreign key constraint on account in :class:`core.models.EMailModel.EMailModel`."""
     startEmail = EMailModel.objects.get(id=start_id)
 
@@ -319,7 +319,7 @@ def test_EMailModel_fullConversation(emailConversation, start_id) -> None:
 @pytest.mark.parametrize(
     "x_spam, expectedResult", [(None, False), ("YES", True), ("NO", False)]
 )
-def test_EMailModel_isSpam(email, x_spam, expectedResult) -> None:
+def test_EMailModel_isSpam(email, x_spam, expectedResult):
     email.x_spam = x_spam
 
     result = email.isSpam()

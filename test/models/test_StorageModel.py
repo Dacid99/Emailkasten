@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture(name="mock_logger", autouse=True)
-def fixture_mock_logger(mocker: MockerFixture) -> MagicMock:
+def fixture_mock_logger(mocker) -> MagicMock:
     """Mocks :attr:`core.models.StorageModel.logger` of the module."""
     return mocker.patch("core.models.StorageModel.logger")
 
@@ -103,7 +103,7 @@ def test_StorageModel_initial_single_creation(
 @pytest.mark.override_config(
     STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
 )
-def test_StorageModel_initial_many_creation(mock_logger, mock_filesystem) -> None:
+def test_StorageModel_initial_many_creation(mock_logger, mock_filesystem):
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
     for number in range(2 * 3 + 1):
@@ -127,7 +127,7 @@ def test_StorageModel_initial_many_creation(mock_logger, mock_filesystem) -> Non
 @pytest.mark.override_config(
     STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
 )
-def test_health_check_success(mock_logger, mock_filesystem, mocker) -> None:
+def test_health_check_success(mock_logger, mock_filesystem, mocker):
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
     for number in range(2 * 3 + 1):
@@ -142,7 +142,7 @@ def test_health_check_success(mock_logger, mock_filesystem, mocker) -> None:
 @pytest.mark.override_config(
     STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
 )
-def test_health_check_failed_duplicate_current(mock_logger, mock_filesystem) -> None:
+def test_health_check_failed_duplicate_current(mock_logger, mock_filesystem):
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
     for number in range(2 * 3 + 1):
@@ -159,7 +159,7 @@ def test_health_check_failed_duplicate_current(mock_logger, mock_filesystem) -> 
 @pytest.mark.override_config(
     STORAGE_PATH="conflicting-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
 )
-def test_health_check_failed_dirty_storage(mock_logger, mock_filesystem) -> None:
+def test_health_check_failed_dirty_storage(mock_logger, mock_filesystem):
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
     for number in range(2 * 3 + 1):

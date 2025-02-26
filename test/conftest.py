@@ -23,7 +23,7 @@ from __future__ import annotations
 import os
 
 
-def pytest_configure(config) -> None:
+def pytest_configure(config):
     """Configures the path for pytest
     to be the directory of this file for consistent relative paths.
     """

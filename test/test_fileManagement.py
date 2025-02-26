@@ -43,11 +43,10 @@ if TYPE_CHECKING:
     from unittest.mock import MagicMock
 
     from pyfakefs.fake_filesystem import FakeFilesystem
-    from pytest_mock.plugin import MockerFixture
 
 
 @pytest.fixture(name="mock_logger", autouse=True)
-def fixture_mock_logger(mocker: MockerFixture) -> MagicMock:
+def fixture_mock_logger(mocker) -> MagicMock:
     """Mocks :attr:`core.utils.fileManagment.logger` of the module."""
     return mocker.patch("core.utils.fileManagment.logger")
 
@@ -55,6 +54,7 @@ def fixture_mock_logger(mocker: MockerFixture) -> MagicMock:
 @pytest.fixture(name="mock_filesystem", autouse=True)
 def fixture_mock_filesystem() -> Generator[FakeFilesystem, None, None]:
     """Mocks a Linux filesystem for realistic testing.
+
     Contains different files with various permission settings for the 'other' users and contents .
 
     Note:
@@ -116,14 +116,14 @@ def fixture_mock_filesystem() -> Generator[FakeFilesystem, None, None]:
     ],
 )
 def test_saveStore(
-    mocker: MockerFixture,
-    mock_logger: MagicMock,
-    mock_filesystem: FakeFilesystem,
-    fakeFile: str,
-    expectedFileExists: bool,
-    expectedFileSize: int,
-    expectedCallsToOpen: int,
-    expectedErrors: int,
+    mocker,
+    mock_logger,
+    mock_filesystem,
+    fakeFile,
+    expectedFileExists,
+    expectedFileSize,
+    expectedCallsToOpen,
+    expectedErrors,
 ) -> None:
     """Tests :func:`core.utils.fileManagment.saveStore` with the help of a fakefs.
 
