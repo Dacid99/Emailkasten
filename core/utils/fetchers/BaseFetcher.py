@@ -22,9 +22,7 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Literal
-
-from core.utils.fetchers.exceptions import FetcherError
+from typing import TYPE_CHECKING
 
 from ...constants import MailFetchingCriteria
 
@@ -41,7 +39,8 @@ class BaseFetcher(ABC):
 
     @abstractmethod
     def __init__(self, account: AccountModel):
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(self)
+        self.account = account
 
     @abstractmethod
     def connectToHost(self) -> None:
@@ -70,6 +69,9 @@ class BaseFetcher(ABC):
             self.logger.debug("Connection to %s is already closed.", str(self.account))
             return
 
+    def __str__(self) -> str:
+        return f"Fetcher for {self.account}"
+
     def __enter__(self) -> BaseFetcher:
         """Framework method for use of class in 'with' statement, creates an instance.
 
@@ -83,7 +85,7 @@ class BaseFetcher(ABC):
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
-    ) -> Literal[False]:
+    ) -> None:
         """Framework method for use of class in 'with' statement, closes an instance.
 
         Args:
@@ -99,4 +101,3 @@ class BaseFetcher(ABC):
                 "An error %s occured, exiting Fetcher!", exc_type, exc_info=exc_value
             )
         self.close()
-        return False
