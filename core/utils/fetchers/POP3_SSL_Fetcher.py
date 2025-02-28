@@ -50,7 +50,7 @@ class POP3_SSL_Fetcher(POP3Fetcher):
             kwargs["timeout"] = timeout
 
         try:
-            self._mailhost = poplib.POP3_SSL(**kwargs)
+            self._mailClient = poplib.POP3_SSL(**kwargs)
         except Exception as error:
             self.logger.exception(
                 "A POP error occured connecting to %s!",

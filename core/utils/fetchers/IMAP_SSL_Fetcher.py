@@ -45,7 +45,7 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
             kwargs["timeout"] = timeout
 
         try:
-            self._mailhost = imaplib.IMAP4_SSL(**kwargs)
+            self._mailClient = imaplib.IMAP4_SSL(**kwargs)
         except Exception as error:
             self.logger.exception(
                 "An IMAP error occured connecting to %s!",
