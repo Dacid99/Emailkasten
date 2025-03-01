@@ -94,22 +94,22 @@ class SafeIMAPMixin:
         Raises:
             exception: If an error occurs or the status doesnt match the expectation.
         """
-
-        def safeAction(*args: Any, **kwargs: Any) -> Any:
-            try:
-                response = imapAction(*args, **kwargs)
-            except imaplib.IMAP4.error as error:
-                self.logger.exception(
-                    "An IMAP error occured during %s!",
-                    imapAction.__name__,
-                )
-                raise exception(
-                    f"An IMAP error occured during {imapAction.__name__}!",
-                ) from error
-            self.checkResponse(response, imapAction.__name__, expectedStatus, exception)
-            return response
-
-        return safeAction
+        def safeWrapper(imapAction: Callable):
+            def safeAction(self, *args: Any, **kwargs: Any) -> Any:
+                try:
+                    response = imapAction(self, *args, **kwargs)
+                except imaplib.IMAP4.error as error:
+                    self.logger.exception(
+                        "An IMAP error occured during %s!",
+                        imapAction.__name__,
+                    )
+                    raise exception(
+                        f"An IMAP error occured during {imapAction.__name__}!",
+                    ) from error
+                self.checkResponse(response, imapAction.__name__, expectedStatus, exception)
+                return response
+            return safeAction
+        return safeWrapper
 
     @safe(exception=MailAccountError)
     def safe_login(self, *args, **kwargs):

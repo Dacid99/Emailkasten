@@ -74,7 +74,7 @@ class SafePOPMixin:
 
     def safe(
         self,
-        imapAction: Callable,
+        popAction: Callable,
         expectedStatus: str = "OK",
         exception: type[FetcherError] = FetcherError,
     ) -> Callable:
@@ -83,7 +83,7 @@ class SafePOPMixin:
         Catches expected errors and checks for correct responses and raises an FetcherError.
 
         Args:
-            imapAction: The POP action to wrap.
+            popAction: The POP action to wrap.
             expectedStatus: The expected status response. Defaults to `"+OK"`.
             exception: The exception to raise if an error occurs or the status doesnt match the expectation.
                 Defaults to :class:`core.utils.fetchers.exceptions.FetcherError`.
@@ -94,22 +94,22 @@ class SafePOPMixin:
         Raises:
             exception: If an error occurs or the status doesnt match the expectation.
         """
-
-        def safeAction(*args: Any, **kwargs: Any) -> Any:
-            try:
-                response = imapAction(*args, **kwargs)
-            except poplib.POP3.error as error:
-                self.logger.exception(
-                    "A POP error occured during %s!",
-                    imapAction.__name__,
-                )
-                raise exception(
-                    f"A POP error occured during {imapAction.__name__}!",
-                ) from error
-            self.checkResponse(response, imapAction.__name__, expectedStatus, exception)
-            return response
-
-        return safeAction
+        def safeWrapper(popAction: Callable):
+            def safeAction(self, *args: Any, **kwargs: Any) -> Any:
+                try:
+                    response = popAction(self, *args, **kwargs)
+                except poplib.POP3.error as error:
+                    self.logger.exception(
+                        "A POP error occured during %s!",
+                        popAction.__name__,
+                    )
+                    raise exception(
+                        f"A POP error occured during {popAction.__name__}!",
+                    ) from error
+                self.checkResponse(response, popAction.__name__, expectedStatus, exception)
+                return response
+            return safeAction
+        return safeWrapper
 
     @safe(exception=MailAccountError)
     def safe_user(self, *args, **kwargs):
