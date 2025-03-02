@@ -1,6 +1,7 @@
 # ToDo
 
 ## To implement
+
 - implement basic exchange
 - maybe fetcher template superclass
 - custom fetching filters with NOT, OR and custom criteria
@@ -22,18 +23,17 @@
 - replace daemons with celery
 
 ### Work in progress
+
 - tests
 - documentation
 - type annotations
 
 ## To test
-- mailboxserializer with correspondents
-- registration in dj-api-auth vs custom implementation
-- registration toggling
+
+- complete app
 
 ## To fix
 
-# Remember
-- new migration must include setting of defaults
+## Remember
+
 - logpath is misconfigured for makemigrations
-- csrf is disabled for debug

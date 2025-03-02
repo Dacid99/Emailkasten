@@ -6,8 +6,8 @@ ENV PYTHONUNBUFFERED=1
 ENV XDG_RUNTIME_DIR=/tmp/xdg_runtime
 ENV PYTHONPATH=/mnt/Emailkasten
 COPY ../ /mnt/
-RUN pip install --upgrade pip
-RUN pip install -r dependencies.txt
+RUN pip install --upgrade pip --no-cache-dir
+RUN pip install -Ur dependencies.txt --no-cache-dir
 RUN chmod +x docker/entrypoint.sh
 EXPOSE 8000
 ENTRYPOINT [ "./docker/entrypoint.sh" ]

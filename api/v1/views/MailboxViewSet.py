@@ -180,7 +180,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
         url_name=URL_NAME_UPLOAD_EML,
     )
     def upload_eml(self, request: Request, pk: int | None = None) -> Response:
-        """Action method toggling the favorite flag of the mailbox.
+        """Action method allowing upload of an .eml file to the server and adding it to a mailbox.
 
         Args:
             request: The request triggering the action.
@@ -215,7 +215,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
         url_name=URL_NAME_UPLOAD_MAILBOX,
     )
     def upload_mailbox(self, request: Request, pk: int | None = None) -> Response:
-        """Action method allowing upload of a mailbox file and adding the contained mails to database.
+        """Action method allowing upload of a mailbox file and adding the contained mails to a mailbox.
 
         Args:
             request: The request triggering the action.
