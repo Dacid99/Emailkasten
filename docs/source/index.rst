@@ -8,7 +8,7 @@ EMailkasten documentation
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents:
 
    rst/development
@@ -16,6 +16,12 @@ EMailkasten documentation
    rst/modules
    rst/import-graph
    rst/db-graph
+   rst/api-schema
+   Emailkasten
+   core
+   api
+   web
+   test
 
 `Latest mypy report <mypy_report/index.html>`_
 

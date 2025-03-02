@@ -17,6 +17,8 @@ help:
 source: Makefile
 	sphinx-apidoc -o $(SOURCEDIR)/rst/ ../
 	python3 ../manage.py graph_models -a -g -o $(SOURCEDIR)/images/db_graph.svg
+	python3 ../manage.py spectacular --validate --file $(BUILDDIR)/api-schema.yml
+	yes | npx @redocly/cli build-docs $(BUILDDIR)/api-schema.yml --output $(BUILDDIR)/html/api-redoc.html
 	pydeps ../ --max-bacon 2 -T svg -L ERROR --rankdir LR --no-show -o $(SOURCEDIR)/images/import_graph.svg
 
 # Catch-all target: route all unknown targets to Sphinx using the new

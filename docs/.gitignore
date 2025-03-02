@@ -7,6 +7,8 @@ source/images/*
 !development.rst
 !db-graph.rst
 !todo.rst
+!api-schema.rst
+api-schema.yml
 apidoc/
 *.log
 *.svg
