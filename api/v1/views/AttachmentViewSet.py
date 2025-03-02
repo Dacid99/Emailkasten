@@ -71,6 +71,8 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
         Returns:
             The attachment entries matching the request user.
         """
+        if getattr(self, "swagger_fake_view", False):
+            return AttachmentModel.objects.none()
         return AttachmentModel.objects.filter(
             email__mailbox__account__user=self.request.user
         )

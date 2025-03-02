@@ -34,29 +34,29 @@ Including another URLconf
 from __future__ import annotations
 
 from django.urls import include, path
-
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
 
+
+SCHEMA_NAME = "schema"
+
 urlpatterns = [
-    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("schema/", SpectacularAPIView.as_view(), name=SCHEMA_NAME),
     path(
-        "schema/swagger-ui/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
+        "schema/swagger/",
+        SpectacularSwaggerView.as_view(url_name=SCHEMA_NAME),
+        name="swagger",
     ),
     path(
         "schema/redoc/",
-        SpectacularRedocView.as_view(url_name="schema"),
+        SpectacularRedocView.as_view(url_name=SCHEMA_NAME),
         name="redoc",
     ),
     path("browsable/", include("rest_framework.urls", namespace="rest_framework")),
-
     path("auth/", include("dj_rest_auth.urls")),
-    path("auth/registration/", include("dj_rest_auth.registration.urls")),
-
-    path("v1/", include("api.v1.urls"))
+    path("registration/", include("dj_rest_auth.registration.urls")),
+    path("v1/", include("api.v1.urls")),
 ]

@@ -76,6 +76,8 @@ class DaemonViewSet(viewsets.ModelViewSet):
         Returns:
             The daemon entries matching the request user.
         """
+        if getattr(self, "swagger_fake_view", False):
+            return DaemonModel.objects.none()
         return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
 
     @override

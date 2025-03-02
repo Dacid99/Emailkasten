@@ -70,6 +70,8 @@ class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
         Returns:
             The correspondent entries matching the request user.
         """
+        if getattr(self, "swagger_fake_view", False):
+            return CorrespondentModel.objects.none()
         return CorrespondentModel.objects.filter(
             emails__mailbox__account__user=self.request.user
         ).distinct()

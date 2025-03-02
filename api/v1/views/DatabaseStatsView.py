@@ -22,55 +22,63 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from core.models.AccountModel import AccountModel
 from core.models.AttachmentModel import AttachmentModel
 from core.models.CorrespondentModel import CorrespondentModel
 from core.models.EMailModel import EMailModel
+from core.models.MailboxModel import MailboxModel
+from core.models.MailingListModel import MailingListModel
+
+from ..serializers.DatabaseStatsSerializer import DatabaseStatsSerializer
 
 
 if TYPE_CHECKING:
     from rest_framework.permissions import BasePermission
-    from rest_framework.request import Request
 
 
-class DatabaseStatsView(APIView):
+class DatabaseStatsView(RetrieveAPIView):
     """APIView for the statistics of the database."""
 
     NAME = "stats"
     permission_classes: Final[list[type[BasePermission]]] = [IsAuthenticated]
+    serializer_class = DatabaseStatsSerializer
 
-    def get(self, request: Request) -> Response:
+    def get_object(self) -> dict:
         """Gets all the number of entries in the tables of the database.
 
-        Args:
-            request: The get request.
-
         Returns:
-            A response with the count of the table entries.
+            A dictionary with the count of the table entries.
         """
         email_count = EMailModel.objects.filter(
-            mailbox__account__user=request.user
+            mailbox__account__user=self.request.user
         ).count()
         correspondent_count = (
             CorrespondentModel.objects.filter(
-                emails__mailbox__account__user=request.user
+                emails__mailbox__account__user=self.request.user
             )
             .distinct()
             .count()
         )
         attachment_count = AttachmentModel.objects.filter(
-            email__mailbox__account__user=request.user
+            email__mailbox__account__user=self.request.user
         ).count()
-        account_count = AccountModel.objects.filter(user=request.user).count()
-
-        data = {
+        account_count = AccountModel.objects.filter(user=self.request.user).count()
+        mailbox_count = MailboxModel.objects.filter(
+            account__user=self.request.user
+        ).count()
+        mailinglist_count = (
+            MailingListModel.objects.filter(emails__account__user=self.request.user)
+            .distinct()
+            .count()
+        )
+        return {
             "email_count": email_count,
             "correspondent_count": correspondent_count,
             "attachment_count": attachment_count,
             "account_count": account_count,
+            "mailbox_count": mailbox_count,
+            "mailinglist_count": mailinglist_count,
         }
-        return Response(data)

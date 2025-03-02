@@ -182,11 +182,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
 SESSION_COOKIE_SECURE = True
 
-CSRF_COOKIE_AGE = 31449600
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = False
-CSRF_USE_SESSIONS = False
-
+# Registration
+DEFAULT_REGISTRATION_ENABLED = "0"
 
 # django-allauth
 ACCOUNT_USERNAME_REQUIRED = True
@@ -201,7 +198,7 @@ REST_AUTH = {
     "USE_JWT": False,
     "REGISTER_PERMISSION_CLASSES": (
         ("rest_framework.permissions.AllowAny",)
-        if os.getenv("REGISTRATION_ENABLED")
+        if bool(int(os.getenv("REGISTRATION_ENABLED", DEFAULT_REGISTRATION_ENABLED)))
         else (
             "rest_framework.permissions.IsAdminUser",
             "rest_framework.permissions.IsAuthenticated",
@@ -293,6 +290,14 @@ STATICFILES_URL = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# DRF Spectacular
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Emailkasten API",
+    "DESCRIPTION": "The API schema for the Emailkasten server.",
+    "VERSION": "0.0.1",
+    "SERVE_INCLUDE_SCHEMA": True,
+}
 
 # Constance settings
 

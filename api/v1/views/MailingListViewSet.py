@@ -76,6 +76,8 @@ class MailingListViewSet(viewsets.ReadOnlyModelViewSet, mixins.DestroyModelMixin
         Returns:
             The mailingslist entries matching the request user.
         """
+        if getattr(self, "swagger_fake_view", False):
+            return MailingListModel.objects.none()
         return MailingListModel.objects.filter(
             emails__mailbox__account__user=self.request.user
         ).distinct()

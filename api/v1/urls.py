@@ -58,9 +58,6 @@ router.register(
     rf"{DaemonViewSet.BASENAME}", DaemonViewSet, basename=DaemonViewSet.BASENAME
 )
 router.register(
-    rf"{EMailViewSet.BASENAME}", EMailViewSet, basename=EMailViewSet.BASENAME
-)
-router.register(
     rf"{CorrespondentViewSet.BASENAME}",
     CorrespondentViewSet,
     basename=CorrespondentViewSet.BASENAME,
@@ -70,12 +67,15 @@ router.register(
     AttachmentViewSet,
     basename=AttachmentViewSet.BASENAME,
 )
-router.register(rf"{UserViewSet.BASENAME}", UserViewSet, basename=UserViewSet.BASENAME)
 router.register(
     rf"{MailingListViewSet.BASENAME}",
     MailingListViewSet,
     basename=MailingListViewSet.BASENAME,
 )
+router.register(
+    rf"{EMailViewSet.BASENAME}", EMailViewSet, basename=EMailViewSet.BASENAME
+)
+router.register(rf"{UserViewSet.BASENAME}", UserViewSet, basename=UserViewSet.BASENAME)
 
 urlpatterns = [
     path("", include(router.urls)),

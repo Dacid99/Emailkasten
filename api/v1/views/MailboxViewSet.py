@@ -77,6 +77,8 @@ class MailboxViewSet(viewsets.ModelViewSet):
         Returns:
             The mailbox entries matching the request user.
         """
+        if getattr(self, "swagger_fake_view", False):
+            return MailboxModel.objects.none()
         return MailboxModel.objects.filter(account__user=self.request.user)
 
     @override

@@ -20,8 +20,6 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from rest_framework import serializers
 
 from core.models.CorrespondentModel import CorrespondentModel
@@ -33,7 +31,9 @@ from ..email_serializers.BaseEMailSerializer import BaseEMailSerializer
 from .BaseMailingListSerializer import BaseMailingListSerializer
 
 
-if TYPE_CHECKING:
+# ruff: noqa: TC001 TC002
+# TYPE_CHECKING guard doesnt work with drf-spectacular: https://github.com/tfranzel/drf-spectacular/issues/390
+if True:
     from rest_framework.utils.serializer_helpers import ReturnDict
 
     from core.models.MailingListModel import MailingListModel
@@ -71,21 +71,21 @@ class MailingListSerializer(BaseMailingListSerializer):
         """
         return object.emails.count()
 
-    def get_from_correspondents(self, object: MailingListModel) -> ReturnDict | None:
+    def get_from_correspondents(self, instance: MailingListModel) -> ReturnDict | None:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:
-            object: The instance being serialized.
+            instance: The instance being serialized.
 
         Returns:
             The serialized From correspondents connected to the instance to be serialized.
             An empty list if the the user is not authenticated.
         """
         request = self.context.get("request")
-        user = request.user if request else None
+        user = getattr(request, "user", None)
         if user is not None:
             emailcorrespondents = CorrespondentModel.objects.filter(
-                emails__mailinglist=object,
+                emails__mailinglist=instance,
                 emails__mailbox__account__user=user,
                 correspondentemails__mention="FROM",
             ).distinct()

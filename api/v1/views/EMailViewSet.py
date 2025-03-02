@@ -76,6 +76,8 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
         Returns:
             The email entries matching the request user.
         """
+        if getattr(self, "swagger_fake_view", False):
+            return EMailModel.objects.none()
         return EMailModel.objects.filter(mailbox__account__user=self.request.user)
 
     def destroy(self, request: Request, pk: int | None = None) -> Response:

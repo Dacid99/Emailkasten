@@ -74,6 +74,8 @@ class AccountViewSet(viewsets.ModelViewSet):
         Returns:
             The account entries matching the request user.
         """
+        if getattr(self, "swagger_fake_view", False):
+            return AccountModel.objects.none()
         return AccountModel.objects.filter(user=self.request.user)
 
     @override

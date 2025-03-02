@@ -20,14 +20,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from rest_framework import serializers
 
 from .BaseMailingListSerializer import BaseMailingListSerializer
 
 
-if TYPE_CHECKING:
+# ruff: noqa: TC001 TC002
+# TYPE_CHECKING guard doesnt work with drf-spectacular: https://github.com/tfranzel/drf-spectacular/issues/390
+if True:
     from core.models.MailingListModel import MailingListModel
 
 
@@ -40,13 +40,13 @@ class SimpleMailingListSerializer(BaseMailingListSerializer):
     email_number = serializers.SerializerMethodField(read_only=True)
     """The number of mails by the mailinglist. Set via :func:`get_email_number`."""
 
-    def get_email_number(self, object: MailingListModel) -> int:
+    def get_email_number(self, instance: MailingListModel) -> int:
         """Gets the number of mails sent by the mailinglist.
 
         Args:
-            object:  The instance being serialized.
+            instance:  The instance being serialized.
 
         Returns:
            The number of mails referencing by the instance.
         """
-        return object.emails.count()
+        return instance.emails.count()

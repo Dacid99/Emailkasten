@@ -36,7 +36,9 @@ from ..mailinglist_serializers.SimpleMailingListSerializer import (
 from .BaseEMailSerializer import BaseEMailSerializer
 
 
-if TYPE_CHECKING:
+# ruff: noqa: TC001 TC002
+# TYPE_CHECKING guard doesnt work with drf-spectacular: https://github.com/tfranzel/drf-spectacular/issues/390
+if True:
     from rest_framework.utils.serializer_helpers import ReturnDict
 
     from core.models.EMailModel import EMailModel
@@ -77,11 +79,11 @@ class EMailSerializer(BaseEMailSerializer):
         exclude: ClassVar[list[str]] = [*BaseEMailSerializer.Meta.exclude, "headers"]
         """Omit the other header fields."""
 
-    def get_correspondents(self, object: EMailModel) -> ReturnDict | None:
+    def get_correspondents(self, instance: EMailModel) -> ReturnDict | None:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:
-            object: The instance being serialized.
+            instance: The instance being serialized.
 
         Returns:
             The serialized correspondents connected to the instance to be serialized.
@@ -91,7 +93,7 @@ class EMailSerializer(BaseEMailSerializer):
         user = request.user if request else None
         if user is not None:
             emailcorrespondents = EMailCorrespondentsModel.objects.filter(
-                email=object, email__mailbox__account__user=user
+                email=instance, email__mailbox__account__user=user
             ).distinct()
             return EMailCorrespondentSerializer(
                 emailcorrespondents, many=True, read_only=True
