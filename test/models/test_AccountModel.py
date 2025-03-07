@@ -93,7 +93,6 @@ def test_AccountModel_creation(account):
     assert isinstance(account.created, datetime.datetime)
 
     assert account.mail_address in str(account)
-    assert account.mail_host in str(account)
     assert account.protocol in str(account)
 
 
@@ -138,7 +137,13 @@ def test_AccountModel_unique():
         (MailFetchingProtocols.POP3_SSL, POP3_SSL_Fetcher),
     ],
 )
-def test_get_fetcher_success(mock_logger, account, protocol, expectedFetcherClass):
+def test_get_fetcher_success(
+    mocker, mock_logger, account, protocol, expectedFetcherClass
+):
+    mocker.patch(
+        f"core.models.AccountModel.{expectedFetcherClass.__name__}.__init__",
+        return_value=None,
+    )
     account.protocol = protocol
 
     fetcher = account.get_fetcher()
@@ -155,6 +160,41 @@ def test_get_fetcher_failure(mock_logger, account):
 
     with pytest.raises(ValueError):
         account.get_fetcher()
+
+    account.refresh_from_db()
+    assert account.is_healthy is False
+    mock_logger.error.assert_called()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "protocol, expectedFetcherClass",
+    [
+        (MailFetchingProtocols.IMAP, IMAPFetcher),
+        (MailFetchingProtocols.IMAP_SSL, IMAP_SSL_Fetcher),
+        (MailFetchingProtocols.POP3, POP3Fetcher),
+        (MailFetchingProtocols.POP3_SSL, POP3_SSL_Fetcher),
+    ],
+)
+def test_get_fetcher_class_success(
+    mock_logger, account, protocol, expectedFetcherClass
+):
+    account.protocol = protocol
+
+    fetcherClass = account.get_fetcher_class()
+
+    assert fetcherClass == expectedFetcherClass
+    mock_logger.error.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_get_fetcher_class_failure(mock_logger, account):
+    account.is_healthy = True
+    account.protocol = "OTHER"
+    account.save(update_fields=["is_healthy"])
+
+    with pytest.raises(ValueError):
+        account.get_fetcher_class()
 
     account.refresh_from_db()
     assert account.is_healthy is False

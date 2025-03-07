@@ -32,8 +32,6 @@ from core.models.EMailModel import EMailModel
 from Emailkasten.utils import get_config
 
 from ..utils.fetchers.exceptions import MailAccountError, MailboxError
-from ..utils.fetchers.IMAPFetcher import IMAPFetcher
-from ..utils.fetchers.POP3Fetcher import POP3Fetcher
 from ..utils.mailParsing import parseMailboxName
 
 
@@ -105,15 +103,12 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
         Used by :func:`api.v1.views.MailboxViewSet.fetching_options` to show the choices for fetching to the user.
 
         Returns:
-            list: A list of all available fetching criteria for this mailbox. Empty if the protocol is unknown.
+            list: A list of all available fetching criteria for this mailbox.
+
+        Raises:
+            ValueError: If the account has an unimplemented protocol.
         """
-        if self.account.protocol.startswith(IMAPFetcher.PROTOCOL):
-            availableFetchingOptions = IMAPFetcher.AVAILABLE_FETCHING_CRITERIA
-        elif self.account.protocol.startswith(POP3Fetcher.PROTOCOL):
-            availableFetchingOptions = POP3Fetcher.AVAILABLE_FETCHING_CRITERIA
-        else:
-            availableFetchingOptions = []
-        return availableFetchingOptions
+        return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA
 
     def test_connection(self) -> None:
         """Tests whether the data in the model is correct.

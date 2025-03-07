@@ -111,29 +111,28 @@ class AccountModel(DirtyFieldsMixin, models.Model):
         Returns:
             The string representation of the account, using :attr:`mail_address`, :attr:`mail_host` and :attr:`protocol`.
         """
-        return f"Account {self.mail_address} at host {self.mail_host} with protocol {self.protocol}"
+        return f"Account {self.mail_address} with protocol {self.protocol}"
 
-    def get_fetcher(self) -> BaseFetcher:
-        """Instantiates the fetcher from :class:`core.utils.fetchers` corresponding to :attr:`protocol`.
+    def get_fetcher_class(self) -> type[BaseFetcher]:
+        """Returns the fetcher class from :class:`core.utils.fetchers` corresponding to :attr:`protocol`.
 
         Returns:
-            A fetcher instance for the account.
+            The fetcher class for the account.
 
         Raises:
             ValueError: If the protocol doesnt match any fetcher class.
                 Marks the account as unhealthy in this case.
         """
-
         if self.protocol == IMAPFetcher.PROTOCOL:
-            return IMAPFetcher(self)
+            return IMAPFetcher
         if self.protocol == IMAP_SSL_Fetcher.PROTOCOL:
-            return IMAP_SSL_Fetcher(self)
+            return IMAP_SSL_Fetcher
         if self.protocol == POP3Fetcher.PROTOCOL:
-            return POP3Fetcher(self)
+            return POP3Fetcher
         if self.protocol == POP3_SSL_Fetcher.PROTOCOL:
-            return POP3_SSL_Fetcher(self)
+            return POP3_SSL_Fetcher
         # if self.protocol == ExchangeFetcher.PROTOCOL:
-        #     return ExchangeFetcher(self)
+        #     return ExchangeFetcher
 
         logger.error(
             "The protocol %s is not implemented in a fetcher class!", self.protocol
@@ -143,6 +142,18 @@ class AccountModel(DirtyFieldsMixin, models.Model):
         raise ValueError(
             "The requested protocol is not implemented in a fetcher class!"
         )
+
+    def get_fetcher(self) -> BaseFetcher:
+        """Convenience method: Instantiates the fetcher from :class:`core.utils.fetchers` corresponding to :attr:`protocol`.
+
+        Returns:
+            A fetcher instance for the account.
+
+        Raises:
+            ValueError: If the protocol doesnt match any fetcher class.
+                Marks the account as unhealthy in this case.
+        """
+        return self.get_fetcher_class()(self)
 
     def test_connection(self) -> None:
         """Tests whether the data in the model is correct.

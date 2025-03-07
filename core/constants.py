@@ -97,7 +97,7 @@ class MailFetchingProtocols:
     POP3_SSL: Final[str] = "POP3_SSL"
     """The POP3 protocol over SSL."""
 
-    EXCHANGE: Final[str] = "EXCHANGE"
+    # EXCHANGE: Final[str] = "EXCHANGE"
     """Microsofts Exchange protocol."""
 
     def __iter__(self):
