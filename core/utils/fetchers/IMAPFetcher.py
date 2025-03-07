@@ -83,28 +83,17 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             Formatted criterion to be used in IMAP request;
             None if `criterionName` is not in :attr:`AVAILABLE_FETCHING_CRITERIA`.
         """
-        if criterionName in IMAPFetcher.AVAILABLE_FETCHING_CRITERIA:
-            if criterionName == MailFetchingCriteria.DAILY:
-                startTime = timezone.now() - datetime.timedelta(days=1)
-            elif criterionName == MailFetchingCriteria.WEEKLY:
-                startTime = timezone.now() - datetime.timedelta(weeks=1)
-            elif criterionName == MailFetchingCriteria.MONTHLY:
-                startTime = timezone.now() - datetime.timedelta(weeks=4)
-            elif criterionName == MailFetchingCriteria.ANNUALLY:
-                startTime = timezone.now() - datetime.timedelta(weeks=52)
-            else:
-                startTime = None
-            return (
-                "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
-                if startTime
-                else criterionName
-            )
-        self.logger.error(
-            "Fetching by %s is not available via protocol %s!",
-            criterionName,
-            self.PROTOCOL,
-        )
-        return None
+        if criterionName == MailFetchingCriteria.DAILY:
+            startTime = timezone.now() - datetime.timedelta(days=1)
+        elif criterionName == MailFetchingCriteria.WEEKLY:
+            startTime = timezone.now() - datetime.timedelta(weeks=1)
+        elif criterionName == MailFetchingCriteria.MONTHLY:
+            startTime = timezone.now() - datetime.timedelta(weeks=4)
+        elif criterionName == MailFetchingCriteria.ANNUALLY:
+            startTime = timezone.now() - datetime.timedelta(weeks=52)
+        else:
+            return criterionName
+        return "SENTSINCE " + imaplib.Time2Internaldate(startTime).split(" ")[0]
 
     @override
     def __init__(self, account: AccountModel) -> None:
@@ -135,11 +124,14 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             self._mailClient = imaplib.IMAP4(**kwargs)
         except Exception as error:
             self.logger.exception(
-                "An IMAP error occured connecting to %s!",
+                "An %s occured connecting to %s!",
+                error.__class__.__name__,
                 self.account,
             )
-            raise MailAccountError from error
-        self.logger.debug("Successfully connected to %s.", str(self.account))
+            raise MailAccountError(
+                f"An {error.__class__.__name__} occured connecting to {self.account}!"
+            ) from error
+        self.logger.info("Successfully connected to %s.", str(self.account))
 
     @override
     def test(self, mailbox: MailboxModel | None = None) -> None:
@@ -153,9 +145,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             MailAccountError: If the account test fails because an error occurs or a bad response is returned.
             MailboxError: If the mailbox test fails because an error occurs or a bad response is returned testing the mailbox.
         """
-        if mailbox is not None and mailbox.account != self.account:
-            self.logger.error("%s is not a mailbox of %s!", mailbox, self.account)
-            raise ValueError(f"{mailbox} is not in {self.account}!")
+        super().test(mailbox)
 
         self.logger.debug("Testing %s ...", str(self.account))
         self.safe_noop()
@@ -165,7 +155,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             self.logger.debug("Testing %s ...", str(mailbox))
             self.safe_select(mailbox.name, readonly=True)
             self.safe_check()
-            self._mailClient.unselect()
+            self.safe_unselect()
             self.logger.debug("Successfully tested %s.", str(mailbox))
 
     @override
@@ -183,7 +173,6 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             mailbox: Database model of the mailbox to fetch data from.
             criterion: Formatted criterion to filter mails in the IMAP request.
                 Defaults to :attr:`Emailkasten.MailFetchingCriteria.ALL`.
-                If an invalid criterion is given, returns [].
 
         Returns:
             List of mails in the mailbox matching the criterion as :class:`bytes`.
@@ -191,15 +180,12 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
 
         Raises:
             ValueError: If the :attr:`mailbox` does not belong to :attr:`self.account`.
+                If :attr:`criterion` is not in :attr:`IMAPFetcher.AVAILABLE_FETCHING_CRITERIA`.
             MailboxError: If an error occurs or a bad response is returned.
         """
-        searchCriterion = self.makeFetchingCriterion(criterion)
-        if not searchCriterion:
-            return []
+        super().fetchEmails(mailbox, criterion)
 
-        if mailbox.account != self.account:
-            self.logger.error("%s is not a mailbox of %s!", mailbox, self.account)
-            raise ValueError(f"{mailbox} is not in {self.account}!")
+        searchCriterion = self.makeFetchingCriterion(criterion)
 
         self.logger.debug(
             "Searching and fetching %s messages in %s...",
@@ -229,8 +215,13 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             try:
                 __, messageData = self.safe_uid("FETCH", uID, "(RFC822)")
             except FetcherError:
+                self.logger.warning(
+                    "Failed to fetch message %s from %s!",
+                    uID,
+                    str(mailbox),
+                    exc_info=True,
+                )
                 continue
-
             mailDataList.append(messageData[0][1])
         self.logger.debug(
             "Successfully fetched %s messages from %s.",
@@ -238,9 +229,9 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             str(mailbox),
         )
 
-        self.logger.debug("Closing mailbox %s ...", str(mailbox))
-        self._mailClient.unselect()
-        self.logger.debug("Successfully closed mailbox.")
+        self.logger.debug("Leaving mailbox %s ...", str(mailbox))
+        self.safe_unselect()
+        self.logger.debug("Successfully left mailbox.")
 
         self.logger.debug(
             "Successfully searched and fetched %s messages in %s.",
@@ -270,16 +261,10 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
 
     @override
     def close(self) -> None:
-        """Logs out of the account and closes the connection to the IMAP server if it is open.
-
-        Ignores all exceptions that occur on logout.
-        Otherwise a broken connection would raise additional exceptions, shadowing the cause of the exit.
-        """
-        super().close()
-        try:
-            self.safe_logout()
-        except Exception:
-            self.logger.exception(
-                "An error occured closing connection to %s!",
-                self.account,
-            )
+        """Logs out of the account and closes the connection to the IMAP server if it is open."""
+        self.logger.debug("Closing connection to %s ...", str(self.account))
+        if self._mailClient is None:
+            self.logger.debug("Connection to %s is already closed.", str(self.account))
+            return
+        self.safe_logout()
+        self.logger.info("Successfully closed connection to %s.", str(self.account))

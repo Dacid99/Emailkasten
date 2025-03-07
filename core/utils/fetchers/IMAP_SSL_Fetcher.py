@@ -48,8 +48,11 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
             self._mailClient = imaplib.IMAP4_SSL(**kwargs)
         except Exception as error:
             self.logger.exception(
-                "An IMAP error occured connecting to %s!",
+                "An %s occured connecting to %s!",
+                error.__class__.__name__,
                 self.account,
             )
-            raise MailAccountError from error
-        self.logger.debug("Successfully connected to %s.", str(self.account))
+            raise MailAccountError(
+                f"An {error.__class__.__name__} occured connecting to {self.account}!"
+            ) from error
+        self.logger.info("Successfully connected to %s.", str(self.account))

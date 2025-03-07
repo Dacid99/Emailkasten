@@ -56,5 +56,7 @@ class POP3_SSL_Fetcher(POP3Fetcher):
                 "A POP error occured connecting to %s!",
                 self.account,
             )
-            raise MailAccountError from error
-        self.logger.debug("Successfully connected to %s.", str(self.account))
+            raise MailAccountError(
+                f"An {error.__class__.__name__} occured connecting to {self.account}!"
+            ) from error
+        self.logger.info("Successfully connected to %s.", str(self.account))

@@ -35,7 +35,16 @@ if TYPE_CHECKING:
 
 
 class BaseFetcher(ABC):
-    """Template class for the mailfetcher classes."""
+    """Template class for the mailfetcher classes.
+
+    Provides arg-checking for methods.
+    """
+
+    PROTOCOL = None
+    """Name of the used protocol, should be one of :class:`MailFetchingProtocols`."""
+
+    AVAILABLE_FETCHING_CRITERIA = []
+    """List of all criteria available for fetching. Should refer to :class:`MailFetchingCriteria`."""
 
     @abstractmethod
     def __init__(self, account: AccountModel):
@@ -44,20 +53,33 @@ class BaseFetcher(ABC):
         Args:
             account: The model of the account to fetch from.
         """
-        self.logger = logging.getLogger(self)
         self.account = account
+        self.logger = logging.getLogger(str(self))
+        if account.protocol != self.PROTOCOL:
+            self.logger.error(
+                "The protocol of %s is not supported by fetcher %s!",
+                account,
+                self.__class__.__name__,
+            )
+            raise ValueError(
+                f"The protocol of {account} is not supported by fetcher {self.__class__.__name__}!"
+            )
+        self._mailClient = None
 
     @abstractmethod
     def connectToHost(self) -> None:
         """Opens the connection to the mailserver."""
 
     @abstractmethod
-    def test(self, mailboxModel: MailboxModel) -> None:
+    def test(self, mailbox: MailboxModel) -> None:
         """Tests the connection to the mailaccount and, if given, the mailbox.
 
         Args:
             mailbox: The mailbox to be tested. Default is `None`.
         """
+        if mailbox is not None and mailbox.account != self.account:
+            self.logger.error("%s is not a mailbox of %s!", mailbox, self.account)
+            raise ValueError(f"{mailbox} is not in {self.account}!")
 
     @abstractmethod
     def fetchEmails(
@@ -75,7 +97,22 @@ class BaseFetcher(ABC):
         Returns:
             List of mails in the mailbox matching the criterion as :class:`bytes`.
             Empty if no such messages are found.
+
+        Raises:
+            ValueError: If the :attr:`fetchingCriterion` is not available for this fetcher.
         """
+        if fetchingCriterion not in self.AVAILABLE_FETCHING_CRITERIA:
+            self.logger.error(
+                "Fetching by %s is not available via protocol %s!",
+                fetchingCriterion,
+                self.PROTOCOL,
+            )
+            raise ValueError(
+                f"Fetching by {fetchingCriterion} is not available via protocol {self.PROTOCOL}!"
+            )
+        if mailbox.account != self.account:
+            self.logger.error("%s is not a mailbox of %s!", mailbox, self.account)
+            raise ValueError(f"{mailbox} is not in {self.account}!")
 
     @abstractmethod
     def fetchMailboxes(self) -> list[bytes]:
@@ -88,10 +125,6 @@ class BaseFetcher(ABC):
     @abstractmethod
     def close(self) -> None:
         """Closes the connection to the mail server."""
-        self.logger.debug("Closing connection to %s ...", str(self.account))
-        if self._mailClient is None:
-            self.logger.debug("Connection to %s is already closed.", str(self.account))
-            return
 
     def __str__(self) -> str:
         """Returns a string representation of the :class:`BaseFetcher` instances.
@@ -99,7 +132,7 @@ class BaseFetcher(ABC):
         Returns:
             The string representation of the fetcher instance.
         """
-        return f"Fetcher for {self.account}"
+        return f"{self.__class__.__name__} for {self.account}"
 
     def __enter__(self) -> BaseFetcher:
         """Framework method for use of class in 'with' statement, creates an instance.

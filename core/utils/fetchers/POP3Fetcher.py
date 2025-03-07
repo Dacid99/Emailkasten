@@ -92,8 +92,10 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
                 "A POP error occured connecting to %s!",
                 self.account,
             )
-            raise MailAccountError from error
-        self.logger.debug("Successfully connected to %s.", str(self.account))
+            raise MailAccountError(
+                f"An {error.__class__.__name__} occured connecting to {self.account}!"
+            ) from error
+        self.logger.info("Successfully connected to %s.", str(self.account))
 
     @override
     def test(self, mailbox: MailboxModel | None = None) -> None:
@@ -106,9 +108,7 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
             ValueError: If the :attr:`mailbox` does not belong to :attr:`self.account`.
             MailAccountError: If the test fails because an error occurs or a bad response is returned.
         """
-        if mailbox is not None and mailbox.account != self.account:
-            self.logger.error("%s is not a mailbox of %s!", str(mailbox), self.account)
-            raise ValueError(f"{mailbox} is not in {self.account}!")
+        super().test(mailbox)
 
         self.logger.debug("Testing %s ...", str(self.account))
         self.safe_noop()
@@ -129,9 +129,8 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
 
         Args:
             mailbox: Database model of the mailbox to fetch data from.
-            criterion: POP only support ALL lookups.
+            criterion: POP only supports ALL lookups.
                 Defaults to :attr:`Emailkasten.MailFetchingCriteria.ALL`.
-                Returns [] if a different value is passed.
                 This arg ensures compatibility with the other fetchers.
 
         Returns:
@@ -139,23 +138,19 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
 
         Raises:
             ValueError: If the :attr:`mailbox` does not belong to :attr:`self.account`.
+                If :attr:`criterion` is not :attr:`Emailkasten.MailFetchingCriteria.ALL`.
             MailAccountError: If an error occurs or a bad response is returned.
         """
-        if criterion not in POP3Fetcher.AVAILABLE_FETCHING_CRITERIA:
-            return []
-
-        if mailbox.account != self.account:
-            self.logger.error("%s is not a mailbox of %s!", str(mailbox), self.account)
-            raise ValueError(f"{mailbox} is not in {self.account}!")
-
         self.logger.debug("Fetching all messages in %s ...", str(mailbox))
+
+        super().fetchEmails(mailbox, criterion)
 
         self.logger.debug("Listing all messages in %s ...", str(mailbox))
 
         __, messageNumbersList, __ = self.safe_list()
 
         messageCount = len(messageNumbersList)
-        self.logger.debug("Found %s messages in %s.", messageCount, str(mailbox))
+        self.logger.info("Found %s messages in %s.", messageCount, str(mailbox))
 
         self.logger.debug("Retrieving all messages in %s ...", str(mailbox))
         mailDataList = []
@@ -163,6 +158,12 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
             try:
                 __, messageData, __ = self.safe_retr(number + 1)
             except FetcherError:
+                self.logger.warning(
+                    "Failed to fetch message %s from %s!",
+                    number,
+                    str(mailbox),
+                    exc_info=True,
+                )
                 continue
 
             fullMessage = b"\n".join(messageData)
@@ -178,7 +179,7 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
         """Returns the data of the mailboxes. For POP3 there is only one mailbox named 'INBOX'.
 
         Note:
-            This method is built to match the methods from other fetcherclasses.
+            This method is built to match the fetcherclasses interface.
 
         Returns:
             The name of the mailbox in the account in a list.
@@ -187,17 +188,10 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
 
     @override
     def close(self) -> None:
-        """Logs out of the account and closes the connection to the POP server if it is open.
-
-        Ignores all exceptions that occur on logout.
-        Otherwise a broken connection would raise additional exceptions, shadowing the cause of the exit.
-        """
-        super().close()
-        try:
-            self.safe_quit()
-            self.logger.info("Successfully closed connection to %s.", str(self.account))
-        except Exception:
-            self.logger.exception(
-                "An error occured closing connection to %s!",
-                self.account,
-            )
+        """Logs out of the account and closes the connection to the POP server if it is open."""
+        self.logger.debug("Closing connection to %s ...", str(self.account))
+        if self._mailClient is None:
+            self.logger.debug("Connection to %s is already closed.", str(self.account))
+            return
+        self.safe_quit()
+        self.logger.info("Successfully closed connection to %s.", str(self.account))

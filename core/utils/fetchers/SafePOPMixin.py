@@ -31,18 +31,27 @@ class SafePOPMixin:
     The implementing class must have
     an :attr:`_mailClient` that is an :class:`poplib.POP3` or :class:`poplib.POP3_SSL`
     and an instance logger.
+
+    Only errors leading up to and during the fetching process should raise outside of the class.
+    Otherwise issues with logout etc would destroy the work done with fetching, which makes no sense.
     """
 
     def checkResponse(
         self,
         response: tuple[str | bytes],
         commandName: str,
-        expectedStatus: str = "+OK",
+        expectedStatus: bytes = b"+OK",
         exception: type[FetcherError] = FetcherError,
     ) -> None:
         """Checks the status response of a POP action.
 
         If it doesnt match the expectation raises an exception.
+
+        :class:`poplib.POP3` typically returns data in form of `tuple(status: bytes, data: list[bytes])`,
+        while a response without data, e.g. for user or in case of an error is just a single `bytes` object starting with the status.
+
+        Todo:
+            Safely! extract error message from response for logging and exception.
 
         Args:
             response: The complete response to the POP action.
@@ -53,29 +62,16 @@ class SafePOPMixin:
         Raises:
             exception: If the response status doesnt match the expectation.
         """
-        status = (
-            response[0].decode("utf-8", errors="replace")
-            if isinstance(response[0], bytes)
-            else response[0]
-        )
+        status = response if isinstance(response, bytes) else response[0]
         if not status.startswith(expectedStatus):
-            serverMessage = (
-                response[1].decode("utf-8", errors="replace")
-                if response[1] and isinstance(response[1], bytes)
-                else "Unknown Error"
-            )
-            self.logger.error(
-                "Bad server response for %s:\n%s %s",
-                commandName,
-                status,
-                serverMessage,
-            )
-            raise exception(f"Bad server response for {commandName}:\n{serverMessage}")
+            self.logger.error("Bad server response for %s:\n%s", commandName, response)
+            if exception is not None:
+                raise exception(f"Bad server response for {commandName}:\n{response}")
         self.logger.debug("Server responded %s as expected.", status)
 
     @staticmethod
     def safe(
-        expectedStatus: str = "OK",
+        expectedStatus: bytes = b"+OK",
         exception: type[FetcherError] = FetcherError,
     ) -> Callable:
         """Wrapper for POP actions.
@@ -83,10 +79,10 @@ class SafePOPMixin:
         Catches expected errors and checks for correct responses and raises an FetcherError.
 
         Args:
-            popAction: The POP action to wrap.
             expectedStatus: The expected status response. Defaults to `"+OK"`.
             exception: The exception to raise if an error occurs or the status doesnt match the expectation.
                 Defaults to :class:`core.utils.fetchers.exceptions.FetcherError`.
+                If None is passed, no exception is passed, all errors are logged nonetheless.
 
         Returns:
             The return value of the wrapped action.
@@ -99,17 +95,21 @@ class SafePOPMixin:
             def safeAction(self, *args: Any, **kwargs: Any) -> Any:
                 try:
                     response = popAction(self, *args, **kwargs)
-                except poplib.error_proto as error:
+                except Exception as error:
                     self.logger.exception(
-                        "A POP error occured during %s!",
+                        "An %s occured during %s!",
+                        error.__class__.__name__,
                         popAction.__name__,
                     )
-                    raise exception(
-                        f"A POP error occured during {popAction.__name__}!",
-                    ) from error
-                self.checkResponse(
-                    response, popAction.__name__, expectedStatus, exception
-                )
+                    if exception is not None:
+                        raise exception(
+                            f"An {error.__class__.__name__} occured during {popAction.__name__}!",
+                        ) from error
+                    return None
+                else:
+                    self.checkResponse(
+                        response, popAction.__name__, expectedStatus, exception
+                    )
                 return response
 
             return safeAction
@@ -140,6 +140,6 @@ class SafePOPMixin:
     def safe_retr(self, *args, **kwargs):
         return self._mailClient.retr(*args, **kwargs)
 
-    @safe(exception=MailAccountError)
+    @safe(exception=None)
     def safe_quit(self, *args, **kwargs):
         return self._mailClient.quit(*args, **kwargs)
