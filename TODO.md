@@ -42,8 +42,6 @@
 
 ## To fix
 
-- mailbox names parsing doesnt match IMAP format
-
 # Remember
 
 - logpath is misconfigured for makemigrations

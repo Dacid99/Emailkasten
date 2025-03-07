@@ -169,4 +169,4 @@ def parseMailboxName(mailboxBytes: bytes) -> str:
     Returns:
         The serverside name of the mailbox
     """
-    return imap_tools.imap_utf7.utf7_decode(mailboxBytes)
+    return imap_tools.imap_utf7.utf7_decode(mailboxBytes).split()[-1]

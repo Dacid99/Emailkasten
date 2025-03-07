@@ -274,15 +274,15 @@ def test_parseCorrespondentHeader_no_header(mocker, mock_logger):
         (b"INBOX", "INBOX"),
         (
             b"Dr&AOc-. Bianka F&APY-rste&BBk-r",
-            "Drç. Bianka FörsteЙr",
+            "FörsteЙr",
         ),
         (
             b"Yves Pr&AN8EGQ-uvost",
-            "Yves PrßЙuvost",
+            "PrßЙuvost",
         ),
         (
             b"&ZY4mBQDfheQ- &Zg5,jg-",
-            "斎★ß藤 明美",
+            "明美",
         ),
     ],
 )
