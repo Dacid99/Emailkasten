@@ -17,12 +17,15 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """Module with the constant values for the :mod:`core` app."""
+
 from __future__ import annotations
 
 from typing import Final
 
+from django.db.models import TextChoices
 
-class MailFetchingCriteria:
+
+class EmailFetchingCriterionChoices(TextChoices):
     """Namespace class for all implemented mail fetching criteria constants.
 
     For a list of all existing IMAP criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4
@@ -30,90 +33,60 @@ class MailFetchingCriteria:
     POP does not support queries at all, so everything will be fetched.
     """
 
-    RECENT: Final[str] = "RECENT"
-    """Filter: str by "RECENT" flag."""
+    RECENT = "RECENT", "RECENT"
+    """Filter by "RECENT" flag."""
 
-    UNSEEN: Final[str] = "UNSEEN"
+    UNSEEN = "UNSEEN", "UNSEEN"
     """Filter by "UNSEEN" flag."""
 
-    ALL: Final[str] = "ALL"
+    ALL = "ALL", "ALL"
     """Filter by "ALL" flag."""
 
-    NEW: Final[str] = "NEW"
+    NEW = "NEW", "NEW"
     """Filter by "NEW" flag."""
 
-    OLD: Final[str] = "OLD"
+    OLD = "OLD", "OLD"
     """Filter by "OLD" flag."""
 
-    FLAGGED: Final[str] = "FLAGGED"
+    FLAGGED = "FLAGGED", "FLAGGED"
     """Filter by "FLAGGED" flag."""
 
-    DRAFT: Final[str] = "DRAFT"
+    DRAFT = "DRAFT", "DRAFT"
     """Filter by "DRAFT" flag."""
 
-    ANSWERED: Final[str] = "ANSWERED"
+    ANSWERED = "ANSWERED", "ANSWERED"
     """Filter by "ANSWERED" flag."""
 
-    DAILY: Final[str] = "DAILY"
-    """Filter using "SENTSINCE" for mails sent the previous day or later."""
+    DAILY = "DAILY", "Last DAY"
+    """Filter using "SENTSINCE" for mails sent the previous day."""
 
-    WEEKLY: Final[str] = "WEEKLY"
-    """Filter using "SENTSINCE" for mails sent the previous week (counting back from now) or later."""
+    WEEKLY = "WEEKLY", "Last WEEK"
+    """Filter using "SENTSINCE" for mails sent the previous week."""
 
-    MONTHLY: Final[str] = "MONTHLY"
-    """Filter using "SENTSINCE" for mails sent the previous 4 weeks (counting back from now) or later."""
+    MONTHLY = "MONTHLY", "Last MONTH"
+    """Filter using "SENTSINCE" for mails sent the previous 4 weeks."""
 
-    ANNUALLY: Final[str] = "ANNUALLY"
-    """Filter using "SENTSINCE" for mails sent the previous 52 weeks (counting back from now) or later."""
-
-    def __iter__(self):
-        """Method to allow easier referencing of the members by listing.
-
-        Note:
-            value must come first in the listed tuples to match the format for field choices.
-        """
-        return iter(
-            (value, attr)
-            for attr, value in self.__class__.__dict__.items()
-            if not attr.startswith("__")
-        )
-
-    def __getitem__(self, key):
-        return getattr(self, key)
+    ANNUALLY = "ANNUALLY", "Last YEAR"
+    """Filter using "SENTSINCE" for mails sent the previous 52 weeks."""
 
 
-class MailFetchingProtocols:
+class EmailProtocolChoices(TextChoices):
     """Namespace class for all implemented mail protocols constants."""
 
-    IMAP: Final[str] = "IMAP"
-    """The IMAP4 protocol."""
+    IMAP = "IMAP", "IMAP4"
+    """The IMAP4 protocol"""
 
-    IMAP_SSL: Final[str] = "IMAP_SSL"
-    """The IMAP4 protocol over SSL."""
+    IMAP_SSL = "IMAP_SSL", "IMAP4 over SSL"
+    """The IMAP4 protocol over SSL"""
 
-    POP3: Final[str] = "POP3"
-    """The POP3 protocol."""
+    POP3 = "POP3", "POP3"
+    """The POP3 protocol"""
 
-    POP3_SSL: Final[str] = "POP3_SSL"
-    """The POP3 protocol over SSL."""
+    POP3_SSL = "POP3_SSL", "POP3 over SSL"
+    """The POP3 protocol over SSL"""
 
-    # EXCHANGE: Final[str] = "EXCHANGE"
-    """Microsofts Exchange protocol."""
-
-    def __iter__(self):
-        """Method to allow easier referencing of the members by listing.
-
-        Note:
-            value must come first in the listed tuples to match the format for field choices.
-        """
-        return iter(
-            (value, attr)
-            for attr, value in self.__class__.__dict__.items()
-            if not attr.startswith("__")
-        )
-
-    def __getitem__(self, key):
-        return getattr(self, key)
+    # EXCHANGE = "EXCHANGE", "Microsoft Exchange"
+    """Microsofts Exchange protocol"""
 
 
 class HeaderFields:
@@ -139,38 +112,32 @@ class HeaderFields:
         HELP: Final[str] = "List-Help"
         ARCHIVE: Final[str] = "List-Archive"
 
-    class Correspondents:
-        """Headers that are treated as correspondents."""
+    class Correspondents(TextChoices):
+        """Headers that are treated as correspondents.
 
-        FROM: Final[str] = "From"
-        TO: Final[str] = "To"
-        CC: Final[str] = "Cc"
-        BCC: Final[str] = "Bcc"
-        SENDER: Final[str] = "Sender"
-        REPLY_TO: Final[str] = "Reply-To"
-        RESENT_FROM: Final[str] = "Resent-From"
-        RESENT_TO: Final[str] = "Resent-To"
-        RESENT_CC: Final[str] = "Resent-Cc"
-        RESENT_BCC: Final[str] = "Resent-Bcc"
-        RESENT_SENDER: Final[str] = "Resent-Sender"
-        RESENT_REPLY_TO: Final[str] = "Resent-Reply-To"
-        ENVELOPE_TO: Final[str] = "Envelope-To"
-        DELIVERED_TO: Final[str] = "Delivered-To"
-        RETURN_PATH: Final[str] = "Return-Path"
-        RETURN_RECEIPT_TO: Final[str] = "Return-Receipt-To"
-        DISPOSITION_NOTIFICATION_TO: Final[str] = "Disposition-Notification-To"
+        This class holds the choices for `core.models.EMailCorrespondentsModel.mention`.
+        """
 
-        def __iter__(self):
-            """Method to allow easier referencing of the members by listing.
-
-            Note:
-                value must come first in the listed tuples to match the format for field choices.
-            """
-            return iter(
-                (value, attr)
-                for attr, value in self.__class__.__dict__.items()
-                if not attr.startswith("__")
-            )
-
-        def __getitem__(self, key):
-            return getattr(self, key)
+        FROM = "From", "From"
+        TO = "To", "To"
+        CC = "Cc", "CC"
+        BCC = "Bcc", "BCC"
+        SENDER = "Sender", "Sender"
+        REPLY_TO = "Reply-To", "Reply-To"
+        RESENT_FROM = "Resent-From", "Resent-From"
+        RESENT_TO = "Resent-To", "Resent-To"
+        RESENT_CC = "Resent-Cc", "Resent-Cc"
+        RESENT_BCC = "Resent-Bcc", "Resent-Bcc"
+        RESENT_SENDER = "Resent-Sender", "Resent-Sender"
+        RESENT_REPLY_TO = "Resent-Reply-To", "Resent-Reply-To"
+        ENVELOPE_TO = (
+            "Envelope-To",
+            "Envelope-To",
+        )
+        DELIVERED_TO = "Delivered-To", "Delivered-To"
+        RETURN_PATH = "Return-Path", "Return-Path"
+        RETURN_RECEIPT_TO = "Return-Receipt-To", "Return-Receipt-To"
+        DISPOSITION_NOTIFICATION_TO = (
+            "Disposition-Notification-To",
+            "Disposition-Notification-To",
+        )

@@ -29,7 +29,7 @@ from django.utils import timezone
 from core.utils.fetchers.exceptions import FetcherError, MailAccountError
 from core.utils.fetchers.SafeIMAPMixin import SafeIMAPMixin
 
-from ...constants import MailFetchingCriteria, MailFetchingProtocols
+from ...constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from .BaseFetcher import BaseFetcher
 
 
@@ -50,22 +50,22 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
         _mailClient (:class:`imaplib.IMAP4`): The IMAP host this instance connects to.
     """
 
-    PROTOCOL = MailFetchingProtocols.IMAP
+    PROTOCOL = EmailProtocolChoices.IMAP
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.IMAP`."""
 
     AVAILABLE_FETCHING_CRITERIA: Final[list[str]] = [
-        MailFetchingCriteria.ALL,
-        MailFetchingCriteria.UNSEEN,
-        MailFetchingCriteria.RECENT,
-        MailFetchingCriteria.NEW,
-        MailFetchingCriteria.OLD,
-        MailFetchingCriteria.FLAGGED,
-        MailFetchingCriteria.DRAFT,
-        MailFetchingCriteria.ANSWERED,
-        MailFetchingCriteria.DAILY,
-        MailFetchingCriteria.WEEKLY,
-        MailFetchingCriteria.MONTHLY,
-        MailFetchingCriteria.ANNUALLY,
+        EmailFetchingCriterionChoices.ALL,
+        EmailFetchingCriterionChoices.UNSEEN,
+        EmailFetchingCriterionChoices.RECENT,
+        EmailFetchingCriterionChoices.NEW,
+        EmailFetchingCriterionChoices.OLD,
+        EmailFetchingCriterionChoices.FLAGGED,
+        EmailFetchingCriterionChoices.DRAFT,
+        EmailFetchingCriterionChoices.ANSWERED,
+        EmailFetchingCriterionChoices.DAILY,
+        EmailFetchingCriterionChoices.WEEKLY,
+        EmailFetchingCriterionChoices.MONTHLY,
+        EmailFetchingCriterionChoices.ANNUALLY,
     ]
     """List of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`.
     For a list of all existing IMAP criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4.
@@ -82,13 +82,13 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             Formatted criterion to be used in IMAP request;
             None if `criterionName` is not in :attr:`AVAILABLE_FETCHING_CRITERIA`.
         """
-        if criterionName == MailFetchingCriteria.DAILY:
+        if criterionName == EmailFetchingCriterionChoices.DAILY:
             startTime = timezone.now() - datetime.timedelta(days=1)
-        elif criterionName == MailFetchingCriteria.WEEKLY:
+        elif criterionName == EmailFetchingCriterionChoices.WEEKLY:
             startTime = timezone.now() - datetime.timedelta(weeks=1)
-        elif criterionName == MailFetchingCriteria.MONTHLY:
+        elif criterionName == EmailFetchingCriterionChoices.MONTHLY:
             startTime = timezone.now() - datetime.timedelta(weeks=4)
-        elif criterionName == MailFetchingCriteria.ANNUALLY:
+        elif criterionName == EmailFetchingCriterionChoices.ANNUALLY:
             startTime = timezone.now() - datetime.timedelta(weeks=52)
         else:
             return criterionName
@@ -161,7 +161,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
     def fetchEmails(
         self,
         mailbox: MailboxModel,
-        criterion: str = MailFetchingCriteria.ALL,
+        criterion: str = EmailFetchingCriterionChoices.ALL,
     ) -> list[bytes]:
         """Fetches and returns maildata from a mailbox based on a given criterion.
 

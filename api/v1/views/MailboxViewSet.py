@@ -169,7 +169,7 @@ class MailboxViewSet(viewsets.ModelViewSet):
         mailbox = self.get_object()
         mailboxSerializer = self.get_serializer(mailbox)
         try:
-            mailbox.fetch(constants.MailFetchingCriteria.ALL)
+            mailbox.fetch(constants.EmailFetchingCriterionChoices.ALL)
         except MailboxError as error:
             return Response(
                 {

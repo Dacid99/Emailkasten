@@ -23,7 +23,7 @@ import logging
 import pytest
 from model_bakery import baker
 
-from core.constants import MailFetchingProtocols
+from core.constants import EmailProtocolChoices
 from core.models.MailboxModel import MailboxModel
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 from core.utils.fetchers.IMAPFetcher import IMAPFetcher
@@ -47,7 +47,7 @@ def fixture_mock_logger(mocker):
 
 @pytest.fixture(name="imapMailbox")
 def fixture_imapMailbox(mailbox):
-    mailbox.account.protocol = MailFetchingProtocols.IMAP
+    mailbox.account.protocol = EmailProtocolChoices.IMAP
     mailbox.account.save(update_fields=["protocol"])
     return mailbox
 
@@ -104,7 +104,7 @@ def test_IMAPFetcher___init___connectionError(
 @pytest.mark.django_db
 def test_IMAPFetcher___init___badProtocol(mocker, imapMailbox, mock_logger, mock_IMAP4):
     spy_IMAPFetcher_connectToHost = mocker.spy(IMAPFetcher, "connectToHost")
-    imapMailbox.account.protocol = MailFetchingProtocols.POP3
+    imapMailbox.account.protocol = EmailProtocolChoices.POP3
 
     with pytest.raises(ValueError, match="not supported"):
         IMAPFetcher(imapMailbox.account)

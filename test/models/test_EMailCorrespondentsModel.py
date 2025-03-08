@@ -27,6 +27,7 @@ import pytest
 from django.db import IntegrityError
 from model_bakery import baker
 
+from core.constants import HeaderFields
 from core.models.CorrespondentModel import CorrespondentModel
 from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from core.models.EMailModel import EMailModel
@@ -55,7 +56,7 @@ def test_EMailCorrespondentsModel_creation(emailCorrespondent):
     assert emailCorrespondent.mention is not None
     assert any(
         emailCorrespondent.mention == mention
-        for mention, _ in EMailCorrespondentsModel.MENTIONTYPES
+        for mention in HeaderFields.Correspondents.values
     )
     assert str(emailCorrespondent.email) in str(emailCorrespondent)
     assert str(emailCorrespondent.correspondent) in str(emailCorrespondent)

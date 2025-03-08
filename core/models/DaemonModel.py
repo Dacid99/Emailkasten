@@ -31,7 +31,7 @@ from django.db import models
 import Emailkasten.constants
 from Emailkasten.utils import get_config
 
-from .. import constants
+from ..constants import EmailFetchingCriterionChoices
 
 
 if TYPE_CHECKING:
@@ -53,17 +53,12 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
     )
     """The mailbox this daemon fetches. Unique. Deletion of that :attr:`mailbox` deletes this daemon."""
 
-    FETCHINGCHOICES: Final[list[tuple[str, str]]] = list(
-        constants.MailFetchingCriteria()
-    )
-    """The available mail fetching criteria. Refers to :class:`Emailkasten.constants.MailFetchingCriteria`."""
-
     fetching_criterion = models.CharField(
-        choices=FETCHINGCHOICES,
-        default=constants.MailFetchingCriteria.ALL,
+        choices=EmailFetchingCriterionChoices.choices,
+        default=EmailFetchingCriterionChoices.ALL,
         max_length=10,
     )
-    """The fetching criterion for this mailbox. One of :attr:`FETCHING_CHOICES`. :attr:`Emailkasten.constants.MailFetchingCriteria.ALL` by default."""
+    """The fetching criterion for this mailbox. :attr:`Emailkasten.constants.EmailFetchingCriterionChoices.ALL` by default."""
 
     cycle_interval = models.IntegerField(
         default=get_config("DAEMON_CYCLE_PERIOD_DEFAULT")
@@ -117,7 +112,7 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
         constraints: Final[list[models.BaseConstraint]] = [
             models.CheckConstraint(
                 condition=models.Q(
-                    fetching_criterion__in=dict(constants.MailFetchingCriteria()).keys()
+                    fetching_criterion__in=EmailFetchingCriterionChoices.values
                 ),
                 name="fetching_criterion_valid_choice",
             ),

@@ -55,7 +55,7 @@ def test_DaemonModel_creation(daemon):
     assert isinstance(daemon.uuid, UUID)
     assert daemon.mailbox is not None
     assert isinstance(daemon.mailbox, MailboxModel)
-    assert daemon.fetching_criterion == constants.MailFetchingCriteria.ALL
+    assert daemon.fetching_criterion == constants.EmailFetchingCriterionChoices.ALL
     assert daemon.cycle_interval == get_config("DAEMON_CYCLE_PERIOD_DEFAULT")
     assert daemon.restart_time == get_config("DAEMON_RESTART_TIME_DEFAULT")
     assert daemon.is_running is False

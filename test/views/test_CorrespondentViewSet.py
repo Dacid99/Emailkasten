@@ -59,7 +59,7 @@ def fixture_correspondentModel(emailModel) -> CorrespondentModel:
     Returns:
         The email instance for testing.
     """
-    return baker.make(CorrespondentModel, emails=[emailModel])
+    return baker.make(CorrespondentModel)
 
 
 @pytest.fixture(name="correspondentPayload")

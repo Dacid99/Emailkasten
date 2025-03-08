@@ -32,7 +32,7 @@ from django.db import IntegrityError, connection, transaction
 from model_bakery import baker
 
 import core.models.AccountModel
-from core.constants import MailFetchingProtocols
+from core.constants import EmailProtocolChoices
 from core.models.AccountModel import AccountModel
 from core.models.MailboxModel import MailboxModel
 from core.utils.fetchers.exceptions import MailAccountError
@@ -79,9 +79,7 @@ def test_AccountModel_creation(account):
     assert account.mail_host_port is None
     assert account.protocol is not None
     assert isinstance(account.protocol, str)
-    assert any(
-        account.protocol == protocol for protocol, _ in AccountModel.PROTOCOL_CHOICES
-    )
+    assert any(account.protocol == protocol for protocol in EmailProtocolChoices.values)
     assert account.timeout is None
     assert account.is_healthy is True
     assert account.is_favorite is False
@@ -131,10 +129,10 @@ def test_AccountModel_unique():
 @pytest.mark.parametrize(
     "protocol, expectedFetcherClass",
     [
-        (MailFetchingProtocols.IMAP, IMAPFetcher),
-        (MailFetchingProtocols.IMAP_SSL, IMAP_SSL_Fetcher),
-        (MailFetchingProtocols.POP3, POP3Fetcher),
-        (MailFetchingProtocols.POP3_SSL, POP3_SSL_Fetcher),
+        (EmailProtocolChoices.IMAP, IMAPFetcher),
+        (EmailProtocolChoices.IMAP_SSL, IMAP_SSL_Fetcher),
+        (EmailProtocolChoices.POP3, POP3Fetcher),
+        (EmailProtocolChoices.POP3_SSL, POP3_SSL_Fetcher),
     ],
 )
 def test_get_fetcher_success(
@@ -170,10 +168,10 @@ def test_get_fetcher_failure(mock_logger, account):
 @pytest.mark.parametrize(
     "protocol, expectedFetcherClass",
     [
-        (MailFetchingProtocols.IMAP, IMAPFetcher),
-        (MailFetchingProtocols.IMAP_SSL, IMAP_SSL_Fetcher),
-        (MailFetchingProtocols.POP3, POP3Fetcher),
-        (MailFetchingProtocols.POP3_SSL, POP3_SSL_Fetcher),
+        (EmailProtocolChoices.IMAP, IMAPFetcher),
+        (EmailProtocolChoices.IMAP_SSL, IMAP_SSL_Fetcher),
+        (EmailProtocolChoices.POP3, POP3Fetcher),
+        (EmailProtocolChoices.POP3_SSL, POP3_SSL_Fetcher),
     ],
 )
 def test_get_fetcher_class_success(

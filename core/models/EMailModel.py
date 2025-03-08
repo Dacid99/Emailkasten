@@ -422,7 +422,7 @@ class EMailModel(models.Model):
                 if new_email.mailinglist:
                     new_email.mailinglist.save()
                 new_email.save(emailData=emailBytes)
-                for mention, __ in HeaderFields.Correspondents():
+                for mention in HeaderFields.Correspondents.values:
                     correspondentHeader = getHeader(emailMessage, mention)
                     if correspondentHeader:
                         EMailCorrespondentsModel.createFromHeader(

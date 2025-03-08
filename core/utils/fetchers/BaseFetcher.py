@@ -24,7 +24,7 @@ import logging
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from ...constants import MailFetchingCriteria
+from ...constants import EmailFetchingCriterionChoices
 
 
 if TYPE_CHECKING:
@@ -85,7 +85,7 @@ class BaseFetcher(ABC):
     def fetchEmails(
         self,
         mailbox: MailboxModel,
-        fetchingCriterion: str = MailFetchingCriteria.ALL,
+        fetchingCriterion: str = EmailFetchingCriterionChoices.ALL,
     ) -> list[bytes]:
         """Fetches emails based on a criterion from the server.
 

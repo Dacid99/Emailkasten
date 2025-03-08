@@ -28,7 +28,7 @@ from dirtyfields import DirtyFieldsMixin
 from django.contrib.auth.models import User
 from django.db import models
 
-from core import constants
+from core.constants import EmailProtocolChoices
 
 from ..utils.fetchers.exceptions import MailAccountError
 from ..utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
@@ -62,13 +62,8 @@ class AccountModel(DirtyFieldsMixin, models.Model):
     mail_host_port = models.IntegerField(null=True)
     """The port of the mail server. Can be null if the default port of the protocol is used."""
 
-    PROTOCOL_CHOICES: Final[list[tuple[str, str]]] = list(
-        constants.MailFetchingProtocols()
-    )
-    """The available mail protocols."""
-
-    protocol = models.CharField(choices=PROTOCOL_CHOICES, max_length=10)
-    """The mail protocol of the mail server. One of :attr:`PROTOCOL_CHOICES`."""
+    protocol = models.CharField(choices=EmailProtocolChoices.choices, max_length=10)
+    """The mail protocol of the mail server."""
 
     timeout = models.IntegerField(null=True)
     """The timeout parameter for the connection to the host. Can be null."""
@@ -103,9 +98,7 @@ class AccountModel(DirtyFieldsMixin, models.Model):
                 name="account_unique_together_mail_address_user",
             ),
             models.CheckConstraint(
-                condition=models.Q(
-                    protocol__in=dict(constants.MailFetchingProtocols()).keys()
-                ),
+                condition=models.Q(protocol__in=EmailProtocolChoices.values),
                 name="protocol_valid_choice",
             ),
         ]

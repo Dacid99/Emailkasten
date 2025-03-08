@@ -21,7 +21,7 @@
 
 import pytest
 
-from core.constants import MailFetchingProtocols
+from core.constants import EmailProtocolChoices
 from core.utils.fetchers.exceptions import MailAccountError
 from core.utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
 
@@ -31,7 +31,7 @@ from .test_IMAPFetcher import FakeIMAP4error, fixture_mock_logger
 
 @pytest.fixture(name="imap_ssl_mailbox")
 def fixture_imap_ssl_mailbox(mailbox):
-    mailbox.account.protocol = MailFetchingProtocols.IMAP_SSL
+    mailbox.account.protocol = EmailProtocolChoices.IMAP_SSL
     mailbox.account.save(update_fields=["protocol"])
     return mailbox
 

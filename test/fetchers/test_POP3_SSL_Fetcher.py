@@ -20,7 +20,7 @@
 
 import pytest
 
-from core.constants import MailFetchingProtocols
+from core.constants import EmailProtocolChoices
 from core.utils.fetchers.exceptions import MailAccountError
 from core.utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
 
@@ -30,7 +30,7 @@ from .test_POP3Fetcher import fixture_mock_logger
 
 @pytest.fixture(name="pop3_ssl_mailbox")
 def fixture_pop_ssl_Mailbox(mailbox):
-    mailbox.account.protocol = MailFetchingProtocols.POP3_SSL
+    mailbox.account.protocol = EmailProtocolChoices.POP3_SSL
     mailbox.account.save(update_fields=["protocol"])
     return mailbox
 

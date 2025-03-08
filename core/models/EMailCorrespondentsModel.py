@@ -46,13 +46,12 @@ class EMailCorrespondentsModel(models.Model):
         related_name="correspondentemails",
         on_delete=models.CASCADE,
     )
-    """The correspondent that was mentioned in :attr:`email`. Unique together with :attr:`email` and :attr:`mention`."""
+    """The correspondent mentioned in :attr:`email`. Unique together with :attr:`email` and :attr:`mention`."""
 
-    MENTIONTYPES: Final[list[tuple[str, str]]] = list(HeaderFields.Correspondents())
-    """The available types of correspondent memtions. Refers to :attr:`Emailkasten.constants.HeaderFields.Correspondents`."""
-
-    mention = models.CharField(choices=MENTIONTYPES, max_length=30)
-    """The way that :attr:`correspondent` was mentioned in :attr:`email`. One of :attr:`MENTIONTYPES`.  Unique together with :attr:`email` and :attr:`correspondent`."""
+    mention = models.CharField(
+        choices=HeaderFields.Correspondents.choices, max_length=30
+    )
+    """The mention of :attr:`correspondent` in :attr:`email`. Unique together with :attr:`email` and :attr:`correspondent`."""
 
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""
@@ -64,7 +63,7 @@ class EMailCorrespondentsModel(models.Model):
         """Metadata class for the model."""
 
         db_table = "email_correspondents"
-        """The name of the database bridge table for the emails and correspondents."""
+        """The name of the database bridge table for emails and correspondents."""
 
         constraints: Final[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
@@ -72,9 +71,7 @@ class EMailCorrespondentsModel(models.Model):
                 name="emailcorrespondents_unique_together_email_correspondent_mention",
             ),
             models.CheckConstraint(
-                condition=models.Q(
-                    mention__in=dict(HeaderFields.Correspondents()).keys()
-                ),
+                condition=models.Q(mention__in=HeaderFields.Correspondents.values),
                 name="mention_criterion_valid_choice",
             ),
         ]

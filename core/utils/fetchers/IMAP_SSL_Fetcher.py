@@ -32,7 +32,7 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
     Does the same things, just using IMAP_SSL protocol.
     """
 
-    PROTOCOL = constants.MailFetchingProtocols.IMAP_SSL
+    PROTOCOL = constants.EmailProtocolChoices.IMAP_SSL
     """Name of the used protocol, refers to :attr:`constants.MailFetchingProtocols.IMAP_SSL`."""
 
     def connectToHost(self) -> None:

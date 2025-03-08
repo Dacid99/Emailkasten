@@ -26,7 +26,7 @@ from typing import TYPE_CHECKING, Final, override
 from core.utils.fetchers.BaseFetcher import BaseFetcher
 from core.utils.fetchers.SafePOPMixin import SafePOPMixin
 
-from ...constants import MailFetchingCriteria, MailFetchingProtocols
+from ...constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from .exceptions import FetcherError, MailAccountError
 
 
@@ -49,10 +49,10 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
         _mailClient (:class:`poplib.POP3`): The POP host this instance connects to.
     """
 
-    PROTOCOL = MailFetchingProtocols.POP3
+    PROTOCOL = EmailProtocolChoices.POP3
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.POP3`."""
 
-    AVAILABLE_FETCHING_CRITERIA: Final[list[str]] = [MailFetchingCriteria.ALL]
+    AVAILABLE_FETCHING_CRITERIA: Final[list[str]] = [EmailFetchingCriterionChoices.ALL]
     """List of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`."""
 
     @override
@@ -121,7 +121,7 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
     def fetchEmails(
         self,
         mailbox: MailboxModel,
-        criterion: str = MailFetchingCriteria.ALL,
+        criterion: str = EmailFetchingCriterionChoices.ALL,
     ) -> list[bytes]:
         """Fetches and returns all maildata from the server.
 

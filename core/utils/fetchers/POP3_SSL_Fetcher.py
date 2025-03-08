@@ -34,7 +34,7 @@ class POP3_SSL_Fetcher(POP3Fetcher):
     Does the same things, just using POP3_SSL protocol.
     """
 
-    PROTOCOL = constants.MailFetchingProtocols.POP3_SSL
+    PROTOCOL = constants.EmailProtocolChoices.POP3_SSL
     """Name of the used protocol, refers to :attr:`constants.MailFetchingProtocols.POP3_SSL`."""
 
     @override

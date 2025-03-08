@@ -36,7 +36,7 @@ from model_bakery import baker
 from rest_framework import status
 
 from api.v1.views.MailboxViewSet import MailboxViewSet
-from core.constants import MailFetchingCriteria
+from core.constants import EmailFetchingCriterionChoices
 from core.models.DaemonModel import DaemonModel
 from core.models.EMailModel import EMailModel
 from core.models.MailboxModel import MailboxModel
@@ -508,7 +508,7 @@ def test_fetch_all_auth_owner(
     assert (
         response.data["mailbox"] == MailboxViewSet.serializer_class(mailboxModel).data
     )
-    mock_MailboxModel_fetch.assert_called_once_with(MailFetchingCriteria.ALL)
+    mock_MailboxModel_fetch.assert_called_once_with(EmailFetchingCriterionChoices.ALL)
 
 
 @pytest.mark.django_db

@@ -35,21 +35,21 @@ if TYPE_CHECKING:
 
 
 class ExchangeFetcher:
-    PROTOCOL = constants.MailFetchingProtocols.EXCHANGE
+    PROTOCOL = constants.EmailProtocolChoices.EXCHANGE
 
     AVAILABLE_FETCHING_CRITERIA = [
-        constants.MailFetchingCriteria.ALL,
-        constants.MailFetchingCriteria.UNSEEN,
-        constants.MailFetchingCriteria.RECENT,
-        constants.MailFetchingCriteria.NEW,
-        constants.MailFetchingCriteria.OLD,
-        constants.MailFetchingCriteria.FLAGGED,
-        constants.MailFetchingCriteria.DRAFT,
-        constants.MailFetchingCriteria.ANSWERED,
-        constants.MailFetchingCriteria.DAILY,
-        constants.MailFetchingCriteria.WEEKLY,
-        constants.MailFetchingCriteria.MONTHLY,
-        constants.MailFetchingCriteria.ANNUALLY,
+        constants.EmailFetchingCriterionChoices.ALL,
+        constants.EmailFetchingCriterionChoices.UNSEEN,
+        constants.EmailFetchingCriterionChoices.RECENT,
+        constants.EmailFetchingCriterionChoices.NEW,
+        constants.EmailFetchingCriterionChoices.OLD,
+        constants.EmailFetchingCriterionChoices.FLAGGED,
+        constants.EmailFetchingCriterionChoices.DRAFT,
+        constants.EmailFetchingCriterionChoices.ANSWERED,
+        constants.EmailFetchingCriterionChoices.DAILY,
+        constants.EmailFetchingCriterionChoices.WEEKLY,
+        constants.EmailFetchingCriterionChoices.MONTHLY,
+        constants.EmailFetchingCriterionChoices.ANNUALLY,
     ]
 
     def __init__(
