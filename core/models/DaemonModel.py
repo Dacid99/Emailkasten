@@ -37,6 +37,7 @@ from .. import constants
 if TYPE_CHECKING:
     from .MailboxModel import MailboxModel
 
+
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
@@ -112,6 +113,16 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
 
         db_table = "daemons"
         """The name of the database table for the daemons."""
+
+        constraints: Final[list[models.BaseConstraint]] = [
+            models.CheckConstraint(
+                condition=models.Q(
+                    fetching_criterion__in=dict(constants.MailFetchingCriteria()).keys()
+                ),
+                name="fetching_criterion_valid_choice",
+            ),
+        ]
+        """Choices for :attr:`fetching_criterion` are enforced on db level."""
 
     def __str__(self) -> str:
         """Returns a string representation of the model data.

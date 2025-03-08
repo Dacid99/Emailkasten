@@ -15,9 +15,8 @@
 - filtertest for choices
 - move all signals into models
 - user validation for serializers to avoid leakage
-- enforce choices via constraint
+- validating choices in serializers and models
 - references header
-- attachment/inline content name as first fallback for filename
 - database statistics
 - replace daemons with celery
 - rework test:

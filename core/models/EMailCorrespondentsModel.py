@@ -70,9 +70,17 @@ class EMailCorrespondentsModel(models.Model):
             models.UniqueConstraint(
                 fields=["email", "correspondent", "mention"],
                 name="emailcorrespondents_unique_together_email_correspondent_mention",
-            )
+            ),
+            models.CheckConstraint(
+                condition=models.Q(
+                    mention__in=dict(HeaderFields.Correspondents()).keys()
+                ),
+                name="mention_criterion_valid_choice",
+            ),
         ]
-        """:attr:`email`, :attr:`correspondent` and :attr:`mention` in combination are unique."""
+        """:attr:`email`, :attr:`correspondent` and :attr:`mention` in combination are unique.
+        Choices for :attr:`mention` are enforced on db level.
+        """
 
     def __str__(self) -> str:
         """Returns a string representation of the model data.

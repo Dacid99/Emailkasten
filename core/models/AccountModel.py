@@ -101,9 +101,17 @@ class AccountModel(DirtyFieldsMixin, models.Model):
             models.UniqueConstraint(
                 fields=["mail_address", "user"],
                 name="account_unique_together_mail_address_user",
-            )
+            ),
+            models.CheckConstraint(
+                condition=models.Q(
+                    protocol__in=dict(constants.MailFetchingProtocols()).keys()
+                ),
+                name="protocol_valid_choice",
+            ),
         ]
-        """`mail_address` and :attr:`user` in combination are unique fields."""
+        """`mail_address` and :attr:`user` in combination are unique fields.
+        Choices for :attr:`protocol` are enforced on db level.
+        """
 
     def __str__(self) -> str:
         """Returns a string representation of the model data.
