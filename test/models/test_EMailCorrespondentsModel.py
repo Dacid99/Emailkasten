@@ -106,7 +106,7 @@ def test_createFromHeader_success(mocker, faker, email):
         return_value=fake_CorrespondentModel,
     )
     fake_header = faker.words(3)
-    fake_headername = faker.word()
+    fake_headername = faker.random_element(HeaderFields.Correspondents.values)
 
     result = EMailCorrespondentsModel.createFromHeader(
         fake_header, fake_headername, email
@@ -129,7 +129,7 @@ def test_createFromHeader_no_correspondent(mocker, faker, email):
         return_value=None,
     )
     fake_header = faker.words(3)
-    fake_headername = faker.word()
+    fake_headername = faker.random_element(HeaderFields.Correspondents.values)
 
     result = EMailCorrespondentsModel.createFromHeader(
         fake_header, fake_headername, email
@@ -141,12 +141,13 @@ def test_createFromHeader_no_correspondent(mocker, faker, email):
 
 @pytest.mark.django_db
 def test_createFromHeader_no_email(mocker, faker):
+    fake_CorrespondentModel = CorrespondentModel(email_address=faker.email())
     mock_CorrespondentModel_fromHeader = mocker.patch(
         "core.models.EMailCorrespondentsModel.CorrespondentModel.fromHeader",
-        return_value=None,
+        return_value=fake_CorrespondentModel,
     )
     fake_header = faker.words(3)
-    fake_headername = faker.word()
+    fake_headername = faker.random_element(HeaderFields.Correspondents.values)
 
     with pytest.raises(ValueError):
         EMailCorrespondentsModel.createFromHeader(
