@@ -37,6 +37,7 @@ def fixture_mock_logger(mocker):
     mocker.patch(
         "core.utils.fetchers.BaseFetcher.logging.getLogger",
         return_value=mock_logger,
+        autospec=True,
     )
     return mock_logger
 

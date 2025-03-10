@@ -41,7 +41,7 @@ import core.utils.mailParsing
 @pytest.fixture(name="mock_logger", autouse=True)
 def fixture_mock_logger(mocker):
     """Mocks :attr:`logger` of the module."""
-    return mocker.patch("core.utils.mailParsing.logger")
+    return mocker.patch("core.utils.mailParsing.logger", autospec=True)
 
 
 @pytest.fixture(name="fake_single_header")

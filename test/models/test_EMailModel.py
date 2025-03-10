@@ -42,7 +42,7 @@ from .test_MailboxModel import fixture_mailboxModel
 @pytest.fixture(name="mock_logger", autouse=True)
 def fixture_mock_logger(mocker):
     """Mocks :attr:`core.models.EMailModel.logger` of the module."""
-    return mocker.patch("core.models.EMailModel.logger")
+    return mocker.patch("core.models.EMailModel.logger", autospec=True)
 
 
 @pytest.fixture(name="mock_os_remove", autouse=True)

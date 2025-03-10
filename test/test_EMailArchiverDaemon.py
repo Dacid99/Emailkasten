@@ -18,6 +18,8 @@
 
 """Test for :mod:`core.EMailArchiverDaemon`."""
 
+import logging
+
 import pytest
 from django.db.models.signals import post_save
 
@@ -36,7 +38,7 @@ def fixture_setupLogger(mocker):
 @pytest.fixture(name="emailArchiverDaemon")
 def fixture_emailArchiverDaemon(mocker, daemon):
     emailArchiverDaemon = EMailArchiverDaemon(daemonModel=daemon)
-    emailArchiverDaemon.logger = mocker.Mock()
+    emailArchiverDaemon.logger = mocker.Mock(spec=logging.Logger)
     return emailArchiverDaemon
 
 

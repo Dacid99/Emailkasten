@@ -44,7 +44,7 @@ def fixture_mock_logger(mocker):
     Returns:
         The mocked logger instance.
     """
-    return mocker.patch("core.models.DaemonModel.logger")
+    return mocker.patch("core.models.DaemonModel.logger", autospec=True)
 
 
 @pytest.fixture(name="daemon")

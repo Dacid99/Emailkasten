@@ -45,7 +45,7 @@ def fixture_mock_logger(mocker) -> MagicMock:
     Returns:
         The mocked logger instance.
     """
-    return mocker.patch("core.models.CorrespondentModel.logger")
+    return mocker.patch("core.models.CorrespondentModel.logger", autospec=True)
 
 
 @pytest.fixture(name="correspondent")

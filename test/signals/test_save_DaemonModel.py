@@ -41,7 +41,7 @@ def fixture_mock_updateDaemon(mocker):
 @pytest.fixture(name="mock_logger", autouse=True)
 def fixture_mock_logger(mocker):
     """Mocks :attr:`core.signals.save_DaemonModel.logger` of the module."""
-    return mocker.patch("core.signals.save_DaemonModel.logger")
+    return mocker.patch("core.signals.save_DaemonModel.logger", autospec=True)
 
 
 @pytest.mark.django_db

@@ -45,7 +45,7 @@ def fixture_mock_logger(mocker) -> MagicMock:
     Returns:
         The email instance for testing.
     """
-    return mocker.patch("core.models.MailingListModel.logger")
+    return mocker.patch("core.models.MailingListModel.logger", autospec=True)
 
 
 @pytest.fixture(name="mailingList")

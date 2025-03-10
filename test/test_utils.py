@@ -26,7 +26,7 @@ from Emailkasten.utils import get_config
 
 @pytest.fixture(name="mock_logger", autouse=True)
 def fixture_mock_logger(mocker):
-    return mocker.patch("Emailkasten.utils.logger")
+    return mocker.patch("Emailkasten.utils.logger", autospec=True)
 
 
 @pytest.fixture(name="mock_getattr", autouse=True)

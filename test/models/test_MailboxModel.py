@@ -53,7 +53,7 @@ def fixture_mock_logger(mocker) -> MagicMock:
     Returns:
         The mocked logger instance.
     """
-    return mocker.patch("core.models.MailboxModel.logger")
+    return mocker.patch("core.models.MailboxModel.logger", autospec=True)
 
 
 @pytest.fixture(name="mailbox")

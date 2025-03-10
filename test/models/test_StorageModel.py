@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 @pytest.fixture(name="mock_logger", autouse=True)
 def fixture_mock_logger(mocker) -> MagicMock:
     """Mocks :attr:`core.models.StorageModel.logger` of the module."""
-    return mocker.patch("core.models.StorageModel.logger")
+    return mocker.patch("core.models.StorageModel.logger", autospec=True)
 
 
 @pytest.fixture(name="mock_filesystem", autouse=True)

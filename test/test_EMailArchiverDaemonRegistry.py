@@ -26,12 +26,10 @@ import contextlib
 
 @pytest.fixture(name="mock_logger", autouse=True)
 def fixture_mock_logger(mocker):
-    mock_logger = mocker.Mock()
-    mocker.patch(
+    return mocker.patch(
         "core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.logger",
-        mock_logger,
+        autospec=True,
     )
-    return mock_logger
 
 
 @pytest.fixture(name="mock_runningDaemon")
