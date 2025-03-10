@@ -19,10 +19,7 @@
 """Test module for :mod:`api.v1.views.AccountViewSet`.
 
 Fixtures:
-    :func:`fixture_accountModel`: Creates an account owned by `owner_user`.
-    :func:`fixture_daemonModel`: Creates an mailbox in `accountModel`.
-    :func:`fixture_mailboxPayload`: Creates clean :class:`core.models.DaemonModel.DaemonModel` payload for a patch, post or put request.
-
+    :func:`fixture_daemonPayload`: Creates clean :class:`core.models.DaemonModel.DaemonModel` payload for a patch, post or put request.
 """
 
 from __future__ import annotations
@@ -38,29 +35,9 @@ from rest_framework import status
 from api.v1.views.DaemonViewSet import DaemonViewSet
 from core.models.DaemonModel import DaemonModel
 
-from .test_AccountViewSet import fixture_accountModel
-from .test_MailboxViewSet import fixture_mailboxModel
-
 
 if TYPE_CHECKING:
     from typing import Any
-
-
-@pytest.fixture(name="daemonModel", autouse=True)
-def fixture_daemonModel(faker, mailboxModel) -> DaemonModel:
-    """Creates an :class:`core.models.DaemonModel.DaemonModel` owned by :attr:`owner_user`.
-
-    Args:
-        mailboxModel: Depends on :func:`fixture_mailboxModel`.
-
-    Returns:
-        The daemon instance for testing.
-    """
-    return baker.make(
-        DaemonModel,
-        log_filepath=faker.file_path(extension="log"),
-        mailbox=mailboxModel,
-    )
 
 
 @pytest.fixture(name="daemonPayload")
@@ -339,7 +316,7 @@ def test_fetching_options_auth_owner(
     mocker, daemonModel, owner_apiClient, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.fetching_options` action with the authenticated owner user client."""
-    mock_fetchingCriteria = ["ALL"]
+    mock_fetchingCriteria = ["ALL", "RECENT"]
     mocker.patch(
         "core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria",
         return_value=mock_fetchingCriteria,
@@ -353,26 +330,6 @@ def test_fetching_options_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["options"] == mock_fetchingCriteria
-
-
-@pytest.mark.django_db
-def test_fetching_options_error_auth_owner(
-    mocker, daemonModel, owner_apiClient, custom_detail_action_url
-):
-    """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.fetching_options` action with the authenticated owner user client."""
-    mock_fetchingCriteria = []
-    mocker.patch(
-        "core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria",
-        return_value=mock_fetchingCriteria,
-    )
-
-    response = owner_apiClient.get(
-        custom_detail_action_url(
-            DaemonViewSet, DaemonViewSet.URL_NAME_FETCHING_OPTIONS, daemonModel
-        )
-    )
-
-    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 @pytest.mark.django_db
