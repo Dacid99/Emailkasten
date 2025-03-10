@@ -145,7 +145,9 @@ class AccountModel(DirtyFieldsMixin, models.Model):
         )
 
     def get_fetcher(self) -> BaseFetcher:
-        """Convenience method: Instantiates the fetcher from :class:`core.utils.fetchers` corresponding to :attr:`protocol`.
+        """Instantiates the fetcher from :class:`core.utils.fetchers` corresponding to :attr:`protocol`.
+
+        Handles possible errors instantiating the fetcher.
 
         Returns:
             A fetcher instance for the account.
@@ -153,8 +155,17 @@ class AccountModel(DirtyFieldsMixin, models.Model):
         Raises:
             ValueError: If the protocol doesnt match any fetcher class.
                 Marks the account as unhealthy in this case.
+            MailAccountError: If the fetcher fails to initialize.
+                Marks the account as unhealthy in this case.
         """
-        return self.get_fetcher_class()(self)
+        try:
+            fetcher = self.get_fetcher_class()(self)
+        except MailAccountError:
+            logger.exception("Failed to instantiate fetcher for %s!", self)
+            self.is_healthy = False
+            self.save(update_fields=["is_healthy"])
+            raise
+        return fetcher
 
     def test_connection(self) -> None:
         """Tests whether the data in the model is correct.
@@ -189,13 +200,13 @@ class AccountModel(DirtyFieldsMixin, models.Model):
         """
 
         logger.info("Updating mailboxes in %s...", self)
-        try:
-            with self.get_fetcher() as fetcher:
+        with self.get_fetcher() as fetcher:
+            try:
                 mailboxList = fetcher.fetchMailboxes()
-        except MailAccountError:
-            self.is_healthy = False
-            self.save(update_fields=["is_healthy"])
-            raise
+            except MailAccountError:
+                self.is_healthy = False
+                self.save(update_fields=["is_healthy"])
+                raise
         self.is_healthy = True
         self.save(update_fields=["is_healthy"])
 

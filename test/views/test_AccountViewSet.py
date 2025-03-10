@@ -348,7 +348,7 @@ def test_scan_mailboxes_auth_other(
 
 
 @pytest.mark.django_db
-def test_scan_mailboxes_auth_owner(
+def test_scan_mailboxes_success_auth_owner(
     mocker,
     accountModel,
     owner_apiClient,
@@ -369,6 +369,37 @@ def test_scan_mailboxes_auth_owner(
     assert (
         response.data["account"] == AccountViewSet.serializer_class(accountModel).data
     )
+    assert "error" not in response.data
+    mock_update_mailboxes.assert_called_once_with()
+
+
+@pytest.mark.django_db
+def test_scan_mailboxes_failure_auth_owner(
+    mocker,
+    faker,
+    accountModel,
+    owner_apiClient,
+    custom_detail_action_url,
+):
+    fake_error_message = faker.sentence()
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.scan_mailboxes` action with the authenticated owner user client."""
+    mock_update_mailboxes = mocker.patch(
+        "api.v1.views.AccountViewSet.AccountModel.update_mailboxes",
+        side_effect=MailAccountError(fake_error_message),
+    )
+
+    response = owner_apiClient.post(
+        custom_detail_action_url(
+            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, accountModel
+        )
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert (
+        response.data["account"] == AccountViewSet.serializer_class(accountModel).data
+    )
+    assert "error" in response.data
+    assert fake_error_message in response.data["error"]
     mock_update_mailboxes.assert_called_once_with()
 
 

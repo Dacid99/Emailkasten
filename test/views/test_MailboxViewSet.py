@@ -488,7 +488,7 @@ def test_fetch_all_auth_other(
 
 
 @pytest.mark.django_db
-def test_fetch_all_auth_owner(
+def test_fetch_all_success_auth_owner(
     mocker, mailboxModel, owner_apiClient, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch_all` action with the authenticated owner user client."""
@@ -506,6 +506,39 @@ def test_fetch_all_auth_owner(
     assert (
         response.data["mailbox"] == MailboxViewSet.serializer_class(mailboxModel).data
     )
+    assert "error" not in response.data
+    mock_MailboxModel_fetch.assert_called_once_with(EmailFetchingCriterionChoices.ALL)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("fetch_side_effect", [MailboxError, MailAccountError])
+def test_fetch_all_failure_auth_owner(
+    mocker,
+    faker,
+    mailboxModel,
+    owner_apiClient,
+    custom_detail_action_url,
+    fetch_side_effect,
+):
+    fake_error_message = faker.sentence()
+    """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch_all` action with the authenticated owner user client."""
+    mock_MailboxModel_fetch = mocker.patch(
+        "api.v1.views.MailboxViewSet.MailboxModel.fetch",
+        side_effect=fetch_side_effect(fake_error_message),
+    )
+
+    response = owner_apiClient.post(
+        custom_detail_action_url(
+            MailboxViewSet, MailboxViewSet.URL_NAME_FETCH_ALL, mailboxModel
+        )
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert (
+        response.data["mailbox"] == MailboxViewSet.serializer_class(mailboxModel).data
+    )
+    assert "error" in response.data
+    assert fake_error_message in response.data["error"]
     mock_MailboxModel_fetch.assert_called_once_with(EmailFetchingCriterionChoices.ALL)
 
 
