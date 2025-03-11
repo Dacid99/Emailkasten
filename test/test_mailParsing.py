@@ -177,7 +177,7 @@ def test_parseDatetimeHeader_success(faker, mock_logger):
 
 def test_parseDatetimeHeader_fallback(mocker, faker, mock_logger):
     mock_timezone_now = mocker.patch(
-        "django.utils.timezone.now", return_value=faker.date_time()
+        "django.utils.timezone.now", autospec=True, return_value=faker.date_time()
     )
 
     result = core.utils.mailParsing.parseDatetimeHeader("no datetime header")
@@ -190,7 +190,7 @@ def test_parseDatetimeHeader_fallback(mocker, faker, mock_logger):
 
 def test_parseDatetimeHeader_no_header(mocker, faker, mock_logger):
     mock_timezone_now = mocker.patch(
-        "django.utils.timezone.now", return_value=faker.date_time()
+        "django.utils.timezone.now", autospec=True, return_value=faker.date_time()
     )
 
     result = core.utils.mailParsing.parseDatetimeHeader(None)

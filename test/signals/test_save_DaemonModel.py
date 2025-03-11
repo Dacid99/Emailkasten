@@ -34,7 +34,8 @@ def fixture_mock_updateDaemon(mocker):
     function called in the signal.
     """
     return mocker.patch(
-        "core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.updateDaemon"
+        "core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.updateDaemon",
+        autospec=True,
     )
 
 

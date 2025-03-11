@@ -283,7 +283,9 @@ def test_download_noauth(
     """
     mock_open = mocker.patch("api.v1.views.AttachmentViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.AttachmentViewSet.os.path.exists", return_value=True
+        "api.v1.views.AttachmentViewSet.os.path.exists",
+        autospec=True,
+        return_value=True,
     )
 
     response = noauth_apiClient.get(
@@ -306,7 +308,9 @@ def test_download_auth_other(
     """
     mock_open = mocker.patch("api.v1.views.AttachmentViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.AttachmentViewSet.os.path.exists", return_value=True
+        "api.v1.views.AttachmentViewSet.os.path.exists",
+        autospec=True,
+        return_value=True,
     )
 
     response = other_apiClient.get(
@@ -329,7 +333,9 @@ def test_download_no_file_auth_owner(
     """
     mock_open = mocker.patch("api.v1.views.AttachmentViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.AttachmentViewSet.os.path.exists", return_value=False
+        "api.v1.views.AttachmentViewSet.os.path.exists",
+        autospec=True,
+        return_value=False,
     )
 
     response = owner_apiClient.get(
@@ -354,7 +360,9 @@ def test_download_auth_owner(
     mock_open = mocker.mock_open(read_data=mockedFileContent)
     mocker.patch("api.v1.views.AttachmentViewSet.open", mock_open)
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.AttachmentViewSet.os.path.exists", return_value=True
+        "api.v1.views.AttachmentViewSet.os.path.exists",
+        autospec=True,
+        return_value=True,
     )
 
     response = owner_apiClient.get(

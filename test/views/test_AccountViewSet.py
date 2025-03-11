@@ -309,7 +309,7 @@ def test_scan_mailboxes_noauth(
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.scan_mailboxes` action with an unauthenticated user client."""
     mock_update_mailboxes = mocker.patch(
-        "core.models.AccountModel.AccountModel.update_mailboxes"
+        "core.models.AccountModel.AccountModel.update_mailboxes", autospec=True
     )
     response = noauth_apiClient.post(
         custom_detail_action_url(
@@ -332,7 +332,7 @@ def test_scan_mailboxes_auth_other(
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.scan_mailboxes` action with the authenticated other user client."""
     mock_update_mailboxes = mocker.patch(
-        "core.models.AccountModel.AccountModel.update_mailboxes"
+        "core.models.AccountModel.AccountModel.update_mailboxes", autospec=True
     )
 
     response = other_apiClient.post(
@@ -356,7 +356,7 @@ def test_scan_mailboxes_success_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.scan_mailboxes` action with the authenticated owner user client."""
     mock_update_mailboxes = mocker.patch(
-        "api.v1.views.AccountViewSet.AccountModel.update_mailboxes"
+        "api.v1.views.AccountViewSet.AccountModel.update_mailboxes", autospec=True
     )
 
     response = owner_apiClient.post(
@@ -370,7 +370,7 @@ def test_scan_mailboxes_success_auth_owner(
         response.data["account"] == AccountViewSet.serializer_class(accountModel).data
     )
     assert "error" not in response.data
-    mock_update_mailboxes.assert_called_once_with()
+    mock_update_mailboxes.assert_called_once_with(accountModel)
 
 
 @pytest.mark.django_db
@@ -385,6 +385,7 @@ def test_scan_mailboxes_failure_auth_owner(
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.scan_mailboxes` action with the authenticated owner user client."""
     mock_update_mailboxes = mocker.patch(
         "api.v1.views.AccountViewSet.AccountModel.update_mailboxes",
+        autospec=True,
         side_effect=MailAccountError(fake_error_message),
     )
 
@@ -400,7 +401,7 @@ def test_scan_mailboxes_failure_auth_owner(
     )
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
-    mock_update_mailboxes.assert_called_once_with()
+    mock_update_mailboxes.assert_called_once_with(accountModel)
 
 
 @pytest.mark.django_db
@@ -412,7 +413,7 @@ def test_test_noauth(
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with an unauthenticated user client."""
     mock_test_connection = mocker.patch(
-        "api.v1.views.AccountViewSet.AccountModel.test_connection"
+        "api.v1.views.AccountViewSet.AccountModel.test_connection", autospec=True
     )
     previous_is_healthy = accountModel.is_healthy
 
@@ -439,7 +440,7 @@ def test_test_auth_other(
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated other user client."""
     mock_test_connection = mocker.patch(
-        "api.v1.views.AccountViewSet.AccountModel.test_connection"
+        "api.v1.views.AccountViewSet.AccountModel.test_connection", autospec=True
     )
     previous_is_healthy = accountModel.is_healthy
 
@@ -466,7 +467,7 @@ def test_test_success_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated owner user client."""
     mock_test_connection = mocker.patch(
-        "api.v1.views.AccountViewSet.AccountModel.test_connection"
+        "api.v1.views.AccountViewSet.AccountModel.test_connection", autospec=True
     )
 
     response = owner_apiClient.post(
@@ -481,7 +482,7 @@ def test_test_success_auth_owner(
     )
     assert response.data["result"] is True
     assert "error" not in response.data
-    mock_test_connection.assert_called_once_with()
+    mock_test_connection.assert_called_once_with(accountModel)
 
 
 @pytest.mark.django_db
@@ -496,6 +497,7 @@ def test_test_failure_auth_owner(
     fake_error_message = faker.sentence()
     mock_test_connection = mocker.patch(
         "api.v1.views.AccountViewSet.AccountModel.test_connection",
+        autospec=True,
         side_effect=MailAccountError(fake_error_message),
     )
 
@@ -512,7 +514,7 @@ def test_test_failure_auth_owner(
     assert response.data["result"] is False
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
-    mock_test_connection.assert_called_once_with()
+    mock_test_connection.assert_called_once_with(accountModel)
 
 
 @pytest.mark.django_db

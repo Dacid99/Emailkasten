@@ -91,6 +91,7 @@ def test_CorrespondentModel_unique(correspondent):
 def test_fromHeader_success(mocker, faker):
     mock_parseCorrespondentHeader = mocker.patch(
         "core.models.CorrespondentModel.parseCorrespondentHeader",
+        autospec=True,
         return_value=(faker.name(), faker.email()),
     )
 
@@ -106,6 +107,7 @@ def test_fromHeader_success(mocker, faker):
 def test_fromHeader_duplicate(mocker, faker, correspondent):
     mock_parseCorrespondentHeader = mocker.patch(
         "core.models.CorrespondentModel.parseCorrespondentHeader",
+        autospec=True,
         return_value=(faker.name(), correspondent.email_address),
     )
 
@@ -119,6 +121,7 @@ def test_fromHeader_duplicate(mocker, faker, correspondent):
 def test_fromHeader_no_address(mocker, faker, mock_logger):
     mock_parseCorrespondentHeader = mocker.patch(
         "core.models.CorrespondentModel.parseCorrespondentHeader",
+        autospec=True,
         return_value=(faker.name(), ""),
     )
 

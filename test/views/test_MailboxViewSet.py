@@ -335,7 +335,7 @@ def test_test_mailbox_noauth(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.test_mailbox` action with an unauthenticated user client."""
     mock_test_connection = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.test_connection"
+        "api.v1.views.MailboxViewSet.MailboxModel.test_connection", autospec=True
     )
     previous_is_healthy = mailboxModel.is_healthy
 
@@ -359,7 +359,7 @@ def test_test_mailbox_auth_other(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.test_mailbox` action with the authenticated other user client."""
     mock_test_connection = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.test_connection"
+        "api.v1.views.MailboxViewSet.MailboxModel.test_connection", autospec=True
     )
     previous_is_healthy = mailboxModel.is_healthy
 
@@ -383,7 +383,7 @@ def test_test_mailbox_success_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.test_mailbox` action with the authenticated owner user client."""
     mock_test_connection = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.test_connection"
+        "api.v1.views.MailboxViewSet.MailboxModel.test_connection", autospec=True
     )
 
     response = owner_apiClient.post(
@@ -398,7 +398,7 @@ def test_test_mailbox_success_auth_owner(
     )
     assert response.data["result"] is True
     assert "error" not in response.data
-    mock_test_connection.assert_called_once_with()
+    mock_test_connection.assert_called_once_with(mailboxModel)
 
 
 @pytest.mark.django_db
@@ -417,6 +417,7 @@ def test_test_mailbox_failure_auth_owner(
     fake_error_message = faker.sentence()
     mock_test_connection = mocker.patch(
         "api.v1.views.MailboxViewSet.MailboxModel.test_connection",
+        autospec=True,
         side_effect=test_connection_side_effect(fake_error_message),
     )
 
@@ -433,7 +434,7 @@ def test_test_mailbox_failure_auth_owner(
     assert response.data["result"] is False
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
-    mock_test_connection.assert_called_once_with()
+    mock_test_connection.assert_called_once_with(mailboxModel)
 
 
 @pytest.mark.django_db
@@ -442,7 +443,7 @@ def test_fetch_all_noauth(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch_all` action with an unauthenticated user client."""
     mock_MailboxModel_fetch = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.fetch"
+        "api.v1.views.MailboxViewSet.MailboxModel.fetch", autospec=True
     )
 
     assert EMailModel.objects.all().count() == 1
@@ -469,7 +470,7 @@ def test_fetch_all_auth_other(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch_all` action with the authenticated other user client."""
     mock_MailboxModel_fetch = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.fetch"
+        "api.v1.views.MailboxViewSet.MailboxModel.fetch", autospec=True
     )
 
     assert EMailModel.objects.all().count() == 1
@@ -493,7 +494,7 @@ def test_fetch_all_success_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch_all` action with the authenticated owner user client."""
     mock_MailboxModel_fetch = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.fetch"
+        "api.v1.views.MailboxViewSet.MailboxModel.fetch", autospec=True
     )
 
     response = owner_apiClient.post(
@@ -507,7 +508,9 @@ def test_fetch_all_success_auth_owner(
         response.data["mailbox"] == MailboxViewSet.serializer_class(mailboxModel).data
     )
     assert "error" not in response.data
-    mock_MailboxModel_fetch.assert_called_once_with(EmailFetchingCriterionChoices.ALL)
+    mock_MailboxModel_fetch.assert_called_once_with(
+        mailboxModel, EmailFetchingCriterionChoices.ALL
+    )
 
 
 @pytest.mark.django_db
@@ -524,6 +527,7 @@ def test_fetch_all_failure_auth_owner(
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch_all` action with the authenticated owner user client."""
     mock_MailboxModel_fetch = mocker.patch(
         "api.v1.views.MailboxViewSet.MailboxModel.fetch",
+        autospec=True,
         side_effect=fetch_side_effect(fake_error_message),
     )
 
@@ -539,7 +543,9 @@ def test_fetch_all_failure_auth_owner(
     )
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
-    mock_MailboxModel_fetch.assert_called_once_with(EmailFetchingCriterionChoices.ALL)
+    mock_MailboxModel_fetch.assert_called_once_with(
+        mailboxModel, EmailFetchingCriterionChoices.ALL
+    )
 
 
 @pytest.mark.django_db
@@ -552,7 +558,7 @@ def test_upload_eml_noauth(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_eml` action with an unauthenticated user client."""
     mock_EMailModel_createFromEmailBytes = mocker.patch(
-        "api.v1.views.MailboxViewSet.EMailModel.createFromEmailBytes"
+        "api.v1.views.MailboxViewSet.EMailModel.createFromEmailBytes", autospec=True
     )
     fake_file_content = bytes(faker.sentence(5), encoding="utf-8")
     fake_file = BytesIO(fake_file_content)
@@ -584,7 +590,7 @@ def test_upload_eml_auth_other(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_eml` action with the authenticated other user client."""
     mock_EMailModel_createFromEmailBytes = mocker.patch(
-        "api.v1.views.MailboxViewSet.EMailModel.createFromEmailBytes"
+        "api.v1.views.MailboxViewSet.EMailModel.createFromEmailBytes", autospec=True
     )
     fake_file_content = bytes(faker.sentence(5), encoding="utf-8")
     fake_file = BytesIO(fake_file_content)
@@ -612,7 +618,7 @@ def test_upload_eml_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_eml` action with the authenticated owner user client."""
     mock_EMailModel_createFromEmailBytes = mocker.patch(
-        "api.v1.views.MailboxViewSet.EMailModel.createFromEmailBytes"
+        "api.v1.views.MailboxViewSet.EMailModel.createFromEmailBytes", autospec=True
     )
     fake_file_content = bytes(faker.sentence(5), encoding="utf-8")
     fake_file = BytesIO(fake_file_content)
@@ -640,7 +646,7 @@ def test_upload_eml_no_file_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_eml` action with the authenticated owner user client."""
     mock_EMailModel_createFromEmailBytes = mocker.patch(
-        "api.v1.views.MailboxViewSet.EMailModel.createFromEmailBytes"
+        "api.v1.views.MailboxViewSet.EMailModel.createFromEmailBytes", autospec=True
     )
 
     assert EMailModel.objects.all().count() == 1
@@ -664,7 +670,7 @@ def test_upload_mailbox_noauth(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with an unauthenticated user client."""
     mock_MailboxModel_addFromMailboxFile = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile"
+        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile", autospec=True
     )
     fake_file_format = faker.word()
     fake_file_content = bytes(faker.sentence(5), encoding="utf-8")
@@ -693,7 +699,7 @@ def test_upload_mailbox_auth_other(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated other user client."""
     mock_MailboxModel_addFromMailboxFile = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile"
+        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile", autospec=True
     )
     fake_file_format = faker.word()
     fake_file_content = bytes(faker.sentence(5), encoding="utf-8")
@@ -722,7 +728,7 @@ def test_upload_mailbox_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
     mock_MailboxModel_addFromMailboxFile = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile"
+        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile", autospec=True
     )
     fake_file_format = faker.word()
     fake_file_content = bytes(faker.sentence(5), encoding="utf-8")
@@ -741,7 +747,7 @@ def test_upload_mailbox_auth_owner(
         response.data["mailbox"] == MailboxViewSet.serializer_class(mailboxModel).data
     )
     mock_MailboxModel_addFromMailboxFile.assert_called_once_with(
-        fake_file_content, fake_file_format
+        mailboxModel, fake_file_content, fake_file_format
     )
 
 
@@ -751,7 +757,7 @@ def test_upload_mailbox_no_file_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
     mock_MailboxModel_addFromMailboxFile = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile"
+        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile", autospec=True
     )
     fake_file_format = faker.word()
 
@@ -777,7 +783,7 @@ def test_upload_mailbox_no_format_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
     mock_MailboxModel_addFromMailboxFile = mocker.patch(
-        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile"
+        "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile", autospec=True
     )
     fake_file_content = bytes(faker.sentence(5), encoding="utf-8")
     fake_file = BytesIO(fake_file_content)
@@ -806,6 +812,7 @@ def test_upload_mailbox_bad_format_auth_owner(
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
     mock_MailboxModel_addFromMailboxFile = mocker.patch(
         "api.v1.views.MailboxViewSet.MailboxModel.addFromMailboxFile",
+        autospec=True,
         side_effect=ValueError,
     )
     fake_file_format = faker.word()
@@ -824,7 +831,7 @@ def test_upload_mailbox_bad_format_auth_owner(
 
     assert response.status_code == status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
     mock_MailboxModel_addFromMailboxFile.assert_called_once_with(
-        fake_file_content, fake_file_format
+        mailboxModel, fake_file_content, fake_file_format
     )
     assert EMailModel.objects.all().count() == 1
     with pytest.raises(KeyError):

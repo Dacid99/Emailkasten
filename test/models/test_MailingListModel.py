@@ -96,7 +96,9 @@ def test_MailingListModel_unique(mailingList):
 def test_MailingListModel_fromEmailMessage(mocker):
     emailMessage = EmailMessage()
     mock_getHeader = mocker.patch(
-        "core.models.MailingListModel.getHeader", return_value="list header"
+        "core.models.MailingListModel.getHeader",
+        autospec=True,
+        return_value="list header",
     )
 
     result = MailingListModel.fromEmailMessage(emailMessage)
@@ -127,7 +129,9 @@ def test_MailingListModel_fromEmailMessage(mocker):
 def test_fromEmailMessage_duplicate(mocker, mailingList) -> None:
     emailMessage = EmailMessage()
     mock_getHeader = mocker.patch(
-        "core.models.MailingListModel.getHeader", return_value=mailingList.list_id
+        "core.models.MailingListModel.getHeader",
+        autospec=True,
+        return_value=mailingList.list_id,
     )
 
     result = MailingListModel.fromEmailMessage(emailMessage)
@@ -140,7 +144,7 @@ def test_fromEmailMessage_duplicate(mocker, mailingList) -> None:
 def test_MailingListModel_fromEmailMessage_no_list_id(mocker, mock_logger):
     emailMessage = EmailMessage()
     mock_getHeader = mocker.patch(
-        "core.models.MailingListModel.getHeader", return_value=None
+        "core.models.MailingListModel.getHeader", autospec=True, return_value=None
     )
 
     result = MailingListModel.fromEmailMessage(emailMessage)

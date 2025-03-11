@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+import contextlib
+
 import pytest
 
+from core.EMailArchiverDaemon import EMailArchiverDaemon
 from core.EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
 
 from .models.test_DaemonModel import fixture_daemonModel
-import contextlib
 
 
 @pytest.fixture(name="mock_logger", autouse=True)
@@ -45,7 +47,8 @@ def fixture_mock_runningDaemon(mocker, daemon):
 def fixture_patch_EMailArchiverDaemon(mocker):
     return mocker.patch(
         "core.EMailArchiverDaemonRegistry.EMailArchiverDaemon",
-        return_value=mocker.Mock(),
+        autospec=True,
+        return_value=mocker.Mock(spec=EMailArchiverDaemon),
     )
 
 

@@ -180,13 +180,13 @@ def fixture_custom_detail_action_url() -> (
 @pytest.fixture(name="mock_os_remove", autouse=True)
 def fixture_mock_AttachmentModel_os_remove(mocker):
     """Patches os.remove in AttachmentModel to prevent errors."""
-    return mocker.patch("core.models.AttachmentModel.os.remove")
+    return mocker.patch("core.models.AttachmentModel.os.remove", autospec=True)
 
 
 @pytest.fixture(name="mock_os_remove", autouse=True)
 def fixture_mock_EMailModel_os_remove(mocker):
     """Patches os.remove in EMailModel to prevent errors."""
-    return mocker.patch("core.models.EMailModel.os.remove")
+    return mocker.patch("core.models.EMailModel.os.remove", autospec=True)
 
 
 @pytest.fixture(name="accountModel", autouse=True)

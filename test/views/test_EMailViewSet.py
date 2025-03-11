@@ -285,7 +285,7 @@ def test_download_noauth(
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with an unauthenticated user client."""
     mock_open = mocker.patch("api.v1.views.EMailViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.EMailViewSet.os.path.exists", return_value=False
+        "api.v1.views.EMailViewSet.os.path.exists", autospec=True, return_value=False
     )
 
     response = noauth_apiClient.get(
@@ -306,7 +306,7 @@ def test_download_auth_other(
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated other user client."""
     mock_open = mocker.patch("api.v1.views.EMailViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.EMailViewSet.os.path.exists", return_value=False
+        "api.v1.views.EMailViewSet.os.path.exists", autospec=True, return_value=False
     )
 
     response = other_apiClient.get(
@@ -327,7 +327,7 @@ def test_download_no_file_auth_owner(
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated owner user client."""
     mock_open = mocker.patch("api.v1.views.EMailViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.EMailViewSet.os.path.exists", return_value=False
+        "api.v1.views.EMailViewSet.os.path.exists", autospec=True, return_value=False
     )
 
     response = owner_apiClient.get(
@@ -350,7 +350,7 @@ def test_download_auth_owner(
     mock_open = mocker.mock_open(read_data=mockedFileContent)
     mocker.patch("api.v1.views.EMailViewSet.open", mock_open)
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.EMailViewSet.os.path.exists", return_value=True
+        "api.v1.views.EMailViewSet.os.path.exists", autospec=True, return_value=True
     )
 
     response = owner_apiClient.get(
@@ -377,7 +377,7 @@ def test_prerender_noauth(
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.prerender` action with an unauthenticated user client."""
     mock_open = mocker.patch("api.v1.views.EMailViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.EMailViewSet.os.path.exists", return_value=True
+        "api.v1.views.EMailViewSet.os.path.exists", autospec=True, return_value=True
     )
 
     response = noauth_apiClient.get(
@@ -398,7 +398,7 @@ def test_prerender_auth_other(
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.prerender` action with the authenticated other user client."""
     mock_open = mocker.patch("api.v1.views.EMailViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.EMailViewSet.os.path.exists", return_value=True
+        "api.v1.views.EMailViewSet.os.path.exists", autospec=True, return_value=True
     )
 
     response = other_apiClient.get(
@@ -419,7 +419,7 @@ def test_prerender_no_file_auth_owner(
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.prerender` action with the authenticated owner user client."""
     mock_open = mocker.patch("api.v1.views.EMailViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.EMailViewSet.os.path.exists", return_value=False
+        "api.v1.views.EMailViewSet.os.path.exists", autospec=True, return_value=False
     )
 
     response = owner_apiClient.get(
@@ -442,7 +442,7 @@ def test_prerender_auth_owner(
     mock_open = mocker.mock_open(read_data=mockedFileContent)
     mocker.patch("api.v1.views.EMailViewSet.open", mock_open)
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.EMailViewSet.os.path.exists", return_value=True
+        "api.v1.views.EMailViewSet.os.path.exists", autospec=True, return_value=True
     )
 
     response = owner_apiClient.get(
@@ -468,7 +468,7 @@ def test_subConversation_noauth(
 ):
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with an unauthenticated user client."""
     mock_subConversation = mocker.patch(
-        "api.v1.views.EMailViewSet.EMailModel.subConversation"
+        "api.v1.views.EMailViewSet.EMailModel.subConversation", autospec=True
     )
 
     response = noauth_apiClient.get(
@@ -487,7 +487,7 @@ def test_subConversation_auth_other(
 ):
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated other user client."""
     mock_subConversation = mocker.patch(
-        "api.v1.views.EMailViewSet.EMailModel.subConversation"
+        "api.v1.views.EMailViewSet.EMailModel.subConversation", autospec=True
     )
 
     response = other_apiClient.get(
@@ -507,6 +507,7 @@ def test_subConversation_auth_owner(
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated owner user client."""
     mock_subConversation = mocker.patch(
         "api.v1.views.EMailViewSet.EMailModel.subConversation",
+        autospec=True,
         return_value=[emailModel],
     )
 
@@ -519,7 +520,7 @@ def test_subConversation_auth_owner(
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data["emails"]) == 1
     assert response.data["emails"][0]["id"] == emailModel.id
-    mock_subConversation.assert_called_once_with()
+    mock_subConversation.assert_called_once_with(emailModel)
 
 
 @pytest.mark.django_db
@@ -528,7 +529,7 @@ def test_fullConversation_noauth(
 ):
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with an unauthenticated user client."""
     mock_fullConversation = mocker.patch(
-        "api.v1.views.EMailViewSet.EMailModel.fullConversation"
+        "api.v1.views.EMailViewSet.EMailModel.fullConversation", autospec=True
     )
 
     response = noauth_apiClient.get(
@@ -547,7 +548,7 @@ def test_fullConversation_auth_other(
 ):
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated other user client."""
     mock_fullConversation = mocker.patch(
-        "api.v1.views.EMailViewSet.EMailModel.fullConversation"
+        "api.v1.views.EMailViewSet.EMailModel.fullConversation", autospec=True
     )
 
     response = other_apiClient.get(
@@ -567,6 +568,7 @@ def test_fullConversation_auth_owner(
     """Tests the get method :func:`api.v1.views.EMailViewSet.EMailViewSet.download` action with the authenticated owner user client."""
     mock_fullConversation = mocker.patch(
         "api.v1.views.EMailViewSet.EMailModel.fullConversation",
+        autospec=True,
         return_value=[emailModel],
     )
 
@@ -579,7 +581,7 @@ def test_fullConversation_auth_owner(
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data["emails"]) == 1
     assert response.data["emails"][0]["id"] == emailModel.id
-    mock_fullConversation.assert_called_once_with()
+    mock_fullConversation.assert_called_once_with(emailModel)
 
 
 @pytest.mark.django_db

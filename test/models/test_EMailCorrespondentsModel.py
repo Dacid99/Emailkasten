@@ -103,6 +103,7 @@ def test_createFromHeader_success(mocker, faker, email):
     fake_CorrespondentModel = CorrespondentModel(email_address=faker.email())
     mock_CorrespondentModel_fromHeader = mocker.patch(
         "core.models.EMailCorrespondentsModel.CorrespondentModel.fromHeader",
+        autospec=True,
         return_value=fake_CorrespondentModel,
     )
     fake_header = faker.words(3)
@@ -126,6 +127,7 @@ def test_createFromHeader_success(mocker, faker, email):
 def test_createFromHeader_no_correspondent(mocker, faker, email):
     mock_CorrespondentModel_fromHeader = mocker.patch(
         "core.models.EMailCorrespondentsModel.CorrespondentModel.fromHeader",
+        autospec=True,
         return_value=None,
     )
     fake_header = faker.words(3)
@@ -144,6 +146,7 @@ def test_createFromHeader_no_email(mocker, faker):
     fake_CorrespondentModel = CorrespondentModel(email_address=faker.email())
     mock_CorrespondentModel_fromHeader = mocker.patch(
         "core.models.EMailCorrespondentsModel.CorrespondentModel.fromHeader",
+        autospec=True,
         return_value=fake_CorrespondentModel,
     )
     fake_header = faker.words(3)

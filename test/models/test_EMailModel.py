@@ -47,7 +47,7 @@ def fixture_mock_logger(mocker):
 
 @pytest.fixture(name="mock_os_remove", autouse=True)
 def fixture_mock_os_remove(mocker):
-    return mocker.patch("core.models.EMailModel.os.remove")
+    return mocker.patch("core.models.EMailModel.os.remove", autospec=True)
 
 
 @pytest.fixture(name="email")
@@ -230,7 +230,9 @@ def test_delete_email_delete_error(mocker, faker, mock_logger, email, mock_os_re
     if delete throws an exception.
     """
     mock_delete = mocker.patch(
-        "core.models.EMailModel.models.Model.delete", side_effect=AssertionError
+        "core.models.EMailModel.models.Model.delete",
+        autospec=True,
+        side_effect=AssertionError,
     )
     email.eml_filepath = faker.file_path(extension="eml")
     email.prerender_filepath = faker.file_path(extension="png")
@@ -245,41 +247,61 @@ def test_delete_email_delete_error(mocker, faker, mock_logger, email, mock_os_re
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("save_to_eml, expectedCalls", [(True, 1), (False, 0)])
-def test_save_data_settings(mocker, email, save_to_eml, expectedCalls):
-    mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
+@pytest.mark.parametrize("save_to_eml, expectedCall", [(True, 1), (False, 0)])
+def test_save_data_settings(mocker, email, save_to_eml, expectedCall):
+    mock_super_save = mocker.patch(
+        "core.models.EMailModel.models.Model.save", autospec=True
+    )
     mock_save_to_storage = mocker.patch(
-        "core.models.EMailModel.EMailModel.save_to_storage"
+        "core.models.EMailModel.EMailModel.save_to_storage", autospec=True
+    )
+    mock_EMailModel_render_to_storage = mocker.patch(
+        "core.models.EMailModel.EMailModel.render_to_storage", autospec=True
     )
     mock_data = mocker.MagicMock(spec=Message)
     email.mailbox.save_toEML = save_to_eml
 
-    email.save(attachmentData=mock_data)
+    email.save(emailData=mock_data)
 
-    assert mock_save_to_storage.call_count == expectedCalls
     mock_super_save.assert_called()
+    assert mock_save_to_storage.call_count == expectedCall
+    if expectedCall:
+        mock_save_to_storage.assert_called_with(email, mock_data)
+    mock_EMailModel_render_to_storage.assert_called_once_with(email, mock_data)
 
 
 @pytest.mark.django_db
 def test_save_no_data(mocker, email):
-    mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
+    mock_super_save = mocker.patch(
+        "core.models.EMailModel.models.Model.save", autospec=True
+    )
     mock_save_to_storage = mocker.patch(
-        "core.models.EMailModel.EMailModel.save_to_storage"
+        "core.models.EMailModel.EMailModel.save_to_storage", autospec=True
+    )
+    mock_EMailModel_render_to_storage = mocker.patch(
+        "core.models.EMailModel.EMailModel.render_to_storage", autospec=True
     )
     email.mailbox.save_toEML = True
 
     email.save()
 
-    mock_super_save.assert_called_once_with()
+    mock_super_save.assert_called_once_with(email)
     mock_save_to_storage.assert_not_called()
+    mock_EMailModel_render_to_storage.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_save_data_failure(mocker, email):
-    mock_super_save = mocker.patch("core.models.EMailModel.models.Model.save")
+    mock_super_save = mocker.patch(
+        "core.models.EMailModel.models.Model.save", autospec=True
+    )
     mock_save_to_storage = mocker.patch(
         "core.models.EMailModel.EMailModel.save_to_storage",
+        autospec=True,
         side_effect=AssertionError,
+    )
+    mock_EMailModel_render_to_storage = mocker.patch(
+        "core.models.EMailModel.EMailModel.render_to_storage", autospec=True
     )
     mock_data = mocker.MagicMock(spec=Message)
     email.mailbox.save_toEML = True
@@ -350,13 +372,13 @@ def test_EMailModel_createFromEmailBytes_success(
     header_count,
 ) -> None:
     mock_EMailModel_save_to_storage = mocker.patch(
-        "core.models.EMailModel.EMailModel.save_to_storage"
+        "core.models.EMailModel.EMailModel.save_to_storage", autospec=True
     )
     mock_EMailModel_render_to_storage = mocker.patch(
-        "core.models.EMailModel.EMailModel.render_to_storage"
+        "core.models.EMailModel.EMailModel.render_to_storage", autospec=True
     )
     mock_AttachmentModel_save_to_storage = mocker.patch(
-        "core.models.EMailModel.AttachmentModel.save_to_storage"
+        "core.models.EMailModel.AttachmentModel.save_to_storage", autospec=True
     )
 
     with override_config(THROW_OUT_SPAM=False):
@@ -388,13 +410,13 @@ def test_EMailModel_createFromEmailBytes_duplicate(
     mocker, override_config, mock_logger, email
 ) -> None:
     mock_EMailModel_save_to_storage = mocker.patch(
-        "core.models.EMailModel.EMailModel.save_to_storage"
+        "core.models.EMailModel.EMailModel.save_to_storage", autospec=True
     )
     mock_EMailModel_render_to_storage = mocker.patch(
-        "core.models.EMailModel.EMailModel.render_to_storage"
+        "core.models.EMailModel.EMailModel.render_to_storage", autospec=True
     )
     mock_AttachmentModel_save_to_storage = mocker.patch(
-        "core.models.EMailModel.AttachmentModel.save_to_storage"
+        "core.models.EMailModel.AttachmentModel.save_to_storage", autospec=True
     )
 
     with override_config(THROW_OUT_SPAM=False):
@@ -432,9 +454,11 @@ def test_EMailModel_createFromEmailBytes_spam(
     THROW_OUT_SPAM,
     expected_isNone,
 ) -> None:
-    mocker.patch("core.models.EMailModel.EMailModel.save_to_storage")
-    mocker.patch("core.models.EMailModel.EMailModel.render_to_storage")
-    mocker.patch("core.models.EMailModel.AttachmentModel.save_to_storage")
+    mocker.patch("core.models.EMailModel.EMailModel.save_to_storage", autospec=True)
+    mocker.patch("core.models.EMailModel.EMailModel.render_to_storage", autospec=True)
+    mocker.patch(
+        "core.models.EMailModel.AttachmentModel.save_to_storage", autospec=True
+    )
 
     with override_config(THROW_OUT_SPAM=THROW_OUT_SPAM):
         result = EMailModel.createFromEmailBytes(
@@ -454,7 +478,9 @@ def test_EMailModel_createFromEmailBytes_dberror(
     mocker, override_config, mock_logger, mailbox
 ) -> None:
     mock_EMailModel_save = mocker.patch(
-        "core.models.EMailModel.EMailModel.save", side_effect=IntegrityError
+        "core.models.EMailModel.EMailModel.save",
+        autospec=True,
+        side_effect=IntegrityError,
     )
 
     with override_config(THROW_OUT_SPAM=False):

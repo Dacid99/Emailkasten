@@ -35,7 +35,8 @@ def fixture_mock_logger(mocker):
 def test_pre_delete_stop_daemon(mocker, mock_logger, daemon):
     """Tests :func:`core.signals.deleteDaemonModel.pre_delete_stop_daemon`."""
     mock_EMailArchiverDaemon_stopDaemon = mocker.patch(
-        "core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.stopDaemon"
+        "core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.stopDaemon",
+        autospec=True,
     )
 
     daemon.delete()

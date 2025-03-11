@@ -41,7 +41,7 @@ def fixture_mock_logger(mocker):
 
 @pytest.fixture(name="mock_os_remove", autouse=True)
 def fixture_mock_os_remove(mocker):
-    return mocker.patch("core.models.AttachmentModel.os.remove")
+    return mocker.patch("core.models.AttachmentModel.os.remove", autospec=True)
 
 
 @pytest.fixture(name="attachment")
@@ -148,14 +148,17 @@ def test_delete_attachmentfile_failure(
 
 
 @pytest.mark.django_db
-def test_delete_attachmentfile_delete_error(mocker, mock_logger, attachment):
+def test_delete_attachmentfile_delete_error(
+    mocker, mock_logger, mock_os_remove, attachment
+):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.delete`
     if delete throws an exception.
     """
     mock_delete = mocker.patch(
-        "core.models.AttachmentModel.models.Model.delete", side_effect=ValueError
+        "core.models.AttachmentModel.models.Model.delete",
+        autospec=True,
+        side_effect=ValueError,
     )
-    mock_os_remove = mocker.patch("core.models.AttachmentModel.os.remove")
 
     with pytest.raises(ValueError):
         attachment.delete()
@@ -168,9 +171,11 @@ def test_delete_attachmentfile_delete_error(mocker, mock_logger, attachment):
 @pytest.mark.django_db
 @pytest.mark.parametrize("save_attachments, expectedCalls", [(True, 1), (False, 0)])
 def test_save_data_settings(mocker, attachment, save_attachments, expectedCalls):
-    mock_super_save = mocker.patch("core.models.AttachmentModel.models.Model.save")
+    mock_super_save = mocker.patch(
+        "core.models.AttachmentModel.models.Model.save", autospec=True
+    )
     mock_save_to_storage = mocker.patch(
-        "core.models.AttachmentModel.AttachmentModel.save_to_storage"
+        "core.models.AttachmentModel.AttachmentModel.save_to_storage", autospec=True
     )
     attachment.email.mailbox.save_attachments = save_attachments
     mock_data = mocker.MagicMock(spec=Message)
@@ -183,23 +188,28 @@ def test_save_data_settings(mocker, attachment, save_attachments, expectedCalls)
 
 @pytest.mark.django_db
 def test_save_no_data(mocker, attachment):
-    mock_super_save = mocker.patch("core.models.AttachmentModel.models.Model.save")
+    mock_super_save = mocker.patch(
+        "core.models.AttachmentModel.models.Model.save", autospec=True
+    )
     mock_save_to_storage = mocker.patch(
-        "core.models.AttachmentModel.AttachmentModel.save_to_storage"
+        "core.models.AttachmentModel.AttachmentModel.save_to_storage", autospec=True
     )
     attachment.email.mailbox.save_attachments = True
 
     attachment.save()
 
-    mock_super_save.assert_called_once_with()
+    mock_super_save.assert_called_once_with(attachment)
     mock_save_to_storage.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_save_data_failure(mocker, attachment):
-    mock_super_save = mocker.patch("core.models.AttachmentModel.models.Model.save")
+    mock_super_save = mocker.patch(
+        "core.models.AttachmentModel.models.Model.save", autospec=True
+    )
     mock_save_to_storage = mocker.patch(
         "core.models.AttachmentModel.AttachmentModel.save_to_storage",
+        autospec=True,
         side_effect=AssertionError,
     )
     attachment.email.mailbox.save_attachments = True

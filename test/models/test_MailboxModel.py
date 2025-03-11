@@ -144,7 +144,9 @@ def test_MailboxModel_getAvailableFetchingCriteria(
 
 @pytest.mark.django_db
 def test_test_connection_success(mocker, mock_logger, mailbox):
-    mock_get_fetcher = mocker.patch("core.models.AccountModel.AccountModel.get_fetcher")
+    mock_get_fetcher = mocker.patch(
+        "core.models.AccountModel.AccountModel.get_fetcher", autospec=True
+    )
     mock_fetcher_test = mock_get_fetcher.return_value.__enter__.return_value.test
     mailbox.is_healthy = False
     mailbox.save(update_fields=["is_healthy"])
@@ -153,7 +155,7 @@ def test_test_connection_success(mocker, mock_logger, mailbox):
 
     mailbox.refresh_from_db()
     assert mailbox.is_healthy is True
-    mock_get_fetcher.assert_called_once_with()
+    mock_get_fetcher.assert_called_once_with(mailbox.account)
     mock_fetcher_test.assert_called_once_with(mailbox)
     mock_logger.info.assert_called()
     mock_logger.error.assert_not_called()
@@ -162,14 +164,16 @@ def test_test_connection_success(mocker, mock_logger, mailbox):
 @pytest.mark.django_db
 def test_test_connection_badProtocol(mocker, mock_logger, mailbox) -> None:
     mock_get_fetcher = mocker.patch(
-        "core.models.AccountModel.AccountModel.get_fetcher", side_effect=ValueError
+        "core.models.AccountModel.AccountModel.get_fetcher",
+        autospec=True,
+        side_effect=ValueError,
     )
     mock_fetcher_test = mock_get_fetcher.return_value.__enter__.return_value.test
 
     with pytest.raises(ValueError):
         mailbox.test_connection()
 
-    mock_get_fetcher.assert_called_once_with()
+    mock_get_fetcher.assert_called_once_with(mailbox.account)
     mock_fetcher_test.assert_not_called()
     mock_logger.info.assert_called()
 
@@ -179,7 +183,9 @@ def test_test_connection_badProtocol(mocker, mock_logger, mailbox) -> None:
 def test_test_connection_failure(
     mocker, mock_logger, mailbox, test_side_effect
 ) -> None:
-    mock_get_fetcher = mocker.patch("core.models.AccountModel.AccountModel.get_fetcher")
+    mock_get_fetcher = mocker.patch(
+        "core.models.AccountModel.AccountModel.get_fetcher", autospec=True
+    )
     mock_fetcher_test = mock_get_fetcher.return_value.__enter__.return_value.test
     mock_fetcher_test.side_effect = test_side_effect
     mailbox.is_healthy = True
@@ -192,7 +198,7 @@ def test_test_connection_failure(
         assert mailbox.is_healthy is False
     elif test_side_effect == MailAccountError:
         assert mailbox.account.is_healthy is False
-    mock_get_fetcher.assert_called_once_with()
+    mock_get_fetcher.assert_called_once_with(mailbox.account)
     mock_fetcher_test.assert_called_once_with(mailbox)
     mock_logger.info.assert_called()
 
@@ -201,6 +207,7 @@ def test_test_connection_failure(
 def test_test_connection_get_fetcher_error(mocker, mock_logger, mailbox) -> None:
     mock_get_fetcher = mocker.patch(
         "core.models.AccountModel.AccountModel.get_fetcher",
+        autospec=True,
         side_effect=MailAccountError,
     )
     mock_fetcher_test = mock_get_fetcher.return_value.__enter__.return_value.test
@@ -211,20 +218,22 @@ def test_test_connection_get_fetcher_error(mocker, mock_logger, mailbox) -> None
         mailbox.test_connection()
 
     assert mailbox.account.is_healthy is False
-    mock_get_fetcher.assert_called_once_with()
+    mock_get_fetcher.assert_called_once_with(mailbox.account)
     mock_fetcher_test.assert_not_called()
     mock_logger.info.assert_called()
 
 
 @pytest.mark.django_db
 def test_fetch_success(mocker, mock_logger, mailbox):
-    mock_get_fetcher = mocker.patch("core.models.AccountModel.AccountModel.get_fetcher")
+    mock_get_fetcher = mocker.patch(
+        "core.models.AccountModel.AccountModel.get_fetcher", autospec=True
+    )
     mock_fetcher_fetchEmails = (
         mock_get_fetcher.return_value.__enter__.return_value.fetchEmails
     )
     mock_fetcher_fetchEmails.return_value = [b"123", b"567", b"098", b"112233"]
     mock_EMailModel_createFromBytes = mocker.patch(
-        "core.models.MailboxModel.EMailModel.createFromEmailBytes"
+        "core.models.MailboxModel.EMailModel.createFromEmailBytes", autospec=True
     )
     mailbox.is_healthy = False
     mailbox.save(update_fields=["is_healthy"])
@@ -243,14 +252,14 @@ def test_fetch_success(mocker, mock_logger, mailbox):
 def test_fetch_failure(mocker, faker, mock_logger, mailbox) -> None:
     fake_criterion = faker.word()
     mock_get_fetcher = mocker.patch(
-        "core.models.AccountModel.AccountModel.get_fetcher",
+        "core.models.AccountModel.AccountModel.get_fetcher", autospec=True
     )
     mock_fetcher_fetchEmails = (
         mock_get_fetcher.return_value.__enter__.return_value.fetchEmails
     )
     mock_fetcher_fetchEmails.side_effect = MailboxError
     mock_EMailModel_createFromBytes = mocker.patch(
-        "core.models.MailboxModel.EMailModel.createFromEmailBytes"
+        "core.models.MailboxModel.EMailModel.createFromEmailBytes", autospec=True
     )
     mailbox.is_healthy = True
     mailbox.save(update_fields=["is_healthy"])
@@ -270,6 +279,7 @@ def test_fetch_failure(mocker, faker, mock_logger, mailbox) -> None:
 def test_fetch_get_fetcher_error(mocker, mock_logger, mailbox) -> None:
     mock_get_fetcher = mocker.patch(
         "core.models.AccountModel.AccountModel.get_fetcher",
+        autospec=True,
         side_effect=MailAccountError,
     )
     mock_fetcher_fetchEmails = (
@@ -277,7 +287,7 @@ def test_fetch_get_fetcher_error(mocker, mock_logger, mailbox) -> None:
     )
     mock_fetcher_fetchEmails.return_value = [b"123", b"567", b"098", b"112233"]
     mock_EMailModel_createFromBytes = mocker.patch(
-        "core.models.MailboxModel.EMailModel.createFromEmailBytes"
+        "core.models.MailboxModel.EMailModel.createFromEmailBytes", autospec=True
     )
     mailbox.is_healthy = True
     mailbox.save(update_fields=["is_healthy"])
@@ -312,10 +322,12 @@ def test_addFromMailboxFile_success(
     mock_parser = mocker.Mock()
     mock_parser.iterkeys.return_value = ["key1", "second key"]
     mock_parser_class = mocker.patch(
-        f"core.models.MailboxModel.{expectedClass}", return_value=mock_parser
+        f"core.models.MailboxModel.{expectedClass}",
+        autospec=True,
+        return_value=mock_parser,
     )
     mock_EMailModel_createFromEmailBytes = mocker.patch(
-        "core.models.MailboxModel.EMailModel.createFromEmailBytes"
+        "core.models.MailboxModel.EMailModel.createFromEmailBytes", autospec=True
     )
     fake_mailbox_file = bytes(faker.sentence(7), encoding="utf-8")
 
@@ -346,7 +358,7 @@ def test_addFromMailboxFile_bad_format(
     mock_open = mocker.mock_open()
     mocker.patch("core.models.MailboxModel.open", mock_open)
     mock_EMailModel_createFromEmailBytes = mocker.patch(
-        "core.models.EMailModel.EMailModel.createFromEmailBytes"
+        "core.models.EMailModel.EMailModel.createFromEmailBytes", autospec=True
     )
     fake_mbox = bytes(faker.sentence(7), encoding="utf-8")
 
@@ -362,7 +374,9 @@ def test_addFromMailboxFile_bad_format(
 
 def test_fromData(mocker):
     mock_parseMailboxName = mocker.patch(
-        "core.models.MailboxModel.parseMailboxName", return_value="testname"
+        "core.models.MailboxModel.parseMailboxName",
+        autospec=True,
+        return_value="testname",
     )
 
     new_mailbox = MailboxModel.fromData("mailboxData", None)

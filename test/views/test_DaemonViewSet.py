@@ -280,6 +280,7 @@ def test_fetching_options_noauth(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.fetching_options` action with an unauthenticated user client."""
     mocker.patch(
         "core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria",
+        autospec=True,
         return_value=["ALL"],
     )
 
@@ -299,6 +300,7 @@ def test_fetching_options_auth_other(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.fetching_options` action with the authenticated other user client."""
     mocker.patch(
         "core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria",
+        autospec=True,
         return_value=["ALL"],
     )
 
@@ -319,6 +321,7 @@ def test_fetching_options_auth_owner(
     mock_fetchingCriteria = ["ALL", "RECENT"]
     mocker.patch(
         "core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria",
+        autospec=True,
         return_value=mock_fetchingCriteria,
     )
 
@@ -337,6 +340,7 @@ def test_test_noauth(mocker, daemonModel, noauth_apiClient, custom_detail_action
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.test` action with an unauthenticated user client."""
     mock_testDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.testDaemon",
+        autospec=True,
         return_value=True,
     )
 
@@ -359,6 +363,7 @@ def test_test_auth_other(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.test` action with the authenticated other user client."""
     mock_testDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.testDaemon",
+        autospec=True,
         return_value=True,
     )
 
@@ -381,6 +386,7 @@ def test_test_success_auth_owner(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.test` action with the authenticated owner user client."""
     mock_testDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.testDaemon",
+        autospec=True,
         return_value=True,
     )
 
@@ -403,6 +409,7 @@ def test_test_failure_auth_owner(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.test` action with the authenticated owner user client."""
     mock_testDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.testDaemon",
+        autospec=True,
         return_value=False,
     )
 
@@ -423,6 +430,7 @@ def test_start_noauth(mocker, daemonModel, noauth_apiClient, custom_detail_actio
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.start` action with an unauthenticated user client."""
     mock_startDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.startDaemon",
+        autospec=True,
         return_value=True,
     )
 
@@ -445,6 +453,7 @@ def test_start_auth_other(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.start` action with the authenticated other user client."""
     mock_startDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.startDaemon",
+        autospec=True,
         return_value=True,
     )
 
@@ -467,6 +476,7 @@ def test_start_success_auth_owner(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.start` action with the authenticated owner user client."""
     mock_startDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.startDaemon",
+        autospec=True,
         return_value=True,
     )
 
@@ -488,6 +498,7 @@ def test_start_failure_auth_owner(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.start` action with the authenticated owner user client."""
     mock_startDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.startDaemon",
+        autospec=True,
         return_value=False,
     )
 
@@ -507,6 +518,7 @@ def test_stop_noauth(mocker, daemonModel, noauth_apiClient, custom_detail_action
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.stop` action with an unauthenticated user client."""
     mock_stopDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.stopDaemon",
+        autospec=True,
         return_value=True,
     )
 
@@ -529,6 +541,7 @@ def test_stop_auth_other(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.stop` action with the authenticated other user client."""
     mock_stopDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.stopDaemon",
+        autospec=True,
         return_value=True,
     )
 
@@ -551,6 +564,7 @@ def test_stop_success_auth_owner(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.stop` action with the authenticated owner user client."""
     mock_stopDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.stopDaemon",
+        autospec=True,
         return_value=True,
     )
 
@@ -572,6 +586,7 @@ def test_stop_failure_auth_owner(
     """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.stop` action with the authenticated owner user client."""
     mock_stopDaemon = mocker.patch(
         "api.v1.views.DaemonViewSet.EMailArchiverDaemonRegistry.stopDaemon",
+        autospec=True,
         return_value=False,
     )
 
@@ -593,7 +608,7 @@ def test_download_noauth(
     """Tests the get method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.log_download` action with an unauthenticated user client."""
     mock_open = mocker.patch("api.v1.views.DaemonViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.DaemonViewSet.os.path.exists", return_value=True
+        "api.v1.views.DaemonViewSet.os.path.exists", autospec=True, return_value=True
     )
 
     response = noauth_apiClient.get(
@@ -614,7 +629,7 @@ def test_download_auth_other(
     """Tests the get method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.log_download` action with the authenticated other user client."""
     mock_open = mocker.patch("api.v1.views.DaemonViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.DaemonViewSet.os.path.exists", return_value=True
+        "api.v1.views.DaemonViewSet.os.path.exists", autospec=True, return_value=True
     )
 
     response = other_apiClient.get(
@@ -635,7 +650,7 @@ def test_download_no_file_auth_owner(
     """Tests the get method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.log_download` action with the authenticated owner user client."""
     mock_open = mocker.patch("api.v1.views.DaemonViewSet.open")
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.DaemonViewSet.os.path.exists", return_value=False
+        "api.v1.views.DaemonViewSet.os.path.exists", autospec=True, return_value=False
     )
 
     response = owner_apiClient.get(
@@ -658,7 +673,7 @@ def test_download_auth_owner(
     mock_open = mocker.mock_open(read_data=mockedFileContent)
     mocker.patch("api.v1.views.DaemonViewSet.open", mock_open)
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.DaemonViewSet.os.path.exists", return_value=True
+        "api.v1.views.DaemonViewSet.os.path.exists", autospec=True, return_value=True
     )
 
     response = owner_apiClient.get(
@@ -695,7 +710,7 @@ def test_download_auth_owner_numberquery(
     mock_open = mocker.mock_open(read_data=mockedFileContent)
     mocker.patch("api.v1.views.DaemonViewSet.open", mock_open)
     mock_os_path_exists = mocker.patch(
-        "api.v1.views.DaemonViewSet.os.path.exists", return_value=True
+        "api.v1.views.DaemonViewSet.os.path.exists", autospec=True, return_value=True
     )
     expected_log_filepath = daemonModel.log_filepath + expected_suffix
 

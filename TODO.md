@@ -21,12 +21,11 @@
 - replace daemons with celery
 - rework test:
   - consistent naming
-  - more autouse
-  - more autospec
   - unify model fixtures
-  - sort args
-  - AssertionErrors for injected side_effects
-  - no pytest.raises(Exception)
+  - consistent mock_open
+  - coverage fix
+  - extract often used fixtures
+  - replace bad return_value constructions with actual mock
 
 ### Work in progress
 
