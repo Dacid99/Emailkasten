@@ -76,7 +76,7 @@ def test_email_subject_filter(
 
 
 @pytest.mark.django_db
-@pytest.mark.pplain_bodytextze(
+@pytest.mark.parametrize(
     "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
 )
 def test_plain_bodytext_filter(
@@ -93,7 +93,7 @@ def test_plain_bodytext_filter(
 
 
 @pytest.mark.django_db
-@pytest.mark.pplain_bodytextze(
+@pytest.mark.parametrize(
     "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
 )
 def test_html_bodytext_filter(

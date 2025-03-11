@@ -327,130 +327,143 @@ DATETIME_TEST_PARAMETERS = [
 ]
 
 
-@pytest.fixture(name="account_queryset")
-def fixture_account_queryset():
-    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                AccountModel,
-                mail_address=text_test_item,
-                mail_host=text_test_item,
-                mail_host_port=INT_TEST_ITEMS[number],
-                timeout=FLOAT_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number],
-                is_healthy=BOOL_TEST_ITEMS[number],
-            )
+@pytest.fixture(name="account_queryset", scope="module")
+def fixture_account_queryset(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
+            with freeze_time(DATETIME_TEST_ITEMS[number]):
+                baker.make(
+                    AccountModel,
+                    mail_address=text_test_item,
+                    mail_host=text_test_item,
+                    mail_host_port=INT_TEST_ITEMS[number],
+                    timeout=FLOAT_TEST_ITEMS[number],
+                    is_favorite=BOOL_TEST_ITEMS[number],
+                    is_healthy=BOOL_TEST_ITEMS[number],
+                )
 
-    return AccountModel.objects.all()
-
-
-@pytest.fixture(name="mailbox_queryset")
-def fixture_mailbox_queryset(account_queryset):
-    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                MailboxModel,
-                name=text_test_item,
-                save_toEML=BOOL_TEST_ITEMS[number],
-                save_attachments=BOOL_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number],
-                is_healthy=BOOL_TEST_ITEMS[number],
-                account=account_queryset.get(id=number + 1),
-            )
-
-    return MailboxModel.objects.all()
+        return AccountModel.objects.all()
 
 
-@pytest.fixture(name="daemon_queryset")
-def fixture_daemon_queryset(faker, mailbox_queryset):
-    for number, int_test_item in enumerate(INT_TEST_ITEMS):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                DaemonModel,
-                cycle_interval=int_test_item,
-                is_running=BOOL_TEST_ITEMS[number],
-                is_healthy=BOOL_TEST_ITEMS[number],
-                mailbox=mailbox_queryset.get(id=number + 1),
-                log_filepath=faker.file_path(),
-            )
+@pytest.fixture(name="mailbox_queryset", scope="module")
+def fixture_mailbox_queryset(django_db_setup, django_db_blocker, account_queryset):
+    with django_db_blocker.unblock():
+        for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
+            with freeze_time(DATETIME_TEST_ITEMS[number]):
+                baker.make(
+                    MailboxModel,
+                    name=text_test_item,
+                    save_toEML=BOOL_TEST_ITEMS[number],
+                    save_attachments=BOOL_TEST_ITEMS[number],
+                    is_favorite=BOOL_TEST_ITEMS[number],
+                    is_healthy=BOOL_TEST_ITEMS[number],
+                    account=account_queryset.get(id=number + 1),
+                )
 
-    return DaemonModel.objects.all()
-
-
-@pytest.fixture(name="correspondent_queryset")
-def fixture_correspondent_queryset():
-    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                CorrespondentModel,
-                email_name=text_test_item,
-                email_address=text_test_item,
-                is_favorite=BOOL_TEST_ITEMS[number],
-            )
-
-    return CorrespondentModel.objects.all()
+        return MailboxModel.objects.all()
 
 
-@pytest.fixture(name="mailinglist_queryset")
-def fixture_mailinglist_queryset():
-    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                MailingListModel,
-                list_id=text_test_item,
-                list_owner=text_test_item,
-                list_subscribe=text_test_item,
-                list_unsubscribe=text_test_item,
-                list_post=text_test_item,
-                list_help=text_test_item,
-                list_archive=text_test_item,
-                is_favorite=BOOL_TEST_ITEMS[number],
-            )
-
-    return MailingListModel.objects.all()
-
-
-@pytest.fixture(name="email_queryset")
-def fixture_email_queryset(
-    mailbox_queryset, correspondent_queryset, mailinglist_queryset
+@pytest.fixture(name="daemon_queryset", scope="module")
+def fixture_daemon_queryset(
+    faker, django_db_setup, django_db_blocker, mailbox_queryset
 ):
-    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            new_email = baker.make(
-                EMailModel,
-                message_id=text_test_item,
-                datetime=datetime.datetime.now(tz=datetime.datetime.UTC),
-                email_subject=text_test_item,
-                plain_bodytext=text_test_item,
-                html_bodytext=text_test_item,
-                datasize=INT_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number],
-                mailbox=mailbox_queryset.get(id=number + 1),
-                mailinglist=mailinglist_queryset.get(id=number + 1),
-                x_spam=text_test_item,
-            )
-            baker.make(
-                EMailCorrespondentsModel,
-                email=new_email,
-                correspondent=correspondent_queryset.get(id=number + 1),
-            )
+    with django_db_blocker.unblock():
+        for number, int_test_item in enumerate(INT_TEST_ITEMS):
+            with freeze_time(DATETIME_TEST_ITEMS[number]):
+                baker.make(
+                    DaemonModel,
+                    cycle_interval=int_test_item,
+                    is_running=BOOL_TEST_ITEMS[number],
+                    is_healthy=BOOL_TEST_ITEMS[number],
+                    mailbox=mailbox_queryset.get(id=number + 1),
+                    log_filepath=faker.file_path(),
+                )
 
-    return EMailModel.objects.all()
+        return DaemonModel.objects.all()
 
 
-@pytest.fixture(name="attachment_queryset")
-def fixture_attachment_queryset(email_queryset):
-    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
-        with freeze_time(DATETIME_TEST_ITEMS[number]):
-            baker.make(
-                AttachmentModel,
-                file_path="/path/" + text_test_item,
-                file_name=text_test_item,
-                content_disposition=text_test_item,
-                content_type=text_test_item,
-                datasize=INT_TEST_ITEMS[number],
-                is_favorite=BOOL_TEST_ITEMS[number],
-                email=email_queryset.get(id=number + 1),
-            )
+@pytest.fixture(name="correspondent_queryset", scope="module")
+def fixture_correspondent_queryset(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
+            with freeze_time(DATETIME_TEST_ITEMS[number]):
+                baker.make(
+                    CorrespondentModel,
+                    email_name=text_test_item,
+                    email_address=text_test_item,
+                    is_favorite=BOOL_TEST_ITEMS[number],
+                )
 
-    return AttachmentModel.objects.all()
+        return CorrespondentModel.objects.all()
+
+
+@pytest.fixture(name="mailinglist_queryset", scope="module")
+def fixture_mailinglist_queryset(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
+            with freeze_time(DATETIME_TEST_ITEMS[number]):
+                baker.make(
+                    MailingListModel,
+                    list_id=text_test_item,
+                    list_owner=text_test_item,
+                    list_subscribe=text_test_item,
+                    list_unsubscribe=text_test_item,
+                    list_post=text_test_item,
+                    list_help=text_test_item,
+                    list_archive=text_test_item,
+                    is_favorite=BOOL_TEST_ITEMS[number],
+                )
+
+        return MailingListModel.objects.all()
+
+
+@pytest.fixture(name="email_queryset", scope="module")
+def fixture_email_queryset(
+    django_db_setup,
+    django_db_blocker,
+    mailbox_queryset,
+    correspondent_queryset,
+    mailinglist_queryset,
+):
+    with django_db_blocker.unblock():
+        for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
+            with freeze_time(DATETIME_TEST_ITEMS[number]):
+                new_email = baker.make(
+                    EMailModel,
+                    message_id=text_test_item,
+                    datetime=datetime.datetime.now(tz=datetime.UTC),
+                    email_subject=text_test_item,
+                    plain_bodytext=text_test_item,
+                    html_bodytext=text_test_item,
+                    datasize=INT_TEST_ITEMS[number],
+                    is_favorite=BOOL_TEST_ITEMS[number],
+                    mailbox=mailbox_queryset.get(id=number + 1),
+                    mailinglist=mailinglist_queryset.get(id=number + 1),
+                    x_spam=text_test_item,
+                )
+                baker.make(
+                    EMailCorrespondentsModel,
+                    email=new_email,
+                    correspondent=correspondent_queryset.get(id=number + 1),
+                )
+
+        return EMailModel.objects.all()
+
+
+@pytest.fixture(name="attachment_queryset", scope="module")
+def fixture_attachment_queryset(django_db_setup, django_db_blocker, email_queryset):
+    with django_db_blocker.unblock():
+        for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
+            with freeze_time(DATETIME_TEST_ITEMS[number]):
+                baker.make(
+                    AttachmentModel,
+                    file_path="/path/" + text_test_item,
+                    file_name=text_test_item,
+                    content_disposition=text_test_item,
+                    content_type=text_test_item,
+                    datasize=INT_TEST_ITEMS[number],
+                    is_favorite=BOOL_TEST_ITEMS[number],
+                    email=email_queryset.get(id=number + 1),
+                )
+
+        return AttachmentModel.objects.all()
