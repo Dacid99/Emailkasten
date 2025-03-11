@@ -27,7 +27,7 @@ import datetime
 from typing import TYPE_CHECKING
 
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from model_bakery import baker
 
@@ -57,7 +57,7 @@ def fixture_mock_logger(mocker) -> MagicMock:
 
 
 @pytest.mark.django_db
-def test_AccountModel_default_creation(account):
+def test_AccountModel_default_creation(django_user_model, account):
     """Tests the correct default creation of :class:`core.models.AccountModel.AccountModel`."""
 
     assert account.mail_address is not None
@@ -74,7 +74,7 @@ def test_AccountModel_default_creation(account):
     assert account.is_healthy is True
     assert account.is_favorite is False
     assert account.user is not None
-    assert isinstance(account.user, User)
+    assert isinstance(account.user, django_user_model)
     assert account.updated is not None
     assert isinstance(account.updated, datetime.datetime)
     assert account.created is not None
@@ -95,7 +95,7 @@ def test_AccountModel_foreign_key_deletion(account):
 
 
 @pytest.mark.django_db
-def test_AccountModel_unique():
+def test_AccountModel_unique(django_user_model):
     """Tests the unique constraints of :class:`core.models.AccountModel.AccountModel`."""
 
     account_1 = baker.make(AccountModel, mail_address="abc123")
@@ -103,7 +103,7 @@ def test_AccountModel_unique():
     assert account_1.mail_address == account_2.mail_address
     assert account_1.user != account_2.user
 
-    user = baker.make(User)
+    user = baker.make(django_user_model)
 
     account_1 = baker.make(AccountModel, user=user)
     account_2 = baker.make(AccountModel, user=user)

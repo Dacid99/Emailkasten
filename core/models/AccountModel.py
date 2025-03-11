@@ -25,11 +25,10 @@ from typing import TYPE_CHECKING, Final
 
 import django.db
 from dirtyfields import DirtyFieldsMixin
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import models
 
-from core.constants import EmailProtocolChoices
-
+from ..constants import EmailProtocolChoices
 from ..utils.fetchers.exceptions import MailAccountError
 from ..utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
 from ..utils.fetchers.IMAPFetcher import IMAPFetcher
@@ -77,7 +76,9 @@ class AccountModel(DirtyFieldsMixin, models.Model):
     is_favorite = models.BooleanField(default=False)
     """Flags favorite accounts. False by default."""
 
-    user = models.ForeignKey(User, related_name="accounts", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        get_user_model(), related_name="accounts", on_delete=models.CASCADE
+    )
     """The user this account belongs to. Deletion of that `user` deletes this correspondent."""
 
     created = models.DateTimeField(auto_now_add=True)

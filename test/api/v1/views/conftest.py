@@ -44,7 +44,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from django.contrib.auth.models import User
 from django.urls import reverse
 from model_bakery import baker
 from rest_framework.test import APIClient
@@ -62,28 +61,29 @@ from core.models.MailingListModel import MailingListModel
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from django.contrib.auth.models import AbstractUser
     from django.db.models import Model
     from rest_framework.viewsets import ModelViewSet
 
 
 @pytest.fixture(name="owner_user", autouse=True)
-def fixture_owner_user() -> User:
-    """Creates a :class:`django.contrib.auth.models.User` that owns the data.
+def fixture_owner_user(django_user_model) -> AbstractUser:
+    """Creates a user that owns the data.
 
     Returns:
         The owner user instance.
     """
-    return baker.make(User)
+    return baker.make(django_user_model)
 
 
 @pytest.fixture(name="other_user", autouse=True)
-def fixture_other_user() -> User:
-    """Creates a :class:`django.contrib.auth.models.User` that is not the owner of the data.
+def fixture_other_user(django_user_model) -> AbstractUser:
+    """Creates a user that is not the owner of the data.
 
     Returns:
        The other user instance.
     """
-    return baker.make(User)
+    return baker.make(django_user_model)
 
 
 @pytest.fixture(name="noauth_apiClient")
