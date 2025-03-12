@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`api.v1.views.MailingListViewSet`.
+"""Test module for :mod:`api.v1.views.MailingListViewSet`'s basic CRUD actions.
 
 Fixtures:
     :func:`fixture_mailingListPayload`: Creates clean :class:`core.models.MailingListModel.MailingListModel` payload for a patch, post or put request.
@@ -41,18 +41,17 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture(name="mailingListPayload")
-def fixture_mailingListPayload(correspondentModel, emailModel) -> dict[str, Any]:
+def fixture_mailingListPayload(emailModel) -> dict[str, Any]:
     """Creates clean :class:`core.models.MailingListModel.MailingListModel` payload for a patch, post or put request.
 
     Args:
-        correspondentModel: Depends on :func:`fixture_correspondentModel`.
         emailModel: Depends on :func:`fixture_emailModel`.
 
     Returns:
         The clean payload.
     """
-    correspondentData = baker.prepare(MailingListModel, emails=[emailModel])
-    payload = model_to_dict(correspondentData)
+    mailinglistData = baker.prepare(MailingListModel, emails=[emailModel])
+    payload = model_to_dict(mailinglistData)
     payload.pop("id")
     return {key: value for key, value in payload.items() if value is not None}
 
@@ -293,57 +292,3 @@ def test_delete_nonexistant_auth_owner(mailingListModel, owner_apiClient, detail
     mailingListModel.id = old_id
     mailingListModel.refresh_from_db()
     assert mailingListModel.list_id is not None
-
-
-@pytest.mark.django_db
-def test_toggle_favorite_noauth(
-    mailingListModel, noauth_apiClient, custom_detail_action_url
-):
-    """Tests the post method :func:`api.v1.views.MailingListViewSet.MailingListViewSet.toggle_favorite` action with an unauthenticated user client."""
-    response = noauth_apiClient.post(
-        custom_detail_action_url(
-            MailingListViewSet,
-            MailingListViewSet.URL_NAME_TOGGLE_FAVORITE,
-            mailingListModel,
-        )
-    )
-
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-    mailingListModel.refresh_from_db()
-    assert mailingListModel.is_favorite is False
-
-
-@pytest.mark.django_db
-def test_toggle_favorite_auth_other(
-    mailingListModel, other_apiClient, custom_detail_action_url
-):
-    """Tests the post method :func:`api.v1.views.MailingListViewSet.MailingListViewSet.toggle_favorite` action with the authenticated other user client."""
-    response = other_apiClient.post(
-        custom_detail_action_url(
-            MailingListViewSet,
-            MailingListViewSet.URL_NAME_TOGGLE_FAVORITE,
-            mailingListModel,
-        )
-    )
-
-    assert response.status_code == status.HTTP_404_NOT_FOUND
-    mailingListModel.refresh_from_db()
-    assert mailingListModel.is_favorite is False
-
-
-@pytest.mark.django_db
-def test_toggle_favorite_auth_owner(
-    mailingListModel, owner_apiClient, custom_detail_action_url
-):
-    """Tests the post method :func:`api.v1.views.MailingListViewSet.MailingListViewSet.toggle_favorite` action with the authenticated owner user client."""
-    response = owner_apiClient.post(
-        custom_detail_action_url(
-            MailingListViewSet,
-            MailingListViewSet.URL_NAME_TOGGLE_FAVORITE,
-            mailingListModel,
-        )
-    )
-
-    assert response.status_code == status.HTTP_200_OK
-    mailingListModel.refresh_from_db()
-    assert mailingListModel.is_favorite is True
