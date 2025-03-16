@@ -40,6 +40,7 @@ services:
       - DB_USER=user
       - DB_PASSWORD=passwd
       - DJANGO_SUPERUSER_PASSWORD=rootqwertz123
+      - ALLOWED_HOSTS='email.emailkasten.org localhost'   # all allowed host URLs seperated by space
       - APP_LOG_LEVEL=DEBUG
       - DJANGO_LOG_LEVEL=INFO
       - ROOT_LOG_LEVEL=DEBUG
