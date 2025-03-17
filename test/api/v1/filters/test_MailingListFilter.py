@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""Test module for :class:`api.v1.filters.MailingListFilter.MailingListFilter`."""
+
 import pytest
 
 from api.v1.filters.MailingListFilter import MailingListFilter
@@ -34,6 +36,9 @@ from .conftest import (
 def test_list_id_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.list_id` field.
+    """
     query = {"list_id" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
@@ -51,6 +56,9 @@ def test_list_id_filter(
 def test_list_owner_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.list_owner` field.
+    """
     query = {"list_owner" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
@@ -68,6 +76,9 @@ def test_list_owner_filter(
 def test_list_subscribe_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.list_subscribe` field.
+    """
     query = {"list_subscribe" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
@@ -85,6 +96,9 @@ def test_list_subscribe_filter(
 def test_list_unsubscribe_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.list_unsubscribe` field.
+    """
     query = {"list_unsubscribe" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
@@ -102,6 +116,9 @@ def test_list_unsubscribe_filter(
 def test_list_post_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.list_post` field.
+    """
     query = {"list_post" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
@@ -119,6 +136,9 @@ def test_list_post_filter(
 def test_list_help_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.list_help` field.
+    """
     query = {"list_help" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
@@ -136,6 +156,9 @@ def test_list_help_filter(
 def test_list_archive_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.list_archive` field.
+    """
     query = {"list_archive" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
@@ -153,6 +176,9 @@ def test_list_archive_filter(
 def test_is_favorite_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.is_favorite` field.
+    """
     query = {"is_favorite" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
@@ -170,6 +196,9 @@ def test_is_favorite_filter(
 def test_created_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.created` field.
+    """
     query = {"created" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs
@@ -187,6 +216,9 @@ def test_created_filter(
 def test_updated_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
+    for the :attr:`core.models.MailingListModel.MailingListModel.updated` field.
+    """
     query = {"updated" + lookup_expr: filterquery}
 
     filtered_data = MailingListFilter(query, queryset=mailinglist_queryset).qs

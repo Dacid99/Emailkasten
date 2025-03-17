@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""Test module for :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`."""
+
 import pytest
 
 from api.v1.filters.AttachmentFilter import AttachmentFilter
@@ -35,6 +37,9 @@ from .conftest import (
 def test_file_name_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.file_name` field.
+    """
     query = {"file_name" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
@@ -52,6 +57,9 @@ def test_file_name_filter(
 def test_content_disposition_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_disposition` field.
+    """
     query = {"content_disposition" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
@@ -69,6 +77,9 @@ def test_content_disposition_filter(
 def test_content_type_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_type` field.
+    """
     query = {"content_type" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
@@ -86,6 +97,9 @@ def test_content_type_filter(
 def test_datasize_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.datasize` field.
+    """
     query = {"datasize" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
@@ -103,6 +117,9 @@ def test_datasize_filter(
 def test_is_favorite_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.is_favorite` field.
+    """
     query = {"is_favorite" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
@@ -120,6 +137,9 @@ def test_is_favorite_filter(
 def test_created_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.created` field.
+    """
     query = {"created" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
@@ -137,6 +157,9 @@ def test_created_filter(
 def test_updated_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.updated` field.
+    """
     query = {"updated" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
@@ -154,6 +177,9 @@ def test_updated_filter(
 def test_email__datetime_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the related :attr:`core.models.EMailModel.EMailModel.datetime` field.
+    """
     query = {"email__datetime" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
