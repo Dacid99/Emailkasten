@@ -130,7 +130,7 @@ def test_StorageModel_initial_many_creation(mock_logger):
 @pytest.mark.override_config(
     STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
 )
-def test_health_check_success():
+def test_StorageModel_health_check_success():
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
     for number in range(2 * 3 + 1):
@@ -145,7 +145,7 @@ def test_health_check_success():
 @pytest.mark.override_config(
     STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
 )
-def test_health_check_failed_duplicate_current(mock_logger):
+def test_StorageModel_health_check_failed_duplicate_current(mock_logger):
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
     for number in range(2 * 3 + 1):
@@ -162,7 +162,7 @@ def test_health_check_failed_duplicate_current(mock_logger):
 @pytest.mark.override_config(
     STORAGE_PATH="conflicting-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
 )
-def test_health_check_failed_dirty_storage(mock_logger):
+def test_StorageModel_health_check_failed_dirty_storage(mock_logger):
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
     for number in range(2 * 3 + 1):

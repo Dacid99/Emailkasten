@@ -58,7 +58,7 @@ def mock_parseCorrespondentHeader(mocker, faker):
 
 
 @pytest.mark.django_db
-def test_CorrespondentModel_default_creation(correspondentModel):
+def test_CorrespondentModel_fields(correspondentModel):
     """Tests the correct default creation of :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     assert correspondentModel.email_name is not None
@@ -78,7 +78,7 @@ def test_CorrespondentModel___str__(correspondentModel):
 
 
 @pytest.mark.django_db
-def test_CorrespondentModel_unique(correspondentModel):
+def test_CorrespondentModel_unique_constraints(correspondentModel):
     """Tests the unique constraint in :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     with pytest.raises(IntegrityError):
@@ -90,7 +90,7 @@ def test_CorrespondentModel_unique(correspondentModel):
 
 
 @pytest.mark.django_db
-def test_fromHeader_success(mock_parseCorrespondentHeader):
+def test_CorrespondentModel_fromHeader_success(mock_parseCorrespondentHeader):
     result = CorrespondentModel.fromHeader("correspondentModel header")
 
     assert isinstance(result, CorrespondentModel)
@@ -100,7 +100,9 @@ def test_fromHeader_success(mock_parseCorrespondentHeader):
 
 
 @pytest.mark.django_db
-def test_fromHeader_duplicate(correspondentModel, mock_parseCorrespondentHeader):
+def test_CorrespondentModel_fromHeader_duplicate(
+    correspondentModel, mock_parseCorrespondentHeader
+):
     mock_parseCorrespondentHeader.return_value = (
         mock_parseCorrespondentHeader.return_value[0],
         correspondentModel.email_address,
@@ -113,7 +115,9 @@ def test_fromHeader_duplicate(correspondentModel, mock_parseCorrespondentHeader)
 
 
 @pytest.mark.django_db
-def test_fromHeader_no_address(mock_logger, mock_parseCorrespondentHeader):
+def test_CorrespondentModel_fromHeader_no_address(
+    mock_logger, mock_parseCorrespondentHeader
+):
     mock_parseCorrespondentHeader.return_value = (
         mock_parseCorrespondentHeader.return_value[0],
         "",

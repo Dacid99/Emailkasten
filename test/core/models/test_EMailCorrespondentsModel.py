@@ -20,7 +20,7 @@
 """Test module for :mod:`core.models.EMailCorrespondentsModel`.
 
 Fixtures:
-    :func:`fixture_emailCorrespondentModelsModel`: Creates an :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` instance for testing.
+    :func:`fixture_emailCorrespondentModels`: Creates an :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` instance for testing.
 """
 
 import pytest
@@ -54,7 +54,7 @@ def fake_header(faker):
 
 
 @pytest.mark.django_db
-def test_EMailCorrespondentsModel_default_creation(emailCorrespondentModel):
+def test_EMailCorrespondentsModel_fields(emailCorrespondentModel):
     """Tests the correct default creation of :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     assert emailCorrespondentModel.email is not None
@@ -96,7 +96,7 @@ def test_EMailCorrespondentsModel_foreign_key_correspondent_deletion(
 
 
 @pytest.mark.django_db
-def test_EMailCorrespondentsModel_unique(emailCorrespondentModel):
+def test_EMailCorrespondentsModel_unique_constraints(emailCorrespondentModel):
     """Tests the unique constraint in :class:`core.models.CorrespondentModel.CorrespondentModel`."""
     with pytest.raises(IntegrityError):
         baker.make(
@@ -108,7 +108,7 @@ def test_EMailCorrespondentsModel_unique(emailCorrespondentModel):
 
 
 @pytest.mark.django_db
-def test_createFromHeader_success(
+def test_EMailCorrespondentsModel_createFromHeader_success(
     emailModel, fake_header_name, fake_header, mock_CorrespondentModel_fromHeader
 ):
     result = EMailCorrespondentsModel.createFromHeader(
@@ -126,7 +126,7 @@ def test_createFromHeader_success(
 
 
 @pytest.mark.django_db
-def test_createFromHeader_no_correspondent(
+def test_EMailCorrespondentsModel_createFromHeader_no_correspondent(
     emailModel, fake_header_name, fake_header, mock_CorrespondentModel_fromHeader
 ):
     mock_CorrespondentModel_fromHeader.return_value = None
@@ -140,7 +140,7 @@ def test_createFromHeader_no_correspondent(
 
 
 @pytest.mark.django_db
-def test_createFromHeader_no_email(
+def test_EMailCorrespondentsModel_createFromHeader_no_email(
     fake_header_name, fake_header, mock_CorrespondentModel_fromHeader
 ):
     with pytest.raises(ValueError):

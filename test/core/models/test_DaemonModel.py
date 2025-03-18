@@ -19,7 +19,7 @@
 """Test module for :mod:`core.models.DaemonModel`.
 
 Fixtures:
-    :func:`fixture_daemonModelModel`: Creates an :class:`core.models.DaemonModel.DaemonModel` instance for testing.
+    :func:`fixture_daemonModel`: Creates an :class:`core.models.DaemonModel.DaemonModel` instance for testing.
 """
 
 import datetime
@@ -48,7 +48,7 @@ def mock_logger(mocker):
 
 
 @pytest.mark.django_db
-def test_DaemonModel_default_creation(daemonModel):
+def test_DaemonModel_fields(daemonModel):
     """Tests the correct default creation of :class:`core.models.DaemonModel.DaemonModel`."""
     assert daemonModel.uuid is not None
     assert isinstance(daemonModel.uuid, UUID)
@@ -75,7 +75,7 @@ def test_DaemonModel___str__(daemonModel):
 
 
 @pytest.mark.django_db
-def test_MailboxModel_foreign_key_deletion(daemonModel):
+def test_DaemonModel_foreign_key_deletion(daemonModel):
     """Tests the on_delete foreign key constraint in :class:`core.models.AccountModel.AccountModel`."""
     assert daemonModel is not None
 
@@ -86,7 +86,7 @@ def test_MailboxModel_foreign_key_deletion(daemonModel):
 
 
 @pytest.mark.django_db
-def test_DaemonModel_unique(daemonModel):
+def test_DaemonModel_unique_constraints(daemonModel):
     """Tests the unique constraints of :class:`core.models.DaemonModel.DaemonModel`."""
     with pytest.raises(IntegrityError):
         baker.make(DaemonModel, log_filepath=daemonModel.log_filepath)

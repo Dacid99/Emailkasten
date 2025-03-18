@@ -80,7 +80,7 @@ def spy_MailboxModel_fromData(mocker):
 
 
 @pytest.mark.django_db
-def test_AccountModel_default_creation(django_user_model, accountModel):
+def test_AccountModel_fields(django_user_model, accountModel):
     """Tests the correct default creation of :class:`core.models.AccountModel.AccountModel`."""
     assert accountModel.mail_address is not None
     assert isinstance(accountModel.mail_address, str)
@@ -122,7 +122,7 @@ def test_AccountModel_foreign_key_deletion(accountModel):
 
 
 @pytest.mark.django_db
-def test_AccountModel_unique(django_user_model):
+def test_AccountModel_unique_constraints(django_user_model):
     """Tests the unique constraints of :class:`core.models.AccountModel.AccountModel`."""
 
     account_1 = baker.make(AccountModel, mail_address="abc123")
@@ -152,7 +152,7 @@ def test_AccountModel_unique(django_user_model):
         (EmailProtocolChoices.POP3_SSL, POP3_SSL_Fetcher),
     ],
 )
-def test_get_fetcher_success(
+def test_AccountModel_get_fetcher_success(
     mocker, mock_logger, accountModel, protocol, expectedFetcherClass
 ):
     mocker.patch(
@@ -168,7 +168,7 @@ def test_get_fetcher_success(
 
 
 @pytest.mark.django_db
-def test_get_fetcher_bad_protocol(mock_logger, accountModel):
+def test_AccountModel_get_fetcher_bad_protocol(mock_logger, accountModel):
     accountModel.is_healthy = True
     accountModel.save(update_fields=["is_healthy"])
     accountModel.protocol = "OTHER"
@@ -191,7 +191,7 @@ def test_get_fetcher_bad_protocol(mock_logger, accountModel):
         (EmailProtocolChoices.POP3_SSL, POP3_SSL_Fetcher),
     ],
 )
-def test_get_fetcher_init_failure(
+def test_AccountModel_get_fetcher_init_failure(
     mocker, mock_logger, accountModel, protocol, expectedFetcherClass
 ):
     accountModel.is_healthy = True
@@ -220,7 +220,7 @@ def test_get_fetcher_init_failure(
         (EmailProtocolChoices.POP3_SSL, POP3_SSL_Fetcher),
     ],
 )
-def test_get_fetcher_class_success(
+def test_AccountModel_get_fetcher_class_success(
     accountModel, mock_logger, protocol, expectedFetcherClass
 ):
     accountModel.protocol = protocol
@@ -232,7 +232,7 @@ def test_get_fetcher_class_success(
 
 
 @pytest.mark.django_db
-def test_get_fetcher_class_failure(accountModel, mock_logger):
+def test_AccountModel_get_fetcher_class_failure(accountModel, mock_logger):
     accountModel.is_healthy = True
     accountModel.protocol = "OTHER"
     accountModel.save(update_fields=["is_healthy"])
@@ -246,7 +246,7 @@ def test_get_fetcher_class_failure(accountModel, mock_logger):
 
 
 @pytest.mark.django_db
-def test_test_connection_success(
+def test_AccountModel_test_connection_success(
     accountModel, mock_logger, mock_fetcher, mock_AccountModel_get_fetcher
 ):
     accountModel.is_healthy = False
@@ -263,7 +263,7 @@ def test_test_connection_success(
 
 
 @pytest.mark.django_db
-def test_test_connection_badProtocol(
+def test_AccountModel_test_connection_badProtocol(
     accountModel, mock_logger, mock_fetcher, mock_AccountModel_get_fetcher
 ):
     mock_AccountModel_get_fetcher.side_effect = ValueError
@@ -277,7 +277,7 @@ def test_test_connection_badProtocol(
 
 
 @pytest.mark.django_db
-def test_test_connection_failure(
+def test_AccountModel_test_connection_failure(
     accountModel, mock_logger, mock_fetcher, mock_AccountModel_get_fetcher
 ) -> None:
     mock_fetcher.test.side_effect = MailAccountError
@@ -295,7 +295,7 @@ def test_test_connection_failure(
 
 
 @pytest.mark.django_db
-def test_test_connection_get_fetcher_error(
+def test_AccountModel_test_connection_get_fetcher_error(
     accountModel, mock_logger, mock_AccountModel_get_fetcher
 ) -> None:
     mock_AccountModel_get_fetcher.side_effect = MailAccountError
@@ -313,7 +313,7 @@ def test_test_connection_get_fetcher_error(
 
 
 @pytest.mark.django_db
-def test_update_mailboxes_success(
+def test_AccountModel_update_mailboxes_success(
     accountModel,
     mock_logger,
     mock_fetcher,
@@ -340,7 +340,7 @@ def test_update_mailboxes_success(
 
 
 @pytest.mark.django_db(transaction=True)
-def test_update_mailboxes_duplicate(
+def test_AccountModel_update_mailboxes_duplicate(
     accountModel,
     mock_logger,
     mock_fetcher,
@@ -368,7 +368,7 @@ def test_update_mailboxes_duplicate(
 
 
 @pytest.mark.django_db
-def test_update_mailboxes_failure(
+def test_AccountModel_update_mailboxes_failure(
     accountModel,
     mock_logger,
     mock_fetcher,
@@ -392,7 +392,7 @@ def test_update_mailboxes_failure(
 
 
 @pytest.mark.django_db
-def test_update_mailboxes_get_fetcher_error(
+def test_AccountModel_update_mailboxes_get_fetcher_error(
     accountModel,
     mock_logger,
     mock_fetcher,

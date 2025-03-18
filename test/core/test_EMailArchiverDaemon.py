@@ -35,12 +35,17 @@ def mock_logging_FileHandler(mocker):
     )
 
 
+@pytest.fixture
+def mock_logger(mocker):
+    return mocker.MagicMock(spec=logging.Logger)
+
+
 @pytest.fixture(autouse=True)
-def mock_logging_getLogger(mocker):
+def mock_logging_getLogger(mocker, mock_logger):
     return mocker.patch(
         "core.EMailArchiverDaemon.logging.getLogger",
         autospec=True,
-        return_value=mocker.Mock(spec=logging.Logger),
+        return_value=mock_logger,
     )
 
 
@@ -63,7 +68,9 @@ def test___init__(mock_logging_getLogger, daemonModel):
 
 
 @pytest.mark.django_db
-def test_setupLogger(mock_logging_getLogger, mock_logging_FileHandler, daemonModel):
+def test_setupLogger(
+    mock_logging_getLogger, mock_logger, mock_logging_FileHandler, daemonModel
+):
     emailArchiverDaemon = EMailArchiverDaemon(daemonModel=daemonModel)
 
     mock_logging_getLogger.assert_called_with(str(emailArchiverDaemon))
@@ -72,9 +79,7 @@ def test_setupLogger(mock_logging_getLogger, mock_logging_FileHandler, daemonMod
         backupCount=daemonModel.log_backup_count,
         maxBytes=daemonModel.logfile_size,
     )
-    mock_logging_getLogger.return_value.addHandler.assert_called_with(
-        mock_logging_FileHandler.return_value
-    )
+    mock_logger.addHandler.assert_called_with(mock_logging_FileHandler.return_value)
 
 
 @pytest.mark.django_db

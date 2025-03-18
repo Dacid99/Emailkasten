@@ -86,7 +86,7 @@ def emailConversation(emailModel) -> None:
 
 
 @pytest.mark.django_db
-def test_EMailModel_default_creation(emailModel):
+def test_EMailModel_fields(emailModel):
     """Tests the correct default creation of :class:`core.models.EMailModel.EMailModel`."""
 
     assert emailModel.message_id is not None
@@ -167,7 +167,7 @@ def test_EMailModel_foreign_key_mailingList_deletion(emailModel):
 
 
 @pytest.mark.django_db
-def test_EMailModel_unique():
+def test_EMailModel_unique_constraints():
     """Tests the unique constraints of :class:`core.models.EMailModel.EMailModel`."""
 
     emailModel_1 = baker.make(EMailModel, x_spam="NO", message_id="abc123")
@@ -188,7 +188,7 @@ def test_EMailModel_unique():
 
 
 @pytest.mark.django_db
-def test_delete_emailModel_success(
+def test_EMailModel_delete_emailfiles_success(
     mock_logger, emailModel_with_filepaths, mock_os_remove
 ):
     """Tests :func:`core.models.EMailModel.EMailModel.delete`
@@ -215,7 +215,7 @@ def test_delete_emailModel_success(
         [Exception, Exception],
     ],
 )
-def test_delete_emailModel_remove_error(
+def test_EMailModel_delete_emailfiles_remove_error(
     mock_logger, emailModel_with_filepaths, mock_os_remove, side_effects
 ) -> None:
     """Tests :func:`core.models.EMailModel.EMailModel.delete`
@@ -236,7 +236,7 @@ def test_delete_emailModel_remove_error(
 
 
 @pytest.mark.django_db
-def test_delete_emailModel_delete_error(
+def test_EMailModel_delete_emailModel_delete_error(
     mocker, mock_logger, emailModel_with_filepaths, mock_os_remove
 ):
     """Tests :func:`core.models.EMailModel.EMailModel.delete`
@@ -258,7 +258,7 @@ def test_delete_emailModel_delete_error(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("save_to_eml, expectedCall", [(True, 1), (False, 0)])
-def test_save_data_settings(
+def test_EMailModel_save_with_data_success(
     emailModel,
     mock_message,
     spy_Model_save,
@@ -279,7 +279,7 @@ def test_save_data_settings(
 
 
 @pytest.mark.django_db
-def test_save_no_data(
+def test_EMailModel_save_no_data(
     emailModel,
     spy_Model_save,
     mock_EMailModel_save_to_storage,
@@ -295,7 +295,7 @@ def test_save_no_data(
 
 
 @pytest.mark.django_db
-def test_save_data_failure(
+def test_EMailModel_save_with_data_failure(
     emailModel,
     mock_message,
     spy_Model_save,

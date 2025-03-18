@@ -24,7 +24,6 @@ Fixtures:
 from __future__ import annotations
 
 import datetime
-from email.message import EmailMessage
 from typing import TYPE_CHECKING
 
 import pytest
@@ -58,7 +57,7 @@ def mock_getHeader(mocker, faker):
 
 
 @pytest.mark.django_db
-def test_MailingListModel_default_creation(mailingListModel):
+def test_MailingListModel_fields(mailingListModel):
     """Tests the correct default creation of :class:`core.models.MailingListModel.MailingListModel`."""
 
     assert mailingListModel.list_id is not None
@@ -88,7 +87,7 @@ def test_MailingListModel___str__(mailingListModel):
 
 
 @pytest.mark.django_db
-def test_MailingListModel_unique(mailingListModel):
+def test_MailingListModel_unique_constraints(mailingListModel):
     """Tests the unique constraints of :class:`core.models.MailingListModel.MailingListModel`."""
     with pytest.raises(IntegrityError):
         baker.make(MailingListModel, list_id=mailingListModel.list_id)
@@ -121,7 +120,7 @@ def test_MailingListModel_fromEmailMessage(mocker, mock_message, mock_getHeader)
 
 
 @pytest.mark.django_db
-def test_fromEmailMessage_duplicate(
+def test_MailingListModel_fromEmailMessage_duplicate(
     mailingListModel, mock_message, mock_getHeader
 ) -> None:
     mock_getHeader.return_value = mailingListModel.list_id

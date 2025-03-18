@@ -42,7 +42,7 @@ def mock_runningDaemon(mocker, daemonModel):
 
 
 @pytest.fixture
-def patch_EMailArchiverDaemon(mocker):
+def mock_EMailArchiverDaemon(mocker):
     return mocker.patch(
         "core.EMailArchiverDaemonRegistry.EMailArchiverDaemon",
         autospec=True,
@@ -73,68 +73,68 @@ def test_updateDaemon(mock_logger, mock_runningDaemon, daemonModel):
 
 
 @pytest.mark.django_db
-def test_testDaemon_success(mock_logger, patch_EMailArchiverDaemon, daemonModel):
+def test_testDaemon_success(mock_logger, mock_EMailArchiverDaemon, daemonModel):
     result = EMailArchiverDaemonRegistry.testDaemon(daemonModel)
 
     assert result is True
-    patch_EMailArchiverDaemon.assert_called_once_with(daemonModel)
-    patch_EMailArchiverDaemon.return_value.cycle.assert_called_once_with()
+    mock_EMailArchiverDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemon.return_value.cycle.assert_called_once_with()
     mock_logger.debug.assert_called()
 
 
 @pytest.mark.django_db
 def test_testDaemon_failure_exception(
-    mock_logger, patch_EMailArchiverDaemon, daemonModel
+    mock_logger, mock_EMailArchiverDaemon, daemonModel
 ):
-    patch_EMailArchiverDaemon.return_value.cycle.side_effect = Exception
+    mock_EMailArchiverDaemon.return_value.cycle.side_effect = Exception
 
     result = EMailArchiverDaemonRegistry.testDaemon(daemonModel)
 
     assert result is False
-    patch_EMailArchiverDaemon.assert_called_once_with(daemonModel)
-    patch_EMailArchiverDaemon.return_value.cycle.assert_called_once_with()
+    mock_EMailArchiverDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemon.return_value.cycle.assert_called_once_with()
     mock_logger.debug.assert_called()
     mock_logger.exception.assert_called()
 
 
 @pytest.mark.django_db
 def test_testDaemon_failure_unhealthy(
-    mock_logger, patch_EMailArchiverDaemon, daemonModel
+    mock_logger, mock_EMailArchiverDaemon, daemonModel
 ):
     def unhealthyDaemon():
         daemonModel.is_healthy = False
         daemonModel.save(update_fields=["is_healthy"])
 
-    patch_EMailArchiverDaemon.return_value.cycle.side_effect = unhealthyDaemon
+    mock_EMailArchiverDaemon.return_value.cycle.side_effect = unhealthyDaemon
 
     result = EMailArchiverDaemonRegistry.testDaemon(daemonModel)
 
     assert result is False
-    patch_EMailArchiverDaemon.assert_called_once_with(daemonModel)
-    patch_EMailArchiverDaemon.return_value.cycle.assert_called_once_with()
+    mock_EMailArchiverDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemon.return_value.cycle.assert_called_once_with()
     mock_logger.debug.assert_called()
 
 
 @pytest.mark.django_db
 def test_startDaemon_active(
-    mock_logger, patch_EMailArchiverDaemon, mock_runningDaemon, daemonModel
+    mock_logger, mock_EMailArchiverDaemon, mock_runningDaemon, daemonModel
 ):
     result = EMailArchiverDaemonRegistry.startDaemon(daemonModel)
 
     assert result is False
-    patch_EMailArchiverDaemon.assert_not_called()
-    patch_EMailArchiverDaemon.return_value.start.assert_not_called()
+    mock_EMailArchiverDaemon.assert_not_called()
+    mock_EMailArchiverDaemon.return_value.start.assert_not_called()
     assert daemonModel.id in EMailArchiverDaemonRegistry._runningDaemons
     mock_logger.debug.assert_called()
 
 
 @pytest.mark.django_db
-def test_startDaemon_inactive(mock_logger, patch_EMailArchiverDaemon, daemonModel):
+def test_startDaemon_inactive(mock_logger, mock_EMailArchiverDaemon, daemonModel):
     result = EMailArchiverDaemonRegistry.startDaemon(daemonModel)
 
     assert result is True
-    patch_EMailArchiverDaemon.assert_called_once_with(daemonModel)
-    patch_EMailArchiverDaemon.return_value.start.assert_called_once_with()
+    mock_EMailArchiverDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemon.return_value.start.assert_called_once_with()
     assert daemonModel.id in EMailArchiverDaemonRegistry._runningDaemons
     mock_logger.debug.assert_called()
 

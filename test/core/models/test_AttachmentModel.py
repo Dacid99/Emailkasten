@@ -19,11 +19,10 @@
 """Test module for :mod:`core.models.AttachmentModel`.
 
 Fixtures:
-    :func:`fixture_attachmentModelModel`: Creates an :class:`core.models.AttachmentModel.AttachmentModel` instance for testing.
+    :func:`fixture_attachmentModel`: Creates an :class:`core.models.AttachmentModel.AttachmentModel` instance for testing.
 """
 
 import datetime
-from email.message import Message
 
 import pytest
 from django.db import IntegrityError
@@ -58,7 +57,7 @@ def spy_Model_save(mocker):
 
 
 @pytest.mark.django_db
-def test_AttachmentModel_default_creation(attachmentModel):
+def test_AttachmentModel_fields(attachmentModel):
     """Tests the correct default creation of :class:`core.models.AttachmentModel.AttachmentModel`."""
 
     assert attachmentModel.file_name is not None
@@ -93,7 +92,7 @@ def test_AttachmentModel_foreign_key_deletion(attachmentModel):
 
 
 @pytest.mark.django_db
-def test_AttachmentModel_unique():
+def test_AttachmentModel_unique_constraints():
     """Tests the unique constraints of :class:`core.models.AttachmentModel.AttachmentModel`."""
 
     attachmentModel_1 = baker.make(AttachmentModel, file_path="test")
@@ -114,7 +113,7 @@ def test_AttachmentModel_unique():
 
 
 @pytest.mark.django_db
-def test_delete_attachmentModelfile_success(
+def test_AttachmentModel_delete_attachmentfile_success(
     attachmentModel, mock_logger, mock_os_remove
 ):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.delete`
@@ -135,7 +134,7 @@ def test_delete_attachmentModelfile_success(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("side_effect", [FileNotFoundError, OSError, Exception])
-def test_delete_attachmentModelfile_failure(
+def test_AttachmentModel_delete_attachmentfile_failure(
     attachmentModel, mock_logger, mock_os_remove, side_effect
 ):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.delete`
@@ -156,7 +155,7 @@ def test_delete_attachmentModelfile_failure(
 
 
 @pytest.mark.django_db
-def test_delete_attachmentModelfile_delete_error(
+def test_AttachmentModel_delete_attachmentfile_delete_error(
     mocker,
     attachmentModel,
     mock_logger,
@@ -181,7 +180,7 @@ def test_delete_attachmentModelfile_delete_error(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("save_attachments, expectedCalls", [(True, 1), (False, 0)])
-def test_save_data_settings(
+def test_AttachmentModel_save_with_data_success(
     attachmentModel,
     mock_message,
     mock_AttachmentModel_save_to_storage,
@@ -198,7 +197,7 @@ def test_save_data_settings(
 
 
 @pytest.mark.django_db
-def test_save_no_data(
+def test_AttachmentModel_save_no_data(
     attachmentModel, mock_AttachmentModel_save_to_storage, spy_Model_save
 ):
     attachmentModel.email.mailbox.save_attachmentModels = True
@@ -210,7 +209,7 @@ def test_save_no_data(
 
 
 @pytest.mark.django_db
-def test_save_data_failure(
+def test_AttachmentModel_save_with_data_failure(
     attachmentModel, mock_message, mock_AttachmentModel_save_to_storage, spy_Model_save
 ):
     mock_AttachmentModel_save_to_storage.side_effect = AssertionError
@@ -224,7 +223,7 @@ def test_save_data_failure(
 
 
 @pytest.mark.django_db
-def test_fromData(mock_message):
+def test_AttachmentModel_fromData(mock_message):
     result = AttachmentModel.fromData(mock_message, None)
 
     mock_message.get_filename.assert_called_once_with()
