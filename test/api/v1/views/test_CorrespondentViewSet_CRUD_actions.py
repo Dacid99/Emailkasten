@@ -60,7 +60,7 @@ def correspondentPayload(emailModel) -> dict[str, Any]:
 
 @pytest.mark.django_db
 def test_list_noauth(correspondentModel, emailModel, noauth_apiClient, list_url):
-    """Tests the list method with an unauthenticated user client."""
+    """Tests the list method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with an unauthenticated user client."""
     response = noauth_apiClient.get(list_url(CorrespondentViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -70,7 +70,7 @@ def test_list_noauth(correspondentModel, emailModel, noauth_apiClient, list_url)
 
 @pytest.mark.django_db
 def test_list_auth_other(correspondentModel, emailModel, other_apiClient, list_url):
-    """Tests the list method with the authenticated other user client."""
+    """Tests the list method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated other user client."""
     response = other_apiClient.get(list_url(CorrespondentViewSet))
 
     assert response.status_code == status.HTTP_200_OK
@@ -80,7 +80,7 @@ def test_list_auth_other(correspondentModel, emailModel, other_apiClient, list_u
 
 @pytest.mark.django_db
 def test_list_auth_owner(correspondentModel, emailModel, owner_apiClient, list_url):
-    """Tests the list method with the authenticated owner user client."""
+    """Tests the list method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated owner user client."""
     response = owner_apiClient.get(list_url(CorrespondentViewSet))
 
     assert response.status_code == status.HTTP_200_OK
@@ -93,7 +93,7 @@ def test_list_auth_owner(correspondentModel, emailModel, owner_apiClient, list_u
 
 @pytest.mark.django_db
 def test_get_noauth(correspondentModel, emailModel, noauth_apiClient, detail_url):
-    """Tests the get method with an unauthenticated user client."""
+    """Tests the get method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with an unauthenticated user client."""
     response = noauth_apiClient.get(
         detail_url(CorrespondentViewSet, correspondentModel)
     )
@@ -105,7 +105,7 @@ def test_get_noauth(correspondentModel, emailModel, noauth_apiClient, detail_url
 
 @pytest.mark.django_db
 def test_get_auth_other(correspondentModel, emailModel, other_apiClient, detail_url):
-    """Tests the get method with the authenticated other user client."""
+    """Tests the get method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated other user client."""
     response = other_apiClient.get(detail_url(CorrespondentViewSet, correspondentModel))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -115,7 +115,7 @@ def test_get_auth_other(correspondentModel, emailModel, other_apiClient, detail_
 
 @pytest.mark.django_db
 def test_get_auth_owner(correspondentModel, emailModel, owner_apiClient, detail_url):
-    """Tests the list method with the authenticated owner user client."""
+    """Tests the list method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated owner user client."""
     response = owner_apiClient.get(detail_url(CorrespondentViewSet, correspondentModel))
 
     assert response.status_code == status.HTTP_200_OK
@@ -126,7 +126,7 @@ def test_get_auth_owner(correspondentModel, emailModel, owner_apiClient, detail_
 def test_patch_noauth(
     correspondentModel, emailModel, noauth_apiClient, correspondentPayload, detail_url
 ):
-    """Tests the patch method with an unauthenticated user client."""
+    """Tests the patch method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with an unauthenticated user client."""
     response = noauth_apiClient.patch(
         detail_url(CorrespondentViewSet, correspondentModel), data=correspondentPayload
     )
@@ -142,7 +142,7 @@ def test_patch_noauth(
 def test_patch_auth_other(
     correspondentModel, emailModel, other_apiClient, correspondentPayload, detail_url
 ):
-    """Tests the patch method with the authenticated other user client."""
+    """Tests the patch method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated other user client."""
     response = other_apiClient.patch(
         detail_url(CorrespondentViewSet, correspondentModel), data=correspondentPayload
     )
@@ -158,7 +158,7 @@ def test_patch_auth_other(
 def test_patch_auth_owner(
     correspondentModel, emailModel, owner_apiClient, correspondentPayload, detail_url
 ):
-    """Tests the patch method with the authenticated owner user client."""
+    """Tests the patch method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated owner user client."""
     response = owner_apiClient.patch(
         detail_url(CorrespondentViewSet, correspondentModel), data=correspondentPayload
     )
@@ -174,7 +174,7 @@ def test_patch_auth_owner(
 def test_put_noauth(
     correspondentModel, emailModel, noauth_apiClient, correspondentPayload, detail_url
 ):
-    """Tests the put method with an unauthenticated user client."""
+    """Tests the put method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with an unauthenticated user client."""
     response = noauth_apiClient.put(
         detail_url(CorrespondentViewSet, correspondentModel), data=correspondentPayload
     )
@@ -190,7 +190,7 @@ def test_put_noauth(
 def test_put_auth_other(
     correspondentModel, emailModel, other_apiClient, correspondentPayload, detail_url
 ):
-    """Tests the put method with the authenticated other user client."""
+    """Tests the put method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated other user client."""
     response = other_apiClient.put(
         detail_url(CorrespondentViewSet, correspondentModel), data=correspondentPayload
     )
@@ -206,7 +206,7 @@ def test_put_auth_other(
 def test_put_auth_owner(
     correspondentModel, emailModel, owner_apiClient, correspondentPayload, detail_url
 ):
-    """Tests the put method with the authenticated owner user client."""
+    """Tests the put method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated owner user client."""
     response = owner_apiClient.put(
         detail_url(CorrespondentViewSet, correspondentModel), data=correspondentPayload
     )
@@ -220,7 +220,7 @@ def test_put_auth_owner(
 
 @pytest.mark.django_db
 def test_post_noauth(noauth_apiClient, correspondentPayload, list_url):
-    """Tests the post method with an unauthenticated user client."""
+    """Tests the post method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with an unauthenticated user client."""
     response = noauth_apiClient.post(
         list_url(CorrespondentViewSet), data=correspondentPayload
     )
@@ -236,7 +236,7 @@ def test_post_noauth(noauth_apiClient, correspondentPayload, list_url):
 
 @pytest.mark.django_db
 def test_post_auth_other(other_apiClient, correspondentPayload, list_url):
-    """Tests the post method with the authenticated other user client."""
+    """Tests the post method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated other user client."""
     response = other_apiClient.post(
         list_url(CorrespondentViewSet), data=correspondentPayload
     )
@@ -252,7 +252,7 @@ def test_post_auth_other(other_apiClient, correspondentPayload, list_url):
 
 @pytest.mark.django_db
 def test_post_auth_owner(owner_apiClient, correspondentPayload, list_url):
-    """Tests the post method with the authenticated owner user client."""
+    """Tests the post method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated owner user client."""
     response = owner_apiClient.post(
         list_url(CorrespondentViewSet), data=correspondentPayload
     )
@@ -268,7 +268,7 @@ def test_post_auth_owner(owner_apiClient, correspondentPayload, list_url):
 
 @pytest.mark.django_db
 def test_delete_noauth(correspondentModel, emailModel, noauth_apiClient, detail_url):
-    """Tests the delete method with an unauthenticated user client."""
+    """Tests the delete method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with an unauthenticated user client."""
     response = noauth_apiClient.delete(
         detail_url(CorrespondentViewSet, correspondentModel)
     )
@@ -280,7 +280,7 @@ def test_delete_noauth(correspondentModel, emailModel, noauth_apiClient, detail_
 
 @pytest.mark.django_db
 def test_delete_auth_other(correspondentModel, emailModel, other_apiClient, detail_url):
-    """Tests the delete method with the authenticated other user client."""
+    """Tests the delete method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated other user client."""
     response = other_apiClient.delete(
         detail_url(CorrespondentViewSet, correspondentModel)
     )
@@ -292,7 +292,7 @@ def test_delete_auth_other(correspondentModel, emailModel, other_apiClient, deta
 
 @pytest.mark.django_db
 def test_delete_auth_owner(correspondentModel, emailModel, owner_apiClient, detail_url):
-    """Tests the delete method with the authenticated owner user client."""
+    """Tests the delete method on :class:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet with the authenticated owner user client."""
     response = owner_apiClient.delete(
         detail_url(CorrespondentViewSet, correspondentModel)
     )

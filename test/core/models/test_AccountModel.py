@@ -58,6 +58,11 @@ def mock_logger(mocker) -> MagicMock:
 
 @pytest.fixture
 def mock_fetcher(mocker, faker) -> MagicMock:
+    """Fixture mocking a :class:`core.utils.fetchers.BaseFetcher.BaseFetcher` instance.
+
+    Returns:
+        The mocked fetcher instance.
+    """
     mock_fetcher = mocker.MagicMock(spec=BaseFetcher)
     mock_fetcher.__enter__.return_value = mock_fetcher
     mock_fetcher.fetchEmails.return_value = [text.encode() for text in faker.texts()]
@@ -67,6 +72,11 @@ def mock_fetcher(mocker, faker) -> MagicMock:
 
 @pytest.fixture
 def mock_AccountModel_get_fetcher(mocker, mock_fetcher) -> MagicMock:
+    """Fixture mocking a :func:`core.models.AccountModel.AccountModel.get_fetcher`.
+
+    Returns:
+        The mocked function.
+    """
     return mocker.patch(
         "core.models.AccountModel.AccountModel.get_fetcher",
         autospec=True,
@@ -76,12 +86,17 @@ def mock_AccountModel_get_fetcher(mocker, mock_fetcher) -> MagicMock:
 
 @pytest.fixture
 def spy_MailboxModel_fromData(mocker):
+    """Fixture spying on :func:`core.models.AccountModel.MailboxModel.fromData` instance.
+
+    Returns:
+        The spied on function.
+    """
     return mocker.spy(core.models.AccountModel.MailboxModel, "fromData")
 
 
 @pytest.mark.django_db
 def test_AccountModel_fields(django_user_model, accountModel):
-    """Tests the correct default creation of :class:`core.models.AccountModel.AccountModel`."""
+    """Tests the fields of :class:`core.models.AccountModel.AccountModel`."""
     assert accountModel.mail_address is not None
     assert isinstance(accountModel.mail_address, str)
     assert accountModel.password is not None
@@ -107,6 +122,7 @@ def test_AccountModel_fields(django_user_model, accountModel):
 
 @pytest.mark.django_db
 def test_AccountModel___str__(accountModel):
+    """Tests the string representation of :class:`core.models.AccountModel.AccountModel`."""
     assert accountModel.mail_address in str(accountModel)
     assert accountModel.protocol in str(accountModel)
 
@@ -155,6 +171,9 @@ def test_AccountModel_unique_constraints(django_user_model):
 def test_AccountModel_get_fetcher_success(
     mocker, mock_logger, accountModel, protocol, expectedFetcherClass
 ):
+    """Tests :func:`core.models.AccountModel.AccountModel.get_fetcher`
+    in case of success.
+    """
     mocker.patch(
         f"core.models.AccountModel.{expectedFetcherClass.__name__}.__init__",
         return_value=None,
@@ -169,6 +188,9 @@ def test_AccountModel_get_fetcher_success(
 
 @pytest.mark.django_db
 def test_AccountModel_get_fetcher_bad_protocol(mock_logger, accountModel):
+    """Tests :func:`core.models.AccountModel.AccountModel.get_fetcher`
+    in case the account has a bad :attr:`core.models.AccountModel.AccountModel.protocol` field.
+    """
     accountModel.is_healthy = True
     accountModel.save(update_fields=["is_healthy"])
     accountModel.protocol = "OTHER"
@@ -194,6 +216,9 @@ def test_AccountModel_get_fetcher_bad_protocol(mock_logger, accountModel):
 def test_AccountModel_get_fetcher_init_failure(
     mocker, mock_logger, accountModel, protocol, expectedFetcherClass
 ):
+    """Tests :func:`core.models.AccountModel.AccountModel.get_fetcher`
+    in case the fetcher fails to construct with a :class:`core.utils.fetcher.exceptions.MailAccountError`.
+    """
     accountModel.is_healthy = True
     accountModel.save(update_fields=["is_healthy"])
     mocker.patch(
@@ -223,6 +248,9 @@ def test_AccountModel_get_fetcher_init_failure(
 def test_AccountModel_get_fetcher_class_success(
     accountModel, mock_logger, protocol, expectedFetcherClass
 ):
+    """Tests :func:`core.models.AccountModel.AccountModel.get_fetcher_class`
+    in case of success.
+    """
     accountModel.protocol = protocol
 
     fetcherClass = accountModel.get_fetcher_class()
@@ -232,7 +260,10 @@ def test_AccountModel_get_fetcher_class_success(
 
 
 @pytest.mark.django_db
-def test_AccountModel_get_fetcher_class_failure(accountModel, mock_logger):
+def test_AccountModel_get_fetcher_class_bad_protocol(accountModel, mock_logger):
+    """Tests :func:`core.models.AccountModel.AccountModel.get_fetcher_class`
+    in case the account has a bad :attr:`core.models.AccountModel.AccountModel.protocol` field.
+    """
     accountModel.is_healthy = True
     accountModel.protocol = "OTHER"
     accountModel.save(update_fields=["is_healthy"])
@@ -249,6 +280,9 @@ def test_AccountModel_get_fetcher_class_failure(accountModel, mock_logger):
 def test_AccountModel_test_connection_success(
     accountModel, mock_logger, mock_fetcher, mock_AccountModel_get_fetcher
 ):
+    """Tests :func:`core.models.AccountModel.AccountModel.test_connection`
+    in case of success.
+    """
     accountModel.is_healthy = False
     accountModel.save(update_fields=["is_healthy"])
 
@@ -266,6 +300,9 @@ def test_AccountModel_test_connection_success(
 def test_AccountModel_test_connection_badProtocol(
     accountModel, mock_logger, mock_fetcher, mock_AccountModel_get_fetcher
 ):
+    """Tests :func:`core.models.AccountModel.AccountModel.test_connection`
+    in case of the account has a bad :attr:`core.models.AccountModel.AccountModel.protocol` field and raises a :class:`ValueError`.
+    """
     mock_AccountModel_get_fetcher.side_effect = ValueError
 
     with pytest.raises(ValueError):
@@ -279,7 +316,10 @@ def test_AccountModel_test_connection_badProtocol(
 @pytest.mark.django_db
 def test_AccountModel_test_connection_failure(
     accountModel, mock_logger, mock_fetcher, mock_AccountModel_get_fetcher
-) -> None:
+):
+    """Tests :func:`core.models.AccountModel.AccountModel.test_connection`
+    in case of the test fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
+    """
     mock_fetcher.test.side_effect = MailAccountError
     accountModel.is_healthy = True
     accountModel.save(update_fields=["is_healthy"])
@@ -297,7 +337,11 @@ def test_AccountModel_test_connection_failure(
 @pytest.mark.django_db
 def test_AccountModel_test_connection_get_fetcher_error(
     accountModel, mock_logger, mock_AccountModel_get_fetcher
-) -> None:
+):
+    """Tests :func:`core.models.AccountModel.AccountModel.test_connection`
+    in case the :func:`core.models.AccountModel.AccountModel.get_fetcher`
+    raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
+    """
     mock_AccountModel_get_fetcher.side_effect = MailAccountError
     accountModel.is_healthy = True
     accountModel.save(update_fields=["is_healthy"])
@@ -320,6 +364,9 @@ def test_AccountModel_update_mailboxes_success(
     mock_AccountModel_get_fetcher,
     spy_MailboxModel_fromData,
 ):
+    """Tests :func:`core.models.AccountModel.AccountModel.update_mailboxes`
+    in case of success.
+    """
     accountModel.is_healthy = False
     accountModel.save(update_fields=["is_healthy"])
 
@@ -347,6 +394,9 @@ def test_AccountModel_update_mailboxes_duplicate(
     mock_AccountModel_get_fetcher,
     spy_MailboxModel_fromData,
 ):
+    """Tests :func:`core.models.AccountModel.AccountModel.update_mailboxes`
+    in case of a fetched mailbox already being in the db.
+    """
     baker.make(MailboxModel, account=accountModel, name="INBOX")
     mock_fetcher.fetchMailboxes.return_value[0] = b"INBOX"
 
@@ -375,6 +425,9 @@ def test_AccountModel_update_mailboxes_failure(
     mock_AccountModel_get_fetcher,
     spy_MailboxModel_fromData,
 ):
+    """Tests :func:`core.models.AccountModel.AccountModel.update_mailboxes`
+    in case fetching mailboxes fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
+    """
     mock_fetcher.fetchMailboxes.side_effect = MailAccountError
     accountModel.is_healthy = True
     accountModel.save(update_fields=["is_healthy"])
@@ -399,6 +452,10 @@ def test_AccountModel_update_mailboxes_get_fetcher_error(
     mock_AccountModel_get_fetcher,
     spy_MailboxModel_fromData,
 ):
+    """Tests :func:`core.models.AccountModel.AccountModel.update_mailboxes`
+    in case :func:`core.models.AccountModel.AccountModel.get_fetcher`
+    fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
+    """
     mock_AccountModel_get_fetcher.side_effect = MailAccountError
     accountModel.is_healthy = True
     accountModel.save(update_fields=["is_healthy"])

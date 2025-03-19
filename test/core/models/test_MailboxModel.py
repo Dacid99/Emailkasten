@@ -61,6 +61,7 @@ def mock_logger(mocker) -> MagicMock:
 
 @pytest.fixture
 def mock_open(mocker):
+    """Fixture to mock the builtin :func:`open`."""
     mock_open = mocker.mock_open()
     mocker.patch("core.models.MailboxModel.open", mock_open)
     return mock_open
@@ -75,7 +76,7 @@ def mock_EMailModel_createFromEmailBytes(mocker):
 
 @pytest.mark.django_db
 def test_MailboxModel_fields(mailboxModel):
-    """Tests the correct default creation of :class:`core.models.MailboxModel.MailboxModel`."""
+    """Tests the fields of :class:`core.models.MailboxModel.MailboxModel`."""
 
     assert mailboxModel.name is not None
     assert mailboxModel.account is not None
@@ -92,6 +93,7 @@ def test_MailboxModel_fields(mailboxModel):
 
 @pytest.mark.django_db
 def test_MailboxModel___str__(mailboxModel):
+    """Tests the string representation of :class:`core.models.MailboxModel.MailboxModel`."""
     assert mailboxModel.name in str(mailboxModel)
     assert str(mailboxModel.account) in str(mailboxModel)
 
@@ -139,7 +141,7 @@ def test_MailboxModel_unique_constraints():
 )
 def test_MailboxModel_getAvailableFetchingCriteria(
     mailboxModel, protocol, expectedFetchingCriteria
-) -> None:
+):
     """Tests :func:`core.models.MailboxModel.MailboxModel.getAvailableFetchingCriteria`.
 
     Args:
@@ -156,6 +158,9 @@ def test_MailboxModel_getAvailableFetchingCriteria(
 def test_MailboxModel_test_connection_success(
     mailboxModel, mock_logger, mock_fetcher, mock_AccountModel_get_fetcher
 ):
+    """Tests :func:`core.models.MailboxModel.MailboxModel.test_connection`
+    in case of success.
+    """
     mailboxModel.is_healthy = False
     mailboxModel.save(update_fields=["is_healthy"])
 
@@ -172,7 +177,11 @@ def test_MailboxModel_test_connection_success(
 @pytest.mark.django_db
 def test_MailboxModel_test_connection_badProtocol(
     mailboxModel, mock_logger, mock_AccountModel_get_fetcher, mock_fetcher
-) -> None:
+):
+    """Tests :func:`core.models.MailboxModel.MailboxModel.test_connection`
+    in case the account of the mailbox has a bad :attr:`core.models.AccountModel.AccountModel.protocol` field
+    and thus get_fetcher raises a :class:`ValueError`.
+    """
     mock_AccountModel_get_fetcher.side_effect = ValueError
 
     with pytest.raises(ValueError):
@@ -191,7 +200,10 @@ def test_MailboxModel_test_connection_failure(
     mock_AccountModel_get_fetcher,
     mock_fetcher,
     test_side_effect,
-) -> None:
+):
+    """Tests :func:`core.models.MailboxModel.MailboxModel.test_connection`
+    in case the test fails with a :class:`core.utils.fetchers.exceptions.FetcherError`.
+    """
     mock_fetcher.test.side_effect = test_side_effect
     mailboxModel.is_healthy = True
     mailboxModel.save(update_fields=["is_healthy"])
@@ -211,7 +223,11 @@ def test_MailboxModel_test_connection_failure(
 @pytest.mark.django_db
 def test_MailboxModel_test_connection_get_fetcher_error(
     mailboxModel, mock_logger, mock_AccountModel_get_fetcher, mock_fetcher
-) -> None:
+):
+    """Tests :func:`core.models.MailboxModel.MailboxModel.test_connection`
+    in case :func:`core.models.AccountModel.AccountModel.get_fetcher`
+    raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
+    """
     mock_AccountModel_get_fetcher.side_effect = MailAccountError
     mailboxModel.is_healthy = True
     mailboxModel.save(update_fields=["is_healthy"])
@@ -234,6 +250,9 @@ def test_MailboxModel_fetch_success(
     mock_fetcher,
     mock_EMailModel_createFromEmailBytes,
 ):
+    """Tests :func:`core.models.MailboxModel.MailboxModel.fetch`
+    in case of success.
+    """
     fake_criterion = faker.word()
     mailboxModel.is_healthy = False
     mailboxModel.save(update_fields=["is_healthy"])
@@ -259,7 +278,10 @@ def test_MailboxModel_fetch_failure(
     mock_fetcher,
     mock_AccountModel_get_fetcher,
     mock_EMailModel_createFromEmailBytes,
-) -> None:
+):
+    """Tests :func:`core.models.MailboxModel.MailboxModel.fetch`
+    in case fetching fails with a :class:`core.utils.fetchers.exceptions.MailboxError`.
+    """
     fake_criterion = faker.word()
     mock_fetcher.fetchEmails.side_effect = MailboxError
     mailboxModel.is_healthy = True
@@ -284,7 +306,11 @@ def test_MailboxModel_fetch_get_fetcher_error(
     mock_AccountModel_get_fetcher,
     mock_fetcher,
     mock_EMailModel_createFromEmailBytes,
-) -> None:
+):
+    """Tests :func:`core.models.MailboxModel.MailboxModel.fetch`
+    in case :func:`core.models.AccountModel.AccountModel.get_fetcher`
+    raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
+    """
     mock_AccountModel_get_fetcher.side_effect = MailAccountError
     mailboxModel.is_healthy = True
     mailboxModel.save(update_fields=["is_healthy"])
@@ -323,7 +349,10 @@ def test_MailboxModel_addFromMailboxFile_success(
     mock_EMailModel_createFromEmailBytes,
     file_format,
     expectedClass,
-) -> None:
+):
+    """Tests :func:`core.models.AccountModel.AccountModel.addFromMailboxFile`
+    in case of success.
+    """
     mock_parser = mocker.Mock(spec=expectedClass)
     fake_keys = faker.words()
     mock_parser.iterkeys.return_value = fake_keys
@@ -358,7 +387,10 @@ def test_MailboxModel_addFromMailboxFile_bad_format(
     mock_open,
     mock_logger,
     mock_EMailModel_createFromEmailBytes,
-) -> None:
+):
+    """Tests :func:`core.models.AccountModel.AccountModel.addFromMailboxFile`
+    in case of the mailbox file format is an unsupported format.
+    """
     with override_config(TEMPORARY_STORAGE_DIRECTORY="/tmp/"), pytest.raises(
         ValueError
     ):
@@ -370,6 +402,9 @@ def test_MailboxModel_addFromMailboxFile_bad_format(
 
 
 def test_MailboxModel_fromData(mocker):
+    """Tests :func:`core.models.AccountModel.AccountModel.fromData`
+    in case of success.
+    """
     mock_parseMailboxName = mocker.patch(
         "core.models.MailboxModel.parseMailboxName",
         autospec=True,

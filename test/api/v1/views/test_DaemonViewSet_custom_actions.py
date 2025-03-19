@@ -30,6 +30,7 @@ from api.v1.views.DaemonViewSet import DaemonViewSet
 
 @pytest.fixture
 def mock_open(mocker, fake_file_bytes):
+    """Fixture to mock the builtin :func:`open`."""
     mock_open = mocker.mock_open(read_data=fake_file_bytes)
     mocker.patch("api.v1.views.DaemonViewSet.open", mock_open)
     return mock_open

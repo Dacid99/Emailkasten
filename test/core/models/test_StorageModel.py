@@ -84,7 +84,7 @@ def test_StorageModel_initial_single_creation(
     override_config,
     STORAGE_PATH,
     expectedCritical,
-) -> None:
+):
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
     with override_config(STORAGE_PATH=STORAGE_PATH, STORAGE_MAX_SUBDIRS_PER_DIR=3):

@@ -59,7 +59,7 @@ def mock_parseCorrespondentHeader(mocker, faker):
 
 @pytest.mark.django_db
 def test_CorrespondentModel_fields(correspondentModel):
-    """Tests the correct default creation of :class:`core.models.CorrespondentModel.CorrespondentModel`."""
+    """Tests the fields of :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     assert correspondentModel.email_name is not None
     assert isinstance(correspondentModel.email_name, str)
@@ -74,6 +74,7 @@ def test_CorrespondentModel_fields(correspondentModel):
 
 @pytest.mark.django_db
 def test_CorrespondentModel___str__(correspondentModel):
+    """Tests the string representation of :class:`core.models.CorrespondentModel.CorrespondentModel`."""
     assert correspondentModel.email_address in str(correspondentModel)
 
 
@@ -91,6 +92,9 @@ def test_CorrespondentModel_unique_constraints(correspondentModel):
 
 @pytest.mark.django_db
 def test_CorrespondentModel_fromHeader_success(mock_parseCorrespondentHeader):
+    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.fromHeader`
+    in case of success.
+    """
     result = CorrespondentModel.fromHeader("correspondentModel header")
 
     assert isinstance(result, CorrespondentModel)
@@ -103,6 +107,9 @@ def test_CorrespondentModel_fromHeader_success(mock_parseCorrespondentHeader):
 def test_CorrespondentModel_fromHeader_duplicate(
     correspondentModel, mock_parseCorrespondentHeader
 ):
+    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.fromHeader`
+    in case the correspondent to be prepared is already being in the database.
+    """
     mock_parseCorrespondentHeader.return_value = (
         mock_parseCorrespondentHeader.return_value[0],
         correspondentModel.email_address,
@@ -118,6 +125,9 @@ def test_CorrespondentModel_fromHeader_duplicate(
 def test_CorrespondentModel_fromHeader_no_address(
     mock_logger, mock_parseCorrespondentHeader
 ):
+    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.fromHeader`
+    in case of there is no address in the header.
+    """
     mock_parseCorrespondentHeader.return_value = (
         mock_parseCorrespondentHeader.return_value[0],
         "",

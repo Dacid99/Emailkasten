@@ -26,6 +26,7 @@
   - disable all signals in tests
   - serializer tests should use views model fixtures
 - emailcorrespondentsmodelserializers are inconsistent
+- consistent naming_style
 
 ### Work in progress
 

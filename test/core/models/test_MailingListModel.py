@@ -58,7 +58,7 @@ def mock_getHeader(mocker, faker):
 
 @pytest.mark.django_db
 def test_MailingListModel_fields(mailingListModel):
-    """Tests the correct default creation of :class:`core.models.MailingListModel.MailingListModel`."""
+    """Tests the fields of :class:`core.models.MailingListModel.MailingListModel`."""
 
     assert mailingListModel.list_id is not None
     assert isinstance(mailingListModel.list_id, str)
@@ -83,6 +83,7 @@ def test_MailingListModel_fields(mailingListModel):
 
 @pytest.mark.django_db
 def test_MailingListModel___str__(mailingListModel):
+    """Tests the string representation of :class:`core.models.MailingListModel.MailingListModel`."""
     assert mailingListModel.list_id in str(mailingListModel)
 
 
@@ -94,7 +95,12 @@ def test_MailingListModel_unique_constraints(mailingListModel):
 
 
 @pytest.mark.django_db
-def test_MailingListModel_fromEmailMessage(mocker, mock_message, mock_getHeader):
+def test_MailingListModel_fromEmailMessage_success(
+    mocker, mock_message, mock_getHeader
+):
+    """Tests :func:`core.models.MailingListModel.MailingListModel.fromEmailMessage`
+    in case of success.
+    """
     result = MailingListModel.fromEmailMessage(mock_message)
 
     assert mock_getHeader.call_count == 7
@@ -122,7 +128,10 @@ def test_MailingListModel_fromEmailMessage(mocker, mock_message, mock_getHeader)
 @pytest.mark.django_db
 def test_MailingListModel_fromEmailMessage_duplicate(
     mailingListModel, mock_message, mock_getHeader
-) -> None:
+):
+    """Tests :func:`core.models.MailingListModel.MailingListModel.fromEmailMessage`
+    in case the mailinglist to be prepared is already in the database.
+    """
     mock_getHeader.return_value = mailingListModel.list_id
     result = MailingListModel.fromEmailMessage(mock_message)
 
@@ -134,6 +143,9 @@ def test_MailingListModel_fromEmailMessage_duplicate(
 def test_MailingListModel_fromEmailMessage_no_list_id(
     mock_message, mock_logger, mock_getHeader
 ):
+    """Tests :func:`core.models.MailingListModel.MailingListModel.fromEmailMessage`
+    in case there is no List-Id in the message argument.
+    """
     mock_getHeader.return_value = None
 
     result = MailingListModel.fromEmailMessage(mock_message)

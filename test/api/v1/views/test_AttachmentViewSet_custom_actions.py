@@ -28,6 +28,7 @@ from api.v1.views.AttachmentViewSet import AttachmentViewSet
 
 @pytest.fixture
 def mock_open(mocker, fake_file_bytes):
+    """Fixture to mock the builtin :func:`open`."""
     mock_open = mocker.mock_open(read_data=fake_file_bytes)
     mocker.patch("api.v1.views.AttachmentViewSet.open", mock_open)
     return mock_open

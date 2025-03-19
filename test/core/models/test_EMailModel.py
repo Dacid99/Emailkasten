@@ -78,7 +78,7 @@ def mock_EMailModel_render_to_storage(mocker):
 
 
 @pytest.fixture
-def emailConversation(emailModel) -> None:
+def emailConversation(emailModel):
     replyMails = baker.make(EMailModel, inReplyTo=emailModel, _quantity=3)
     baker.make(EMailModel, inReplyTo=replyMails[1], _quantity=2)
     replyReplyMail = baker.make(EMailModel, inReplyTo=replyMails[0])
@@ -87,7 +87,7 @@ def emailConversation(emailModel) -> None:
 
 @pytest.mark.django_db
 def test_EMailModel_fields(emailModel):
-    """Tests the correct default creation of :class:`core.models.EMailModel.EMailModel`."""
+    """Tests the fields of :class:`core.models.EMailModel.EMailModel`."""
 
     assert emailModel.message_id is not None
     assert isinstance(emailModel.message_id, str)
@@ -121,6 +121,7 @@ def test_EMailModel_fields(emailModel):
 
 @pytest.mark.django_db
 def test_EMailModel___str__(emailModel):
+    """Tests the string representation of :class:`core.models.EMailModel.EMailModel`."""
     assert emailModel.message_id in str(emailModel)
     assert str(emailModel.datetime) in str(emailModel)
     assert str(emailModel.mailbox) in str(emailModel)
@@ -217,9 +218,9 @@ def test_EMailModel_delete_emailfiles_success(
 )
 def test_EMailModel_delete_emailfiles_remove_error(
     mock_logger, emailModel_with_filepaths, mock_os_remove, side_effects
-) -> None:
+):
     """Tests :func:`core.models.EMailModel.EMailModel.delete`
-    if the file removal throws an exception.
+    if the file removal raises an exception.
     """
     mock_os_remove.side_effect = side_effects
 
@@ -240,7 +241,7 @@ def test_EMailModel_delete_emailModel_delete_error(
     mocker, mock_logger, emailModel_with_filepaths, mock_os_remove
 ):
     """Tests :func:`core.models.EMailModel.EMailModel.delete`
-    if delete throws an exception.
+    if delete raises an exception.
     """
     mock_delete = mocker.patch(
         "core.models.EMailModel.models.Model.delete",
@@ -267,6 +268,9 @@ def test_EMailModel_save_with_data_success(
     save_to_eml,
     expectedCall,
 ):
+    """Tests :func:`core.models.EMailModel.EMailModel.save`
+    in case of success with data to be saved.
+    """
     emailModel.mailbox.save_toEML = save_to_eml
 
     emailModel.save(emailData=mock_message)
@@ -285,6 +289,9 @@ def test_EMailModel_save_no_data(
     mock_EMailModel_save_to_storage,
     mock_EMailModel_render_to_storage,
 ):
+    """Tests :func:`core.models.EMailModel.EMailModel.save`
+    in case of success without data to be saved.
+    """
     emailModel.mailbox.save_toEML = True
 
     emailModel.save()
@@ -302,6 +309,9 @@ def test_EMailModel_save_with_data_failure(
     mock_EMailModel_save_to_storage,
     mock_EMailModel_render_to_storage,
 ):
+    """Tests :func:`core.models.EMailModel.EMailModel.save`
+    in case of success saving data fails with an exception.
+    """
     mock_EMailModel_save_to_storage.side_effect = AssertionError
     emailModel.mailbox.save_toEML = True
 
@@ -319,7 +329,7 @@ def test_EMailModel_save_with_data_failure(
     [(1, 8), (2, 3), (3, 3), (4, 1), (5, 1), (6, 1), (7, 2), (8, 1)],
 )
 def test_EMailModel_subConversation(emailConversation, start_id, expected_len):
-    """Tests the on_delete foreign key constraint on account in :class:`core.models.EMailModel.EMailModel`."""
+    """Tests :func:`core.models.EMailModel.EMailModel.subConversation`."""
     startEmail = EMailModel.objects.get(id=start_id)
 
     subConversationEmails = startEmail.subConversation()
@@ -330,7 +340,7 @@ def test_EMailModel_subConversation(emailConversation, start_id, expected_len):
 @pytest.mark.django_db
 @pytest.mark.parametrize("start_id", [1, 2, 3, 4, 5, 6, 7, 8])
 def test_EMailModel_fullConversation(emailConversation, start_id):
-    """Tests the on_delete foreign key constraint on account in :class:`core.models.EMailModel.EMailModel`."""
+    """Tests :func:`core.models.EMailModel.EMailModel.fullConversation`."""
     startEmail = EMailModel.objects.get(id=start_id)
 
     subConversationEmails = startEmail.fullConversation()
@@ -343,6 +353,7 @@ def test_EMailModel_fullConversation(emailConversation, start_id):
     "x_spam, expectedResult", [(None, False), ("YES", True), ("NO", False)]
 )
 def test_EMailModel_isSpam(emailModel, x_spam, expectedResult):
+    """Tests :func:`core.models.EMailModel.EMailModel.isSpam`."""
     emailModel.x_spam = x_spam
 
     result = emailModel.isSpam()
@@ -372,7 +383,10 @@ def test_EMailModel_createFromEmailBytes_success(
     plain_bodytext,
     html_bodytext,
     header_count,
-) -> None:
+):
+    """Tests :func:`core.models.EMailModel.EMailModel.createFromEmailBytes`
+    in case of success.
+    """
     with override_config(THROW_OUT_SPAM=False):
         emailModel = EMailModel.createFromEmailBytes(test_email, mailbox=mailboxModel)
 
@@ -405,7 +419,10 @@ def test_EMailModel_createFromEmailBytes_duplicate(
     mock_EMailModel_save_to_storage,
     mock_EMailModel_render_to_storage,
     mock_AttachmentModel_save_to_storage,
-) -> None:
+):
+    """Tests :func:`core.models.EMailModel.EMailModel.createFromEmailBytes`
+    in case the email to be parsed is already in the database.
+    """
     with override_config(THROW_OUT_SPAM=False):
         result = EMailModel.createFromEmailBytes(
             f"Message-ID: {emailModel.message_id}".encode(), emailModel.mailbox
@@ -442,7 +459,10 @@ def test_EMailModel_createFromEmailBytes_spam(
     X_Spam_Flag,
     THROW_OUT_SPAM,
     expected_isNone,
-) -> None:
+):
+    """Tests :func:`core.models.EMailModel.EMailModel.createFromEmailBytes`
+    with regard to spam emails.
+    """
     with override_config(THROW_OUT_SPAM=THROW_OUT_SPAM):
         result = EMailModel.createFromEmailBytes(
             f"X-Spam-Flag: {X_Spam_Flag}".encode(), mailboxModel
@@ -459,7 +479,10 @@ def test_EMailModel_createFromEmailBytes_spam(
 @pytest.mark.django_db
 def test_EMailModel_createFromEmailBytes_dberror(
     mocker, override_config, mailboxModel, mock_logger
-) -> None:
+):
+    """Tests :func:`core.models.EMailModel.EMailModel.createFromEmailBytes`
+    in case an database :class:`django.db.IntegrityError` occurs.
+    """
     mock_EMailModel_save = mocker.patch(
         "core.models.EMailModel.EMailModel.save",
         autospec=True,

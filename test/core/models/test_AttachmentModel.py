@@ -35,12 +35,13 @@ from core.models.EMailModel import EMailModel
 
 @pytest.fixture(autouse=True)
 def mock_logger(mocker):
-    """Mocks :attr:`core.models.AttachmentModel.logger` of the module."""
+    """Fixture mocking the logger :attr:`core.models.AttachmentModel.logger` of the module."""
     return mocker.patch("core.models.AttachmentModel.logger", autospec=True)
 
 
 @pytest.fixture(autouse=True)
 def mock_os_remove(mocker):
+    """Fixture mocking :func:`os.remove`."""
     return mocker.patch("core.models.AttachmentModel.os.remove", autospec=True)
 
 
@@ -58,7 +59,7 @@ def spy_Model_save(mocker):
 
 @pytest.mark.django_db
 def test_AttachmentModel_fields(attachmentModel):
-    """Tests the correct default creation of :class:`core.models.AttachmentModel.AttachmentModel`."""
+    """Tests the fields of :class:`core.models.AttachmentModel.AttachmentModel`."""
 
     assert attachmentModel.file_name is not None
     assert isinstance(attachmentModel.file_name, str)
@@ -77,6 +78,7 @@ def test_AttachmentModel_fields(attachmentModel):
 
 @pytest.mark.django_db
 def test_AttachmentModel___str__(attachmentModel):
+    """Tests the string representation of :class:`core.models.AttachmentModel.AttachmentModel`."""
     assert attachmentModel.file_name in str(attachmentModel)
     assert str(attachmentModel.email) in str(attachmentModel)
 
@@ -117,7 +119,7 @@ def test_AttachmentModel_delete_attachmentfile_success(
     attachmentModel, mock_logger, mock_os_remove
 ):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.delete`
-    if the file removal is successful.
+    in case the file removal is successful.
     """
     file_path = attachmentModel.file_path
 
@@ -138,7 +140,7 @@ def test_AttachmentModel_delete_attachmentfile_failure(
     attachmentModel, mock_logger, mock_os_remove, side_effect
 ):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.delete`
-    if the file removal throws an exception.
+    in case the file removal raises an exception.
     """
     mock_os_remove.side_effect = side_effect
     file_path = attachmentModel.file_path
@@ -162,15 +164,15 @@ def test_AttachmentModel_delete_attachmentfile_delete_error(
     mock_os_remove,
 ):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.delete`
-    if delete throws an exception.
+    in case delete raises an exception.
     """
     mock_delete = mocker.patch(
         "core.models.AttachmentModel.models.Model.delete",
         autospec=True,
-        side_effect=ValueError,
+        side_effect=AssertionError,
     )
 
-    with pytest.raises(ValueError):
+    with pytest.raises(AssertionError):
         attachmentModel.delete()
 
     mock_delete.assert_called_once()
@@ -188,6 +190,9 @@ def test_AttachmentModel_save_with_data_success(
     save_attachments,
     expectedCalls,
 ):
+    """Tests :func:`core.models.AttachmentModel.AttachmentModel.save`
+    in case of success with data to be saved.
+    """
     attachmentModel.email.mailbox.save_attachments = save_attachments
 
     attachmentModel.save(attachmentData=mock_message)
@@ -200,6 +205,9 @@ def test_AttachmentModel_save_with_data_success(
 def test_AttachmentModel_save_no_data(
     attachmentModel, mock_AttachmentModel_save_to_storage, spy_Model_save
 ):
+    """Tests :func:`core.models.AttachmentModel.AttachmentModel.save`
+    in case of success without data to be saved.
+    """
     attachmentModel.email.mailbox.save_attachmentModels = True
 
     attachmentModel.save()
@@ -212,6 +220,9 @@ def test_AttachmentModel_save_no_data(
 def test_AttachmentModel_save_with_data_failure(
     attachmentModel, mock_message, mock_AttachmentModel_save_to_storage, spy_Model_save
 ):
+    """Tests :func:`core.models.AttachmentModel.AttachmentModel.save`
+    in case of the data fails to be saved.
+    """
     mock_AttachmentModel_save_to_storage.side_effect = AssertionError
     attachmentModel.email.mailbox.save_attachmentModels = True
 
@@ -224,6 +235,9 @@ def test_AttachmentModel_save_with_data_failure(
 
 @pytest.mark.django_db
 def test_AttachmentModel_fromData(mock_message):
+    """Tests :func:`core.models.AttachmentModel.AttachmentModel.fromData`
+    in case of success.
+    """
     result = AttachmentModel.fromData(mock_message, None)
 
     mock_message.get_filename.assert_called_once_with()

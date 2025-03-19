@@ -49,7 +49,7 @@ def mock_logger(mocker):
 
 @pytest.mark.django_db
 def test_DaemonModel_fields(daemonModel):
-    """Tests the correct default creation of :class:`core.models.DaemonModel.DaemonModel`."""
+    """Tests the fields of :class:`core.models.DaemonModel.DaemonModel`."""
     assert daemonModel.uuid is not None
     assert isinstance(daemonModel.uuid, UUID)
     assert daemonModel.mailbox is not None
@@ -70,13 +70,14 @@ def test_DaemonModel_fields(daemonModel):
 
 @pytest.mark.django_db
 def test_DaemonModel___str__(daemonModel):
+    """Tests the string representation of :class:`core.models.DaemonModel.DaemonModel`."""
     assert str(daemonModel.uuid) in str(daemonModel)
     assert str(daemonModel.mailbox) in str(daemonModel)
 
 
 @pytest.mark.django_db
 def test_DaemonModel_foreign_key_deletion(daemonModel):
-    """Tests the on_delete foreign key constraint in :class:`core.models.AccountModel.AccountModel`."""
+    """Tests the on_delete foreign key constraint in :class:`core.models.DaemonModel.DaemonModel`."""
     assert daemonModel is not None
 
     daemonModel.mailbox.delete()
@@ -94,6 +95,9 @@ def test_DaemonModel_unique_constraints(daemonModel):
 
 @pytest.mark.django_db
 def test_DaemonModel_save_logfileCreation(daemonModel):
+    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.save`
+    in case there is no log_filepath.
+    """
     daemonModel.log_filepath = None
 
     daemonModel.save()
