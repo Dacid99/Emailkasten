@@ -2,7 +2,9 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
+
                 {% include "partials/_health_badge.html" with object=daemon %}
+
                 <span class="badge bg-secondary">
                     {% if daemon.is_running %}
                         <i class="fa-solid fa-play"></i>
@@ -14,7 +16,10 @@
                 <small>{{ daemon.created }}</small>
             </h5>
             <h6 class="card-subtitle">{{ daemon.mailbox.name }}</h6>
-            <h6 class="card-subtitle"><a href="mailto:{{ daemon.mailbox.account.mail_address }}" class="link-info">{{ daemon.mailbox.account.mail_address }}</a></h6>
+            <h6 class="card-subtitle">
+                <a href="mailto:{{ daemon.mailbox.account.mail_address }}"
+                   class="link-info">{{ daemon.mailbox.account.mail_address }}</a>
+            </h6>
             <p class="card-text">Criterion: {{ daemon.fetching_criterion }}</p>
         </div>
     </div>

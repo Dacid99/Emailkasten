@@ -5,5 +5,7 @@
         {{ filter.form.as_p }}
         <input type="submit" />
     </form>
+
     {% include "account/partials/_account_list.html" with accounts=filter.qs %}
-{% endblock %}
+
+{% endblock content %}
