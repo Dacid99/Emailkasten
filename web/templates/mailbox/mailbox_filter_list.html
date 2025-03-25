@@ -5,5 +5,7 @@
         {{ filter.form.as_p }}
         <input type="submit" />
     </form>
+
     {% include "mailbox/partials/_mailbox_list.html" with mailboxes=filter.qs %}
-{% endblock %}
+
+{% endblock content %}
