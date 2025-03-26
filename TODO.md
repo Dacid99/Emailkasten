@@ -27,6 +27,9 @@
   - serializer tests should use views model fixtures
 - emailcorrespondentsmodelserializers are inconsistent
 - consistent naming_style
+- email correspondent on delete is cascading! Should be data preserving instead
+- download mailboxes and accounts
+- tooltips
 
 ### Work in progress
 

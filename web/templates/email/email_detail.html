@@ -21,7 +21,7 @@
             <h2 class="card-title">{{ email.message_id }}</h2>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">Subject: {{ email.email_subject }}</li>
-                <li class="list-group-item">Date received: {{ email.datetime }}</li>
+                <li class="list-group-item">Date received: {{ email.datetime|localize }}</li>
                 <li class="list-group-item">X-Spam: {{ email.x_spam }}</li>
                 <li class="list-group-item list-group-item-action">
                     <a href="{% url 'web:mailinglist-detail' email.mailinglist.pk %}">Mailinglist: {{ email.mailinglist.list_id }}</a>
