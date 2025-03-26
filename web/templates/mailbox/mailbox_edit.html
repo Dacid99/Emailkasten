@@ -1,0 +1,38 @@
+{% extends base.html %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+
+            {% include "partials/_favorite_badge.html" with object=mailbox %}
+
+            {% include "partials/_health_badge.html" with object=mailbox %}
+
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">{{ mailbox.name }}</h2>
+            <h3 class="card-subtitle">{{ mailbox.account.mail_address }}</h3>
+            <form method="post">
+                {% csrf_token %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label for="{{ form.save_attachments.id_for_label }}" class="form-label">
+                            {{ form.save_attachments.label }}
+                        </label>
+                        {{ form.save_attachments }}
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.save_toEML.id_for_label }}" class="form-label">
+                            {{ form.save_toEML.label }}
+                        </label>
+                        {{ form.save_toEML }}
+                    </li>
+                </ul>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+
+        {% include "partials/_dates_card-footer.html" with object=mailbox %}
+
+    </div>
+{% endblock content %}
