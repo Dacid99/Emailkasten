@@ -1,0 +1,62 @@
+{% extends base.html %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <span class="badge bg-secondary text-center">
+                {% if daemon.is_running %}
+                    <i class="fa-regular fa-play"></i>
+                {% else %}
+                    <i class="fa-regular fa-pause"></i>
+                {% endif %}
+            </span>
+
+            {% include "partials/_health_badge.html" with object=daemon %}
+
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">{{ daemon.uuid }}</h2>
+            <h3 class="card-subtitle link-primary">{{ daemon.mailbox.name }}</h3>
+            <h3 class="card-subtitle link-primary">{{ daemon.mailbox.account.mail_address }}</h3>
+            <form method="post">
+                {% csrf_token %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <label for="{{ form.fetching_criterion.id_for_label }}" class="form-label">
+                            {{ form.fetching_criterion.label }}
+                        </label>
+                        {{ form.fetching_criterion }}
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.cycle_interval.id_for_label }}" class="form-label">
+                            {{ form.cycle_interval.label }}
+                        </label>
+                        {{ form.cycle_interval }}
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.restart_time.id_for_label }}" class="form-label">
+                            {{ form.restart_time.label }}
+                        </label>
+                        {{ form.restart_time }}
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.log_backup_count.id_for_label }}" class="form-label">
+                            {{ form.log_backup_count.label }}
+                        </label>
+                        {{ form.log_backup_count }}
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.logfile_size.id_for_label }}" class="form-label">
+                            {{ form.logfile_size.label }}
+                        </label>
+                        {{ form.logfile_size }}
+                    </li>
+                </ul>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+
+        {% include "partials/_dates_card-footer.html" with object=daemon %}
+
+    </div>
+{% endblock content %}
