@@ -27,6 +27,9 @@
   - sort args
   - AssertionErrors for injected side_effects
   - no pytest.raises(Exception)
+- email correspondent on delete is cascading! Should be data preserving instead
+- download mailboxes and accounts
+- tooltips
 
 ### Work in progress
 
