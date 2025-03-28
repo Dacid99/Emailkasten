@@ -110,7 +110,7 @@ def owner_apiClient(noauth_apiClient, owner_user) -> APIClient:
     return noauth_apiClient
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="package")
 def list_url() -> Callable[[type[ModelViewSet]], str]:
     """Gets the viewsets url for list actions.
 
@@ -120,7 +120,7 @@ def list_url() -> Callable[[type[ModelViewSet]], str]:
     return lambda viewsetClass: reverse(f"{viewsetClass.BASENAME}-list")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="package")
 def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
     """Gets the viewsets url for detail actions.
 
@@ -132,7 +132,7 @@ def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="package")
 def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
     """Gets the viewsets url for custom list actions.
 
@@ -144,7 +144,7 @@ def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="package")
 def custom_detail_action_url() -> Callable[[type[ModelViewSet], str, Model], str]:
     """Gets the viewsets url for custom detail actions.
 
