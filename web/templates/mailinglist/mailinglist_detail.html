@@ -31,7 +31,7 @@
             <div class="card-body">
                 <h4 class="card-title">Emails</h4>
 
-                {% include "email/partials/_email_list.html" with emails=mailinglist.emails %}
+                {% include "email/partials/_email_list.html" with emails=mailinglist.emails.all %}
 
             </div>
         </div>
@@ -39,7 +39,7 @@
             <div class="card-body">
                 <h4 class="card-title">Correspondents</h4>
 
-                {% include "correspondent/partials/_correspondent_list.html" with correspondents=mailinglist.emails.correspondents %}
+                {% include "correspondent/partials/_correspondent_list.html" with correspondents=mailinglist.emails.correspondents.all.distinct %}
 
             </div>
         </div>

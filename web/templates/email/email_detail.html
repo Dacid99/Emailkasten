@@ -21,20 +21,24 @@
             <h2 class="card-title">{{ email.message_id }}</h2>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">Subject: {{ email.email_subject }}</li>
-                <li class="list-group-item">Date received: {{ email.datetime|localize }}</li>
+                <li class="list-group-item">Date received: {{ email.datetime|date:"d-m-Y" }}</li>
                 <li class="list-group-item">X-Spam: {{ email.x_spam }}</li>
-                <li class="list-group-item list-group-item-action">
-                    <a href="{% url 'web:mailinglist-detail' email.mailinglist.pk %}">Mailinglist: {{ email.mailinglist.list_id }}</a>
-                </li>
+                {% if email.mailinglist %}
+                    <li class="list-group-item list-group-item-action">
+                        <a href="{% url 'web:mailinglist-detail' email.mailinglist.pk %}">Mailinglist: {{ email.mailinglist.list_id }}</a>
+                    </li>
+                {% endif %}
                 <li class="list-group-item list-group-item-action">
                     <a href="{% url 'web:mailbox-detail' email.mailbox.pk %}">Mailbox: {{ email.mailbox.name }}</a>
                 </li>
                 <li class="list-group-item list-group-item-action">
                     <a href="{% url 'web:account-detail' email.mailbox.account.pk %}">Account: {{ email.mailbox.account.mail_address }}</a>
                 </li>
-                <li class="list-group-item list-group-item-action">
-                    <a href="{% url 'web:email-detail' email.inReplyTo.pk %}">In reply to: {{ email.inReplyTo.message_id }}</a>
-                </li>
+                {% if email.inReplyTo %}
+                    <li class="list-group-item list-group-item-action">
+                        <a href="{% url 'web:email-detail' email.inReplyTo.pk %}">In reply to: {{ email.inReplyTo.message_id }}</a>
+                    </li>
+                {% endif %}
                 <li class="list-group-item">
                     <p class="d-inline-flex gap-1">
                         <button class="btn btn-primary"
@@ -78,7 +82,7 @@
             <div class="card-body">
                 <h4 class="card-title">Correspondents</h4>
 
-                {% include "correspondent/partials/_correspondent_list.html" with correspondents=email.correspondents %}
+                {% include "correspondent/partials/_correspondent_list.html" with correspondents=email.correspondents.all.distinct %}
 
             </div>
         </div>
@@ -100,10 +104,12 @@
 
                             {% for headername, headervalue in email.headers %}
                                 <li class="list-group-item">{{ headername }}: {{ headervalue }}</li>
-                            </ul>
-                        </div>
+                            {% endfor %}
+
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-    {% endblock content %}
+    </div>
+{% endblock content %}

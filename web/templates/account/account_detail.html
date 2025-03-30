@@ -27,7 +27,7 @@
             <div class="card-body">
                 <h4 class="card-title">Mailboxes</h4>
 
-                {% include "mailbox/partials/_mailbox_list.html" with mailboxes=account.mailboxes %}
+                {% include "mailbox/partials/_mailbox_list.html" with mailboxes=account.mailboxes.all %}
 
             </div>
         </div>
