@@ -7,7 +7,9 @@
                 {% include "partials/_favorite_badge.html" with object=attachment %}
 
             </h5>
-            <small>{{ attachment.created }}</small>
+
+            {% include "partials/_dates_card-p.html" with object=attachment %}
+
             <p class="card-text">Type: {{ attachment.content_type }}</p>
             <p class="card-text">Size: {{ attachment.datasize }} bytes</p>
         </div>

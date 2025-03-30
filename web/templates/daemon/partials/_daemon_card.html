@@ -13,7 +13,9 @@
                     {% endif %}
                 </span>
                 {{ daemon.uuid }}
-                <small>{{ daemon.created }}</small>
+
+                {% include "partials/_dates_card-p.html" with object=daemon %}
+
             </h5>
             <h6 class="card-subtitle">{{ daemon.mailbox.name }}</h6>
             <h6 class="card-subtitle">

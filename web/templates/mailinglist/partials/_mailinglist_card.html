@@ -7,7 +7,9 @@
                 {% include "partials/_favorite_badge.html" with object=mailinglist %}
 
             </h5>
-            <small>{{ mailinglist.created }}</small>
+
+            {% include "partials/_dates_card-p.html" with object=mailinglist %}
+
             <h6 class="card-subtitle">{{ mailinglist.list_id }}</h6>
             <p class="card-text">Owner: {{ mailinglist.list_owner }}</p>
         </div>

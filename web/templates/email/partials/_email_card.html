@@ -7,7 +7,9 @@
                 {% include "partials/_favorite_badge.html" with object=email %}
 
             </h5>
-            <small>{{ email.created }}</small>
+
+            {% include "partials/_dates_card-p.html" with object=email %}
+
             <h6 class="card-subtitle">{{ email.mailbox.name }}</h6>
             <h6 class="card-subtitle">
                 <a href="mailto:{{ email.mailbox.account.mail_address }}"

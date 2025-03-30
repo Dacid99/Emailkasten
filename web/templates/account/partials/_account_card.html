@@ -10,7 +10,9 @@
                 {% include "partials/_favorite_badge.html" with object=account %}
 
             </h5>
-            <small>{{ account.created }}</small>
+
+            {% include "partials/_dates_card-p.html" with object=account %}
+
             <p class="card-text">Protocol: {{ account.protocol }}</p>
         </div>
     </div>

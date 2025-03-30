@@ -8,7 +8,9 @@
 
             </h5>
             <h6 class="card-subtitle">{{ correspondent.email_name }}</h6>
-            <small>{{ attachment.created }}</small>
+
+            {% include "partials/_dates_card-p.html" with object=attachment %}
+
         </div>
     </div>
 </a>
