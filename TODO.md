@@ -30,6 +30,7 @@
 - email correspondent on delete is cascading! Should be data preserving instead
 - download mailboxes and accounts
 - tooltips
+- option to prohibit daemon for spambox
 
 ### Work in progress
 

@@ -26,6 +26,7 @@ import uuid
 from typing import TYPE_CHECKING, Any, Final, override
 
 from dirtyfields import DirtyFieldsMixin
+from django.core.exceptions import ValidationError
 from django.db import models
 
 import Emailkasten.constants
@@ -150,3 +151,13 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
                 f"daemon_{self.uuid}.log",
             )
         super().save(*args, **kwargs)
+
+    @override
+    def clean(self) -> None:
+        """Validates that :attr:`fetching_criterion` is available for the :attr:`mailbox.account`."""
+        if self.fetching_criterion not in self.mailbox.getAvailableFetchingCriteria():
+            raise ValidationError(
+                {
+                    "fetching_criterion": "This fetching criterion is not available for this mailbox!"
+                }
+            )
