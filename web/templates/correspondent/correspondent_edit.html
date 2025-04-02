@@ -8,6 +8,9 @@
 
         </div>
         <div class="card-body">
+
+            {% include "partials/_delete-button.html" with object=correspondent %}
+
             <h2 class="card-title">{{ correspondent.email_address }}</h2>
             <form method="post">
                 {% csrf_token %}

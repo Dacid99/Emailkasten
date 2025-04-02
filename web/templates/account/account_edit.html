@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+
+            {% include "partials/_delete-button.html" with object=account %}
+
+            <form method="post">
+                {% csrf_token %}
+                <h2 class="card-title">
+                    <label for="{{ form.mail_address.id_for_label }}" class="form-label">
+                        {{ form.mail_address.label }}
+                    </label>
+                    {{ form.mail_address }}
+                </h2>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        {{ form. }}
+                        <label for="{{ form.mail_host.id_for_label }}" class="form-label">
+                            {{ form.mail_host.label }}
+                        </label>
+                        {{ form.mail_host }}
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.protocol.id_for_label }}" class="form-label">{{ form.protocol.label }}</label>
+                        {{ form.protocol }}
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.mail_host_port.id_for_label }}" class="form-label">
+                            {{ form.mail_host_port.label }}
+                        </label>
+                        {{ form.mail_host_port }}
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.timeout.id_for_label }}" class="form-label">{{ form.timeout.label }}</label>
+                        {{ form.timeout }}
+                    </li>
+                </ul>
+                <button type="submit" class="btn btn-primary" name="update">Save</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

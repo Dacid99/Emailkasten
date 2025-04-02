@@ -35,12 +35,29 @@ from __future__ import annotations
 
 from django.urls import include, path
 
-from .views.account_views import AccountDetailView, AccountFilterView
+from .views.account_views import (
+    AccountCreateView,
+    AccountDetailView,
+    AccountFilterView,
+    AccountUpdateOrDeleteView,
+)
 from .views.attachment_views import AttachmentDetailView, AttachmentFilterView
-from .views.correspondent_views import CorrespondentDetailView, CorrespondentFilterView
-from .views.daemon_views import DaemonDetailView, DaemonFilterView
+from .views.correspondent_views import (
+    CorrespondentDetailView,
+    CorrespondentFilterView,
+    CorrespondentUpdateOrDeleteView,
+)
+from .views.daemon_views import (
+    DaemonDetailView,
+    DaemonFilterView,
+    DaemonUpdateOrDeleteView,
+)
 from .views.email_views import EMailDetailView, EMailFilterView
-from .views.mailbox_views import MailboxDetailView, MailboxFilterView
+from .views.mailbox_views import (
+    MailboxDetailView,
+    MailboxFilterView,
+    MailboxUpdateOrDeleteView,
+)
 from .views.mailinglist_views import MailingListDetailView, MailingListFilterView
 
 
@@ -54,9 +71,19 @@ urlpatterns = [
         name=AccountFilterView.AccountFilterView.URL_NAME,
     ),
     path(
-        "account/<int:pk>/",
+        "accounts/<int:pk>/details/",
         AccountDetailView.AccountDetailView.as_view(),
         name=AccountDetailView.AccountDetailView.URL_NAME,
+    ),
+    path(
+        "accounts/<int:pk>/edit/",
+        AccountUpdateOrDeleteView.AccountUpdateOrDeleteView.as_view(),
+        name=AccountUpdateOrDeleteView.AccountUpdateOrDeleteView.URL_NAME,
+    ),
+    path(
+        "accounts/add/",
+        AccountCreateView.AccountCreateView.as_view(),
+        name=AccountCreateView.AccountCreateView.URL_NAME,
     ),
     path(
         "attachments/",
@@ -64,7 +91,7 @@ urlpatterns = [
         name=AttachmentFilterView.AttachmentFilterView.URL_NAME,
     ),
     path(
-        "attachment/<int:pk>/",
+        "attachments/<int:pk>/details/",
         AttachmentDetailView.AttachmentDetailView.as_view(),
         name=AttachmentDetailView.AttachmentDetailView.URL_NAME,
     ),
@@ -74,9 +101,14 @@ urlpatterns = [
         name=CorrespondentFilterView.CorrespondentFilterView.URL_NAME,
     ),
     path(
-        "correspondent/<int:pk>/",
+        "correspondents/<int:pk>/details/",
         CorrespondentDetailView.CorrespondentDetailView.as_view(),
         name=CorrespondentDetailView.CorrespondentDetailView.URL_NAME,
+    ),
+    path(
+        "correspondents/<int:pk>/edit/",
+        CorrespondentUpdateOrDeleteView.CorrespondentUpdateOrDeleteView.as_view(),
+        name=CorrespondentUpdateOrDeleteView.CorrespondentUpdateOrDeleteView.URL_NAME,
     ),
     path(
         "daemons/",
@@ -84,9 +116,14 @@ urlpatterns = [
         name=DaemonFilterView.DaemonFilterView.URL_NAME,
     ),
     path(
-        "daemon/<int:pk>/",
+        "daemons/<int:pk>/details/",
         DaemonDetailView.DaemonDetailView.as_view(),
         name=DaemonDetailView.DaemonDetailView.URL_NAME,
+    ),
+    path(
+        "daemons/<int:pk>/edit/",
+        DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView.as_view(),
+        name=DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView.URL_NAME,
     ),
     path(
         "emails/",
@@ -94,7 +131,7 @@ urlpatterns = [
         name=EMailFilterView.EMailFilterView.URL_NAME,
     ),
     path(
-        "email/<int:pk>/",
+        "emails/<int:pk>/details/",
         EMailDetailView.EMailDetailView.as_view(),
         name=EMailDetailView.EMailDetailView.URL_NAME,
     ),
@@ -104,9 +141,14 @@ urlpatterns = [
         name=MailboxFilterView.MailboxFilterView.URL_NAME,
     ),
     path(
-        "mailbox/<int:pk>/",
+        "mailboxes/<int:pk>/details/",
         MailboxDetailView.MailboxDetailView.as_view(),
         name=MailboxDetailView.MailboxDetailView.URL_NAME,
+    ),
+    path(
+        "mailboxes/<int:pk>/edit/",
+        MailboxUpdateOrDeleteView.MailboxUpdateOrDeleteView.as_view(),
+        name=MailboxUpdateOrDeleteView.MailboxUpdateOrDeleteView.URL_NAME,
     ),
     path(
         "mailinglists/",
@@ -114,7 +156,7 @@ urlpatterns = [
         name=MailingListFilterView.MailingListFilterView.URL_NAME,
     ),
     path(
-        "mailinglist/<int:pk>/",
+        "mailinglists/<int:pk>/details/",
         MailingListDetailView.MailingListDetailView.as_view(),
         name=MailingListDetailView.MailingListDetailView.URL_NAME,
     ),
