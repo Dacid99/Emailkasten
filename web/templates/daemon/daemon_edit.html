@@ -2,24 +2,25 @@
 
 {% block content %}
     <div class="card">
-        <div class="card-header">
-            <span class="badge bg-secondary text-center">
-                {% if daemon.is_running %}
-                    <i class="fa-regular fa-play"></i>
-                {% else %}
-                    <i class="fa-regular fa-pause"></i>
-                {% endif %}
-            </span>
+        <div class="card-header d-flex justify-content-end">
+            <div class="btn-toolbar p-2"
+                 role="toolbar"
+                 aria-label="Toolbar with buttons">
+                <div class="btn-group" role="group" aria-label="Edit button group">
 
-            {% include "partials/_health_badge.html" with object=daemon %}
+                    {% include "partials/_delete-button.html" with object=daemon %}
 
+                    {% include "partials/_end_edit-button.html" with object=daemon %}
+
+                </div>
+                <div class="btn-group" role="group" aria-label="Close button group">
+
+                    {% include "partials/_close_to_list-button.html" with object=daemon %}
+
+                </div>
+            </div>
         </div>
         <div class="card-body">
-
-            {% include "partials/_delete-button.html" with object=daemon %}
-
-            {% include "partials/_close_to_detail-button.html" with object=daemon %}
-
             <h2 class="card-title">{{ daemon.uuid }}</h2>
             <h3 class="card-subtitle link-primary">{{ daemon.mailbox.name }}</h3>
             <h3 class="card-subtitle link-primary">{{ daemon.mailbox.account.mail_address }}</h3>
