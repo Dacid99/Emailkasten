@@ -37,6 +37,22 @@ class URLMixin:
         """
         return reverse("web:" + self.get_detail_web_url_name(), kwargs={"pk": self.pk})
 
+    def get_absolute_edit_url(self) -> str:
+        """Gets the edit webview url for the model instance.
+
+        Returns:
+            The edit webview url for the model instance.
+        """
+        return reverse("web:" + self.get_edit_web_url_name(), kwargs={"pk": self.pk})
+
+    def get_absolute_list_url(self) -> str:
+        """Gets the list webview url for the model instance.
+
+        Returns:
+            The list webview url for the model instance.
+        """
+        return reverse("web:" + self.get_list_web_url_name())
+
     @classmethod
     def get_list_web_url_name(cls) -> str:
         """Gets the list webview urlname for the model.
