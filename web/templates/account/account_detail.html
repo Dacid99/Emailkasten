@@ -10,6 +10,9 @@
 
         </div>
         <div class="card-body">
+
+            {% include "partials/_edit-button.html" with object=account %}
+
             <h2 class="card-title">
                 <a href="mailto:{{ account.mail_address }}" class="link-info">{{ account.mail_address }}</a>
             </h2>

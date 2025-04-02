@@ -15,6 +15,9 @@
 
         </div>
         <div class="card-body">
+
+            {% include "partials/_edit-button.html" with object=account %}
+
             <h2 class="card-title">{{ daemon.uuid }}</h2>
             <h3 class="card-subtitle link-primary">
                 <a href="{% url 'web:mailbox-detail' daemon.mailbox.pk %}">{{ daemon.mailbox.name }}</a>

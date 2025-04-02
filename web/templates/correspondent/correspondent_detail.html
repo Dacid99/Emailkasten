@@ -8,6 +8,9 @@
 
         </div>
         <div class="card-body">
+
+            {% include "partials/_edit-button.html" with object=correspondent %}
+
             <h2 class="card-title">
                 <a href="mailto:{{ correspondent.email_address }}" class="link-info">{{ correspondent.email_address }}</a>
             </h2>
