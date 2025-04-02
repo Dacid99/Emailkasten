@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% include "account/partials/_add_button.html" with object=account %}
+
 {% block content %}
     <form method="get">
         {{ filter.form.as_p }}
