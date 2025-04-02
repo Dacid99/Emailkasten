@@ -18,6 +18,8 @@
 
             {% include "partials/_delete-button.html" with object=daemon %}
 
+            {% include "partials/_close_to_detail-button.html" with object=daemon %}
+
             <h2 class="card-title">{{ daemon.uuid }}</h2>
             <h3 class="card-subtitle link-primary">{{ daemon.mailbox.name }}</h3>
             <h3 class="card-subtitle link-primary">{{ daemon.mailbox.account.mail_address }}</h3>

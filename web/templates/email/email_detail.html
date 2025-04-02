@@ -18,6 +18,9 @@
 
         </div>
         <div class="card-body">
+
+            {% include "partials/_close_to_list-button.html" with object=email %}
+
             <h2 class="card-title">{{ email.message_id }}</h2>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">Subject: {{ email.email_subject }}</li>

@@ -8,6 +8,9 @@
 
         </div>
         <div class="card-body">
+
+            {% include "partials/_close_to_list-button.html" with object=mailinglist %}
+
             <h2 class="card-title">{{ mailinglist.list_id }}</h2>
             <h3 class="card-subtitle">{{ mailinglist.list_owner }}</h3>
             <ul class="list-group list-group-flush">

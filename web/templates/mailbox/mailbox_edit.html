@@ -13,6 +13,8 @@
 
             {% include "partials/_delete-button.html" with object=mailbox %}
 
+            {% include "partials/_close_to_detail-button.html" with object=mailbox %}
+
             <h2 class="card-title">{{ mailbox.name }}</h2>
             <h3 class="card-subtitle">{{ mailbox.account.mail_address }}</h3>
             <form method="post">

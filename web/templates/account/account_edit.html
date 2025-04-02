@@ -6,6 +6,8 @@
 
             {% include "partials/_delete-button.html" with object=account %}
 
+            {% include "partials/_close_to_detail-button.html" with object=account %}
+
             <form method="post">
                 {% csrf_token %}
                 <h2 class="card-title">

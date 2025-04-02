@@ -16,7 +16,9 @@
         </div>
         <div class="card-body">
 
-            {% include "partials/_edit-button.html" with object=account %}
+            {% include "partials/_edit-button.html" with object=daemon %}
+
+            {% include "partials/_close_to_list-button.html" with object=daemon %}
 
             <h2 class="card-title">{{ daemon.uuid }}</h2>
             <h3 class="card-subtitle link-primary">
