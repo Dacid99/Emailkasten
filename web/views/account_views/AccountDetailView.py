@@ -33,7 +33,7 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
     model = AccountModel
     template_name = "account/account_detail.html"
     context_object_name = "account"
-    URL_NAME = "account-detail"
+    URL_NAME = AccountModel.get_detail_web_url_name()
 
     @override
     def get_queryset(self) -> QuerySet:

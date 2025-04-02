@@ -48,7 +48,7 @@ if TYPE_CHECKING:
 class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
     """Viewset for the :class:`core.models.AttachmentModel.AttachmentModel`."""
 
-    BASENAME = "attachments"
+    BASENAME = AttachmentModel.BASENAME
     serializer_class = BaseAttachmentSerializer
     filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
     filterset_class = AttachmentFilter

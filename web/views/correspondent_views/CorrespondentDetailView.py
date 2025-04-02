@@ -33,7 +33,7 @@ class CorrespondentDetailView(LoginRequiredMixin, DetailView):
     model = CorrespondentModel
     template_name = "correspondent/correspondent_detail.html"
     context_object_name = "correspondent"
-    URL_NAME = "correspondent-detail"
+    URL_NAME = CorrespondentModel.get_detail_web_url_name()
 
     @override
     def get_queryset(self) -> QuerySet:

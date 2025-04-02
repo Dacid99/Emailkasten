@@ -30,6 +30,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 import Emailkasten.constants
+from core.mixins.URLMixin import URLMixin
 from Emailkasten.utils import get_config
 
 from ..constants import EmailFetchingCriterionChoices
@@ -43,7 +44,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class DaemonModel(DirtyFieldsMixin, models.Model):
+class DaemonModel(DirtyFieldsMixin, URLMixin, models.Model):
     """Database model for the daemon fetching a mailbox."""
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -113,6 +114,8 @@ class DaemonModel(DirtyFieldsMixin, models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
+
+    BASENAME = "daemon"
 
     class Meta:
         """Metadata class for the model."""

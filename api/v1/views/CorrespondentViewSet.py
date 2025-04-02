@@ -50,7 +50,7 @@ if TYPE_CHECKING:
 class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
     """Viewset for the :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
-    BASENAME = "correspondents"
+    BASENAME = CorrespondentModel.BASENAME
     serializer_class = CorrespondentSerializer
     filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
     filterset_class = CorrespondentFilter

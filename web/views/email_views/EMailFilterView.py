@@ -34,7 +34,7 @@ class EMailFilterView(LoginRequiredMixin, FilterView):
     model = EMailModel
     template_name = "email/email_filter_list.html"
     context_object_name = "emails"
-    URL_NAME = "email-list"
+    URL_NAME = EMailModel.get_list_web_url_name()
     filterset_class = EMailFilter
 
     @override

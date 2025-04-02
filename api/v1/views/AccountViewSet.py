@@ -48,7 +48,7 @@ if TYPE_CHECKING:
 class AccountViewSet(viewsets.ModelViewSet):
     """Viewset for the :class:`core.models.AccountModel.AccountModel`."""
 
-    BASENAME = "accounts"
+    BASENAME = AccountModel.BASENAME
     serializer_class = AccountSerializer
     filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
     filterset_class = AccountFilter

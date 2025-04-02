@@ -49,7 +49,7 @@ class MailingListViewSet(viewsets.ReadOnlyModelViewSet, mixins.DestroyModelMixin
     Provides every read-only and a destroy action.
     """
 
-    BASENAME = "mailinglists"
+    BASENAME = MailingListModel.BASENAME
     serializer_class = MailingListSerializer
     filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
     filterset_class = MailingListFilter

@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING, Final
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 
+from core.mixins.URLMixin import URLMixin
 from core.models.EMailModel import EMailModel
 from Emailkasten.utils import get_config
 
@@ -43,7 +44,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class MailboxModel(DirtyFieldsMixin, models.Model):
+class MailboxModel(DirtyFieldsMixin, URLMixin, models.Model):
     """Database model for a mailbox in a mail account."""
 
     name = models.CharField(max_length=255)
@@ -81,6 +82,8 @@ class MailboxModel(DirtyFieldsMixin, models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
+
+    BASENAME = "mailbox"
 
     class Meta:
         """Metadata class for the model."""

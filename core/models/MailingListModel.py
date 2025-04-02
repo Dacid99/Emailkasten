@@ -25,6 +25,8 @@ from typing import TYPE_CHECKING
 
 from django.db import models
 
+from core.mixins.URLMixin import URLMixin
+
 from ..constants import HeaderFields
 from ..utils.mailParsing import getHeader
 
@@ -36,7 +38,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class MailingListModel(models.Model):
+class MailingListModel(URLMixin, models.Model):
     """Database model for a mailinglist."""
 
     list_id = models.CharField(max_length=255, unique=True)
@@ -68,6 +70,8 @@ class MailingListModel(models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
+
+    BASENAME = "mailinglist"
 
     class Meta:
         """Metadata class for the model."""

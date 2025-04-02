@@ -24,6 +24,7 @@ import logging
 
 from django.db import models
 
+from core.mixins.URLMixin import URLMixin
 from core.utils.mailParsing import parseCorrespondentHeader
 
 
@@ -31,7 +32,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for the module."""
 
 
-class CorrespondentModel(models.Model):
+class CorrespondentModel(URLMixin, models.Model):
     """Database model for the correspondent data found in a mail."""
 
     email_name = models.CharField(
@@ -54,6 +55,8 @@ class CorrespondentModel(models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
+
+    BASENAME = "correspondent"
 
     class Meta:
         """Metadata class for the model."""

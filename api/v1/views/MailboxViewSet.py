@@ -33,7 +33,7 @@ from core import constants
 from core.models.DaemonModel import DaemonModel
 from core.models.EMailModel import EMailModel
 from core.models.MailboxModel import MailboxModel
-from core.utils.fetchers.exceptions import FetcherError, MailboxError
+from core.utils.fetchers.exceptions import FetcherError
 
 from ..filters.MailboxFilter import MailboxFilter
 from ..serializers.mailbox_serializers.MailboxWithDaemonSerializer import (
@@ -50,7 +50,7 @@ if TYPE_CHECKING:
 class MailboxViewSet(viewsets.ModelViewSet):
     """Viewset for the :class:`core.models.MailboxModel.MailboxModel`."""
 
-    BASENAME = "mailboxes"
+    BASENAME = MailboxModel.BASENAME
     serializer_class = MailboxWithDaemonSerializer
     filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
     filterset_class = MailboxFilter

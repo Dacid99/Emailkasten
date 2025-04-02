@@ -34,7 +34,7 @@ class CorrespondentFilterView(LoginRequiredMixin, FilterView):
     model = CorrespondentModel
     template_name = "correspondent/correspondent_filter_list.html"
     context_object_name = "correspondents"
-    URL_NAME = "correspondent-list"
+    URL_NAME = CorrespondentModel.get_list_web_url_name()
     filterset_class = CorrespondentFilter
 
     @override

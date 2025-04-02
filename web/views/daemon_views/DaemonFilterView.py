@@ -34,7 +34,7 @@ class DaemonFilterView(LoginRequiredMixin, FilterView):
     model = DaemonModel
     template_name = "daemon/daemon_filter_list.html"
     context_object_name = "daemons"
-    URL_NAME = "daemon-list"
+    URL_NAME = DaemonModel.get_list_web_url_name()
     filterset_class = DaemonFilter
 
     @override

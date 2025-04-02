@@ -34,7 +34,7 @@ class MailingListFilterView(LoginRequiredMixin, FilterView):
     model = MailingListModel
     template_name = "mailinglist/mailinglist_filter_list.html"
     context_object_name = "mailinglists"
-    URL_NAME = "mailinglist-list"
+    URL_NAME = MailingListModel.get_list_web_url_name()
     filterset_class = MailingListFilter
 
     @override

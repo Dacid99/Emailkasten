@@ -34,7 +34,7 @@ class MailboxFilterView(LoginRequiredMixin, FilterView):
     model = MailboxModel
     template_name = "mailbox/mailbox_filter_list.html"
     context_object_name = "mailboxes"
-    URL_NAME = "mailbox-list"
+    URL_NAME = MailboxModel.get_list_web_url_name()
     filterset_class = MailboxFilter
 
     @override

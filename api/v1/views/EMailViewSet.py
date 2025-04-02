@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 class EMailViewSet(viewsets.ReadOnlyModelViewSet):
     """Viewset for the :class:`core.models.EMailModel.EMailModel`."""
 
-    BASENAME = "emails"
+    BASENAME = EMailModel.BASENAME
     serializer_class = FullEMailSerializer
     filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
     filterset_class = EMailFilter

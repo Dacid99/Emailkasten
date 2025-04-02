@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 class DaemonViewSet(viewsets.ModelViewSet):
     """Viewset for the :class:`core.models.DaemonModel.DaemonModel`."""
 
-    BASENAME = "daemons"
+    BASENAME = DaemonModel.BASENAME
     serializer_class = BaseDaemonSerializer
     filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
     filterset_class = DaemonFilter

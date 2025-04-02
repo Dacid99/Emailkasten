@@ -29,6 +29,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 from ..constants import EmailProtocolChoices
+from ..mixins.URLMixin import URLMixin
 from ..utils.fetchers.exceptions import MailAccountError
 from ..utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
 from ..utils.fetchers.IMAPFetcher import IMAPFetcher
@@ -46,7 +47,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class AccountModel(DirtyFieldsMixin, models.Model):
+class AccountModel(DirtyFieldsMixin, URLMixin, models.Model):
     """Database model for the account data of a mail account."""
 
     mail_address = models.EmailField(
@@ -109,6 +110,8 @@ class AccountModel(DirtyFieldsMixin, models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
+
+    BASENAME = "account"
 
     class Meta:
         """Metadata class for the model."""

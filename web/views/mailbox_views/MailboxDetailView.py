@@ -33,7 +33,7 @@ class MailboxDetailView(LoginRequiredMixin, DetailView):
     model = MailboxModel
     template_name = "mailbox/mailbox_detail.html"
     context_object_name = "mailbox"
-    URL_NAME = "mailbox-detail"
+    URL_NAME = MailboxModel.get_detail_web_url_name()
 
     @override
     def get_queryset(self) -> QuerySet:

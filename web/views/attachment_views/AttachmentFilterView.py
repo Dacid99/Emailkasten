@@ -34,7 +34,7 @@ class AttachmentFilterView(LoginRequiredMixin, FilterView):
     model = AttachmentModel
     template_name = "attachment/attachment_filter_list.html"
     context_object_name = "attachments"
-    URL_NAME = "attachment-list"
+    URL_NAME = AttachmentModel.get_list_web_url_name()
     filterset_class = AttachmentFilter
 
     @override

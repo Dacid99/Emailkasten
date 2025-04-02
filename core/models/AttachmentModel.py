@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING, Any, Final, override
 from django.db import models
 
 from core.mixins.HasDownloadMixin import HasDownloadMixin
+from core.mixins.URLMixin import URLMixin
 from Emailkasten.utils import get_config
 
 from ..utils.fileManagment import saveStore
@@ -44,7 +45,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class AttachmentModel(HasDownloadMixin, models.Model):
+class AttachmentModel(HasDownloadMixin, URLMixin, models.Model):
     """Database model for an attachment file in a mail."""
 
     file_name = models.CharField(max_length=255)
@@ -80,6 +81,8 @@ class AttachmentModel(HasDownloadMixin, models.Model):
 
     updated = models.DateTimeField(auto_now=True)
     """The datetime this entry was last updated. Is set automatically."""
+
+    BASENAME = "attachment"
 
     class Meta:
         """Metadata class for the model."""

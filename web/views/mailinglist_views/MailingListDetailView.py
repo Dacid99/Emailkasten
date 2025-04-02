@@ -33,7 +33,7 @@ class MailingListDetailView(LoginRequiredMixin, DetailView):
     model = MailingListModel
     template_name = "mailinglist/mailinglist_detail.html"
     context_object_name = "mailinglist"
-    URL_NAME = "mailinglist-detail"
+    URL_NAME = MailingListModel.get_detail_web_url_name()
 
     @override
     def get_queryset(self) -> QuerySet:

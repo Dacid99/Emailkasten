@@ -33,7 +33,7 @@ class AttachmentDetailView(LoginRequiredMixin, DetailView):
     model = AttachmentModel
     template_name = "attachment/attachment_detail.html"
     context_object_name = "attachment"
-    URL_NAME = "attachment-detail"
+    URL_NAME = AttachmentModel.get_detail_web_url_name()
 
     @override
     def get_queryset(self) -> QuerySet:

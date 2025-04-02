@@ -33,7 +33,7 @@ class AccountFilterView(LoginRequiredMixin, FilterView):
 
     model = AccountModel
     template_name = "account/account_filter_list.html"
-    URL_NAME = "account-filter-list"
+    URL_NAME = AccountModel.get_list_web_url_name()
     filterset_class = AccountFilter
 
     @override

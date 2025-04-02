@@ -33,7 +33,7 @@ class DaemonDetailView(LoginRequiredMixin, DetailView):
     model = DaemonModel
     template_name = "daemon/daemon_detail.html"
     context_object_name = "daemon"
-    URL_NAME = "daemon-detail"
+    URL_NAME = DaemonModel.get_detail_web_url_name()
 
     @override
     def get_queryset(self) -> QuerySet:
