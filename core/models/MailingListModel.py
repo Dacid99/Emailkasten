@@ -89,7 +89,6 @@ class MailingListModel(models.Model):
 
         Args:
             emailMessage: The email message to parse the malinglistdata from.
-            correspondent: The correspondent for the new mailinglist.
 
         Returns:
             The :class:`core.models.MailingListModel.MailingListModel` instance with data from the message.
@@ -110,25 +109,23 @@ class MailingListModel(models.Model):
 
         new_mailinglist = MailingListModel(list_id=list_id)
         new_mailinglist.list_owner = getHeader(
-            emailMessage, HeaderFields.MailingList.OWNER, fallbackCallable=lambda: ""
+            emailMessage, HeaderFields.MailingList.OWNER
         )
         new_mailinglist.list_subscribe = getHeader(
             emailMessage,
             HeaderFields.MailingList.SUBSCRIBE,
-            fallbackCallable=lambda: "",
         )
         new_mailinglist.list_unsubscribe = getHeader(
             emailMessage,
             HeaderFields.MailingList.UNSUBSCRIBE,
-            fallbackCallable=lambda: "",
         )
         new_mailinglist.list_post = getHeader(
-            emailMessage, HeaderFields.MailingList.POST, fallbackCallable=lambda: ""
+            emailMessage, HeaderFields.MailingList.POST
         )
         new_mailinglist.list_help = getHeader(
-            emailMessage, HeaderFields.MailingList.HELP, fallbackCallable=lambda: ""
+            emailMessage, HeaderFields.MailingList.HELP
         )
         new_mailinglist.list_archive = getHeader(
-            emailMessage, HeaderFields.MailingList.ARCHIVE, fallbackCallable=lambda: ""
+            emailMessage, HeaderFields.MailingList.ARCHIVE
         )
         return new_mailinglist

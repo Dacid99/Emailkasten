@@ -39,7 +39,6 @@ from django.utils import timezone
 
 if TYPE_CHECKING:
     import datetime
-    from collections.abc import Callable
     from email.header import Header
     from email.message import EmailMessage
 
@@ -81,7 +80,6 @@ def getHeader(
     emailMessage: EmailMessage,
     headerName: str,
     joiningString: str = ", ",
-    fallbackCallable: Callable[[], str | None] = lambda: None,
 ) -> str | None:
     """Shorthand to safely get a header from a :class:`email.message.EmailMessage`.
 
@@ -89,16 +87,14 @@ def getHeader(
         emailMessage: The message to get the header from.
         headerName: The name of the header field.
         joiningString: The string to join multiple headers with. Default to ', ' which is safe for CharFields.
-        fallbackCallable: A callable that provides a fallback if the field is not found.
-            Is only executed if required. Defaults to `lambda: None`.
 
     Returns:
         The decoded header field as a string if found
-        else the return of the :attr:`fallbackCallable`.
+        else "".
     """
     encoded_header = emailMessage.get_all(headerName)
     if not encoded_header:
-        return fallbackCallable()
+        return ""
     return joiningString.join([decodeHeader(header) for header in encoded_header])
 
 

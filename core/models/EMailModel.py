@@ -331,14 +331,14 @@ class EMailModel(models.Model):
         """
         emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)
 
-        message_id = getHeader(
-            emailMessage,
-            HeaderFields.MESSAGE_ID,
-            fallbackCallable=lambda: md5(emailBytes).hexdigest(),
+        message_id = (
+            getHeader(
+                emailMessage,
+                HeaderFields.MESSAGE_ID,
+            )
+            or md5(emailBytes).hexdigest()
         )
-        x_spam = getHeader(
-            emailMessage, HeaderFields.X_SPAM, fallbackCallable=lambda: ""
-        )
+        x_spam = getHeader(emailMessage, HeaderFields.X_SPAM)
         if x_spam != "NO" and get_config("THROW_OUT_SPAM"):
             logger.debug(
                 "Skipping email with Message-ID %s in %s, it is flagged as spam.",
@@ -359,9 +359,7 @@ class EMailModel(models.Model):
         new_email.datetime = parseDatetimeHeader(
             getHeader(emailMessage, HeaderFields.DATE)
         )
-        new_email.email_subject = getHeader(
-            emailMessage, HeaderFields.SUBJECT, fallbackCallable=lambda: ""
-        )
+        new_email.email_subject = getHeader(emailMessage, HeaderFields.SUBJECT)
         new_email.datasize = len(emailBytes)
 
         inReplyTo_message_id = getHeader(emailMessage, HeaderFields.IN_REPLY_TO)

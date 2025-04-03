@@ -145,22 +145,12 @@ def test_getHeader_multi_joinparam_success(emailMessage, fake_multi_header):
 def test_getHeader_fallback(empty_emailMessage, fake_single_header):
     result = core.utils.mailParsing.getHeader(empty_emailMessage, fake_single_header[0])
 
-    assert result is None
-
-
-def test_getHeader_fallbackparam_fallback(empty_emailMessage, fake_single_header):
-    result = core.utils.mailParsing.getHeader(
-        empty_emailMessage, fake_single_header[0], fallbackCallable=lambda: "fallback"
-    )
-
-    assert result == "fallback"
+    assert result == ""
 
 
 def test_getHeader_failure(no_emailMessage, fake_single_header):
     with pytest.raises(AttributeError):
-        core.utils.mailParsing.getHeader(
-            no_emailMessage, fake_single_header[0], fallbackCallable=lambda: "fallback"
-        )
+        core.utils.mailParsing.getHeader(no_emailMessage, fake_single_header[0])
 
 
 def test_parseDatetimeHeader_success(faker, mock_logger):

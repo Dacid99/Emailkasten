@@ -108,12 +108,12 @@ def test_MailingListModel_fromEmailMessage_success(
     mock_getHeader.assert_has_calls(
         [
             mocker.call(mock_message, "List-Id"),
-            mocker.call(mock_message, "List-Owner", fallbackCallable=lambda: ""),
-            mocker.call(mock_message, "List-Subscribe", fallbackCallable=lambda: ""),
-            mocker.call(mock_message, "List-Unsubscribe", fallbackCallable=lambda: ""),
-            mocker.call(mock_message, "List-Post", fallbackCallable=lambda: ""),
-            mocker.call(mock_message, "List-Help", fallbackCallable=lambda: ""),
-            mocker.call(mock_message, "List-Archive", fallbackCallable=lambda: ""),
+            mocker.call(mock_message, "List-Owner"),
+            mocker.call(mock_message, "List-Subscribe"),
+            mocker.call(mock_message, "List-Unsubscribe"),
+            mocker.call(mock_message, "List-Post"),
+            mocker.call(mock_message, "List-Help"),
+            mocker.call(mock_message, "List-Archive"),
         ]
     )
     assert isinstance(result, MailingListModel)
