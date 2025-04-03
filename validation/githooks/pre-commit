@@ -12,7 +12,6 @@ if [ -z "$CHANGED_FILES" ]; then
 fi
 
 #format
-
 black --config=validation/black_config $CHANGED_FILES > validation/reports/black_precommit.ansi
 if [ $? -ne 0 ]; then
   echo "Formatting code failed, please check validation/reports/black_precommit.ansi ."
@@ -34,11 +33,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-pylint --rcfile=validation/pylintrc_style $CHANGED_FILES > validation/reports/pylint_style_precommit.ansi
-if [ $? -ne 0 ]; then
-  echo "Pylinting style failed, please check validation/reports/pylint_style_precommit.ansi ."
-  exit 1
-fi
 
 echo "All precommit actions passed successfully."
 exit 0

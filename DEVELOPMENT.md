@@ -82,11 +82,10 @@ git config core.hooksPath validation/githooks/
 
 - everything for python and django
 - python test (with setting "python.testing.cwd": "/path/to/repo/test/")
-- ruff (with setting "ruff.configuration": "validation/ruff.toml"
-)
+- ruff (with setting "ruff.configuration": "validation/ruff.toml")
 - pylint (with setting "pylint.args": ["--rcfile=validation/pylintrc(_strict)_extension"] )
 - mypy (with setting "mypy-type-checker.args": ["--config-file=validation/mypy_extension.ini"] )
-- black (with setting "mypy-type-checker.args": ["--config=validation/black_config"] )
+- black (with setting "black-formatter.args": ["--config=validation/black_config"] )
 - python poetry
 - ANSI colors (iliazeus.vscode-ansi) (for validation reports)
 - reStructuredText (lextudio.restructuredtext) for docs

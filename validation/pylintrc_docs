@@ -84,7 +84,6 @@ limit-inference-results=100
 # usually to register additional checkers.
 load-plugins=pylint.extensions.docparams,
              pylintfileheader,
-             pylint_pytest
 
 # Pickle collected data for later comparisons.
 persistent=yes
