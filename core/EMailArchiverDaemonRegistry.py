@@ -126,3 +126,11 @@ class EMailArchiverDaemonRegistry:
 
         cls.logger.debug("Did not stop daemon %s, it was not running.", daemonModel)
         return False
+
+    @staticmethod
+    def healthcheck() -> bool:
+        """Checks whether the :attr:`is_running` flag on every :class:`core.models.DaemonModel.DaemonModel` is correct."""
+        return all(
+            daemon.is_running is EMailArchiverDaemonRegistry.isRunning(daemon)
+            for daemon in DaemonModel.objects.all()
+        )

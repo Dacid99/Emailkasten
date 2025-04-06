@@ -37,6 +37,10 @@ class CoreConfig(AppConfig):
 
         plugin_dir.register(StorageIntegrityCheckBackend)
 
+        from .backends import DaemonHealthCheckBackend
+
+        plugin_dir.register(DaemonHealthCheckBackend)
+
         from .signals import (
             delete_DaemonModel,
             save_AccountModel,
