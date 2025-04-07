@@ -33,7 +33,7 @@ Including another URLconf
 """
 from __future__ import annotations
 
-from django.urls import include, path
+from django.urls import path
 
 from .views.account_views import (
     AccountCreateView,
@@ -67,7 +67,6 @@ from .views.mailinglist_views import (
 app_name = "web"
 
 urlpatterns = [
-    path("users/", include("allauth.urls")),
     path(
         "accounts/",
         AccountFilterView.AccountFilterView.as_view(),
