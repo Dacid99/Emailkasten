@@ -30,12 +30,14 @@
                         <label for="{{ form.save_attachments.id_for_label }}" class="form-label">
                             {{ form.save_attachments.label }}
                         </label>
+                        {{ form.save_attachments.errors }}
                         {{ form.save_attachments }}
                     </li>
                     <li class="list-group-item">
                         <label for="{{ form.save_toEML.id_for_label }}" class="form-label">
                             {{ form.save_toEML.label }}
                         </label>
+                        {{ form.save_toEML.errors }}
                         {{ form.save_toEML }}
                     </li>
                 </ul>
