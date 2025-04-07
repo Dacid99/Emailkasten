@@ -309,6 +309,11 @@ CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 
 CONSTANCE_IGNORE_ADMIN_VERSION_CHECK = True
 
+CONSTANCE_ADDITIONAL_FIELDS = {
+    "array": ["django.forms.fields.CharField", {"widget": "django.forms.Textarea"}],
+    "json": ["django.forms.fields.CharField", {"widget": "django.forms.Textarea"}],
+}
+
 CONSTANCE_CONFIG = {
     "API_DEFAULT_PAGE_SIZE": (
         20,
@@ -332,12 +337,12 @@ CONSTANCE_CONFIG = {
     ),
     "DAEMON_LOG_BACKUP_COUNT_DEFAULT": (
         5,
-        _("The default restart time setting of a daemon in seconds"),
+        _("The default number of daemon logfiles to keep"),
         int,
     ),
     "DAEMON_LOGFILE_SIZE_DEFAULT": (
         1 * 1024 * 1024,
-        _("The default restart time setting of a daemon in seconds"),
+        _("The default maximum size of a daemon logfile in bytes"),
         int,
     ),
     "STORAGE_MAX_SUBDIRS_PER_DIR": (
@@ -360,28 +365,18 @@ CONSTANCE_CONFIG = {
         bool,
     ),
     "SAVE_CONTENT_TYPE_PREFIXES": (
-        [
-            "image/",
-            "audio/",
-            "video/",
-            "model/",
-            "font/",
-            "application/",
-        ],
+        ["image/", "audio/", "video/", "model/", "font/", "application/"],
         _(
             "A list of content types prefixes to parse as files even if they are not marked as such. For an exhaustive list of all available types see https://www.iana.org/assignments/media-types/media-types.xhtml#text"
         ),
-        list,
+        "array",
     ),
     "DONT_SAVE_CONTENT_TYPE_SUFFIXES": (
-        [
-            "/plain",
-            "/html",
-        ],
+        ["/plain", "/html"],
         _(
-            "A list of content types prefixes to not parse as files even if they are not marked as such. Overrides elements in 'SAVE_CONTENT_TYPE_PREFIXES'."
+            "A list of content types prefixes to not parse as files even if they are marked as such. Overrides elements in 'SAVE_CONTENT_TYPE_PREFIXES'."
         ),
-        list,
+        "array",
     ),
     "TEMPORARY_STORAGE_DIRECTORY": (
         "/tmp/images",
@@ -423,7 +418,7 @@ CONSTANCE_CONFIG = {
     "PRERENDER_IMGKIT_OPTIONS": (
         {"load-error-handling": "skip"},
         _("The imgkit options for prerendering the images."),
-        dict,
+        "json",
     ),
     "DEFAULT_SAVE_TO_EML": (
         True,
