@@ -90,7 +90,7 @@ def login_url() -> str:
     Returns:
         The login url.
     """
-    return reverse("web:account_login")
+    return reverse("account_login")
 
 
 @pytest.fixture(scope="package")
