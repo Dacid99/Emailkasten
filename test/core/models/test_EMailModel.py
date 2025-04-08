@@ -523,3 +523,20 @@ def test_EMailModel_has_download(emailModel, eml_filepath, expected_has_download
     result = emailModel.has_download
 
     assert result == expected_has_download
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "html_filepath, expected_has_thumbnail",
+    [
+        (None, False),
+        ("some/file/path", True),
+    ],
+)
+def test_EMailModel_has_thumbnail(emailModel, html_filepath, expected_has_thumbnail):
+    """Tests :func:`core.models.AttachmentModel.AttachmentModel.has_download` in the two relevant cases."""
+    emailModel.html_filepath = html_filepath
+
+    result = emailModel.has_thumbnail
+
+    assert result is expected_has_thumbnail
