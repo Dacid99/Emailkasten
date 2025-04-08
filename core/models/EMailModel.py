@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import email.generator
-import email.parser
 import logging
 import os
 from email import policy
@@ -32,13 +31,14 @@ from django.db import models, transaction
 
 from core.constants import HeaderFields
 from core.mixins.HasDownloadMixin import HasDownloadMixin
+from core.mixins.HasThumbnailMixin import HasPrerenderMixin
 from core.mixins.URLMixin import URLMixin
 from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from core.utils.fileManagment import saveStore
+from core.utils.mailRendering import eml2html
 from Emailkasten.utils import get_config
 
 from ..utils.mailParsing import getHeader, parseDatetimeHeader
-from ..utils.mailRendering import renderEML
 from .AttachmentModel import AttachmentModel
 from .MailingListModel import MailingListModel
 from .StorageModel import StorageModel
@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class EMailModel(HasDownloadMixin, URLMixin, models.Model):
+class EMailModel(HasDownloadMixin, HasPrerenderMixin, URLMixin, models.Model):
     """Database model for an email."""
 
     message_id = models.CharField(max_length=255)
@@ -94,16 +94,16 @@ class EMailModel(HasDownloadMixin, URLMixin, models.Model):
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_EMailModel.post_delete_email_files`.
     """
 
-    prerender_filepath = models.FilePathField(
+    html_filepath = models.FilePathField(
         path=get_config("STORAGE_PATH"),
         max_length=255,
         recursive=True,
-        match=rf".*\.{get_config('PRERENDER_IMAGETYPE')}$",
+        match=r".*\.html$",
         null=True,
     )
-    """The path where the prerender image of the mail is stored.
-    Can be null if the prerendering process was no successful.
-    Must contain :attr:`constance.get_config('STORAGE_PATH')` and end on :attr:`constance.get_config('PRERENDER_IMAGETYPE')`.
+    """The path where the html version of the mail is stored.
+    Can be null if the conversion process was no successful.
+    Must contain :attr:`constance.get_config('STORAGE_PATH')` and end on `.html`.
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_EMailModel.post_delete_email_files`."""
 
     is_favorite = models.BooleanField(default=False)
@@ -170,14 +170,15 @@ class EMailModel(HasDownloadMixin, URLMixin, models.Model):
         super().save(*args, **kwargs)
         if emailData is not None:
             if self.mailbox.save_toEML:
-                self.save_to_storage(emailData)
-            self.render_to_storage(emailData)
+                self.save_eml_to_storage(emailData)
+            if self.mailbox.save_toHTML:
+                self.save_html_to_storage(emailData)
 
     @override
     def delete(self, *args: Any, **kwargs: Any) -> None:
         """Extended :django::func:`django.models.Model.delete` method.
 
-        Deletes :attr:`eml_filepath` and :attr:`prerender_filepath` files on deletion.
+        Deletes :attr:`eml_filepath` and :attr:`html_filepath` files on deletion.
         """
         super().delete(*args, **kwargs)
 
@@ -197,26 +198,24 @@ class EMailModel(HasDownloadMixin, URLMixin, models.Model):
                     "An unexpected error occured removing %s!", self.eml_filepath
                 )
 
-        if self.prerender_filepath:
+        if self.html_filepath:
             logger.debug("Removing %s from storage ...", self)
             try:
-                os.remove(self.prerender_filepath)
+                os.remove(self.html_filepath)
                 logger.debug(
-                    "Successfully removed the prerender image file from storage.",
+                    "Successfully removed the html file from storage.",
                     exc_info=True,
                 )
             except FileNotFoundError:
-                logger.exception("%s was not found!", self.prerender_filepath)
+                logger.exception("%s was not found!", self.html_filepath)
             except OSError:
-                logger.exception(
-                    "An OS error occured removing %s!", self.prerender_filepath
-                )
+                logger.exception("An OS error occured removing %s!", self.html_filepath)
             except Exception:
                 logger.exception(
-                    "An unexpected error occured removing %s!", self.prerender_filepath
+                    "An unexpected error occured removing %s!", self.html_filepath
                 )
 
-    def save_to_storage(self, emailData: bytes) -> None:
+    def save_eml_to_storage(self, emailData: bytes) -> None:
         """Saves the email to the storage in eml format.
 
         If the file already exists, does not overwrite.
@@ -248,8 +247,8 @@ class EMailModel(HasDownloadMixin, URLMixin, models.Model):
         else:
             logger.error("Failed to store %s as eml!", self)
 
-    def render_to_storage(self, emailData: bytes) -> None:
-        """Renders the email and writes the resulting image to the storage.
+    def save_html_to_storage(self, emailData: bytes) -> None:
+        """Converts the email to html and writes the result to the storage.
 
         If the file already exists, does not overwrite.
         If an error occurs, removes the incomplete file.
@@ -258,31 +257,29 @@ class EMailModel(HasDownloadMixin, URLMixin, models.Model):
             Uses :func:`core.utils.fileManagment.saveStore` to wrap the storing process.
 
         Args:
-            emailData: The data of the email to be rendered.
+            emailData: The data of the email to be converted.
         """
-        if self.prerender_filepath:
-            logger.debug("%s is already stored as prerender image.", self)
+        if self.html_filepath:
+            logger.debug("%s is already stored as html.", self)
             return
 
-        imageType = get_config("PRERENDER_IMAGETYPE")
-
         @saveStore
-        def renderAndStoreMessage(
-            prerenderFile: BufferedWriter, emailData: bytes
+        def convertAndStoreHtmlMessage(
+            htmlFile: BufferedWriter, emailData: bytes
         ) -> None:
-            renderedMessage = renderEML(emailData)
-            renderedMessage.save(prerenderFile, format=imageType)
+            htmlMessage = eml2html(emailData)
+            htmlFile.write(htmlMessage)
 
         logger.debug("Rendering and storing %s  ...", self)
 
         dirPath = StorageModel.getSubdirectory(self.message_id)
-        preliminary_file_path = os.path.join(dirPath, self.message_id + "." + imageType)
-        if file_path := renderAndStoreMessage(preliminary_file_path, emailData):
-            self.prerender_filepath = file_path
-            self.save(update_fields=["prerender_filepath"])
-            logger.debug("Successfully rendered and stored email.")
+        preliminary_file_path = os.path.join(dirPath, self.message_id + ".html")
+        if file_path := convertAndStoreHtmlMessage(preliminary_file_path, emailData):
+            self.html_filepath = file_path
+            self.save(update_fields=["html_filepath"])
+            logger.debug("Successfully converted and stored email.")
         else:
-            logger.error("Failed to render and store %s!", self)
+            logger.error("Failed to convert and store %s!", self)
 
     def subConversation(self) -> list[EMailModel]:
         """Gets all emails that are follow this email in the conversation.
@@ -445,3 +442,8 @@ class EMailModel(HasDownloadMixin, URLMixin, models.Model):
     @property
     def has_download(self):
         return self.eml_filepath is not None
+
+    @override
+    @property
+    def has_thumbnail(self):
+        return self.html_filepath is not None

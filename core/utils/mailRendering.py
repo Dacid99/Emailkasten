@@ -21,14 +21,11 @@
 from __future__ import annotations
 
 import email
-import email.header
 import logging
 from base64 import b64encode
 from email import policy
-from io import BytesIO
 
-import imgkit
-from PIL import Image
+from html_sanitizer.django import get_sanitizer
 
 from Emailkasten.utils import get_config
 
@@ -96,34 +93,4 @@ def eml2html(emailBytes: bytes) -> str:
             "</html>",
             f"<p><hr><p><b>Attached Files:</b><p><ul>{attachmentsFooter}</ul></html>",
         )
-    return html
-
-
-def renderHtml(html: str) -> Image.Image:
-    """Renders a html string into an image using imgkit and wkhtmltoimage.
-
-    Args:
-        html: The html string to render.
-
-    Returns:
-        The rendered image.
-    """
-    imgkitOptions = get_config("PRERENDER_IMGKIT_OPTIONS")
-    try:
-        imageBytes = imgkit.from_string(html, None, options=imgkitOptions)
-    except Exception:
-        logger.warning("Error with imgkit!", exc_info=True)
-    return Image.open(BytesIO(imageBytes))
-
-
-def renderEML(emlData: bytes) -> Image.Image:
-    """Renders emldata into an image using imgkit and wkhtmltoimage.
-
-    Args:
-        emlData: The emldata to render.
-
-    Returns:
-        The rendered image.
-    """
-    html = eml2html(emlData)
-    return renderHtml(html)
+    return get_sanitizer().sanitize(html)

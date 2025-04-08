@@ -33,12 +33,10 @@ from rest_framework.request import Request
 from core.constants import HeaderFields
 from core.models.AccountModel import AccountModel
 from core.models.AttachmentModel import AttachmentModel
-from core.models.CorrespondentModel import CorrespondentModel
 from core.models.DaemonModel import DaemonModel
 from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from core.models.EMailModel import EMailModel
 from core.models.MailboxModel import MailboxModel
-from core.models.MailingListModel import MailingListModel
 
 
 @pytest.fixture(autouse=True)
@@ -73,7 +71,7 @@ def complete_database(
         mailbox=other_mailboxModel,
         mailinglist=mailingListModel,
         eml_filepath=faker.file_path(extension="eml"),
-        prerender_filepath=faker.file_path(extension="png"),
+        html_filepath=faker.file_path(extension="png"),
     )
     baker.make(
         EMailCorrespondentsModel,

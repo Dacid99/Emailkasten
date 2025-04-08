@@ -121,21 +121,21 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
         with open(filePath, "rb") as file:
             return FileResponse(file, as_attachment=True, filename=fileName)
 
-    URL_PATH_PRERENDER = "prerender"
-    URL_NAME_PRERENDER = "prerender"
+    URL_PATH_DOWNLOAD_HTML = "download-html"
+    URL_NAME_DOWNLOAD_HTML = "download-html"
 
     @action(
         detail=True,
         methods=["get"],
-        url_path=URL_PATH_PRERENDER,
-        url_name=URL_NAME_PRERENDER,
+        url_path=URL_PATH_DOWNLOAD_HTML,
+        url_name=URL_NAME_DOWNLOAD_HTML,
     )
-    def prerender(self, request: Request, pk: int | None = None) -> FileResponse:
-        """Action method downloading the prerender image of the mail.
+    def download_html(self, request: Request, pk: int | None = None) -> FileResponse:
+        """Action method downloading the html version of the mail.
 
         Args:
             request: The request triggering the action.
-            pk: The private key of the attachment to download. Defaults to None.
+            pk: The private key of the email to download. Defaults to None.
 
         Raises:
             Http404: If the filepath is not in the database or it doesnt exist.
@@ -145,15 +145,13 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
         """
         email = self.get_object()
 
-        prerenderFilePath = email.prerender_filepath
-        if not prerenderFilePath or not os.path.exists(prerenderFilePath):
-            raise Http404("Prerender image file not found")
+        htmlFilePath = email.html_filepath
+        if not htmlFilePath or not os.path.exists(htmlFilePath):
+            raise Http404("Html file not found")
 
-        prerenderFileName = os.path.basename(prerenderFilePath)
-        with open(prerenderFilePath, "rb") as prerenderFile:
-            return FileResponse(
-                prerenderFile, as_attachment=True, filename=prerenderFileName
-            )
+        htmlFileName = os.path.basename(htmlFilePath)
+        with open(htmlFilePath, "rb") as htmlFile:
+            return FileResponse(htmlFile, as_attachment=True, filename=htmlFileName)
 
     URL_PATH_FULLCONVERSATION = "full-conversation"
     URL_NAME_FULLCONVERSATION = "full-conversation"

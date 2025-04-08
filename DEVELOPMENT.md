@@ -7,7 +7,7 @@ If necessary you can install it via [the deadsnakes ppa](https://launchpad.net/~
 First install the packages required for the build environment, on debian based distros:
 
 ```bash
-sudo apt-get -y update && apt-get -y install build-essential default-mysql-client wkhtmltopdf krb5-user krb5-multidev libmysqlclient-dev pkg-config mysql-server nodejs npm
+sudo apt-get -y update && apt-get -y install build-essential default-mysql-client krb5-user krb5-multidev libmysqlclient-dev pkg-config mysql-server nodejs npm
 ```
 
 Then to install the python dependencies start a new virtual environment and activate it:

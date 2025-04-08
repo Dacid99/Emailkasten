@@ -256,10 +256,12 @@ def test_AttachmentModel_fromData(mock_message):
         ("some/file/path", True),
     ],
 )
-def test_AttachmentModel_has_download(attachment, file_path, expected_has_download):
+def test_AttachmentModel_has_download(
+    attachmentModel, file_path, expected_has_download
+):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.has_download` in the two relevant cases."""
-    attachment.file_path = file_path
+    attachmentModel.file_path = file_path
 
-    result = attachment.has_download
+    result = attachmentModel.has_download
 
     assert result == expected_has_download

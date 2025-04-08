@@ -185,7 +185,7 @@ def emailModel(faker, correspondentModel, mailboxModel, mailingListModel) -> EMa
         mailbox=mailboxModel,
         mailinglist=mailingListModel,
         eml_filepath=faker.file_path(extension="eml"),
-        prerender_filepath=faker.file_path(extension="png"),
+        html_filepath=faker.file_path(extension="png"),
     )
     baker.make(
         EMailCorrespondentsModel,

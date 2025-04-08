@@ -11,9 +11,8 @@ dj-rest-auth
 drf-spectacular
 mysqlclient
 exchangelib
-pillow
-imgkit
 email-validator
 imap-tools
 django-bootstrap5
 fontawesomefree
+html-sanitizer

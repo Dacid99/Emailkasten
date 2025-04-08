@@ -379,55 +379,43 @@ CONSTANCE_CONFIG = {
         "array",
     ),
     "TEMPORARY_STORAGE_DIRECTORY": (
-        "/tmp/images",
-        _(
-            "The path where intermediate images of the prerendering process will be placed"
-        ),
+        "/tmp/",
+        _("The path where intermediate files will be placed"),
         str,
     ),
     "HTML_WRAPPER": (
-        """<html>
+        """<!DOCTYPE html>
+        <html>
         <head>
+            <meta charset="UTF-8">
             <style>
-                body {{
+                body {
                     font-family: Arial, sans-serif;
                     font-size: 14px;
                     white-space: pre-wrap;
-                }}
+                }
             </style>
         </head>
         <body>
             <pre>%s</pre>
         </body>
         </html>""",
-        "The html template to wrap around plain text before prerendering",
+        "The html template to wrap around plain text for html conversion.",
         str,
-    ),
-    "PRERENDER_IMAGETYPE": (
-        "JPEG",
-        _(
-            "The image format for the prerendered eml files. Must be supported by PILLOW, see https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html."
-        ),
-        str,
-    ),
-    "PRERENDER_IMAGE_BACKGROUND_COLOR": (
-        "#ffffff",
-        _("The background color for the prerender images."),
-        str,
-    ),
-    "PRERENDER_IMGKIT_OPTIONS": (
-        {"load-error-handling": "skip"},
-        _("The imgkit options for prerendering the images."),
-        "json",
     ),
     "DEFAULT_SAVE_TO_EML": (
         True,
-        _("The default mailbox setting whether to store mails as eml"),
+        _("The default mailbox setting whether to store mails as eml."),
+        bool,
+    ),
+    "DEFAULT_SAVE_TO_HTML": (
+        True,
+        _("The default mailbox setting whether to convert and store mails as html."),
         bool,
     ),
     "DEFAULT_SAVE_ATTACHMENTS": (
         True,
-        _("The default mailbox setting whether to store attachments"),
+        _("The default mailbox setting whether to store attachments."),
         bool,
     ),
 }
@@ -437,6 +425,8 @@ CONSTANCE_FIELDSETS = (
         _("Default Values"),
         (
             "DEFAULT_SAVE_TO_EML",
+            "DEFAULT_SAVE_TO_HTML",
+            "DEFAULT_SAVE_TO_THUMBNAIL",
             "DEFAULT_SAVE_ATTACHMENTS",
             "DAEMON_CYCLE_PERIOD_DEFAULT",
             "DAEMON_RESTART_TIME_DEFAULT",
@@ -447,9 +437,6 @@ CONSTANCE_FIELDSETS = (
         (
             "THROW_OUT_SPAM",
             "HTML_WRAPPER",
-            "PRERENDER_IMAGETYPE",
-            "PRERENDER_IMAGE_BACKGROUND_COLOR",
-            "PRERENDER_IMGKIT_OPTIONS",
             "SAVE_CONTENT_TYPE_PREFIXES",
             "DONT_SAVE_CONTENT_TYPE_SUFFIXES",
         ),

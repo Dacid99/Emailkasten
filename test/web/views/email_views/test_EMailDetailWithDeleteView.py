@@ -58,6 +58,8 @@ def test_get_auth_owner(emailModel, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert emailModel.message_id in response.content.decode()
+    with open("detail.html", "w") as f:
+        f.write(response.content.decode())
 
 
 @pytest.mark.django_db

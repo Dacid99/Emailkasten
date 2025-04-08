@@ -50,3 +50,5 @@ def test_view_auth_owner(owner_client, list_url):
     response = owner_client.get(list_url(AccountFilterView))
 
     assert response.status_code == status.HTTP_200_OK
+    with open("list.html", "w") as f:
+        f.write(response.content.decode())
