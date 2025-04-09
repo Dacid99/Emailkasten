@@ -1,23 +1,32 @@
 <a href="{{ email.get_absolute_url }}">
     <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">
-                {{ email.message_id }}
+        <div class="row g-0">
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ email.message_id }}
 
-                {% include "partials/_favorite_badge.html" with object=email %}
+                        {% include "partials/_favorite_badge.html" with object=email %}
 
-            </h5>
+                    </h5>
 
-            <h6 class="card-subtitle">{{ email.mailbox.name }}</h6>
-            <h6 class="card-subtitle">
-                <a href="mailto:{{ email.mailbox.account.mail_address }}"
-                   class="link-info">{{ email.mailbox.account.mail_address }}</a>
-            </h6>
-            <div class="card-text">Subject: {{ email.email_subject }}</div>
-            <div class="card-text">Date received: {{ email.datetime }}</div>
+                    <h6 class="card-subtitle">{{ email.mailbox.name }}</h6>
+                    <h6 class="card-subtitle">
+                        <a href="mailto:{{ email.mailbox.account.mail_address }}"
+                           class="link-info">{{ email.mailbox.account.mail_address }}</a>
+                    </h6>
+                    <div class="card-text">Subject: {{ email.email_subject }}</div>
+                    <div class="card-text">Date received: {{ email.datetime }}</div>
 
-            {% include "partials/_dates_card-small.html" with object=email %}
+                    {% include "partials/_dates_card-small.html" with object=email %}
 
+                </div>
+            </div>
+            <div class="col-md-4">
+                <iframe src="{{ email.get_absolute_thumbnail_url }}"
+                        class="h-100 w-100 rounded"
+                        alt="Image for {{ email }}"></iframe>
+            </div>
         </div>
     </div>
 </a>
