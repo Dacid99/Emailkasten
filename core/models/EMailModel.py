@@ -35,7 +35,7 @@ from core.mixins.HasThumbnailMixin import HasPrerenderMixin
 from core.mixins.URLMixin import URLMixin
 from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from core.utils.fileManagment import saveStore
-from core.utils.mailRendering import eml2html
+from core.utils.mailParsing import eml2html
 from Emailkasten.utils import get_config
 
 from ..utils.mailParsing import getHeader, parseDatetimeHeader
