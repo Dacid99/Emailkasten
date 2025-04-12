@@ -23,6 +23,8 @@ from __future__ import annotations
 import django_filters
 from django.forms import widgets
 
+from ..utils.widgets import AdaptedSelectDateWidget
+
 
 class MailboxFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.MailboxModel`."""
@@ -43,15 +45,17 @@ class MailboxFilter(django_filters.FilterSet):
         field_name="is_healthy",
         widget=widgets.NullBooleanSelect,
     )
-    created__date__lt = django_filters.DateTimeFilter(
+    created__date__lte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__lte",
-        widget=widgets.SelectDateWidget,
+        label="Created before",
+        widget=AdaptedSelectDateWidget,
     )
-    created__date__gt = django_filters.DateTimeFilter(
+    created__date__gte = django_filters.DateTimeFilter(
         field_name="created",
-        lookup_expr="date__gt",
-        widget=widgets.SelectDateWidget,
+        lookup_expr="date__gte",
+        label="Created after",
+        widget=AdaptedSelectDateWidget,
     )
 
     o = django_filters.OrderingFilter(

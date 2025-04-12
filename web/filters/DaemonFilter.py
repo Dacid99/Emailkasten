@@ -25,26 +25,31 @@ from django.forms import widgets
 
 from core.constants import EmailFetchingCriterionChoices
 
+from ..utils.widgets import AdaptedSelectDateWidget
+
 
 class DaemonFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.MailboxModel`."""
 
     fetching_criterion = django_filters.MultipleChoiceFilter(
-        choices=EmailFetchingCriterionChoices.choices
+        choices=EmailFetchingCriterionChoices.choices,
+        widget=widgets.CheckboxSelectMultiple,
     )
     cycle_interval = django_filters.NumericRangeFilter(
         field_name="cycle_interval",
         lookup_expr="range",
     )
-    created__date__lt = django_filters.DateTimeFilter(
+    created__date__lte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__lte",
-        widget=widgets.SelectDateWidget,
+        label="Created before",
+        widget=AdaptedSelectDateWidget,
     )
-    created__date__gt = django_filters.DateTimeFilter(
+    created__date__gte = django_filters.DateTimeFilter(
         field_name="created",
-        lookup_expr="date__gt",
-        widget=widgets.SelectDateWidget,
+        lookup_expr="date__gte",
+        label="Created after",
+        widget=AdaptedSelectDateWidget,
     )
     is_running = django_filters.BooleanFilter(
         field_name="is_running",

@@ -28,6 +28,8 @@ from django.forms import widgets
 
 from core.constants import EmailProtocolChoices
 
+from ..utils.widgets import AdaptedSelectDateWidget
+
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
@@ -44,16 +46,19 @@ class AccountFilter(django_filters.FilterSet):
     protocol = django_filters.MultipleChoiceFilter(
         field_name="protocol",
         choices=EmailProtocolChoices.choices,
+        widget=widgets.CheckboxSelectMultiple,
     )
-    created__date__lt = django_filters.DateTimeFilter(
+    created__date__lte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__lte",
-        widget=widgets.SelectDateWidget,
+        label="Created before",
+        widget=AdaptedSelectDateWidget,
     )
-    created__date__gt = django_filters.DateTimeFilter(
+    created__date__gte = django_filters.DateTimeFilter(
         field_name="created",
-        lookup_expr="date__gt",
-        widget=widgets.SelectDateWidget,
+        lookup_expr="date__gte",
+        label="Created after",
+        widget=AdaptedSelectDateWidget,
     )
     is_favorite = django_filters.BooleanFilter(
         field_name="is_favorite",

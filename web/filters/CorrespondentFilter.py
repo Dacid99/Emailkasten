@@ -26,6 +26,8 @@ import django_filters
 from django.db.models import Q
 from django.forms import widgets
 
+from ..utils.widgets import AdaptedSelectDateWidget
+
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
@@ -39,15 +41,17 @@ class CorrespondentFilter(django_filters.FilterSet):
         label="Search",
         widget=widgets.SearchInput,
     )
-    created__date__lt = django_filters.DateTimeFilter(
+    created__date__lte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__lte",
-        widget=widgets.SelectDateWidget,
+        label="Created before",
+        widget=AdaptedSelectDateWidget,
     )
-    created__date__gt = django_filters.DateTimeFilter(
+    created__date__gte = django_filters.DateTimeFilter(
         field_name="created",
-        lookup_expr="date__gt",
-        widget=widgets.SelectDateWidget,
+        lookup_expr="date__gte",
+        label="Created after",
+        widget=AdaptedSelectDateWidget,
     )
     is_favorite = django_filters.BooleanFilter(
         field_name="is_favorite",

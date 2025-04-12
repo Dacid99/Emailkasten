@@ -28,6 +28,8 @@ from django.forms import widgets
 
 from core.constants import HeaderFields
 
+from ..utils.widgets import AdaptedSelectDateWidget
+
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
@@ -53,15 +55,17 @@ class EMailFilter(django_filters.FilterSet):
         field_name="mention",
         choices=HeaderFields.Correspondents.choices,
     )
-    datetime__date__lt = django_filters.DateTimeFilter(
+    datetime__date__lte = django_filters.DateTimeFilter(
         field_name="email__datetime",
         lookup_expr="date__lte",
-        widget=widgets.SelectDateWidget,
+        label="Received before",
+        widget=AdaptedSelectDateWidget,
     )
-    datetime__date__gt = django_filters.DateTimeFilter(
+    datetime__date__gte = django_filters.DateTimeFilter(
         field_name="email__datetime",
-        lookup_expr="date__gt",
-        widget=widgets.SelectDateWidget,
+        lookup_expr="date__gte",
+        label="Received after",
+        widget=AdaptedSelectDateWidget,
     )
     x_spam = django_filters.AllValuesMultipleFilter(
         field_name="email__x_spam",
