@@ -23,6 +23,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, ClassVar, Final
 
 from django import forms
+from django.forms import PasswordInput, Widget
 
 from core.models.AccountModel import AccountModel
 
@@ -58,3 +59,7 @@ class BaseAccountForm(forms.ModelForm):
             "is_favorite",
         ]
         """Exposes all fields that the user should be able to change."""
+
+        widgets: ClassVar[dict[str, type[Widget]]] = {
+            "password": PasswordInput,
+        }
