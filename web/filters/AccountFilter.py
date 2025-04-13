@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 class AccountFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.AccountModel`."""
 
-    search_text = django_filters.CharFilter(
+    text_search = django_filters.CharFilter(
         method="filter_text_fields",
         label="Search",
         widget=widgets.SearchInput,
@@ -62,6 +62,10 @@ class AccountFilter(django_filters.FilterSet):
     )
     is_favorite = django_filters.BooleanFilter(
         field_name="is_favorite",
+        widget=widgets.NullBooleanSelect,
+    )
+    is_healthy = django_filters.BooleanFilter(
+        field_name="is_healthy",
         widget=widgets.NullBooleanSelect,
     )
 

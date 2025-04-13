@@ -29,11 +29,11 @@ from ..utils.widgets import AdaptedSelectDateWidget
 class MailboxFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.MailboxModel`."""
 
-    name = django_filters.CharFilter(
+    name__icontains = django_filters.CharFilter(
         field_name="name",
         lookup_expr="icontains",
     )
-    account__mail_address = django_filters.CharFilter(
+    account__mail_address__icontains = django_filters.CharFilter(
         field_name="account__mail_address",
         lookup_expr="icontains",
     )

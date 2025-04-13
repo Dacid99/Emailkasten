@@ -29,17 +29,16 @@ from ..utils.widgets import AdaptedSelectDateWidget
 class AttachmentFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.AttachmentModel`."""
 
-    file_name = django_filters.CharFilter(
+    file_name__icontains = django_filters.CharFilter(
         field_name="file_name",
         lookup_expr="icontains",
     )
-    content_type = django_filters.CharFilter(
+    content_type__icontains = django_filters.CharFilter(
         field_name="content_type",
         lookup_expr="icontains",
     )
     content_disposition = django_filters.AllValuesMultipleFilter(
         field_name="content_disposition",
-        lookup_expr="icontains",
     )
     datasize = django_filters.NumericRangeFilter(
         field_name="datasize",

@@ -35,10 +35,10 @@ if TYPE_CHECKING:
     from django.db.models import QuerySet
 
 
-class CorrespondentFilter(django_filters.FilterSet):
+class EMailCorrespondentFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.CorrespondentModel`."""
 
-    search = django_filters.CharFilter(
+    text_search = django_filters.CharFilter(
         method="filter_text_fields",
         label="Search",
         widget=widgets.SearchInput,
@@ -89,5 +89,5 @@ class CorrespondentFilter(django_filters.FilterSet):
             return queryset.filter(
                 Q(correspondent__email_address__icontains=value)
                 | Q(correspondent__email_name__icontains=value)
-            )
+            ).distinct()
         return queryset

@@ -36,7 +36,7 @@ if TYPE_CHECKING:
 class MailingListFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.MailingListModel`."""
 
-    search_text = django_filters.CharFilter(
+    text_search = django_filters.CharFilter(
         method="filter_text_fields",
         label="Search",
         widget=widgets.SearchInput,
