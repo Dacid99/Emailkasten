@@ -273,16 +273,24 @@ def test_parseCorrespondentHeader_no_header(mocker, mock_logger):
     [
         (b"INBOX", "INBOX"),
         (
-            b"Dr&AOc-. Bianka F&APY-rste&BBk-r",
+            b'Dr&AOc-. Bianka "/" F&APY-rste&BBk-r',
             "FörsteЙr",
         ),
         (
-            b"Yves Pr&AN8EGQ-uvost",
+            b'Yves "/" Pr&AN8EGQ-uvost',
             "PrßЙuvost",
         ),
         (
-            b"&ZY4mBQDfheQ- &Zg5,jg-",
+            b'&ZY4mBQDfheQ- "/" &Zg5,jg-',
             "明美",
+        ),
+        (
+            b'(\\Sent \\HasNoChildren) "/" "Gesendete Objekte"',
+            '"Gesendete Objekte"',
+        ),
+        (
+            b'(\\HasNoChildren) "/" Archiv/2024',
+            "Archiv/2024",
         ),
     ],
 )
