@@ -18,14 +18,18 @@
 
 """Module with the :class:`DaemonDetailWithDeleteView` view."""
 
-from typing import override
+from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
+from rest_framework import status
 
+from core.EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
 from core.models.DaemonModel import DaemonModel
 from web.views.daemon_views.DaemonFilterView import DaemonFilterView
 
@@ -43,3 +47,24 @@ class DaemonDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
     def get_queryset(self) -> QuerySet:
         """Restricts the queryset to objects owned by the requesting user."""
         return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
+
+    @override
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if "delete" in request.POST:
+            return DeletionMixin.post(self, request)
+        return self.handle_start_stop_action(request)
+
+    def handle_start_stop_action(self, request: HttpRequest):
+        self.object = self.get_object()
+        if "start-daemon" in request.POST:
+            start_result = EMailArchiverDaemonRegistry.startDaemon(self.object)
+            result_context = {"start_result": {"status": start_result}}
+        elif "stop-daemon" in request.POST:
+            stop_result = EMailArchiverDaemonRegistry.stopDaemon(self.object)
+            result_context = {"stop_result": {"status": stop_result}}
+        else:
+            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        self.object.refresh_from_db()
+        context = self.get_context_data(object=self.object)
+        context.update(result_context)
+        return render(request, self.template_name, context)

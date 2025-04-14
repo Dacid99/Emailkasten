@@ -164,3 +164,23 @@ def mock_MailboxModel_test_connection(mocker):
         "core.models.MailboxModel.MailboxModel.test_connection",
         autospec=True,
     )
+
+
+@pytest.fixture
+def mock_EMailArchiverDaemonRegistry_startDaemon(mocker):
+    """Patches :func:`core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.startDaemon` for testing of the start action."""
+    return mocker.patch(
+        "core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.startDaemon",
+        autospec=True,
+        return_value=True,
+    )
+
+
+@pytest.fixture
+def mock_EMailArchiverDaemonRegistry_stopDaemon(mocker):
+    """Patches :func:`core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.stopDaemon` for testing of the stop action."""
+    return mocker.patch(
+        "core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.stopDaemon",
+        autospec=True,
+        return_value=True,
+    )

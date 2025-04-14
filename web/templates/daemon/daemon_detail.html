@@ -5,6 +5,11 @@
 {% endblock title %}
 
 {% block content %}
+
+    {% include "daemon/partials/_start-alert.html" %}
+
+    {% include "daemon/partials/_stop-alert.html" %}
+
     <div class="card">
         <div class="card-header d-flex justify-content-between">
             <div>
@@ -15,6 +20,13 @@
 
             </div>
             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with buttons">
+                <div class="btn-group me-3" role="group" aria-label="Action button group">
+
+                    {% include "daemon/partials/_start-button.html" %}
+
+                    {% include "daemon/partials/_stop-button.html" %}
+
+                </div>
                 <div class="btn-group me-3" role="group" aria-label="Edit button group">
 
                     {% include "partials/_delete-button.html" with object=daemon %}
