@@ -5,7 +5,7 @@
 
                 {% include "partials/_health_badge.html" with object=account %}
 
-                <a href="mailto:{{ account.mail_address }}" class="link-info">{{ account.mail_address }}</a>
+                {{ account.mail_address }}
 
                 {% include "partials/_favorite_badge.html" with object=account %}
 

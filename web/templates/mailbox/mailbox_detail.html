@@ -58,6 +58,14 @@
 
             </div>
         </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Emails</h4>
+
+                {% include "email/partials/_email_list.html" with emails=mailbox.emails.all %}
+
+            </div>
+        </div>
     </div>
 
     {% include "partials/_delete-modal.html" with object=mailbox %}

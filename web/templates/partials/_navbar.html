@@ -31,8 +31,8 @@
         <div class="collapse navbar-collapse">
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
-                    <a class="nav-link link-dark"
-                       href="{% url 'account_logout' %} text-capitalize">
+                    <a class="nav-link link-dark text-capitalize"
+                       href="{% url 'account_logout' %}">
                         {{ user.username }}<i class="fa fa-user-circle" aria-hidden="true"></i>
                     </a>
                 {% else %}

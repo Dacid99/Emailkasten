@@ -39,10 +39,11 @@
                 <li class="list-group-item">Content Type: {{ attachment.content_type }}</li>
                 <li class="list-group-item">Content Disposition: {{ attachment.content_disposition }}</li>
                 <li class="list-group-item">Size: {{ attachment.datasize }} bytes</li>
+                <li class="list-group-item">Date received: {{ attachment.email.datetime }}</li>
             </ul>
         </div>
 
-        {% include "partials/_dates_card-footer.html" with object=form %}
+        {% include "partials/_dates_card-footer.html" with object=attachment %}
 
     </div>
 

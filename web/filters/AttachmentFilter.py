@@ -51,13 +51,13 @@ class AttachmentFilter(django_filters.FilterSet):
     email__datetime__date__lte = django_filters.DateTimeFilter(
         field_name="email__datetime",
         lookup_expr="date__lte",
-        label="Created before",
+        label="Received before",
         widget=AdaptedSelectDateWidget,
     )
     email__datetime__date__gte = django_filters.DateTimeFilter(
         field_name="email__datetime",
         lookup_expr="date__gte",
-        label="Created after",
+        label="Received after",
         widget=AdaptedSelectDateWidget,
     )
 
