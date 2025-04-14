@@ -118,8 +118,7 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
             raise Http404("EMl file not found")
 
         fileName = os.path.basename(filePath)
-        with open(filePath, "rb") as file:
-            return FileResponse(file, as_attachment=True, filename=fileName)
+        return FileResponse(open(filePath, "rb"), as_attachment=True, filename=fileName)
 
     URL_PATH_DOWNLOAD_HTML = "download-html"
     URL_NAME_DOWNLOAD_HTML = "download-html"
@@ -150,13 +149,17 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
             raise Http404("Html file not found")
 
         htmlFileName = os.path.basename(htmlFilePath)
-        with open(htmlFilePath, "rb") as htmlFile:
-            return FileResponse(
-                htmlFile,
-                as_attachment=False,
-                filename=htmlFileName,
-                content_type="text/html",
-            )
+        response = FileResponse(
+            open(  # noqa: SIM115 ;  this is the recommended usage for FileResponse, see https://docs.djangoproject.com/en/5.2/ref/request-response/
+                htmlFilePath, "rb"
+            ),
+            as_attachment=False,
+            filename=htmlFileName,
+            content_type="text/html",
+        )
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+        return response
 
     URL_PATH_FULLCONVERSATION = "full-conversation"
     URL_NAME_FULLCONVERSATION = "full-conversation"

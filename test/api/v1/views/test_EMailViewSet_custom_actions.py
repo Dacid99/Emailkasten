@@ -244,6 +244,10 @@ def test_download_html_auth_owner(
     assert "inline" in response["Content-Disposition"]
     assert "Content-Type" in response.headers
     assert response.headers["Content-Type"] == "text/html"
+    assert "X-Frame-Options" in response.headers
+    assert response.headers["X-Frame-Options"] == "SAMEORIGIN"
+    assert "Content-Security-Policy" in response.headers
+    assert response.headers["Content-Security-Policy"] == "frame-ancestors 'self'"
     assert b"".join(response.streaming_content) == mock_open().read()
 
 

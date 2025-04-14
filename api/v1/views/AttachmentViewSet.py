@@ -105,10 +105,11 @@ class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
             raise Http404("Attachment file not found")
 
         attachmentFileName = attachment.file_name
-        with open(attachmentFilePath, "rb") as attachmentFile:
-            return FileResponse(
-                attachmentFile, as_attachment=True, filename=attachmentFileName
-            )
+        return FileResponse(
+            open(attachmentFilePath, "rb"),
+            as_attachment=True,
+            filename=attachmentFileName,
+        )
 
     URL_PATH_TOGGLE_FAVORITE = "toggle-favorite"
     URL_NAME_TOGGLE_FAVORITE = "toggle-favorite"

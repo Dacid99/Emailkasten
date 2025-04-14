@@ -230,7 +230,8 @@ class DaemonViewSet(viewsets.ModelViewSet):
             raise Http404("Log file not found")
 
         daemonLogFilename = os.path.basename(daemonLogFilepath)
-        with open(daemonLogFilepath, "rb") as daemonLogFile:
-            return FileResponse(
-                daemonLogFile, as_attachment=True, filename=daemonLogFilename
-            )
+        return FileResponse(
+            open(daemonLogFilepath, "rb"),
+            as_attachment=True,
+            filename=daemonLogFilename,
+        )
