@@ -1,14 +1,18 @@
 <a href="{{ account.get_absolute_url }}">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">
+            <h5 class="card-title d-flex justify-content-between align-items-center">
+                <div>
+                    {{ account.mail_address }}
 
-                {% include "partials/_health_badge.html" with object=account %}
+                    {% include "partials/_favorite_badge.html" with object=account %}
 
-                {{ account.mail_address }}
+                </div>
+                <div>
 
-                {% include "partials/_favorite_badge.html" with object=account %}
+                    {% include "partials/_health_badge.html" with object=account %}
 
+                </div>
             </h5>
 
             <div class="card-text">Protocol: {{ account.protocol }}</div>

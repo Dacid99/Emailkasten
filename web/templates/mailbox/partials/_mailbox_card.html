@@ -1,14 +1,18 @@
 <a href="{{ mailbox.get_absolute_url }}">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">
+            <h5 class="card-title d-flex justify-content-between align-items-center">
+                <div>
+                    {{ mailbox.name }}
 
-                {% include "partials/_favorite_badge.html" with object=mailbox %}
+                    {% include "partials/_favorite_badge.html" with object=mailbox %}
 
-                {{ mailbox.name }}
+                </div>
+                <div>
 
-                {% include "partials/_health_badge.html" with object=mailbox %}
+                    {% include "partials/_health_badge.html" with object=mailbox %}
 
+                </div>
             </h5>
             <h6 class="card-subtitle">
                 <a href="mailto:{{ mailbox.account.mail_address }}" class="link-info">{{ mailbox.account.mail_address }}</a>

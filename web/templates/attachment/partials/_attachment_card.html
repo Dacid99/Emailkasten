@@ -1,13 +1,12 @@
 <a href="{{ attachment.get_absolute_url }}">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">
+            <h5 class="card-title align-items-center">
+                {{ attachment.file_name }}
 
                 {% include "partials/_favorite_badge.html" with object=attachment %}
 
-                {{ attachment.file_name }}
             </h5>
-
             <div class="card-text">Type: {{ attachment.content_type }}</div>
             <div class="card-text">Size: {{ attachment.datasize }} bytes</div>
             <div class="card-text">Date received: {{ attachment.email.datetime }}</div>

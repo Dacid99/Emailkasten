@@ -6,32 +6,31 @@
 
 {% block content %}
     <div class="card">
-        {% if email.has_thumbnail %}
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
 
-            <div class="card-header d-flex justify-content-between">
-                <div>
+                {% include "partials/_favorite_badge.html" with object=email %}
 
-                    {% include "partials/_favorite_badge.html" with object=email %}
+            </div>
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with buttons">
+                <div class="btn-group me-3" role="group" aria-label="Action button group">
+
+                    {% include "partials/_download-button.html" with object=email %}
 
                 </div>
-                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with buttons">
-                    <div class="btn-group me-3" role="group" aria-label="Action button group">
+                <div class="btn-group me-3" role="group" aria-label="Edit button group">
 
-                        {% include "partials/_download-button.html" with object=email %}
+                    {% include "partials/_delete-button.html" with object=email %}
 
-                    </div>
-                    <div class="btn-group me-3" role="group" aria-label="Edit button group">
+                </div>
+                <div class="btn-group ms-3" role="group" aria-label="Close button group">
 
-                        {% include "partials/_delete-button.html" with object=email %}
+                    {% include "partials/_close_to_list-button.html" with object=email %}
 
-                    </div>
-                    <div class="btn-group ms-3" role="group" aria-label="Close button group">
-
-                        {% include "partials/_close_to_list-button.html" with object=email %}
-
-                    </div>
                 </div>
             </div>
+        </div>
+        {% if email.has_thumbnail %}
             <div class="row">
                 <div class="col-6">
                 {% endif %}

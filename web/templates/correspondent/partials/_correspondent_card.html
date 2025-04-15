@@ -1,7 +1,7 @@
 <a href="{{ correspondent.get_absolute_url }}">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">
+            <h5 class="card-title align-items-center">
                 {{ correspondent.email_address }}
 
                 {% include "partials/_favorite_badge.html" with object=correspondent %}
