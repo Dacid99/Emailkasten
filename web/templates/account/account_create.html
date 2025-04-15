@@ -58,7 +58,9 @@
                     {{ form.timeout }}
                 </li>
             </ul>
-            <button type="submit" class="btn btn-primary">Save</button>
+
+            {% include "partials/_submit_edit-button.html" %}
+
             <a type="button"
                class="btn btn-secondary"
                href="{% url 'web:account-filter-list' %}">Cancel</a>

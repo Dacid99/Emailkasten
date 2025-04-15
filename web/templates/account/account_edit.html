@@ -63,7 +63,8 @@
                         {{ form.timeout }}
                     </li>
                 </ul>
-                <button type="submit" class="btn btn-primary" name="update">Save</button>
+
+                {% include "partials/_submit_edit-button.html" %}
 
                 {% include "partials/_cancel_edit-button.html" with object=account %}
 
