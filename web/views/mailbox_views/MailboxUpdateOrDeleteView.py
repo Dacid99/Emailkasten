@@ -18,44 +18,30 @@
 
 """Module with the :class:`MailboxUpdateView` view."""
 
-from typing import Any, override
+from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse
-from django.urls import reverse
-from django.views.generic.edit import DeletionMixin, UpdateView
+from django.urls import reverse_lazy
 
 from core.models.MailboxModel import MailboxModel
 from web.views.mailbox_views.MailboxFilterView import MailboxFilterView
+from web.views.UpdateOrDeleteView import UpdateOrDeleteView
 
 from ...forms.mailbox_forms.BaseMailboxForm import BaseMailboxForm
 
 
-class MailboxUpdateOrDeleteView(LoginRequiredMixin, UpdateView, DeletionMixin):
+class MailboxUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     """View for updating or deleting a single :class:`core.models.MailboxModel.MailboxModel` instance."""
 
     model = MailboxModel
     form_class = BaseMailboxForm
     template_name = "mailbox/mailbox_edit.html"
     context_object_name = "mailbox"
+    delete_success_url = reverse_lazy("web:" + MailboxFilterView.URL_NAME)
     URL_NAME = MailboxModel.get_edit_web_url_name()
-
-    @override
-    def get_success_url(self) -> str:
-        """Overridden method to redirect to filter-list after `delete` else to detail."""
-        if "delete" in self.request.POST:
-            return reverse("web:" + MailboxFilterView.URL_NAME)
-        return UpdateView.get_success_url(self)
 
     @override
     def get_queryset(self) -> QuerySet:
         """Restricts the queryset to objects owned by the requesting user."""
         return MailboxModel.objects.filter(account__user=self.request.user)
-
-    @override
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        """Overridden method to distinguish the delete button."""
-        if "delete" in request.POST:
-            return DeletionMixin.post(self, request, *args, **kwargs)
-        return UpdateView.post(self, request, *args, **kwargs)

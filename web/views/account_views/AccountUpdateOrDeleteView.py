@@ -18,44 +18,30 @@
 
 """Module with the :class:`AccountUpdateView` view."""
 
-from typing import Any, override
+from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse
-from django.urls import reverse
-from django.views.generic.edit import DeletionMixin, UpdateView
+from django.urls import reverse_lazy
 
 from core.models.AccountModel import AccountModel
+from web.views.UpdateOrDeleteView import UpdateOrDeleteView
 
 from ...forms.account_forms.BaseAccountForm import BaseAccountForm
 from .AccountFilterView import AccountFilterView
 
 
-class AccountUpdateOrDeleteView(LoginRequiredMixin, UpdateView, DeletionMixin):
+class AccountUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     """View for updating or deleting a single :class:`core.models.AccountModel.AccountModel` instance."""
 
     model = AccountModel
     form_class = BaseAccountForm
     template_name = "account/account_edit.html"
     context_object_name = "account"
+    delete_success_url = reverse_lazy("web:" + AccountFilterView.URL_NAME)
     URL_NAME = AccountModel.get_edit_web_url_name()
-
-    @override
-    def get_success_url(self) -> str:
-        """Overridden method to redirect to filter-list after `delete` else to detail."""
-        if "delete" in self.request.POST:
-            return reverse("web:" + AccountFilterView.URL_NAME)
-        return UpdateView.get_success_url(self)
 
     @override
     def get_queryset(self) -> QuerySet:
         """Restricts the queryset to objects owned by the requesting user."""
         return super().get_queryset().filter(user=self.request.user)
-
-    @override
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        """Overridden method to distinguish the `delete` button."""
-        if "delete" in request.POST:
-            return DeletionMixin.post(self, request, *args, **kwargs)
-        return UpdateView.post(self, request, *args, **kwargs)

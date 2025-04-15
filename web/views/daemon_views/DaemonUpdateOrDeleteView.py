@@ -18,44 +18,30 @@
 
 """Module with the :class:`DaemonUpdateView` view."""
 
-from typing import Any, override
+from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse
-from django.urls import reverse
-from django.views.generic.edit import DeletionMixin, UpdateView
+from django.urls import reverse_lazy
 
 from core.models.DaemonModel import DaemonModel
 from web.views.daemon_views.DaemonFilterView import DaemonFilterView
+from web.views.UpdateOrDeleteView import UpdateOrDeleteView
 
 from ...forms.daemon_forms.BaseDaemonForm import BaseDaemonForm
 
 
-class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateView, DeletionMixin):
+class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     """View for updating or deleting a single :class:`core.models.DaemonModel.DaemonModel` instance."""
 
     model = DaemonModel
     form_class = BaseDaemonForm
     template_name = "daemon/daemon_edit.html"
     context_object_name = "daemon"
+    delete_success_url = reverse_lazy("web:" + DaemonFilterView.URL_NAME)
     URL_NAME = DaemonModel.get_edit_web_url_name()
-
-    @override
-    def get_success_url(self) -> str:
-        """Overridden method to redirect to filter-list after `delete` else to detail."""
-        if "delete" in self.request.POST:
-            return reverse("web:" + DaemonFilterView.URL_NAME)
-        return UpdateView.get_success_url(self)
 
     @override
     def get_queryset(self) -> QuerySet:
         """Restricts the queryset to objects owned by the requesting user."""
         return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
-
-    @override
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        """Overridden method to distinguish the `delete` button."""
-        if "delete" in request.POST:
-            return DeletionMixin.post(self, request, *args, **kwargs)
-        return UpdateView.post(self, request, *args, **kwargs)
