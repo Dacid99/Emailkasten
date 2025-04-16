@@ -1,0 +1,31 @@
+<div class="d-grid m-1">
+    <button class="btn btn-primary"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasFilter"
+            aria-controls="offcanvasFilter">Show filter options</button>
+</div>
+<hr>
+
+{% block list %}
+{% endblock list %}
+
+<div class="offcanvas offcanvas-start"
+     data-bs-scroll="true"
+     data-bs-backdrop="false"
+     tabindex="-1"
+     id="offcanvasFilter"
+     aria-labelledby="offcanvasFilterLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasFilterLabel">Filter options</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        {% include "partials/_filter-form.html" %}
+
+    </div>
+</div>

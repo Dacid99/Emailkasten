@@ -1,5 +1,7 @@
-{% include "partials/_filter-form.html" %}
+{% extends "partials/_filter_list.html" %}
 
-<hr>
+{% block list %}
 
-{% include "mailinglist/partials/_mailinglist_list.html" with mailinglists=filter.qs %}
+    {% include "mailinglist/partials/_mailinglist_list.html" with mailinglists=filter.qs %}
+
+{% endblock list %}
