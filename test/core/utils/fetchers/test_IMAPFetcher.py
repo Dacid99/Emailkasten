@@ -230,7 +230,7 @@ def test_IMAPFetcher_test_mailbox_success(imap_mailboxModel, mock_logger, mock_I
     assert result is None
     mock_IMAP4.return_value.noop.assert_called_once_with()
     mock_IMAP4.return_value.select.assert_called_once_with(
-        imap_mailboxModel.name, readonly=True
+        utf7_encode(imap_mailboxModel.name), readonly=True
     )
     mock_IMAP4.return_value.check.assert_called_once_with()
     mock_IMAP4.return_value.unselect.assert_called_once_with()
@@ -268,7 +268,7 @@ def test_IMAPFetcher_test_mailbox_badResponse(
     assert mock_IMAP4.return_value.select.call_count == expectedCalls[0]
     if expectedCalls[0]:
         mock_IMAP4.return_value.select.assert_called_with(
-            imap_mailboxModel.name, readonly=True
+            utf7_encode(imap_mailboxModel.name), readonly=True
         )
     assert mock_IMAP4.return_value.check.call_count == expectedCalls[1]
     if expectedCalls[1]:
@@ -294,7 +294,7 @@ def test_IMAPFetcher_test_mailbox_exception(
     assert mock_IMAP4.return_value.select.call_count == expectedCalls[0]
     if expectedCalls[0]:
         mock_IMAP4.return_value.select.assert_called_with(
-            imap_mailboxModel.name, readonly=True
+            utf7_encode(imap_mailboxModel.name), readonly=True
         )
     assert mock_IMAP4.return_value.check.call_count == expectedCalls[1]
     if expectedCalls[1]:
@@ -313,7 +313,7 @@ def test_IMAPFetcher_test_mailbox_badResponse_ignored(
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
     mock_IMAP4.return_value.select.assert_called_once_with(
-        imap_mailboxModel.name, readonly=True
+        utf7_encode(imap_mailboxModel.name), readonly=True
     )
     mock_IMAP4.return_value.check.assert_called_once_with()
     mock_IMAP4.return_value.unselect.assert_called_once_with()
@@ -331,7 +331,7 @@ def test_IMAPFetcher_test_mailbox_exception_ignored(
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
     mock_IMAP4.return_value.select.assert_called_once_with(
-        imap_mailboxModel.name, readonly=True
+        utf7_encode(imap_mailboxModel.name), readonly=True
     )
     mock_IMAP4.return_value.check.assert_called_once_with()
     mock_logger.debug.assert_called()

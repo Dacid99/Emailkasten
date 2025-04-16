@@ -153,7 +153,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
 
         if mailbox is not None:
             self.logger.debug("Testing %s ...", mailbox)
-            self.safe_select(mailbox.name, readonly=True)
+            self.safe_select(utf7_encode(mailbox.name), readonly=True)
             self.safe_check()
             self.safe_unselect()
             self.logger.debug("Successfully tested %s.", mailbox)
