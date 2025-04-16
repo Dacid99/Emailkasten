@@ -22,6 +22,7 @@ from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
+from django.forms import Form
 from django.http import HttpResponse
 from django.views.generic import CreateView
 
@@ -40,10 +41,11 @@ class AccountCreateView(LoginRequiredMixin, CreateView):
     URL_NAME = AccountModel.BASENAME + "-create"
 
     @override
-    def form_valid(self, form: BaseAccountForm) -> HttpResponse:
+    def get_form(self, form_class: type[Form] | None = None) -> HttpResponse:
         """Extended method to add the requesting user to the created account."""
+        form = super().get_form(form_class)
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        return form
 
     @override
     def get_queryset(self) -> QuerySet:

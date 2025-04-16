@@ -19,7 +19,7 @@
 """Test module for :mod:`web.views.account_views.AccountCreateView`."""
 
 import pytest
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
@@ -109,3 +109,19 @@ def test_post_auth_owner(accountPayload, owner_client, list_url):
     assert added_account.password == accountPayload["password"]
     assert added_account.mail_host == accountPayload["mail_host"]
     assert added_account.mail_host_port == accountPayload["mail_host_port"]
+
+
+@pytest.mark.django_db
+def test_post_duplicate_auth_owner(
+    accountModel, accountPayload, owner_client, list_url
+):
+    """Tests :class:`web.views.account_views.AccountCreateView.AccountCreateView` with the authenticated owner user client."""
+    assert AccountModel.objects.all().count() == 1
+
+    accountPayload["mail_address"] = accountModel.mail_address
+    response = owner_client.post(list_url(AccountCreateView), accountPayload)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(response, HttpResponse)
+    assert "This account already exists" in response.content.decode()
+    assert AccountModel.objects.all().count() == 1

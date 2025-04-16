@@ -21,11 +21,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, override
 
 import django.db
 from dirtyfields import DirtyFieldsMixin
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from ..constants import EmailProtocolChoices
@@ -140,6 +141,20 @@ class AccountModel(DirtyFieldsMixin, URLMixin, models.Model):
             The string representation of the account, using :attr:`mail_address`, :attr:`mail_host` and :attr:`protocol`.
         """
         return f"Account {self.mail_address} with protocol {self.protocol}"
+
+    @override
+    def clean(self) -> None:
+        """Validation for the unique together constraint on :attr:`mail_account`.
+
+        Raises:
+            ValidationError: If the instance violates the constraint.
+        """
+        if (
+            AccountModel.objects.filter(user=self.user, mail_address=self.mail_address)
+            .exclude(pk=self.pk)
+            .exists()
+        ):
+            raise ValidationError({"mail_address": "This account already exists."})
 
     def get_fetcher_class(self) -> type[BaseFetcher]:
         """Returns the fetcher class from :class:`core.utils.fetchers` corresponding to :attr:`protocol`.
