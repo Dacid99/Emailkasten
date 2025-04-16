@@ -72,10 +72,10 @@ class AccountModel(DirtyFieldsMixin, URLMixin, models.Model):
     )
     """The url of the mail server where the account is located."""
 
-    mail_host_port = models.IntegerField(
+    mail_host_port = models.PositiveIntegerField(
         null=True,
         blank=True,
-        verbose_name="Mailserver-Port",
+        verbose_name="Mailserver-Portnumber",
         help_text="The port of the mailserver for the chosen protocol.",
     )
     """The port of the mail server. Can be null if the default port of the protocol is used."""
@@ -88,7 +88,7 @@ class AccountModel(DirtyFieldsMixin, URLMixin, models.Model):
     )
     """The mail protocol of the mail server."""
 
-    timeout = models.IntegerField(
+    timeout = models.PositiveIntegerField(
         null=True,
         blank=True,
         verbose_name="Connection Timeout",

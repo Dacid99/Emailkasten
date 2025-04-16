@@ -66,17 +66,17 @@ class DaemonModel(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
     )
     """The fetching criterion for this mailbox. :attr:`Emailkasten.constants.EmailFetchingCriterionChoices.ALL` by default."""
 
-    cycle_interval = models.IntegerField(
+    cycle_interval = models.PositiveIntegerField(
         default=get_config("DAEMON_CYCLE_PERIOD_DEFAULT"),
         verbose_name="Cycle Period",
-        help_text="The time between two daemon runs.",
+        help_text="The time between two daemon runs in seconds.",
     )
     """The period with which the daemon is running. :attr:`constance.config('DAEMON_CYCLE_PERIOD_DEFAULT')` by default."""
 
-    restart_time = models.IntegerField(
+    restart_time = models.PositiveIntegerField(
         default=get_config("DAEMON_RESTART_TIME_DEFAULT"),
         verbose_name="Restart time",
-        help_text="The time to wait before restarting the daemon after a crash.",
+        help_text="The time to wait before restarting the daemon after a crash in seconds.",
     )
     """The time after which a crashed daemon restarts. :attr:`constance.config('DAEMON_RESTART_TIME_DEFAULT')` by default."""
 
@@ -97,14 +97,14 @@ class DaemonModel(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
     )
     """The logfile the daemon logs to. Is automatically set by :func:`save`. Unique."""
 
-    log_backup_count = models.IntegerField(
+    log_backup_count = models.PositiveSmallIntegerField(
         default=get_config("DAEMON_LOG_BACKUP_COUNT_DEFAULT"),
         verbose_name="Logfile Backup Count",
         help_text="The number of historical logfiles to keep.",
     )
     """The number of backup logfiles for the daemon. :attr:`constance.config('DAEMON_LOG_BACKUP_COUNT_DEFAULT')` by default."""
 
-    logfile_size = models.IntegerField(
+    logfile_size = models.PositiveIntegerField(
         default=get_config("DAEMON_LOGFILE_SIZE_DEFAULT"),
         verbose_name="Logfile Maximum Size",
         help_text="The maximum size of a logfile in bytes.",

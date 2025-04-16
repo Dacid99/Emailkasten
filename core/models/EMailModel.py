@@ -20,7 +20,7 @@
 
 from __future__ import annotations
 
-import email.generator
+import email
 import logging
 import os
 from email import policy
@@ -78,7 +78,7 @@ class EMailModel(HasDownloadMixin, HasThumbnailMixin, URLMixin, models.Model):
     )
     """The mail that this mail is a response to. Can be null. Deletion of that replied-to mail sets this field to NULL."""
 
-    datasize = models.IntegerField()
+    datasize = models.PositiveIntegerField()
     """The bytes size of the mail."""
 
     eml_filepath = models.FilePathField(

@@ -67,7 +67,7 @@ class AttachmentModel(HasDownloadMixin, HasThumbnailMixin, URLMixin, models.Mode
     content_type = models.CharField(max_length=255, default="")
     """The type of the file."""
 
-    datasize = models.IntegerField()
+    datasize = models.PositiveIntegerField()
     """The filesize of the attachment."""
 
     is_favorite = models.BooleanField(default=False)
