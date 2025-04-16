@@ -46,7 +46,6 @@ class MailingListFilter(django_filters.FilterSet):
             "list_help",
             "list_archive",
             "created",
-            "updated",
         ]
     )
 

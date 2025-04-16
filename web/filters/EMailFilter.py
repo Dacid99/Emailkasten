@@ -43,7 +43,6 @@ class EMailFilter(django_filters.FilterSet):
             "datetime",
             "datasize",
             "created",
-            "updated",
         ]
     )
 

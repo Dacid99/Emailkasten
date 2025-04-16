@@ -37,7 +37,6 @@ class AttachmentFilter(django_filters.FilterSet):
             "datasize",
             "email__datetime",
             "created",
-            "updated",
         ]
     )
 

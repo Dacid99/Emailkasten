@@ -46,7 +46,6 @@ class CorrespondentEMailFilter(django_filters.FilterSet):
             "mention",
             "email__datasize",
             "email__created",
-            "email__updated",
         ]
     )
 
