@@ -51,7 +51,7 @@ class AttachmentFilter(django_filters.FilterSet):
     content_disposition = django_filters.AllValuesMultipleFilter(
         field_name="content_disposition",
     )
-    datasize = django_filters.NumericRangeFilter(
+    datasize = django_filters.RangeFilter(
         field_name="datasize",
         lookup_expr="range",
     )

@@ -44,7 +44,7 @@ class DaemonFilter(django_filters.FilterSet):
         choices=EmailFetchingCriterionChoices.choices,
         widget=widgets.CheckboxSelectMultiple,
     )
-    cycle_interval = django_filters.NumericRangeFilter(
+    cycle_interval = django_filters.RangeFilter(
         field_name="cycle_interval",
         lookup_expr="range",
     )

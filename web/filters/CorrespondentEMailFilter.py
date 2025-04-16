@@ -54,7 +54,7 @@ class CorrespondentEMailFilter(django_filters.FilterSet):
         label="Search",
         widget=widgets.SearchInput,
     )
-    datasize = django_filters.NumericRangeFilter(
+    datasize = django_filters.RangeFilter(
         field_name="email__datasize",
         lookup_expr="range",
     )
