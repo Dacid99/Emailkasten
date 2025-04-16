@@ -58,7 +58,11 @@ class AccountModel(DirtyFieldsMixin, URLMixin, models.Model):
     )
     """The mail address of the account. Unique together with :attr:`user`."""
 
-    password = models.CharField(max_length=255, verbose_name="Password")
+    password = models.CharField(
+        max_length=255,
+        verbose_name="Password",
+        help_text="The password to the account.",
+    )
     """The password to log into the account."""
 
     mail_host = models.CharField(
