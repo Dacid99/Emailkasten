@@ -1,4 +1,5 @@
-<a href="{{ email.get_absolute_url }}">
+<a href="{{ email.get_absolute_url }}"
+   class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
     <div class="card">
         {% if email.has_thumbnail %}
             <div class="row g-0">
@@ -12,9 +13,13 @@
 
                     </h5>
 
-                    <h6 class="card-subtitle">{{ email.mailbox.name }}</h6>
                     <h6 class="card-subtitle">
-                        <a href="{{ email.mailbox.account.get_absolute_url }}">{{ email.mailbox.account.mail_address }}</a>
+                        Mailbox: <a href="{{ email.mailbox.get_absolute_url }}"
+    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ email.mailbox.name }}</a>
+                    </h6>
+                    <h6 class="card-subtitle">
+                        Account: <a href="{{ email.mailbox.account.get_absolute_url }}"
+    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ email.mailbox.account.mail_address }}</a>
                     </h6>
                     <div class="card-text">Subject: {{ email.email_subject }}</div>
                     <div class="card-text">Date received: {{ email.datetime }}</div>

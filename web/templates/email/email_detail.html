@@ -42,18 +42,22 @@
                         <li class="list-group-item">X-Spam: {{ email.x_spam }}</li>
                         {% if email.mailinglist %}
                             <li class="list-group-item list-group-item-action">
-                                <a href="{% url 'web:mailinglist-detail' email.mailinglist.pk %}">Mailinglist: {{ email.mailinglist.list_id }}</a>
+                                Mailinglist: <a href="{{ email.mailinglist.get_absolute_url }}"
+    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Mailinglist: {{ email.mailinglist.list_id }}</a>
                             </li>
                         {% endif %}
                         <li class="list-group-item list-group-item-action">
-                            <a href="{% url 'web:mailbox-detail' email.mailbox.pk %}">Mailbox: {{ email.mailbox.name }}</a>
+                            Mailbox: <a href="{{ email.mailbox.get_absolute_url }}"
+    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ email.mailbox.name }}</a>
                         </li>
                         <li class="list-group-item list-group-item-action">
-                            <a href="{% url 'web:account-detail' email.mailbox.account.pk %}">Account: {{ email.mailbox.account.mail_address }}</a>
+                            Account: <a href="{{ email.mailbox.account.get_absolute_url }}"
+    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ email.mailbox.account.mail_address }}</a>
                         </li>
                         {% if email.inReplyTo %}
                             <li class="list-group-item list-group-item-action">
-                                <a href="{% url 'web:email-detail' email.inReplyTo.pk %}">In reply to: {{ email.inReplyTo.message_id }}</a>
+                                In reply to: <a href="{{ email.inReplyTo.get_absolute_url }}"
+    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ email.inReplyTo.message_id }}</a>
                             </li>
                         {% endif %}
                         <div class="accordion accordion-flush" id="content-accordion">

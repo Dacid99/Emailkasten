@@ -43,8 +43,9 @@
         </div>
         <div class="card-body">
             <h2 class="card-title">{{ mailbox.name }}</h2>
-            <h3 class="card-subtitle link-primary">
-                <a href="{{ mailbox.account.get_absolute_url }}">{{ mailbox.account.mail_address }}</a>
+            <h3 class="card-subtitle">
+                Account: <a href="{{ mailbox.account.get_absolute_url }}"
+    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ mailbox.account.mail_address }}</a>
             </h3>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">Save attachments: {{ mailbox.save_attachments }}</li>
