@@ -138,6 +138,8 @@ class EMailModel(HasDownloadMixin, HasThumbnailMixin, URLMixin, models.Model):
 
     BASENAME = "email"
 
+    DELETE_NOTICE = "This will delete this email and all its attachments but not its correspondents or mailinglists."
+
     class Meta:
         """Metadata class for the model."""
 

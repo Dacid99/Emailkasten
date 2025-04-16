@@ -73,6 +73,8 @@ class MailingListModel(URLMixin, models.Model):
 
     BASENAME = "mailinglist"
 
+    DELETE_NOTICE = "This will delete this mailinglist and all its emails!"
+
     class Meta:
         """Metadata class for the model."""
 

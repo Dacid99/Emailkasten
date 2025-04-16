@@ -86,6 +86,8 @@ class AttachmentModel(HasDownloadMixin, HasThumbnailMixin, URLMixin, models.Mode
 
     BASENAME = "attachment"
 
+    DELETE_NOTICE = "This will only delete this attachment, not the email."
+
     class Meta:
         """Metadata class for the model."""
 

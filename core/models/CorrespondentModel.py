@@ -58,6 +58,8 @@ class CorrespondentModel(URLMixin, models.Model):
 
     BASENAME = "correspondent"
 
+    DELETE_NOTICE = "This will only delete this correspondent, not its emails."
+
     class Meta:
         """Metadata class for the model."""
 

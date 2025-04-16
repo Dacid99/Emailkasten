@@ -13,8 +13,10 @@
                         aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete {{ object }}?</p>
-                <p>This will delete data depending on it as well!</p>
+                <p>
+                    <strong>Are you sure you want to delete {{ object }}?</strong>
+                </p>
+                <p>{{ object.DELETE_NOTICE }}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

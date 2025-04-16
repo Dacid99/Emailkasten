@@ -119,6 +119,8 @@ class DaemonModel(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
 
     BASENAME = "daemon"
 
+    DELETE_NOTICE = "This will only delete this daemon, not its mailbox."
+
     class Meta:
         """Metadata class for the model."""
 

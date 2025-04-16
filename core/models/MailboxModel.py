@@ -92,6 +92,10 @@ class MailboxModel(DirtyFieldsMixin, URLMixin, models.Model):
 
     BASENAME = "mailbox"
 
+    DELETE_NOTICE = (
+        "This will delete this mailbox and all emails and attachments found in it!"
+    )
+
     class Meta:
         """Metadata class for the model."""
 
