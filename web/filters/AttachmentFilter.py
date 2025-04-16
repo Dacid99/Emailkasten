@@ -29,6 +29,18 @@ from ..utils.widgets import AdaptedSelectDateWidget
 class AttachmentFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.AttachmentModel`."""
 
+    o = django_filters.OrderingFilter(
+        fields=[
+            "file_name",
+            "content_type",
+            "content_disposition",
+            "datasize",
+            "email__datetime",
+            "created",
+            "updated",
+        ]
+    )
+
     file_name__icontains = django_filters.CharFilter(
         field_name="file_name",
         lookup_expr="icontains",
@@ -59,16 +71,4 @@ class AttachmentFilter(django_filters.FilterSet):
         lookup_expr="date__gte",
         label="Received after",
         widget=AdaptedSelectDateWidget,
-    )
-
-    o = django_filters.OrderingFilter(
-        fields=[
-            "file_name",
-            "content_type",
-            "content_disposition",
-            "datasize",
-            "email__datetime",
-            "created",
-            "updated",
-        ]
     )

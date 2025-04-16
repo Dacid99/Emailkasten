@@ -36,6 +36,17 @@ if TYPE_CHECKING:
 class EMailFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.EMailModel`."""
 
+    o = django_filters.OrderingFilter(
+        fields=[
+            "message_id",
+            "email_subject",
+            "datetime",
+            "datasize",
+            "created",
+            "updated",
+        ]
+    )
+
     text_search = django_filters.CharFilter(
         method="filter_text_fields",
         label="Search",
@@ -63,17 +74,6 @@ class EMailFilter(django_filters.FilterSet):
     )
     x_spam = django_filters.AllValuesMultipleFilter(
         field_name="x_spam",
-    )
-
-    o = django_filters.OrderingFilter(
-        fields=[
-            "message_id",
-            "email_subject",
-            "datetime",
-            "datasize",
-            "created",
-            "updated",
-        ]
     )
 
     def filter_text_fields(self, queryset: QuerySet, name: str, value: str) -> QuerySet:

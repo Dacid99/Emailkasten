@@ -38,6 +38,16 @@ if TYPE_CHECKING:
 class EMailCorrespondentFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.CorrespondentModel`."""
 
+    o = django_filters.OrderingFilter(
+        fields=[
+            "correspondent__email_name",
+            "correspondent__email_address",
+            "mention",
+            "correspondent__created",
+            "correspondent__updated",
+        ]
+    )
+
     text_search = django_filters.CharFilter(
         method="filter_text_fields",
         label="Search",
@@ -62,16 +72,6 @@ class EMailCorrespondentFilter(django_filters.FilterSet):
     is_favorite = django_filters.BooleanFilter(
         field_name="correspondent__is_favorite",
         widget=widgets.NullBooleanSelect,
-    )
-
-    o = django_filters.OrderingFilter(
-        fields=[
-            "correspondent__email_name",
-            "correspondent__email_address",
-            "mention",
-            "correspondent__created",
-            "correspondent__updated",
-        ]
     )
 
     def filter_text_fields(self, queryset: QuerySet, name: str, value: str) -> QuerySet:

@@ -31,6 +31,15 @@ from ..utils.widgets import AdaptedSelectDateWidget
 class DaemonFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.MailboxModel`."""
 
+    o = django_filters.OrderingFilter(
+        fields=[
+            "uuid",
+            "cycle_interval",
+            "created",
+            "updated",
+        ]
+    )
+
     fetching_criterion = django_filters.MultipleChoiceFilter(
         choices=EmailFetchingCriterionChoices.choices,
         widget=widgets.CheckboxSelectMultiple,
@@ -58,13 +67,4 @@ class DaemonFilter(django_filters.FilterSet):
     is_healthy = django_filters.BooleanFilter(
         field_name="is_healthy",
         widget=widgets.NullBooleanSelect,
-    )
-
-    o = django_filters.OrderingFilter(
-        fields=[
-            "uuid",
-            "cycle_interval",
-            "created",
-            "updated",
-        ]
     )

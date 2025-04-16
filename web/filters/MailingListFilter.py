@@ -36,6 +36,20 @@ if TYPE_CHECKING:
 class MailingListFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.MailingListModel`."""
 
+    o = django_filters.OrderingFilter(
+        fields=[
+            "list_id",
+            "list_owner",
+            "list_subscribe",
+            "list_unsubscribe",
+            "list_post",
+            "list_help",
+            "list_archive",
+            "created",
+            "updated",
+        ]
+    )
+
     text_search = django_filters.CharFilter(
         method="filter_text_fields",
         label="Search",
@@ -56,20 +70,6 @@ class MailingListFilter(django_filters.FilterSet):
     is_favorite = django_filters.BooleanFilter(
         field_name="is_favorite",
         widget=widgets.NullBooleanSelect,
-    )
-
-    o = django_filters.OrderingFilter(
-        fields=[
-            "list_id",
-            "list_owner",
-            "list_subscribe",
-            "list_unsubscribe",
-            "list_post",
-            "list_help",
-            "list_archive",
-            "created",
-            "updated",
-        ]
     )
 
     def filter_text_fields(self, queryset: QuerySet, name: str, value: str) -> QuerySet:

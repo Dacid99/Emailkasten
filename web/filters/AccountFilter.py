@@ -38,6 +38,16 @@ if TYPE_CHECKING:
 class AccountFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.AccountModel`."""
 
+    o = django_filters.OrderingFilter(
+        fields=[
+            "mail_address",
+            "mail_host",
+            "protocol",
+            "created",
+            "updated",
+        ]
+    )
+
     text_search = django_filters.CharFilter(
         method="filter_text_fields",
         label="Search",
@@ -67,16 +77,6 @@ class AccountFilter(django_filters.FilterSet):
     is_healthy = django_filters.BooleanFilter(
         field_name="is_healthy",
         widget=widgets.NullBooleanSelect,
-    )
-
-    o = django_filters.OrderingFilter(
-        fields=[
-            "mail_address",
-            "mail_host",
-            "protocol",
-            "created",
-            "updated",
-        ]
     )
 
     def filter_text_fields(self, queryset: QuerySet, name: str, value: str) -> QuerySet:

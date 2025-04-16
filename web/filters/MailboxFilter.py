@@ -29,6 +29,15 @@ from ..utils.widgets import AdaptedSelectDateWidget
 class MailboxFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.MailboxModel`."""
 
+    o = django_filters.OrderingFilter(
+        fields=[
+            "name",
+            "account__mail_address",
+            "created",
+            "updated",
+        ]
+    )
+
     name__icontains = django_filters.CharFilter(
         field_name="name",
         lookup_expr="icontains",
@@ -56,13 +65,4 @@ class MailboxFilter(django_filters.FilterSet):
         lookup_expr="date__gte",
         label="Created after",
         widget=AdaptedSelectDateWidget,
-    )
-
-    o = django_filters.OrderingFilter(
-        fields=[
-            "name",
-            "account__mail_address",
-            "created",
-            "updated",
-        ]
     )
