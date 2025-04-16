@@ -25,23 +25,14 @@
         <div class="card-body">
             <h2 class="card-title">{{ mailbox.name }}</h2>
             <h3 class="card-subtitle">{{ mailbox.account.mail_address }}</h3>
+
+            {% load django_bootstrap5 %}
+
             <form method="post">
                 {% csrf_token %}
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <label for="{{ form.save_attachments.id_for_label }}" class="form-label">
-                            {{ form.save_attachments.label }}:
-                        </label>
-                        {{ form.save_attachments.errors }}
-                        {{ form.save_attachments }}
-                    </li>
-                    <li class="list-group-item">
-                        <label for="{{ form.save_toEML.id_for_label }}" class="form-label">
-                            {{ form.save_toEML.label }}:
-                        </label>
-                        {{ form.save_toEML.errors }}
-                        {{ form.save_toEML }}
-                    </li>
+                    <li class="list-group-item">{% bootstrap_field form.save_attachments %}</li>
+                    <li class="list-group-item">{% bootstrap_field form.save_toEML %}</li>
                 </ul>
 
                 {% include "partials/_submit_edit-button.html" %}

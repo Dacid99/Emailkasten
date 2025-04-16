@@ -23,45 +23,18 @@
             </div>
         </div>
         <div class="card-body">
+
+            {% load django_bootstrap5 %}
+
             <form method="post">
                 {% csrf_token %}
-                <h2 class="card-title">
-                    <label for="{{ form.mail_address.id_for_label }}" class="form-label">
-                        {{ form.mail_address.label }}:
-                    </label>
-                    {{ form.mail_address.errors }}
-                    {{ form.mail_address }}
-                </h2>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}:</label>
-                        {{ form.password.errors }}
-                        {{ form.password }}
-                    </li>
-                    <li class="list-group-item">
-                        <label for="{{ form.mail_host.id_for_label }}" class="form-label">
-                            {{ form.mail_host.label }}:
-                        </label>
-                        {{ form.mail_host.errors }}
-                        {{ form.mail_host }}
-                    </li>
-                    <li class="list-group-item">
-                        <label for="{{ form.protocol.id_for_label }}" class="form-label">{{ form.protocol.label }}:</label>
-                        {{ form.protocol.errors }}
-                        {{ form.protocol }}
-                    </li>
-                    <li class="list-group-item">
-                        <label for="{{ form.mail_host_port.id_for_label }}" class="form-label">
-                            {{ form.mail_host_port.label }}:
-                        </label>
-                        {{ form.mail_host_port.errors }}
-                        {{ form.mail_host_port }}
-                    </li>
-                    <li class="list-group-item">
-                        <label for="{{ form.timeout.id_for_label }}" class="form-label">{{ form.timeout.label }}:</label>
-                        {{ form.timeout.errors }}
-                        {{ form.timeout }}
-                    </li>
+                    <li class="list-group-item">{% bootstrap_field form.mail_address %}</li>
+                    <li class="list-group-item">{% bootstrap_field form.password %}</li>
+                    <li class="list-group-item">{% bootstrap_field form.mail_host %}</li>
+                    <li class="list-group-item">{% bootstrap_field form.protocol %}</li>
+                    <li class="list-group-item">{% bootstrap_field form.mail_host_port %}</li>
+                    <li class="list-group-item">{% bootstrap_field form.timeout %}</li>
                 </ul>
 
                 {% include "partials/_submit_edit-button.html" %}
@@ -70,6 +43,9 @@
 
             </form>
         </div>
+
+        {% include "partials/_dates_card-footer.html" with object=account %}
+
     </div>
 
     {% include "partials/_delete-modal.html" with object=account %}

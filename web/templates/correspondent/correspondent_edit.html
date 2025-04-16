@@ -24,15 +24,13 @@
         </div>
         <div class="card-body">
             <h2 class="card-title">{{ correspondent.email_address }}</h2>
+
+            {% load django_bootstrap5 %}
+
             <form method="post">
                 {% csrf_token %}
-                <h3 class="card-subtitle">
-                    <label for="{{ form.email_name.id_for_label }}" class="form-label">
-                        {{ form.email_name.label }}:
-                    </label>
-                    {{ form.email_name.errors }}
-                    {{ form.email_name }}
-                </h3>
+
+                {% bootstrap_field form.email_name %}
 
                 {% include "partials/_submit_edit-button.html" %}
 
