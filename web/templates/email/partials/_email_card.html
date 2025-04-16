@@ -14,8 +14,7 @@
 
                     <h6 class="card-subtitle">{{ email.mailbox.name }}</h6>
                     <h6 class="card-subtitle">
-                        <a href="mailto:{{ email.mailbox.account.mail_address }}"
-                           class="link-info">{{ email.mailbox.account.mail_address }}</a>
+                        <a href="{{ email.mailbox.account.get_absolute_url }}">{{ email.mailbox.account.mail_address }}</a>
                     </h6>
                     <div class="card-text">Subject: {{ email.email_subject }}</div>
                     <div class="card-text">Date received: {{ email.datetime }}</div>

@@ -13,8 +13,7 @@
             </h5>
             <h6 class="card-subtitle">{{ daemon.mailbox.name }}</h6>
             <h6 class="card-subtitle">
-                <a href="mailto:{{ daemon.mailbox.account.mail_address }}"
-                   class="link-info">{{ daemon.mailbox.account.mail_address }}</a>
+                <a href="{{ daemon.mailbox.account.get_absolute_url }}">{{ daemon.mailbox.account.mail_address }}</a>
             </h6>
             <div class="card-text">Criterion: {{ daemon.fetching_criterion }}</div>
 

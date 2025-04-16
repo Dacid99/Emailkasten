@@ -2,7 +2,7 @@
     <div class="card">
         {% if attachment.has_thumbnail %}
             <div class="row g-0">
-                <div class="col-md-8">
+                <div class="col-md-10">
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title align-items-center">
@@ -20,7 +20,7 @@
                 </div>
                 {% if attachment.has_thumbnail %}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <img src="{{ attachment.get_absolute_thumbnail_url }}"
                          class="img-fluid rounded"
                          alt="Image attachment" />

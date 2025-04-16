@@ -15,7 +15,7 @@
                 </div>
             </h5>
             <h6 class="card-subtitle">
-                <a href="mailto:{{ mailbox.account.mail_address }}" class="link-info">{{ mailbox.account.mail_address }}</a>
+                <a href="{{ mailbox.account.get_absolute_url }}" class="link-primary">{{ mailbox.account.mail_address }}</a>
             </h6>
             <div class="card-text">Protocol: {{ mailbox.protocol }}</div>
 
