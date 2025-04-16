@@ -25,9 +25,10 @@ from web.forms.account_forms.BaseAccountForm import BaseAccountForm
 
 
 @pytest.mark.django_db
-def test_post_create(accountModel):
+def test_post_create(accountModel, other_user):
     """Tests post direction of :class:`web.forms.account_forms.BaseAccountForm.BaseAccountForm`."""
     form = BaseAccountForm(data=model_to_dict(accountModel))
+    form.instance.user = other_user
 
     assert form.is_valid()
     form_data = form.cleaned_data
