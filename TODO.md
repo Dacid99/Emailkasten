@@ -31,6 +31,7 @@
 - download mailboxes and accounts
 - tooltips
 - option to prohibit daemon for spambox
+- default ssl cert and safest settings
 
 ### Work in progress
 
