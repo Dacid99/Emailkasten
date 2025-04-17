@@ -18,13 +18,16 @@
 
 """Test module for the :class:`IMAPFetcher` class."""
 
+import datetime
 import logging
+from imaplib import Time2Internaldate
 
 import pytest
+from freezegun import freeze_time
 from imap_tools.imap_utf7 import utf7_encode
 from model_bakery import baker
 
-from core.constants import EmailProtocolChoices
+from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from core.models.MailboxModel import MailboxModel
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 from core.utils.fetchers.IMAPFetcher import IMAPFetcher
@@ -68,6 +71,56 @@ def mock_IMAP4(mocker, faker):
     mock_IMAP4.return_value.uid.return_value = ("OK", [fake_response, b""])
     mock_IMAP4.return_value.logout.return_value = ("BYE", [fake_response])
     return mock_IMAP4
+
+
+@pytest.mark.parametrize(
+    "criterionName, expectedTimeDelta",
+    [
+        (EmailFetchingCriterionChoices.DAILY, datetime.timedelta(days=1)),
+        (EmailFetchingCriterionChoices.WEEKLY, datetime.timedelta(weeks=1)),
+        (EmailFetchingCriterionChoices.MONTHLY, datetime.timedelta(weeks=4)),
+        (EmailFetchingCriterionChoices.ANNUALLY, datetime.timedelta(weeks=52)),
+    ],
+)
+def test_IMAPFetcher_makeFetchingCriterion_dateCriterion(
+    faker, criterionName, expectedTimeDelta
+):
+    fake_datetime = faker.date_time_this_decade(tzinfo=faker.pytimezone())
+    expectedCriterion = f"SENTSINCE {Time2Internaldate(fake_datetime - expectedTimeDelta).split(" ")[
+        0
+    ].strip('" ')}"
+
+    with freeze_time(fake_datetime):
+        result = IMAPFetcher.makeFetchingCriterion(criterionName)
+
+    assert result == expectedCriterion
+
+
+@pytest.mark.parametrize(
+    "criterionName, expectedResult",
+    [
+        (EmailFetchingCriterionChoices.ALL, EmailFetchingCriterionChoices.ALL),
+        (EmailFetchingCriterionChoices.UNSEEN, EmailFetchingCriterionChoices.UNSEEN),
+        (EmailFetchingCriterionChoices.RECENT, EmailFetchingCriterionChoices.RECENT),
+        (EmailFetchingCriterionChoices.NEW, EmailFetchingCriterionChoices.NEW),
+        (EmailFetchingCriterionChoices.OLD, EmailFetchingCriterionChoices.OLD),
+        (EmailFetchingCriterionChoices.FLAGGED, EmailFetchingCriterionChoices.FLAGGED),
+        (EmailFetchingCriterionChoices.DRAFT, EmailFetchingCriterionChoices.DRAFT),
+        (
+            EmailFetchingCriterionChoices.ANSWERED,
+            EmailFetchingCriterionChoices.ANSWERED,
+        ),
+    ],
+)
+def test_IMAPFetcher_makeFetchingCriterion_otherCriterion(
+    faker, criterionName, expectedResult
+):
+    fake_datetime = faker.date_time_this_decade(tzinfo=faker.pytimezone())
+
+    with freeze_time(fake_datetime):
+        result = IMAPFetcher.makeFetchingCriterion(criterionName)
+
+    assert result == expectedResult
 
 
 @pytest.mark.django_db
