@@ -40,7 +40,8 @@
                     <h2 class="card-title">{{ email.message_id }}</h2>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Subject: {{ email.email_subject }}</li>
-                        <li class="list-group-item">Date received: {{ email.datetime|date:"d-m-Y" }}</li>
+                        <li class="list-group-item">Date received: {{ email.datetime|date:"DATE_FORMAT" }}</li>
+                        <li class="list-group-item">Time received: {{ email.datetime|time:"TIME_FORMAT" }}</li>
                         <li class="list-group-item">X-Spam: {{ email.x_spam }}</li>
                         <li class="list-group-item">Datasize: {{ email.datasize }}</li>
                         {% if email.mailinglist %}

@@ -6,7 +6,12 @@
 
 {% block content %}
 
-    {% include "account/partials/_add_button.html" %}
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2>Accounts</h2>
+
+        {% include "account/partials/_add_button.html" %}
+
+    </div>
 
     {% include "account/partials/_account_filter_list.html" %}
 

@@ -1,4 +1,4 @@
 <div class="card-footer text-end">
-    <small class="text-muted">Added: {{ object.created }}</small>
+    <small class="text-muted">Added: {{ object.created|date:"DATETIME_FORMAT" }}</small>
     <small class="text-muted">Last changed: {{ object.updated|timesince|default:"-" }}</small>
 </div>
