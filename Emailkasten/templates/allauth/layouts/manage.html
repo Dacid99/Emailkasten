@@ -30,6 +30,13 @@
                          " href="{{ usersessions_list_url_ }}">Sessions</a>
                     </li>
                 {% endif %}
+                {% if user.is_staff %}
+                    <li class="nav-item">
+                        <a class=" 
+                            {% block nav_class_admin %}nav-link{% endblock nav_class_admin %}
+                         " href="{% url 'admin:index' %}">{% translate "Admin panel" %}</a>
+                    </li>
+                {% endif %}
             </ul>
         </aside>
         <main class="col-sm-8 col-md-9 col-lg-10">
