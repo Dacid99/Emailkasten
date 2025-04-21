@@ -259,7 +259,7 @@ def test_delete_auth_other(attachmentModel, other_apiClient, detail_url):
     """Tests the delete method on :class:`api.v1.views.AttachmentViewSet.AttachmentViewSet with the authenticated other user client."""
     response = other_apiClient.delete(detail_url(AttachmentViewSet, attachmentModel))
 
-    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    assert response.status_code == status.HTTP_404_NOT_FOUND
     attachmentModel.refresh_from_db()
     assert attachmentModel.file_name is not None
 
@@ -269,6 +269,6 @@ def test_delete_auth_owner(attachmentModel, owner_apiClient, detail_url):
     """Tests the delete method on :class:`api.v1.views.AttachmentViewSet.AttachmentViewSet with the authenticated owner user client."""
     response = owner_apiClient.delete(detail_url(AttachmentViewSet, attachmentModel))
 
-    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    attachmentModel.refresh_from_db()
-    assert attachmentModel.file_name is not None
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    with pytest.raises(AttachmentModel.DoesNotExist):
+        attachmentModel.refresh_from_db()

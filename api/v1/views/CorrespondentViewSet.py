@@ -23,7 +23,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
@@ -47,8 +47,11 @@ if TYPE_CHECKING:
     from rest_framework.serializers import BaseSerializer
 
 
-class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet):
-    """Viewset for the :class:`core.models.CorrespondentModel.CorrespondentModel`."""
+class CorrespondentViewSet(viewsets.ReadOnlyModelViewSet, mixins.DestroyModelMixin):
+    """Viewset for the :class:`core.models.CorrespondentModel.CorrespondentModel`.
+
+    Provides every read-only and a destroy action.
+    """
 
     BASENAME = "correspondents"
     serializer_class = CorrespondentSerializer

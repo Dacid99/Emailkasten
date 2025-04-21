@@ -285,7 +285,7 @@ def test_delete_auth_other(correspondentModel, emailModel, other_apiClient, deta
         detail_url(CorrespondentViewSet, correspondentModel)
     )
 
-    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+    assert response.status_code == status.HTTP_404_NOT_FOUND
     correspondentModel.refresh_from_db()
     assert correspondentModel.email_address is not None
 
@@ -297,6 +297,6 @@ def test_delete_auth_owner(correspondentModel, emailModel, owner_apiClient, deta
         detail_url(CorrespondentViewSet, correspondentModel)
     )
 
-    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    correspondentModel.refresh_from_db()
-    assert correspondentModel.email_address is not None
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    with pytest.raises(CorrespondentModel.DoesNotExist):
+        correspondentModel.refresh_from_db()

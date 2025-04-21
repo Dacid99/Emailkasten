@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING, Final, override
 
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
@@ -45,7 +45,7 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
-class AttachmentViewSet(viewsets.ReadOnlyModelViewSet):
+class AttachmentViewSet(viewsets.ReadOnlyModelViewSet, mixins.DestroyModelMixin):
     """Viewset for the :class:`core.models.AttachmentModel.AttachmentModel`."""
 
     BASENAME = "attachments"

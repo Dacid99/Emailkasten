@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING, Final
 
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
@@ -44,8 +44,11 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
-class EMailViewSet(viewsets.ReadOnlyModelViewSet):
-    """Viewset for the :class:`core.models.EMailModel.EMailModel`."""
+class EMailViewSet(viewsets.ReadOnlyModelViewSet, mixins.DestroyModelMixin):
+    """Viewset for the :class:`core.models.EMailModel.EMailModel`.
+
+    Provides every read-only and a destroy action.
+    """
 
     BASENAME = "emails"
     serializer_class = FullEMailSerializer
@@ -79,15 +82,6 @@ class EMailViewSet(viewsets.ReadOnlyModelViewSet):
         if getattr(self, "swagger_fake_view", False):
             return EMailModel.objects.none()
         return EMailModel.objects.filter(mailbox__account__user=self.request.user)
-
-    def destroy(self, request: Request, pk: int | None = None) -> Response:
-        """Adds the `delete` action to the viewset."""
-        try:
-            instance = self.get_object()
-            instance.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except EMailModel.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
 
     URL_PATH_DOWNLOAD = "download"
     URL_NAME_DOWNLOAD = "download"
