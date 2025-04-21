@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n django_bootstrap5 %}
 
 {% block title %}
     {% translate "Edit Account" %} -
@@ -26,9 +26,6 @@
             </div>
         </div>
         <div class="card-body">
-
-            {% load django_bootstrap5 %}
-
             <form method="post">
                 {% csrf_token %}
                 <ul class="list-group list-group-flush">

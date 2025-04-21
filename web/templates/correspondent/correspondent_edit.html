@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n django_bootstrap5 %}
 
 {% block title %}
     {% translate "Edit Correspondent" %} -
@@ -27,9 +27,6 @@
         </div>
         <div class="card-body">
             <h2 class="card-title">{{ correspondent.email_address }}</h2>
-
-            {% load django_bootstrap5 %}
-
             <form method="post">
                 {% csrf_token %}
                 {% bootstrap_field form.email_name %}

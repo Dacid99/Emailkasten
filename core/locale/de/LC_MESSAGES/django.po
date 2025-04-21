@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-20 21:26+0200\n"
+"POT-Creation-Date: 2025-04-21 15:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,147 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: core/constants.py:37
+msgid "All RECENT emails"
+msgstr ""
+
+#: core/constants.py:40
+msgid "All UNSEEN emails"
+msgstr ""
+
+#: core/constants.py:43
+msgid "All emails"
+msgstr ""
+
+#: core/constants.py:46
+msgid "All RECENT and UNSEEN emails"
+msgstr ""
+
+#: core/constants.py:49
+msgid "All emails that are not NEW"
+msgstr ""
+
+#: core/constants.py:52
+msgid "FLAGGED emails"
+msgstr ""
+
+#: core/constants.py:55
+msgid "All email DRAFTs"
+msgstr ""
+
+#: core/constants.py:58
+msgid "All emails that are not DRAFTs"
+msgstr ""
+
+#: core/constants.py:61
+msgid "All ANSWERED emails"
+msgstr ""
+
+#: core/constants.py:64
+msgid "All UNANSWERED emails"
+msgstr ""
+
+#: core/constants.py:67
+msgid "All DELETED emails"
+msgstr ""
+
+#: core/constants.py:70
+msgid "All UNDELETED emails"
+msgstr ""
+
+#: core/constants.py:73
+msgid "All emails received the last DAY"
+msgstr ""
+
+#: core/constants.py:76
+msgid "All emails received the last WEEK"
+msgstr ""
+
+#: core/constants.py:79
+msgid "All emails receiced the last MONTH"
+msgstr ""
+
+#: core/constants.py:82
+msgid "All emails received the last YEAR"
+msgstr ""
+
+#: core/constants.py:89
+msgid "IMAP4"
+msgstr ""
+
+#: core/constants.py:92
+msgid "IMAP4 over SSL"
+msgstr ""
+
+#: core/constants.py:95
+msgid "POP3"
+msgstr ""
+
+#: core/constants.py:98
+msgid "POP3 over SSL"
+msgstr ""
+
+#: core/constants.py:134
+msgid "From"
+msgstr ""
+
+#: core/constants.py:135
+msgid "To"
+msgstr ""
+
+#: core/constants.py:136
+msgid "CC"
+msgstr ""
+
+#: core/constants.py:137
+msgid "BCC"
+msgstr ""
+
+#: core/constants.py:138
+msgid "Sender"
+msgstr ""
+
+#: core/constants.py:139
+msgid "Reply-To"
+msgstr ""
+
+#: core/constants.py:140
+msgid "Resent-From"
+msgstr ""
+
+#: core/constants.py:141
+msgid "Resent-To"
+msgstr ""
+
+#: core/constants.py:142
+msgid "Resent-Cc"
+msgstr ""
+
+#: core/constants.py:143
+msgid "Resent-Bcc"
+msgstr ""
+
+#: core/constants.py:144
+msgid "Resent-Sender"
+msgstr ""
+
+#: core/constants.py:145
+msgid "Resent-Reply-To"
+msgstr ""
+
+#: core/constants.py:150
+msgid "Delivered-To"
+msgstr ""
+
+#: core/constants.py:151
+msgid "Return-Path"
+msgstr ""
+
+#: core/constants.py:152
+msgid "Return-Receipt-To"
+msgstr ""
+
 #: core/models/AccountModel.py:57
 msgid "Email address"
 msgstr ""
@@ -220,6 +361,7 @@ msgid "%(state)s storage directory %(path)s"
 msgstr ""
 
 #: core/utils/fetchers/SafeIMAPMixin.py:75
+#: core/utils/fetchers/SafePOPMixin.py:71
 #, python-format
 msgid ""
 "Bad server response for %(commandName)s:\n"
@@ -227,6 +369,7 @@ msgid ""
 msgstr ""
 
 #: core/utils/fetchers/SafeIMAPMixin.py:115
+#: core/utils/fetchers/SafePOPMixin.py:110
 #, python-format
 msgid "An %(error_class_name)s occured during %(action_name)s!"
 msgstr ""

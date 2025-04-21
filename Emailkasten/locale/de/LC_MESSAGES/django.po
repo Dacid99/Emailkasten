@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-20 21:26+0200\n"
+"POT-Creation-Date: 2025-04-21 15:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: Emailkasten/settings.py:333
 msgid "Emailkasten API"
 msgstr ""
@@ -114,23 +115,23 @@ msgstr ""
 msgid "API Settings"
 msgstr ""
 
-#: Emailkasten/templates/allauth/layouts/base.html:33
+#: Emailkasten/templates/allauth/layouts/base.html:31
 msgid "Go to Emailkasten"
 msgstr ""
 
-#: Emailkasten/templates/allauth/layouts/base.html:54
-#: Emailkasten/templates/allauth/layouts/base.html:58
+#: Emailkasten/templates/allauth/layouts/base.html:52
+#: Emailkasten/templates/allauth/layouts/base.html:56
 msgid "Select Language"
 msgstr ""
 
-#: Emailkasten/templates/allauth/layouts/base.html:76
+#: Emailkasten/templates/allauth/layouts/base.html:74
 msgid "Sign Out"
 msgstr ""
 
-#: Emailkasten/templates/allauth/layouts/base.html:80
+#: Emailkasten/templates/allauth/layouts/base.html:78
 msgid "Sign In"
 msgstr ""
 
-#: Emailkasten/templates/allauth/layouts/base.html:83
+#: Emailkasten/templates/allauth/layouts/base.html:81
 msgid "Sign Up"
 msgstr ""

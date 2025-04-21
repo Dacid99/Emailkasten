@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n django_bootstrap5 %}
 
 {% block title %}
     {% translate "Edit Daemon" %} -
@@ -34,9 +34,6 @@
                 {% translate "Account" %}: <a href="{{ daemon.mailbox.account.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ daemon.mailbox.account.mail_address }}</a>
             </h3>
-
-            {% load django_bootstrap5 %}
-
             <form method="post">
                 {% csrf_token %}
                 <ul class="list-group list-group-flush">
