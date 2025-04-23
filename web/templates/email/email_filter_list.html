@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load static i18n %}
 
 {% block title %}
     {% translate "Emails" %} -
@@ -12,3 +12,7 @@
     {% include "email/partials/_email_filter_list.html" %}
 
 {% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'js/form-utils.js' %}"></script>
+{% endblock scripts %}
