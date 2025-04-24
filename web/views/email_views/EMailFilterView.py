@@ -22,14 +22,14 @@ from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
-from django_filters.views import FilterView
 
 from core.models.EMailModel import EMailModel
 
 from ...filters.EMailFilter import EMailFilter
+from ..FilterPageView import FilterPageView
 
 
-class EMailFilterView(LoginRequiredMixin, FilterView):
+class EMailFilterView(LoginRequiredMixin, FilterPageView):
     """View for filtering listed :class:`core.models.EMailModel.EMailModel` instances."""
 
     URL_NAME = EMailModel.get_list_web_url_name()

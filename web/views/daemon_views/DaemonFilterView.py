@@ -22,14 +22,14 @@ from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
-from django_filters.views import FilterView
 
 from core.models.DaemonModel import DaemonModel
 
 from ...filters.DaemonFilter import DaemonFilter
+from ..FilterPageView import FilterPageView
 
 
-class DaemonFilterView(LoginRequiredMixin, FilterView):
+class DaemonFilterView(LoginRequiredMixin, FilterPageView):
     """View for filtering listed :class:`core.models.DaemonModel.DaemonModel` instances."""
 
     URL_NAME = DaemonModel.get_list_web_url_name()

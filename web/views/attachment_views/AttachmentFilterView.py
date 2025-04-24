@@ -22,14 +22,14 @@ from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
-from django_filters.views import FilterView
 
 from core.models.AttachmentModel import AttachmentModel
 
 from ...filters.AttachmentFilter import AttachmentFilter
+from ..FilterPageView import FilterPageView
 
 
-class AttachmentFilterView(LoginRequiredMixin, FilterView):
+class AttachmentFilterView(LoginRequiredMixin, FilterPageView):
     """View for filtering listed :class:`core.models.AttachmentModel.AttachmentModel` instances."""
 
     URL_NAME = AttachmentModel.get_list_web_url_name()

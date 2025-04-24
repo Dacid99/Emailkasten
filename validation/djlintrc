@@ -6,7 +6,7 @@
     "max_line_length": 100,
     "profile": "django",
     "extension": "html",
-    "blank_line_before_tag": "load,include,block,for",
-    "blank_line_after_tag": "extends,load,include,endblock,endfor",
+    "blank_line_before_tag": "load,include,block",
+    "blank_line_after_tag": "extends,load,include,endblock",
     "format_css": true
 }

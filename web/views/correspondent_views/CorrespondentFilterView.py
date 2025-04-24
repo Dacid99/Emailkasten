@@ -22,14 +22,14 @@ from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
-from django_filters.views import FilterView
 
 from core.models.CorrespondentModel import CorrespondentModel
 
 from ...filters.CorrespondentFilter import CorrespondentFilter
+from ..FilterPageView import FilterPageView
 
 
-class CorrespondentFilterView(LoginRequiredMixin, FilterView):
+class CorrespondentFilterView(LoginRequiredMixin, FilterPageView):
     """View for filtering listed :class:`core.models.CorrespondentModel.CorrespondentModel` instances."""
 
     URL_NAME = CorrespondentModel.get_list_web_url_name()

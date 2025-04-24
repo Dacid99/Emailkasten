@@ -7,6 +7,9 @@
             data-bs-target="#offcanvasFilter"
             aria-controls="offcanvasFilter">{% translate "Show filter options" %}</button>
 </div>
+
+{% include "web/partials/_filter_pagination.html" %}
+
 <hr>
 
 {% block list %}
@@ -14,7 +17,7 @@
 
 <hr>
 
-{% include "web/partials/_pagination.html" %}
+{% include "web/partials/_filter_pagination.html" %}
 
 <div class="offcanvas offcanvas-start"
      data-bs-scroll="true"
