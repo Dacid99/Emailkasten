@@ -8,12 +8,12 @@
                 <div class="col-md-10">
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title align-items-center">
-                        {{ attachment.file_name }}
+                    <div class="d-inline-flex align-items-center">
+                        <h5 class="card-title me-1">{{ attachment.file_name }}</h5>
 
                         {% include "web/partials/_favorite_badge.html" with object=attachment %}
 
-                    </h5>
+                    </div>
                     <div class="card-text">{% translate "Type" %}: {{ attachment.content_type }}</div>
                     <div class="card-text">
                         {% translate "Email" %}: <a href="{{ attachment.email.get_absolute_url }}"

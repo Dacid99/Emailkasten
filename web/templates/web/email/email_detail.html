@@ -7,7 +7,7 @@
 {% endblock title %}
 
 {% block content %}
-    <div class="card">
+    <div class="card {% if email.isSpam %}border-danger bg-danger-subtle{% endif %}">
         <div class="card-header d-flex justify-content-between align-items-center">
             <div>
 
@@ -39,15 +39,15 @@
                 <div class="col-6">
                 {% endif %}
                 <div class="card-body">
-                    <h2 class="card-title">{{ email.message_id }}</h2>
+                    <h2 class="card-title">{{ email.email_subject }}</h2>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">{% translate "Subject" %}: {{ email.email_subject }}</li>
                         <li class="list-group-item">
                             {% translate "Date received" %}: {{ email.datetime|date:"DATE_FORMAT" }}
                         </li>
                         <li class="list-group-item">
                             {% translate "Time received" %}: {{ email.datetime|time:"TIME_FORMAT" }}
                         </li>
+                        <li class="list-group-item">{% translate "Message Id" %}: {{ email.message_id }}</li>
                         <li class="list-group-item">{% translate "X-Spam" %}: {{ email.x_spam }}</li>
                         <li class="list-group-item">{% translate "Datasize" %}: {{ email.datasize }}</li>
                         {% if email.mailinglist %}

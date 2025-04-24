@@ -2,18 +2,18 @@
 
 <a href="{{ email.get_absolute_url }}"
    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-    <div class="card">
+    <div class="card {% if email.isSpam %}border-danger bg-danger-subtle{% endif %}">
         {% if email.has_thumbnail %}
             <div class="row g-0">
                 <div class="col-md-8">
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title align-items-center">
-                        {{ email.message_id }}
+                    <div class="d-inline-flex align-items-center">
+                        <h5 class="card-title me-1">{{ email.email_subject }}</h5>
 
                         {% include "web/partials/_favorite_badge.html" with object=email %}
 
-                    </h5>
+                    </div>
                     <h6 class="card-subtitle">
                         {% translate "Mailbox" %}: <a href="{{ email.mailbox.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ email.mailbox.name }}</a>
@@ -21,8 +21,9 @@
                         {% translate "Account" %}: <a href="{{ email.mailbox.account.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ email.mailbox.account.mail_address }}</a>
                     </h6>
-                    <div class="card-text">{% translate "Subject" %}: {{ email.email_subject }}</div>
-                    <div class="card-text">{% translate "Date received" %}: {{ email.datetime }}</div>
+                    <div class="card-text">
+                        {% translate "Received" %}: {{ email.datetime|date:"SHORT_DATETIME_FORMAT" }}
+                    </div>
 
                     {% include "web/partials/_dates_card-small.html" with object=email %}
 

@@ -4,8 +4,8 @@
    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title d-flex justify-content-between align-items-center">
-                <div>{{ daemon.uuid }}</div>
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title me-1">{{ daemon.uuid }}</h5>
                 <div>
 
                     {% include "web/daemon/partials/_is_running-badge.html" %}
@@ -13,7 +13,7 @@
                     {% include "web/partials/_health_badge.html" with object=daemon %}
 
                 </div>
-            </h5>
+            </div>
             <h6 class="card-subtitle">
                 {% translate "Mailbox" %}: <a href="{{ daemon.mailbox.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ daemon.mailbox.name }}</a>
