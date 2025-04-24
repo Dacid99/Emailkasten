@@ -33,7 +33,7 @@ class MailboxFilterView(LoginRequiredMixin, FilterView):
     """View for filtering listed :class:`core.models.MailboxModel.MailboxModel` instances."""
 
     model = MailboxModel
-    template_name = "mailbox/mailbox_filter_list.html"
+    template_name = "web/mailbox/mailbox_filter_list.html"
     context_object_name = "mailboxes"
     URL_NAME = MailboxModel.get_list_web_url_name()
     filterset_class = MailboxFilter

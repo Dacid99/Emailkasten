@@ -35,7 +35,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     """View function for the web dashboard."""
 
     URL_NAME = "dashboard"
-    template_name = "dashboard.html"
+    template_name = "web/dashboard.html"
 
     @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

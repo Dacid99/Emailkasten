@@ -43,7 +43,9 @@ def test_get_auth_other(other_client, list_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "mailbox/mailbox_filter_list.html" in [t.name for t in response.templates]
+    assert "web/mailbox/mailbox_filter_list.html" in [
+        t.name for t in response.templates
+    ]
 
 
 @pytest.mark.django_db
@@ -53,4 +55,6 @@ def test_get_auth_owner(owner_client, list_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "mailbox/mailbox_filter_list.html" in [t.name for t in response.templates]
+    assert "web/mailbox/mailbox_filter_list.html" in [
+        t.name for t in response.templates
+    ]

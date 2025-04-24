@@ -33,7 +33,7 @@ class DaemonFilterView(LoginRequiredMixin, FilterView):
     """View for filtering listed :class:`core.models.DaemonModel.DaemonModel` instances."""
 
     model = DaemonModel
-    template_name = "daemon/daemon_filter_list.html"
+    template_name = "web/daemon/daemon_filter_list.html"
     context_object_name = "daemons"
     URL_NAME = DaemonModel.get_list_web_url_name()
     filterset_class = DaemonFilter

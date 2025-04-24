@@ -43,7 +43,7 @@ def test_get_auth_other(other_client, list_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "attachment/attachment_filter_list.html" in [
+    assert "web/attachment/attachment_filter_list.html" in [
         t.name for t in response.templates
     ]
 
@@ -55,6 +55,6 @@ def test_get_auth_owner(owner_client, list_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "attachment/attachment_filter_list.html" in [
+    assert "web/attachment/attachment_filter_list.html" in [
         t.name for t in response.templates
     ]

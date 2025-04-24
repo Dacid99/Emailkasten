@@ -35,7 +35,7 @@ class AttachmentDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMix
 
     URL_NAME = AttachmentModel.get_detail_web_url_name()
     model = AttachmentModel
-    template_name = "attachment/attachment_detail.html"
+    template_name = "web/attachment/attachment_detail.html"
     context_object_name = "attachment"
     success_url = reverse_lazy("web:" + AttachmentFilterView.URL_NAME)
 

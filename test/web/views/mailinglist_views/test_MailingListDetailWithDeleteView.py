@@ -65,7 +65,9 @@ def test_get_auth_owner(mailingListModel, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "mailinglist/mailinglist_detail.html" in [t.name for t in response.templates]
+    assert "web/mailinglist/mailinglist_detail.html" in [
+        t.name for t in response.templates
+    ]
     assert mailingListModel.list_id in response.content.decode()
 
 

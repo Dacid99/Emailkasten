@@ -59,7 +59,7 @@ def test_get_auth_owner(daemonModel, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "daemon/daemon_detail.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     assert daemonModel.mailbox.name in response.content.decode()
 
 
@@ -160,7 +160,7 @@ def test_post_start_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "daemon/daemon_detail.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     mock_EMailArchiverDaemonRegistry_startDaemon.assert_called_once_with(daemonModel)
 
     assert "Daemon started successfully" in response.content.decode()
@@ -180,7 +180,7 @@ def test_post_start_failure_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "daemon/daemon_detail.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     mock_EMailArchiverDaemonRegistry_startDaemon.assert_called_once_with(daemonModel)
     assert "Daemon was already running" in response.content.decode()
 
@@ -235,7 +235,7 @@ def test_post_stop_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "daemon/daemon_detail.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     mock_EMailArchiverDaemonRegistry_stopDaemon.assert_called_once_with(daemonModel)
     assert "Daemon stopped successfully" in response.content.decode()
 
@@ -254,6 +254,6 @@ def test_post_stop_failure_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "daemon/daemon_detail.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     mock_EMailArchiverDaemonRegistry_stopDaemon.assert_called_once_with(daemonModel)
     assert "Daemon was not running" in response.content.decode()

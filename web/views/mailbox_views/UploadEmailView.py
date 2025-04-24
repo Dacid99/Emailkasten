@@ -41,7 +41,7 @@ class UploadEmailView(LoginRequiredMixin, DetailView, FormView):
     model = MailboxModel
     context_object_name = "mailbox"
     form_class = UploadEmailForm
-    template_name = "mailbox/upload_email.html"
+    template_name = "web/mailbox/upload_email.html"
 
     @override
     def get_success_url(self) -> str:

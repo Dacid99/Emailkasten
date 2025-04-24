@@ -33,7 +33,7 @@ class CorrespondentFilterView(LoginRequiredMixin, FilterView):
     """View for filtering listed :class:`core.models.CorrespondentModel.CorrespondentModel` instances."""
 
     model = CorrespondentModel
-    template_name = "correspondent/correspondent_filter_list.html"
+    template_name = "web/correspondent/correspondent_filter_list.html"
     context_object_name = "correspondents"
     URL_NAME = CorrespondentModel.get_list_web_url_name()
     filterset_class = CorrespondentFilter

@@ -66,7 +66,7 @@ def test_get_auth_owner(correspondentModel, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "correspondent/correspondent_edit.html" in [
+    assert "web/correspondent/correspondent_edit.html" in [
         t.name for t in response.templates
     ]
     assert correspondentModel.email_address in response.content.decode()

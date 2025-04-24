@@ -62,7 +62,7 @@ def test_get_auth_owner(accountModel, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [t.name for t in response.templates]
     assert accountModel.mail_address in response.content.decode()
 
 
@@ -159,7 +159,7 @@ def test_post_test_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [t.name for t in response.templates]
     mock_AccountModel_test_connection.assert_called_once()
 
 
@@ -178,7 +178,7 @@ def test_post_test_failure_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [t.name for t in response.templates]
     mock_AccountModel_test_connection.assert_called_once()
     assert fake_error_message in response.content.decode()
 
@@ -229,7 +229,7 @@ def test_post_update_mailboxes_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [t.name for t in response.templates]
     mock_AccountModel_update_mailboxes.assert_called_once()
 
 
@@ -250,6 +250,6 @@ def test_post_update_mailboxes_failure_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [t.name for t in response.templates]
     mock_AccountModel_update_mailboxes.assert_called_once()
     assert fake_error_message in response.content.decode()

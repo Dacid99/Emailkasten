@@ -65,7 +65,9 @@ def test_get_auth_owner(attachmentModel, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "attachment/attachment_detail.html" in [t.name for t in response.templates]
+    assert "web/attachment/attachment_detail.html" in [
+        t.name for t in response.templates
+    ]
     assert attachmentModel.file_name in response.content.decode()
 
 

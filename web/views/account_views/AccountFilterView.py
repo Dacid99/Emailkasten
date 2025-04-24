@@ -33,7 +33,7 @@ class AccountFilterView(LoginRequiredMixin, FilterView):
     """View for filtering listed :class:`core.models.AccountModel.AccountModel` instances."""
 
     model = AccountModel
-    template_name = "account/account_filter_list.html"
+    template_name = "web/account/account_filter_list.html"
     URL_NAME = AccountModel.get_list_web_url_name()
     filterset_class = AccountFilter
 

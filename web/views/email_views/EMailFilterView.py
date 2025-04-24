@@ -33,7 +33,7 @@ class EMailFilterView(LoginRequiredMixin, FilterView):
     """View for filtering listed :class:`core.models.EMailModel.EMailModel` instances."""
 
     model = EMailModel
-    template_name = "email/email_filter_list.html"
+    template_name = "web/email/email_filter_list.html"
     context_object_name = "emails"
     URL_NAME = EMailModel.get_list_web_url_name()
     filterset_class = EMailFilter

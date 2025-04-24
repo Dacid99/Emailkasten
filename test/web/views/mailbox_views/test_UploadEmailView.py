@@ -61,7 +61,7 @@ def test_get_auth_owner(mailboxModel, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "mailbox/upload_email.html" in [t.name for t in response.templates]
+    assert "web/mailbox/upload_email.html" in [t.name for t in response.templates]
 
 
 @pytest.mark.django_db
@@ -178,7 +178,7 @@ def test_post_upload_auth_owner_bad_format(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert "mailbox/upload_email.html" in [t.name for t in response.templates]
+    assert "web/mailbox/upload_email.html" in [t.name for t in response.templates]
     mock_EMailModel_createFromEmailBytes.assert_not_called()
     mock_MailboxModel_addFromMailboxFile.assert_not_called()
 
@@ -201,6 +201,6 @@ def test_post_upload_auth_owner_bad_file(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert "mailbox/upload_email.html" in [t.name for t in response.templates]
+    assert "web/mailbox/upload_email.html" in [t.name for t in response.templates]
     mock_EMailModel_createFromEmailBytes.assert_not_called()
     mock_MailboxModel_addFromMailboxFile.assert_not_called()

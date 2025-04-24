@@ -35,7 +35,7 @@ class EMailDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
 
     URL_NAME = EMailModel.get_detail_web_url_name()
     model = EMailModel
-    template_name = "email/email_detail.html"
+    template_name = "web/email/email_detail.html"
     context_object_name = "email"
     success_url = reverse_lazy("web:" + EMailFilterView.URL_NAME)
 

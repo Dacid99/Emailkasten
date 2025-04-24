@@ -36,7 +36,7 @@ class AccountUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
 
     model = AccountModel
     form_class = BaseAccountForm
-    template_name = "account/account_edit.html"
+    template_name = "web/account/account_edit.html"
     context_object_name = "account"
     delete_success_url = reverse_lazy("web:" + AccountFilterView.URL_NAME)
     URL_NAME = AccountModel.get_edit_web_url_name()

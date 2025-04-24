@@ -33,7 +33,7 @@ class AttachmentFilterView(LoginRequiredMixin, FilterView):
     """View for filtering listed :class:`core.models.AttachmentModel.AttachmentModel` instances."""
 
     model = AttachmentModel
-    template_name = "attachment/attachment_filter_list.html"
+    template_name = "web/attachment/attachment_filter_list.html"
     context_object_name = "attachments"
     URL_NAME = AttachmentModel.get_list_web_url_name()
     filterset_class = AttachmentFilter

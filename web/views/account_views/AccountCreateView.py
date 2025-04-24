@@ -36,7 +36,7 @@ class AccountCreateView(LoginRequiredMixin, CreateView):
 
     model = AccountModel
     form_class = BaseAccountForm
-    template_name = "account/account_create.html"
+    template_name = "web/account/account_create.html"
     context_object_name = "account"
     URL_NAME = AccountModel.BASENAME + "-create"
 
