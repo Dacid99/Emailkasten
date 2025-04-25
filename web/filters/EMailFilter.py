@@ -38,7 +38,6 @@ class EMailFilter(django_filters.FilterSet):
 
     o = django_filters.OrderingFilter(
         fields=[
-            "message_id",
             "email_subject",
             "datetime",
             "datasize",
