@@ -1,0 +1,19 @@
+{% extends "web/base.html" %}
+
+{% load static i18n %}
+
+{% block title %}
+    {% translate "Emails" %} -
+{% endblock title %}
+
+{% block content %}
+    <h2>{% translate "Emails" %}</h2>
+    <h4>{% translate "in" %} {{ account.mail_address }}</h4>
+
+    {% include "web/email/partials/_email_filter_list.html" %}
+
+{% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'web/js/form-utils.js' %}"></script>
+{% endblock scripts %}

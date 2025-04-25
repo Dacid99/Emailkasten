@@ -39,6 +39,7 @@ from django.views.generic import RedirectView
 from .views.account_views import (
     AccountCreateView,
     AccountDetailWithDeleteView,
+    AccountEmailsFilterView,
     AccountFilterView,
     AccountUpdateOrDeleteView,
 )
@@ -57,6 +58,7 @@ from .views.DashboardView import DashboardView
 from .views.email_views import EMailDetailWithDeleteView, EMailFilterView
 from .views.mailbox_views import (
     MailboxDetailWithDeleteView,
+    MailboxEmailsFilterView,
     MailboxFilterView,
     MailboxUpdateOrDeleteView,
     UploadEmailView,
@@ -81,6 +83,11 @@ urlpatterns = [
         "accounts/<int:pk>/details/",
         AccountDetailWithDeleteView.AccountDetailWithDeleteView.as_view(),
         name=AccountDetailWithDeleteView.AccountDetailWithDeleteView.URL_NAME,
+    ),
+    path(
+        "accounts/<int:pk>/emails/",
+        AccountEmailsFilterView.AccountEmailsFilterView.as_view(),
+        name=AccountEmailsFilterView.AccountEmailsFilterView.URL_NAME,
     ),
     path(
         "accounts/<int:pk>/edit/",
@@ -151,6 +158,11 @@ urlpatterns = [
         "mailboxes/<int:pk>/details/",
         MailboxDetailWithDeleteView.MailboxDetailWithDeleteView.as_view(),
         name=MailboxDetailWithDeleteView.MailboxDetailWithDeleteView.URL_NAME,
+    ),
+    path(
+        "mailboxes/<int:pk>/emails/",
+        MailboxEmailsFilterView.MailboxEmailsFilterView.as_view(),
+        name=MailboxEmailsFilterView.MailboxEmailsFilterView.URL_NAME,
     ),
     path(
         "mailboxes/<int:pk>/edit/",
