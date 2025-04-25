@@ -30,6 +30,7 @@ from django.views.generic.edit import DeletionMixin
 
 from core.constants import EmailFetchingCriterionChoices
 from core.models.DaemonModel import DaemonModel
+from core.models.EMailModel import EMailModel
 from core.models.MailboxModel import MailboxModel
 from core.utils.fetchers.exceptions import FetcherError
 from web.mixins.CustomActionMixin import CustomActionMixin
@@ -52,6 +53,15 @@ class MailboxDetailWithDeleteView(
     def get_queryset(self) -> QuerySet:
         """Restricts the queryset to objects owned by the requesting user."""
         return MailboxModel.objects.filter(account__user=self.request.user)
+
+    @override
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Extended to add the mailboxes latest emails to the context."""
+        context = super().get_context_data(**kwargs)
+        context["latest_emails"] = EMailModel.objects.filter(
+            mailbox=self.object
+        ).order_by("-created")
+        return context
 
     @override
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
