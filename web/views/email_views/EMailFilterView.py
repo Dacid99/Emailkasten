@@ -40,6 +40,8 @@ class EMailFilterView(LoginRequiredMixin, FilterPageView):
     paginate_by = 25
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[EMailModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return EMailModel.objects.filter(mailbox__account__user=self.request.user)
+        if self.request.user.is_authenticated:
+            return EMailModel.objects.filter(mailbox__account__user=self.request.user)
+        return EMailModel.objects.none()

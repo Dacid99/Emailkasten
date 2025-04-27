@@ -23,6 +23,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
@@ -41,7 +43,7 @@ class SimpleMailingListSerializer(BaseMailingListSerializer):
     emails = serializers.SerializerMethodField(read_only=True)
     """The mails by the mailinglist. Set via :func:`get_emails`."""
 
-    def get_emails(self, instance: MailingListModel) -> ReturnDict | list:
+    def get_emails(self, instance: MailingListModel) -> ReturnDict[str, Any]:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:
@@ -54,5 +56,6 @@ class SimpleMailingListSerializer(BaseMailingListSerializer):
         user = getattr(request, "user", None)
         if user is not None:
             emails = instance.emails.filter(mailbox__account__user=user)
-            return BaseEMailSerializer(emails, many=True, read_only=True).data
-        return []
+        else:
+            emails = instance.emails.none()
+        return BaseEMailSerializer(emails, many=True, read_only=True).data

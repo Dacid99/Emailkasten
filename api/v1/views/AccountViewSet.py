@@ -41,19 +41,18 @@ from ..serializers.account_serializers.AccountSerializer import AccountSerialize
 
 if TYPE_CHECKING:
     from django.db.models.query import QuerySet
-    from rest_framework.permissions import BasePermission
     from rest_framework.request import Request
     from rest_framework.serializers import BaseSerializer
 
 
-class AccountViewSet(viewsets.ModelViewSet, ToggleFavoriteMixin):
+class AccountViewSet(viewsets.ModelViewSet[AccountModel], ToggleFavoriteMixin):
     """Viewset for the :class:`core.models.AccountModel.AccountModel`."""
 
     BASENAME = AccountModel.BASENAME
     serializer_class = AccountSerializer
-    filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = AccountFilter
-    permission_classes: Final[list[type[BasePermission]]] = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     ordering_fields: Final[list[str]] = [
         "mail_address",
         "mail_host",
@@ -68,7 +67,7 @@ class AccountViewSet(viewsets.ModelViewSet, ToggleFavoriteMixin):
     ordering: Final[list[str]] = ["id"]
 
     @override
-    def get_queryset(self) -> QuerySet[AccountModel, AccountModel]:
+    def get_queryset(self) -> QuerySet[AccountModel]:
         """Fetches the queryset by filtering the data for entries connected to the request user.
 
         Returns:
@@ -76,10 +75,12 @@ class AccountViewSet(viewsets.ModelViewSet, ToggleFavoriteMixin):
         """
         if getattr(self, "swagger_fake_view", False):
             return AccountModel.objects.none()
-        return AccountModel.objects.filter(user=self.request.user)
+        if self.request.user.is_authenticated:
+            return AccountModel.objects.filter(user=self.request.user)
+        return AccountModel.objects.none()
 
     @override
-    def perform_create(self, serializer: BaseSerializer) -> None:
+    def perform_create(self, serializer: BaseSerializer[AccountModel]) -> None:
         """Adds the request user to the serializer data of the create request.
 
         Args:
@@ -88,7 +89,7 @@ class AccountViewSet(viewsets.ModelViewSet, ToggleFavoriteMixin):
         try:
             serializer.save(user=self.request.user)
         except IntegrityError:
-            # pylint: disable-next=raise-missing-from ; raising with from is unnecessary here
+            # pylint: disable-next=raise-missing-from  # raising with from is unnecessary here
             raise ValidationError({"detail": "This account already exists!"}) from None
 
     URL_PATH_UPDATE_MAILBOXES = "update-mailboxes"

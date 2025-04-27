@@ -132,12 +132,12 @@ class AttachmentModel(
             self.save_to_storage(attachmentData)
 
     @override
-    def delete(self, *args: Any, **kwargs: Any) -> None:
+    def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
         """Extended :django::func:`django.models.Model.delete` method.
 
         Deletes :attr:`file_path` file on deletion.
         """
-        super().delete(*args, **kwargs)
+        delete_return = super().delete(*args, **kwargs)
 
         if self.file_path:
             logger.debug("Removing %s from storage ...", self)
@@ -156,6 +156,8 @@ class AttachmentModel(
                     "An unexpected error occured removing %s!", self.file_path
                 )
 
+        return delete_return
+
     def save_to_storage(self, attachmentData: Message[str, str]) -> None:
         """Saves the attachment file to the storage.
 
@@ -173,16 +175,23 @@ class AttachmentModel(
             return
 
         @saveStore
-        def writeAttachment(
-            file: BufferedWriter, attachmentData: Message[str, str]
-        ) -> None:
-            file.write(attachmentData.get_payload(decode=True))
+        def writeAttachment(file: BufferedWriter, attachmentPayload: bytes) -> None:
+            file.write(attachmentPayload)
 
         logger.debug("Storing %s ...", self)
 
         dirPath = StorageModel.getSubdirectory(self.email.message_id)
         preliminary_file_path = os.path.join(dirPath, self.file_name)
 
+        payload = attachmentData.get_payload(decode=True)
+        if isinstance(payload, bytes):
+            file_path = writeAttachment(preliminary_file_path, attachmentData)
+        else:
+            logger.error(
+                "UNEXPECTED: attachment payload was of type %s.", type(payload)
+            )
+            logger.error("Failed to store %s!", self)
+            return
         if file_path := writeAttachment(preliminary_file_path, attachmentData):
             self.file_path = file_path
             self.save(update_fields=["file_path"])
@@ -206,7 +215,7 @@ class AttachmentModel(
         new_attachment = AttachmentModel()
         new_attachment.file_name = (
             attachmentData.get_filename()
-            or md5(  # noqa: S324 ; no safe hash required here
+            or md5(  # noqa: S324  # no safe hash required here
                 attachmentData.as_bytes()
             ).hexdigest()
             + f".{attachmentData.get_content_subtype()}"

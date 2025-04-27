@@ -141,7 +141,7 @@ class MailboxModel(
         Raises:
             ValueError: If the account has an unimplemented protocol.
         """
-        return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA
+        return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA  # type: ignore[no-any-return]  # for some reason mypy doesnt get this
 
     def test_connection(self) -> None:
         """Tests whether the data in the model is correct.
@@ -238,7 +238,7 @@ class MailboxModel(
         )
         with open(dump_filepath, "bw") as file:
             file.write(file_data)
-        mailboxFile = formatClass(dump_filepath)
+        mailboxFile = formatClass(dump_filepath)  # type: ignore[abstract]  # Mailbox class is never implemented, it's just used for typing
         for key in mailboxFile.iterkeys():
             EMailModel.createFromEmailBytes(mailboxFile.get_bytes(key), self)
         logger.info("Successfully added emails from mailbox file.")

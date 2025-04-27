@@ -40,8 +40,10 @@ class AttachmentFilterView(LoginRequiredMixin, FilterPageView):
     paginate_by = 25
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[AttachmentModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return AttachmentModel.objects.filter(
-            email__mailbox__account__user=self.request.user
-        )
+        if self.request.user.is_authenticated:
+            return AttachmentModel.objects.filter(
+                email__mailbox__account__user=self.request.user
+            )
+        return AttachmentModel.objects.none()

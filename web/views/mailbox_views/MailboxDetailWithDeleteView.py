@@ -39,7 +39,11 @@ from web.views.mailbox_views.MailboxFilterView import MailboxFilterView
 
 
 class MailboxDetailWithDeleteView(
-    LoginRequiredMixin, DetailView, DeletionMixin, CustomActionMixin, TestActionMixin
+    LoginRequiredMixin,
+    DetailView,
+    DeletionMixin,
+    CustomActionMixin,
+    TestActionMixin,
 ):
     """View for a single :class:`core.models.MailboxModel.MailboxModel` instance."""
 
@@ -50,9 +54,11 @@ class MailboxDetailWithDeleteView(
     success_url = reverse_lazy("web:" + MailboxFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[MailboxModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return MailboxModel.objects.filter(account__user=self.request.user)
+        if self.request.user.is_authenticated:
+            return MailboxModel.objects.filter(account__user=self.request.user)
+        return MailboxModel.objects.none()
 
     @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -85,13 +91,17 @@ class MailboxDetailWithDeleteView(
         context.update({"action_result": result})
         return render(request, self.template_name, context)
 
-    def perform_fetch_all(self) -> None:
+    def perform_fetch_all(self) -> dict[str, bool | str | None]:
         """Performs fetching of the mailboxes emails.
 
         Returns:
             Data containing the status, message and, if provided, the error message of the action.
         """
-        result = {"status": None, "message": None, "error": None}
+        result: dict[str, bool | str | None] = {
+            "status": None,
+            "message": None,
+            "error": None,
+        }
         try:
             self.object.fetch(EmailFetchingCriterionChoices.ALL)
         except FetcherError as error:

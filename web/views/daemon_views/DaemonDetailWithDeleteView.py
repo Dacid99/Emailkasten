@@ -35,7 +35,10 @@ from web.views.daemon_views.DaemonFilterView import DaemonFilterView
 
 
 class DaemonDetailWithDeleteView(
-    LoginRequiredMixin, DetailView, DeletionMixin, CustomActionMixin
+    LoginRequiredMixin,
+    DetailView,
+    DeletionMixin,
+    CustomActionMixin,
 ):
     """View for a single :class:`core.models.DaemonModel.DaemonModel` instance."""
 
@@ -46,9 +49,11 @@ class DaemonDetailWithDeleteView(
     success_url = reverse_lazy("web:" + DaemonFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[DaemonModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
+        if self.request.user.is_authenticated:
+            return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
+        return DaemonModel.objects.none()
 
     @override
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:

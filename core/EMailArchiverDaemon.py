@@ -24,7 +24,7 @@ import logging
 import logging.handlers
 import threading
 import time
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 
 if TYPE_CHECKING:
@@ -53,6 +53,7 @@ class EMailArchiverDaemon(threading.Thread):
 
         self._setupLogger()
 
+    @override
     def __str__(self) -> str:
         """Returns a string representation of the daemon instance.
 
@@ -71,6 +72,7 @@ class EMailArchiverDaemon(threading.Thread):
         )
         self.logger.addHandler(fileHandler)
 
+    @override
     def start(self) -> None:
         """Starts this daemon instance if it is inactive."""
         try:
@@ -104,6 +106,7 @@ class EMailArchiverDaemon(threading.Thread):
         self._daemonModel.refresh_from_db()
         self.logger.debug("Daemon updated.")
 
+    @override
     def run(self) -> None:
         """The looping task execute on the daemon thread.
 

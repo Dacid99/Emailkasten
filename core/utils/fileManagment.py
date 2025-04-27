@@ -29,22 +29,26 @@ import logging
 import os.path
 import re
 from builtins import open  # required for testing
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from typing import Any
+    from io import BufferedWriter
 
 
 logger = logging.getLogger(__name__)
 
 
-def saveStore(storingFunc: Callable) -> Callable:
+def saveStore(
+    storingFunc: Callable[[BufferedWriter, Any], None],
+) -> Callable[[str, Any], str | None]:
     """Decorator to ensure no files are overwriten and errors are handled when storing files.
 
+    Exchanges the first file buffer argument with a filepath argument.
+
     Todo:
-        Needs a test that doesnt require workarounds, eg using tempfile
+        Needs a test that doesnt require workarounds, e.g. using tempfile.
 
     Args:
         storingFunc: The function writing a file into the storage to wrap.

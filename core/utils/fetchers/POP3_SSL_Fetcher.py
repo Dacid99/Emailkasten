@@ -42,14 +42,20 @@ class POP3_SSL_Fetcher(POP3Fetcher):
         """Overrides :func:`core.utils.fetchers.POP3Fetcher.connectToHost` to use :class:`poplib.POP3_SSL`."""
         self.logger.debug("Connecting to %s ...", self.account)
 
-        kwargs = {"host": self.account.mail_host, "context": None}
-        if port := self.account.mail_host_port:
-            kwargs["port"] = port
-        if timeout := self.account.timeout:
-            kwargs["timeout"] = timeout
-
+        mail_host = self.account.mail_host
+        mail_host_port = self.account.mail_host_port
+        timeout = self.account.timeout
         try:
-            self._mailClient = poplib.POP3_SSL(**kwargs)
+            if mail_host_port and timeout:
+                self._mailClient = poplib.POP3_SSL(
+                    host=mail_host, port=mail_host_port, timeout=timeout, context=None
+                )
+            elif mail_host_port:
+                self._mailClient = poplib.POP3_SSL(
+                    host=mail_host, port=mail_host_port, context=None
+                )
+            else:
+                self._mailClient = poplib.POP3_SSL(host=mail_host, context=None)
         except Exception as error:
             self.logger.exception(
                 "A POP error occured connecting to %s!",

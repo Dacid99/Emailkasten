@@ -50,12 +50,14 @@ class UploadEmailView(LoginRequiredMixin, DetailView, FormView):
         Returns:
             The detail url of the mailbox.
         """
-        return self.object.get_absolute_url()
+        return self.object.get_absolute_url()  # type: ignore[no-any-return]  # self.object is set during dispatch via get_queryset().get(), so it is always a MailboxModel
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[MailboxModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return MailboxModel.objects.filter(account__user=self.request.user)
+        if self.request.user.is_authenticated:
+            return MailboxModel.objects.filter(account__user=self.request.user)
+        return MailboxModel.objects.none()
 
     @override
     def form_valid(self, form: UploadEmailForm) -> HttpResponse:

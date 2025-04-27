@@ -18,18 +18,16 @@
 
 """Module with the :class:`NoCreateMixin` viewset mixin."""
 
-from typing import Any, override
+from typing import Any
 
 from rest_framework import status
-from rest_framework.request import Request
 from rest_framework.response import Response
 
 
 class NoCreateMixin:
     """Mixin blocking the `create` endpoint of an implementing viewset."""
 
-    @override
-    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def create(self, *args: Any, **kwargs: Any) -> Response:
         """Disables the POST method for the viewset."""
         return Response(
             {"detail": "POST method is not allowed on this endpoint."},

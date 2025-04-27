@@ -42,6 +42,8 @@ class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     URL_NAME = DaemonModel.get_edit_web_url_name()
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[DaemonModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
+        if self.request.user.is_authenticated:
+            return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
+        return DaemonModel.objects.none()

@@ -41,20 +41,21 @@ from ..serializers.attachment_serializers.BaseAttachmentSerializer import (
 
 if TYPE_CHECKING:
     from django.db.models.query import QuerySet
-    from rest_framework.permissions import BasePermission
     from rest_framework.request import Request
 
 
 class AttachmentViewSet(
-    viewsets.ReadOnlyModelViewSet, mixins.DestroyModelMixin, ToggleFavoriteMixin
+    viewsets.ReadOnlyModelViewSet[AttachmentModel],
+    mixins.DestroyModelMixin,
+    ToggleFavoriteMixin,
 ):
     """Viewset for the :class:`core.models.AttachmentModel.AttachmentModel`."""
 
     BASENAME = AttachmentModel.BASENAME
     serializer_class = BaseAttachmentSerializer
-    filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = AttachmentFilter
-    permission_classes: Final[list[type[BasePermission]]] = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     ordering_fields: Final[list[str]] = [
         "file_name",
         "datasize",
@@ -74,9 +75,11 @@ class AttachmentViewSet(
         """
         if getattr(self, "swagger_fake_view", False):
             return AttachmentModel.objects.none()
-        return AttachmentModel.objects.filter(
-            email__mailbox__account__user=self.request.user
-        )
+        if self.request.user.is_authenticated:
+            return AttachmentModel.objects.filter(
+                email__mailbox__account__user=self.request.user
+            )
+        return AttachmentModel.objects.none()
 
     URL_PATH_DOWNLOAD = "download"
     URL_NAME_DOWNLOAD = "download"

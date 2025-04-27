@@ -28,10 +28,10 @@ from django.views.generic.edit import DeletionMixin, UpdateView
 class UpdateOrDeleteView(UpdateView, DeletionMixin):
     """A view that implements both updating and deleting."""
 
-    delete_success_url = None
+    delete_success_url: str | None = None
     """The URL to redirect to after deletion. Must be set."""
 
-    success_url = None
+    success_url: str | None = None
     """The URL to redirect to after form submission.
     If this is not set, the models get_absolute_url method is used.
     """

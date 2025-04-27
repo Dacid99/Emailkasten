@@ -23,6 +23,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
@@ -47,7 +49,9 @@ class FullEMailSerializer(BaseEMailSerializer):
     :attr:`core.models.EMailModel.EMailModel.correspondents` foreign key and related fields.
     """
 
-    replies = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    replies: serializers.PrimaryKeyRelatedField[EMailModel] = (
+        serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    )
     """The replies mails are included by id only to prevent recursion."""
 
     attachments = BaseAttachmentSerializer(many=True, read_only=True)
@@ -66,7 +70,7 @@ class FullEMailSerializer(BaseEMailSerializer):
     via :func:`get_correspondents`.
     """
 
-    def get_correspondents(self, instance: EMailModel) -> ReturnDict | None:
+    def get_correspondents(self, instance: EMailModel) -> ReturnDict[str, Any]:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:

@@ -1,2 +1,3 @@
 reports/*
 .mypy_cache/
+.dmypy.json

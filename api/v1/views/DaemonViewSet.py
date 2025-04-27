@@ -41,11 +41,10 @@ from ..serializers.daemon_serializers.BaseDaemonSerializer import BaseDaemonSeri
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
-    from rest_framework.permissions import BasePermission
     from rest_framework.request import Request
 
 
-class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet):
+class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[DaemonModel]):
     """Viewset for the :class:`core.models.DaemonModel.DaemonModel`.
 
     Provides all but the create method.
@@ -53,9 +52,9 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet):
 
     BASENAME = DaemonModel.BASENAME
     serializer_class = BaseDaemonSerializer
-    filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = DaemonFilter
-    permission_classes: Final[list[type[BasePermission]]] = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     ordering_fields: Final[list[str]] = [
         "fetching_criterion",
         "cycle_interval",
@@ -81,7 +80,9 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet):
         """
         if getattr(self, "swagger_fake_view", False):
             return DaemonModel.objects.none()
-        return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
+        if self.request.user.is_authenticated:
+            return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
+        return DaemonModel.objects.none()
 
     URL_PATH_FETCHING_OPTIONS = "fetching-options"
     URL_NAME_FETCHING_OPTIONS = "fetching-options"
@@ -215,9 +216,9 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet):
         """
         daemon = self.get_object()
 
-        number = request.query_params.get("number", "0")
+        number_query_param = request.query_params.get("number", "0")
         try:
-            number = int(number)
+            number = int(number_query_param)
         except ValueError:
             number = 0
         number_suffix = f".{number}" if number > 0 else ""

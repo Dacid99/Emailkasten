@@ -44,7 +44,7 @@ from Emailkasten.utils import get_config
 if TYPE_CHECKING:
     import datetime
     from email.header import Header
-    from email.message import EmailMessage
+    from email.message import Message
 
 logger = logging.getLogger(__name__)
 
@@ -81,12 +81,14 @@ def decodeHeader(header: Header | str) -> str:
 
 
 def getHeader(
-    emailMessage: EmailMessage,
+    emailMessage: Message[str, str],
     headerName: str,
     joiningString: str = ", ",
 ) -> str | None:
     """Shorthand to safely get a header from a :class:`email.message.EmailMessage`.
 
+    Todo:
+        emailMessage arg should become EmailMessage type after mypy 1.16.0
     Args:
         emailMessage: The message to get the header from.
         headerName: The name of the header field.
@@ -118,6 +120,11 @@ def parseDatetimeHeader(dateHeader: str | None) -> datetime.datetime:
         The datetime version of the header.
         The current time in case of an invalid date header.
     """
+    if not dateHeader:
+        logger.warning(
+            "No Date header found in mail, resorting to current time!",
+        )
+        return timezone.now()
     try:
         parsedDatetime = email.utils.parsedate_to_datetime(dateHeader)
     except ValueError:
@@ -182,12 +189,12 @@ def eml2html(emailBytes: bytes) -> str:
     Args:
         emailBytes: The data of the mail to be converted.
     """
-    emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)
+    emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0
     ignorePlainText = False  # ignores too broadly!
 
     htmlWrapper = get_config("HTML_WRAPPER")
     html = ""
-    cidContent = {}
+    cidContent: dict[str, Message[str, str]] = {}
     attachmentsFooter = ""
     for part in emailMessage.walk():
         if part.get_content_subtype() == "alternative":
@@ -200,11 +207,29 @@ def eml2html(emailBytes: bytes) -> str:
         if content_maintype == "text":
             if content_subtype == "html":
                 charset = part.get_content_charset("utf-8")
-                html += part.get_payload(decode=True).decode(charset, errors="replace")
+                payload = part.get_payload(decode=True)
+                if isinstance(payload, bytes):
+                    html += payload.decode(charset, errors="replace")
+                else:
+                    logger.debug(
+                        "UNEXPECTED: %s/%s part payload was of type %s.",
+                        content_maintype,
+                        content_subtype,
+                        type(payload),
+                    )
             elif not ignorePlainText:
                 charset = part.get_content_charset("utf-8")
-                text = part.get_payload(decode=True).decode(charset, errors="replace")
-                html += htmlWrapper % text
+                payload = part.get_payload(decode=True)
+                if isinstance(payload, bytes):
+                    text = payload.decode(charset, errors="replace")
+                    html += htmlWrapper % text
+                else:
+                    logger.debug(
+                        "UNEXPECTED: %s/%s part payload was of type %s.",
+                        content_maintype,
+                        content_subtype,
+                        type(payload),
+                    )
         elif content_maintype == "image":
             if cid := part.get("Content-ID", None):
                 cidContent[cid.strip("<>")] = part
@@ -225,18 +250,25 @@ def eml2html(emailBytes: bytes) -> str:
             attachmentsFooter += "<li>" + fileName + "</li>"
 
     for cid, part in cidContent.items():
-        partBytes = part.get_payload(decode=True)
         content_type = part.get_content_type()
-        base64part = b64encode(partBytes).decode("utf-8")
-        html = html.replace(
-            f'src="cid:{cid}"', f'src="data:{content_type};base64,{base64part}"'
-        )
+        partBytes = part.get_payload(decode=True)
+        if isinstance(partBytes, bytes):
+            base64part = b64encode(partBytes).decode("utf-8")
+            html = html.replace(
+                f'src="cid:{cid}"', f'src="data:{content_type};base64,{base64part}"'
+            )
+        else:
+            logger.debug(
+                "UNEXPECTED: %s part payload was of type %s.",
+                content_type,
+                type(partBytes),
+            )
     if attachmentsFooter:
         html = html.replace(
             "</html>",
             f"<p><hr><p><b>Attached Files:</b><p><ul>{attachmentsFooter}</ul></html>",
         )
-    return get_sanitizer().sanitize(html)
+    return get_sanitizer().sanitize(html)  # type: ignore[no-any-return]  # always returns a str, mypy cant read html_sanitizer
 
 
 def is_X_Spam(x_spam_header: str | None) -> bool:

@@ -21,7 +21,7 @@
 from rest_framework import serializers
 
 
-class DatabaseStatsSerializer(serializers.Serializer):
+class DatabaseStatsSerializer(serializers.Serializer[dict[str, int]]):
     """The serializer for stats about the database.
 
     Includes count values for emails, correspondents, attachments and accounts.

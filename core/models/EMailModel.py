@@ -28,6 +28,7 @@ from hashlib import md5
 from typing import TYPE_CHECKING, Any, Final, override
 
 from django.db import models, transaction
+from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import HeaderFields
@@ -77,8 +78,10 @@ class EMailModel(
     html_bodytext = models.TextField(blank=True, default="")
     """The html bodytext of the mail. Can be blank."""
 
-    inReplyTo: models.ForeignKey[EMailModel] = models.ForeignKey(
-        "self", null=True, related_name="replies", on_delete=models.SET_NULL
+    inReplyTo: models.ForeignKey[EMailModel | None, EMailModel | None] = (
+        models.ForeignKey(
+            "self", null=True, related_name="replies", on_delete=models.SET_NULL
+        )
     )
     """The mail that this mail is a response to. Can be null. Deletion of that replied-to mail sets this field to NULL."""
 
@@ -122,8 +125,13 @@ class EMailModel(
     )
     """The correspondents that are mentioned in this mail. Bridges through :class:`core.models.EMailCorrespondentsModel`."""
 
-    mailinglist: models.ForeignKey[MailingListModel] = models.ForeignKey(
-        "MailingListModel", null=True, related_name="emails", on_delete=models.CASCADE
+    mailinglist: models.ForeignKey[MailingListModel | None, MailingListModel | None] = (
+        models.ForeignKey(
+            "MailingListModel",
+            null=True,
+            related_name="emails",
+            on_delete=models.CASCADE,
+        )
     )
     """The mailinglist that this mail has been sent from. Can be null. Deletion of that `mailinglist` deletes this mail."""
 
@@ -194,12 +202,12 @@ class EMailModel(
                 self.save_html_to_storage(emailData)
 
     @override
-    def delete(self, *args: Any, **kwargs: Any) -> None:
+    def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
         """Extended :django::func:`django.models.Model.delete` method.
 
         Deletes :attr:`eml_filepath` and :attr:`html_filepath` files on deletion.
         """
-        super().delete(*args, **kwargs)
+        delete_return = super().delete(*args, **kwargs)
 
         if self.eml_filepath:
             logger.debug("Removing %s from storage ...", self)
@@ -233,6 +241,8 @@ class EMailModel(
                 logger.exception(
                     "An unexpected error occured removing %s!", self.html_filepath
                 )
+
+        return delete_return
 
     def save_eml_to_storage(self, emailData: bytes) -> None:
         """Saves the email to the storage in eml format.
@@ -350,16 +360,16 @@ class EMailModel(
                 if the mail already exists in the db or
                 if the mail is spam and is supposed to be thrown out.
         """
-        emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)
+        emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0
 
         message_id = (
             getHeader(
                 emailMessage,
                 HeaderFields.MESSAGE_ID,
             )
-            or md5(emailBytes).hexdigest()  # noqa: S324 ; no safe hash required here
+            or md5(emailBytes).hexdigest()  # noqa: S324  # no safe hash required here
         )
-        x_spam = getHeader(emailMessage, HeaderFields.X_SPAM)
+        x_spam = getHeader(emailMessage, HeaderFields.X_SPAM) or ""
         if is_X_Spam(x_spam) and get_config("THROW_OUT_SPAM"):
             logger.debug(
                 "Skipping email with Message-ID %s in %s, it is flagged as spam.",
@@ -380,7 +390,9 @@ class EMailModel(
         new_email.datetime = parseDatetimeHeader(
             getHeader(emailMessage, HeaderFields.DATE)
         )
-        new_email.email_subject = getHeader(emailMessage, HeaderFields.SUBJECT)
+        new_email.email_subject = getHeader(emailMessage, HeaderFields.SUBJECT) or __(
+            "No subject"
+        )
         new_email.datasize = len(emailBytes)
 
         inReplyTo_message_id = getHeader(emailMessage, HeaderFields.IN_REPLY_TO)
@@ -410,11 +422,27 @@ class EMailModel(
             if contentType == "text/plain":
                 payload = part.get_payload(decode=True)
                 charset = part.get_content_charset("utf-8")
-                new_email.plain_bodytext += payload.decode(charset, errors="replace")
+                if isinstance(payload, bytes):
+                    new_email.plain_bodytext += payload.decode(
+                        charset, errors="replace"
+                    )
+                else:
+                    logger.debug(
+                        "UNEXPECTED: %s part payload was of type %s.",
+                        contentType,
+                        type(payload),
+                    )
             elif contentType == "text/html":
                 payload = part.get_payload(decode=True)
                 charset = part.get_content_charset("utf-8")
-                new_email.html_bodytext += payload.decode(charset, errors="replace")
+                if isinstance(payload, bytes):
+                    new_email.html_bodytext += payload.decode(charset, errors="replace")
+                else:
+                    logger.debug(
+                        "UNEXPECTED: %s part payload was of type %s.",
+                        contentType,
+                        type(payload),
+                    )
             elif contentDisposition in ["inline", "attachment"] or (
                 any(
                     contentType.startswith(type_to_save)

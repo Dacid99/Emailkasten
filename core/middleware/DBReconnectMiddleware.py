@@ -49,7 +49,7 @@ class DBReconnectMiddleware:
     """The time delay between reconnect attempt.
     Set from :attr:`Emailkasten.constants.DatabaseConfiguration.RECONNECT_DELAY`."""
 
-    def __init__(self, get_response: Callable):
+    def __init__(self, get_response: Callable[[Request], Response]):
         """Sets up the middleware."""
         self.get_response = get_response
 

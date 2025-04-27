@@ -44,8 +44,10 @@ class CorrespondentUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     URL_NAME = CorrespondentModel.get_edit_web_url_name()
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[CorrespondentModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return CorrespondentModel.objects.filter(
-            emails__mailbox__account__user=self.request.user
-        ).distinct()
+        if self.request.user.is_authenticated:
+            return CorrespondentModel.objects.filter(
+                emails__mailbox__account__user=self.request.user
+            ).distinct()
+        return CorrespondentModel.objects.none()

@@ -20,7 +20,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, ClassVar, Final
 
 from rest_framework import serializers
 
@@ -31,7 +31,9 @@ if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseEMailCorrespondentSerializer(serializers.ModelSerializer):
+class BaseEMailCorrespondentSerializer(
+    serializers.ModelSerializer[EMailCorrespondentsModel]
+):
     """The base serializer for :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`.
 
     Includes all viable fields from the model.
@@ -50,7 +52,7 @@ class BaseEMailCorrespondentSerializer(serializers.ModelSerializer):
         model: Final[type[Model]] = EMailCorrespondentsModel
         """The model to serialize."""
 
-        fields = "__all__"
+        fields: ClassVar[list[str] | str] = "__all__"
 
         read_only_fields: Final[list[str]] = [
             "email",

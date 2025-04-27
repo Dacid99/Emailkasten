@@ -22,12 +22,14 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, override
 
 from ...constants import EmailFetchingCriterionChoices
 
 
 if TYPE_CHECKING:
+    from imaplib import IMAP4
+    from poplib import POP3
     from types import TracebackType
 
     from core.models.AccountModel import AccountModel
@@ -40,10 +42,10 @@ class BaseFetcher(ABC):
     Provides arg-checking for methods.
     """
 
-    PROTOCOL: str | None = None
+    PROTOCOL = ""
     """Name of the used protocol, should be one of :class:`MailFetchingProtocols`."""
 
-    AVAILABLE_FETCHING_CRITERIA: ClassVar[list] = []
+    AVAILABLE_FETCHING_CRITERIA: ClassVar[list[str]] = []
     """List of all criteria available for fetching. Should refer to :class:`MailFetchingCriteria`."""
 
     @abstractmethod
@@ -64,14 +66,14 @@ class BaseFetcher(ABC):
             raise ValueError(
                 f"The protocol of {account} is not supported by fetcher {self.__class__.__name__}!"
             )
-        self._mailClient = None
+        self._mailClient: IMAP4 | POP3 | None = None
 
     @abstractmethod
     def connectToHost(self) -> None:
         """Opens the connection to the mailserver."""
 
     @abstractmethod
-    def test(self, mailbox: MailboxModel | None) -> None:
+    def test(self, mailbox: MailboxModel | None = None) -> None:
         """Tests the connection to the mailaccount and, if given, the mailbox.
 
         Args:
@@ -82,7 +84,7 @@ class BaseFetcher(ABC):
             raise ValueError(f"{mailbox} is not in {self.account}!")
 
     @abstractmethod
-    def fetchEmails(
+    def fetchEmails(  # type: ignore[return]  # this abstractmethod just provides basic arg-checking
         self,
         mailbox: MailboxModel,
         criterion: str = EmailFetchingCriterionChoices.ALL,
@@ -126,6 +128,7 @@ class BaseFetcher(ABC):
     def close(self) -> None:
         """Closes the connection to the mail server."""
 
+    @override
     def __str__(self) -> str:
         """Returns a string representation of the :class:`BaseFetcher` instances.
 

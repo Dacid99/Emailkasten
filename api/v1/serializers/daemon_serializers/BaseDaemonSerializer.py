@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseDaemonSerializer(serializers.ModelSerializer):
+class BaseDaemonSerializer(serializers.ModelSerializer[DaemonModel]):
     """The base serializer for :class:`core.models.DaemonModel.DaemonModel`.
 
     Includes all viable fields from the model.

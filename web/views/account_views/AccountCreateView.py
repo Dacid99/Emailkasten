@@ -22,8 +22,7 @@ from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
-from django.forms import Form
-from django.http import HttpResponse
+from django.http import Http404
 from django.views.generic import CreateView
 
 from core.models.AccountModel import AccountModel
@@ -41,13 +40,19 @@ class AccountCreateView(LoginRequiredMixin, CreateView):
     URL_NAME = AccountModel.BASENAME + "-create"
 
     @override
-    def get_form(self, form_class: type[Form] | None = None) -> HttpResponse:
+    def get_form(
+        self, form_class: type[BaseAccountForm] | None = None
+    ) -> BaseAccountForm:
         """Extended method to add the requesting user to the created account."""
-        form = super().get_form(form_class)
-        form.instance.user = self.request.user
-        return form
+        if self.request.user.is_authenticated:
+            form = super().get_form(form_class)
+            form.instance.user = self.request.user
+            return form  # type: ignore[no-any-return]  # super().get_form returns the form_class arg or classvar, which are both BaseAccountForm
+        raise Http404
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[AccountModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return super().get_queryset().filter(user=self.request.user)
+        if self.request.user.is_authenticated:
+            return super().get_queryset().filter(user=self.request.user)
+        return super().get_queryset().none()

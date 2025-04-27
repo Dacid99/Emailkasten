@@ -34,7 +34,7 @@ from ..utils.mailParsing import getHeader
 
 
 if TYPE_CHECKING:
-    from email.message import EmailMessage
+    from email.message import Message
 
 
 logger = logging.getLogger(__name__)
@@ -96,7 +96,7 @@ class MailingListModel(URLMixin, FavoriteMixin, models.Model):
         }
 
     @staticmethod
-    def fromEmailMessage(emailMessage: EmailMessage) -> MailingListModel | None:
+    def fromEmailMessage(emailMessage: Message[str, str]) -> MailingListModel | None:
         """Prepares a :class:`core.models.MailingListModel.MailingListModel` from an email message.
 
         Args:
@@ -120,24 +120,30 @@ class MailingListModel(URLMixin, FavoriteMixin, models.Model):
             pass
 
         new_mailinglist = MailingListModel(list_id=list_id)
-        new_mailinglist.list_owner = getHeader(
-            emailMessage, HeaderFields.MailingList.OWNER
+        new_mailinglist.list_owner = (
+            getHeader(emailMessage, HeaderFields.MailingList.OWNER) or ""
         )
-        new_mailinglist.list_subscribe = getHeader(
-            emailMessage,
-            HeaderFields.MailingList.SUBSCRIBE,
+        new_mailinglist.list_subscribe = (
+            getHeader(
+                emailMessage,
+                HeaderFields.MailingList.SUBSCRIBE,
+            )
+            or ""
         )
-        new_mailinglist.list_unsubscribe = getHeader(
-            emailMessage,
-            HeaderFields.MailingList.UNSUBSCRIBE,
+        new_mailinglist.list_unsubscribe = (
+            getHeader(
+                emailMessage,
+                HeaderFields.MailingList.UNSUBSCRIBE,
+            )
+            or ""
         )
-        new_mailinglist.list_post = getHeader(
-            emailMessage, HeaderFields.MailingList.POST
+        new_mailinglist.list_post = (
+            getHeader(emailMessage, HeaderFields.MailingList.POST) or ""
         )
-        new_mailinglist.list_help = getHeader(
-            emailMessage, HeaderFields.MailingList.HELP
+        new_mailinglist.list_help = (
+            getHeader(emailMessage, HeaderFields.MailingList.HELP) or ""
         )
-        new_mailinglist.list_archive = getHeader(
-            emailMessage, HeaderFields.MailingList.ARCHIVE
+        new_mailinglist.list_archive = (
+            getHeader(emailMessage, HeaderFields.MailingList.ARCHIVE) or ""
         )
         return new_mailinglist

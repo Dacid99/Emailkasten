@@ -32,6 +32,8 @@ from ..utils.widgets import AdaptedSelectDateWidget
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
+    from core.models.CorrespondentModel import CorrespondentModel
+
 
 class CorrespondentFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.CorrespondentModel`."""
@@ -67,7 +69,9 @@ class CorrespondentFilter(django_filters.FilterSet):
         widget=widgets.NullBooleanSelect,
     )
 
-    def filter_text_fields(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
+    def filter_text_fields(
+        self, queryset: QuerySet[CorrespondentModel], name: str, value: str
+    ) -> QuerySet[CorrespondentModel]:
         """Filters textfields in the model.
 
         Args:

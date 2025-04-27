@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseMailboxSerializer(serializers.ModelSerializer):
+class BaseMailboxSerializer(serializers.ModelSerializer[MailboxModel]):
     """The base serializer for :class:`core.models.MailboxModel.MailboxModel`.
 
     Includes all viable fields from the model.

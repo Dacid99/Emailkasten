@@ -38,11 +38,12 @@ from ..serializers.mailinglist_serializers.MailingListSerializer import (
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
-    from rest_framework.permissions import BasePermission
 
 
 class MailingListViewSet(
-    viewsets.ReadOnlyModelViewSet, mixins.DestroyModelMixin, ToggleFavoriteMixin
+    viewsets.ReadOnlyModelViewSet[MailingListModel],
+    mixins.DestroyModelMixin,
+    ToggleFavoriteMixin,
 ):
     """Viewset for the :class:`core.models.MailingListModel.MailingListModel`.
 
@@ -51,9 +52,9 @@ class MailingListViewSet(
 
     BASENAME = MailingListModel.BASENAME
     serializer_class = MailingListSerializer
-    filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = MailingListFilter
-    permission_classes: Final[list[type[BasePermission]]] = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     ordering_fields: Final[list[str]] = [
         "list_id",
         "list_owner",
@@ -77,6 +78,8 @@ class MailingListViewSet(
         """
         if getattr(self, "swagger_fake_view", False):
             return MailingListModel.objects.none()
-        return MailingListModel.objects.filter(
-            emails__mailbox__account__user=self.request.user
-        ).distinct()
+        if self.request.user.is_authenticated:
+            return MailingListModel.objects.filter(
+                emails__mailbox__account__user=self.request.user
+            ).distinct()
+        return MailingListModel.objects.none()

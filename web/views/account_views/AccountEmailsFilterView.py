@@ -29,17 +29,19 @@ from core.models.EMailModel import EMailModel
 from ..email_views.EMailFilterView import EMailFilterView
 
 
-class AccountEmailsFilterView(EMailFilterView, SingleObjectMixin):
+class AccountEmailsFilterView(EMailFilterView, SingleObjectMixin):  # type: ignore[misc]  # SingleObjectMixin attributes are shadowed purposefully
     """View for filtering listed :class:`core.models.EMailModel.EMailModel` instances belonging to a certain account."""
 
     URL_NAME = "account-emails"
     template_name = "web/account/account_email_filter_list.html"
 
     @override
-    def get_queryset(self) -> QuerySet:
-        account_queryset = AccountModel.objects.filter(user=self.request.user)
-        self.object = self.get_object(queryset=account_queryset)
-        return EMailModel.objects.filter(mailbox__account=self.object)
+    def get_queryset(self) -> QuerySet[EMailModel]:
+        if self.request.user.is_authenticated:
+            account_queryset = AccountModel.objects.filter(user=self.request.user)
+            self.object = self.get_object(queryset=account_queryset)
+            return EMailModel.objects.filter(mailbox__account=self.object)
+        return EMailModel.objects.none()
 
     @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

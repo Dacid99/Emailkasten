@@ -202,10 +202,9 @@ SESSION_COOKIE_SECURE = False
 DEFAULT_REGISTRATION_ENABLED = "0"
 
 # django-allauth
-ACCOUNT_SIGNUP_FIELDS = ["username*", "email", "password1*", "password2*"]
+ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = {"username"}
 ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_SESSION_REMEMBER = None
 ACCOUNT_ADAPTER = "Emailkasten.utils.ToggleSignupAccountAdapter"
 
 # dj-rest-auth

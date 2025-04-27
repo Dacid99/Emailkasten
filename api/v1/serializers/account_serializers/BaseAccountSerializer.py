@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseAccountSerializer(serializers.ModelSerializer):
+class BaseAccountSerializer(serializers.ModelSerializer[AccountModel]):
     """The base serializer for :class:`core.models.AccountModel.AccountModel`.
 
     Includes all viable fields from the model.

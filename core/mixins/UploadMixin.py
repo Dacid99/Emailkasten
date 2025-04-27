@@ -18,14 +18,23 @@
 
 """Module with the :class:`UploadMixin` mixin."""
 
+from typing import Any, ClassVar, Protocol
+
 from django.urls import reverse
+
+
+class Uploadable(Protocol):
+    """Protocol defining the required attributes of a class implementing this mixin."""
+
+    BASENAME: ClassVar[str]
+    pk: Any
 
 
 class UploadMixin:
     """Mixin providing url methods for the upload page of the model."""
 
     @classmethod
-    def get_upload_web_url_name(cls) -> str:
+    def get_upload_web_url_name(cls: type[Uploadable]) -> str:
         """Gets the edit webview urlname for the model.
 
         Returns:
@@ -33,7 +42,7 @@ class UploadMixin:
         """
         return cls.BASENAME + "-upload"
 
-    def get_absolute_upload_url(self) -> str:
+    def get_absolute_upload_url(self: Uploadable) -> str:
         """Gets the upload webview url for the model instance.
 
         Returns:

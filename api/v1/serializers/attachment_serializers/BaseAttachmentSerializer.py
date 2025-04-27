@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseAttachmentSerializer(serializers.ModelSerializer):
+class BaseAttachmentSerializer(serializers.ModelSerializer[AttachmentModel]):
     """The base serializer for :class:`core.models.AttachmentModel.AttachmentModel`.
 
     Includes all viable fields from the model.

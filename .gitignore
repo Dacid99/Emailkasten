@@ -16,3 +16,4 @@ pytest-cov/
 test.py
 htmlcov/
 *.mo
+*.patch

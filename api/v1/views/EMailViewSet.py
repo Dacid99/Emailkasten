@@ -21,7 +21,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, override
 
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -41,12 +41,13 @@ from ..serializers.email_serializers.FullEMailSerializer import FullEMailSeriali
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
-    from rest_framework.permissions import BasePermission
     from rest_framework.request import Request
 
 
 class EMailViewSet(
-    viewsets.ReadOnlyModelViewSet, mixins.DestroyModelMixin, ToggleFavoriteMixin
+    viewsets.ReadOnlyModelViewSet[EMailModel],
+    mixins.DestroyModelMixin,
+    ToggleFavoriteMixin,
 ):
     """Viewset for the :class:`core.models.EMailModel.EMailModel`.
 
@@ -55,9 +56,9 @@ class EMailViewSet(
 
     BASENAME = EMailModel.BASENAME
     serializer_class = FullEMailSerializer
-    filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = EMailFilter
-    permission_classes: Final[list[type[BasePermission]]] = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     ordering_fields: Final[list[str]] = [
         "datetime",
         "email_subject",
@@ -76,6 +77,7 @@ class EMailViewSet(
     ]
     ordering: Final[list[str]] = ["id"]
 
+    @override
     def get_queryset(self) -> QuerySet[EMailModel]:
         """Filters the data for entries connected to the request user.
 
@@ -84,7 +86,9 @@ class EMailViewSet(
         """
         if getattr(self, "swagger_fake_view", False):
             return EMailModel.objects.none()
-        return EMailModel.objects.filter(mailbox__account__user=self.request.user)
+        if self.request.user.is_authenticated:
+            return EMailModel.objects.filter(mailbox__account__user=self.request.user)
+        return EMailModel.objects.none()
 
     URL_PATH_DOWNLOAD = "download"
     URL_NAME_DOWNLOAD = "download"
@@ -148,7 +152,7 @@ class EMailViewSet(
         htmlFileName = os.path.basename(htmlFilePath)
         response = FileResponse(
             # pylint: disable-next=consider-using-with
-            open(  # noqa: SIM115 ;  this is the recommended usage for FileResponse, see https://docs.djangoproject.com/en/5.2/ref/request-response/
+            open(  # noqa: SIM115  # this is the recommended usage for FileResponse, see https://docs.djangoproject.com/en/5.2/ref/request-response/
                 htmlFilePath, "rb"
             ),
             as_attachment=False,

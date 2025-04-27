@@ -32,6 +32,8 @@ from ..utils.widgets import AdaptedSelectDateWidget
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
+    from core.models.EMailModel import EMailModel
+
 
 class EMailFilter(django_filters.FilterSet):
     """The filter class for :class:`core.models.EMailModel`."""
@@ -74,7 +76,9 @@ class EMailFilter(django_filters.FilterSet):
         field_name="x_spam",
     )
 
-    def filter_text_fields(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
+    def filter_text_fields(
+        self, queryset: QuerySet[EMailModel], name: str, value: str
+    ) -> QuerySet[EMailModel]:
         """Filters textfields in the model.
 
         Args:

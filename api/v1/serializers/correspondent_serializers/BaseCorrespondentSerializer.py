@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseCorrespondentSerializer(serializers.ModelSerializer):
+class BaseCorrespondentSerializer(serializers.ModelSerializer[CorrespondentModel]):
     """The base serializer for :class:`core.models.CorrespondentModel.CorrespondentModel`.
 
     Includes all viable fields from the model.

@@ -20,7 +20,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, override
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
@@ -41,12 +41,13 @@ from ..serializers.correspondent_serializers.CorrespondentSerializer import (
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
-    from rest_framework.permissions import BasePermission
     from rest_framework.serializers import BaseSerializer
 
 
 class CorrespondentViewSet(
-    viewsets.ReadOnlyModelViewSet, mixins.DestroyModelMixin, ToggleFavoriteMixin
+    viewsets.ReadOnlyModelViewSet[CorrespondentModel],
+    mixins.DestroyModelMixin,
+    ToggleFavoriteMixin,
 ):
     """Viewset for the :class:`core.models.CorrespondentModel.CorrespondentModel`.
 
@@ -55,9 +56,9 @@ class CorrespondentViewSet(
 
     BASENAME = CorrespondentModel.BASENAME
     serializer_class = CorrespondentSerializer
-    filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = CorrespondentFilter
-    permission_classes: Final[list[type[BasePermission]]] = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     ordering_fields: Final[list[str]] = [
         "email_name",
         "email_address",
@@ -67,6 +68,7 @@ class CorrespondentViewSet(
     ]
     ordering: Final[list[str]] = ["id"]
 
+    @override
     def get_queryset(self) -> QuerySet[CorrespondentModel]:
         """Filters the data for entries connected to the request user.
 
@@ -75,11 +77,14 @@ class CorrespondentViewSet(
         """
         if getattr(self, "swagger_fake_view", False):
             return CorrespondentModel.objects.none()
-        return CorrespondentModel.objects.filter(
-            emails__mailbox__account__user=self.request.user
-        ).distinct()
+        if self.request.user.is_authenticated:
+            return CorrespondentModel.objects.filter(
+                emails__mailbox__account__user=self.request.user
+            ).distinct()
+        return CorrespondentModel.objects.none()
 
-    def get_serializer_class(self) -> type[BaseSerializer]:
+    @override
+    def get_serializer_class(self) -> type[BaseSerializer[CorrespondentModel]]:
         """Sets the serializer for `list` requests to the simplified version."""
         if self.action == "list":
             return BaseCorrespondentSerializer

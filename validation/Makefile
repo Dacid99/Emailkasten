@@ -13,8 +13,14 @@ rufflint: ruff.toml
 templatelint: djlintrc
 	djlint --configuration djlintrc ../web/templates | tee -a reports/htmllint.ansi
 
-check: mypy.ini
-	mypy --config-file $< ../Emailkasten ../test/ ../core/ ../api/ ../web/ | tee reports/mypy/mypy.ansi
+mypy-check: mypy.ini
+	mypy --config-file $< ../Emailkasten ../core/ ../api/ ../web/ | tee reports/mypy/mypy.ansi
+
+dmypy-start: mypy.ini
+	dmypy run --log-file reports/mypy/dmypy.log -- --config-file $< ../Emailkasten ../core/ ../api/ ../web/ | tee reports/mypy/mypy.ansi
+
+dmypy-check:
+	dmypy recheck | tee reports/mypy/mypy.ansi
 
 types:
 	python3 -m autotyping --safe ../Emailkasten ../core/ ../api/ ../web/

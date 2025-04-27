@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import datetime
 import imaplib
-from typing import TYPE_CHECKING, Final, override
+from typing import TYPE_CHECKING, ClassVar, override
 
 from django.utils import timezone
 from imap_tools.imap_utf7 import utf7_encode
@@ -51,22 +51,22 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
         _mailClient (:class:`imaplib.IMAP4`): The IMAP host this instance connects to.
     """
 
-    PROTOCOL = EmailProtocolChoices.IMAP
+    PROTOCOL = EmailProtocolChoices.IMAP.value
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.IMAP`."""
 
-    AVAILABLE_FETCHING_CRITERIA: Final[list[str]] = [
-        EmailFetchingCriterionChoices.ALL,
-        EmailFetchingCriterionChoices.UNSEEN,
-        EmailFetchingCriterionChoices.RECENT,
-        EmailFetchingCriterionChoices.NEW,
-        EmailFetchingCriterionChoices.OLD,
-        EmailFetchingCriterionChoices.FLAGGED,
-        EmailFetchingCriterionChoices.DRAFT,
-        EmailFetchingCriterionChoices.ANSWERED,
-        EmailFetchingCriterionChoices.DAILY,
-        EmailFetchingCriterionChoices.WEEKLY,
-        EmailFetchingCriterionChoices.MONTHLY,
-        EmailFetchingCriterionChoices.ANNUALLY,
+    AVAILABLE_FETCHING_CRITERIA: ClassVar[list[str]] = [
+        EmailFetchingCriterionChoices.ALL.value,
+        EmailFetchingCriterionChoices.UNSEEN.value,
+        EmailFetchingCriterionChoices.RECENT.value,
+        EmailFetchingCriterionChoices.NEW.value,
+        EmailFetchingCriterionChoices.OLD.value,
+        EmailFetchingCriterionChoices.FLAGGED.value,
+        EmailFetchingCriterionChoices.DRAFT.value,
+        EmailFetchingCriterionChoices.ANSWERED.value,
+        EmailFetchingCriterionChoices.DAILY.value,
+        EmailFetchingCriterionChoices.WEEKLY.value,
+        EmailFetchingCriterionChoices.MONTHLY.value,
+        EmailFetchingCriterionChoices.ANNUALLY.value,
     ]
     """List of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`.
     IMAP4 does not accept time lookups, only date based.
@@ -117,13 +117,19 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             MailAccountError: If an error occurs or a bad response is returned.
         """
         self.logger.debug("Connecting to %s ...", self.account)
-        kwargs = {"host": self.account.mail_host}
-        if port := self.account.mail_host_port:
-            kwargs["port"] = port
-        if timeout := self.account.timeout:
-            kwargs["timeout"] = timeout
+
+        mail_host = self.account.mail_host
+        mail_host_port = self.account.mail_host_port
+        timeout = self.account.timeout
         try:
-            self._mailClient = imaplib.IMAP4(**kwargs)
+            if mail_host_port and timeout:
+                self._mailClient = imaplib.IMAP4(
+                    host=mail_host, port=mail_host_port, timeout=timeout
+                )
+            elif mail_host_port:
+                self._mailClient = imaplib.IMAP4(host=mail_host, port=mail_host_port)
+            else:
+                self._mailClient = imaplib.IMAP4(host=mail_host)
         except Exception as error:
             self.logger.exception(
                 "An %s occured connecting to %s!",
@@ -199,7 +205,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
         self.logger.debug("Successfully opened mailbox.")
 
         self.logger.debug("Searching %s messages in %s ...", searchCriterion, mailbox)
-        __, messageUIDs = self.safe_uid("SEARCH", searchCriterion)
+        _, messageUIDs = self.safe_uid("SEARCH", searchCriterion)
         self.logger.info(
             "Found %s messages with uIDs %s in %s.",
             searchCriterion,
@@ -211,7 +217,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
         mailDataList = []
         for uID in messageUIDs[0].split():
             try:
-                __, messageData = self.safe_uid("FETCH", uID, "(RFC822)")
+                _, messageData = self.safe_uid("FETCH", uID, "(RFC822)")
             except FetcherError:
                 self.logger.warning(
                     "Failed to fetch message %s from %s!",
@@ -253,9 +259,18 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             MailAccountError: If an error occurs or a bad response is returned.
         """
         self.logger.debug("Fetching mailboxes at %s ...", self.account)
-        __, mailboxes = self.safe_list()
+        _, mailboxes = self.safe_list()
+        bytes_mailboxes = [
+            mailbox for mailbox in mailboxes if isinstance(mailbox, bytes)
+        ]
+        if len(mailboxes) != len(bytes_mailboxes):
+            self.logger.debug(
+                "UNEXPECTED: %s returned mailboxes %s, not all are bytes.",
+                self.account,
+                mailboxes,
+            )
         self.logger.debug("Successfully fetched mailboxes in %s.", self.account)
-        return mailboxes
+        return bytes_mailboxes
 
     @override
     def close(self) -> None:

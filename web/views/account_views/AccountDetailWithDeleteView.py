@@ -37,7 +37,11 @@ from web.views.account_views.AccountFilterView import AccountFilterView
 
 
 class AccountDetailWithDeleteView(
-    LoginRequiredMixin, DetailView, DeletionMixin, CustomActionMixin, TestActionMixin
+    LoginRequiredMixin,
+    DetailView,
+    DeletionMixin,
+    CustomActionMixin,
+    TestActionMixin,
 ):
     """View for a single :class:`core.models.AccountModel.AccountModel` instance."""
 
@@ -48,9 +52,11 @@ class AccountDetailWithDeleteView(
     success_url = reverse_lazy("web:" + AccountFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[AccountModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return super().get_queryset().filter(user=self.request.user)
+        if self.request.user.is_authenticated:
+            return super().get_queryset().filter(user=self.request.user)
+        return super().get_queryset().none()
 
     @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -83,13 +89,17 @@ class AccountDetailWithDeleteView(
         context.update({"action_result": result})
         return render(request, self.template_name, context)
 
-    def perform_update_mailboxes(self) -> dict[str, bool | str]:
+    def perform_update_mailboxes(self) -> dict[str, bool | str | None]:
         """Performs updating of the accounts mailboxes.
 
         Returns:
             Data containing the status, message and, if provided, the error message of the action.
         """
-        result = {"status": None, "message": None, "error": None}
+        result: dict[str, bool | str | None] = {
+            "status": None,
+            "message": None,
+            "error": None,
+        }
         try:
             self.object.update_mailboxes()
         except MailAccountError as error:

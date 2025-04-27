@@ -45,13 +45,17 @@ class TestActionMixin:
         context["action_result"] = result
         return render(request, self.template_name, context)
 
-    def perform_test(self) -> dict[str, bool | str]:
+    def perform_test(self) -> dict[str, bool | str | None]:
         """Performs the object test.
 
         Returns:
             Data containing the status and, if provided, the error message of the test.
         """
-        result = {"status": None, "message": None, "error": None}
+        result: dict[str, bool | str | None] = {
+            "status": None,
+            "message": None,
+            "error": None,
+        }
         try:
             self.object.test_connection()
         except FetcherError as error:

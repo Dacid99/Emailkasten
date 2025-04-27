@@ -45,11 +45,12 @@ from ..serializers.mailbox_serializers.MailboxWithDaemonSerializer import (
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
-    from rest_framework.permissions import BasePermission
     from rest_framework.request import Request
 
 
-class MailboxViewSet(NoCreateMixin, viewsets.ModelViewSet, ToggleFavoriteMixin):
+class MailboxViewSet(
+    NoCreateMixin, viewsets.ModelViewSet[MailboxModel], ToggleFavoriteMixin
+):
     """Viewset for the :class:`core.models.MailboxModel.MailboxModel`.
 
     Provides all but the create method.
@@ -57,9 +58,9 @@ class MailboxViewSet(NoCreateMixin, viewsets.ModelViewSet, ToggleFavoriteMixin):
 
     BASENAME = MailboxModel.BASENAME
     serializer_class = MailboxWithDaemonSerializer
-    filter_backends: Final[list] = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = MailboxFilter
-    permission_classes: Final[list[type[BasePermission]]] = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     ordering_fields: Final[list[str]] = [
         "name",
         "account__mail_address",
@@ -83,7 +84,9 @@ class MailboxViewSet(NoCreateMixin, viewsets.ModelViewSet, ToggleFavoriteMixin):
         """
         if getattr(self, "swagger_fake_view", False):
             return MailboxModel.objects.none()
-        return MailboxModel.objects.filter(account__user=self.request.user)
+        if self.request.user.is_authenticated:
+            return MailboxModel.objects.filter(account__user=self.request.user)
+        return MailboxModel.objects.none()
 
     URL_PATH_ADD_DAEMON = "add-daemon"
     URL_NAME_ADD_DAEMON = "add-daemon"

@@ -32,7 +32,11 @@ from web.views.correspondent_views.CorrespondentFilterView import (
 )
 
 
-class CorrespondentDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
+class CorrespondentDetailWithDeleteView(
+    LoginRequiredMixin,
+    DetailView,
+    DeletionMixin,
+):
     """View for a single :class:`core.models.CorrespondentModel.CorrespondentModel` instance."""
 
     URL_NAME = CorrespondentModel.get_detail_web_url_name()
@@ -42,8 +46,10 @@ class CorrespondentDetailWithDeleteView(LoginRequiredMixin, DetailView, Deletion
     success_url = reverse_lazy("web:" + CorrespondentFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[CorrespondentModel]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return CorrespondentModel.objects.filter(
-            emails__mailbox__account__user=self.request.user
-        ).distinct()
+        if self.request.user.is_authenticated:
+            return CorrespondentModel.objects.filter(
+                emails__mailbox__account__user=self.request.user
+            ).distinct()
+        return CorrespondentModel.objects.none()

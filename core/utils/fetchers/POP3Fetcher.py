@@ -21,7 +21,7 @@
 from __future__ import annotations
 
 import poplib
-from typing import TYPE_CHECKING, Final, override
+from typing import TYPE_CHECKING, ClassVar, override
 
 from core.utils.fetchers.BaseFetcher import BaseFetcher
 from core.utils.fetchers.SafePOPMixin import SafePOPMixin
@@ -49,10 +49,12 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
         _mailClient (:class:`poplib.POP3`): The POP host this instance connects to.
     """
 
-    PROTOCOL = EmailProtocolChoices.POP3
+    PROTOCOL = EmailProtocolChoices.POP3.value
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.POP3`."""
 
-    AVAILABLE_FETCHING_CRITERIA: Final[list[str]] = [EmailFetchingCriterionChoices.ALL]
+    AVAILABLE_FETCHING_CRITERIA: ClassVar[list[str]] = [
+        EmailFetchingCriterionChoices.ALL.value
+    ]
     """List of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`."""
 
     @override
@@ -77,14 +79,18 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
         """
         self.logger.debug("Connecting to %s ...", self.account)
 
-        kwargs = {"host": self.account.mail_host}
-        if port := self.account.mail_host_port:
-            kwargs["port"] = port
-        if timeout := self.account.timeout:
-            kwargs["timeout"] = timeout
-
+        mail_host = self.account.mail_host
+        mail_host_port = self.account.mail_host_port
+        timeout = self.account.timeout
         try:
-            self._mailClient = poplib.POP3(**kwargs)
+            if mail_host_port and timeout:
+                self._mailClient = poplib.POP3(
+                    host=mail_host, port=mail_host_port, timeout=timeout
+                )
+            elif mail_host_port:
+                self._mailClient = poplib.POP3(host=mail_host, port=mail_host_port)
+            else:
+                self._mailClient = poplib.POP3(host=mail_host)
         except Exception as error:
             self.logger.exception(
                 "A POP error occured connecting to %s!",
@@ -145,7 +151,7 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
 
         self.logger.debug("Listing all messages in %s ...", mailbox)
 
-        __, messageNumbersList, __ = self.safe_list()
+        _, messageNumbersList, _ = self.safe_list()
 
         messageCount = len(messageNumbersList)
         self.logger.info("Found %s messages in %s.", messageCount, mailbox)
@@ -154,7 +160,7 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
         mailDataList = []
         for number in range(messageCount):
             try:
-                __, messageData, __ = self.safe_retr(number + 1)
+                _, messageData, _ = self.safe_retr(number + 1)
             except FetcherError:
                 self.logger.warning(
                     "Failed to fetch message %s from %s!",

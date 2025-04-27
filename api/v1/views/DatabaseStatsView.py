@@ -20,10 +20,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
-from rest_framework.generics import RetrieveAPIView
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from core.models.AccountModel import AccountModel
 from core.models.AttachmentModel import AttachmentModel
@@ -32,55 +34,56 @@ from core.models.EMailModel import EMailModel
 from core.models.MailboxModel import MailboxModel
 from core.models.MailingListModel import MailingListModel
 
-from ..serializers.DatabaseStatsSerializer import DatabaseStatsSerializer
-
 
 if TYPE_CHECKING:
-    from rest_framework.permissions import BasePermission
+    from rest_framework.request import Request
 
 
-class DatabaseStatsView(RetrieveAPIView):
+class DatabaseStatsView(APIView):
     """APIView for the statistics of the database."""
 
     NAME = "stats"
-    permission_classes: Final[list[type[BasePermission]]] = [IsAuthenticated]
-    serializer_class = DatabaseStatsSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_object(self) -> dict:
+    def get(self, request: Request) -> Response:
         """Gets all the number of entries in the tables of the database.
 
         Returns:
             A dictionary with the count of the table entries.
         """
-        email_count = EMailModel.objects.filter(
-            mailbox__account__user=self.request.user
-        ).count()
-        correspondent_count = (
-            CorrespondentModel.objects.filter(
-                emails__mailbox__account__user=self.request.user
+        if request.user.is_authenticated:
+            email_count = EMailModel.objects.filter(
+                mailbox__account__user=request.user
+            ).count()
+            correspondent_count = (
+                CorrespondentModel.objects.filter(
+                    emails__mailbox__account__user=request.user
+                )
+                .distinct()
+                .count()
             )
-            .distinct()
-            .count()
-        )
-        attachment_count = AttachmentModel.objects.filter(
-            email__mailbox__account__user=self.request.user
-        ).count()
-        account_count = AccountModel.objects.filter(user=self.request.user).count()
-        mailbox_count = MailboxModel.objects.filter(
-            account__user=self.request.user
-        ).count()
-        mailinglist_count = (
-            MailingListModel.objects.filter(
-                emails__mailbox__account__user=self.request.user
+            attachment_count = AttachmentModel.objects.filter(
+                email__mailbox__account__user=request.user
+            ).count()
+            account_count = AccountModel.objects.filter(user=request.user).count()
+            mailbox_count = MailboxModel.objects.filter(
+                account__user=request.user
+            ).count()
+            mailinglist_count = (
+                MailingListModel.objects.filter(
+                    emails__mailbox__account__user=request.user
+                )
+                .distinct()
+                .count()
             )
-            .distinct()
-            .count()
-        )
-        return {
-            "email_count": email_count,
-            "correspondent_count": correspondent_count,
-            "attachment_count": attachment_count,
-            "account_count": account_count,
-            "mailbox_count": mailbox_count,
-            "mailinglist_count": mailinglist_count,
-        }
+            return Response(
+                {
+                    "email_count": email_count,
+                    "correspondent_count": correspondent_count,
+                    "attachment_count": attachment_count,
+                    "account_count": account_count,
+                    "mailbox_count": mailbox_count,
+                    "mailinglist_count": mailinglist_count,
+                }
+            )
+        return Response(status=status.HTTP_404_NOT_FOUND)

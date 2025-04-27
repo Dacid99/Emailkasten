@@ -18,6 +18,9 @@
 
 """Module with :class:`web.mixins.CustomActionMixin.CustomActionMixin`."""
 
+from typing import Final
+
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpRequest, HttpResponse
 from rest_framework import status
 
@@ -30,7 +33,7 @@ class CustomActionMixin:
     that creates the appropriate response to a `action` post request.
     """
 
-    _handler_method_prefix = "handle_"
+    _handler_method_prefix: Final[str] = "handle_"
     """The name prefix of methods considered request handlers."""
 
     def post(self, request: HttpRequest) -> HttpResponse:
@@ -45,11 +48,19 @@ class CustomActionMixin:
         Returns:
             The handlers response to the request.
             If no matching handler is found Http204.
+
+        Raises:
+           ImproperlyConfigured: If the called handler method does not return a :class:`django.http.HttpResponse`.>
         """
         for attr in dir(self):
             if (
                 attr.startswith(self._handler_method_prefix)
                 and attr.removeprefix(self._handler_method_prefix) in request.POST
             ):
-                return getattr(self, attr)(request)
+                response = getattr(self, attr)(request)
+                if isinstance(response, HttpResponse):
+                    return response
+                raise ImproperlyConfigured(
+                    f"The custom action handler {attr} did not return a HttpResponse!"
+                )
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)

@@ -19,6 +19,8 @@
 """The apps module for :mod:`core`."""
 from __future__ import annotations
 
+from typing import override
+
 from django.apps import AppConfig
 from health_check.plugins import plugin_dir
 
@@ -29,10 +31,11 @@ class CoreConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "core"
 
+    @override
     def ready(self) -> None:
         """Imports all model signals."""
         # ruff: noqa: F401
-        # pylint: disable=import-outside-toplevel, unused-import ; this is the way it is intended by django
+        # pylint: disable=import-outside-toplevel, unused-import  # this is the way it is intended by django
         from .backends import StorageIntegrityCheckBackend
 
         plugin_dir.register(StorageIntegrityCheckBackend)

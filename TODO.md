@@ -25,8 +25,10 @@
 
 - headerdict accumulation can be easier, message supports dict() or at least .items()
 - check for existance is better with filter().exists()
-- return .non() in serializers not []
+- improve db performance with SubQuery, select_related, etc
+- explore emailmessage methods
 - drf specific filter
+- content_type main and sub as fields and rename settings
 - consistent naming_style
 - move all signals into models
 - base detail/edit template
@@ -59,7 +61,6 @@
 - default ssl cert and safest settings
 - memory save upload (chunks instead of read)
 - shortcut urls (api/auth -> api/auth/login, etc)
-- fallback for email_subject
 
 ### Work in progress
 
@@ -77,6 +78,7 @@
 - separation of multi correspondentheader not working!
 - cascase doesnt trigger delete!
 - browser is occasionally in quirks mode
+- test for makeFetchingCriterion fails depending on timezone
 
 # Remember
 

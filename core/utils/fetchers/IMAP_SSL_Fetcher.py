@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 import imaplib
+from typing import override
 
 from ... import constants
 from .exceptions import MailAccountError
@@ -35,17 +36,28 @@ class IMAP_SSL_Fetcher(IMAPFetcher):
     PROTOCOL = constants.EmailProtocolChoices.IMAP_SSL
     """Name of the used protocol, refers to :attr:`constants.MailFetchingProtocols.IMAP_SSL`."""
 
+    @override
     def connectToHost(self) -> None:
         """Overrides :func:`core.utils.fetchers.IMAPFetcher.connectToHost` to use :class:`imaplib.IMAP4_SSL`."""
         self.logger.debug("Connecting to %s ...", self.account)
-        kwargs = {"host": self.account.mail_host, "ssl_context": None}
-        if port := self.account.mail_host_port:
-            kwargs["port"] = port
-        if timeout := self.account.timeout:
-            kwargs["timeout"] = timeout
 
+        mail_host = self.account.mail_host
+        mail_host_port = self.account.mail_host_port
+        timeout = self.account.timeout
         try:
-            self._mailClient = imaplib.IMAP4_SSL(**kwargs)
+            if mail_host_port and timeout:
+                self._mailClient = imaplib.IMAP4_SSL(
+                    host=mail_host,
+                    port=mail_host_port,
+                    timeout=timeout,
+                    ssl_context=None,
+                )
+            elif mail_host_port:
+                self._mailClient = imaplib.IMAP4_SSL(
+                    host=mail_host, port=mail_host_port, ssl_context=None
+                )
+            else:
+                self._mailClient = imaplib.IMAP4_SSL(host=mail_host, ssl_context=None)
         except Exception as error:
             self.logger.exception(
                 "An %s occured connecting to %s!",

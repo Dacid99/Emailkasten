@@ -23,6 +23,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
@@ -55,7 +57,7 @@ class MailingListSerializer(BaseMailingListSerializer):
     by :class:`api.v1.serializers.CorrespondentSerializers.BaseCorrespondentSerializer.BaseCorrespondentSerializer`.
     """
 
-    def get_emails(self, instance: MailingListModel) -> ReturnDict | list:
+    def get_emails(self, instance: MailingListModel) -> ReturnDict[str, Any]:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:
@@ -69,10 +71,13 @@ class MailingListSerializer(BaseMailingListSerializer):
         user = getattr(request, "user", None)
         if user is not None:
             emails = instance.emails.filter(mailbox__account__user=user)
-            return BaseEMailSerializer(emails, many=True, read_only=True).data
-        return []
+        else:
+            emails = instance.emails.none()
+        return BaseEMailSerializer(emails, many=True, read_only=True).data
 
-    def get_from_correspondents(self, instance: MailingListModel) -> ReturnDict | list:
+    def get_from_correspondents(
+        self, instance: MailingListModel
+    ) -> ReturnDict[str, Any]:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:
@@ -90,7 +95,8 @@ class MailingListSerializer(BaseMailingListSerializer):
                 correspondentemails__mention=HeaderFields.Correspondents.FROM,
                 emails__mailbox__account__user=user,
             ).distinct()
-            return BaseCorrespondentSerializer(
-                from_correspondents, many=True, read_only=True
-            ).data
-        return []
+        else:
+            from_correspondents = CorrespondentModel.objects.none()
+        return BaseCorrespondentSerializer(
+            from_correspondents, many=True, read_only=True
+        ).data
