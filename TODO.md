@@ -28,7 +28,6 @@
 - improve db performance with SubQuery, select_related, etc
 - dict.update is slower, use dict[key] = val
 - explore emailmessage methods
-- drf specific filter
 - content_type main and sub as fields and rename settings
 - consistent naming_style
 - move all signals into models

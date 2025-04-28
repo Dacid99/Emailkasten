@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-import django_filters
+from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
 from core.models.MailingListModel import MailingListModel
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class MailingListFilter(django_filters.FilterSet):
+class MailingListFilter(filters.FilterSet):
     """The filter class for :class:`core.models.MailingListModel`."""
 
     class Meta:

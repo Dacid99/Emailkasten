@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-import django_filters
+from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
 from core.models.AttachmentModel import AttachmentModel
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class AttachmentFilter(django_filters.FilterSet):
+class AttachmentFilter(filters.FilterSet):
     """The filter class for :class:`core.models.AttachmentModel`."""
 
     class Meta:
