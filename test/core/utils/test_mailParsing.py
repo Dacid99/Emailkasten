@@ -27,7 +27,6 @@ Fixtures:
     :func:`fixture_mock_empty_parsedMailDict`: Mocks an empty parsedMail :class:`dict` that the mail is parsed into.
 """
 
-import zoneinfo
 from datetime import datetime
 from email.message import EmailMessage
 from email.utils import format_datetime
@@ -35,7 +34,8 @@ from email.utils import format_datetime
 import pytest
 
 from core.utils import mailParsing
-from test.core.conftest import TEST_EMAIL_PARAMETERS
+
+from ...conftest import TEST_EMAIL_PARAMETERS
 
 
 @pytest.fixture(autouse=True)
@@ -51,7 +51,7 @@ def fake_single_header(faker):
 
 @pytest.fixture
 def fake_date_headervalue(faker):
-    return faker.date_time(tzinfo=zoneinfo.ZoneInfo(faker.timezone()))
+    return faker.date_time(tzinfo=faker.pytimezone())
 
 
 @pytest.fixture
@@ -154,9 +154,7 @@ def test_getHeader_failure(no_emailMessage, fake_single_header):
 
 
 def test_parseDatetimeHeader_success(faker, mock_logger):
-    fake_date_headervalue = format_datetime(
-        faker.date_time(tzinfo=zoneinfo.ZoneInfo(faker.timezone()))
-    )
+    fake_date_headervalue = format_datetime(faker.date_time(tzinfo=faker.pytimezone()))
 
     result = mailParsing.parseDatetimeHeader(fake_date_headervalue)
 
@@ -284,11 +282,11 @@ def test_parseMailboxName_success(nameBytes, expectedName):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "test_email, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count",
+    "test_email_path, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count",
     TEST_EMAIL_PARAMETERS,
 )
 def test_eml2html(
-    test_email,
+    test_email_path,
     message_id,
     subject,
     attachments_count,
@@ -299,7 +297,10 @@ def test_eml2html(
     html_bodytext,
     header_count,
 ):
-    result = mailParsing.eml2html(test_email)
+    with open(test_email_path, "br") as test_email_file:
+        test_email_bytes = test_email_file.read()
+
+    result = mailParsing.eml2html(test_email_bytes)
 
     assert result
 

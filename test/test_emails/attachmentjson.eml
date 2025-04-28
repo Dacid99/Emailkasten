@@ -1,0 +1,135 @@
+Return-Path: <judith.aderbauer@gmail.com>
+Authentication-Results:  kundenserver.de; dkim=pass header.i=@gmail.com
+Received: from mail-lf1-f44.google.com ([209.85.167.44]) by mx.kundenserver.de
+ (mxeue102 [217.72.192.67]) with ESMTPS (Nemesis) id 1MP242-1ss5h32TGO-00IXDu
+ for <archiv@aderbauer.org>; Wed, 07 Aug 2024 11:41:33 +0200
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-52efc60a6e6so2449461e87.1
+        for <archiv@aderbauer.org>; Wed, 07 Aug 2024 02:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723023693; x=1723628493; darn=aderbauer.org;
+        h=subject:from:cc:to:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RFlxTLx9fGlwRQOf0qUqe52St091bjsuM2uAJRhDBxg=;
+        b=Vqnuv0OOkJaPL/3I9TBl6Dfnp/7AsGOca3m/QNFYfSMLAFgtX2eSMXPrHBwjvm8XAC
+         cxhYDm4gslqj3lp1tIKnQpKS41w2Mr37CyriOnaQIyUG+lOgPheyP940yZjcQnFKS7pa
+         rBKCunzd5pfAAfhk+qtiSijHiRR+7/QetNun0pp8DPFSI7Uayrsl8b3IPgmZWn8fVMG6
+         IRk8RjQ99/TJg3IGdt7wMIE7Ej93cLXjpo3z584XB2ybf+6Yj2GJJYngOh42yLpuYHnr
+         W5qSVpdUE6PXCvSUXHJgVmj86sxhu+89ta6oVSQyB33u6xIKpV6dGfbcJ+BcdkNZBlgg
+         bjbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723023693; x=1723628493;
+        h=subject:from:cc:to:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RFlxTLx9fGlwRQOf0qUqe52St091bjsuM2uAJRhDBxg=;
+        b=ZBmPe0p5DIUcFo6IofWGfBqfeGVtC/tp+ksrLH+r8C50PENNH6Yf9rglnhUaqJ7CP/
+         yAeue9v/oJXuGmtRqaJztuy0S54SWlQ0m5McqJDBHKCzUG8ARKTBOUAh+aReo5A8ehCo
+         mvjW7mLeMtKiBW5adguMtE9hS/c7qAOH7lBhKz4PnZhj3o9eqmQsg7uGlYyWAj+tJi84
+         IfItqJ1Lun+foHEvbijjdSuoIXGjaWDLBFX+7T3Ojn2aZ5JUkYRj0tUFP+vQXtjcH+nJ
+         83jZ8LJFxbFwN36GhMZhnnH9c3uwix6LWp/8RTWHGTe/WSTycsJiq5BiL18e5UBuekeU
+         27Wg==
+X-Gm-Message-State: AOJu0YwnabjN4AiGxl+QC06gNHKmhGHxpGdywJD30comSXyvw0MF9qJL
+	1BMeYDpZ+F40RM2AOnnRGCpaYjBnjGvRvBseajyMWyks2+jz2/k7Fu8uUg==
+X-Google-Smtp-Source: AGHT+IG0smtMojV6Qj+RAAzDBj3MsRVttvWAmRSsioKzDuqtE3e/wiTyV76HNnTL+QjSfn+ZpvwU4w==
+X-Received: by 2002:ac2:4c47:0:b0:530:ae43:d7ef with SMTP id 2adb3069b0e04-530bb39ff83mr11272803e87.48.1723023691907;
+        Wed, 07 Aug 2024 02:41:31 -0700 (PDT)
+Received: from [192.168.178.3] (p4ffd7c0d.dip0.t-ipconnect.de. [79.253.124.13])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42905796974sm21107665e9.6.2024.08.07.02.41.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Aug 2024 02:41:31 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------lxGwj3dPk80t53jx9NGRDA0k"
+Message-ID: <e047e14d-2397-435b-baf6-8e8b7423f860@gmail.com>
+Date: Wed, 7 Aug 2024 11:41:29 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: archiv@aderbauer.org
+Cc: daveaderbauer@gmail.com
+From: Judith Aderbauer <judith.aderbauer@gmail.com>
+Subject: Whats up
+Envelope-To: <archiv@aderbauer.org>
+X-Spam-Flag: NO
+UI-InboundReport: notjunk:1;M01:P0:Mb6ajNHamrc=;jhDGG8ZKQHoVTQuDsLKZBk6yaF9m
+ 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
+ mFZcxlCUtKr25JfCLcbLU10=
+
+This is a multi-part message in MIME format.
+--------------lxGwj3dPk80t53jx9NGRDA0k
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+this a test to see how ur doin
+
+
+
+
+
+--------------lxGwj3dPk80t53jx9NGRDA0k
+Content-Type: application/json; name="manifest.json"
+Content-Disposition: attachment; filename="manifest.json"
+Content-Transfer-Encoding: base64
+
+ewogICJtYW5pZmVzdF92ZXJzaW9uIjogMiwKICAibmFtZSI6ICJVbml2ZXJzYWwgSGlnaGxp
+Z2h0ZXIiLAogICJ2ZXJzaW9uIjogIjEuMCIsCiAgImRlc2NyaXB0aW9uIjogIkhpZ2hsaWdo
+dCBrZXl3b3JkcyBpbiBIVE1MIGFuZCBQREYgZmlsZXMiLAogICJwZXJtaXNzaW9ucyI6IFsK
+ICAgICJhY3RpdmVUYWIiLAogICAgInNjcmlwdGluZyIsCiAgICAidGFicyIKICBdLAogICJi
+YWNrZ3JvdW5kIjogewogICAgInNjcmlwdHMiOiBbImJhY2tncm91bmQuanMiXQogIH0sCiAg
+ImNvbnRlbnRfc2NyaXB0cyI6IFsKICAgIHsKICAgICAgIm1hdGNoZXMiOiBbIio6Ly8qLyou
+cGRmIl0sCiAgICAgICJqcyI6IFsicGRmQ29udGVudFNjcmlwdC5qcyJdCiAgICB9LAogICAg
+ewogICAgICAibWF0Y2hlcyI6IFsiPGFsbF91cmxzPiJdLAogICAgICAianMiOiBbImh0bWxD
+b250ZW50U2NyaXB0LmpzIl0KICAgIH0KICBdCn0KCg==
+
+--------------lxGwj3dPk80t53jx9NGRDA0k--

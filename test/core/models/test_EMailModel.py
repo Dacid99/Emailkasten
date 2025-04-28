@@ -36,7 +36,7 @@ from core.models.EMailModel import EMailModel
 from core.models.MailboxModel import MailboxModel
 from core.models.MailingListModel import MailingListModel
 
-from ..conftest import TEST_EMAIL_PARAMETERS
+from ...conftest import TEST_EMAIL_PARAMETERS
 from .test_AttachmentModel import mock_AttachmentModel_save_to_storage
 
 
@@ -397,7 +397,7 @@ def test_EMailModel_isSpam(emailModel, x_spam, expectedResult):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "test_email, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count",
+    "test_email_path, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count",
     TEST_EMAIL_PARAMETERS,
 )
 def test_EMailModel_createFromEmailBytes_success(
@@ -407,7 +407,7 @@ def test_EMailModel_createFromEmailBytes_success(
     mock_EMailModel_save_eml_to_storage,
     mock_EMailModel_save_html_to_storage,
     mock_AttachmentModel_save_to_storage,
-    test_email,
+    test_email_path,
     message_id,
     subject,
     attachments_count,
@@ -421,8 +421,13 @@ def test_EMailModel_createFromEmailBytes_success(
     """Tests :func:`core.models.EMailModel.EMailModel.createFromEmailBytes`
     in case of success.
     """
+    with open(test_email_path, "br") as test_email_file:
+        test_email_bytes = test_email_file.read()
+
     with override_config(THROW_OUT_SPAM=False):
-        emailModel = EMailModel.createFromEmailBytes(test_email, mailbox=mailboxModel)
+        emailModel = EMailModel.createFromEmailBytes(
+            test_email_bytes, mailbox=mailboxModel
+        )
 
     assert isinstance(emailModel, EMailModel)
     assert emailModel.message_id == message_id

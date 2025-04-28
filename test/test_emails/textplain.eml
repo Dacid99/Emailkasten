@@ -1,0 +1,123 @@
+Return-Path: <daveaderbauer@gmail.com>
+Authentication-Results:  kundenserver.de; dkim=pass header.i=@gmail.com
+Received: from mail-ed1-f50.google.com ([209.85.208.50]) by mx.kundenserver.de
+ (mxeue102 [217.72.192.67]) with ESMTPS (Nemesis) id 1M7dlr-1scXhf2XZl-000an0
+ for <archiv@aderbauer.org>; Thu, 01 Aug 2024 15:35:54 +0200
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-595856e2336so3510123a12.1
+        for <archiv@aderbauer.org>; Thu, 01 Aug 2024 06:35:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722519354; x=1723124154; darn=aderbauer.org;
+        h=content-transfer-encoding:subject:to:content-language:user-agent
+         :mime-version:date:message-id:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hzOQDB/R71jP2AvbeRXXQP4sL+zAl1+WGYLL69+fzi4=;
+        b=aH4ULnhdMG2SRHd0trh59z5xHpTVNGNwsDyTE9g3uENzEJ0HZnZy1BCRnxazYWLnr8
+         4bjXa8GSU5aWWdu0AkDseXK/vjCVglqxgBKT9NfhhvS3y9qswzQ2AguHApdUXEsycD1E
+         VDYgFoO+o1WOLsNulaIjLjAB9RhX9A1DR7pn75Qx4JnHDt92bmDZBJaCE089ONn464Z6
+         S12IcDVTwYBz1E+OcE0uFyKDN85iMKFZINnueyjhdKmDQtdFVPrI/TAtZwY0mlbNApPI
+         ziA8WwLBhy5YskCGqlOO8bWk/QzsRFnrA+GjSdyoxB0RJOpRRmQW8rJns5/g1fh+JPHl
+         o0oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722519354; x=1723124154;
+        h=content-transfer-encoding:subject:to:content-language:user-agent
+         :mime-version:date:message-id:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hzOQDB/R71jP2AvbeRXXQP4sL+zAl1+WGYLL69+fzi4=;
+        b=Qz/LtcHCXo3fi6phrL3zr1sMlCRCJl60ekQHKeNf6RhnBGV4VWscDz42VDQRfHdebL
+         219iJnSO/+o38dAjU+68LZOHi3Ae4jR27iio980Apu/jHtQKV/bua9tmCBGY/vOvSpl1
+         ZUw27vzZ8HU1V7m8qqoWrDtatKMjQt0WO4IOHFRJZ9jPNM2+qHyASDLxhiqag19MKz+f
+         ypxaikahzB078W8g5s4CHed9C1ZQk/jpXYsvP0cxB2mzF6YpozDtYz60SlrCXrLkVYUD
+         6jhFAGtVE6qk8VHPcPN4dW0/IOpxiig5kqFYsnbAq9RpnhxgI8S2BsQdIkodCl/sineI
+         ASxQ==
+X-Gm-Message-State: AOJu0Yx6nog/MeHO/pRitFEzJ2bTvZkqbXxB3xl/yTCLfBeoRv6tivCn
+	3ICKQ2bZyPxEGCbCMuc/XIICH5LbCY5r1L7Wl44YyCNoDVGyKbNz7751tA==
+X-Google-Smtp-Source: AGHT+IExf8bv9M/gDWlRg2PAy/+e0P3XV9k8oebYYeWHrfjSEvcq48M+w1Ri+RQykvDBZkpVjpaWIw==
+X-Received: by 2002:a05:6402:13c9:b0:57d:6bb:d264 with SMTP id 4fb4d7f45d1cf-5b77bbb1374mr1347958a12.1.1722519353519;
+        Thu, 01 Aug 2024 06:35:53 -0700 (PDT)
+Received: from [192.168.178.190] (p4ffd7c0d.dip0.t-ipconnect.de. [79.253.124.13])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5ac652911a5sm10057160a12.79.2024.08.01.06.35.53
+        for <archiv@aderbauer.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Aug 2024 06:35:53 -0700 (PDT)
+From: David Aderbauer <daveaderbauer@gmail.com>
+X-Google-Original-From: David Aderbauer <dave.aderbauer@gmail.com>
+Message-ID: <622b772d-0839-4ff3-9f31-2313b0b57040@gmail.com>
+Date: Thu, 1 Aug 2024 15:35:52 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: archiv@aderbauer.org
+Subject: Testmail
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Envelope-To: <archiv@aderbauer.org>
+X-Spam-Flag: NO
+UI-InboundReport: notjunk:1;M01:P0:Ugbg55Tfn70=;H/1hc/njG/PN7iylAI2fUL4TJkdq
+ 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
+
+Hi
+
+This is a test!
+
+äöü
+
+Viele Grüße,
+
+David
+

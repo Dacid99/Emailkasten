@@ -76,6 +76,58 @@ def pytest_configure(config) -> None:
     os.chdir(pytest_ini_dir)
 
 
+TEST_EMAIL_PARAMETERS = [
+    (
+        "test_emails/attachmentjson.eml",
+        "<e047e14d-2397-435b-baf6-8e8b7423f860@gmail.com>",
+        "Whats up",
+        1,
+        3,
+        5,
+        "NO",
+        "this a test to see how ur doin\r\n\r\n\r\n\r\n\r\n",
+        "",
+        20,
+    ),
+    (
+        "test_emails/inlineimage.eml",
+        "<a634b121-4bc0-457d-a08f-a4579b9bb92a@gmail.com>",
+        "more image",
+        1,
+        2,
+        4,
+        "NO",
+        "\r\ntry this\r\n",
+        '<!DOCTYPE html>\r\n<html>\r\n  <head>\r\n\r\n    <meta http-equiv="content-type" content="text/html; charset=UTF-8">\r\n  </head>\r\n  <body>\r\n    <p><img src="cid:part1.DePPID0S.dKVK0mlg@gmail.com" alt=""></p>\r\n    <p><br>\r\n    </p>\r\n    <p>try this<br>\r\n    </p>\r\n  </body>\r\n</html>',
+        21,
+    ),
+    (
+        "test_emails/textplain.eml",
+        "<622b772d-0839-4ff3-9f31-2313b0b57040@gmail.com>",
+        "Testmail",
+        0,
+        2,
+        4,
+        "NO",
+        "Hi\r\n\r\nThis is a test!\r\n\r\näöü\r\n\r\nViele Grüße,\r\n\r\nDavid\r\n\r\n",
+        "",
+        22,
+    ),
+    (
+        "test_emails/multipartalternative_basic.eml",
+        "<320b8a44-3d8c-457d-b590-0d33290ae599@myubt.de>",
+        "Welcome back",
+        0,
+        3,
+        4,
+        "NO",
+        "\r\n\r\nSehr geehrte ,\r\n\r\n\r\n\r\nViele Grüße,\r\nDavid\r\n",
+        '<html>\r\n<head>\r\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\r\n</head>\r\n<body>\r\n<div dir="auto"><br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Sehr geehrte ,<!-- tmjah_g_1299e --><br>\r\n<br>\r\n<br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Viele Grüße,<!-- tmjah_g_1299e --><br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->David<!-- tmjah_g_1299e --></div>\r\n</body>\r\n</html>\r\n',
+        21,
+    ),
+]
+
+
 @pytest.fixture
 def fake_file_bytes(faker) -> bytes:
     """Fixture providing random bytes to mock file content."""

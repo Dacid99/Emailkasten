@@ -1,0 +1,100 @@
+Return-Path: <prvs=1951f1b812=aderbauer@uni-bayreuth.de>
+Authentication-Results:  kundenserver.de; dkim=pass header.i=@uni-bayreuth.de
+Received: from mailgate01.myubt.de ([132.180.16.213]) by mx.kundenserver.de
+ (mxeue102 [217.72.192.67]) with ESMTPS (Nemesis) id 1M1sTO-1sefGy1VEm-003ris
+ for <archiv@aderbauer.org>; Fri, 09 Aug 2024 18:20:24 +0200
+From: "Aderbauer, David" <aderbauer@uni-bayreuth.de>
+To: "archiv@aderbauer.org" <archiv@aderbauer.org>
+Subject: Welcome back
+Thread-Topic: Welcome back
+Thread-Index: AQHa6ngJGC3BWXuYNUino9aokn79lA==
+Date: Fri, 9 Aug 2024 16:20:23 +0000
+Message-ID: <320b8a44-3d8c-457d-b590-0d33290ae599@myubt.de>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-exchange-messagesentrepresentingtype: 1
+Content-Type: multipart/alternative;
+	boundary="_000_320b8a443d8c457db5900d33290ae599myubtde_"
+MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=uni-bayreuth.de; s=mail; c=relaxed/relaxed;
+ h=from:to:subject:date:message-id:content-type:mime-version;
+ bh=9nxSU+rSSeMxtzxPu7zHBq9BLjSulNcybMuDLcmvfwU=;
+ b=pXhP0lQjx9VzD4NyXRe85KEMGH341YqvL+8NJwyy1iI1LXpXEoTYk361iqxugt6I4TUc+RnjGtR1
+	EIwwNi8jIby1vXp3+/NR5Wfl2I1MAhueqDBUnkSNTTw+EunuaxpsXVLtii0/iNM8alJ5o/MDG+Lj
+	RSm3ZB1gcQnI/9owXZ0=
+Envelope-To: <archiv@aderbauer.org>
+X-Spam-Flag: NO
+UI-InboundReport: notjunk:1;M01:P0:ExkesKc4wo8=;6Z1b5bnxzOxKK7EXj0FV8Pt0b3m+
+ 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
+ OYiZEam0KbSjMkyOzbuIX2Ac/hUzl9A=
+
+--_000_320b8a443d8c457db5900d33290ae599myubtde_
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+DQoNClNlaHIgZ2VlaHJ0ZSAsDQoNCg0KDQpWaWVsZSBHcsO8w59lLA0KRGF2aWQNCg==
+
+--_000_320b8a443d8c457db5900d33290ae599myubtde_
+Content-Type: text/html; charset="utf-8"
+Content-ID: <9315DE0004CD3F459BA5976215F4F5CE@uni-bayreuth.de>
+Content-Transfer-Encoding: base64
+
+PGh0bWw+DQo8aGVhZD4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0i
+dGV4dC9odG1sOyBjaGFyc2V0PXV0Zi04Ij4NCjwvaGVhZD4NCjxib2R5Pg0KPGRpdiBkaXI9ImF1
+dG8iPjxicj4NCjxicj4NCjwvZGl2Pg0KPGRpdiBkaXI9ImF1dG8iPjwhLS0gdG1qYWhfZ18xMjk5
+cyAtLT5TZWhyIGdlZWhydGUgLDwhLS0gdG1qYWhfZ18xMjk5ZSAtLT48YnI+DQo8YnI+DQo8YnI+
+DQo8YnI+DQo8L2Rpdj4NCjxkaXYgZGlyPSJhdXRvIj48IS0tIHRtamFoX2dfMTI5OXMgLS0+Vmll
+bGUgR3LDvMOfZSw8IS0tIHRtamFoX2dfMTI5OWUgLS0+PGJyPg0KPC9kaXY+DQo8ZGl2IGRpcj0i
+YXV0byI+PCEtLSB0bWphaF9nXzEyOTlzIC0tPkRhdmlkPCEtLSB0bWphaF9nXzEyOTllIC0tPjwv
+ZGl2Pg0KPC9ib2R5Pg0KPC9odG1sPg0K
+
+--_000_320b8a443d8c457db5900d33290ae599myubtde_--
