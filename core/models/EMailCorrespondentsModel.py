@@ -109,7 +109,10 @@ class EMailCorrespondentsModel(models.Model):
         Returns:
             The :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` instance with data from the header.
             If the correspondent already exists in the db uses that version.
-            None if the correspondent could not be parsed.
+            `None` if the correspondent could not be parsed.
+
+        Raises:
+            ValueError: If the `email` argument is not in the db.
         """
         if email.pk is None:
             raise ValueError("Email is not in the db!")

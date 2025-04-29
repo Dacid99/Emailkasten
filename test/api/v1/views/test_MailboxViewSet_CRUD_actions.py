@@ -29,7 +29,7 @@ from core.models.MailboxModel import MailboxModel
 
 @pytest.mark.django_db
 def test_list_noauth(mailboxModel, noauth_apiClient, list_url):
-    """Tests the list method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with an unauthenticated user client."""
+    """Tests the list method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with an unauthenticated user client."""
     response = noauth_apiClient.get(list_url(MailboxViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -39,7 +39,7 @@ def test_list_noauth(mailboxModel, noauth_apiClient, list_url):
 
 @pytest.mark.django_db
 def test_list_auth_other(mailboxModel, other_apiClient, list_url):
-    """Tests the list method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated other user client."""
+    """Tests the list method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated other user client."""
     response = other_apiClient.get(list_url(MailboxViewSet))
 
     assert response.status_code == status.HTTP_200_OK
@@ -49,7 +49,7 @@ def test_list_auth_other(mailboxModel, other_apiClient, list_url):
 
 @pytest.mark.django_db
 def test_list_auth_owner(mailboxModel, owner_apiClient, list_url):
-    """Tests the list method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated owner user client."""
+    """Tests the list method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated owner user client."""
     response = owner_apiClient.get(list_url(MailboxViewSet))
 
     assert response.status_code == status.HTTP_200_OK
@@ -59,7 +59,7 @@ def test_list_auth_owner(mailboxModel, owner_apiClient, list_url):
 
 @pytest.mark.django_db
 def test_get_noauth(mailboxModel, noauth_apiClient, detail_url):
-    """Tests the get method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with an unauthenticated user client."""
+    """Tests the get method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with an unauthenticated user client."""
     response = noauth_apiClient.get(detail_url(MailboxViewSet, mailboxModel))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -69,7 +69,7 @@ def test_get_noauth(mailboxModel, noauth_apiClient, detail_url):
 
 @pytest.mark.django_db
 def test_get_auth_other(mailboxModel, other_apiClient, detail_url):
-    """Tests the get method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated other user client."""
+    """Tests the get method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated other user client."""
     response = other_apiClient.get(detail_url(MailboxViewSet, mailboxModel))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -77,7 +77,7 @@ def test_get_auth_other(mailboxModel, other_apiClient, detail_url):
 
 @pytest.mark.django_db
 def test_get_auth_owner(mailboxModel, owner_apiClient, detail_url):
-    """Tests the list method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated owner user client."""
+    """Tests the list method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated owner user client."""
     response = owner_apiClient.get(detail_url(MailboxViewSet, mailboxModel))
 
     assert response.status_code == status.HTTP_200_OK
@@ -86,7 +86,7 @@ def test_get_auth_owner(mailboxModel, owner_apiClient, detail_url):
 
 @pytest.mark.django_db
 def test_patch_noauth(mailboxModel, noauth_apiClient, mailboxPayload, detail_url):
-    """Tests the patch method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with an unauthenticated user client."""
+    """Tests the patch method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with an unauthenticated user client."""
     response = noauth_apiClient.patch(
         detail_url(MailboxViewSet, mailboxModel), data=mailboxPayload
     )
@@ -100,7 +100,7 @@ def test_patch_noauth(mailboxModel, noauth_apiClient, mailboxPayload, detail_url
 
 @pytest.mark.django_db
 def test_patch_auth_other(mailboxModel, other_apiClient, mailboxPayload, detail_url):
-    """Tests the patch method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated other user client."""
+    """Tests the patch method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated other user client."""
     response = other_apiClient.patch(
         detail_url(MailboxViewSet, mailboxModel), data=mailboxPayload
     )
@@ -114,7 +114,7 @@ def test_patch_auth_other(mailboxModel, other_apiClient, mailboxPayload, detail_
 
 @pytest.mark.django_db
 def test_patch_auth_owner(mailboxModel, owner_apiClient, mailboxPayload, detail_url):
-    """Tests the patch method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated owner user client."""
+    """Tests the patch method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated owner user client."""
     response = owner_apiClient.patch(
         detail_url(MailboxViewSet, mailboxModel), data=mailboxPayload
     )
@@ -127,7 +127,7 @@ def test_patch_auth_owner(mailboxModel, owner_apiClient, mailboxPayload, detail_
 
 @pytest.mark.django_db
 def test_put_noauth(mailboxModel, noauth_apiClient, mailboxPayload, detail_url):
-    """Tests the put method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with an unauthenticated user client."""
+    """Tests the put method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with an unauthenticated user client."""
     response = noauth_apiClient.put(
         detail_url(MailboxViewSet, mailboxModel), data=mailboxPayload
     )
@@ -141,7 +141,7 @@ def test_put_noauth(mailboxModel, noauth_apiClient, mailboxPayload, detail_url):
 
 @pytest.mark.django_db
 def test_put_auth_other(mailboxModel, other_apiClient, mailboxPayload, detail_url):
-    """Tests the put method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated other user client."""
+    """Tests the put method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated other user client."""
     response = other_apiClient.put(
         detail_url(MailboxViewSet, mailboxModel), data=mailboxPayload
     )
@@ -155,7 +155,7 @@ def test_put_auth_other(mailboxModel, other_apiClient, mailboxPayload, detail_ur
 
 @pytest.mark.django_db
 def test_put_auth_owner(mailboxModel, owner_apiClient, mailboxPayload, detail_url):
-    """Tests the put method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated owner user client."""
+    """Tests the put method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated owner user client."""
     response = owner_apiClient.put(
         detail_url(MailboxViewSet, mailboxModel), data=mailboxPayload
     )
@@ -167,7 +167,7 @@ def test_put_auth_owner(mailboxModel, owner_apiClient, mailboxPayload, detail_ur
 
 @pytest.mark.django_db
 def test_post_noauth(noauth_apiClient, mailboxPayload, list_url):
-    """Tests the post method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with an unauthenticated user client."""
+    """Tests the post method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with an unauthenticated user client."""
     response = noauth_apiClient.post(list_url(MailboxViewSet), data=mailboxPayload)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -179,7 +179,7 @@ def test_post_noauth(noauth_apiClient, mailboxPayload, list_url):
 
 @pytest.mark.django_db
 def test_post_auth_other(other_apiClient, mailboxPayload, list_url):
-    """Tests the post method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated other user client."""
+    """Tests the post method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated other user client."""
     response = other_apiClient.post(list_url(MailboxViewSet), data=mailboxPayload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -191,7 +191,7 @@ def test_post_auth_other(other_apiClient, mailboxPayload, list_url):
 
 @pytest.mark.django_db
 def test_post_auth_owner(owner_apiClient, mailboxPayload, list_url):
-    """Tests the post method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated owner user client."""
+    """Tests the post method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated owner user client."""
     response = owner_apiClient.post(list_url(MailboxViewSet), data=mailboxPayload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -203,7 +203,7 @@ def test_post_auth_owner(owner_apiClient, mailboxPayload, list_url):
 
 @pytest.mark.django_db
 def test_delete_noauth(mailboxModel, noauth_apiClient, detail_url):
-    """Tests the delete method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with an unauthenticated user client."""
+    """Tests the delete method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with an unauthenticated user client."""
     response = noauth_apiClient.delete(detail_url(MailboxViewSet, mailboxModel))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -213,7 +213,7 @@ def test_delete_noauth(mailboxModel, noauth_apiClient, detail_url):
 
 @pytest.mark.django_db
 def test_delete_auth_other(mailboxModel, other_apiClient, detail_url):
-    """Tests the delete method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated other user client."""
+    """Tests the delete method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated other user client."""
     response = other_apiClient.delete(detail_url(MailboxViewSet, mailboxModel))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -223,7 +223,7 @@ def test_delete_auth_other(mailboxModel, other_apiClient, detail_url):
 
 @pytest.mark.django_db
 def test_delete_auth_owner(mailboxModel, owner_apiClient, detail_url):
-    """Tests the delete method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet with the authenticated owner user client."""
+    """Tests the delete method on :class:`api.v1.views.MailboxViewSet.MailboxViewSet` with the authenticated owner user client."""
     response = owner_apiClient.delete(detail_url(MailboxViewSet, mailboxModel))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT

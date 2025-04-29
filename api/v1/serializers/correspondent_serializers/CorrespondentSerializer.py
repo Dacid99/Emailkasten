@@ -42,7 +42,7 @@ from .BaseCorrespondentSerializer import BaseCorrespondentSerializer
 
 
 class CorrespondentSerializer(BaseCorrespondentSerializer):
-    """The standard serializer for a :class:`core.models.CorrespondentModel`.
+    """The standard serializer for a :class:`core.models.CorrespondentModel.CorrespondentModel`.
 
     Includes a nested serializer for
     the :attr:`core.models.CorrespondentModel.CorrespondentModel.emails`

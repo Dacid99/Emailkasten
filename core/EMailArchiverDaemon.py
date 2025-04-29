@@ -32,15 +32,9 @@ if TYPE_CHECKING:
 
 
 class EMailArchiverDaemon(threading.Thread):
-    """Daemon for continuous fetching and saving of mails to database.
+    """Daemon for continuous fetching and saving of mails to database."""
 
-    Attributes:
-        logger (:class:`logging.Logger`): Logger for this instance with a filehandler for the daemons own logfile.
-        _stopEvent (:class:`threading.Event`): Event flag to control whether this daemon instance is running.
-        _daemon (:class:`core.models.DaemonModel`): The database model of this daemon.
-    """
-
-    def __init__(self, daemonModel: DaemonModel) -> None:
+    def __init__(self, daemonModel: DaemonModel):
         """Constructor, sets up the daemon with the specification in `daemon`.
 
         Args:

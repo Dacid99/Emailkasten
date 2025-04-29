@@ -123,7 +123,7 @@ class EMailModel(
             related_name="emails",
         )
     )
-    """The correspondents that are mentioned in this mail. Bridges through :class:`core.models.EMailCorrespondentsModel`."""
+    """The correspondents that are mentioned in this mail. Bridges through :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`."""
 
     mailinglist: models.ForeignKey[MailingListModel | None, MailingListModel | None] = (
         models.ForeignKey(
@@ -349,8 +349,8 @@ class EMailModel(
         Returns:
             The :class:`core.models.EMailModel.EMailModel` instance with data from the bytes.
             None if there is no Message-ID header in :attr:`emailMessage`,
-                if the mail already exists in the db or
-                if the mail is spam and is supposed to be thrown out.
+            if the mail already exists in the db or
+            if the mail is spam and is supposed to be thrown out.
         """
         emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
 

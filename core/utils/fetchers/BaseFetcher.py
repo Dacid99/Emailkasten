@@ -78,6 +78,9 @@ class BaseFetcher(ABC):
 
         Args:
             mailbox: The mailbox to be tested. Default is `None`.
+
+        Raises:
+            ValueError: If the `mailbox` argument does not belong to :attr:`self.account`.
         """
         if mailbox is not None and mailbox.account != self.account:
             self.logger.error("%s is not a mailbox of %s!", mailbox, self.account)

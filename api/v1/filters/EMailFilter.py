@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 
 class EMailFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.EMailModel`."""
+    """The filter class for :class:`core.models.EMailModel.EMailModel`."""
 
     correspondent_mention = filters.CharFilter(
         field_name="emailcorrespondents__mention", lookup_expr="exact"

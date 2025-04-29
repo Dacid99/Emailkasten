@@ -41,7 +41,7 @@ from .BaseEMailSerializer import BaseEMailSerializer
 
 
 class EMailSerializer(BaseEMailSerializer):
-    """The standard serializer for a :class:`core.models.EMailModel`.
+    """The standard serializer for a :class:`core.models.EMailModel.EMailModel`.
 
     Includes only the most relevant model fields.
     Includes nested serializers for the :attr:`core.models.EMailModel.EMailModel.replies`,

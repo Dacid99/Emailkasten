@@ -27,7 +27,7 @@ from .BaseEMailCorrespondentSerializer import BaseEMailCorrespondentSerializer
 
 
 class EMailCorrespondentSerializer(BaseEMailCorrespondentSerializer):
-    """The serializer for correspondents from :class:`core.models.EMailCorrespondentsModel`.
+    """The serializer for correspondents from :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`.
 
     Used to serialize the correspondent belonging to an email. Does not include that email.
     """

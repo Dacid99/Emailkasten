@@ -111,7 +111,7 @@ def clean_filename(filename: str) -> str:
     Chars /, ., ~ are replaced with _.
 
     Args:
-        The filename without extension.
+        filename: The filename without extension.
 
     Returns:
         The cleaned filename without extension.

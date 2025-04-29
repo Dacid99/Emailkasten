@@ -60,7 +60,7 @@ class DBReconnectMiddleware:
             request: The request to handle.
 
         Raises:
-            :class:`django.db.OperationalError`: If no connection attempt is successful.
+            OperationalError: If no connection attempt is successful.
 
         Returns:
             The response to the request.

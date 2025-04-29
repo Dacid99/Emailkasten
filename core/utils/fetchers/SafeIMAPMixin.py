@@ -76,8 +76,8 @@ class SafeIMAPMixin:
         Args:
             response: The complete response to the IMAP action.
             commandName: The name of the action.
-            expectedStatus: The expected status response. Defaults to `"OK"`.
             exception: The expection to raise if the status doesnt match the expectation. Defaults to :class:`core.utils.fetchers.exceptions.FetcherError`.
+            expectedStatus: The expected status response. Defaults to `"OK"`.
 
         Raises:
             exception: If the response status doesnt match the expectation.
@@ -127,10 +127,10 @@ class SafeIMAPMixin:
             Find a better way to disable the exception and getting rid of the typing mess.
 
         Args:
-            expectedStatus: The expected status response. Defaults to `"OK"`.
             exception: The exception to raise if an error occurs or the status doesnt match the expectation.
                 Defaults to :class:`core.utils.fetchers.exceptions.FetcherError`.
                 If `None` is passed, no exception is raised, all errors are logged nonetheless.
+            expectedStatus: The expected status response. Defaults to `"OK"`.
 
         Returns:
             The return value of the wrapped action.

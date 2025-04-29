@@ -41,7 +41,7 @@ from .BaseEMailSerializer import BaseEMailSerializer
 
 
 class FullEMailSerializer(BaseEMailSerializer):
-    """A complete serializer for a :class:`core.models.EMailModel`.
+    """A complete serializer for a :class:`core.models.EMailModel.EMailModel`.
 
     Includes nested serializers for the :attr:`core.models.EMailModel.EMailModel.replies`,
     :attr:`core.models.EMailModel.EMailModel.attachments`,

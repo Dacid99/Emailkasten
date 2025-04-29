@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 
 class MailboxFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.MailboxModel`."""
+    """The filter class for :class:`core.models.MailboxModel.MailboxModel`."""
 
     class Meta:
         """Metadata class for the filter."""

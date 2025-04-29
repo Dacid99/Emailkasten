@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 
 class CorrespondentFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.CorrespondentModel`."""
+    """The filter class for :class:`core.models.CorrespondentModel.CorrespondentModel`."""
 
     mention__iexact = filters.CharFilter(
         field_name="correspondentemails__mention", lookup_expr="iexact"

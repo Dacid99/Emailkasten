@@ -44,11 +44,6 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
 
     Opens a connection to the IMAP server on construction and is preferably used in a 'with' environment.
     Allows fetching of mails and mailboxes from an account on an IMAP host.
-
-    Attributes:
-        account (:class:`core.models.AccountModel`): The model of the account to be fetched from.
-        logger (:class:`logging.Logger`): The logger for this instance.
-        _mailClient (:class:`imaplib.IMAP4`): The IMAP host this instance connects to.
     """
 
     PROTOCOL = EmailProtocolChoices.IMAP.value

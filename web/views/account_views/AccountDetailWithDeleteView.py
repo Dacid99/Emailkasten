@@ -79,7 +79,7 @@ class AccountDetailWithDeleteView(
         Args:
             request: The action request to handle.
 
-        Return:
+        Returns:
             A template response with the updated view after the action.
         """
         self.object = self.get_object()

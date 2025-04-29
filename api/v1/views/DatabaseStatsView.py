@@ -48,6 +48,9 @@ class DatabaseStatsView(APIView):
     def get(self, request: Request) -> Response:
         """Gets all the number of entries in the tables of the database.
 
+        Args:
+            request: The GET request to respond to.
+
         Returns:
             A dictionary with the count of the table entries.
         """

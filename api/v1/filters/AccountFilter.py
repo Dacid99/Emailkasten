@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 
 class AccountFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.AccountModel`."""
+    """The filter class for :class:`core.models.AccountModel.AccountModel`."""
 
     class Meta:
         """Metadata class for the filter."""

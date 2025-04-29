@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 
 
 class CorrespondentEMailFilter(django_filters.FilterSet):
-    """The filter class for :class:`core.models.EMailModel`."""
+    """The filter class for :class:`core.models.EMailModel.EMailModel`."""
 
     order = django_filters.OrderingFilter(
         fields=[

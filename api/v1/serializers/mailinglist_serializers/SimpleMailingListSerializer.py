@@ -35,7 +35,7 @@ from .BaseMailingListSerializer import BaseMailingListSerializer
 
 
 class SimpleMailingListSerializer(BaseMailingListSerializer):
-    """A reduced serializer for a :class:`core.models.MailingListModel`.
+    """A reduced serializer for a :class:`core.models.MailingListModel.MailingListModel`.
 
     Includes a method field for the count of elements in :attr:`core.models.MailingList.MailingList.emails`.
     """

@@ -42,11 +42,6 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
     Allows fetching of mails and mailboxes from an account on an POP host.
 
     Since POP does not have any mailboxes, none of the methods should raise a `MailboxError`.
-
-    Attributes:
-        account (:class:`core.models.AccountModel`): The model of the account to be fetched from.
-        logger (:class:`logging.Logger`): The logger for this instance.
-        _mailClient (:class:`poplib.POP3`): The POP host this instance connects to.
     """
 
     PROTOCOL = EmailProtocolChoices.POP3.value
