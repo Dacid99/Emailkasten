@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the custom :class:`DBReconnectMiddleware`."""
+"""Module with the :class:`DBReconnectMiddleware`."""
 
 from __future__ import annotations
 
@@ -65,12 +65,12 @@ class DBReconnectMiddleware:
         Returns:
             The response to the request.
         """
-        for attempt in range(self.max_retries):
+        for attempt in range(self.max_retries + 1):
             try:
                 with connection.cursor():
                     break
             except OperationalError:
-                if attempt == self.max_retries - 1:
+                if attempt == self.max_retries:
                     raise
                 time.sleep(self.delay)
 
