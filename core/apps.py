@@ -36,11 +36,11 @@ class CoreConfig(AppConfig):
         """Imports all model signals."""
         # ruff: noqa: F401
         # pylint: disable=import-outside-toplevel, unused-import  # this is the way it is intended by django
-        from .backends import StorageIntegrityCheckBackend
+        from .backends.StorageIntegrityCheckBackend import StorageIntegrityCheckBackend
 
         plugin_dir.register(StorageIntegrityCheckBackend)
 
-        from .backends import DaemonHealthCheckBackend
+        from .backends.DaemonHealthCheckBackend import DaemonHealthCheckBackend
 
         plugin_dir.register(DaemonHealthCheckBackend)
 

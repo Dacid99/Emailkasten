@@ -73,7 +73,6 @@
 - separation of multi correspondentheader not working!
 - cascase doesnt trigger delete!
 - browser is occasionally in quirks mode
-- healthcheck throws error module not callable
 - UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list QuerySet.
 
 # Remember
