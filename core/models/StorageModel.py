@@ -184,7 +184,7 @@ class StorageModel(models.Model):
             False if there is no unique current storage directory
             or the count of subdirectories for one of the directories is wrong.
         """
-        uniqueCurrent = StorageModel.objects.filter(current=True).count() == 1
+        uniqueCurrent = StorageModel.objects.filter(current=True).count() < 2
         if not uniqueCurrent:
             logger.critical("More than one currently used storage direcory!!!")
             return False
