@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django (>=5.2,<6.0)",
-    "django-extensions (>=3.2.3,<4.0.0)",
+    "django-extensions (>=4.1,<5.0)",
     "djangorestframework (>=3.16.0,<4.0.0)",
     "django-health-check (>=3.18.3,<4.0.0)",
     "django-filter (>=25.1,<26.0)",
