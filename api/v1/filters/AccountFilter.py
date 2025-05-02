@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
+from django.db.models import Q, QuerySet
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
@@ -34,6 +35,10 @@ if TYPE_CHECKING:
 
 class AccountFilter(filters.FilterSet):
     """The filter class for :class:`core.models.AccountModel.AccountModel`."""
+
+    search = filters.CharFilter(
+        method="filter_text_fields",
+    )
 
     class Meta:
         """Metadata class for the filter."""
@@ -51,3 +56,20 @@ class AccountFilter(filters.FilterSet):
             "created": FilterSetups.DATETIME,
             "updated": FilterSetups.DATETIME,
         }
+
+    def filter_text_fields(
+        self, queryset: QuerySet[AccountModel], name: str, value: str
+    ) -> QuerySet[AccountModel]:
+        """Filters textfields in the model.
+
+        Args:
+            queryset: The basic queryset to filter.
+            name: The name of the filterfield.
+            value: The value to filter by.
+
+        Returns:
+            The filtered queryset.
+        """
+        return queryset.filter(
+            Q(mail_address__icontains=value) | Q(mail_host__icontains=value)
+        ).distinct()

@@ -54,7 +54,7 @@
 - favicon.ico for the icon
 - default ssl cert and safest settings
 - memory save upload (chunks instead of read)
-- shortcut urls (api/auth -> api/auth/login, etc)
+- shortcut urls (api/auth -> api/auth/login, /1 -> /1/details)
 - variable page size pagination
 - more settings via env (django-environ maybe)
 
@@ -74,6 +74,7 @@
 - separation of multi correspondentheader not working!
 - cascase doesnt trigger delete!
 - browser is occasionally in quirks mode
+- reverse lookup filters search doesnt work as implemented
 
 # Remember
 

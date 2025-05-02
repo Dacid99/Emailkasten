@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
+from django.db.models import Q, QuerySet
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
@@ -34,6 +35,10 @@ if TYPE_CHECKING:
 
 class EMailFilter(filters.FilterSet):
     """The filter class for :class:`core.models.EMailModel.EMailModel`."""
+
+    search = filters.CharFilter(
+        method="filter_text_fields",
+    )
 
     correspondent_mention = filters.CharFilter(
         field_name="emailcorrespondents__mention", lookup_expr="exact"
@@ -94,3 +99,26 @@ class EMailFilter(filters.FilterSet):
             "mailinglist__list_id": FilterSetups.TEXT,
             "mailinglist__list_owner": FilterSetups.TEXT,
         }
+
+    def filter_text_fields(
+        self, queryset: QuerySet[EMailModel], name: str, value: str
+    ) -> QuerySet[EMailModel]:
+        """Filters textfields in the model.
+
+        Args:
+            queryset: The basic queryset to filter.
+            name: The name of the filterfield.
+            value: The value to filter by.
+
+        Returns:
+            The filtered queryset.
+        """
+        return queryset.filter(
+            Q(message_id__icontains=value)
+            | Q(email_subject__icontains=value)
+            | Q(plain_bodytext__icontains=value)
+            | Q(html_bodytext__icontains=value)
+            | Q(headers__has_key=value)
+            | Q(correspondents__email_address=value)
+            | Q(attachments__file_name=value)
+        ).distinct()

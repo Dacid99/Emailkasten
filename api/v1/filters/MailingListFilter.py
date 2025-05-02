@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
+from django.db.models import Q, QuerySet
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
@@ -34,6 +35,10 @@ if TYPE_CHECKING:
 
 class MailingListFilter(filters.FilterSet):
     """The filter class for :class:`core.models.MailingListModel.MailingListModel`."""
+
+    search = filters.CharFilter(
+        method="filter_text_fields",
+    )
 
     class Meta:
         """Metadata class for the filter."""
@@ -52,3 +57,26 @@ class MailingListFilter(filters.FilterSet):
             "created": FilterSetups.DATETIME,
             "updated": FilterSetups.DATETIME,
         }
+
+    def filter_text_fields(
+        self, queryset: QuerySet[MailingListModel], name: str, value: str
+    ) -> QuerySet[MailingListModel]:
+        """Filters textfields in the model.
+
+        Args:
+            queryset: The basic queryset to filter.
+            name: The name of the filterfield.
+            value: The value to filter by.
+
+        Returns:
+            The filtered queryset.
+        """
+        return queryset.filter(
+            Q(list_id__icontains=value)
+            | Q(list_owner__icontains=value)
+            | Q(list_subscribe__icontains=value)
+            | Q(list_unsubscribe__icontains=value)
+            | Q(list_post__icontains=value)
+            | Q(list_help__icontains=value)
+            | Q(list_archive__icontains=value)
+        ).distinct()

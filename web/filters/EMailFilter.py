@@ -96,4 +96,5 @@ class EMailFilter(django_filters.FilterSet):
             | Q(html_bodytext__icontains=value)
             | Q(headers__has_key=value)
             | Q(correspondents__email_address=value)
+            | Q(attachments__file_name=value)
         ).distinct()
