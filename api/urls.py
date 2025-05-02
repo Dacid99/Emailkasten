@@ -34,8 +34,15 @@ Including another URLconf
 from __future__ import annotations
 
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 
 app_name = "api"
 
-urlpatterns = [path("v1/", include("api.v1.urls"))]
+urlpatterns = [
+    path("v1/", include("api.v1.urls")),
+    path(
+        "api/",
+        RedirectView.as_view(url="api/v1/", permanent=True),
+    ),
+]
