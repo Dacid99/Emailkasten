@@ -31,7 +31,6 @@ from django.db import IntegrityError
 from django.urls import reverse
 from model_bakery import baker
 
-import Emailkasten.constants
 from core import constants
 from core.models.DaemonModel import DaemonModel
 from core.models.MailboxModel import MailboxModel
@@ -95,17 +94,19 @@ def test_DaemonModel_unique_constraints(daemonModel):
 
 
 @pytest.mark.django_db
-def test_DaemonModel_save_logfileCreation(daemonModel):
+def test_DaemonModel_save_logfileCreation(faker, settings, daemonModel):
     """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.save`
     in case there is no log_filepath.
     """
+    fake_log_directory_path = os.path.dirname(faker.file_path())
+    settings.LOG_DIRECTORY_PATH = fake_log_directory_path
     daemonModel.log_filepath = None
 
     daemonModel.save()
 
     daemonModel.refresh_from_db()
     assert daemonModel.log_filepath == os.path.join(
-        Emailkasten.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
+        fake_log_directory_path,
         f"daemon_{daemonModel.uuid}.log",
     )
 

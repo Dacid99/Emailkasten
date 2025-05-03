@@ -26,12 +26,12 @@ import uuid
 from typing import TYPE_CHECKING, Any, Final, override
 
 from dirtyfields import DirtyFieldsMixin
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-import Emailkasten.constants
 from core.mixins.HasDownloadMixin import HasDownloadMixin
 from core.mixins.URLMixin import URLMixin
 from Emailkasten.utils.workarounds import get_config
@@ -94,7 +94,7 @@ class DaemonModel(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
     """Flags whether the daemon is healthy. `True` by default."""
 
     log_filepath = models.FilePathField(
-        path=Emailkasten.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
+        path=settings.LOG_DIRECTORY_PATH,
         recursive=True,
         unique=True,
     )
@@ -161,7 +161,7 @@ class DaemonModel(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
 
         if not self.log_filepath:
             self.log_filepath = os.path.join(
-                Emailkasten.constants.LoggerConfiguration.LOG_DIRECTORY_PATH,
+                settings.LOG_DIRECTORY_PATH,
                 f"daemon_{self.uuid}.log",
             )
         super().save(*args, **kwargs)

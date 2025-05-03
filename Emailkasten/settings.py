@@ -27,28 +27,29 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 from django.utils.translation import gettext_lazy as _
-
-import Emailkasten.constants
+from environ import FileAwareEnv
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Get environ either from environment and file defined via _FILE env-variable
+# See https://django-environ.readthedocs.io/en/latest/tips.html#docker-style-file-based-variables
+env = FileAwareEnv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-854!q(ej3aqf0agllzt^#u$=aqe33xd1zj*vz^$xi1tmw^bxn5"
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG", cast=bool, default=False)
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split()
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=list, default=["localhost"])
 
 
 # Application definition
@@ -155,17 +156,24 @@ SITE_ID = 1
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": Emailkasten.constants.DatabaseConfiguration.NAME,
-        "USER": Emailkasten.constants.DatabaseConfiguration.USER,
-        "PASSWORD": Emailkasten.constants.DatabaseConfiguration.PASSWORD,
+        "NAME": env("DATABASE", default="email_archive_django"),
+        "USER": env("DATABASE_USER", default="user"),
+        "PASSWORD": env("DATABASE_PASSWORD", default="passwd"),
         "HOST": "db",
-        "PORT": "3306",
         "OPTIONS": {
             "charset": "utf8mb4",
         },
     }
 }
+DATABASE_RECONNECT_RETRIES_DEFAULT = 10
+DATABASE_RECONNECT_RETRIES = env(
+    "DATABASE_RECONNECT_RETRIES", cast=int, default=DATABASE_RECONNECT_RETRIES_DEFAULT
+)
 
+DATABASE_RECONNECT_DELAY_DEFAULT = 10
+DATABASE_RECONNECT_DELAY = env(
+    "DATABASE_RECONNECT_DELAY", cast=int, default=DATABASE_RECONNECT_DELAY_DEFAULT
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -203,7 +211,10 @@ LANGUAGE_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 
 # Registration
-DEFAULT_REGISTRATION_ENABLED = "0"
+REGISTRATION_ENABLED_DEFAULT = False
+REGISTRATION_ENABLED = env(
+    "REGISTRATION_ENABLED", cast=bool, default=REGISTRATION_ENABLED_DEFAULT
+)
 
 # django-allauth
 ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]
@@ -221,9 +232,13 @@ REST_AUTH = {
 
 
 # Logging
-LOG_DIRECTORY_PATH = "/var/log" if not DEBUG else ""
-LOGFILE_MAXSIZE = int(os.environ.get("LOGFILE_MAXSIZE", "10485760"))
-LOGFILE_BACKUP_NUMBER = int(os.environ.get("LOGFILE_BACKUP_NUMBER", "5"))
+LOG_DIRECTORY_PATH = Path("/var/log") if not DEBUG else BASE_DIR
+LOGFILE_MAXSIZE_DEFAULT = 10485760
+LOGFILE_MAXSIZE = env("LOGFILE_MAXSIZE", cast=int, default=LOGFILE_MAXSIZE_DEFAULT)
+LOGFILE_BACKUP_NUMBER_DEFAULT = 5
+LOGFILE_BACKUP_NUMBER = env(
+    "LOGFILE_BACKUP_NUMBER", cast=int, default=LOGFILE_BACKUP_NUMBER_DEFAULT
+)
 LOGLEVEL_DEFAULT = "INFO"
 
 LOGGING = {
@@ -244,10 +259,7 @@ LOGGING = {
         "django_logfile": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": os.path.join(
-                LOG_DIRECTORY_PATH,
-                "django.log",
-            ),
+            "filename": LOG_DIRECTORY_PATH / "django.log",
             "maxBytes": LOGFILE_MAXSIZE,
             "backupCount": LOGFILE_BACKUP_NUMBER,
             "formatter": "default",
@@ -255,10 +267,7 @@ LOGGING = {
         "app_logfile": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": os.path.join(
-                LOG_DIRECTORY_PATH,
-                "Emailkasten.log",
-            ),
+            "filename": LOG_DIRECTORY_PATH / "Emailkasten.log",
             "maxBytes": LOGFILE_MAXSIZE,
             "backupCount": LOGFILE_BACKUP_NUMBER,
             "formatter": "default",
@@ -266,17 +275,17 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": os.environ.get("ROOT_LOG_LEVEL", LOGLEVEL_DEFAULT),
+        "level": env("ROOT_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
     },
     "loggers": {
         "django": {
             "handlers": ["django_logfile"],
-            "level": os.environ.get("DJANGO_LOG_LEVEL", LOGLEVEL_DEFAULT),
+            "level": env("DJANGO_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
             "propagate": True,
         },
         "Emailkasten": {
             "handlers": ["app_logfile"],
-            "level": os.environ.get("APP_LOG_LEVEL", LOGLEVEL_DEFAULT),
+            "level": env("APP_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
             "propagate": True,
         },
     },

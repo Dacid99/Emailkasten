@@ -19,9 +19,8 @@
 """Test module for the :class:`DBReconnectMiddleware`."""
 
 import pytest
+from django.conf import settings
 from django.db import OperationalError, connection
-
-from Emailkasten.constants import DatabaseConfiguration
 
 from ...web.views.conftest import owner_client
 
@@ -41,5 +40,5 @@ def test_reconnect(monkeypatch, owner_client, mock_time_sleep):
     with pytest.raises(OperationalError):
         owner_client.get("/")
 
-    assert mock_time_sleep.call_count == DatabaseConfiguration.RECONNECT_RETRIES
-    mock_time_sleep.assert_called_with(DatabaseConfiguration.RECONNECT_DELAY)
+    assert mock_time_sleep.call_count == settings.DATABASE_RECONNECT_RETRIES
+    mock_time_sleep.assert_called_with(settings.DATABASE_RECONNECT_DELAY)

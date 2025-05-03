@@ -20,13 +20,12 @@
 
 from __future__ import annotations
 
-import os
 from typing import TYPE_CHECKING, override
 
 from allauth.account.adapter import DefaultAccountAdapter
+from django.conf import settings
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 
-from Emailkasten.settings import DEFAULT_REGISTRATION_ENABLED
 from Emailkasten.utils.workarounds import get_config
 
 
@@ -50,9 +49,9 @@ class ToggleSignupAccountAdapter(
         Returns:
             Whether signups are allowed.
         """
-        return bool(
-            int(os.getenv("REGISTRATION_ENABLED", DEFAULT_REGISTRATION_ENABLED))
-        ) and bool(get_config("REGISTRATION_ENABLED"))
+        return bool(settings.REGISTRATION_ENABLED) and bool(
+            get_config("REGISTRATION_ENABLED")
+        )
 
 
 class ToggleSignUpPermissionClass(AllowAny, IsAuthenticated, IsAdminUser):
@@ -70,8 +69,8 @@ class ToggleSignUpPermissionClass(AllowAny, IsAuthenticated, IsAdminUser):
         Returns:
             If the signup request is permitted.
         """
-        if bool(
-            int(os.getenv("REGISTRATION_ENABLED", DEFAULT_REGISTRATION_ENABLED))
-        ) and bool(get_config("REGISTRATION_ENABLED")):
+        if bool(settings.REGISTRATION_ENABLED) and bool(
+            get_config("REGISTRATION_ENABLED")
+        ):
             return AllowAny.has_permission(self, request, view)
         return IsAdminUser.has_permission(self, request, view)

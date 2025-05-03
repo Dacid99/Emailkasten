@@ -54,9 +54,9 @@
 - favicon.ico for the icon
 - default ssl cert and safest settings
 - memory save upload (chunks instead of read)
-- shortcut urls (api/auth -> api/auth/login, /1 -> /1/details)
 - variable page size pagination
-- more settings via env (django-environ maybe)
+- docs:
+  - integratons page, searxng section in docs
 
 ### Work in progress
 
@@ -75,7 +75,8 @@
 - cascase doesnt trigger delete!
 - browser is occasionally in quirks mode
 - reverse lookup filters search doesnt work as implemented
-
-# Remember
-
-- logpath is misconfigured for makemigrations
+- optics:
+  - stats table out of bounds for slim viewport
+  - datasize bytes missing
+  - favorite buttons overlaid by href
+  - view all button for dashboard mails

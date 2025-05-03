@@ -23,9 +23,8 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.db import OperationalError, connection
-
-from Emailkasten.constants import DatabaseConfiguration
 
 
 if TYPE_CHECKING:
@@ -41,13 +40,13 @@ class DBReconnectMiddleware:
     Elementary for initial setup.
     """
 
-    max_retries = DatabaseConfiguration.RECONNECT_RETRIES
+    max_retries = settings.DATABASE_RECONNECT_RETRIES
     """The number of times to retry connecting.
-    Set from :attr:`Emailkasten.constants.DatabaseConfiguration.RECONNECT_RETRIES`."""
+    Set from :attr:`django.conf.settings.RECONNECT_RETRIES`."""
 
-    delay = DatabaseConfiguration.RECONNECT_DELAY
+    delay = settings.DATABASE_RECONNECT_DELAY
     """The time delay between reconnect attempt.
-    Set from :attr:`Emailkasten.constants.DatabaseConfiguration.RECONNECT_DELAY`."""
+    Set from :attr:`django.conf.settings.RECONNECT_DELAY`."""
 
     def __init__(self, get_response: Callable[[Request], Response]):
         """Sets up the middleware."""

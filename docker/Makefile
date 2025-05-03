@@ -1,10 +1,10 @@
-image: Dockerfile entrypoint.sh
-	sudo docker compose build
+image: build/Dockerfile build/docker-compose.build.yml entrypoint.sh
+	sudo docker compose -f build/docker-compose.build.yml build
 
-up: docker-compose.yml Dockerfile entrypoint.sh
-	sudo docker compose up
+up: docker-compose.yml entrypoint.sh
+	sudo docker compose up -d
 
-down: docker-compose.yml Dockerfile entrypoint.sh
+down: docker-compose.yml entrypoint.sh
 	sudo docker compose down
 
 clean:

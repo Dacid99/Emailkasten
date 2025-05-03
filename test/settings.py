@@ -19,7 +19,13 @@
 """Settings for testing of the django project."""
 from __future__ import annotations
 
-from Emailkasten.settings import *  # noqa: F403 ; pylint: disable=wildcard-import, unused-wildcard-import ; all settings need to be imported
+from environ import Env
+
+
+Env.read_env()
+
+
+from Emailkasten.settings import *  # noqa: F403,E402 ; pylint: disable=wildcard-import, unused-wildcard-import ; all settings need to be imported and environment needs to be set beforehand
 
 
 DATABASES = {
@@ -35,7 +41,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "default": {
-            "format": Emailkasten.constants.LoggerConfiguration.LOG_FORMAT,
+            "format": "{asctime} {levelname} - {name}.{funcName}: {message}",
             "style": "{",
         },
     },
