@@ -6,7 +6,7 @@ Your global python version should be at least *3.12*.
 
 If necessary you can install it via [the deadsnakes ppa](https://launchpad.net/~deadsnakes/+archive/ubuntu/ppa).
 
-Make sure to also install the python-dev version.
+Make sure to also install the *python-dev* version!
 
 First install the packages required for the build environment, on debian based distros:
 
@@ -29,12 +29,6 @@ You can then add the tab completions for it by:
 poetry completions bash >> ~/.bash_completion
 ```
 
-If you prefer to have the virtual environment inside the project root (which we recommend), you need to change one poetry config:
-
-```bash
-poetry config virtualenvs.in-project true
-```
-
 Then install all the dependencies to a virtual environment:
 
 ```bash
@@ -47,11 +41,7 @@ Finally you can activate the venv with
 eval $(poetry env activate)
 ```
 
-or if you have set up the venv in the project root as explained above
-
-```bash
-source .venv/bin/activate
-```
+You should avoid having the venv inside the workspace as that will brick docker run in most cases.
 
 Depending on your OS, the mysqlclient package may cause problems, this can usually be solved by installing a missing system package.
 

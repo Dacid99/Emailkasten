@@ -5,7 +5,6 @@ WORKDIR /mnt
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV XDG_RUNTIME_DIR=/tmp/xdg_runtime
-ENV PYTHONPATH=/mnt/Emailkasten
 COPY ../ /mnt/
 RUN pip install -U --no-cache-dir poetry
 RUN poetry install

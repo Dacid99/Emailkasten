@@ -1,5 +1,5 @@
 #!/bin/bash
-source .venv/bin/activate
+eval $(poetry env activate)
 
 set -o pipefail
 
