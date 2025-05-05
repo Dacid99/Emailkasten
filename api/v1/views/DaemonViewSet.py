@@ -125,9 +125,9 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[DaemonModel]):
             A response detailing the test result for the daemon.
         """
         daemon = self.get_object()
-        daemonData = self.get_serializer(daemon).data
         result = EMailArchiverDaemonRegistry.testDaemon(daemon)
-
+        daemon.refresh_from_db()
+        daemonData = self.get_serializer(daemon).data
         return Response(
             {
                 "detail": (
@@ -157,14 +157,18 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[DaemonModel]):
             A response detailing the start result of the daemon.
         """
         daemon = self.get_object()
-        daemonData = self.get_serializer(daemon).data
         result = EMailArchiverDaemonRegistry.startDaemon(daemon)
         if result:
-            return Response({"detail": "Daemon started", "daemon": daemonData})
-        return Response(
-            {"detail": "Daemon already running", "daemon": daemonData},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+            response = Response({"detail": "Daemon started"})
+        else:
+            response = Response(
+                {"detail": "Daemon already running"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        daemon.refresh_from_db()
+        daemonData = self.get_serializer(daemon).data
+        response.data["daemon"] = daemonData
+        return response
 
     URL_PATH_STOP = "stop"
     URL_NAME_STOP = "stop"
@@ -183,14 +187,18 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[DaemonModel]):
             A response detailing the stop result for the daemon.
         """
         daemon = self.get_object()
-        daemonData = self.get_serializer(daemon).data
         result = EMailArchiverDaemonRegistry.stopDaemon(daemon)
         if result:
-            return Response({"status": "Daemon stopped", "daemon": daemonData})
-        return Response(
-            {"status": "Daemon not running", "daemon": daemonData},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+            response = Response({"status": "Daemon stopped"})
+        else:
+            response = Response(
+                {"status": "Daemon not running"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        daemon.refresh_from_db()
+        daemonData = self.get_serializer(daemon).data
+        response.data["daemon"] = daemonData
+        return response
 
     URL_PATH_LOG_DOWNLOAD = "log/download"
     URL_NAME_LOG_DOWNLOAD = "log-download"

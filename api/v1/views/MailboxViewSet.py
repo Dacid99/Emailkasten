@@ -112,9 +112,11 @@ class MailboxViewSet(
         mailbox = self.get_object()
         DaemonModel.objects.create(mailbox=mailbox)
         mailbox.refresh_from_db()
-        mailboxSerializer = self.get_serializer(mailbox)
         return Response(
-            {"detail": "Added daemon for mailbox", "mailbox": mailboxSerializer.data}
+            {
+                "detail": "Added daemon for mailbox",
+                "mailbox": self.get_serializer(mailbox).data,
+            }
         )
 
     URL_PATH_TEST = "test"
@@ -134,11 +136,9 @@ class MailboxViewSet(
             A response containing the updated mailbox data and the test result.
         """
         mailbox = self.get_object()
-        mailboxSerializer = self.get_serializer(mailbox)
         response = Response(
             {
                 "detail": "Tested mailbox",
-                "mailbox": mailboxSerializer.data,
             }
         )
         try:
@@ -148,6 +148,8 @@ class MailboxViewSet(
             response.data["error"] = str(error)
         else:
             response.data["result"] = True
+        mailbox.refresh_from_db()
+        response.data["mailbox"] = self.get_serializer(mailbox).data
         return response
 
     URL_PATH_FETCH_ALL = "fetch-all"
@@ -170,21 +172,21 @@ class MailboxViewSet(
             A response with the mailbox data.
         """
         mailbox = self.get_object()
-        mailboxSerializer = self.get_serializer(mailbox)
         try:
             mailbox.fetch(constants.EmailFetchingCriterionChoices.ALL)
         except FetcherError as error:
-            return Response(
+            response = Response(
                 {
                     "detail": "Error with mailaccount or mailbox occured!",
-                    "mailbox": mailboxSerializer.data,
                     "error": str(error),
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        return Response(
-            {"detail": "All mails fetched", "mailbox": mailboxSerializer.data}
-        )
+        else:
+            response = Response({"detail": "All mails fetched"})
+        mailbox.refresh_from_db()
+        response.data["mailbox"] = self.get_serializer(mailbox).data
+        return response
 
     URL_PATH_UPLOAD_EML = "upload-eml"
     URL_NAME_UPLOAD_EML = "upload-eml"

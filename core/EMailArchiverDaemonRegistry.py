@@ -74,13 +74,14 @@ class EMailArchiverDaemonRegistry:
             newDaemon = EMailArchiverDaemon(daemonModel)
             cls.logger.debug("Testing daemon %s ...", daemonModel)
             newDaemon.cycle()
-            cls.logger.debug("Successfully tested daemon %s.", daemonModel)
-            daemonModel.refresh_from_db()
         except Exception:
-            cls.logger.exception("Failed to test daemon %s !", daemonModel)
+            cls.logger.exception("Test for daemon %s failed!", daemonModel)
+            daemonModel.is_healthy = False
+            daemonModel.save(update_fields=["is_healthy"])
             return False
         else:
-            return daemonModel.is_healthy
+            cls.logger.debug("Successfully tested daemon %s.", daemonModel)
+            return True
 
     @classmethod
     def startDaemon(cls, daemonModel: DaemonModel) -> bool:

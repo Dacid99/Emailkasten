@@ -119,21 +119,21 @@ class AccountViewSet(viewsets.ModelViewSet[AccountModel], ToggleFavoriteMixin):
             A response containing the updated account data.
         """
         account = self.get_object()
-        accountSerializer = self.get_serializer(account)
         try:
             account.update_mailboxes()
         except MailAccountError as error:
-            return Response(
+            response = Response(
                 data={
                     "detail": "Error with mailaccount occured!",
-                    "account": accountSerializer.data,
                     "error": str(error),
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        return Response(
-            data={"detail": "Updated mailboxes", "account": accountSerializer.data}
-        )
+        else:
+            response = Response(data={"detail": "Updated mailboxes"})
+        account.refresh_from_db()
+        response.data["account"] = self.get_serializer(account).data
+        return response
 
     URL_PATH_TEST = "test"
     URL_NAME_TEST = "test"
@@ -152,11 +152,9 @@ class AccountViewSet(viewsets.ModelViewSet[AccountModel], ToggleFavoriteMixin):
             A response containing the updated account data and the test result.
         """
         account = self.get_object()
-        accountSerializer = self.get_serializer(account)
         response = Response(
             {
                 "detail": "Tested mailaccount",
-                "account": accountSerializer.data,
             }
         )
         try:
@@ -166,4 +164,6 @@ class AccountViewSet(viewsets.ModelViewSet[AccountModel], ToggleFavoriteMixin):
             response.data["error"] = str(error)
         else:
             response.data["result"] = True
+        account.refresh_from_db()
+        response.data["account"] = self.get_serializer(account).data
         return response
