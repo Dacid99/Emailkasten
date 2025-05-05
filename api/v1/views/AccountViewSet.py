@@ -77,7 +77,9 @@ class AccountViewSet(viewsets.ModelViewSet[AccountModel], ToggleFavoriteMixin):
             return AccountModel.objects.none()
         if not self.request.user.is_authenticated:
             return AccountModel.objects.none()
-        return AccountModel.objects.filter(user=self.request.user)
+        return AccountModel.objects.filter(user=self.request.user).prefetch_related(
+            "mailboxes"
+        )
 
     @override
     def perform_create(self, serializer: BaseSerializer[AccountModel]) -> None:

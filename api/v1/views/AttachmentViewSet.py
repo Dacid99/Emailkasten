@@ -79,7 +79,7 @@ class AttachmentViewSet(
             return AttachmentModel.objects.none()
         return AttachmentModel.objects.filter(
             email__mailbox__account__user=self.request.user
-        )
+        ).select_related("email")
 
     URL_PATH_DOWNLOAD = "download"
     URL_NAME_DOWNLOAD = "download"

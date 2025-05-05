@@ -370,7 +370,7 @@ class EMailModel(
             )
             return None
 
-        if EMailModel.objects.filter(message_id=message_id, mailbox=mailbox).count():
+        if EMailModel.objects.filter(message_id=message_id, mailbox=mailbox).exists():
             logger.debug(
                 "Skipping email with Message-ID %s in %s, it already exists in the db.",
                 message_id,

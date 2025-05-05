@@ -23,6 +23,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, Final, override
 
+from django.db.models import Prefetch
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
@@ -32,6 +33,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from core.models.EMailModel import EMailModel
 
 from ..filters.EMailFilter import EMailFilter
@@ -88,7 +90,19 @@ class EMailViewSet(
             return EMailModel.objects.none()
         if not self.request.user.is_authenticated:
             return EMailModel.objects.none()
-        return EMailModel.objects.filter(mailbox__account__user=self.request.user)
+        return (
+            EMailModel.objects.filter(mailbox__account__user=self.request.user)
+            .select_related("mailinglist", "inReplyTo")
+            .prefetch_related("attachments")
+            .prefetch_related(
+                Prefetch(
+                    "emailcorrespondents",
+                    queryset=EMailCorrespondentsModel.objects.select_related(
+                        "correspondent"
+                    ),
+                )
+            )
+        )
 
     URL_PATH_DOWNLOAD = "download"
     URL_NAME_DOWNLOAD = "download"

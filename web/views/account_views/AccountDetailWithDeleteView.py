@@ -56,15 +56,22 @@ class AccountDetailWithDeleteView(
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()
-        return super().get_queryset().filter(user=self.request.user)
+        return (
+            super()
+            .get_queryset()
+            .filter(user=self.request.user)
+            .prefetch_related("mailboxes")
+        )
 
     @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """Extended to add the accounts latest emails to the context."""
         context = super().get_context_data(**kwargs)
-        context["latest_emails"] = EMailModel.objects.filter(
-            mailbox__account=self.object
-        ).order_by("-created")
+        context["latest_emails"] = (
+            EMailModel.objects.filter(mailbox__account=self.object)
+            .order_by("-created")
+            .select_related("mailbox", "mailbox__account")[:25]
+        )
         return context
 
     @override

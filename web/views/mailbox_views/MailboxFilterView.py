@@ -45,4 +45,9 @@ class MailboxFilterView(LoginRequiredMixin, FilterPageView):
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()
-        return super().get_queryset().filter(account__user=self.request.user)
+        return (
+            super()
+            .get_queryset()
+            .filter(account__user=self.request.user)
+            .select_related("account")
+        )

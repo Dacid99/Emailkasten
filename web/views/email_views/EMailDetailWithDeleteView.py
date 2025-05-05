@@ -21,11 +21,12 @@
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import Prefetch, QuerySet
 from django.urls import reverse_lazy
 from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
+from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 from core.models.EMailModel import EMailModel
 from web.views.email_views.EMailFilterView import EMailFilterView
 
@@ -44,4 +45,16 @@ class EMailDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return EMailModel.objects.none()
-        return EMailModel.objects.filter(mailbox__account__user=self.request.user)
+        return (
+            EMailModel.objects.filter(mailbox__account__user=self.request.user)
+            .select_related("mailinglist", "mailbox", "mailbox__account", "inReplyTo")
+            .prefetch_related("attachments")
+            .prefetch_related(
+                Prefetch(
+                    "emailcorrespondents",
+                    queryset=EMailCorrespondentsModel.objects.select_related(
+                        "correspondent"
+                    ),
+                )
+            )
+        )

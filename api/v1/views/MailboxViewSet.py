@@ -86,7 +86,9 @@ class MailboxViewSet(
             return MailboxModel.objects.none()
         if not self.request.user.is_authenticated:
             return MailboxModel.objects.none()
-        return MailboxModel.objects.filter(account__user=self.request.user)
+        return MailboxModel.objects.filter(
+            account__user=self.request.user
+        ).prefetch_related("daemons")
 
     URL_PATH_ADD_DAEMON = "add-daemon"
     URL_NAME_ADD_DAEMON = "add-daemon"
@@ -109,7 +111,7 @@ class MailboxViewSet(
         """
         mailbox = self.get_object()
         DaemonModel.objects.create(mailbox=mailbox)
-
+        mailbox.refresh_from_db()
         mailboxSerializer = self.get_serializer(mailbox)
         return Response(
             {"detail": "Added daemon for mailbox", "mailbox": mailboxSerializer.data}

@@ -45,4 +45,9 @@ class DaemonFilterView(LoginRequiredMixin, FilterPageView):
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()
-        return super().get_queryset().filter(mailbox__account__user=self.request.user)
+        return (
+            super()
+            .get_queryset()
+            .filter(mailbox__account__user=self.request.user)
+            .select_related("mailbox", "mailbox__account")
+        )

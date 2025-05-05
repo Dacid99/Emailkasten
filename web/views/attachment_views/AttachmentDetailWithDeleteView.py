@@ -46,4 +46,4 @@ class AttachmentDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMix
             return AttachmentModel.objects.none()
         return AttachmentModel.objects.filter(
             email__mailbox__account__user=self.request.user
-        )
+        ).select_related("email")

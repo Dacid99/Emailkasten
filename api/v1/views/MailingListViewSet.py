@@ -80,6 +80,10 @@ class MailingListViewSet(
             return MailingListModel.objects.none()
         if not self.request.user.is_authenticated:
             return MailingListModel.objects.none()
-        return MailingListModel.objects.filter(
-            emails__mailbox__account__user=self.request.user
-        ).distinct()
+        return (
+            MailingListModel.objects.filter(
+                emails__mailbox__account__user=self.request.user
+            )
+            .distinct()
+            .prefetch_related("emails")
+        )

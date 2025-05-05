@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final, override
 
+from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 from rest_framework.filters import OrderingFilter
@@ -29,6 +30,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
 from core.models.CorrespondentModel import CorrespondentModel
+from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
 
 from ..filters.CorrespondentFilter import CorrespondentFilter
 from ..serializers.correspondent_serializers.BaseCorrespondentSerializer import (
@@ -79,9 +81,20 @@ class CorrespondentViewSet(
             return CorrespondentModel.objects.none()
         if not self.request.user.is_authenticated:
             return CorrespondentModel.objects.none()
-        return CorrespondentModel.objects.filter(
-            emails__mailbox__account__user=self.request.user
-        ).distinct()
+        return (
+            CorrespondentModel.objects.filter(
+                emails__mailbox__account__user=self.request.user
+            )
+            .distinct()
+            .prefetch_related(
+                Prefetch(
+                    "correspondentemails",
+                    queryset=EMailCorrespondentsModel.objects.filter(
+                        email__mailbox__account__user=self.request.user
+                    ).select_related("email"),
+                )
+            )
+        )
 
     @override
     def get_serializer_class(self) -> type[BaseSerializer[CorrespondentModel]]:

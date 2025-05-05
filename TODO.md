@@ -24,8 +24,7 @@
 ## To refactor
 
 - headerdict accumulation can be easier, message supports dict() or at least .items()
-- check for existance is better with filter().exists()
-- improve db performance with SubQuery, select_related, etc
+- lookup instead of save with IntegrityError where faster
 - explore emailmessage methods
 - content_type main and sub as fields and rename settings
 - consistent naming_style
@@ -75,6 +74,7 @@
 - cascase doesnt trigger delete!
 - browser is occasionally in quirks mode
 - reverse lookup filters search doesnt work as implemented
+- api responses after custom actions contain outdated modeldata
 - optics:
   - stats table out of bounds for slim viewport
   - datasize bytes missing

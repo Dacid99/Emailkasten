@@ -49,4 +49,5 @@ class AttachmentFilterView(LoginRequiredMixin, FilterPageView):
             super()
             .get_queryset()
             .filter(email__mailbox__account__user=self.request.user)
+            .select_related("email")
         )

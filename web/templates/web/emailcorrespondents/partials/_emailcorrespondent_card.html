@@ -8,7 +8,7 @@
             <div class="d-inline-flex align-items-center">
                 <h6 class="card-subtitle me-1">{{ emailcorrespondent.correspondent.email_address }}</h6>
 
-                {% include "web/partials/_favorite_badge.html" with object=correspondentemail.correspondent %}
+                {% include "web/partials/_favorite_badge.html" with object=emailcorrespondent.correspondent %}
 
             </div>
             <div class="card-text">{{ emailcorrespondent.correspondent.email_name }}</div>
