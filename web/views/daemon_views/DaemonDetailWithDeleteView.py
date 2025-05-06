@@ -45,7 +45,6 @@ class DaemonDetailWithDeleteView(
     URL_NAME = DaemonModel.get_detail_web_url_name()
     model = DaemonModel
     template_name = "web/daemon/daemon_detail.html"
-    context_object_name = "daemon"
     success_url = reverse_lazy("web:" + DaemonFilterView.URL_NAME)
 
     @override

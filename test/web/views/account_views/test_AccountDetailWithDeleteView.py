@@ -63,7 +63,7 @@ def test_get_auth_owner(accountModel, owner_client, detail_url):
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/account/account_detail.html" in [t.name for t in response.templates]
-    assert "account" in response.context
+    assert "object" in response.context
     assert "latest_emails" in response.context
     assert accountModel.mail_address in response.content.decode()
 
@@ -162,7 +162,7 @@ def test_post_test_success_auth_owner(
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/account/account_detail.html" in [t.name for t in response.templates]
-    assert "account" in response.context
+    assert "object" in response.context
     assert "latest_emails" in response.context
     assert "action_result" in response.context
     assert "status" in response.context["action_result"]
@@ -190,7 +190,7 @@ def test_post_test_failure_auth_owner(
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/account/account_detail.html" in [t.name for t in response.templates]
-    assert "account" in response.context
+    assert "object" in response.context
     assert "latest_emails" in response.context
     assert "action_result" in response.context
     assert "status" in response.context["action_result"]
@@ -262,7 +262,7 @@ def test_post_update_mailboxes_success_auth_owner(
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/account/account_detail.html" in [t.name for t in response.templates]
-    assert "account" in response.context
+    assert "object" in response.context
     assert "latest_emails" in response.context
     assert "action_result" in response.context
     assert "status" in response.context["action_result"]
@@ -292,7 +292,7 @@ def test_post_update_mailboxes_failure_auth_owner(
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/account/account_detail.html" in [t.name for t in response.templates]
-    assert "account" in response.context
+    assert "object" in response.context
     assert "latest_emails" in response.context
     assert "action_result" in response.context
     assert "status" in response.context["action_result"]

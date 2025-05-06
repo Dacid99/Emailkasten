@@ -37,7 +37,6 @@ class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     model = DaemonModel
     form_class = BaseDaemonForm
     template_name = "web/daemon/daemon_edit.html"
-    context_object_name = "daemon"
     delete_success_url = reverse_lazy("web:" + DaemonFilterView.URL_NAME)
     URL_NAME = DaemonModel.get_edit_web_url_name()
 

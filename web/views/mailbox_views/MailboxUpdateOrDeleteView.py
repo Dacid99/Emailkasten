@@ -37,7 +37,6 @@ class MailboxUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     model = MailboxModel
     form_class = BaseMailboxForm
     template_name = "web/mailbox/mailbox_edit.html"
-    context_object_name = "mailbox"
     delete_success_url = reverse_lazy("web:" + MailboxFilterView.URL_NAME)
     URL_NAME = MailboxModel.get_edit_web_url_name()
 

@@ -43,7 +43,6 @@ class CorrespondentDetailWithDeleteView(
     URL_NAME = CorrespondentModel.get_detail_web_url_name()
     model = CorrespondentModel
     template_name = "web/correspondent/correspondent_detail.html"
-    context_object_name = "correspondent"
     success_url = reverse_lazy("web:" + CorrespondentFilterView.URL_NAME)
 
     @override

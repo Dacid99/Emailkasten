@@ -50,7 +50,6 @@ class MailboxDetailWithDeleteView(
     URL_NAME = MailboxModel.get_detail_web_url_name()
     model = MailboxModel
     template_name = "web/mailbox/mailbox_detail.html"
-    context_object_name = "mailbox"
     success_url = reverse_lazy("web:" + MailboxFilterView.URL_NAME)
 
     @override

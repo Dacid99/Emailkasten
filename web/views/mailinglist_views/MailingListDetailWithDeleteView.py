@@ -36,7 +36,6 @@ class MailingListDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMi
     URL_NAME = MailingListModel.get_detail_web_url_name()
     model = MailingListModel
     template_name = "web/mailinglist/mailinglist_detail.html"
-    context_object_name = "mailinglist"
     success_url = reverse_lazy("web:" + MailingListFilterView.URL_NAME)
 
     @override

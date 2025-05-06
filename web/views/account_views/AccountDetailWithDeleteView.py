@@ -48,7 +48,6 @@ class AccountDetailWithDeleteView(
     URL_NAME = AccountModel.get_detail_web_url_name()
     model = AccountModel
     template_name = "web/account/account_detail.html"
-    context_object_name = "account"
     success_url = reverse_lazy("web:" + AccountFilterView.URL_NAME)
 
     @override

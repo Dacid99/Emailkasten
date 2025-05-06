@@ -39,7 +39,6 @@ class CorrespondentUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     model = CorrespondentModel
     form_class = BaseCorrespondentForm
     template_name = "web/correspondent/correspondent_edit.html"
-    context_object_name = "correspondent"
     delete_success_url = reverse_lazy("web:" + CorrespondentFilterView.URL_NAME)
     URL_NAME = CorrespondentModel.get_edit_web_url_name()
 

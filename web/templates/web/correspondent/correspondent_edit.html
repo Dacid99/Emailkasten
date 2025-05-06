@@ -14,35 +14,35 @@
                  aria-label="Toolbar with buttons">
                 <div class="btn-group me-3" role="group" aria-label="Edit button group">
 
-                    {% include "web/partials/_delete-button.html" with object=correspondent %}
+                    {% include "web/partials/_delete-button.html" %}
 
-                    {% include "web/partials/_end_edit-button.html" with object=correspondent %}
+                    {% include "web/partials/_end_edit-button.html" %}
 
                 </div>
                 <div class="btn-group ms-3" role="group" aria-label="Close button group">
 
-                    {% include "web/partials/_close_to_list-button.html" with object=correspondent %}
+                    {% include "web/partials/_close_to_list-button.html" %}
 
                 </div>
             </div>
         </div>
         <div class="card-body">
-            <h2 class="card-title">{{ correspondent.email_address }}</h2>
+            <h2 class="card-title">{{ object.email_address }}</h2>
             <form method="post">
                 {% csrf_token %}
                 {% bootstrap_field form.email_name %}
 
                 {% include "web/partials/_submit_edit-button.html" %}
 
-                {% include "web/partials/_cancel_edit-button.html" with object=correspondent %}
+                {% include "web/partials/_cancel_edit-button.html" %}
 
             </form>
         </div>
 
-        {% include "web/partials/_dates_card-footer.html" with object=correspondent %}
+        {% include "web/partials/_dates_card-footer.html" %}
 
     </div>
 
-    {% include "web/partials/_delete-modal.html" with object=correspondent %}
+    {% include "web/partials/_delete-modal.html" %}
 
 {% endblock content %}
