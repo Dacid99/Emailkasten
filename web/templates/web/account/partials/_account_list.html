@@ -1,5 +1,5 @@
 {% for account in accounts %}
 
-    {% include "web/account/partials/_account_card.html" %}
+    {% include "web/account/partials/_account_card.html" with card_object=account %}
 
 {% endfor %}

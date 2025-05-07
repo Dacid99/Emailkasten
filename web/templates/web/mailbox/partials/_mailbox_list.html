@@ -1,5 +1,5 @@
 {% for mailbox in mailboxes %}
 
-    {% include "web/mailbox/partials/_mailbox_card.html" %}
+    {% include "web/mailbox/partials/_mailbox_card.html" with card_object=mailbox %}
 
 {% endfor %}

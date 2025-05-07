@@ -1,30 +1,29 @@
+{% extends "web/partials/bases/_base_card_editable.html" %}
+
 {% load i18n %}
 
-<a href="{{ daemon.get_absolute_url }}"
-   class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="card-title me-1">{{ daemon.uuid }}</h5>
-                <div>
+{% block card_title %}
+    {{ card_object.uuid }}
+{% endblock card_title %}
 
-                    {% include "web/daemon/partials/_is_running-badge.html" %}
+{% block end_badges %}
 
-                    {% include "web/partials/_health_badge.html" with object=daemon %}
+    {% include "web/daemon/partials/_is_running-badge.html" %}
 
-                </div>
-            </div>
-            <h6 class="card-subtitle">
-                {% translate "Mailbox" %}: <a href="{{ daemon.mailbox.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ daemon.mailbox.name }}</a>
-                <br>
-                {% translate "Account" %}: <a href="{{ daemon.mailbox.account.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ daemon.mailbox.account.mail_address }}</a>
-            </h6>
-            <div class="card-text">{% translate "Criterion" %}: {{ daemon.fetching_criterion }}</div>
+    {% include "web/partials/_health_badge.html" with object=card_object %}
 
-            {% include "web/partials/_date_created-small.html" with object=daemon %}
+{% endblock end_badges %}
 
-        </div>
-    </div>
-</a>
+
+{% block card_subtitle %}
+    {% translate "Mailbox" %}: <a href="{{ card_object.mailbox.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ card_object.mailbox.name }}</a>
+    <br>
+    {% translate "Account" %}: <a href="{{ card_object.mailbox.account.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ card_object.mailbox.account.mail_address }}</a>
+{% endblock card_subtitle %}
+
+
+{% block card_content %}
+    <div class="card-text">{% translate "Criterion" %}: {{ card_object.fetching_criterion }}</div>
+{% endblock card_content %}

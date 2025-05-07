@@ -1,5 +1,5 @@
 {% for attachment in attachments %}
 
-    {% include "web/attachment/partials/_attachment_card.html" %}
+    {% include "web/attachment/partials/_attachment_card.html" with card_object=attachment %}
 
 {% endfor %}

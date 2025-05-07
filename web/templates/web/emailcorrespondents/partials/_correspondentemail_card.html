@@ -1,19 +1,5 @@
-{% load i18n %}
+{% extends "web/email/partials/_email_card.html" %}
 
-<a href="{{ correspondentemail.email.get_absolute_url }}"
-   class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">{{ correspondentemail.mention }}</h5>
-            <div class="d-inline-flex align-items-center">
-                <h6 class="card-subtitle me-1">{{ correspondentemail.email.email_subject }}</h6>
-
-                {% include "web/partials/_favorite_badge.html" with object=correspondentemail.email %}
-
-            </div>
-            <div class="card-text">
-                {% translate "Received" %}:{{ correspondentemail.email.datetime|date:"SHORT_DATETIME_FORMAT" }}
-            </div>
-        </div>
-    </div>
-</a>
+{% block card_title %}
+    {{ correspondentemail.mention }}
+{% endblock card_title %}

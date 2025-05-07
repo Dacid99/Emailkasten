@@ -1,30 +1,31 @@
+{% extends "web/partials/bases/_base_card_editable.html" %}
+
 {% load i18n %}
 
-<a href="{{ mailbox.get_absolute_url }}"
-   class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-inline-flex align-items-center">
-                    <h5 class="card-title me-1">{{ mailbox.name }}</h5>
+{% block card_title %}
+    {{ card_object.name }}
+{% endblock card_title %}
 
-                    {% include "web/partials/_favorite_badge.html" with object=mailbox %}
+{% block start_badges %}
 
-                    <div>
+    {% include "web/partials/_favorite_badge.html" with object=card_object %}
 
-                        {% include "web/partials/_health_badge.html" with object=mailbox %}
+{% endblock start_badges %}
 
-                    </div>
-                </div>
-            </div>
-            <h6 class="card-subtitle">
-                {% translate "Account" %}: <a href="{{ mailbox.account.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ mailbox.account.mail_address }}</a>
-            </h6>
-            <div class="card-text">{% translate "Protocol" %}: {{ mailbox.protocol }}</div>
 
-            {% include "web/partials/_date_created-small.html" with object=mailbox %}
+{% block end_badges %}
 
-        </div>
-    </div>
-</a>
+    {% include "web/partials/_health_badge.html" with object=card_object %}
+
+{% endblock end_badges %}
+
+
+{% block card_subtitle %}
+    {% translate "Account" %}: <a href="{{ card_object.account.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ card_object.account.mail_address }}</a>
+{% endblock card_subtitle %}
+
+
+{% block card_content %}
+    <div class="card-text">{% translate "Protocol" %}: {{ card_object.protocol }}</div>
+{% endblock card_content %}

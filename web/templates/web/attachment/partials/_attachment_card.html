@@ -1,37 +1,26 @@
+{% extends "web/partials/bases/_base_card_with_thumbnail.html" %}
+
 {% load i18n %}
 
-<a href="{{ attachment.get_absolute_url }}"
-   class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-    <div class="card">
-        {% if attachment.has_thumbnail %}
-            <div class="row g-0">
-                <div class="col-md-10">
-                {% endif %}
-                <div class="card-body">
-                    <div class="d-inline-flex align-items-center">
-                        <h5 class="card-title me-1">{{ attachment.file_name }}</h5>
+{% block card_title %}
+    {{ card_object.file_name }}
+{% endblock card_title %}
 
-                        {% include "web/partials/_favorite_badge.html" with object=attachment %}
+{% block card_subtitle %}
+    <div class="card-text">{% translate "Type" %}: {{ card_object.content_type }}</div>
+{% endblock card_subtitle %}
 
-                    </div>
-                    <div class="card-text">{% translate "Type" %}: {{ attachment.content_type }}</div>
-                    <div class="card-text">
-                        {% translate "Email" %}: <a href="{{ attachment.email.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ attachment.email.message_id }}</a>
-                    </div>
-                    <div class="card-text">{% translate "Date received" %}: {{ attachment.email.datetime }}</div>
+{% block start_badges %}
 
-                    {% include "web/partials/_date_created-small.html" with object=attachment %}
+    {% include "web/partials/_favorite_badge.html" with object=card_object %}
 
-                </div>
-                {% if attachment.has_thumbnail %}
-                </div>
-                <div class="col-md-2">
-                    <img src="{{ attachment.get_absolute_thumbnail_url }}"
-                         class="img-fluid rounded"
-                         alt="Image attachment" />
-                </div>
-            </div>
-        {% endif %}
+{% endblock start_badges %}
+
+
+{% block card_content %}
+    <div class="card-text">
+        {% translate "Email" %}: <a href="{{ card_object.email.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ card_object.email.message_id }}</a>
     </div>
-</a>
+    <div class="card-text">{% translate "Date received" %}: {{ card_object.email.datetime }}</div>
+{% endblock card_content %}

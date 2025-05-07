@@ -77,5 +77,4 @@
 - api responses after custom actions contain outdated modeldata
 - optics:
   - stats table out of bounds for slim viewport
-  - favorite buttons overlaid by href
   - view all button for dashboard mails

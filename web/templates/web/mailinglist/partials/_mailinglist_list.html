@@ -1,5 +1,5 @@
 {% for mailinglist in mailinglists %}
 
-    {% include "web/mailinglist/partials/_mailinglist_card.html" %}
+    {% include "web/mailinglist/partials/_mailinglist_card.html" with card_object=mailinglist %}
 
 {% endfor %}

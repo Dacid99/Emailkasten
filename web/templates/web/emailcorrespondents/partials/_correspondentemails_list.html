@@ -1,5 +1,5 @@
 {% for correspondentemail in correspondentemails %}
 
-    {% include "web/emailcorrespondents/partials/_correspondentemail_card.html" %}
+    {% include "web/emailcorrespondents/partials/_correspondentemail_card.html" with card_object=correspondentemail.email %}
 
 {% endfor %}

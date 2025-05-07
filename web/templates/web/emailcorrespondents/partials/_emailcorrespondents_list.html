@@ -1,5 +1,5 @@
 {% for emailcorrespondent in emailcorrespondents %}
 
-    {% include "web/emailcorrespondents/partials/_emailcorrespondent_card.html" %}
+    {% include "web/emailcorrespondents/partials/_emailcorrespondent_card.html" with card_object=emailcorrespondent.correspondent %}
 
 {% endfor %}

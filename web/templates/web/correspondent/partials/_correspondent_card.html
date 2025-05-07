@@ -1,17 +1,16 @@
-<a href="{{ correspondent.get_absolute_url }}"
-   class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-    <div class="card">
-        <div class="card-body">
-            <div class="d-inline-flex align-items-center">
-                <h5 class="card-title me-1">{{ correspondent.email_address }}</h5>
+{% extends "web/partials/bases/_base_card_editable.html" %}
 
-                {% include "web/partials/_favorite_badge.html" with object=correspondent %}
+{% block card_title %}
+    {{ card_object.email_address }}
+{% endblock card_title %}
 
-            </div>
-            <h6 class="card-subtitle">{{ correspondent.email_name }}</h6>
+{% block start_badges %}
 
-            {% include "web/partials/_date_created-small.html" with object=correspondent %}
+    {% include "web/partials/_favorite_badge.html" with object=card_object %}
 
-        </div>
-    </div>
-</a>
+{% endblock start_badges %}
+
+
+{% block card_subtitle %}
+    {{ card_object.email_name }}
+{% endblock card_subtitle %}

@@ -1,0 +1,48 @@
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-inline-flex align-items-center">
+                <h5 class="card-title me-1">
+                    <a href="{{ card_object.get_absolute_url }}"
+                       class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+
+                        {% block card_title %}
+                        {% endblock card_title %}
+
+                    </a>
+                </h5>
+                <div class="align-items-center">
+
+                    {% block start_badges %}
+                    {% endblock start_badges %}
+
+                </div>
+            </div>
+            <div>
+
+                {% block end_badges %}
+                {% endblock end_badges %}
+
+            </div>
+        </div>
+        <h6 class="card-subtitle">
+
+            {% block card_subtitle %}
+            {% endblock card_subtitle %}
+
+        </h6>
+
+        {% block card_content %}
+        {% endblock card_content %}
+
+        <div class="card-text text-end">
+
+            {% include "web/partials/_date_created-small.html" with object=card_object %}
+
+            {% block card_timestamps %}
+            {% endblock card_timestamps %}
+
+        </div>
+
+    </div>
+</div>
