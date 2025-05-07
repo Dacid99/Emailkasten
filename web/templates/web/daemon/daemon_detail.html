@@ -1,4 +1,4 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_detail_editable.html" %}
 
 {% load i18n %}
 
@@ -6,73 +6,54 @@
     {% translate "Daemon Details" %} -
 {% endblock title %}
 
-{% block content %}
+{% block alerts %}
 
     {% include "web/daemon/partials/_start-alert.html" %}
 
     {% include "web/daemon/partials/_stop-alert.html" %}
 
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <div>
+{% endblock alerts %}
 
-                {% include "web/daemon/partials/_is_running-badge.html" %}
+{% block badges %}
 
-                {% include "web/partials/_health_badge.html" %}
+    {% include "web/daemon/partials/_is_running-badge.html" %}
 
-            </div>
-            <div class="btn-toolbar align-items-center"
-                 role="toolbar"
-                 aria-label="Toolbar with buttons">
-                <div class="btn-group me-3" role="group" aria-label="Action button group">
+    {% include "web/partials/_health_badge.html" %}
 
-                    {% include "web/daemon/partials/_start-button.html" %}
+{% endblock badges %}
 
-                    {% include "web/daemon/partials/_stop-button.html" %}
+{% block action_buttons %}
 
-                    {% include "web/daemon/partials/_download_logs-button.html" %}
+    {% include "web/daemon/partials/_start-button.html" %}
 
-                </div>
-                <div class="btn-group me-3" role="group" aria-label="Edit button group">
+    {% include "web/daemon/partials/_stop-button.html" %}
 
-                    {% include "web/partials/_delete-button.html" %}
+    {% include "web/daemon/partials/_download_logs-button.html" %}
 
-                    {% include "web/partials/_edit-button.html" %}
+{% endblock action_buttons %}
 
-                </div>
-                <div class="btn-group ms-3" role="group" aria-label="Close button group">
+{% block card_title %}
+    {{ object.uuid }}
+{% endblock card_title %}
 
-                    {% include "web/partials/_close_to_list-button.html" %}
-
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <h2 class="card-title">{{ object.uuid }}</h2>
-            <h3 class="card-subtitle">
-                {% translate "Mailbox" %}: <a href="{{ object.mailbox.get_absolute_url }}"
+{% block card_subtitle %}
+    {% translate "Mailbox" %}: <a href="{{ object.mailbox.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-            object.mailbox.name }}</a>
-            <br>
-            {% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
+object.mailbox.name }}</a>
+<br>
+{% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-        object.mailbox.account.mail_address }}</a>
-    </h3>
+object.mailbox.account.mail_address }}</a>
+{% endblock card_subtitle %}
+
+{% block card_content %}
     <ul class="list-group list-group-flush">
         <li class="list-group-item">{% translate "Criterion" %}: {{ object.fetching_criterion }}</li>
         <li class="list-group-item">{% translate "Cycle period" %}: {{ object.cycle_interval }}</li>
         <li class="list-group-item">{% translate "Restart time" %}: {{ object.restart_time }}</li>
         <li class="list-group-item">{% translate "Logfile backups" %}: {{ object.log_backup_count }}</li>
         <li class="list-group-item">
-            {% translate "Logfile max size" %}: {{ object.logfile_size }} bytes
+            {% translate "Logfile max size" %}: {{ object.logfile_size }} {% translate "bytes" %}
         </li>
     </ul>
-</div>
-
-{% include "web/partials/_dates_card-footer.html" %}
-
-</div>
-
-{% include "web/partials/_delete-modal.html" %}
-
-{% endblock content %}
+{% endblock card_content %}

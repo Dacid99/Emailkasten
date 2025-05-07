@@ -1,23 +1,24 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_filter_list.html" %}
 
-{% load static i18n %}
+{% load i18n %}
 
 {% block title %}
     {% translate "Accounts" %} -
 {% endblock title %}
 
-{% block content %}
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <h2>{% translate "Accounts" %}</h2>
+{% block header_title %}
+    {% translate "Accounts" %}
+{% endblock header_title %}
 
-        {% include "web/account/partials/_add_button.html" %}
+{% block header_buttons %}
 
-    </div>
+    {% include "web/account/partials/_add_button.html" %}
 
-    {% include "web/account/partials/_account_filter_list.html" %}
+{% endblock header_buttons %}
 
-{% endblock content %}
 
-{% block scripts %}
-    <script src="{% static 'web/js/form-utils.js' %}"></script>
-{% endblock scripts %}
+{% block list %}
+
+    {% include "web/account/partials/_account_list.html" with accounts=page_obj %}
+
+{% endblock list %}

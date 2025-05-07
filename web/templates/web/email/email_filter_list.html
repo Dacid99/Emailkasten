@@ -1,18 +1,17 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_filter_list.html" %}
 
-{% load static i18n %}
+{% load i18n %}
 
 {% block title %}
     {% translate "Emails" %} -
 {% endblock title %}
 
-{% block content %}
-    <h2>{% translate "Emails" %}</h2>
+{% block header_title %}
+    {% translate "Emails" %}
+{% endblock header_title %}
 
-    {% include "web/email/partials/_email_filter_list.html" %}
+{% block list %}
 
-{% endblock content %}
+    {% include "web/email/partials/_email_list.html" with emails=page_obj %}
 
-{% block scripts %}
-    <script src="{% static 'web/js/form-utils.js' %}"></script>
-{% endblock scripts %}
+{% endblock list %}

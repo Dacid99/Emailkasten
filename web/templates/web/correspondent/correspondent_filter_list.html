@@ -1,18 +1,17 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_filter_list.html" %}
 
-{% load static i18n %}
+{% load i18n %}
 
 {% block title %}
     {% translate "Correspondents" %} -
 {% endblock title %}
 
-{% block content %}
-    <h2>{% translate "Correspondents" %}</h2>
+{% block header_title %}
+    {% translate "Correspondents" %}
+{% endblock header_title %}
 
-    {% include "web/correspondent/partials/_correspondent_filter_list.html" %}
+{% block list %}
 
-{% endblock content %}
+    {% include "web/correspondent/partials/_correspondent_list.html" with correspondents=page_obj %}
 
-{% block scripts %}
-    <script src="{% static 'web/js/form-utils.js' %}"></script>
-{% endblock scripts %}
+{% endblock list %}

@@ -1,4 +1,4 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_edit.html" %}
 
 {% load i18n django_bootstrap5 %}
 
@@ -6,58 +6,24 @@
     {% translate "Edit Daemon" %} -
 {% endblock title %}
 
-{% block content %}
-    <div class="card">
-        <div class="card-header d-flex justify-content-end align-items-center">
-            <div class="btn-toolbar align-items-center"
-                 role="toolbar"
-                 aria-label="Toolbar with buttons">
-                <div class="btn-group me-3" role="group" aria-label="Edit button group">
+{% block card_title %}
+    {{ object.uuid }}
+{% endblock card_title %}
 
-                    {% include "web/partials/_delete-button.html" %}
+{% block card_subtitle %}
+    {% translate "Mailbox" %}: <a href="{{ object.mailbox.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.mailbox.name }}</a>
+    <br>
+    {% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.mailbox.account.mail_address }}</a>
+{% endblock card_subtitle %}
 
-                    {% include "web/partials/_end_edit-button.html" %}
-
-                </div>
-                <div class="btn-group ms-3" role="group" aria-label="Close button group">
-
-                    {% include "web/partials/_close_to_list-button.html" %}
-
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <h2 class="card-title">{{ object.uuid }}</h2>
-            <h3 class="card-subtitle">
-                {% translate "Mailbox" %}: <a href="{{ object.mailbox.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-            object.mailbox.name }}</a>
-            <br>
-            {% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-        object.mailbox.account.mail_address }}</a>
-    </h3>
-    <form method="post">
-        {% csrf_token %}
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">{% bootstrap_field form.fetching_criterion %}</li>
-            <li class="list-group-item">{% bootstrap_field form.cycle_interval %}</li>
-            <li class="list-group-item">{% bootstrap_field form.restart_time %}</li>
-            <li class="list-group-item">{% bootstrap_field form.log_backup_count %}</li>
-            <li class="list-group-item">{% bootstrap_field form.logfile_size %}</li>
-        </ul>
-
-        {% include "web/partials/_submit_edit-button.html" %}
-
-        {% include "web/partials/_cancel_edit-button.html" %}
-
-    </form>
-</div>
-
-{% include "web/partials/_dates_card-footer.html" %}
-
-</div>
-
-{% include "web/partials/_delete-modal.html" %}
-
-{% endblock content %}
+{% block form %}
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">{% bootstrap_field form.fetching_criterion %}</li>
+        <li class="list-group-item">{% bootstrap_field form.cycle_interval %}</li>
+        <li class="list-group-item">{% bootstrap_field form.restart_time %}</li>
+        <li class="list-group-item">{% bootstrap_field form.log_backup_count %}</li>
+        <li class="list-group-item">{% bootstrap_field form.logfile_size %}</li>
+    </ul>
+{% endblock form %}

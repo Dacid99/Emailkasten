@@ -1,18 +1,17 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_filter_list.html" %}
 
-{% load static i18n %}
+{% load i18n %}
 
 {% block title %}
     {% translate "Mailinglists" %} -
 {% endblock title %}
 
-{% block content %}
-    <h2>{% translate "Mailinglists" %}</h2>
+{% block header_title %}
+    {% translate "Mailinglists" %}
+{% endblock header_title %}
 
-    {% include "web/mailinglist/partials/_mailinglist_filter_list.html" %}
+{% block list %}
 
-{% endblock content %}
+    {% include "web/mailinglist/partials/_mailinglist_list.html" with mailinglists=page_obj %}
 
-{% block scripts %}
-    <script src="{% static 'web/js/form-utils.js' %}"></script>
-{% endblock scripts %}
+{% endblock list %}

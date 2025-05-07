@@ -29,7 +29,6 @@
 - content_type main and sub as fields and rename settings
 - consistent naming_style
 - move all signals into models
-- base detail/edit template
 - rework test:
   - consistent naming
   - disable all signals in tests
@@ -78,6 +77,5 @@
 - api responses after custom actions contain outdated modeldata
 - optics:
   - stats table out of bounds for slim viewport
-  - datasize bytes missing
   - favorite buttons overlaid by href
   - view all button for dashboard mails

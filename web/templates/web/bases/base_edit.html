@@ -1,0 +1,26 @@
+{% extends "web/bases/base_detail_editable.html" %}
+
+{% block edit_buttons %}
+
+    {% include "web/partials/_end_edit-button.html" %}
+
+{% endblock edit_buttons %}
+
+
+{% block card_content %}
+    <form method="post">
+        {% csrf_token %}
+
+        {% block form %}
+        {% endblock form %}
+
+
+        {% include "web/partials/_submit_form-button.html" %}
+
+        {% include "web/partials/_end_edit-button.html" %}
+
+        {% block extra_form_buttons %}
+        {% endblock extra_form_buttons %}
+
+    </form>
+{% endblock card_content %}

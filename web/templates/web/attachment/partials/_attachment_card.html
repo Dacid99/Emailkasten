@@ -21,7 +21,7 @@
                     </div>
                     <div class="card-text">{% translate "Date received" %}: {{ attachment.email.datetime }}</div>
 
-                    {% include "web/partials/_dates_card-small.html" with object=attachment %}
+                    {% include "web/partials/_date_created-small.html" with object=attachment %}
 
                 </div>
                 {% if attachment.has_thumbnail %}

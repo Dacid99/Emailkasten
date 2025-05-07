@@ -1,18 +1,17 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_filter_list.html" %}
 
-{% load static i18n %}
+{% load i18n %}
 
 {% block title %}
     {% translate "Attachments" %} -
 {% endblock title %}
 
-{% block content %}
-    <h2>{% translate "Attachments" %}</h2>
+{% block header_title %}
+    {% translate "Attachments" %}
+{% endblock header_title %}
 
-    {% include "web/attachment/partials/_attachment_filter_list.html" %}
+{% block list %}
 
-{% endblock content %}
+    {% include "web/attachment/partials/_attachment_list.html" with attachments=page_obj %}
 
-{% block scripts %}
-    <script src="{% static 'web/js/form-utils.js' %}"></script>
-{% endblock scripts %}
+{% endblock list %}

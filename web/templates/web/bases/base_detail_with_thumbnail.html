@@ -1,0 +1,92 @@
+{% extends "web/bases/base.html" %}
+
+{% block content %}
+
+    {% block alerts %}
+    {% endblock alerts %}
+
+    <div class="card 
+        {% block card_class %}{% endblock card_class %}
+         ">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="align-items-center">
+
+                {% block badges %}
+                {% endblock badges %}
+
+            </div>
+            <div class="btn-toolbar align-items-center"
+                 role="toolbar"
+                 aria-label="Toolbar with buttons">
+                <div class="btn-group me-3" role="group" aria-label="Action button group">
+
+                    {% block action_buttons %}
+                    {% endblock action_buttons %}
+
+                </div>
+                <div class="btn-group me-3" role="group" aria-label="Edit button group">
+
+                    {% block edit_buttons %}
+                    {% endblock edit_buttons %}
+
+                    {% include "web/partials/_delete-button.html" %}
+
+                </div>
+                <div class="btn-group ms-3" role="group" aria-label="Close button group">
+
+                    {% include "web/partials/_close_to_list-button.html" %}
+
+                </div>
+            </div>
+        </div>
+        {% if object.has_thumbnail %}
+            <div class="row">
+                <div class="col-6">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title">
+
+                        {% block card_title %}
+                        {% endblock card_title %}
+
+                    </h2>
+                    <h4 class="card-subtitle">
+
+                        {% block card_subtitle %}
+                        {% endblock card_subtitle %}
+
+                    </h4>
+
+                    {% block card_content %}
+                    {% endblock card_content %}
+
+                </div>
+                {% if object.has_thumbnail %}
+                </div>
+                <div class="col-6">
+                    <img src="{{ object.get_absolute_thumbnail_url }}"
+                         class="img-fluid p-1"
+                         alt="Image attachment" />
+                </div>
+            </div>
+        {% endif %}
+        <div class="card-footer">
+
+            {% include "web/partials/_date_created-small.html" %}
+
+            {% block card_footer_timestamps %}
+            {% endblock card_footer_timestamps %}
+
+        </div>
+
+        {% block card_extras %}
+        {% endblock card_extras %}
+
+
+    </div>
+
+    {% block overlay_elements %}
+    {% endblock overlay_elements %}
+
+
+{% endblock content %}

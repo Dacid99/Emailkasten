@@ -25,7 +25,7 @@
                         {% translate "Received" %}: {{ email.datetime|date:"SHORT_DATETIME_FORMAT" }}
                     </div>
 
-                    {% include "web/partials/_dates_card-small.html" with object=email %}
+                    {% include "web/partials/_date_created-small.html" with object=email %}
 
                 </div>
                 {% if email.has_thumbnail %}

@@ -1,18 +1,17 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_filter_list.html" %}
 
-{% load static i18n %}
+{% load i18n %}
 
 {% block title %}
     {% translate "Daemons" %} -
 {% endblock title %}
 
-{% block content %}
-    <h2>{% translate "Daemons" %}</h2>
+{% block header_title %}
+    {% translate "Daemons" %}
+{% endblock header_title %}
 
-    {% include "web/daemon/partials/_daemon_filter_list.html" %}
+{% block list %}
 
-{% endblock content %}
+    {% include "web/daemon/partials/_daemon_list.html" with daemons=page_obj %}
 
-{% block scripts %}
-    <script src="{% static 'web/js/form-utils.js' %}"></script>
-{% endblock scripts %}
+{% endblock list %}

@@ -1,4 +1,4 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_detail_with_thumbnail.html" %}
 
 {% load i18n %}
 
@@ -6,70 +6,38 @@
     {% translate "Attachment Details" %} -
 {% endblock title %}
 
-{% block content %}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <div>
+{% block badges %}
 
-                {% include "web/partials/_favorite_badge.html" with object=object %}
+    {% include "web/partials/_favorite_badge.html" %}
 
-            </div>
-            <div class="btn-toolbar align-items-center"
-                 role="toolbar"
-                 aria-label="Toolbar with buttons">
-                <div class="btn-group me-3" role="group" aria-label="Action button group">
+{% endblock badges %}
 
-                    {% include "web/partials/_download-button.html" with object=object %}
 
-                </div>
-                <div class="btn-group me-3" role="group" aria-label="Edit button group">
+{% block action_buttons %}
 
-                    {% include "web/partials/_delete-button.html" with object=object %}
+    {% include "web/partials/_download-button.html" %}
 
-                </div>
-                <div class="btn-group ms-3" role="group" aria-label="Close button group">
+{% endblock action_buttons %}
 
-                    {% include "web/partials/_close_to_list-button.html" with object=object %}
 
-                </div>
-            </div>
-        </div>
-        {% if object.has_thumbnail %}
-            <div class="row">
-                <div class="col-6">
-                {% endif %}
-                <div class="card-body">
-                    <h2 class="card-title">{{ object.file_name }}</h2>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item list-group-item-action ">
-                            {% translate "Email" %}: <a href="{{ object.email.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-                        object.email.message_id }}</a>
-                    </li>
-                    <li class="list-group-item">{% translate "Content Type" %}: {{ object.content_type }}</li>
-                    <li class="list-group-item">
-                        {% translate "Content Disposition" %}: {{ object.content_disposition }}
-                    </li>
-                    <li class="list-group-item">
-                        {% translate "Size" %}: {{ object.datasize }} {% translate "bytes" %}
-                    </li>
-                    <li class="list-group-item">{% translate "Date received" %}: {{ object.email.datetime }}</li>
-                </ul>
-            </div>
-            {% if object.has_thumbnail %}
-            </div>
-            <div class="col-6">
-                <img src="{{ object.get_absolute_thumbnail_url }}"
-                     class="img-fluid p-1"
-                     alt="Image attachment" />
-            </div>
-        </div>
-    {% endif %}
+{% block card_title %}
+    {{ object.file_name }}
+{% endblock card_title %}
 
-    {% include "web/partials/_dates_card_uneditable-footer.html" with object=object %}
 
-</div>
-
-{% include "web/partials/_delete-modal.html" with object=object %}
-
-{% endblock content %}
+{% block card_content %}
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action ">
+            {% translate "Email" %}: <a href="{{ object.email.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.email.message_id }}</a>
+        </li>
+        <li class="list-group-item">{% translate "Content Type" %}: {{ object.content_type }}</li>
+        <li class="list-group-item">
+            {% translate "Content Disposition" %}: {{ object.content_disposition }}
+        </li>
+        <li class="list-group-item">
+            {% translate "Size" %}: {{ object.datasize }} {% translate "bytes" %}
+        </li>
+        <li class="list-group-item">{% translate "Date received" %}: {{ object.email.datetime }}</li>
+    </ul>
+{% endblock card_content %}

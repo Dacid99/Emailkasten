@@ -13,14 +13,12 @@
                     <a class="page-link"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
                 </li>
             {% endif %}
-
             {% for page_number in page_obj.paginator.page_range %}
                 <li class="page-item {% if page_number == page_obj.number %}active{% endif %}">
                     <a class="page-link"
                        href="?page={{ page_number }}{% for param, value in query.items %}&{{ param }}={{ value }}{% endfor %}">{{ page_number }}</a>
                 </li>
             {% endfor %}
-
             {% if page_obj.has_next %}
                 <li class="page-item">
                     <a class="page-link"

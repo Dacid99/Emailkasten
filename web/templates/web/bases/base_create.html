@@ -1,0 +1,58 @@
+{% extends "web/bases/base.html" %}
+
+{% block content %}
+
+    {% block alerts %}
+    {% endblock alerts %}
+
+    <div class="card 
+        {% block card_class %}{% endblock card_class %}
+         ">
+        <div class="card-header d-flex justify-content-end align-items-center">
+            <div class="btn-toolbar align-items-center"
+                 role="toolbar"
+                 aria-label="Toolbar with buttons">
+                <div class="btn-group ms-3" role="group" aria-label="Close button group">
+
+                    {% block close_to_list_button %}
+                    {% endblock close_to_list_button %}
+
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">
+
+                {% block card_title %}
+                {% endblock card_title %}
+
+            </h2>
+            <h4 class="card-subtitle">
+
+                {% block card_subtitle %}
+                {% endblock card_subtitle %}
+
+            </h4>
+            <form method="post">
+                {% csrf_token %}
+
+                {% block form %}
+                {% endblock form %}
+
+                {% include "web/partials/_submit_form-button.html" %}
+
+                {% block cancel_form_button %}
+                {% endblock cancel_form_button %}
+
+                {% block extra_form_buttons %}
+                {% endblock extra_form_buttons %}
+
+            </form>
+        </div>
+
+        {% block card_extras %}
+        {% endblock card_extras %}
+
+
+    </div>
+{% endblock content %}

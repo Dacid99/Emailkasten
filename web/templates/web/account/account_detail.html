@@ -1,90 +1,76 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base_detail_editable.html" %}
 
 {% load i18n %}
 
 {% block title %}
-    {% translate "Account Details" %}% -
+    {% translate "Account Details" %} -
 {% endblock title %}
 
-{% block content %}
+{% block alerts %}
 
     {% include "web/partials/_action_result-alert.html" %}
 
+{% endblock alerts %}
+
+
+{% block badges %}
+
+    {% include "web/partials/_favorite_badge.html" %}
+
+    {% include "web/partials/_health_badge.html" %}
+
+{% endblock badges %}
+
+
+{% block action_buttons %}
+
+    {% include "web/partials/_test-button.html" %}
+
+    {% include "web/account/partials/_update_mailboxes-button.html" %}
+
+{% endblock action_buttons %}
+
+
+{% block card_title %}
+    <a href="mailto:{{ object.mail_address }}"
+       class="link-info link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+        {{ object.mail_address }}
+    </a>
+{% endblock card_title %}
+
+
+{% block card_content %}
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">{% translate "Host" %}: {{ object.mail_host }}</li>
+        <li class="list-group-item">{% translate "Protocol" %}: {{ object.protocol }}</li>
+        <li class="list-group-item">{% translate "Port" %}: {{ object.mail_host_port }}</li>
+        <li class="list-group-item">{% translate "Timeout" %}: {{ object.timeout }}</li>
+    </ul>
+{% endblock card_content %}
+
+
+{% block card_extras %}
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <div class="align-items-center">
-
-                {% include "web/partials/_favorite_badge.html" %}
-
-                {% include "web/partials/_health_badge.html" %}
-
-            </div>
-            <div class="btn-toolbar align-items-center"
-                 role="toolbar"
-                 aria-label="Toolbar with buttons">
-                <div class="btn-group me-3" role="group" aria-label="Action button group">
-
-                    {% include "web/partials/_test-button.html" %}
-
-                    {% include "web/account/partials/_update_mailboxes-button.html" %}
-
-                </div>
-                <div class="btn-group me-3" role="group" aria-label="Edit button group">
-
-                    {% include "web/partials/_delete-button.html" %}
-
-                    {% include "web/partials/_edit-button.html" %}
-
-                </div>
-                <div class="btn-group ms-3" role="group" aria-label="Close button group">
-
-                    {% include "web/partials/_close_to_list-button.html" %}
-
-                </div>
-            </div>
-        </div>
         <div class="card-body">
-            <h2 class="card-title">
-                <a href="mailto:{{ object.mail_address }}"
-                   class="link-info link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-                object.mail_address }}</a>
-            </h2>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">{% translate "Host" %}: {{ object.mail_host }}</li>
-                <li class="list-group-item">{% translate "Protocol" %}: {{ object.protocol }}</li>
-                <li class="list-group-item">{% translate "Port" %}: {{ object.mail_host_port }}</li>
-                <li class="list-group-item">{% translate "Timeout" %}: {{ object.timeout }}</li>
-            </ul>
-        </div>
+            <h4 class="card-title">{% translate "Mailboxes" %}</h4>
 
-        {% include "web/partials/_dates_card-footer.html" %}
+            {% include "web/mailbox/partials/_mailbox_list.html" with mailboxes=object.mailboxes.all %}
 
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">{% translate "Mailboxes" %}</h4>
-
-                {% include "web/mailbox/partials/_mailbox_list.html" with mailboxes=object.mailboxes.all %}
-
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">{% translate "Latest Emails" %}</h4>
-                        <a role="button"
-                           class="btn btn-outline-primary"
-                           href="{% url 'web:account-emails' object.pk %}">{%
-                        translate "View all" %}</a>
-                    </div>
-                </div>
-
-                {% include "web/email/partials/_email_list.html" with emails=latest_emails %}
-
-            </div>
         </div>
     </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">{% translate "Latest Emails" %}</h4>
+                    <a role="button"
+                       class="btn btn-outline-primary"
+                       href="{% url 'web:account-emails' object.pk %}">{% translate "View all" %}</a>
+                </div>
+            </div>
 
-    {% include "web/partials/_delete-modal.html" %}
+            {% include "web/email/partials/_email_list.html" with emails=latest_emails %}
 
-{% endblock content %}
+        </div>
+    </div>
+{% endblock card_extras %}

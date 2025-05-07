@@ -16,7 +16,6 @@ sudo apt-get -y update && apt-get -y install build-essential gettext default-mys
 
 Then to install the python dependencies start a new virtual environment and activate it:
 
-
 [Poetry](https://python-poetry.org/docs/) is used to manage the python dependencies of this project.
 
 ```bash
@@ -67,17 +66,52 @@ git config core.hooksPath validation/githooks/
 #### Settings
 
 - Trim final newlines
+
+```json
+    "files.trimFinalNewlines": true,
+```
+
 - Trim trailing whitespace
+
+```json
+    "files.trimTrailingWhitespace": true,
+```
+
 - Insert final newline
+
+```json
+    "files.insertFinalNewline": true,
+```
+
+- Disable html autoformatting, it messes up django templates on a regular basis
+
+```json
+"html.format.enable": false
+```
 
 #### Extensions
 
 - everything for python and django
 - python test (with setting "python.testing.cwd": "/path/to/repo/test/")
 - ruff (with setting "ruff.configuration": "validation/ruff.toml")
-- pylint (with setting "pylint.args": ["--rcfile=validation/pylintrc(_strict)_extension"] )
-- mypy (with setting "mypy-type-checker.args": ["--config-file=validation/mypy_extension.ini"] )
-- black (with setting "black-formatter.args": ["--config=validation/black_config"] )
+- pylint, with config
+
+```json
+"pylint.args": ["--rcfile=validation/pylintrc(_strict)_extension"]
+```
+
+- mypy, with config
+
+```json
+ "mypy-type-checker.args": ["--config-file=validation/mypy_extension.ini"]
+```
+
+- black, with config
+
+```json
+ "black-formatter.args": ["--config=validation/black_config"]
+```
+
 - python poetry
 - ANSI colors (iliazeus.vscode-ansi) (for validation reports)
 - reStructuredText (lextudio.restructuredtext) for docs

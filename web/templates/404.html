@@ -1,4 +1,4 @@
-{% extends "web/base.html" %}
+{% extends "web/bases/base.html" %}
 
 {% load i18n %}
 
@@ -13,11 +13,9 @@
                 <div class="col col-lg-4">
                     <div class="bg-white shadow rounded-4">
                         <div id="content" class="p-5">
-
                             <h1>{% translate "Page Not Found" %}</h1>
                             <p>{% translate "The page you requested doesn't exist." %}</p>
                             <p>{% translate "First aid: Check the URL for typos." %}</p>
-
                         </div>
                     </div>
                 </div>
