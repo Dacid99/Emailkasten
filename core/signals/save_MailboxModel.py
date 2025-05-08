@@ -50,7 +50,7 @@ def post_save_is_healthy(
     Note:
         Using the batch `update` for the daemons does not trigger their post_save!
     """
-    if created:
+    if created or instance.is_healthy is None:
         return
 
     if instance.is_healthy:

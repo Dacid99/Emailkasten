@@ -44,7 +44,7 @@ def post_save_daemon(
         created: Whether the instance was newly created.
         **kwargs: Other keyword arguments.
     """
-    if created:
+    if created or instance.is_healthy is None:
         return
 
     EMailArchiverDaemonRegistry.updateDaemon(instance)

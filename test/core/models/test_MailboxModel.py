@@ -95,7 +95,7 @@ def test_MailboxModel_fields(mailboxModel):
     assert mailboxModel.save_attachments is get_config("DEFAULT_SAVE_ATTACHMENTS")
     assert mailboxModel.save_toEML is get_config("DEFAULT_SAVE_TO_EML")
     assert mailboxModel.is_favorite is False
-    assert mailboxModel.is_healthy is True
+    assert mailboxModel.is_healthy is None
     assert isinstance(mailboxModel.updated, datetime.datetime)
     assert mailboxModel.updated is not None
     assert isinstance(mailboxModel.created, datetime.datetime)

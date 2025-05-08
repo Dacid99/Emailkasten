@@ -58,7 +58,7 @@ def test_DaemonModel_fields(daemonModel):
     assert daemonModel.cycle_interval == get_config("DAEMON_CYCLE_PERIOD_DEFAULT")
     assert daemonModel.restart_time == get_config("DAEMON_RESTART_TIME_DEFAULT")
     assert daemonModel.is_running is False
-    assert daemonModel.is_healthy is True
+    assert daemonModel.is_healthy is None
     assert daemonModel.log_filepath is not None
     assert daemonModel.log_backup_count == get_config("DAEMON_LOG_BACKUP_COUNT_DEFAULT")
     assert daemonModel.logfile_size == get_config("DAEMON_LOGFILE_SIZE_DEFAULT")

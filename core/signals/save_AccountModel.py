@@ -43,7 +43,7 @@ def post_save_is_healthy(
         created: Whether the instance was newly created.
         **kwargs: Other keyword arguments.
     """
-    if created:
+    if created or instance.is_healthy is None:
         return
 
     if not instance.is_healthy and "is_healthy" in instance.get_dirty_fields():

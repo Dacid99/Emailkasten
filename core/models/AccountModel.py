@@ -98,11 +98,10 @@ class AccountModel(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
     )
     """The timeout parameter for the connection to the host. Can be null."""
 
-    is_healthy = models.BooleanField(default=True)
-    """Flags whether the account can be accessed using the data. True by default.
+    is_healthy = models.BooleanField(null=True)
+    """Flags whether the account can be accessed using the data. `None` by default.
     When this field changes to `False`, all mailboxes :attr:`core.models.MailboxModel.is_healthy` field will be updated accordingly.
-    When the :attr:`core.models.MailboxModel.is_healthy` field of one of the mailboxes referencing this entry via :attr:`core.models.MailboxModel.account`
-    becomes `True` after being `False`, this field will be set to `True` as well."""
+    When the :attr:`core.models.MailboxModel.is_healthy` field of one of the mailboxes referencing this entry becomes `True`, this field will be set to `True` as well by a signal."""
 
     is_favorite = models.BooleanField(default=False)
     """Flags favorite accounts. False by default."""

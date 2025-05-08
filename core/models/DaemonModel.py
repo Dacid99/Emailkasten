@@ -90,8 +90,11 @@ class DaemonModel(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
         This must only be changed by internal mechanism, never by the user!
     """
 
-    is_healthy = models.BooleanField(default=True)
-    """Flags whether the daemon is healthy. `True` by default."""
+    is_healthy = models.BooleanField(null=True)
+    """Flags whether the daemon is healthy. `None` by default.
+    When the :attr:`core.models.MailboxModel.is_healthy` field changes to `False`, this field is updated accordingly.
+    When this field changes to `True`, the :attr:`core.models.MailboxModel.is_healthy` field of :attr:`mailbox` will be set to `True` as well by a signal.
+    """
 
     log_filepath = models.FilePathField(
         path=str(settings.LOG_DIRECTORY_PATH),

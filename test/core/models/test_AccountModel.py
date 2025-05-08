@@ -112,7 +112,7 @@ def test_AccountModel_fields(django_user_model, accountModel):
         accountModel.protocol == protocol for protocol in EmailProtocolChoices.values
     )
     assert accountModel.timeout is None
-    assert accountModel.is_healthy is True
+    assert accountModel.is_healthy is None
     assert accountModel.is_favorite is False
     assert accountModel.user is not None
     assert isinstance(accountModel.user, django_user_model)

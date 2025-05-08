@@ -19,9 +19,6 @@
 """Test file for :mod:`core.signals.save_DaemonModel`."""
 
 import pytest
-from model_bakery import baker
-
-from core.models.DaemonModel import DaemonModel
 
 
 @pytest.fixture
@@ -65,7 +62,7 @@ def test_DaemonModel_post_save_from_healthy(
     assert daemonModel.is_healthy is False
     daemonModel.mailbox.refresh_from_db()
     assert daemonModel.mailbox.is_healthy is True
-    mock_logger.debug.assert_not_called()
+    mock_logger.debug.assert_called()
 
 
 @pytest.mark.django_db
