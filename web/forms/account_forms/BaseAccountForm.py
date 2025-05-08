@@ -22,17 +22,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from django import forms
 from django.forms import PasswordInput, Widget
 
 from core.models.AccountModel import AccountModel
+
+from ...utils.RequiredMarkerModelForm import RequiredMarkerModelForm
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseAccountForm(forms.ModelForm):
+class BaseAccountForm(RequiredMarkerModelForm):
     """The base form for :class:`core.models.AccountModel.AccountModel`.
 
     Exposes all fields from the model that may be changed by the user.

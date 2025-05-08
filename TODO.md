@@ -24,7 +24,6 @@
 ## To refactor
 
 - explore emailmessage methods
-- content_type main and sub as fields and rename settings
 - consistent naming_style
 - move all signals into models
 - rework test:
@@ -46,10 +45,8 @@
 - important headers in html repr
 - is_healthy null on creation
 - only show allowed fetching criteria
-- indicator for required form fields
 - favicon.ico for the icon
 - default ssl cert and safest settings
-- memory save upload (chunks instead of read)
 - variable page size pagination
 - docs:
   - integratons page, searxng section in docs

@@ -22,16 +22,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from django import forms
-
 from core.models.CorrespondentModel import CorrespondentModel
+
+from ...utils.RequiredMarkerModelForm import RequiredMarkerModelForm
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseCorrespondentForm(forms.ModelForm):
+class BaseCorrespondentForm(RequiredMarkerModelForm):
     """The form for :class:`core.models.CorrespondentModel.CorrespondentModel`.
 
     Exposes all fields from the model that may be changed by the user.

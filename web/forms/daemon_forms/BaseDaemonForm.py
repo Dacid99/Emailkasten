@@ -22,16 +22,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from django import forms
-
 from core.models.DaemonModel import DaemonModel
+
+from ...utils.RequiredMarkerModelForm import RequiredMarkerModelForm
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseDaemonForm(forms.ModelForm):
+class BaseDaemonForm(RequiredMarkerModelForm):
     """The base form for :class:`core.models.DaemonModel.DaemonModel`.
 
     Exposes all fields from the model that may be changed by the user.

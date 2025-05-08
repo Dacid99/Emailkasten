@@ -16,27 +16,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`UploadEmailForm` form class."""
+"""Module with the :class:`RequiredMarkerModelForm` form class."""
 
-from django import forms
+from typing import Any
+
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from core.constants import SupportedEmailUploadFormats
 
-from ..utils.RequiredMarkerModelForm import RequiredMarkerModelForm
+class RequiredMarkerModelForm(ModelForm):
+    """A slightly extended version of :class:`django.forms.ModelForm` that adds a marker to required fields."""
 
+    required_marker = _(" *")
 
-class UploadEmailForm(RequiredMarkerModelForm):
-    """Form for email file upload."""
-
-    file_format = forms.ChoiceField(
-        choices=SupportedEmailUploadFormats.choices,
-        required=True,
-        label=_("File format"),
-        help_text=_("Select the format of the email file you want to upload."),
-    )
-    file = forms.FileField(
-        required=True,
-        label=_("Email or Mailbox file"),
-        help_text=_("Pick a file for upload."),
-    )
+    def __init__(self, *args: Any, **kwargs: Any):
+        """Extended constructor adding :attr:`required_marker` to the required field labels."""
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            if self.fields[field_name].required:
+                self.fields[field_name].label += self.required_marker
