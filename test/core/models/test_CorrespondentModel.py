@@ -16,12 +16,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""Test module for :mod:`core.models.CorrespondentModel`."""
 
-"""Test module for :mod:`core.models.CorrespondentModel`.
-
-Fixtures:
-    :func:`fixture_correspondentModelModel`: Creates an :class:`core.models.CorrespondentModel.CorrespondentModel` instance for testing.
-"""
 from __future__ import annotations
 
 import datetime
@@ -39,6 +35,11 @@ if TYPE_CHECKING:
     from unittest.mock import MagicMock
 
 
+@pytest.fixture
+def fake_correspondentTuple(faker):
+    return (faker.name(), faker.email())
+
+
 @pytest.fixture(autouse=True)
 def mock_logger(mocker) -> MagicMock:
     """Mocks the :attr:`core.models.CorrespondentModel.logger`.
@@ -47,16 +48,6 @@ def mock_logger(mocker) -> MagicMock:
         The mocked logger instance.
     """
     return mocker.patch("core.models.CorrespondentModel.logger", autospec=True)
-
-
-@pytest.fixture
-def mock_parseCorrespondentHeader(mocker, faker):
-    """Fixture mocking :func:`core.models.CorrespondentModel.parseCorrespondentHeader`."""
-    return mocker.patch(
-        "core.models.CorrespondentModel.parseCorrespondentHeader",
-        autospec=True,
-        return_value=(faker.name(), faker.email()),
-    )
 
 
 @pytest.mark.django_db
@@ -93,52 +84,58 @@ def test_CorrespondentModel_unique_constraints(correspondentModel):
 
 
 @pytest.mark.django_db
-def test_CorrespondentModel_fromHeader_success(mock_parseCorrespondentHeader):
-    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.fromHeader`
+def test_CorrespondentModel_createFromCorrespondentTuple_success(
+    fake_correspondentTuple,
+):
+    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.createFromCorrespondentTuple`
     in case of success.
     """
-    result = CorrespondentModel.fromHeader("correspondentModel header")
+    assert CorrespondentModel.objects.count() == 0
+
+    result = CorrespondentModel.createFromCorrespondentTuple(fake_correspondentTuple)
 
     assert isinstance(result, CorrespondentModel)
-    mock_parseCorrespondentHeader.assert_called_once_with("correspondentModel header")
-    assert result.email_name == mock_parseCorrespondentHeader.return_value[0]
-    assert result.email_address == mock_parseCorrespondentHeader.return_value[1]
+    assert result.pk is not None
+    assert CorrespondentModel.objects.count() == 1
+    assert result.email_name == fake_correspondentTuple[0]
+    assert result.email_address == fake_correspondentTuple[1]
 
 
 @pytest.mark.django_db
-def test_CorrespondentModel_fromHeader_duplicate(
-    correspondentModel, mock_parseCorrespondentHeader
+def test_CorrespondentModel_createFromCorrespondentTuple_duplicate(
+    correspondentModel, fake_correspondentTuple
 ):
-    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.fromHeader`
+    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.createFromCorrespondentTuple`
     in case the correspondent to be prepared is already being in the database.
     """
-    mock_parseCorrespondentHeader.return_value = (
-        mock_parseCorrespondentHeader.return_value[0],
+    fake_correspondentTuple = (
+        fake_correspondentTuple[0],
         correspondentModel.email_address,
     )
 
-    result = CorrespondentModel.fromHeader("correspondentModel header")
+    assert CorrespondentModel.objects.count() == 1
+
+    result = CorrespondentModel.createFromCorrespondentTuple(fake_correspondentTuple)
 
     assert result == correspondentModel
-    mock_parseCorrespondentHeader.assert_called_once_with("correspondentModel header")
+    assert CorrespondentModel.objects.count() == 1
 
 
 @pytest.mark.django_db
-def test_CorrespondentModel_fromHeader_no_address(
-    mock_logger, mock_parseCorrespondentHeader
+def test_CorrespondentModel_createFromCorrespondentTuple_no_address(
+    mock_logger, fake_correspondentTuple
 ):
-    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.fromHeader`
+    """Tests :func:`core.models.CorrespondentModel.CorrespondentModel.createFromCorrespondentTuple`
     in case of there is no address in the header.
     """
-    mock_parseCorrespondentHeader.return_value = (
-        mock_parseCorrespondentHeader.return_value[0],
-        "",
-    )
+    fake_correspondentTuple = (fake_correspondentTuple[0], "")
 
-    result = CorrespondentModel.fromHeader("correspondentModel header")
+    assert CorrespondentModel.objects.count() == 0
+
+    result = CorrespondentModel.createFromCorrespondentTuple(fake_correspondentTuple)
 
     assert result is None
-    mock_parseCorrespondentHeader.assert_called_once_with("correspondentModel header")
+    assert CorrespondentModel.objects.count() == 0
     mock_logger.debug.assert_called()
 
 

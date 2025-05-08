@@ -76,6 +76,7 @@ def pytest_configure(config) -> None:
     os.chdir(pytest_ini_dir)
 
 
+# test_email_path, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count
 TEST_EMAIL_PARAMETERS = [
     (
         "test_emails/attachmentjson.eml",
@@ -124,6 +125,18 @@ TEST_EMAIL_PARAMETERS = [
         "\r\n\r\nSehr geehrte ,\r\n\r\n\r\n\r\nViele Grüße,\r\nDavid\r\n",
         '<html>\r\n<head>\r\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\r\n</head>\r\n<body>\r\n<div dir="auto"><br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Sehr geehrte ,<!-- tmjah_g_1299e --><br>\r\n<br>\r\n<br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Viele Grüße,<!-- tmjah_g_1299e --><br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->David<!-- tmjah_g_1299e --></div>\r\n</body>\r\n</html>\r\n',
         21,
+    ),
+    (
+        "test_emails/doubleCC.eml",
+        "<CACjuskUOYbprYYU9-L3CrZ5RjNHdo9c9A4z7pFDC=8JKheDWSQ@mail.gmail.com>",
+        "Test for cc header",
+        0,
+        4,
+        6,
+        "NO",
+        "another test for the correspondents ..\r\n",
+        '<div dir="ltr">another test for the correspondents ..<br></div>\r\n',
+        19,
     ),
 ]
 

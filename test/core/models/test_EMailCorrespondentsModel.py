@@ -17,11 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
-"""Test module for :mod:`core.models.EMailCorrespondentsModel`.
-
-Fixtures:
-    :func:`fixture_emailCorrespondentModels`: Creates an :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` instance for testing.
-"""
+"""Test module for :mod:`core.models.EMailCorrespondentsModel`."""
 
 import pytest
 from django.db import IntegrityError
@@ -34,25 +30,9 @@ from core.models.EMailModel import EMailModel
 
 
 @pytest.fixture
-def mock_CorrespondentModel_fromHeader(mocker, faker):
-    fake_CorrespondentModel = CorrespondentModel(email_address=faker.email())
-    return mocker.patch(
-        "core.models.EMailCorrespondentsModel.CorrespondentModel.fromHeader",
-        autospec=True,
-        return_value=fake_CorrespondentModel,
-    )
-
-
-@pytest.fixture
 def fake_header_name(faker):
     """Fixture providing a random correspondent header name."""
     return faker.random_element(HeaderFields.Correspondents.values)
-
-
-@pytest.fixture
-def fake_header(faker):
-    """Fixture providing a random header value."""
-    return faker.sentence()
 
 
 @pytest.mark.django_db
@@ -115,53 +95,94 @@ def test_EMailCorrespondentsModel_unique_constraints(emailCorrespondentModel):
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    "header, expectedResults",
+    [
+        ("test <test@test.org>", [("test", "test@test.org")]),
+        ("someone@somedomain.us", [("", "someone@somedomain.us")]),
+        ("<the@dude.eu>", [("", "the@dude.eu")]),
+        ("abc<alpha@beta.de>", [("abc", "alpha@beta.de")]),
+        (
+            "one <one@eins.de>, two <two@due.it>",
+            [("one", "one@eins.de"), ("two", "two@due.it")],
+        ),
+        ("a <addr@sub.dom.tld>", [("a", "addr@sub.dom.tld")]),
+    ],
+)
 def test_EMailCorrespondentsModel_createFromHeader_success(
-    emailModel, fake_header_name, fake_header, mock_CorrespondentModel_fromHeader
+    emailModel, fake_header_name, header, expectedResults
 ):
     """Tests :func:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel.createFromHeader`
     in case of success.
     """
+    assert EMailCorrespondentsModel.objects.count() == 0
+    assert CorrespondentModel.objects.count() == 0
+
     result = EMailCorrespondentsModel.createFromHeader(
-        fake_header, fake_header_name, emailModel
+        header, fake_header_name, emailModel
     )
 
-    assert isinstance(result, EMailCorrespondentsModel)
-    assert result.pk is not None
-    assert result.correspondent is mock_CorrespondentModel_fromHeader.return_value
-    assert result.email is emailModel
-    assert result.mention is fake_header_name
-
-    mock_CorrespondentModel_fromHeader.assert_called_once_with(fake_header)
-    assert result.mention == fake_header_name
+    assert EMailCorrespondentsModel.objects.count() == len(expectedResults)
+    assert CorrespondentModel.objects.count() == len(expectedResults)
+    assert isinstance(result, list)
+    assert len(result) == len(expectedResults)
+    for item, expectedResult in zip(result, expectedResults, strict=True):
+        assert isinstance(item, EMailCorrespondentsModel)
+        assert item.pk is not None
+        assert item.correspondent.email_name == expectedResult[0]
+        assert item.correspondent.email_address == expectedResult[1]
+        assert item.email == emailModel
+        assert item.mention == fake_header_name
 
 
 @pytest.mark.django_db
 def test_EMailCorrespondentsModel_createFromHeader_no_correspondent(
-    emailModel, fake_header_name, fake_header, mock_CorrespondentModel_fromHeader
+    emailModel, fake_header_name
 ):
     """Tests :func:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel.createFromHeader`
     in case of the correspondent cannot be set up.
     """
-    mock_CorrespondentModel_fromHeader.return_value = None
+    assert EMailCorrespondentsModel.objects.count() == 0
+    assert CorrespondentModel.objects.count() == 0
 
-    result = EMailCorrespondentsModel.createFromHeader(
-        fake_header, fake_header_name, emailModel
-    )
+    result = EMailCorrespondentsModel.createFromHeader("", fake_header_name, emailModel)
 
-    assert result is None
-    mock_CorrespondentModel_fromHeader.assert_called_once_with(fake_header)
+    assert result == []
+    assert EMailCorrespondentsModel.objects.count() == 0
+    assert CorrespondentModel.objects.count() == 0
 
 
 @pytest.mark.django_db
-def test_EMailCorrespondentsModel_createFromHeader_no_email(
-    fake_header_name, fake_header, mock_CorrespondentModel_fromHeader
+def test_EMailCorrespondentsModel_createFromHeader_no_address(
+    emailModel, fake_header_name
 ):
+    """Tests :func:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel.createFromHeader`
+    in case of the correspondent cannot be set up.
+    """
+    assert EMailCorrespondentsModel.objects.count() == 0
+    assert CorrespondentModel.objects.count() == 0
+
+    result = EMailCorrespondentsModel.createFromHeader(
+        "<>", fake_header_name, emailModel
+    )
+
+    assert result == []
+    assert EMailCorrespondentsModel.objects.count() == 0
+    assert CorrespondentModel.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_EMailCorrespondentsModel_createFromHeader_no_email(fake_header_name, faker):
     """Tests :func:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel.createFromHeader`
     in case the email argument is not in the database.
     """
+    assert EMailCorrespondentsModel.objects.count() == 0
+    assert CorrespondentModel.objects.count() == 0
+
     with pytest.raises(ValueError):
         EMailCorrespondentsModel.createFromHeader(
-            fake_header, fake_header_name, EMailModel()
+            faker.sentence(), fake_header_name, EMailModel()
         )
 
-    mock_CorrespondentModel_fromHeader.assert_not_called()
+    assert EMailCorrespondentsModel.objects.count() == 0
+    assert CorrespondentModel.objects.count() == 0

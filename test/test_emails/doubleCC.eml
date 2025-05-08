@@ -1,0 +1,117 @@
+Return-Path: <daveaderbauer@gmail.com>
+Authentication-Results:  kundenserver.de; dkim=pass header.i=@gmail.com
+Received: from mail-lf1-f46.google.com ([209.85.167.46]) by mx.kundenserver.de
+ (mxeue001 [212.227.15.41]) with ESMTPS (Nemesis) id 1McJLw-1teRih1oeS-00hjKk
+ for <archiv@aderbauer.org>; Fri, 18 Oct 2024 17:12:03 +0200
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-53a0c160b94so130338e87.2;
+        Fri, 18 Oct 2024 08:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729264323; x=1729869123; darn=aderbauer.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WN+lQFxVeYV1HvvVqhFVEv/nyI6C4OK1ys7PEYn/Mso=;
+        b=KUncLwQ/4mPqLye3ftcWuYgFSxl/YDznz0Z8Iff6Kiuxtbo05L4BxGhr5hKzcl9SEo
+         Mw2jC3BonfVLVlFk7HRgORTTKIfF8JGRR/WUAjK3KaU4GV0O8aBb0o9B9429EyUGJw+E
+         tHFQvzBZ9KGVMATA4QD2KH/DVH5bxiGu+nQw0rI3EdR2YhQfS62jOe9r32kUU+8Epb7G
+         s6W7IYwSTUZJoDFhdu7Gn9EnZRZl5t/WUUXXODumPAR0Y4EiognQo+AOQhlKbtjzhX5W
+         Ms2IfGCh5kbo1APwyDpRuuHE4FJi0reS6q+UeQ8ugCc6F7AdbmocfNepoFPBBjiUBD0o
+         18lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729264323; x=1729869123;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WN+lQFxVeYV1HvvVqhFVEv/nyI6C4OK1ys7PEYn/Mso=;
+        b=uhiizA1VAlnlVrT88Wi6DVOw30+0hh2tTNmbMhtskUOQ0vvt4wMKjIo3AlbU6BZxnY
+         silJFKDogTWJG2QO7v9hyx2u7gQgDoYgjEmw7erE6spJyRNFISKRBhpgunjhTE745Rfm
+         FteYVdTNNet8DZWU2GhJgx3O5WcnFk/eaeM1mYeHTIAgleNZu3fkCINIxKay8ryDM6Af
+         wp0BKYN8rCnwm1G2qbUAtUrL3eRocOFdMHwwQM1YviAAoc6PtXVxk3B5AbnFbmgMSp9n
+         xhlar/jmtY6f+KbSKoaE15X+CLHXzwH7tr5mx06ZWMGyjOT6sjpC2/n5v1jFTT3Oqgql
+         /KOA==
+X-Gm-Message-State: AOJu0Yw0mAKtJFu3QWoCOGm7QW78wn3OTHxMagfxjVAtI3xrMoCEsk7n
+	hzWqwGWdfkSJ6BkCv/RFS+5PWSGFJ0W59VNT2mlsmdjxMGFd38Izq83ko7BcU2iRDqmCJsU4MtK
+	frlqf6UOZAn2HtOOEVNSbxO9QA7e62A==
+X-Google-Smtp-Source: AGHT+IFBD5AxJiGtz4aS/XYS07mpZ9tmcj7cRC6fOmfR0GSOtnAWbrBU/PerAbLypXNBhUwxv71AR2GwRxiZFBN0hug=
+X-Received: by 2002:a05:6512:2305:b0:537:a824:7e5 with SMTP id
+ 2adb3069b0e04-53a15219ad7mr2122165e87.18.1729264322432; Fri, 18 Oct 2024
+ 08:12:02 -0700 (PDT)
+MIME-Version: 1.0
+From: Hungry Burger <daveaderbauer@gmail.com>
+Date: Fri, 18 Oct 2024 17:11:50 +0200
+Message-ID: <CACjuskUOYbprYYU9-L3CrZ5RjNHdo9c9A4z7pFDC=8JKheDWSQ@mail.gmail.com>
+Subject: Test for cc header
+To: archiv@aderbauer.org
+Cc: David <david@aderbauer.org>, david.aderbauer@gmx.de
+Content-Type: multipart/alternative; boundary="000000000000a959430624c1b927"
+Envelope-To: <archiv@aderbauer.org>
+X-Spam-Flag: NO
+UI-InboundReport: notjunk:1;M01:P0:P5UTFk76TyA=;B+mQeW6RbUVtlrkXmyzuqV68kb7w
+ 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
+ 6RWpPwmBKrz/CDEDrqHBJtOSycl4HsfrN9X
+
+--000000000000a959430624c1b927
+Content-Type: text/plain; charset="UTF-8"
+
+another test for the correspondents ..
+
+--000000000000a959430624c1b927
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr">another test for the correspondents ..<br></div>
+
+--000000000000a959430624c1b927--

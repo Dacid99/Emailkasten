@@ -45,7 +45,6 @@
 - autostart daemons on restart
 - user divided storage to make file_paths unique again
 - replace daemons with celery, ensure threadsafe db operations in daemons
-- choices for api filters
 - important headers in html repr
 - is_healthy null on creation
 - only show allowed fetching criteria
@@ -70,9 +69,7 @@
 
 ## To fix
 
-- separation of multi correspondentheader not working!
 - cascase doesnt trigger delete!
 - browser is occasionally in quirks mode
-- reverse lookup filters search doesnt work as implemented
 - optics:
   - stats table out of bounds for slim viewport

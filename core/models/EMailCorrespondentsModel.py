@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+from email.utils import getaddresses
 from typing import TYPE_CHECKING, Final, override
 
 from django.db import models
@@ -98,8 +99,8 @@ class EMailCorrespondentsModel(models.Model):
     @staticmethod
     def createFromHeader(
         header: str, headerName: str, email: EMailModel
-    ) -> EMailCorrespondentsModel | None:
-        """Prepares a :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` from an email header.
+    ) -> list[EMailCorrespondentsModel] | None:
+        """Prepares a list :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` from an email header.
 
         Args:
             header: The header to parse the malinglistdata from.
@@ -107,8 +108,8 @@ class EMailCorrespondentsModel(models.Model):
             email: The email for the new emailcorrespondent.
 
         Returns:
-            The :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` instance with data from the header.
-            If the correspondent already exists in the db uses that version.
+            The list of :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` instances with data from the header.
+            If the correspondent already exists in the db.
             `None` if the correspondent could not be parsed.
 
         Raises:
@@ -116,12 +117,16 @@ class EMailCorrespondentsModel(models.Model):
         """
         if email.pk is None:
             raise ValueError("Email is not in the db!")
-        new_correspondent = CorrespondentModel.fromHeader(header)
-        if new_correspondent is None:
-            return None
-        new_correspondent.save()
-        new_emailCorrespondent = EMailCorrespondentsModel(
-            correspondent=new_correspondent, email=email, mention=headerName
-        )
-        new_emailCorrespondent.save()
-        return new_emailCorrespondent
+        new_emailCorrespondentModels = []
+        for correspondentTuple in getaddresses([header]):
+            new_correspondent = CorrespondentModel.createFromCorrespondentTuple(
+                correspondentTuple
+            )
+            if new_correspondent is None:
+                continue
+            new_emailCorrespondent = EMailCorrespondentsModel(
+                correspondent=new_correspondent, email=email, mention=headerName
+            )
+            new_emailCorrespondent.save()
+            new_emailCorrespondentModels.append(new_emailCorrespondent)
+        return new_emailCorrespondentModels

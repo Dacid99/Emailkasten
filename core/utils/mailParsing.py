@@ -30,10 +30,8 @@ import email.utils
 import logging
 from base64 import b64encode
 from email import policy
-from email.utils import parseaddr
 from typing import TYPE_CHECKING
 
-import email_validator
 import imap_tools.imap_utf7
 from django.utils import timezone
 from html_sanitizer.django import get_sanitizer
@@ -134,34 +132,6 @@ def parseDatetimeHeader(dateHeader: str | None) -> datetime.datetime:
         )
         return timezone.now()
     return parsedDatetime
-
-
-def parseCorrespondentHeader(correspondentHeader: str) -> tuple[str, str]:
-    """Parses a correspondent header into name and address and validates that address.
-
-    Args:
-        correspondentHeader: The header with the correspondent to parse.
-
-    Returns:
-        The parsed and validated correspondent name and address.
-        If the correspondent address could not be validated uses the entire header.
-    """
-    name, address = parseaddr(correspondentHeader)
-    if not address:
-        logger.warning(
-            "No mailaddress in header %s! Falling back to full header.",
-            correspondentHeader,
-        )
-        return name, correspondentHeader
-    try:
-        email_validator.validate_email(address, check_deliverability=False)
-    except email_validator.EmailNotValidError:
-        logger.warning(
-            "Invalid mailadress in %s! Falling back to full header.",
-            correspondentHeader,
-        )
-        return name, correspondentHeader
-    return name, address
 
 
 def parseMailboxName(mailboxBytes: bytes) -> str:

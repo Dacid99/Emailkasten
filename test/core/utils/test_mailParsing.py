@@ -190,65 +190,6 @@ def test_parseDatetimeHeader_no_header(mocker, faker, mock_logger):
 
 
 @pytest.mark.parametrize(
-    "header, expectedResult",
-    [
-        ("test <test@test.org>", ("test", "test@test.org")),
-        ("someone@somedomain.us", ("", "someone@somedomain.us")),
-        ("<the@dude.eu>", ("", "the@dude.eu")),
-        ("abc<alpha@beta.de>", ("abc", "alpha@beta.de")),
-        ("a <addr@sub.dom.tld>", ("a", "addr@sub.dom.tld")),
-    ],
-)
-def test_parseCorrespondentHeader_success(mocker, mock_logger, header, expectedResult):
-    spy_validate_email = mocker.spy(mailParsing.email_validator, "validate_email")
-
-    result = mailParsing.parseCorrespondentHeader(header)
-
-    assert result == expectedResult
-    mock_logger.warning.assert_not_called()
-    spy_validate_email.assert_called_once()
-
-
-def test_parseCorrespondentHeader_no_address(mocker, mock_logger):
-    spy_validate_email = mocker.spy(mailParsing.email_validator, "validate_email")
-
-    result = mailParsing.parseCorrespondentHeader("no address <>")
-
-    assert result == ("no address", "no address <>")
-    mock_logger.warning.assert_called()
-    spy_validate_email.assert_not_called()
-
-
-@pytest.mark.parametrize(
-    "invalidHeader, expectedResult",
-    [
-        ("noone@somedomain", ("", "noone@somedomain")),
-        ("abc", ("", "abc")),
-    ],
-)
-def test_parseCorrespondentHeader_invalid_address(
-    mocker, mock_logger, invalidHeader, expectedResult
-):
-    spy_validate_email = mocker.spy(mailParsing.email_validator, "validate_email")
-
-    result = mailParsing.parseCorrespondentHeader(invalidHeader)
-
-    assert result == expectedResult
-    mock_logger.warning.assert_called()
-    spy_validate_email.assert_called_once()
-
-
-def test_parseCorrespondentHeader_no_header(mocker, mock_logger):
-    spy_validate_email = mocker.spy(mailParsing.email_validator, "validate_email")
-
-    result = mailParsing.parseCorrespondentHeader(None)
-
-    assert result == ("", None)
-    mock_logger.warning.assert_called()
-    spy_validate_email.assert_not_called()
-
-
-@pytest.mark.parametrize(
     "nameBytes, expectedName",
     [
         (b"INBOX", "INBOX"),

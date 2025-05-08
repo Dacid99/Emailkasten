@@ -28,7 +28,6 @@ from django.utils.translation import gettext_lazy as _
 
 from core.mixins.FavoriteMixin import FavoriteMixin
 from core.mixins.URLMixin import URLMixin
-from core.utils.mailParsing import parseCorrespondentHeader
 
 
 logger = logging.getLogger(__name__)
@@ -81,7 +80,9 @@ class CorrespondentModel(URLMixin, FavoriteMixin, models.Model):
         }
 
     @staticmethod
-    def fromHeader(header: str) -> CorrespondentModel | None:
+    def createFromCorrespondentTuple(
+        correspondentTuple: tuple[str, str],
+    ) -> CorrespondentModel | None:
         """Prepares a :class:`core.models.CorrespondentModel.CorrespondentModel` from email header data.
 
         Args:
@@ -90,18 +91,20 @@ class CorrespondentModel(URLMixin, FavoriteMixin, models.Model):
         Returns:
             The :class:`core.models.CorrespondentModel.CorrespondentModel` with the data from the header.
             If the correspondent already exists in the db returns that version.
-            None if there is no address in :attr:`header`.
+            `None` if there is no address in :attr:`header`.
         """
-        name, address = parseCorrespondentHeader(header)
+        name, address = correspondentTuple
         if not address:
             logger.debug(
-                "Skipping correspondent with empty mailaddress %s.",
-                address,
+                "Skipping correspondent %s with empty mailaddress.",
+                name,
             )
             return None
         try:
             return CorrespondentModel.objects.get(email_address=address)
         except CorrespondentModel.DoesNotExist:
-            pass
-
-        return CorrespondentModel(email_address=address, email_name=name)
+            new_correspondent = CorrespondentModel(
+                email_address=address, email_name=name
+            )
+            new_correspondent.save()
+            return new_correspondent
