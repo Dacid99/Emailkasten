@@ -18,7 +18,7 @@
 
 """Module with the :class:`DaemonFilterView` view."""
 
-from typing import Final, override
+from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
@@ -38,7 +38,7 @@ class DaemonFilterView(LoginRequiredMixin, FilterPageView):
     context_object_name = "daemons"
     filterset_class = DaemonFilter
     paginate_by = 25
-    ordering: Final[list[str]] = ["mailbox__name"]
+    ordering = ["mailbox__name"]
 
     @override
     def get_queryset(self) -> QuerySet[DaemonModel]:

@@ -94,7 +94,7 @@ class DaemonModel(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
     """Flags whether the daemon is healthy. `True` by default."""
 
     log_filepath = models.FilePathField(
-        path=settings.LOG_DIRECTORY_PATH,
+        path=str(settings.LOG_DIRECTORY_PATH),
         recursive=True,
         unique=True,
     )

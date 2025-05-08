@@ -97,13 +97,13 @@ git config core.hooksPath validation/githooks/
 - pylint, with config
 
 ```json
-"pylint.args": ["--rcfile=validation/pylintrc(_strict)_extension"]
+"pylint.args": ["--rcfile=validation/pylintrc_extension"]
 ```
 
 - mypy, with config
 
 ```json
- "mypy-type-checker.args": ["--config-file=validation/mypy_extension.ini"]
+ "mypy-type-checker.args": ["--config-file=validation/mypy.ini"]
 ```
 
 - black, with config

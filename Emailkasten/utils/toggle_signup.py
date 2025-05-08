@@ -30,8 +30,8 @@ from Emailkasten.utils.workarounds import get_config
 
 
 if TYPE_CHECKING:
-    from django.views import View
     from rest_framework.request import Request
+    from rest_framework.views import APIView
 
 
 class ToggleSignupAccountAdapter(
@@ -58,7 +58,7 @@ class ToggleSignUpPermissionClass(AllowAny, IsAuthenticated, IsAdminUser):
     """Permission class to allow toggling of signups for dj-rest-auth."""
 
     @override
-    def has_permission(self, request: Request, view: View) -> bool:
+    def has_permission(self, request: Request, view: APIView) -> bool:
         """Checks a signup request is permitted.
 
         If registration is disabled only staff members can make signup requests.

@@ -18,7 +18,7 @@
 
 """Module with the :class:`AttachmentFilterView` view."""
 
-from typing import Final, override
+from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
@@ -38,7 +38,7 @@ class AttachmentFilterView(LoginRequiredMixin, FilterPageView):
     context_object_name = "attachments"
     filterset_class = AttachmentFilter
     paginate_by = 25
-    ordering: Final[list[str]] = ["file_name"]
+    ordering = ["file_name"]
 
     @override
     def get_queryset(self) -> QuerySet[AttachmentModel]:

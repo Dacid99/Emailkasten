@@ -18,7 +18,7 @@
 
 """Module with the :class:`MailboxFilterView` view."""
 
-from typing import Final, override
+from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
@@ -38,7 +38,7 @@ class MailboxFilterView(LoginRequiredMixin, FilterPageView):
     context_object_name = "mailboxes"
     filterset_class = MailboxFilter
     paginate_by = 25
-    ordering: Final[list[str]] = ["name"]
+    ordering = ["name"]
 
     @override
     def get_queryset(self) -> QuerySet[MailboxModel]:

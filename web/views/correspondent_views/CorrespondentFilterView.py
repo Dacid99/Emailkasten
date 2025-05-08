@@ -18,7 +18,7 @@
 
 """Module with the :class:`CorrespondentFilterView` view."""
 
-from typing import Final, override
+from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
@@ -38,7 +38,7 @@ class CorrespondentFilterView(LoginRequiredMixin, FilterPageView):
     context_object_name = "correspondents"
     filterset_class = CorrespondentFilter
     paginate_by = 25
-    ordering: Final[list[str]] = ["email_address"]
+    ordering = ["email_address"]
 
     @override
     def get_queryset(self) -> QuerySet[CorrespondentModel]:

@@ -14,9 +14,11 @@ templatelint: djlintrc
 	djlint --configuration djlintrc ../web/templates | tee -a reports/htmllint.ansi
 
 mypy-check: mypy.ini
+	export SECRET_KEY='something'
 	mypy --config-file $< ../Emailkasten ../core/ ../api/ ../web/ | tee reports/mypy/mypy.ansi
 
 dmypy-start: mypy.ini
+	export SECRET_KEY='something'
 	dmypy run --log-file reports/mypy/dmypy.log -- --config-file $< ../Emailkasten ../core/ ../api/ ../web/ | tee reports/mypy/mypy.ansi
 
 dmypy-check:
