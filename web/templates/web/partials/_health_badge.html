@@ -2,8 +2,12 @@
     <span class="badge bg-success text-end shadow">
         <i class="fa-regular fa-circle-check text-light"></i>
     </span>
-{% else %}
+{% elif object.is_healthy is False %}
     <span class="badge bg-danger text-end shadow">
         <i class="fa-solid fa-triangle-exclamation text-light"></i>
+    </span>
+{% else %}
+    <span class="badge bg-secondary text-end shadow">
+        <i class="fa-regular fa-circle-question text-light"></i>
     </span>
 {% endif %}
