@@ -66,5 +66,6 @@
 
 - cascase doesnt trigger delete!
 - browser is occasionally in quirks mode
+- reset forms resets to latest submission
 - optics:
   - stats table out of bounds for slim viewport
