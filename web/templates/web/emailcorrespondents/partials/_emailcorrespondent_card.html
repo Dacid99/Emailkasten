@@ -1,7 +1,5 @@
 {% extends "web/correspondent/partials/_correspondent_card.html" %}
 
 {% block card_title %}
-    {{ emailcorrespondent.mention }}
-    <br>
-    {{ card_object.email_address }}
+    {{ emailcorrespondent.mention }}:&emsp; {{ card_object.email_address }}
 {% endblock card_title %}

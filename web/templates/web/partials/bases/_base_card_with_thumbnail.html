@@ -1,7 +1,7 @@
 <div class="card">
     {% if card_object.has_thumbnail %}
         <div class="row g-0">
-            <div class="col-md-10">
+            <div class="col-md-8">
             {% endif %}
             <div class="card-body">
                 <div class="d-flex justify-content-between">
@@ -51,10 +51,11 @@
             </div>
             {% if card_object.has_thumbnail %}
             </div>
-            <div class="col-md-2">
-                <img src="{{ card_object.get_absolute_thumbnail_url }}"
-                     class="img-fluid rounded"
-                     alt="Thumbnail image" />
+            <div class="col-md-4">
+
+                {% block thumbnail %}
+                {% endblock thumbnail %}
+
             </div>
         </div>
     {% endif %}

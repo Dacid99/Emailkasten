@@ -27,3 +27,13 @@
         {% translate "Received" %}: {{ card_object.datetime|date:"SHORT_DATETIME_FORMAT" }}
     </div>
 {% endblock card_content %}
+
+
+{% block thumbnail %}
+
+    <iframe src="{{ card_object.get_absolute_thumbnail_url }}"
+            class="h-100 w-100 rounded"
+            alt="Email content"
+            sandbox="allow-same-origin"></iframe>
+
+{% endblock thumbnail %}

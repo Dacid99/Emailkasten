@@ -24,3 +24,10 @@
     </div>
     <div class="card-text">{% translate "Date received" %}: {{ card_object.email.datetime }}</div>
 {% endblock card_content %}
+
+
+{% block thumbnail %}
+    <img src="{{ card_object.get_absolute_thumbnail_url }}"
+         class="img-fluid rounded"
+         alt="Attachment image" />
+{% endblock thumbnail %}

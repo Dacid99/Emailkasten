@@ -66,9 +66,10 @@
                 {% if object.has_thumbnail %}
                 </div>
                 <div class="col-6">
-                    <img src="{{ object.get_absolute_thumbnail_url }}"
-                         class="img-fluid p-1"
-                         alt="Image attachment" />
+
+                    {% block thumbnail %}
+                    {% endblock thumbnail %}
+
                 </div>
             </div>
         {% endif %}

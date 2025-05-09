@@ -42,71 +42,70 @@
         {% if object.mailinglist %}
             <li class="list-group-item list-group-item-action">
                 {% translate "Mailinglist" %}: <a href="{{ object.mailinglist.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{%
-            translate "Mailinglist" %}: {{ object.mailinglist.list_id }}</a>
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{% translate "Mailinglist" %}: {{ object.mailinglist.list_id }}</a>
+            </li>
+        {% endif %}
+        <li class="list-group-item list-group-item-action">
+            {% translate "Mailbox" %}: <a href="{{ object.mailbox.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.mailbox.name }}</a>
         </li>
-    {% endif %}
-    <li class="list-group-item list-group-item-action">
-        {% translate "Mailbox" %}: <a href="{{ object.mailbox.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-    object.mailbox.name }}</a>
-</li>
-<li class="list-group-item list-group-item-action">
-    {% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-object.mailbox.account.mail_address }}</a>
-</li>
-{% if object.inReplyTo %}
-    <li class="list-group-item list-group-item-action">
-        {% translate "In reply to" %}: <a href="{{ object.inReplyTo.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-    object.inReplyTo.message_id }}</a>
-</li>
-{% endif %}
-<div class="accordion accordion-flush" id="content-accordion">
-    <li class="list-group-item accordion-item">
-        <div class="accordion-header" id="plain-text-header">
-            <button class="accordion-button collapsed p-0"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#plain-text"
-                    aria-expanded="true"
-                    aria-controls="plain-text">
-                {%
-                translate "Plain bodytext" %}
-            </button>
+        <li class="list-group-item list-group-item-action">
+            {% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.mailbox.account.mail_address }}</a>
+        </li>
+        {% if object.inReplyTo %}
+            <li class="list-group-item list-group-item-action">
+                {% translate "In reply to" %}: <a href="{{ object.inReplyTo.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.inReplyTo.message_id }}</a>
+            </li>
+        {% endif %}
+        <div class="accordion accordion-flush" id="content-accordion">
+            <li class="list-group-item accordion-item">
+                <div class="accordion-header" id="plain-text-header">
+                    <button class="accordion-button collapsed p-0"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#plain-text"
+                            aria-expanded="true"
+                            aria-controls="plain-text">{% translate "Plain bodytext" %}</button>
+                </div>
+                <div id="plain-text"
+                     class="accordion-collapse collapse"
+                     aria-labelledby="plain-text-header"
+                     data-bs-parent="content-accordion">
+                    <div class="accordion-body">{{ object.plain_bodytext }}</div>
+                </div>
+            </li>
+            <li class="list-group-item accordion-item">
+                <div class="accordion-header" id="html-text-header">
+                    <button class="accordion-button collapsed p-0"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#html-text"
+                            aria-expanded="true"
+                            aria-controls="html-text">{% translate "Html bodytext" %}</button>
+                </div>
+                <div id="html-text"
+                     class="accordion-collapse collapse"
+                     aria-labelledby="html-text-header"
+                     data-bs-parent="content-accordion">
+                    <div class="accordion-body">
+                        <code>{{ object.html_bodytext }}</code>
+                    </div>
+                </div>
+            </li>
         </div>
-        <div id="plain-text"
-             class="accordion-collapse collapse"
-             aria-labelledby="plain-text-header"
-             data-bs-parent="content-accordion">
-            <div class="accordion-body">{{ object.plain_bodytext }}</div>
-        </div>
-    </li>
-    <li class="list-group-item accordion-item">
-        <div class="accordion-header" id="html-text-header">
-            <button class="accordion-button collapsed p-0"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#html-text"
-                    aria-expanded="true"
-                    aria-controls="html-text">
-                {%
-                translate "Html bodytext" %}
-            </button>
-        </div>
-        <div id="html-text"
-             class="accordion-collapse collapse"
-             aria-labelledby="html-text-header"
-             data-bs-parent="content-accordion">
-            <div class="accordion-body">
-                <code>{{ object.html_bodytext }}</code>
-            </div>
-        </div>
-    </li>
-</div>
-</ul>
+    </ul>
 {% endblock card_content %}
+
+{% block thumbnail %}
+    <iframe src="{{ object.get_absolute_thumbnail_url }}"
+            class="w-100 h-100 p-1"
+            title="Email content"
+            alt="Email content"
+            sandbox="allow-same-origin"></iframe>
+{% endblock thumbnail %}
+
 
 {% block card_extras %}
     <div class="card">

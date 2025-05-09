@@ -47,6 +47,7 @@
 - favicon.ico for the icon
 - default ssl cert and safest settings
 - variable page size pagination
+- more attachment thumbnails
 - docs:
   - integratons page, searxng section in docs
 
