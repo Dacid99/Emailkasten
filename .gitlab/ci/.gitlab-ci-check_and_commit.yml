@@ -7,6 +7,11 @@ check_and_commit_codebase:
     - poetry install --with=dev
     - mkdir -p $CHECK_REPORT_PATH
     - poetry run ruff check --config=$CHECK_CONFIG_PATH'ruff.toml' > $CHECK_REPORT_PATH'ruff_prebuild.ansi'
+    - poetry run black --config=$CONFIG_PATH'black_config' . > $REPORT_PATH'black_precommit.ansi'
+      if [ $? -ne 0 ]; then
+        echo "Formatting code failed, please check "$CHECK_REPORT_PATH"black_precommit.ansi ."
+        exit 1
+      fi
     - poetry run pylint --rcfile=$CHECK_CONFIG_PATH'pylintrc_code' > $CHECK_REPORT_PATH'pylint_code_prebuild.ansi'
     - |
       if [ $? -ne 0 ]; then
