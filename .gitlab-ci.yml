@@ -40,19 +40,19 @@ stages:
   - build
 
 include:
-  - local: ci/.gitlab-ci-check.yml
+  - local: .gitlab/ci/.gitlab-ci-check.yml
     rules:
       - if: '$CI_COMMIT_BRANCH == "master"'
-  - local: ci/.gitlab-ci-check_and_commit.yml
+  - local: .gitlab/ci/.gitlab-ci-check_and_commit.yml
     rules:
       - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  - local: ci/.gitlab-ci-test.yml
+  - local: .gitlab/ci/.gitlab-ci-test.yml
     rules:
       - if: '$CI_COMMIT_BRANCH == "master"'
       - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  - local: ci/.gitlab-ci-docs.yml
+  - local: .gitlab/ci/.gitlab-ci-docs.yml
     rules:
       - if: '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_TAG'
-  - local: ci/.gitlab-ci-build.yml
+  - local: .gitlab/ci/.gitlab-ci-build.yml
     rules:
       - if: '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_TAG'
