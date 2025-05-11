@@ -1,0 +1,20 @@
+build_docker:
+  stage: build
+  dependencies:
+    - check
+    - test
+  only:
+    - tags
+  script:
+    - echo "Building docker image ..."
+    - poetry install
+    - cd docker
+    - docker compose -f docker-compose.build.yml build
+    - echo "Successfully built docker image."
+    - echo "Releasing docker image ..."
+    - echo "Nowhere to release at the moment."
+    - echo "Successfully released docker image."
+  artifacts:
+    paths:
+      - "$DOCKER_IMAGE_PATH"
+    expire_in: 30 days

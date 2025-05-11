@@ -1,0 +1,15 @@
+test_codebase:
+  stage: test
+  only:
+    - tags
+  script:
+    - echo "Testing codebase ..."
+    - poetry install --with=dev
+    - mkdir -p $TEST_REPORT_PATH
+    - cd $TEST_PATH
+    - poetry run pytest . --config-file pytest.ini > $TEST_REPORT_PATH"pytest_prebuild.ansi"
+    - echo "Successfully tested codebase."
+  artifacts:
+    paths:
+      - "$TEST_REPORT_PATH"
+    expire_in: 30 days

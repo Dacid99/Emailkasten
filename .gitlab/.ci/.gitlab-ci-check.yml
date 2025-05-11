@@ -1,0 +1,34 @@
+check_codebase:
+  stage: check
+  only:
+    - tags
+  script:
+    - echo "Checking codebase ..."
+    - poetry install --with=dev
+    - mkdir -p $CHECK_REPORT_PATH
+    - poetry run ruff check --config=$CHECK_CONFIG_PATH'ruff.toml' > $CHECK_REPORT_PATH'ruff_prebuild.ansi'
+    - poetry run pylint --rcfile=$CHECK_CONFIG_PATH'pylintrc_code' > $CHECK_REPORT_PATH'pylint_code_prebuild.ansi'
+    - |
+      if [ $? -ne 0 ]; then
+        echo "Pylint for code failed, please check "$CHECK_REPORT_PATH"pylint_code_prebuild.ansi ."
+        exit 1
+      fi
+    - poetry run pylint --rcfile=$CHECK_CONFIG_PATH'pylintrc_docs' > $CHECK_REPORT_PATH'pylint_docs_prebuild.ansi'
+    - |
+      if [ $? -ne 0 ]; then
+        echo "Pylint for docs failed, please check "$CHECK_REPORT_PATH"pylint_docs_prebuild.ansi ."
+        exit 1
+      fi
+    - poetry run mypy --config-file $CHECK_CONFIG_PATH'mypy.ini' > $CHECK_REPORT_PATH'mypy/mypy_prebuild.ansi'
+    - poetry run djlint --reformat --configuration $CHECK_CONFIG_PATH'djlintrc' > $CHECK_REPORT_PATH'djlint_prebuild.ansi'
+    - poetry run djlint --lint --configuration $CHECK_CONFIG_PATH'djlintrc' >> $CHECK_REPORT_PATH'djlint_prebuild.ansi'
+    - |
+      if [ $? -ne 0 ]; then
+        echo "Djlint failed, please check "$CHECK_REPORT_PATH"djlint_prebuild.ansi ."
+        exit 1
+      fi
+    - echo "Successfully checked codebase."
+  artifacts:
+    paths:
+      - "$CHECK_REPORT_PATH"
+    expire_in: 30 days
