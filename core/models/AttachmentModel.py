@@ -25,6 +25,7 @@ import os
 from hashlib import md5
 from typing import TYPE_CHECKING, Any, Final, override
 
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -33,7 +34,6 @@ from core.mixins.FavoriteMixin import FavoriteMixin
 from core.mixins.HasDownloadMixin import HasDownloadMixin
 from core.mixins.HasThumbnailMixin import HasThumbnailMixin
 from core.mixins.URLMixin import URLMixin
-from Emailkasten.utils.workarounds import get_config
 
 from ..utils.fileManagment import clean_filename, saveStore
 from .StorageModel import StorageModel
@@ -58,7 +58,7 @@ class AttachmentModel(
     """The filename of the attachment."""
 
     file_path = models.FilePathField(
-        path=get_config("STORAGE_PATH"), max_length=511, recursive=True, null=True
+        path=settings.STORAGE_PATH, max_length=511, recursive=True, null=True
     )
     """The path where the attachment is stored. Unique together with :attr:`email`.
     Can be null if the attachment has not been saved (null does not collide with the unique constraint.).

@@ -27,6 +27,7 @@ from email import policy
 from hashlib import md5
 from typing import TYPE_CHECKING, Any, Final, override
 
+from django.conf import settings
 from django.db import models, transaction
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
@@ -89,7 +90,7 @@ class EMailModel(
     """The bytes size of the mail."""
 
     eml_filepath = models.FilePathField(
-        path=get_config("STORAGE_PATH"),
+        path=settings.STORAGE_PATH,
         max_length=255,
         recursive=True,
         match=r".*\.eml$",
@@ -102,7 +103,7 @@ class EMailModel(
     """
 
     html_filepath = models.FilePathField(
-        path=get_config("STORAGE_PATH"),
+        path=settings.STORAGE_PATH,
         max_length=255,
         recursive=True,
         match=r".*\.html$",
