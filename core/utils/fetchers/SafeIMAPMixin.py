@@ -157,9 +157,12 @@ class SafeIMAPMixin:
                     )
                     if exception is not None:
                         raise exception(
-                            _("An %(error_class_name)s occured during %(action_name)s!")
+                            _(
+                                "An %(error_class_name)s: %(error)s occured during %(action_name)s!"
+                            )
                             % {
                                 "error_class_name": error.__class__.__name__,
+                                "error": error,
                                 "action_name": imapAction.__name__,
                             },
                         ) from error

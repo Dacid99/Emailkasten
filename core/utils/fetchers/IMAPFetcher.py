@@ -134,7 +134,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
                 self.account,
             )
             raise MailAccountError(
-                f"An {error.__class__.__name__} occured connecting to {self.account}!"
+                f"An {error.__class__.__name__}: {error} occured connecting to {self.account}!"
             ) from error
         self.logger.info("Successfully connected to %s.", self.account)
 
