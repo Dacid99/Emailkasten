@@ -24,6 +24,7 @@ import logging
 import os
 from typing import Any, override
 
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -46,9 +47,9 @@ class StorageModel(models.Model):
     directory_number = models.PositiveIntegerField(unique=True)
     """The number of the directory tracked by this entry. Unique."""
 
-    path = models.FilePathField(unique=True, path=get_config("STORAGE_PATH"))
+    path = models.FilePathField(unique=True, path=settings.STORAGE_PATH)
     """The path of the tracked directory. Unique.
-    Must contain :attr:`constance.get_config('STORAGE_PATH')`."""
+    Must contain :attr:`settings.STORAGE_PATH`."""
 
     subdirectory_count = models.PositiveSmallIntegerField(default=0)
     """The number of subdirectories in this directory. 0 by default.
@@ -91,9 +92,7 @@ class StorageModel(models.Model):
         If the path points to a file, suffixes are added to the path until the path becomes valid.
         """
         if not self.path:
-            self.path = os.path.join(
-                get_config("STORAGE_PATH"), str(self.directory_number)
-            )
+            self.path = os.path.join(settings.STORAGE_PATH, str(self.directory_number))
             while os.path.isfile(self.path):
                 self.path += ".a"
             if not os.path.exists(self.path):
@@ -190,7 +189,7 @@ class StorageModel(models.Model):
             return False
 
         correctDirCount = StorageModel.objects.count() == len(
-            os.listdir(get_config("STORAGE_PATH"))
+            os.listdir(settings.STORAGE_PATH)
         )
         if not correctDirCount:
             logger.critical(

@@ -39,6 +39,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Get environ either from environment and file defined via _FILE env-variable
 # See https://django-environ.readthedocs.io/en/latest/tips.html#docker-style-file-based-variables
 env = FileAwareEnv()
+env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -174,6 +175,11 @@ DATABASE_RECONNECT_DELAY_DEFAULT = 10
 DATABASE_RECONNECT_DELAY = env(
     "DATABASE_RECONNECT_DELAY", cast=int, default=DATABASE_RECONNECT_DELAY_DEFAULT
 )
+CONN_MAX_AGE = 3600
+CONN_HEALTH_CHECKS = True
+
+# Storage
+STORAGE_PATH = "/mnt/archive"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -232,7 +238,7 @@ REST_AUTH = {
 
 
 # Logging
-LOG_DIRECTORY_PATH = Path("/var/lib")
+LOG_DIRECTORY_PATH = Path("/var/log")
 LOGFILE_MAXSIZE_DEFAULT = 10485760
 LOGFILE_MAXSIZE = env("LOGFILE_MAXSIZE", cast=int, default=LOGFILE_MAXSIZE_DEFAULT)
 LOGFILE_BACKUP_NUMBER_DEFAULT = 5
@@ -399,13 +405,6 @@ CONSTANCE_CONFIG = {
         ),
         int,
     ),
-    "STORAGE_PATH": (
-        "/mnt/archive",
-        _(
-            "The path to the storage for the saved data. Must match the path in the docker-compose.yml to ensure data persistence!"
-        ),
-        str,
-    ),
     "THROW_OUT_SPAM": (
         True,
         _("Whether or not to ignore emails that have a spam flag"),
@@ -421,7 +420,7 @@ CONSTANCE_CONFIG = {
     "DONT_SAVE_CONTENT_TYPE_SUFFIXES": (
         ["/plain", "/html"],
         _(
-            "A list of content types prefixes to not parse as files even if they are marked as such. Overrides elements in 'SAVE_CONTENT_TYPE_PREFIXES'."
+            "A list of content types prefixes to not parse as files if they are not marked as such. Overrides elements in 'SAVE_CONTENT_TYPE_PREFIXES'."
         ),
         "array",
     ),
@@ -485,6 +484,8 @@ CONSTANCE_FIELDSETS = (
             "DEFAULT_SAVE_ATTACHMENTS",
             "DAEMON_CYCLE_PERIOD_DEFAULT",
             "DAEMON_RESTART_TIME_DEFAULT",
+            "DAEMON_LOG_BACKUP_COUNT_DEFAULT",
+            "DAEMON_LOGFILE_SIZE_DEFAULT",
         ),
     ),
     (
@@ -498,7 +499,7 @@ CONSTANCE_FIELDSETS = (
     ),
     (
         _("Storage Settings"),
-        ("STORAGE_PATH", "STORAGE_MAX_SUBDIRS_PER_DIR", "TEMPORARY_STORAGE_DIRECTORY"),
+        ("STORAGE_MAX_SUBDIRS_PER_DIR", "TEMPORARY_STORAGE_DIRECTORY"),
     ),
     (
         _("API Settings"),
