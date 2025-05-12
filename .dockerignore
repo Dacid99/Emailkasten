@@ -10,11 +10,11 @@ docs/
 __pycache__/
 .ruff_cache/
 .pytest_cache/
-*.pytest_cache
 *.log
 .git
 .gitignore
 .coverage
+.env
 htmlcov/
 reports/
 Readme.md
@@ -23,3 +23,6 @@ DEVELOPMENT.md
 CODE_OF_CONDUCT.md
 LICENSE
 TODO.md
+.gitea/
+.gitlab/
+.github/
