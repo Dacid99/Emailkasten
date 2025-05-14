@@ -98,13 +98,15 @@ def test___str__(faker, is_current, expected_status_str):
     ],
 )
 def test_StorageModel_initial_single_creation(
-    mock_logger,
+    settings,
     override_config,
+    mock_logger,
     STORAGE_PATH,
 ):
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
+    settings.STORAGE_PATH = STORAGE_PATH
 
-    with override_config(STORAGE_PATH=STORAGE_PATH, STORAGE_MAX_SUBDIRS_PER_DIR=3):
+    with override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3):
         subdirectory = StorageModel.getSubdirectory("test")
 
     assert os.path.isdir(subdirectory)
@@ -119,9 +121,8 @@ def test_StorageModel_initial_single_creation(
 
 
 @pytest.mark.django_db
-@pytest.mark.override_config(
-    STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
-)
+@pytest.mark.override_setting(STORAGE_PATH="empty-storage")
+@pytest.mark.override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3)
 def test_StorageModel_initial_many_creation(mock_logger):
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
@@ -142,9 +143,8 @@ def test_StorageModel_initial_many_creation(mock_logger):
 
 
 @pytest.mark.django_db
-@pytest.mark.override_config(
-    STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
-)
+@pytest.mark.override_setting(STORAGE_PATH="empty-storage")
+@pytest.mark.override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3)
 def test_StorageModel_single_creation_healthcheck_success():
     """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
 
@@ -156,7 +156,7 @@ def test_StorageModel_single_creation_healthcheck_success():
 
 
 @pytest.mark.django_db
-@pytest.mark.override_config(
+@pytest.mark.override_setting(
     STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
 )
 def test_StorageModel_many_creation_health_check_success():
@@ -171,9 +171,8 @@ def test_StorageModel_many_creation_health_check_success():
 
 
 @pytest.mark.django_db
-@pytest.mark.override_config(
-    STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
-)
+@pytest.mark.override_setting(STORAGE_PATH="empty-storage")
+@pytest.mark.override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3)
 def test_StorageModel_health_check_failed_duplicate_current(mock_logger):
     """Tests the storage healthcheck in case of a duplicate `current` directory."""
     for number in range(2 * 3 + 1):
@@ -196,15 +195,16 @@ def test_StorageModel_health_check_failed_duplicate_current(mock_logger):
     ],
 )
 def test_StorageModel_health_check_failed_dirty_storage(
-    override_config, mock_logger, STORAGE_PATH
+    settings, override_config, mock_logger, STORAGE_PATH
 ):
     """Tests the storage healthcheck in case of dirty storage."""
+    settings.STORAGE_PATH = STORAGE_PATH
 
-    with override_config(STORAGE_PATH=STORAGE_PATH, STORAGE_MAX_SUBDIRS_PER_DIR=3):
+    with override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3):
         for number in range(2 * 3 + 1):
             StorageModel.getSubdirectory(f"test_{number}")
 
-        health = StorageModel.healthcheck()
+    health = StorageModel.healthcheck()
 
     assert not health
     mock_logger.critical.assert_called()
