@@ -339,8 +339,16 @@ class EMailModel(
         return is_X_Spam(self.x_spam)
 
     @classmethod
-    def fillFromEmailBytes(cls, email_bytes: bytes):
-        email_message = email.message_from_bytes(email_bytes, policy=policy.default)
+    def fillFromEmailBytes(cls, email_bytes: bytes) -> EMailModel:
+        """Constructs an :class:`core.models.EMailModel.EMailModel` from an email in bytes form.
+
+        Args:
+            emailBytes: The email bytes to parse the emaildata from.
+
+        Returns:
+            The :class:`core.models.EMailModel.EMailModel` instance with data from the bytes.
+        """
+        email_message = email.message_from_bytes(email_bytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
         headerDict = {}
         for headerName in email_message:
             headerDict[headerName] = getHeader(email_message, headerName)
@@ -352,13 +360,12 @@ class EMailModel(
         bodytexts = get_bodytexts(email_message)
         return cls(
             headers=headerDict,
-            message_id=headerDict.get(
-                HeaderFields.MESSAGE_ID, md5(email_bytes).hexdigest()
-            ),
+            message_id=headerDict.get(HeaderFields.MESSAGE_ID)
+            or md5(email_bytes).hexdigest(),
             datetime=parseDatetimeHeader(headerDict.get(HeaderFields.DATE)),
-            email_subject=headerDict.get(HeaderFields.SUBJECT, __("No subject")),
+            email_subject=headerDict.get(HeaderFields.SUBJECT) or __("No subject"),
             inReplyTo=inReplyTo,
-            x_spam=headerDict.get(HeaderFields.X_SPAM, ""),
+            x_spam=headerDict.get(HeaderFields.X_SPAM) or "",
             datasize=len(email_bytes),
             plain_bodytext=bodytexts.get("plain", ""),
             html_bodytext=bodytexts.get("html", ""),
@@ -416,12 +423,13 @@ class EMailModel(
                     emailMessage
                 )
                 new_email.save(emailData=emailBytes)
-                for mention in HeaderFields.Correspondents.values:
-                    correspondentHeader = new_email.headers.get(mention)
-                    if correspondentHeader:
-                        EMailCorrespondentsModel.createFromHeader(
-                            correspondentHeader, mention, new_email
-                        )
+                if new_email.headers:
+                    for mention in HeaderFields.Correspondents.values:
+                        correspondentHeader = new_email.headers.get(mention)
+                        if correspondentHeader:
+                            EMailCorrespondentsModel.createFromHeader(
+                                correspondentHeader, mention, new_email
+                            )
                 attachments = AttachmentModel.createFromEmailMessage(
                     emailMessage, new_email
                 )

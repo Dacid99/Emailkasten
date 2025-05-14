@@ -196,6 +196,14 @@ class AttachmentModel(
     def createFromEmailMessage(
         cls, email_message: Message[str, str], email: EMailModel
     ) -> list[AttachmentModel]:
+        """Creates :class:`core.models.AttachmentModel.AttachmentModel`s from an email message.
+
+        Args:
+            email_message: The email_message to get and create all attachments from.
+
+        Returns:
+            A list of :class:`core.models.AttachmentModel.AttachmentModel` in the email message.
+        """
         if email.pk is None:
             raise ValueError("Email is not in db!")
         SAVE_MAINTYPES = get_config("SAVE_CONTENT_TYPE_PREFIXES")
@@ -213,23 +221,24 @@ class AttachmentModel(
                 and content_subtype not in IGNORE_SUBTYPES
             ):
                 part_payload = part.get_payload(decode=True)
-                new_attachment = cls(
-                    file_name=(
-                        part.get_filename()
-                        or md5(  # noqa: S324  # no safe hash required here
-                            part_payload
-                        ).hexdigest()
-                        + f".{content_subtype}"
-                    ),
-                    content_disposition=content_disposition or "",
-                    content_id=part.get(HeaderFields.CONTENT_ID, ""),
-                    content_maintype=content_maintype,
-                    content_subtype=content_subtype,
-                    datasize=len(part_payload),
-                    email=email,
-                )
-                new_attachment.save(attachment_payload=part_payload)
-                new_attachments.append(new_attachment)
+                if isinstance(part_payload, bytes):
+                    new_attachment = cls(
+                        file_name=(
+                            part.get_filename()
+                            or md5(  # noqa: S324  # no safe hash required here
+                                part_payload
+                            ).hexdigest()
+                            + f".{content_subtype}"
+                        ),
+                        content_disposition=content_disposition or "",
+                        content_id=part.get(HeaderFields.CONTENT_ID, ""),
+                        content_maintype=content_maintype,
+                        content_subtype=content_subtype,
+                        datasize=len(part_payload),
+                        email=email,
+                    )
+                    new_attachment.save(attachment_payload=part_payload)
+                    new_attachments.append(new_attachment)
         return new_attachments
 
     @override

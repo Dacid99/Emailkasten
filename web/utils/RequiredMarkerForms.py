@@ -34,7 +34,10 @@ class RequiredMarkerModelForm(ModelForm):
         super().__init__(*args, **kwargs)
         for field_name in self.fields:
             if self.fields[field_name].required:
-                self.fields[field_name].label += self.required_marker
+                if self.fields[field_name].label is not None:
+                    self.fields[field_name].label += self.required_marker  # type: ignore[operator]  #  adding StrPromises is fine
+                else:
+                    self.fields[field_name].label = self.required_marker
 
 
 class RequiredMarkerForm(Form):
@@ -47,4 +50,7 @@ class RequiredMarkerForm(Form):
         super().__init__(*args, **kwargs)
         for field_name in self.fields:
             if self.fields[field_name].required:
-                self.fields[field_name].label += self.required_marker
+                if self.fields[field_name].label is not None:
+                    self.fields[field_name].label += self.required_marker  # type: ignore[operator]  #  adding StrPromises is fine
+                else:
+                    self.fields[field_name].label = self.required_marker

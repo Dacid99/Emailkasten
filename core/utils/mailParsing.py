@@ -42,7 +42,7 @@ from Emailkasten.utils.workarounds import get_config
 if TYPE_CHECKING:
     import datetime
     from email.header import Header
-    from email.message import EmailMessage, Message
+    from email.message import Message
 
 logger = logging.getLogger(__name__)
 
@@ -127,7 +127,15 @@ def parseDatetimeHeader(dateHeader: str | None) -> datetime.datetime:
     return parsedDatetime
 
 
-def get_bodytexts(email_message: EmailMessage) -> dict[str, str]:
+def get_bodytexts(email_message: Message[str, str]) -> dict[str, str]:
+    """Parses the various bodytexts from a :class:`email.message.Message`.
+
+    Args:
+        email_message: The message to parse the bodytexts from.
+
+    Returns:
+        A dict containing the bodytexts with their contenttypes as keys.
+    """
     bodytexts = {}
     for part in email_message.walk():
         content_maintype = part.get_content_maintype()
