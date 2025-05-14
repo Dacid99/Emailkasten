@@ -96,9 +96,9 @@ class EMailCorrespondentsModel(models.Model):
             "mention": self.mention,
         }
 
-    @staticmethod
+    @classmethod
     def createFromHeader(
-        header: str, headerName: str, email: EMailModel
+        cls, header: str, headerName: str, email: EMailModel
     ) -> list[EMailCorrespondentsModel] | None:
         """Prepares a list :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` from an email header.
 
@@ -124,7 +124,7 @@ class EMailCorrespondentsModel(models.Model):
             )
             if new_correspondent is None:
                 continue
-            new_emailCorrespondent = EMailCorrespondentsModel(
+            new_emailCorrespondent = cls(
                 correspondent=new_correspondent, email=email, mention=headerName
             )
             new_emailCorrespondent.save()

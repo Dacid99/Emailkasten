@@ -97,13 +97,13 @@ def test_MailingListModel_unique_constraints(mailingListModel):
 
 
 @pytest.mark.django_db
-def test_MailingListModel_fromEmailMessage_success(
+def test_MailingListModel_createFromEmailMessage_success(
     mocker, mock_message, mock_getHeader
 ):
-    """Tests :func:`core.models.MailingListModel.MailingListModel.fromEmailMessage`
+    """Tests :func:`core.models.MailingListModel.MailingListModel.createFromEmailMessage`
     in case of success.
     """
-    result = MailingListModel.fromEmailMessage(mock_message)
+    result = MailingListModel.createFromEmailMessage(mock_message)
 
     assert mock_getHeader.call_count == 7
     mock_getHeader.assert_has_calls(
@@ -118,6 +118,7 @@ def test_MailingListModel_fromEmailMessage_success(
         ]
     )
     assert isinstance(result, MailingListModel)
+    assert result.pk is not None
     assert result.list_id == mock_getHeader.return_value
     assert result.list_owner == mock_getHeader.return_value
     assert result.list_post == mock_getHeader.return_value
@@ -128,29 +129,29 @@ def test_MailingListModel_fromEmailMessage_success(
 
 
 @pytest.mark.django_db
-def test_MailingListModel_fromEmailMessage_duplicate(
+def test_MailingListModel_createFromEmailMessage_duplicate(
     mailingListModel, mock_message, mock_getHeader
 ):
-    """Tests :func:`core.models.MailingListModel.MailingListModel.fromEmailMessage`
+    """Tests :func:`core.models.MailingListModel.MailingListModel.createFromEmailMessage`
     in case the mailinglist to be prepared is already in the database.
     """
     mock_getHeader.return_value = mailingListModel.list_id
-    result = MailingListModel.fromEmailMessage(mock_message)
+    result = MailingListModel.createFromEmailMessage(mock_message)
 
     assert result == mailingListModel
     mock_getHeader.assert_called_once_with(mock_message, "List-Id")
 
 
 @pytest.mark.django_db
-def test_MailingListModel_fromEmailMessage_no_list_id(
+def test_MailingListModel_createFromEmailMessage_no_list_id(
     mock_message, mock_logger, mock_getHeader
 ):
-    """Tests :func:`core.models.MailingListModel.MailingListModel.fromEmailMessage`
+    """Tests :func:`core.models.MailingListModel.MailingListModel.createFromEmailMessage`
     in case there is no List-Id in the message argument.
     """
     mock_getHeader.return_value = None
 
-    result = MailingListModel.fromEmailMessage(mock_message)
+    result = MailingListModel.createFromEmailMessage(mock_message)
 
     assert result is None
     mock_getHeader.assert_called_once_with(mock_message, "List-Id")

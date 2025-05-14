@@ -34,6 +34,7 @@ from core.mixins.FavoriteMixin import FavoriteMixin
 from core.mixins.HasDownloadMixin import HasDownloadMixin
 from core.mixins.HasThumbnailMixin import HasThumbnailMixin
 from core.mixins.URLMixin import URLMixin
+from Emailkasten.utils.workarounds import get_config
 
 from ..utils.fileManagment import clean_filename, saveStore
 from .StorageModel import StorageModel
@@ -126,10 +127,10 @@ class AttachmentModel(
         Saves the data to storage if configured.
         """
         self.file_name = clean_filename(self.file_name)
-        attachmentData = kwargs.pop("attachmentData", None)
+        attachment_payload = kwargs.pop("attachment_payload", None)
         super().save(*args, **kwargs)
-        if attachmentData is not None and self.email.mailbox.save_attachments:
-            self.save_to_storage(attachmentData)
+        if attachment_payload is not None and self.email.mailbox.save_attachments:
+            self.save_to_storage(attachment_payload)
 
     @override
     def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
@@ -152,7 +153,7 @@ class AttachmentModel(
 
         return delete_return
 
-    def save_to_storage(self, attachmentData: Message[str, str]) -> None:
+    def save_to_storage(self, attachment_payload: bytes) -> None:
         """Saves the attachment file to the storage.
 
         If the file already exists, does not overwrite.
@@ -174,17 +175,9 @@ class AttachmentModel(
 
         logger.debug("Storing %s ...", self)
 
-        payload = attachmentData.get_payload(decode=True)
-        if not isinstance(payload, bytes):
-            logger.error(
-                "UNEXPECTED: attachment payload was of type %s.", type(payload)
-            )
-            logger.error("Failed to store %s!", self)
-            return
-
         dirPath = StorageModel.getSubdirectory(self.email.message_id)
         preliminary_file_path = os.path.join(dirPath, self.file_name)
-        file_path = writeAttachment(preliminary_file_path, payload)
+        file_path = writeAttachment(preliminary_file_path, attachment_payload)
         if file_path:
             self.file_path = file_path
             self.save(update_fields=["file_path"])
@@ -192,35 +185,44 @@ class AttachmentModel(
         else:
             logger.error("Failed to store %s!", self)
 
-    @staticmethod
-    def fromData(
-        attachmentData: Message[str, str], email: EMailModel
-    ) -> AttachmentModel:
-        """Prepares a :class:`core.models.AttachmentModel.AttachmentModel` from attachment payload in bytes.
-
-        Args:
-            attachmentData: The attachment in bytes.
-            email: The email the attachment was a part of.
-
-        Returns:
-            The :class:`core.models.AttachmentModel.AttachmentModel` instance with the file data.
-        """
-        new_attachment = AttachmentModel()
-        new_attachment.file_name = (
-            attachmentData.get_filename()
-            or md5(  # noqa: S324  # no safe hash required here
-                attachmentData.as_bytes()
-            ).hexdigest()
-            + f".{attachmentData.get_content_subtype()}"
-        )
-        new_attachment.content_disposition = (
-            attachmentData.get_content_disposition() or ""
-        )
-        new_attachment.content_type = attachmentData.get_content_type()
-        new_attachment.datasize = len(attachmentData.as_bytes())
-        new_attachment.email = email
-
-        return new_attachment
+    @classmethod
+    def createFromEmailMessage(
+        cls, email_message: Message[str, str], email: EMailModel
+    ) -> list[AttachmentModel]:
+        if email.pk is None:
+            raise ValueError("Email is not in db!")
+        SAVE_MAINTYPES = get_config("SAVE_CONTENT_TYPE_PREFIXES")
+        IGNORE_SUBTYPES = get_config("DONT_SAVE_CONTENT_TYPE_SUFFIXES")
+        new_attachments = []
+        for part in email_message.walk():
+            if part.is_multipart():
+                # for safe get_payload
+                continue
+            content_disposition = part.get_content_disposition()
+            content_type = part.get_content_type()
+            if content_disposition or (
+                any(content_type.startswith(maintype) for maintype in SAVE_MAINTYPES)
+                and not any(
+                    content_type.endswith(subtype) for subtype in IGNORE_SUBTYPES
+                )
+            ):
+                part_payload = part.get_payload(decode=True)
+                new_attachment = cls(
+                    file_name=(
+                        part.get_filename()
+                        or md5(  # noqa: S324  # no safe hash required here
+                            part_payload
+                        ).hexdigest()
+                        + f".{content_type.rsplit("/", maxsplit=1)[-1]}"
+                    ),
+                    content_disposition=content_disposition or "",
+                    content_type=content_type,
+                    datasize=len(part_payload),
+                    email=email,
+                )
+                new_attachment.save(attachment_payload=part_payload)
+                new_attachments.append(new_attachment)
+        return new_attachments
 
     @override
     @property

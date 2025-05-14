@@ -42,7 +42,7 @@ from Emailkasten.utils.workarounds import get_config
 if TYPE_CHECKING:
     import datetime
     from email.header import Header
-    from email.message import Message
+    from email.message import EmailMessage, Message
 
 logger = logging.getLogger(__name__)
 
@@ -62,18 +62,11 @@ def decodeHeader(header: Header | str) -> str:
     decodedFragments = email.header.decode_header(header)
     decodedString = ""
     for fragment, charset in decodedFragments:
-        if not charset:
-            decodedString += (
-                fragment.decode(errors="replace")
-                if isinstance(fragment, bytes)
-                else fragment
-            )
-        else:
-            decodedString += (
-                fragment.decode(charset, errors="replace")
-                if isinstance(fragment, bytes)
-                else fragment
-            )
+        decodedString += (
+            fragment.decode(charset if charset else "utf-8", errors="replace")
+            if isinstance(fragment, bytes)
+            else fragment
+        )
 
     return decodedString
 
@@ -134,6 +127,16 @@ def parseDatetimeHeader(dateHeader: str | None) -> datetime.datetime:
     return parsedDatetime
 
 
+def get_bodytexts(email_message: EmailMessage) -> dict[str, str]:
+    bodytexts = {}
+    for part in email_message.walk():
+        content_maintype = part.get_content_maintype()
+        content_subtype = part.get_content_subtype()
+        if content_maintype == "text" and not part.get_content_disposition():
+            bodytexts[content_subtype] = part.get_content()
+    return bodytexts
+
+
 def parseMailboxName(mailboxBytes: bytes) -> str:
     """Parses the mailbox name as received by the `fetchMailboxes` method in :mod:`core.utils.fetchers`.
 
@@ -159,11 +162,14 @@ def eml2html(emailBytes: bytes) -> str:
     Args:
         emailBytes: The data of the mail to be converted.
 
+    Todo:
+        ignoreplaintext mechanism may ignore too broadly
+
     Returns:
         The html representation of the email.
     """
     emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
-    ignorePlainText = False  # ignores too broadly!
+    ignorePlainText = False
 
     htmlWrapper = get_config("HTML_WRAPPER")
     html = ""

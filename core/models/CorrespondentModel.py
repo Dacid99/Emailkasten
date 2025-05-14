@@ -79,9 +79,9 @@ class CorrespondentModel(URLMixin, FavoriteMixin, models.Model):
             "email_address": self.email_address
         }
 
-    @staticmethod
+    @classmethod
     def createFromCorrespondentTuple(
-        correspondentTuple: tuple[str, str],
+        cls, correspondentTuple: tuple[str, str]
     ) -> CorrespondentModel | None:
         """Prepares a :class:`core.models.CorrespondentModel.CorrespondentModel` from email header data.
 
@@ -101,10 +101,8 @@ class CorrespondentModel(URLMixin, FavoriteMixin, models.Model):
             )
             return None
         try:
-            return CorrespondentModel.objects.get(email_address=address)
-        except CorrespondentModel.DoesNotExist:
-            new_correspondent = CorrespondentModel(
-                email_address=address, email_name=name
-            )
-            new_correspondent.save()
-            return new_correspondent
+            correspondent = cls.objects.get(email_address=address)
+        except cls.DoesNotExist:
+            correspondent = cls(email_address=address, email_name=name)
+            correspondent.save()
+        return correspondent

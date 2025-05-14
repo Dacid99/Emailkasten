@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import email
 import logging
 import os
@@ -42,7 +43,7 @@ from core.utils.fileManagment import clean_filename, saveStore
 from core.utils.mailParsing import eml2html, is_X_Spam
 from Emailkasten.utils.workarounds import get_config
 
-from ..utils.mailParsing import getHeader, parseDatetimeHeader
+from ..utils.mailParsing import get_bodytexts, getHeader, parseDatetimeHeader
 from .AttachmentModel import AttachmentModel
 from .MailingListModel import MailingListModel
 from .StorageModel import StorageModel
@@ -311,7 +312,7 @@ class EMailModel(
             The list of all mails in the subconversation.
         """
         subConversationEmails = [self]
-        for replyEmail in self.replies.all():
+        for replyEmail in self.replies.all().prefetch_related("replies"):
             subConversationEmails.extend(replyEmail.subConversation())
         return subConversationEmails
 
@@ -337,9 +338,35 @@ class EMailModel(
         """
         return is_X_Spam(self.x_spam)
 
-    @staticmethod
+    @classmethod
+    def fillFromEmailBytes(cls, email_bytes: bytes):
+        email_message = email.message_from_bytes(email_bytes, policy=policy.default)
+        headerDict = {}
+        for headerName in email_message:
+            headerDict[headerName] = getHeader(email_message, headerName)
+        inReplyTo_message_id = headerDict.get(HeaderFields.IN_REPLY_TO)
+        inReplyTo = None
+        if inReplyTo_message_id:
+            with contextlib.suppress(EMailModel.DoesNotExist):
+                inReplyTo = EMailModel.objects.get(message_id=inReplyTo_message_id)
+        bodytexts = get_bodytexts(email_message)
+        return cls(
+            headers=headerDict,
+            message_id=headerDict.get(
+                HeaderFields.MESSAGE_ID, md5(email_bytes).hexdigest()
+            ),
+            datetime=parseDatetimeHeader(headerDict.get(HeaderFields.DATE)),
+            email_subject=headerDict.get(HeaderFields.SUBJECT, __("No subject")),
+            inReplyTo=inReplyTo,
+            x_spam=headerDict.get(HeaderFields.X_SPAM, ""),
+            datasize=len(email_bytes),
+            plain_bodytext=bodytexts.get("plain", ""),
+            html_bodytext=bodytexts.get("html", ""),
+        )
+
+    @classmethod
     def createFromEmailBytes(
-        emailBytes: bytes, mailbox: MailboxModel
+        cls, emailBytes: bytes, mailbox: MailboxModel
     ) -> EMailModel | None:
         """Creates an :class:`core.models.EMailModel.EMailModel` from an email in bytes form.
 
@@ -371,7 +398,7 @@ class EMailModel(
             )
             return None
 
-        if EMailModel.objects.filter(message_id=message_id, mailbox=mailbox).exists():
+        if cls.objects.filter(message_id=message_id, mailbox=mailbox).exists():
             logger.debug(
                 "Skipping email with Message-ID %s in %s, it already exists in the db.",
                 message_id,
@@ -379,97 +406,25 @@ class EMailModel(
             )
             return None
 
-        new_email = EMailModel(message_id=message_id, mailbox=mailbox, x_spam=x_spam)
-        new_email.datetime = parseDatetimeHeader(
-            getHeader(emailMessage, HeaderFields.DATE)
-        )
-        new_email.email_subject = getHeader(emailMessage, HeaderFields.SUBJECT) or __(
-            "No subject"
-        )
-        new_email.datasize = len(emailBytes)
+        new_email = cls.fillFromEmailBytes(email_bytes=emailBytes)
+        new_email.mailbox = mailbox
 
-        inReplyTo_message_id = getHeader(emailMessage, HeaderFields.IN_REPLY_TO)
-        if inReplyTo_message_id:
-            try:
-                new_email.inReplyTo = EMailModel.objects.get(
-                    message_id=inReplyTo_message_id
-                )
-            except EMailModel.DoesNotExist:
-                new_email.inReplyTo = None
-
-        new_email.mailinglist = MailingListModel.fromEmailMessage(emailMessage)
-
-        headerDict = {}
-        for headerName in emailMessage:
-            headerDict[headerName] = getHeader(emailMessage, headerName)
-        new_email.headers = headerDict
-
-        new_email.plain_bodytext = ""
-        new_email.html_bodytext = ""
-        attachments = []
-        for part in emailMessage.walk():
-            contentType = part.get_content_type()
-            contentDisposition = part.get_content_disposition()
-            # The order in this switch is crucial
-            # Rare email parts should be in the back
-            if contentType == "text/plain":
-                payload = part.get_payload(decode=True)
-                charset = part.get_content_charset("utf-8")
-                if isinstance(payload, bytes):
-                    new_email.plain_bodytext += payload.decode(
-                        charset, errors="replace"
-                    )
-                else:
-                    logger.debug(
-                        "UNEXPECTED: %s part payload was of type %s.",
-                        contentType,
-                        type(payload),
-                    )
-            elif contentType == "text/html":
-                payload = part.get_payload(decode=True)
-                charset = part.get_content_charset("utf-8")
-                if isinstance(payload, bytes):
-                    new_email.html_bodytext += payload.decode(charset, errors="replace")
-                else:
-                    logger.debug(
-                        "UNEXPECTED: %s part payload was of type %s.",
-                        contentType,
-                        type(payload),
-                    )
-            elif contentDisposition in ["inline", "attachment"] or (
-                any(
-                    contentType.startswith(type_to_save)
-                    for type_to_save in get_config("SAVE_CONTENT_TYPE_PREFIXES")
-                )
-                and not any(
-                    contentType.endswith(type_to_skip)
-                    for type_to_skip in get_config("DONT_SAVE_CONTENT_TYPE_SUFFIXES")
-                )
-            ):
-                attachments.append(
-                    (AttachmentModel.fromData(part, email=new_email), part)
-                )
-            else:
-                logger.debug(
-                    "Part %s with disposition %s of email %s was not parsed.",
-                    contentType,
-                    contentDisposition,
-                    new_email.message_id,
-                )
         logger.debug("Successfully parsed email.")
         try:
             with transaction.atomic():
-                if new_email.mailinglist:
-                    new_email.mailinglist.save()
+                new_email.mailinglist = MailingListModel.createFromEmailMessage(
+                    emailMessage
+                )
                 new_email.save(emailData=emailBytes)
                 for mention in HeaderFields.Correspondents.values:
-                    correspondentHeader = getHeader(emailMessage, mention)
+                    correspondentHeader = new_email.headers.get(mention)
                     if correspondentHeader:
                         EMailCorrespondentsModel.createFromHeader(
                             correspondentHeader, mention, new_email
                         )
-                for attachment, data in attachments:
-                    attachment.save(attachmentData=data)
+                attachments = AttachmentModel.createFromEmailMessage(
+                    emailMessage, new_email
+                )
         except Exception:
             logger.exception(
                 "Failed creating email from bytes: Error while saving email to db!"

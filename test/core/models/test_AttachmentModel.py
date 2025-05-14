@@ -23,6 +23,7 @@ Fixtures:
 """
 
 import datetime
+import email
 import os
 
 import pytest
@@ -33,6 +34,8 @@ from model_bakery import baker
 import core.models.AttachmentModel
 from core.models.AttachmentModel import AttachmentModel
 from core.models.EMailModel import EMailModel
+
+from ...conftest import TEST_EMAIL_PARAMETERS
 
 
 @pytest.fixture(autouse=True)
@@ -202,18 +205,15 @@ def test_AttachmentModel_delete_attachmentfile_delete_error(
 
 @pytest.mark.django_db
 def test_save_to_storage_success(
-    faker,
-    mock_message,
+    fake_file_bytes,
     attachmentModel,
     mock_logger,
     mock_open,
     mock_StorageModel_getSubdirectory,
 ):
-    fake_message_payload = faker.text().encode()
-    mock_message.get_payload.return_value = fake_message_payload
     attachmentModel.file_path = None
 
-    attachmentModel.save_to_storage(mock_message)
+    attachmentModel.save_to_storage(fake_file_bytes)
 
     mock_StorageModel_getSubdirectory.assert_called_once_with(
         attachmentModel.email.message_id
@@ -224,7 +224,7 @@ def test_save_to_storage_success(
         ),
         "wb",
     )
-    mock_open.return_value.write.assert_called_once_with(fake_message_payload)
+    mock_open.return_value.write.assert_called_once_with(fake_file_bytes)
     attachmentModel.refresh_from_db()
     assert attachmentModel.file_path == os.path.join(
         mock_StorageModel_getSubdirectory.return_value, attachmentModel.file_name
@@ -258,19 +258,16 @@ def test_save_to_storage_file_path_set(
 
 @pytest.mark.django_db
 def test_save_to_storage_open_osError(
-    faker,
-    mock_message,
+    fake_file_bytes,
     attachmentModel,
     mock_logger,
     mock_open,
     mock_StorageModel_getSubdirectory,
 ):
-    fake_message_payload = faker.text().encode()
-    mock_message.get_payload.return_value = fake_message_payload
     attachmentModel.file_path = None
     mock_open.side_effect = OSError
 
-    attachmentModel.save_to_storage(mock_message)
+    attachmentModel.save_to_storage(fake_file_bytes)
 
     mock_StorageModel_getSubdirectory.assert_called_once_with(
         attachmentModel.email.message_id
@@ -289,19 +286,17 @@ def test_save_to_storage_open_osError(
 
 @pytest.mark.django_db
 def test_save_to_storage_write_osError(
-    faker,
+    fake_file_bytes,
     mock_message,
     attachmentModel,
     mock_logger,
     mock_open,
     mock_StorageModel_getSubdirectory,
 ):
-    fake_message_payload = faker.text().encode()
-    mock_message.get_payload.return_value = fake_message_payload
     attachmentModel.file_path = None
     mock_open.return_value.write.side_effect = OSError
 
-    attachmentModel.save_to_storage(mock_message)
+    attachmentModel.save_to_storage(fake_file_bytes)
 
     mock_StorageModel_getSubdirectory.assert_called_once_with(
         attachmentModel.email.message_id
@@ -312,7 +307,7 @@ def test_save_to_storage_write_osError(
         ),
         "wb",
     )
-    mock_open.return_value.write.assert_called_once_with(fake_message_payload)
+    mock_open.return_value.write.assert_called_once_with(fake_file_bytes)
     assert attachmentModel.file_path is None
     mock_logger.debug.assert_called()
     mock_logger.error.assert_called()
@@ -322,7 +317,7 @@ def test_save_to_storage_write_osError(
 @pytest.mark.parametrize("save_attachments, expectedCalls", [(True, 1), (False, 0)])
 def test_AttachmentModel_save_with_data_success(
     attachmentModel,
-    mock_message,
+    fake_file_bytes,
     mock_AttachmentModel_save_to_storage,
     spy_Model_save,
     save_attachments,
@@ -333,7 +328,7 @@ def test_AttachmentModel_save_with_data_success(
     """
     attachmentModel.email.mailbox.save_attachments = save_attachments
 
-    attachmentModel.save(attachmentData=mock_message)
+    attachmentModel.save(attachment_payload=fake_file_bytes)
 
     assert mock_AttachmentModel_save_to_storage.call_count == expectedCalls
     spy_Model_save.assert_called()
@@ -356,7 +351,10 @@ def test_AttachmentModel_save_no_data(
 
 @pytest.mark.django_db
 def test_AttachmentModel_save_with_data_failure(
-    attachmentModel, mock_message, mock_AttachmentModel_save_to_storage, spy_Model_save
+    attachmentModel,
+    fake_file_bytes,
+    mock_AttachmentModel_save_to_storage,
+    spy_Model_save,
 ):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.save`
     in case of the data fails to be saved.
@@ -365,25 +363,44 @@ def test_AttachmentModel_save_with_data_failure(
     attachmentModel.email.mailbox.save_attachmentModels = True
 
     with pytest.raises(AssertionError):
-        attachmentModel.save(attachmentData=mock_message)
+        attachmentModel.save(attachment_payload=fake_file_bytes)
 
     spy_Model_save.assert_called()
     mock_AttachmentModel_save_to_storage.assert_called()
 
 
 @pytest.mark.django_db
-def test_AttachmentModel_fromData(mock_message):
+@pytest.mark.parametrize(
+    "test_email_path, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count",
+    TEST_EMAIL_PARAMETERS,
+)
+def test_AttachmentModel_fromData(
+    emailModel,
+    mock_AttachmentModel_save_to_storage,
+    test_email_path,
+    message_id,
+    subject,
+    attachments_count,
+    correspondents_count,
+    emailcorrespondents_count,
+    x_spam,
+    plain_bodytext,
+    html_bodytext,
+    header_count,
+):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.fromData`
     in case of success.
     """
-    result = AttachmentModel.fromData(mock_message, None)
+    with open(test_email_path, "br") as f:
+        test_email_bytes = f.read()
+    test_emailMessage = email.message_from_bytes(test_email_bytes)
 
-    mock_message.get_filename.assert_called_once_with()
-    mock_message.as_bytes.assert_called_once_with()
-    mock_message.as_bytes.return_value.__len__.assert_called_once()
-    assert isinstance(result, AttachmentModel)
-    assert result.file_name == mock_message.get_filename.return_value
-    assert result.datasize == mock_message.as_bytes.return_value.__len__.return_value
+    result = AttachmentModel.createFromEmailMessage(test_emailMessage, emailModel)
+
+    assert isinstance(result, list)
+    assert all(isinstance(item, AttachmentModel) for item in result)
+    assert len(result) == attachments_count
+    assert mock_AttachmentModel_save_to_storage.call_count == attachments_count
 
 
 @pytest.mark.django_db

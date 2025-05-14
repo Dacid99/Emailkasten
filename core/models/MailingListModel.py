@@ -95,8 +95,10 @@ class MailingListModel(URLMixin, FavoriteMixin, models.Model):
             "list_owner": self.list_owner,
         }
 
-    @staticmethod
-    def fromEmailMessage(emailMessage: Message[str, str]) -> MailingListModel | None:
+    @classmethod
+    def createFromEmailMessage(
+        cls, emailMessage: Message[str, str]
+    ) -> MailingListModel | None:
         """Prepares a :class:`core.models.MailingListModel.MailingListModel` from an email message.
 
         Args:
@@ -115,35 +117,32 @@ class MailingListModel(URLMixin, FavoriteMixin, models.Model):
             )
             return None
         try:
-            return MailingListModel.objects.get(list_id=list_id)
-        except MailingListModel.DoesNotExist:
-            pass
-
-        new_mailinglist = MailingListModel(list_id=list_id)
-        new_mailinglist.list_owner = (
-            getHeader(emailMessage, HeaderFields.MailingList.OWNER) or ""
-        )
-        new_mailinglist.list_subscribe = (
-            getHeader(
-                emailMessage,
-                HeaderFields.MailingList.SUBSCRIBE,
+            mailinglist = cls.objects.get(list_id=list_id)
+        except cls.DoesNotExist:
+            mailinglist = cls(
+                list_id=list_id,
+                list_owner=(
+                    getHeader(emailMessage, HeaderFields.MailingList.OWNER) or ""
+                ),
+                list_subscribe=(
+                    getHeader(emailMessage, HeaderFields.MailingList.SUBSCRIBE) or ""
+                ),
+                list_unsubscribe=(
+                    getHeader(
+                        emailMessage,
+                        HeaderFields.MailingList.UNSUBSCRIBE,
+                    )
+                    or ""
+                ),
+                list_post=(
+                    getHeader(emailMessage, HeaderFields.MailingList.POST) or ""
+                ),
+                list_help=(
+                    getHeader(emailMessage, HeaderFields.MailingList.HELP) or ""
+                ),
+                list_archive=(
+                    getHeader(emailMessage, HeaderFields.MailingList.ARCHIVE) or ""
+                ),
             )
-            or ""
-        )
-        new_mailinglist.list_unsubscribe = (
-            getHeader(
-                emailMessage,
-                HeaderFields.MailingList.UNSUBSCRIBE,
-            )
-            or ""
-        )
-        new_mailinglist.list_post = (
-            getHeader(emailMessage, HeaderFields.MailingList.POST) or ""
-        )
-        new_mailinglist.list_help = (
-            getHeader(emailMessage, HeaderFields.MailingList.HELP) or ""
-        )
-        new_mailinglist.list_archive = (
-            getHeader(emailMessage, HeaderFields.MailingList.ARCHIVE) or ""
-        )
-        return new_mailinglist
+            mailinglist.save()
+        return mailinglist
