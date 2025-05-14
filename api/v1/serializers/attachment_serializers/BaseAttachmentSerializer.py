@@ -56,7 +56,9 @@ class BaseAttachmentSerializer(serializers.ModelSerializer[AttachmentModel]):
         read_only_fields: Final[list[str]] = [
             "file_name",
             "content_disposition",
-            "content_type",
+            "content_id",
+            "content_maintype",
+            "content_subtype",
             "datasize",
             "email",
             "created",

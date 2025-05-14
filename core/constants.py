@@ -113,6 +113,7 @@ class HeaderFields:
     DATE: Final[str] = "Date"
     SUBJECT: Final[str] = "Subject"
     X_SPAM: Final[str] = "X-Spam-Flag"
+    CONTENT_ID: Final[str] = "Content-Id"
 
     class MailingList:
         """Headers that are included in the mailinglists table."""

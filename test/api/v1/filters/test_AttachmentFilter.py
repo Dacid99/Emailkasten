@@ -74,13 +74,53 @@ def test_content_disposition_filter(
 @pytest.mark.parametrize(
     "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
 )
-def test_content_type_filter(
+def test_content_maintype_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
-    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_type` field.
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_maintype` field.
     """
-    query = {"content_type" + lookup_expr: filterquery}
+    query = {"content_maintype" + lookup_expr: filterquery}
+
+    filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
+
+    assert filtered_data.distinct().count() == filtered_data.count()
+    assert filtered_data.count() == len(expected_indices)
+    for data in filtered_data:
+        assert data.id - 1 in expected_indices
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
+)
+def test_content_subtype_filter(
+    attachment_queryset, lookup_expr, filterquery, expected_indices
+):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_subtype` field.
+    """
+    query = {"content_subtype" + lookup_expr: filterquery}
+
+    filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
+
+    assert filtered_data.distinct().count() == filtered_data.count()
+    assert filtered_data.count() == len(expected_indices)
+    for data in filtered_data:
+        assert data.id - 1 in expected_indices
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
+)
+def test_content_id_filter(
+    attachment_queryset, lookup_expr, filterquery, expected_indices
+):
+    """Tests :class:`api.v1.filters.AttachmentFilter.AttachmentFilter`'s filtering
+    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_id` field.
+    """
+    query = {"content_id" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilter(query, queryset=attachment_queryset).qs
 

@@ -20,10 +20,10 @@
 - more daemon logging configs via model
 - streaming daemon logs
 - download for main logfiles
+- fetching in bunches to handle large amounts of emails, fetch as generator
 
 ## To refactor
 
-- explore emailmessage methods
 - consistent naming_style
 - move all signals into models
 - rework test:
@@ -50,7 +50,6 @@
 - more attachment thumbnails
 - fallback for list-id if other list entries are present
 - identification of mailinglists via from
-- sub- and maintype , content-id in attachments
 - time benchmarks in debug log
 
 ### Work in progress

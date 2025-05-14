@@ -424,20 +424,20 @@ def test_AttachmentModel_has_download(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "content_type, expected_has_thumbnail",
+    "content_maintype, expected_has_thumbnail",
     [
         ("", False),
-        ("oo4vuy0s9yn/qwytrhrfvb9", False),
-        ("image/something", True),
-        ("video/whatever", False),
-        ("application/pdf", False),
+        ("oo4vuy0s9yn", False),
+        ("image", True),
+        ("video", False),
+        ("application", False),
     ],
 )
 def test_AttachmentModel_has_thumbnail(
-    attachmentModel, content_type, expected_has_thumbnail
+    attachmentModel, content_maintype, expected_has_thumbnail
 ):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.has_thumbnail` in the two relevant cases."""
-    attachmentModel.content_type = content_type
+    attachmentModel.content_maintype = content_maintype
 
     result = attachmentModel.has_thumbnail
 

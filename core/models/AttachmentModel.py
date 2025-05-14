@@ -30,6 +30,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from core.constants import HeaderFields
 from core.mixins.FavoriteMixin import FavoriteMixin
 from core.mixins.HasDownloadMixin import HasDownloadMixin
 from core.mixins.HasThumbnailMixin import HasThumbnailMixin
@@ -69,8 +70,14 @@ class AttachmentModel(
     content_disposition = models.CharField(blank=True, default="", max_length=255)
     """The disposition of the file. Typically 'attachment', 'inline' or ''."""
 
-    content_type = models.CharField(max_length=255, default="")
-    """The type of the file."""
+    content_id = models.CharField(max_length=255, default="")
+    """The MIME subtype of the file."""
+
+    content_maintype = models.CharField(max_length=255, default="")
+    """The MIME maintype of the file."""
+
+    content_subtype = models.CharField(max_length=255, default="")
+    """The MIME subtype of the file."""
 
     datasize = models.PositiveIntegerField()
     """The filesize of the attachment."""
@@ -199,12 +206,11 @@ class AttachmentModel(
                 # for safe get_payload
                 continue
             content_disposition = part.get_content_disposition()
-            content_type = part.get_content_type()
+            content_maintype = part.get_content_maintype()
+            content_subtype = part.get_content_subtype()
             if content_disposition or (
-                any(content_type.startswith(maintype) for maintype in SAVE_MAINTYPES)
-                and not any(
-                    content_type.endswith(subtype) for subtype in IGNORE_SUBTYPES
-                )
+                content_maintype in SAVE_MAINTYPES
+                and content_subtype not in IGNORE_SUBTYPES
             ):
                 part_payload = part.get_payload(decode=True)
                 new_attachment = cls(
@@ -213,10 +219,12 @@ class AttachmentModel(
                         or md5(  # noqa: S324  # no safe hash required here
                             part_payload
                         ).hexdigest()
-                        + f".{content_type.rsplit("/", maxsplit=1)[-1]}"
+                        + f".{content_subtype}"
                     ),
                     content_disposition=content_disposition or "",
-                    content_type=content_type,
+                    content_id=part.get(HeaderFields.CONTENT_ID, ""),
+                    content_maintype=content_maintype,
+                    content_subtype=content_subtype,
                     datasize=len(part_payload),
                     email=email,
                 )
@@ -232,7 +240,7 @@ class AttachmentModel(
     @override
     @property
     def has_thumbnail(self) -> bool:
-        return self.content_type.startswith("image")
+        return self.content_maintype == "image"
 
     @override
     def get_absolute_thumbnail_url(self) -> str:

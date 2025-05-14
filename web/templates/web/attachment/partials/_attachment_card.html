@@ -7,7 +7,9 @@
 {% endblock card_title %}
 
 {% block card_subtitle %}
-    <div class="card-text">{% translate "MIME-Type" %}: {{ card_object.content_type }}</div>
+    <div class="card-text">
+        {% translate "MIME-Type" %}: {{ card_object.content_maintype }}/{{ card_object.content_subtype }}
+    </div>
 {% endblock card_subtitle %}
 
 {% block start_badges %}

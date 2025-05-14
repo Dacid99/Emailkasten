@@ -32,7 +32,8 @@ class AttachmentFilter(django_filters.FilterSet):
     order = django_filters.OrderingFilter(
         fields=[
             "file_name",
-            "content_type",
+            "content_maintype",
+            "content_subtype",
             "content_disposition",
             "datasize",
             "email__datetime",
@@ -44,8 +45,14 @@ class AttachmentFilter(django_filters.FilterSet):
         field_name="file_name",
         lookup_expr="icontains",
     )
-    content_type__icontains = django_filters.CharFilter(
-        field_name="content_type",
+    content_maintype = django_filters.AllValuesMultipleFilter(
+        field_name="content_maintype",
+    )
+    content_subtype = django_filters.AllValuesMultipleFilter(
+        field_name="content_subtype",
+    )
+    content_id__icontains = django_filters.CharFilter(
+        field_name="content_id",
         lookup_expr="icontains",
     )
     content_disposition = django_filters.AllValuesMultipleFilter(

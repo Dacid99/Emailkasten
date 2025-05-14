@@ -42,8 +42,12 @@ def test_output(attachmentModel, request_context):
     assert serializerData["file_name"] == attachmentModel.file_name
     assert "content_disposition" in serializerData
     assert serializerData["content_disposition"] == attachmentModel.content_disposition
-    assert "content_type" in serializerData
-    assert serializerData["content_type"] == attachmentModel.content_type
+    assert "content_id" in serializerData
+    assert serializerData["content_id"] == attachmentModel.content_id
+    assert "content_maintype" in serializerData
+    assert serializerData["content_maintype"] == attachmentModel.content_maintype
+    assert "content_subtype" in serializerData
+    assert serializerData["content_subtype"] == attachmentModel.content_subtype
     assert "datasize" in serializerData
     assert serializerData["datasize"] == attachmentModel.datasize
     assert "is_favorite" in serializerData
@@ -54,7 +58,7 @@ def test_output(attachmentModel, request_context):
     assert datetime.fromisoformat(serializerData["created"]) == attachmentModel.created
     assert "updated" in serializerData
     assert datetime.fromisoformat(serializerData["updated"]) == attachmentModel.updated
-    assert len(serializerData) == 9
+    assert len(serializerData) == 11
 
 
 @pytest.mark.django_db
@@ -70,7 +74,9 @@ def test_input(attachmentModel, request_context):
     assert "file_path" not in serializerData
     assert "file_name" not in serializerData
     assert "content_disposition" not in serializerData
-    assert "content_type" not in serializerData
+    assert "content_id" not in serializerData
+    assert "content_maintype" not in serializerData
+    assert "content_subtype" not in serializerData
     assert "datasize" not in serializerData
     assert "is_favorite" in serializerData
     assert serializerData["is_favorite"] == attachmentModel.is_favorite

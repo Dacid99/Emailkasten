@@ -43,7 +43,9 @@ class AttachmentFilter(filters.FilterSet):
         fields: ClassVar[dict[str, list[str]]] = {
             "file_name": FilterSetups.TEXT,
             "content_disposition": FilterSetups.TEXT,
-            "content_type": FilterSetups.TEXT,
+            "content_id": FilterSetups.TEXT,
+            "content_maintype": FilterSetups.TEXT,
+            "content_subtype": FilterSetups.TEXT,
             "datasize": FilterSetups.INT,
             "is_favorite": FilterSetups.BOOL,
             "created": FilterSetups.DATETIME,

@@ -316,7 +316,9 @@ def attachmentPayload(faker, emailModel) -> dict[str, Any]:
         AttachmentModel,
         email=emailModel,
         content_disposition=faker.name(),
-        content_type=faker.name(),
+        content_id=faker.name(),
+        content_maintype=faker.name(),
+        content_subtype=faker.name(),
         is_favorite=not AttachmentModel.is_favorite.field.default,
     )
     payload = model_to_dict(attachmentData)

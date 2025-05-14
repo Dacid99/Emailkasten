@@ -31,10 +31,17 @@
             {% translate "Email" %}: <a href="{{ object.email.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.email.message_id }}</a>
         </li>
-        <li class="list-group-item">{% translate "Content Type" %}: {{ object.content_type }}</li>
         <li class="list-group-item">
-            {% translate "Content Disposition" %}: {{ object.content_disposition }}
+            {% translate "Content Type" %}: {{ object.content_maintype }}/{{ object.content_subtype }}
         </li>
+        {% if object.content_disposition %}
+            <li class="list-group-item">
+                {% translate "Content Disposition" %}: {{ object.content_disposition }}
+            </li>
+        {% endif %}
+        {% if object.content_id %}
+            <li class="list-group-item">{% translate "Content Id" %}: {{ object.content_id }}</li>
+        {% endif %}
         <li class="list-group-item">
             {% translate "Size" %}: {{ object.datasize }} {% translate "bytes" %}
         </li>
