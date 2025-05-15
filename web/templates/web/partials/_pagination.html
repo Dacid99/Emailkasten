@@ -1,8 +1,7 @@
 {% load i18n %}
 
-<div class="position-relative align-items-center m-3">
-    <ul class="nav pagination position-absolute start-50 translate-middle-x"
-        aria-label="Page navigation">
+<div class="d-flex align-items-center justify-content-end">
+    <ul class="nav pagination mx-auto" aria-label="Page navigation">
         {% if page_obj.has_previous %}
             <li class="page-item">
                 <a class="page-link"
@@ -30,18 +29,18 @@
             </li>
         {% endif %}
     </ul>
-</div>
-<div class="dropdown position-absolute end-0">
-    <button class="btn btn-outline-primary dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">{% translate "Page Size" %}</button>
-    <ul class="dropdown-menu">
-        {% for page_size_option in config.WEB_PAGE_SIZES_OPTIONS %}
-            <li>
-                <a class="dropdown-item {% if page_size_option == page_size %}active{% endif %}"
-                   href="?page={{ page_obj.number }}&page_size={{ page_size_option }}{% for param, value in query.items %}&{{ param }}={{ value }}{% endfor %}">{{ page_size_option }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="dropdown">
+        <button class="btn btn-outline-primary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">{% translate "Page Size" %}</button>
+        <ul class="dropdown-menu">
+            {% for page_size_option in config.WEB_PAGE_SIZES_OPTIONS %}
+                <li>
+                    <a class="dropdown-item {% if page_size_option == page_size %}active{% endif %}"
+                       href="?page={{ page_obj.number }}&page_size={{ page_size_option }}{% for param, value in query.items %}&{{ param }}={{ value }}{% endfor %}">{{ page_size_option }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>

@@ -41,7 +41,7 @@
 - user divided storage to make file_paths unique again
 - replace daemons with celery, ensure threadsafe db operations in daemons
 - important headers in html repr
-- only show allowed fetching criteria
+- create daemon view
 - favicon.ico for the icon
 - default ssl cert and safest settings
 - more attachment thumbnails

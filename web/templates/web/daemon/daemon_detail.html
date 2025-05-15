@@ -38,12 +38,10 @@
 
 {% block card_subtitle %}
     {% translate "Mailbox" %}: <a href="{{ object.mailbox.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-object.mailbox.name }}</a>
-<br>
-{% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{
-object.mailbox.account.mail_address }}</a>
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.mailbox.name }}</a>
+    <br>
+    {% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.mailbox.account.mail_address }}</a>
 {% endblock card_subtitle %}
 
 {% block card_content %}
