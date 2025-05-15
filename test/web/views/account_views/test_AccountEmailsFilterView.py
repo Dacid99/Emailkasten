@@ -59,6 +59,7 @@ def test_get_auth_owner(accountModel, owner_client, detail_url):
         t.name for t in response.templates
     ]
     assert "page_obj" in response.context
+    assert "page_size" in response.context
     assert "query" in response.context
     assert "account" in response.context
     with open("detaillist.html", "w") as f:

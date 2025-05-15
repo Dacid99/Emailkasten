@@ -36,7 +36,6 @@ class AccountFilterView(LoginRequiredMixin, FilterPageView):
     model = AccountModel
     template_name = "web/account/account_filter_list.html"
     filterset_class = AccountFilter
-    paginate_by = 25
     ordering = ["mail_address"]
 
     @override

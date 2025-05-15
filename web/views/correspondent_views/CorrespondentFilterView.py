@@ -37,7 +37,6 @@ class CorrespondentFilterView(LoginRequiredMixin, FilterPageView):
     template_name = "web/correspondent/correspondent_filter_list.html"
     context_object_name = "correspondents"
     filterset_class = CorrespondentFilter
-    paginate_by = 25
     ordering = ["email_address"]
 
     @override

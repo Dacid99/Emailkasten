@@ -37,7 +37,6 @@ class DaemonFilterView(LoginRequiredMixin, FilterPageView):
     template_name = "web/daemon/daemon_filter_list.html"
     context_object_name = "daemons"
     filterset_class = DaemonFilter
-    paginate_by = 25
     ordering = ["mailbox__name"]
 
     @override

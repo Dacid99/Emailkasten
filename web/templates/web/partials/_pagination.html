@@ -1,0 +1,47 @@
+{% load i18n %}
+
+<div class="position-relative align-items-center m-3">
+    <ul class="nav pagination position-absolute start-50 translate-middle-x"
+        aria-label="Page navigation">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ page_obj.previous_page_number }}&page_size={{ page_size }}{% for param, value in query.items %}&{{ param }}={{ value }}{% endfor %}"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+            </li>
+        {% endif %}
+        {% for page_number in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_number == page_obj.number %}active{% endif %}">
+                <a class="page-link"
+                   href="?page={{ page_number }}&page_size={{ page_size }}{% for param, value in query.items %}&{{ param }}={{ value }}{% endfor %}">{{ page_number }}</a>
+            </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ page_obj.next_page_number }}&page_size={{ page_size }}{% for param, value in query.items %}&{{ param }}={{ value }}{% endfor %}"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+<div class="dropdown position-absolute end-0">
+    <button class="btn btn-outline-primary dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">{% translate "Page Size" %}</button>
+    <ul class="dropdown-menu">
+        {% for page_size_option in config.WEB_PAGE_SIZES_OPTIONS %}
+            <li>
+                <a class="dropdown-item {% if page_size_option == page_size %}active{% endif %}"
+                   href="?page={{ page_obj.number }}&page_size={{ page_size_option }}{% for param, value in query.items %}&{{ param }}={{ value }}{% endfor %}">{{ page_size_option }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

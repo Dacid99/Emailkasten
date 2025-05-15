@@ -20,26 +20,47 @@
 
 from typing import Any, override
 
+from django.db.models import QuerySet
 from django_filters.views import FilterView
+
+from Emailkasten.utils.workarounds import get_config
 
 
 class FilterPageView(FilterView):
     """An extended :class:`django_filters.views.FilterView` with fixed pagination."""
 
+    page_size_kwarg = "page_size"
+    paginate_by = get_config("WEB_DEFAULT_PAGE_SIZE")
+
+    @override
+    def get_paginate_by(self, queryset: QuerySet) -> int:
+        """Extended method to allow variable page sizes.
+
+        Returns:
+            The requested page size or the `paginate_by` value.
+        """
+        return (
+            self.kwargs.get(self.page_size_kwarg)
+            or self.request.GET.get(self.page_size_kwarg)
+            or super().get_paginate_by(queryset)
+        )
+
     @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """Extended method to pass the query parameters to the context.
 
-        Note:
-            Follows the fix proposed in https://jeffpohlmeyer.com/django-filters-with-pagination .
+        References:
+            https://jeffpohlmeyer.com/django-filters-with-pagination
 
         Returns:
             The view's context with added query parameters.
         """
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(
+            page_size=self.get_paginate_by(self.object_list), **kwargs
+        )
         context["query"] = {}
         for query_param, query_value in context["filter"].data.items():
-            if query_param != "page":
+            if not query_param.startswith("page"):
                 context["query"][query_param] = query_value
 
         return context

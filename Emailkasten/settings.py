@@ -134,6 +134,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "constance.context_processors.config",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -378,6 +379,18 @@ CONSTANCE_CONFIG = {
         _("The maximum page size for paginated API response data"),
         int,
     ),
+    "WEB_DEFAULT_PAGE_SIZE": (
+        25,
+        _("The default page size for pagination in the webapp."),
+        int,
+    ),
+    "WEB_PAGE_SIZES_OPTIONS": (
+        [10, 25, 50, 75, 100],
+        _(
+            "The page size options for pagination in the webapp. Should contain the WEB_DEFAULT_PAGE_SIZE value."
+        ),
+        "array",
+    ),
     "DAEMON_CYCLE_PERIOD_DEFAULT": (
         60,
         _("The default cycle period setting of a daemon in seconds"),
@@ -504,5 +517,9 @@ CONSTANCE_FIELDSETS = (
     (
         _("API Settings"),
         ("API_DEFAULT_PAGE_SIZE", "API_MAX_PAGE_SIZE"),
+    ),
+    (
+        _("Web Settings"),
+        ("WEB_DEFAULT_PAGE_SIZE", "WEB_PAGE_SIZES_OPTIONS"),
     ),
 )

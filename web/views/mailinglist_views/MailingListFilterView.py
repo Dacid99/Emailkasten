@@ -37,7 +37,6 @@ class MailingListFilterView(LoginRequiredMixin, FilterPageView):
     template_name = "web/mailinglist/mailinglist_filter_list.html"
     context_object_name = "mailinglists"
     filterset_class = MailingListFilter
-    paginate_by = 25
     ordering = ["-created"]
 
     @override

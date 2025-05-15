@@ -37,7 +37,6 @@ class MailboxFilterView(LoginRequiredMixin, FilterPageView):
     template_name = "web/mailbox/mailbox_filter_list.html"
     context_object_name = "mailboxes"
     filterset_class = MailboxFilter
-    paginate_by = 25
     ordering = ["name"]
 
     @override

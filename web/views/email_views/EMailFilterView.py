@@ -37,7 +37,6 @@ class EMailFilterView(LoginRequiredMixin, FilterPageView):
     template_name = "web/email/email_filter_list.html"
     context_object_name = "emails"
     filterset_class = EMailFilter
-    paginate_by = 25
     ordering = ["-created"]
 
     @override

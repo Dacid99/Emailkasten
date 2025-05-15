@@ -37,7 +37,6 @@ class AttachmentFilterView(LoginRequiredMixin, FilterPageView):
     template_name = "web/attachment/attachment_filter_list.html"
     context_object_name = "attachments"
     filterset_class = AttachmentFilter
-    paginate_by = 25
     ordering = ["file_name"]
 
     @override
