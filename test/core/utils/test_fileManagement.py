@@ -161,8 +161,8 @@ def test_saveStore(
         ("pof/dejfoe", "pof_dejfoe"),
         ("abc etet?t ", "abcetet?t"),
         ("p hnbh~o", "phnbh_o"),
-        ("qwe..e", "qwe__e"),
-        (".<and*~/%>", "_<and*__%>"),
+        ("qwe.ext", "qwe.ext"),
+        ("<and*~/%>", "<and*__%>"),
     ],
 )
 def test_clean_filename(filename, expectedResult):

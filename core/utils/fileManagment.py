@@ -105,10 +105,13 @@ def saveStore(
     return saveStoringFunc
 
 
+DANGEROUS_CHAR_REGEX = r"[/~]"
+
+
 def clean_filename(filename: str) -> str:
     r"""Sanitizes dangerous chars and strips whitespace from a filename.
 
-    Chars /, ., ~ are replaced with _.
+    Chars /, ~ are replaced with _.
 
     Args:
         filename: The filename without extension.
@@ -116,5 +119,5 @@ def clean_filename(filename: str) -> str:
     Returns:
         The cleaned filename without extension.
     """
-    cleaned_filename = re.sub(r"[/\.~]", "_", filename)
+    cleaned_filename = re.sub(DANGEROUS_CHAR_REGEX, "_", filename)
     return re.sub(r"\s+", "", cleaned_filename).strip()
