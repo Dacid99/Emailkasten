@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import os
 import random
+from datetime import UTC, datetime, timedelta, timezone
 from io import BytesIO
 from typing import TYPE_CHECKING
 
@@ -76,67 +77,175 @@ def pytest_configure(config) -> None:
     os.chdir(pytest_ini_dir)
 
 
-# test_email_path, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count
+# test_email_path, expected_email_features, expected_correspondents_features, expected_attachments_features
 TEST_EMAIL_PARAMETERS = [
     (
         "test_emails/attachmentjson.eml",
-        "<e047e14d-2397-435b-baf6-8e8b7423f860@gmail.com>",
-        "Whats up",
-        1,
-        3,
-        5,
-        "NO",
-        "this a test to see how ur doin\r\n\r\n\r\n\r\n\r\n",
-        "",
-        20,
+        {
+            "message_id": "<e047e14d-2397-435b-baf6-8e8b7423f860@bvncmx.com>",
+            "email_subject": "Whats up",
+            "date": datetime(
+                2024, 8, 7, 11, 41, 29, tzinfo=timezone(timedelta(seconds=7200))
+            ),
+            "x_spam": "NO",
+            "plain_bodytext": "this a test to see how ur doin\r\n\r\n\r\n\r\n\r\n",
+            "html_bodytext": "",
+            "header_count": 20,
+        },
+        {
+            "Return-Path": {
+                "mnbvcfg.48ij343regrh8ge5jp02b@bvncmx.com": {"name": ""},
+            },
+            "From": {
+                "mnbvcfg.48ij343regrh8ge5jp02b@bvncmx.com": {
+                    "name": "xsejino mnkfsdfuio"
+                },
+            },
+            "Envelope-To": {
+                "test@48ij343regrh8ge5jp02b.org": {"name": ""},
+            },
+            "To": {
+                "test@48ij343regrh8ge5jp02b.org": {"name": ""},
+            },
+            "Cc": {
+                "sndfbkl48ij343regrh8ge5jp02b@bvncmx.com": {"name": ""},
+            },
+        },
+        {
+            "manifest.json": {
+                "content_maintype": "application",
+                "content_subtype": "json",
+                "content_disposition": "attachment",
+                "content_id": "",
+            }
+        },
     ),
     (
         "test_emails/inlineimage.eml",
-        "<a634b121-4bc0-457d-a08f-a4579b9bb92a@gmail.com>",
-        "more image",
-        1,
-        2,
-        4,
-        "NO",
-        "\r\ntry this\r\n",
-        '<!DOCTYPE html>\r\n<html>\r\n  <head>\r\n\r\n    <meta http-equiv="content-type" content="text/html; charset=UTF-8">\r\n  </head>\r\n  <body>\r\n    <p><img src="cid:part1.DePPID0S.dKVK0mlg@gmail.com" alt=""></p>\r\n    <p><br>\r\n    </p>\r\n    <p>try this<br>\r\n    </p>\r\n  </body>\r\n</html>',
-        21,
+        {
+            "message_id": "<a634b121-4bc0-457d-a08f-a4579b9bb92a@bvncmx.com>",
+            "email_subject": "more image",
+            "date": datetime(
+                2024, 10, 5, 14, 43, 21, tzinfo=timezone(timedelta(seconds=7200))
+            ),
+            "x_spam": "NO",
+            "plain_bodytext": "\r\ntry this\r\n",
+            "html_bodytext": '<!DOCTYPE html>\r\n<html>\r\n  <head>\r\n\r\n    <meta http-equiv="content-type" content="text/html; charset=UTF-8">\r\n  </head>\r\n  <body>\r\n    <p><img src="cid:part1.DePPID0S.dKVK0mlg@bvncmx.com" alt=""></p>\r\n    <p><br>\r\n    </p>\r\n    <p>try this<br>\r\n    </p>\r\n  </body>\r\n</html>',
+            "header_count": 21,
+        },
+        {
+            "Return-Path": {
+                "sndfbkl48ij343regrh8ge5jp02b@bvncmx.com": {"name": ""},
+            },
+            "From": {
+                "sndfbkl48ij343regrh8ge5jp02b@bvncmx.com": {"name": "QNfjq"},
+            },
+            "Envelope-To": {
+                "test@48ij343regrh8ge5jp02b.org": {"name": ""},
+            },
+            "To": {
+                "test@48ij343regrh8ge5jp02b.org": {"name": ""},
+            },
+        },
+        {
+            "Z4md6xHlrYcKHhKK.png": {
+                "content_maintype": "image",
+                "content_subtype": "png",
+                "content_disposition": "inline",
+                "content_id": "<part1.DePPID0S.dKVK0mlg@bvncmx.com>",
+            }
+        },
     ),
     (
         "test_emails/textplain.eml",
-        "<622b772d-0839-4ff3-9f31-2313b0b57040@gmail.com>",
-        "Testmail",
-        0,
-        2,
-        4,
-        "NO",
-        "Hi\r\n\r\nThis is a test!\r\n\r\näöü\r\n\r\nViele Grüße,\r\n\r\nDavid\r\n\r\n",
-        "",
-        22,
+        {
+            "message_id": "<622b772d-0839-4ff3-9f31-2313b0b57040@bvncmx.com>",
+            "email_subject": "Testmail",
+            "date": datetime(
+                2024, 8, 1, 15, 35, 52, tzinfo=timezone(timedelta(seconds=7200))
+            ),
+            "x_spam": "NO",
+            "plain_bodytext": "Hi\r\n\r\nThis is a test!\r\n\r\näöü\r\n\r\nViele Grüße,\r\n\r\nQNfjq\r\n",
+            "html_bodytext": "",
+            "header_count": 22,
+        },
+        {
+            "Return-Path": {
+                "sndfbkl48ij343regrh8ge5jp02b@bvncmx.com": {"name": ""},
+            },
+            "From": {
+                "sndfbkl48ij343regrh8ge5jp02b@bvncmx.com": {"name": "QNfjq"},
+            },
+            "Envelope-To": {
+                "test@48ij343regrh8ge5jp02b.org": {"name": ""},
+            },
+            "To": {
+                "test@48ij343regrh8ge5jp02b.org": {"name": ""},
+            },
+        },
+        {},
     ),
     (
         "test_emails/multipartalternative_basic.eml",
-        "<320b8a44-3d8c-457d-b590-0d33290ae599@myubt.de>",
-        "Welcome back",
-        0,
-        3,
-        4,
-        "NO",
-        "\r\n\r\nSehr geehrte ,\r\n\r\n\r\n\r\nViele Grüße,\r\nDavid\r\n",
-        '<html>\r\n<head>\r\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\r\n</head>\r\n<body>\r\n<div dir="auto"><br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Sehr geehrte ,<!-- tmjah_g_1299e --><br>\r\n<br>\r\n<br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Viele Grüße,<!-- tmjah_g_1299e --><br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->David<!-- tmjah_g_1299e --></div>\r\n</body>\r\n</html>\r\n',
-        21,
+        {
+            "message_id": "<320b8a44-3d8c-457d-b590-0d33290ae599@prov.de>",
+            "email_subject": "Welcome back",
+            "date": datetime(2024, 8, 9, 16, 20, 23, tzinfo=UTC),
+            "x_spam": "NO",
+            "plain_bodytext": "\r\n\r\nSehr geehrte ,\r\n\r\n\r\n\r\nViele Grüße,\r\nDavid\r\n",
+            "html_bodytext": '<html>\r\n<head>\r\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\r\n</head>\r\n<body>\r\n<div dir="auto"><br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Sehr geehrte ,<!-- tmjah_g_1299e --><br>\r\n<br>\r\n<br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Viele Grüße,<!-- tmjah_g_1299e --><br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->David<!-- tmjah_g_1299e --></div>\r\n</body>\r\n</html>\r\n',
+            "header_count": 21,
+        },
+        {
+            "Return-Path": {
+                "prvs=1951f1b812=48ij343regrh8ge5jp02b@uttgjub8.de": {"name": ""},
+            },
+            "From": {
+                "48ij343regrh8ge5jp02b@uttgjub8.de": {"name": "mnkfsdfuio, QNfjq"},
+            },
+            "Envelope-To": {
+                "test@48ij343regrh8ge5jp02b.org": {"name": ""},
+            },
+            "To": {
+                "test@48ij343regrh8ge5jp02b.org": {
+                    "name": "test@48ij343regrh8ge5jp02b.org"
+                },
+            },
+        },
+        {},
     ),
     (
         "test_emails/doubleCC.eml",
-        "<CACjuskUOYbprYYU9-L3CrZ5RjNHdo9c9A4z7pFDC=8JKheDWSQ@mail.gmail.com>",
-        "Test for cc header",
-        0,
-        4,
-        6,
-        "NO",
-        "another test for the correspondents ..\r\n",
-        '<div dir="ltr">another test for the correspondents ..<br></div>\r\n',
-        19,
+        {
+            "message_id": "<CACjuskUOYbprYYU9-L3CrZ5RjNHdo9c9A4z7pFDC=8JKheDWSQ@mail.bvncmx.com>",
+            "email_subject": "Test for cc header",
+            "date": datetime(
+                2024, 10, 18, 17, 11, 50, tzinfo=timezone(timedelta(seconds=7200))
+            ),
+            "x_spam": "NO",
+            "plain_bodytext": "another test for the correspondents ..\r\n",
+            "html_bodytext": '<div dir="ltr">another test for the correspondents ..<br></div>\r\n',
+            "header_count": 19,
+        },
+        {
+            "Return-Path": {
+                "sndfbkl48ij343regrh8ge5jp02b@bvncmx.com": {"name": ""},
+            },
+            "From": {
+                "sndfbkl48ij343regrh8ge5jp02b@bvncmx.com": {"name": "Hungry Burger"},
+            },
+            "Envelope-To": {
+                "test@48ij343regrh8ge5jp02b.org": {"name": ""},
+            },
+            "To": {
+                "test@48ij343regrh8ge5jp02b.org": {"name": ""},
+            },
+            "Cc": {
+                "wehrnfg@48ij343regrh8ge5jp02b.org": {"name": "QNfjq"},
+                "wehrnfg.48ij343regrh8ge5jp02b@picge1.de": {"name": ""},
+            },
+        },
+        {},
     ),
 ]
 
@@ -258,8 +367,10 @@ def emailModel(faker, mailboxModel, mailingListModel) -> EMailModel:
 
 
 @pytest.fixture
-def emailCorrespondentModel(faker, correspondentModel, emailModel) -> EMailModel:
-    """Fixture creating an :class:`core.models.EMailModel.EMailModel`.
+def emailCorrespondentModel(
+    faker, correspondentModel, emailModel
+) -> EMailCorrespondentsModel:
+    """Fixture creating an :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`.
 
     Returns:
         The emailModel instance for testing.

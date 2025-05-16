@@ -640,7 +640,7 @@ def test_EMailModel_isSpam(emailModel, x_spam, expectedResult):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "test_email_path, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count",
+    "test_email_path, expected_email_features, expected_correspondents_features,expected_attachments_features",
     TEST_EMAIL_PARAMETERS,
 )
 def test_EMailModel_createFromEmailBytes_success(
@@ -651,15 +651,9 @@ def test_EMailModel_createFromEmailBytes_success(
     mock_EMailModel_save_html_to_storage,
     mock_AttachmentModel_save_to_storage,
     test_email_path,
-    message_id,
-    subject,
-    attachments_count,
-    correspondents_count,
-    emailcorrespondents_count,
-    x_spam,
-    plain_bodytext,
-    html_bodytext,
-    header_count,
+    expected_email_features,
+    expected_correspondents_features,
+    expected_attachments_features,
 ):
     """Tests :func:`core.models.EMailModel.EMailModel.createFromEmailBytes`
     in case of success.
@@ -668,22 +662,49 @@ def test_EMailModel_createFromEmailBytes_success(
         test_email_bytes = test_email_file.read()
 
     with override_config(THROW_OUT_SPAM=False):
-        emailModel = EMailModel.createFromEmailBytes(
-            test_email_bytes, mailbox=mailboxModel
-        )
+        result = EMailModel.createFromEmailBytes(test_email_bytes, mailbox=mailboxModel)
 
-    assert isinstance(emailModel, EMailModel)
-    assert emailModel.message_id == message_id
-    assert emailModel.email_subject == subject
-    assert emailModel.x_spam == x_spam
-    assert emailModel.plain_bodytext == plain_bodytext
-    assert emailModel.html_bodytext == html_bodytext
-    assert emailModel.attachments.count() == attachments_count
-    assert emailModel.correspondents.distinct().count() == correspondents_count
-    assert emailModel.correspondents.count() == emailcorrespondents_count
-    assert len(emailModel.headers) == header_count
-    assert emailModel.mailbox == mailboxModel
-    if attachments_count > 0:
+    assert isinstance(result, EMailModel)
+    assert result.pk is not None
+    assert result.message_id == expected_email_features["message_id"]
+    assert result.email_subject == expected_email_features["email_subject"]
+    assert result.x_spam == expected_email_features["x_spam"]
+    assert result.plain_bodytext == expected_email_features["plain_bodytext"]
+    assert result.html_bodytext == expected_email_features["html_bodytext"]
+    assert result.attachments.count() == len(expected_attachments_features)
+    for item in result.attachments.all():
+        assert item.file_name in expected_attachments_features
+        assert (
+            item.content_disposition
+            == expected_attachments_features[item.file_name]["content_disposition"]
+        )
+        assert (
+            item.content_maintype
+            == expected_attachments_features[item.file_name]["content_maintype"]
+        )
+        assert (
+            item.content_subtype
+            == expected_attachments_features[item.file_name]["content_subtype"]
+        )
+        assert (
+            item.content_id
+            == expected_attachments_features[item.file_name]["content_id"]
+        )
+    assert result.emailcorrespondents.count() == sum(
+        [
+            len(correspondents)
+            for correspondents in expected_correspondents_features.values()
+        ]
+    )
+    for item in result.emailcorrespondents.all():
+        assert item.mention in expected_correspondents_features
+        assert (
+            item.correspondent.email_address
+            in expected_correspondents_features[item.mention]
+        )
+    assert len(result.headers) == expected_email_features["header_count"]
+    assert result.mailbox == mailboxModel
+    if expected_attachments_features:
         mock_AttachmentModel_save_to_storage.assert_called()
     mock_EMailModel_save_eml_to_storage.assert_called()
     mock_EMailModel_save_html_to_storage.assert_called()

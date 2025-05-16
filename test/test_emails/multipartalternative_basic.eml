@@ -1,22 +1,22 @@
-Return-Path: <prvs=1951f1b812=aderbauer@uni-bayreuth.de>
-Authentication-Results:  kundenserver.de; dkim=pass header.i=@uni-bayreuth.de
-Received: from mailgate01.myubt.de ([132.180.16.213]) by mx.kundenserver.de
+Return-Path: <prvs=1951f1b812=48ij343regrh8ge5jp02b@uttgjub8.de>
+Authentication-Results:  kundenserver.de; dkim=pass header.i=@uttgjub8.de
+Received: from mailgate01.prov.de ([132.180.16.213]) by mx.kundenserver.de
  (mxeue102 [217.72.192.67]) with ESMTPS (Nemesis) id 1M1sTO-1sefGy1VEm-003ris
- for <archiv@aderbauer.org>; Fri, 09 Aug 2024 18:20:24 +0200
-From: "Aderbauer, David" <aderbauer@uni-bayreuth.de>
-To: "archiv@aderbauer.org" <archiv@aderbauer.org>
+ for <test@48ij343regrh8ge5jp02b.org>; Fri, 09 Aug 2024 18:20:24 +0200
+From: "mnkfsdfuio, QNfjq" <48ij343regrh8ge5jp02b@uttgjub8.de>
+To: "test@48ij343regrh8ge5jp02b.org" <test@48ij343regrh8ge5jp02b.org>
 Subject: Welcome back
 Thread-Topic: Welcome back
 Thread-Index: AQHa6ngJGC3BWXuYNUino9aokn79lA==
 Date: Fri, 9 Aug 2024 16:20:23 +0000
-Message-ID: <320b8a44-3d8c-457d-b590-0d33290ae599@myubt.de>
+Message-ID: <320b8a44-3d8c-457d-b590-0d33290ae599@prov.de>
 Accept-Language: de-DE, en-US
 Content-Language: de-DE
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
 x-ms-exchange-messagesentrepresentingtype: 1
 Content-Type: multipart/alternative;
-	boundary="_000_320b8a443d8c457db5900d33290ae599myubtde_"
+	boundary="_000_320b8a443d8c457db5900d33290ae599provde_"
 MIME-Version: 1.0
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=uni-bayreuth.de; s=mail; c=relaxed/relaxed;
  h=from:to:subject:date:message-id:content-type:mime-version;
@@ -24,7 +24,7 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=uni-bayreuth.de; s=mail; c=relax
  b=pXhP0lQjx9VzD4NyXRe85KEMGH341YqvL+8NJwyy1iI1LXpXEoTYk361iqxugt6I4TUc+RnjGtR1
 	EIwwNi8jIby1vXp3+/NR5Wfl2I1MAhueqDBUnkSNTTw+EunuaxpsXVLtii0/iNM8alJ5o/MDG+Lj
 	RSm3ZB1gcQnI/9owXZ0=
-Envelope-To: <archiv@aderbauer.org>
+Envelope-To: <test@48ij343regrh8ge5jp02b.org>
 X-Spam-Flag: NO
 UI-InboundReport: notjunk:1;M01:P0:ExkesKc4wo8=;6Z1b5bnxzOxKK7EXj0FV8Pt0b3m+
  esY3yvD5wm3OqUWvTPmYGTDLVS6S2DAkYCHrvtPpiAJajAGL7xbUoD3fEFluc4oFnTBAsAqzP
@@ -77,15 +77,15 @@ UI-InboundReport: notjunk:1;M01:P0:ExkesKc4wo8=;6Z1b5bnxzOxKK7EXj0FV8Pt0b3m+
  JefLDieqKwjpdARoJvBIRENFU4MgMoZ7GyqmO2BxtpFS/Kf1iVyWEbcYKa1Av46wCRAa900bs
  OYiZEam0KbSjMkyOzbuIX2Ac/hUzl9A=
 
---_000_320b8a443d8c457db5900d33290ae599myubtde_
+--_000_320b8a443d8c457db5900d33290ae599provde_
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 
 DQoNClNlaHIgZ2VlaHJ0ZSAsDQoNCg0KDQpWaWVsZSBHcsO8w59lLA0KRGF2aWQNCg==
 
---_000_320b8a443d8c457db5900d33290ae599myubtde_
+--_000_320b8a443d8c457db5900d33290ae599provde_
 Content-Type: text/html; charset="utf-8"
-Content-ID: <9315DE0004CD3F459BA5976215F4F5CE@uni-bayreuth.de>
+Content-ID: <9315DE0004CD3F459BA5976215F4F5CE@uttgjub8.de>
 Content-Transfer-Encoding: base64
 
 PGh0bWw+DQo8aGVhZD4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0i
@@ -97,4 +97,4 @@ bGUgR3LDvMOfZSw8IS0tIHRtamFoX2dfMTI5OWUgLS0+PGJyPg0KPC9kaXY+DQo8ZGl2IGRpcj0i
 YXV0byI+PCEtLSB0bWphaF9nXzEyOTlzIC0tPkRhdmlkPCEtLSB0bWphaF9nXzEyOTllIC0tPjwv
 ZGl2Pg0KPC9ib2R5Pg0KPC9odG1sPg0K
 
---_000_320b8a443d8c457db5900d33290ae599myubtde_--
+--_000_320b8a443d8c457db5900d33290ae599provde_--

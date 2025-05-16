@@ -1,12 +1,12 @@
-Return-Path: <daveaderbauer@gmail.com>
-Authentication-Results:  kundenserver.de; dkim=pass header.i=@gmail.com
+Return-Path: <sndfbkl48ij343regrh8ge5jp02b@bvncmx.com>
+Authentication-Results:  kundenserver.de; dkim=pass header.i=@bvncmx.com
 Received: from mail-lf1-f46.google.com ([209.85.167.46]) by mx.kundenserver.de
  (mxeue001 [212.227.15.41]) with ESMTPS (Nemesis) id 1McJLw-1teRih1oeS-00hjKk
- for <archiv@aderbauer.org>; Fri, 18 Oct 2024 17:12:03 +0200
+ for <test@48ij343regrh8ge5jp02b.org>; Fri, 18 Oct 2024 17:12:03 +0200
 Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-53a0c160b94so130338e87.2;
         Fri, 18 Oct 2024 08:12:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729264323; x=1729869123; darn=aderbauer.org;
+        d=bvncmx.com; s=20230601; t=1729264323; x=1729869123; darn=48ij343regrh8ge5jp02b.org;
         h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
         bh=WN+lQFxVeYV1HvvVqhFVEv/nyI6C4OK1ys7PEYn/Mso=;
@@ -35,14 +35,14 @@ X-Received: by 2002:a05:6512:2305:b0:537:a824:7e5 with SMTP id
  2adb3069b0e04-53a15219ad7mr2122165e87.18.1729264322432; Fri, 18 Oct 2024
  08:12:02 -0700 (PDT)
 MIME-Version: 1.0
-From: Hungry Burger <daveaderbauer@gmail.com>
+From: Hungry Burger <sndfbkl48ij343regrh8ge5jp02b@bvncmx.com>
 Date: Fri, 18 Oct 2024 17:11:50 +0200
-Message-ID: <CACjuskUOYbprYYU9-L3CrZ5RjNHdo9c9A4z7pFDC=8JKheDWSQ@mail.gmail.com>
+Message-ID: <CACjuskUOYbprYYU9-L3CrZ5RjNHdo9c9A4z7pFDC=8JKheDWSQ@mail.bvncmx.com>
 Subject: Test for cc header
-To: archiv@aderbauer.org
-Cc: David <david@aderbauer.org>, david.aderbauer@gmx.de
+To: test@48ij343regrh8ge5jp02b.org
+Cc: QNfjq <wehrnfg@48ij343regrh8ge5jp02b.org>, wehrnfg.48ij343regrh8ge5jp02b@picge1.de
 Content-Type: multipart/alternative; boundary="000000000000a959430624c1b927"
-Envelope-To: <archiv@aderbauer.org>
+Envelope-To: <test@48ij343regrh8ge5jp02b.org>
 X-Spam-Flag: NO
 UI-InboundReport: notjunk:1;M01:P0:P5UTFk76TyA=;B+mQeW6RbUVtlrkXmyzuqV68kb7w
  BKrDXWtRYg2lq5gfqT9w3POW4VPCrOEv5Xl7QcMBKifq2nV0t0MKR3Qicb0E3cmRKl6v1dfLd

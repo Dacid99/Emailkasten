@@ -18,7 +18,9 @@
 
 """Test module for :mod:`core.utils.mailParsing`."""
 
+import email
 from datetime import datetime
+from email import policy
 from email.message import EmailMessage
 from email.utils import format_datetime
 
@@ -214,20 +216,14 @@ def test_parseMailboxName_success(nameBytes, expectedName):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "test_email_path, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count",
+    "test_email_path, expected_email_features, expected_correspondents_features,expected_attachments_features",
     TEST_EMAIL_PARAMETERS,
 )
 def test_eml2html(
     test_email_path,
-    message_id,
-    subject,
-    attachments_count,
-    correspondents_count,
-    emailcorrespondents_count,
-    x_spam,
-    plain_bodytext,
-    html_bodytext,
-    header_count,
+    expected_email_features,
+    expected_correspondents_features,
+    expected_attachments_features,
 ):
     with open(test_email_path, "br") as test_email_file:
         test_email_bytes = test_email_file.read()
@@ -235,6 +231,30 @@ def test_eml2html(
     result = mailParsing.eml2html(test_email_bytes)
 
     assert result
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "test_email_path, expected_email_features, expected_correspondents_features,expected_attachments_features",
+    TEST_EMAIL_PARAMETERS,
+)
+def test_get_bodytexts(
+    test_email_path,
+    expected_email_features,
+    expected_correspondents_features,
+    expected_attachments_features,
+):
+    with open(test_email_path, "br") as test_email_file:
+        test_emailMessage = email.message_from_bytes(
+            test_email_file.read(), policy=policy.default
+        )
+
+    result = mailParsing.get_bodytexts(test_emailMessage)
+
+    assert ("plain" in result) is bool(expected_email_features["plain_bodytext"])
+    assert result.get("plain", "") == expected_email_features["plain_bodytext"]
+    assert ("html" in result) is bool(expected_email_features["html_bodytext"])
+    assert result.get("html", "") == expected_email_features["html_bodytext"]
 
 
 @pytest.mark.parametrize(

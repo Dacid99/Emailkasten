@@ -367,22 +367,16 @@ def test_AttachmentModel_save_with_data_failure(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "test_email_path, message_id, subject, attachments_count, correspondents_count, emailcorrespondents_count, x_spam, plain_bodytext, html_bodytext, header_count",
+    "test_email_path, expected_email_features, expected_correspondents_features,expected_attachments_features",
     TEST_EMAIL_PARAMETERS,
 )
 def test_AttachmentModel_fromData(
     emailModel,
     mock_AttachmentModel_save_to_storage,
     test_email_path,
-    message_id,
-    subject,
-    attachments_count,
-    correspondents_count,
-    emailcorrespondents_count,
-    x_spam,
-    plain_bodytext,
-    html_bodytext,
-    header_count,
+    expected_email_features,
+    expected_correspondents_features,
+    expected_attachments_features,
 ):
     """Tests :func:`core.models.AttachmentModel.AttachmentModel.fromData`
     in case of success.
@@ -395,8 +389,29 @@ def test_AttachmentModel_fromData(
 
     assert isinstance(result, list)
     assert all(isinstance(item, AttachmentModel) for item in result)
-    assert len(result) == attachments_count
-    assert mock_AttachmentModel_save_to_storage.call_count == attachments_count
+    assert len(result) == len(expected_attachments_features)
+    for item in result:
+        assert item.pk is not None
+        assert item.file_name in expected_attachments_features
+        assert (
+            item.content_disposition
+            == expected_attachments_features[item.file_name]["content_disposition"]
+        )
+        assert (
+            item.content_maintype
+            == expected_attachments_features[item.file_name]["content_maintype"]
+        )
+        assert (
+            item.content_subtype
+            == expected_attachments_features[item.file_name]["content_subtype"]
+        )
+        assert (
+            item.content_id
+            == expected_attachments_features[item.file_name]["content_id"]
+        )
+    assert mock_AttachmentModel_save_to_storage.call_count == len(
+        expected_attachments_features
+    )
 
 
 @pytest.mark.django_db

@@ -1,12 +1,12 @@
-Return-Path: <judith.aderbauer@gmail.com>
-Authentication-Results:  kundenserver.de; dkim=pass header.i=@gmail.com
+Return-Path: <mnbvcfg.48ij343regrh8ge5jp02b@bvncmx.com>
+Authentication-Results:  kundenserver.de; dkim=pass header.i=@bvncmx.com
 Received: from mail-lf1-f44.google.com ([209.85.167.44]) by mx.kundenserver.de
  (mxeue102 [217.72.192.67]) with ESMTPS (Nemesis) id 1MP242-1ss5h32TGO-00IXDu
- for <archiv@aderbauer.org>; Wed, 07 Aug 2024 11:41:33 +0200
+ for <test@48ij343regrh8ge5jp02b.org>; Wed, 07 Aug 2024 11:41:33 +0200
 Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-52efc60a6e6so2449461e87.1
-        for <archiv@aderbauer.org>; Wed, 07 Aug 2024 02:41:33 -0700 (PDT)
+        for <test@48ij343regrh8ge5jp02b.org>; Wed, 07 Aug 2024 02:41:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723023693; x=1723628493; darn=aderbauer.org;
+        d=bvncmx.com; s=20230601; t=1723023693; x=1723628493; darn=48ij343regrh8ge5jp02b.org;
         h=subject:from:cc:to:user-agent:mime-version:date:message-id:from:to
          :cc:subject:date:message-id:reply-to;
         bh=RFlxTLx9fGlwRQOf0qUqe52St091bjsuM2uAJRhDBxg=;
@@ -33,19 +33,19 @@ X-Google-Smtp-Source: AGHT+IG0smtMojV6Qj+RAAzDBj3MsRVttvWAmRSsioKzDuqtE3e/wiTyV7
 X-Received: by 2002:ac2:4c47:0:b0:530:ae43:d7ef with SMTP id 2adb3069b0e04-530bb39ff83mr11272803e87.48.1723023691907;
         Wed, 07 Aug 2024 02:41:31 -0700 (PDT)
 Received: from [192.168.178.3] (p4ffd7c0d.dip0.t-ipconnect.de. [79.253.124.13])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42905796974sm21107665e9.6.2024.08.07.02.41.31
+        by smtp.bvncmx.com with ESMTPSA id 5b1f17b1804b1-42905796974sm21107665e9.6.2024.08.07.02.41.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Wed, 07 Aug 2024 02:41:31 -0700 (PDT)
 Content-Type: multipart/mixed; boundary="------------lxGwj3dPk80t53jx9NGRDA0k"
-Message-ID: <e047e14d-2397-435b-baf6-8e8b7423f860@gmail.com>
+Message-ID: <e047e14d-2397-435b-baf6-8e8b7423f860@bvncmx.com>
 Date: Wed, 7 Aug 2024 11:41:29 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: archiv@aderbauer.org
-Cc: daveaderbauer@gmail.com
-From: Judith Aderbauer <judith.aderbauer@gmail.com>
+To: test@48ij343regrh8ge5jp02b.org
+Cc: sndfbkl48ij343regrh8ge5jp02b@bvncmx.com
+From: xsejino mnkfsdfuio <mnbvcfg.48ij343regrh8ge5jp02b@bvncmx.com>
 Subject: Whats up
-Envelope-To: <archiv@aderbauer.org>
+Envelope-To: <test@48ij343regrh8ge5jp02b.org>
 X-Spam-Flag: NO
 UI-InboundReport: notjunk:1;M01:P0:Mb6ajNHamrc=;jhDGG8ZKQHoVTQuDsLKZBk6yaF9m
  UtI5yOJ2DlUaaozRtjjqGwovkTabFygiWV6PXhiE0Wd0K0+KKQDGa7uhVo9iyjg/O1w+Of58C

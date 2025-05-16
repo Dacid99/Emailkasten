@@ -1,12 +1,12 @@
-Return-Path: <daveaderbauer@gmail.com>
-Authentication-Results:  kundenserver.de; dkim=pass header.i=@gmail.com
+Return-Path: <sndfbkl48ij343regrh8ge5jp02b@bvncmx.com>
+Authentication-Results:  kundenserver.de; dkim=pass header.i=@bvncmx.com
 Received: from mail-ed1-f50.google.com ([209.85.208.50]) by mx.kundenserver.de
  (mxeue102 [217.72.192.67]) with ESMTPS (Nemesis) id 1M7dlr-1scXhf2XZl-000an0
- for <archiv@aderbauer.org>; Thu, 01 Aug 2024 15:35:54 +0200
+ for <test@48ij343regrh8ge5jp02b.org>; Thu, 01 Aug 2024 15:35:54 +0200
 Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-595856e2336so3510123a12.1
-        for <archiv@aderbauer.org>; Thu, 01 Aug 2024 06:35:54 -0700 (PDT)
+        for <test@48ij343regrh8ge5jp02b.org>; Thu, 01 Aug 2024 06:35:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722519354; x=1723124154; darn=aderbauer.org;
+        d=bvncmx.com; s=20230601; t=1722519354; x=1723124154; darn=48ij343regrh8ge5jp02b.org;
         h=content-transfer-encoding:subject:to:content-language:user-agent
          :mime-version:date:message-id:from:from:to:cc:subject:date
          :message-id:reply-to;
@@ -35,22 +35,22 @@ X-Google-Smtp-Source: AGHT+IExf8bv9M/gDWlRg2PAy/+e0P3XV9k8oebYYeWHrfjSEvcq48M+w1
 X-Received: by 2002:a05:6402:13c9:b0:57d:6bb:d264 with SMTP id 4fb4d7f45d1cf-5b77bbb1374mr1347958a12.1.1722519353519;
         Thu, 01 Aug 2024 06:35:53 -0700 (PDT)
 Received: from [192.168.178.190] (p4ffd7c0d.dip0.t-ipconnect.de. [79.253.124.13])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5ac652911a5sm10057160a12.79.2024.08.01.06.35.53
-        for <archiv@aderbauer.org>
+        by smtp.bvncmx.com with ESMTPSA id 4fb4d7f45d1cf-5ac652911a5sm10057160a12.79.2024.08.01.06.35.53
+        for <test@48ij343regrh8ge5jp02b.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Thu, 01 Aug 2024 06:35:53 -0700 (PDT)
-From: David Aderbauer <daveaderbauer@gmail.com>
-X-Google-Original-From: David Aderbauer <dave.aderbauer@gmail.com>
-Message-ID: <622b772d-0839-4ff3-9f31-2313b0b57040@gmail.com>
+From: QNfjq mnkfsdfuio <sndfbkl48ij343regrh8ge5jp02b@bvncmx.com>
+X-Google-Original-From: QNfjq mnkfsdfuio <sndfbkl.48ij343regrh8ge5jp02b@bvncmx.com>
+Message-ID: <622b772d-0839-4ff3-9f31-2313b0b57040@bvncmx.com>
 Date: Thu, 1 Aug 2024 15:35:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-To: archiv@aderbauer.org
+To: test@48ij343regrh8ge5jp02b.org
 Subject: Testmail
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Envelope-To: <archiv@aderbauer.org>
+Envelope-To: <test@48ij343regrh8ge5jp02b.org>
 X-Spam-Flag: NO
 UI-InboundReport: notjunk:1;M01:P0:Ugbg55Tfn70=;H/1hc/njG/PN7iylAI2fUL4TJkdq
  FTJfkNikP5N57wcycEOzE0zMBfmrLXLIO/Bj2lUmYa/4lTxLzloF3RN5i/um7f0huSu6TzEBS
@@ -119,5 +119,4 @@ This is a test!
 
 Viele Grüße,
 
-David
-
+QNfjq

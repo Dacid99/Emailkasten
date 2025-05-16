@@ -1,12 +1,12 @@
-Return-Path: <daveaderbauer@gmail.com>
-Authentication-Results:  kundenserver.de; dkim=pass header.i=@gmail.com
+Return-Path: <sndfbkl48ij343regrh8ge5jp02b@bvncmx.com>
+Authentication-Results:  kundenserver.de; dkim=pass header.i=@bvncmx.com
 Received: from mail-wm1-f44.google.com ([209.85.128.44]) by mx.kundenserver.de
  (mxeue103 [217.72.192.67]) with ESMTPS (Nemesis) id 1MsbW9-1tqYUa13Nr-00u3LP
- for <archiv@aderbauer.org>; Sat, 05 Oct 2024 14:43:23 +0200
+ for <test@48ij343regrh8ge5jp02b.org>; Sat, 05 Oct 2024 14:43:23 +0200
 Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-42cde6b5094so29930975e9.3
-        for <archiv@aderbauer.org>; Sat, 05 Oct 2024 05:43:23 -0700 (PDT)
+        for <test@48ij343regrh8ge5jp02b.org>; Sat, 05 Oct 2024 05:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728132203; x=1728737003; darn=aderbauer.org;
+        d=bvncmx.com; s=20230601; t=1728132203; x=1728737003; darn=48ij343regrh8ge5jp02b.org;
         h=subject:to:content-language:user-agent:mime-version:date:message-id
          :from:from:to:cc:subject:date:message-id:reply-to;
         bh=UR6nQj4nuqy1zwp5l1f7D3XhlsbnvU+iqqGxoxoBBj8=;
@@ -33,22 +33,22 @@ X-Google-Smtp-Source: AGHT+IEGxdd9q9iQOIATV2wl2kIQGrex6Wtywja39cZslq95e8sTGgph0S
 X-Received: by 2002:a05:600c:468f:b0:42c:af06:718 with SMTP id 5b1f17b1804b1-42f85aea086mr44780945e9.28.1728132202401;
         Sat, 05 Oct 2024 05:43:22 -0700 (PDT)
 Received: from [192.168.178.101] (p4ffd704e.dip0.t-ipconnect.de. [79.253.112.78])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f86a20471sm39424645e9.17.2024.10.05.05.43.21
-        for <archiv@aderbauer.org>
+        by smtp.bvncmx.com with ESMTPSA id 5b1f17b1804b1-42f86a20471sm39424645e9.17.2024.10.05.05.43.21
+        for <test@48ij343regrh8ge5jp02b.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Sat, 05 Oct 2024 05:43:21 -0700 (PDT)
-From: David <daveaderbauer@gmail.com>
-X-Google-Original-From: David <dave.aderbauer@gmail.com>
+From: QNfjq <sndfbkl48ij343regrh8ge5jp02b@bvncmx.com>
+X-Google-Original-From: QNfjq <sndfbkl.48ij343regrh8ge5jp02b@bvncmx.com>
 Content-Type: multipart/alternative;
  boundary="------------40Tk0emvCICBGcRiucnjKbPe"
-Message-ID: <a634b121-4bc0-457d-a08f-a4579b9bb92a@gmail.com>
+Message-ID: <a634b121-4bc0-457d-a08f-a4579b9bb92a@bvncmx.com>
 Date: Sat, 5 Oct 2024 14:43:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-To: archiv@aderbauer.org
+To: test@48ij343regrh8ge5jp02b.org
 Subject: more image
-Envelope-To: <archiv@aderbauer.org>
+Envelope-To: <test@48ij343regrh8ge5jp02b.org>
 X-Spam-Flag: NO
 UI-InboundReport: notjunk:1;M01:P0:4adGTmrKLvY=;aaHGOQyySHsYK/Gw5Ue7D9PTahmV
  dWymWQQ+zSVdtDvAfIp48Bu5VSL/U8oZOa66IMdauFqivYbQEiC0DqDd4jBkiRv+ZIIbSrvOq
@@ -133,7 +133,7 @@ Content-Transfer-Encoding: 7bit
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   </head>
   <body>
-    <p><img src="cid:part1.DePPID0S.dKVK0mlg@gmail.com" alt=""></p>
+    <p><img src="cid:part1.DePPID0S.dKVK0mlg@bvncmx.com" alt=""></p>
     <p><br>
     </p>
     <p>try this<br>
@@ -143,7 +143,7 @@ Content-Transfer-Encoding: 7bit
 --------------kY00i0RlbPzx0kpsduMUaVPZ
 Content-Type: image/png; name="Z4md6xHlrYcKHhKK.png"
 Content-Disposition: inline; filename="Z4md6xHlrYcKHhKK.png"
-Content-Id: <part1.DePPID0S.dKVK0mlg@gmail.com>
+Content-Id: <part1.DePPID0S.dKVK0mlg@bvncmx.com>
 Content-Transfer-Encoding: base64
 
 iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAkw0lEQVR4AezdA8xlVxfG8f2x
