@@ -32,11 +32,11 @@ from ..utils.widgets import AdaptedSelectDateWidget
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
-    from core.models.MailingListModel import MailingListModel
+    from core.models.MailingList import MailingList
 
 
 class MailingListFilter(django_filters.FilterSet):
-    """The filter class for :class:`core.models.MailingListModel.MailingListModel`."""
+    """The filter class for :class:`core.models.MailingList.MailingList`."""
 
     order = django_filters.OrderingFilter(
         fields=[
@@ -74,8 +74,8 @@ class MailingListFilter(django_filters.FilterSet):
     )
 
     def filter_text_fields(
-        self, queryset: QuerySet[MailingListModel], name: str, value: str
-    ) -> QuerySet[MailingListModel]:
+        self, queryset: QuerySet[MailingList], name: str, value: str
+    ) -> QuerySet[MailingList]:
         """Filters textfields in the model.
 
         Args:

@@ -40,7 +40,7 @@ def test_file_name_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AttachmentFilter.AttachmentFilter`'s filtering
-    for the :attr:`core.models.AttachmentModel.AttachmentModel.file_name` field.
+    for the :attr:`core.models.Attachment.Attachment.file_name` field.
     """
     query = {"file_name" + lookup_expr: filterquery}
 
@@ -60,7 +60,7 @@ def test_content_disposition_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AttachmentFilter.AttachmentFilter`'s filtering
-    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_disposition` field.
+    for the :attr:`core.models.Attachment.Attachment.content_disposition` field.
     """
     query = {"content_disposition": [TEXT_TEST_ITEMS[index] for index in filterquery]}
 
@@ -80,7 +80,7 @@ def test_content_id_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AttachmentFilter.AttachmentFilter`'s filtering
-    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_id` field.
+    for the :attr:`core.models.Attachment.Attachment.content_id` field.
     """
     query = {"content_id" + lookup_expr: filterquery}
 
@@ -100,7 +100,7 @@ def test_content_maintype_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AttachmentFilter.AttachmentFilter`'s filtering
-    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_maintype` field.
+    for the :attr:`core.models.Attachment.Attachment.content_maintype` field.
     """
     query = {"content_maintype": [TEXT_TEST_ITEMS[index] for index in filterquery]}
 
@@ -120,7 +120,7 @@ def test_content_subtype_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AttachmentFilter.AttachmentFilter`'s filtering
-    for the :attr:`core.models.AttachmentModel.AttachmentModel.content_subtype` field.
+    for the :attr:`core.models.Attachment.Attachment.content_subtype` field.
     """
     query = {"content_subtype": [TEXT_TEST_ITEMS[index] for index in filterquery]}
 
@@ -140,7 +140,7 @@ def test_datasize_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AttachmentFilter.AttachmentFilter`'s filtering
-    for the :attr:`core.models.AttachmentModel.AttachmentModel.datasize` field.
+    for the :attr:`core.models.Attachment.Attachment.datasize` field.
     """
     query = {"datasize_min": filterquery[0], "datasize_max": filterquery[1]}
 
@@ -160,7 +160,7 @@ def test_is_favorite_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AttachmentFilter.AttachmentFilter`'s filtering
-    for the :attr:`core.models.AttachmentModel.AttachmentModel.is_favorite` field.
+    for the :attr:`core.models.Attachment.Attachment.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -180,7 +180,7 @@ def test_email__datetime_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AttachmentFilter.AttachmentFilter`'s filtering
-    for the related :attr:`core.models.EMailModel.EMailModel.datetime` field.
+    for the related :attr:`core.models.EMail.EMail.datetime` field.
     """
     query = {"email__datetime" + lookup_expr: filterquery}
 

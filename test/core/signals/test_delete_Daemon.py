@@ -16,30 +16,30 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`core.signals.delete_DaemonModel`."""
+"""Test module for :mod:`core.signals.delete_Daemon`."""
 
 import pytest
 
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 
 
 @pytest.fixture(autouse=True)
 def mock_logger(mocker):
-    """Mocks :attr:`core.signals.save_AccountModel.logger` of the module."""
-    return mocker.patch("core.signals.delete_DaemonModel.logger", autospec=True)
+    """Mocks :attr:`core.signals.save_Account.logger` of the module."""
+    return mocker.patch("core.signals.delete_Daemon.logger", autospec=True)
 
 
 @pytest.mark.django_db
-def test_pre_delete_stop_daemon(mocker, mock_logger, daemonModel):
-    """Tests :func:`core.signals.deleteDaemonModel.pre_delete_stop_daemon`."""
+def test_pre_delete_stop_daemon(mocker, mock_logger, fake_daemon):
+    """Tests :func:`core.signals.deleteDaemon.pre_delete_stop_daemon`."""
     mock_EMailArchiverDaemon_stopDaemon = mocker.patch(
         "core.EMailArchiverDaemonRegistry.EMailArchiverDaemonRegistry.stopDaemon",
         autospec=True,
     )
 
-    daemonModel.delete()
+    fake_daemon.delete()
 
-    with pytest.raises(DaemonModel.DoesNotExist):
-        daemonModel.refresh_from_db()
+    with pytest.raises(Daemon.DoesNotExist):
+        fake_daemon.refresh_from_db()
     mock_EMailArchiverDaemon_stopDaemon.assert_called_once()
     mock_logger.debug.assert_called()

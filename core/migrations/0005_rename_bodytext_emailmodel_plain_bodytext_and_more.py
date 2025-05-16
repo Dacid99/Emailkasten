@@ -11,12 +11,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name="emailmodel",
+            model_name="email",
             old_name="bodytext",
             new_name="plain_bodytext",
         ),
         migrations.AddField(
-            model_name="emailmodel",
+            model_name="email",
             name="html_bodytext",
             field=models.TextField(default=""),
             preserve_default=False,

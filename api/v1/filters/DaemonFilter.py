@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 
 
 if TYPE_CHECKING:
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 
 class DaemonFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.MailboxModel.MailboxModel`."""
+    """The filter class for :class:`core.models.Mailbox.Mailbox`."""
 
     mail_address__icontains = filters.CharFilter(
         field_name="mailbox__account__mail_address", lookup_expr="icontains"
@@ -120,7 +120,7 @@ class DaemonFilter(filters.FilterSet):
     class Meta:
         """Metadata class for the filter."""
 
-        model: Final[type[Model]] = DaemonModel
+        model: Final[type[Model]] = Daemon
 
         fields: ClassVar[dict[str, list[str]]] = {
             "uuid": ["exact", "contains"],

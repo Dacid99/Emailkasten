@@ -24,23 +24,23 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from rest_framework import serializers
 
-from core.models.AccountModel import AccountModel
+from core.models.Account import Account
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseAccountSerializer(serializers.ModelSerializer[AccountModel]):
-    """The base serializer for :class:`core.models.AccountModel.AccountModel`.
+class BaseAccountSerializer(serializers.ModelSerializer[Account]):
+    """The base serializer for :class:`core.models.Account.Account`.
 
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`core.models.AccountModel.AccountModel` should inherit from this.
+    Other serializers for :class:`core.models.Account.Account` should inherit from this.
     """
 
     password = serializers.CharField(max_length=255, write_only=True)
-    """The :attr:`core.models.AccountModel.AccountModel.password` field
+    """The :attr:`core.models.Account.Account.password` field
     is set to write-only for security reasons.
     """
 
@@ -52,14 +52,14 @@ class BaseAccountSerializer(serializers.ModelSerializer[AccountModel]):
         :attr:`read_only_fields` and :attr:`exclude` must not be shortened in subclasses.
         """
 
-        model: Final[type[Model]] = AccountModel
+        model: Final[type[Model]] = Account
         """The model to serialize."""
 
         exclude: ClassVar[list[str]] = ["user"]
-        """Exclude the :attr:`core.models.AccountModel.AccountModel.user` field."""
+        """Exclude the :attr:`core.models.Account.Account.user` field."""
 
         read_only_fields: Final[list[str]] = ["is_healthy", "created", "updated"]
-        """The :attr:`core.models.AccountModel.AccountModel.is_healthy`,
-        :attr:`core.models.AccountModel.AccountModel.created` and
-        :attr:`core.models.AccountModel.AccountModel.updated` fields are read-only.
+        """The :attr:`core.models.Account.Account.is_healthy`,
+        :attr:`core.models.Account.Account.created` and
+        :attr:`core.models.Account.Account.updated` fields are read-only.
         """

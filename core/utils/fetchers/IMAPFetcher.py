@@ -35,8 +35,8 @@ from .BaseFetcher import BaseFetcher
 
 
 if TYPE_CHECKING:
-    from ...models.AccountModel import AccountModel
-    from ...models.MailboxModel import MailboxModel
+    from ...models.Account import Account
+    from ...models.Mailbox import Mailbox
 
 
 class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
@@ -93,7 +93,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
         return f"SENTSINCE {imaplib.Time2Internaldate(startTime).split(" ")[0].strip('" ')}"
 
     @override
-    def __init__(self, account: AccountModel) -> None:
+    def __init__(self, account: Account) -> None:
         """Constructor, starts the IMAP connection and logs into the account.
 
         Args:
@@ -139,7 +139,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
         self.logger.info("Successfully connected to %s.", self.account)
 
     @override
-    def test(self, mailbox: MailboxModel | None = None) -> None:
+    def test(self, mailbox: Mailbox | None = None) -> None:
         """Tests the connection to the mailserver and, if a mailbox is provided, whether it can be opened and listed.
 
         Args:
@@ -166,7 +166,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
     @override
     def fetchEmails(
         self,
-        mailbox: MailboxModel,
+        mailbox: Mailbox,
         criterion: str = EmailFetchingCriterionChoices.ALL,
     ) -> list[bytes]:
         """Fetches and returns maildata from a mailbox based on a given criterion.

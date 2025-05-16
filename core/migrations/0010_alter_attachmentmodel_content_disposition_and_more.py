@@ -11,67 +11,67 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="attachmentmodel",
+            model_name="attachment",
             name="content_disposition",
             field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="attachmentmodel",
+            model_name="attachment",
             name="content_type",
             field=models.CharField(default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="correspondentmodel",
+            model_name="correspondent",
             name="email_name",
             field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="emailmodel",
+            model_name="email",
             name="email_subject",
             field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="emailmodel",
+            model_name="email",
             name="html_bodytext",
             field=models.TextField(blank=True, default=""),
         ),
         migrations.AlterField(
-            model_name="emailmodel",
+            model_name="email",
             name="plain_bodytext",
             field=models.TextField(blank=True, default=""),
         ),
         migrations.AlterField(
-            model_name="emailmodel",
+            model_name="email",
             name="x_spam",
             field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="mailinglistmodel",
+            model_name="mailinglist",
             name="list_archive",
             field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="mailinglistmodel",
+            model_name="mailinglist",
             name="list_help",
             field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="mailinglistmodel",
+            model_name="mailinglist",
             name="list_owner",
             field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="mailinglistmodel",
+            model_name="mailinglist",
             name="list_post",
             field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="mailinglistmodel",
+            model_name="mailinglist",
             name="list_subscribe",
             field=models.EmailField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="mailinglistmodel",
+            model_name="mailinglist",
             name="list_unsubscribe",
             field=models.EmailField(blank=True, default="", max_length=255),
         ),

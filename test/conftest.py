@@ -55,14 +55,14 @@ from core.constants import (
     EmailProtocolChoices,
     HeaderFields,
 )
-from core.models.AccountModel import AccountModel
-from core.models.AttachmentModel import AttachmentModel
-from core.models.CorrespondentModel import CorrespondentModel
-from core.models.DaemonModel import DaemonModel
-from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from core.models.EMailModel import EMailModel
-from core.models.MailboxModel import MailboxModel
-from core.models.MailingListModel import MailingListModel
+from core.models.Account import Account
+from core.models.Attachment import Attachment
+from core.models.Correspondent import Correspondent
+from core.models.Daemon import Daemon
+from core.models.EMail import EMail
+from core.models.EMailCorrespondents import EMailCorrespondents
+from core.models.Mailbox import Mailbox
+from core.models.MailingList import MailingList
 
 
 if TYPE_CHECKING:
@@ -283,8 +283,8 @@ def other_user(django_user_model) -> AbstractUser:
 
 
 @pytest.fixture
-def accountModel(owner_user) -> AccountModel:
-    """Creates an :class:`core.models.AccountModel.AccountModel` owned by :attr:`owner_user`.
+def fake_account(owner_user) -> Account:
+    """Creates an :class:`core.models.Account.Account` owned by :attr:`owner_user`.
 
     Args:
         owner_user: Depends on :func:`owner_user`.
@@ -292,115 +292,115 @@ def accountModel(owner_user) -> AccountModel:
     Returns:
         The account instance for testing.
     """
-    return baker.make(AccountModel, user=owner_user)
+    return baker.make(Account, user=owner_user)
 
 
 @pytest.fixture
-def mailboxModel(accountModel) -> MailboxModel:
-    """Creates an :class:`core.models.MailboxModel.MailboxModel` owned by :attr:`owner_user`.
+def fake_mailbox(fake_account) -> Mailbox:
+    """Creates an :class:`core.models.Mailbox.Mailbox` owned by :attr:`owner_user`.
 
     Args:
-        accountModel: Depends on :func:`accountModel`.
+        account: Depends on :func:`account`.
 
     Returns:
         The mailbox instance for testing.
     """
-    return baker.make(MailboxModel, account=accountModel)
+    return baker.make(Mailbox, account=fake_account)
 
 
 @pytest.fixture
-def daemonModel(faker, mailboxModel) -> DaemonModel:
-    """Creates an :class:`core.models.DaemonModel.DaemonModel` owned by :attr:`owner_user`.
+def fake_daemon(faker, fake_mailbox) -> Daemon:
+    """Creates an :class:`core.models.Daemon.Daemon` owned by :attr:`owner_user`.
 
     Args:
-        mailboxModel: Depends on :func:`mailboxModel`.
+        mailbox: Depends on :func:`mailbox`.
 
     Returns:
         The daemon instance for testing.
     """
     return baker.make(
-        DaemonModel,
+        Daemon,
         log_filepath=faker.file_path(extension="log"),
-        mailbox=mailboxModel,
+        mailbox=fake_mailbox,
     )
 
 
 @pytest.fixture
-def correspondentModel() -> CorrespondentModel:
-    """Creates an :class:`core.models.CorrespondentModel.CorrespondentModel` owned by :attr:`owner_user`.
+def fake_correspondent() -> Correspondent:
+    """Creates an :class:`core.models.Correspondent.Correspondent` owned by :attr:`owner_user`.
 
     Returns:
         The correspondent instance for testing.
     """
-    return baker.make(CorrespondentModel)
+    return baker.make(Correspondent)
 
 
 @pytest.fixture
-def mailingListModel() -> MailingListModel:
-    """Creates an :class:`core.models.MailingListModel.MailingListModel` owned by :attr:`owner_user`.
+def fake_mailingList() -> MailingList:
+    """Creates an :class:`core.models.MailingList.MailingList` owned by :attr:`owner_user`.
 
     Returns:
         The mailinglist instance for testing.
     """
-    return baker.make(MailingListModel)
+    return baker.make(MailingList)
 
 
 @pytest.fixture
-def emailModel(faker, mailboxModel, mailingListModel) -> EMailModel:
-    """Creates an :class:`core.models.EMailModel.EMailModel` owned by :attr:`owner_user`.
+def fake_email(faker, fake_mailbox, fake_mailingList) -> EMail:
+    """Creates an :class:`core.models.EMail.EMail` owned by :attr:`owner_user`.
 
     Args:
-        correspondentModel: Depends on :func:`correspondentModel`.
-        mailboxModel: Depends on :func:`mailboxModel`.
-        mailinglistModel: Depends on :func:`mailinglistModel`.
+        correspondent: Depends on :func:`correspondent`.
+        mailbox: Depends on :func:`mailbox`.
+        mailinglist: Depends on :func:`mailinglist`.
 
     Returns:
         The email instance for testing.
     """
     return baker.make(
-        EMailModel,
-        mailbox=mailboxModel,
-        mailinglist=mailingListModel,
+        EMail,
+        mailbox=fake_mailbox,
+        mailinglist=fake_mailingList,
         eml_filepath=faker.file_path(extension="eml"),
         html_filepath=faker.file_path(extension="png"),
     )
 
 
 @pytest.fixture
-def emailCorrespondentModel(
-    faker, correspondentModel, emailModel
-) -> EMailCorrespondentsModel:
-    """Fixture creating an :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`.
+def fake_emailCorrespondent(
+    faker, fake_correspondent, fake_email
+) -> EMailCorrespondents:
+    """Fixture creating an :class:`core.models.EMailCorrespondents.EMailCorrespondents`.
 
     Returns:
-        The emailModel instance for testing.
+        The email instance for testing.
     """
     return baker.make(
-        EMailCorrespondentsModel,
-        email=emailModel,
-        correspondent=correspondentModel,
-        mention=faker.random_element(HeaderFields.Correspondents),
+        EMailCorrespondents,
+        email=fake_email,
+        correspondent=fake_correspondent,
+        mention=HeaderFields.Correspondents.FROM,
     )
 
 
 @pytest.fixture
-def attachmentModel(faker, emailModel) -> AttachmentModel:
-    """Creates an :class:`core.models.AttachmentModel.AttachmentModel` owned by :attr:`owner_user`.
+def fake_attachment(faker, fake_email) -> Attachment:
+    """Creates an :class:`core.models.Attachment.Attachment` owned by :attr:`owner_user`.
 
     Args:
-        emailModel: Depends on :func:`emailModel`.
+        email: Depends on :func:`email`.
 
     Returns:
         The attachment instance for testing.
     """
     return baker.make(
-        AttachmentModel, email=emailModel, file_path=faker.file_path(extension="pdf")
+        Attachment, email=fake_email, file_path=faker.file_path(extension="pdf")
     )
 
 
 @pytest.fixture
 def accountPayload(owner_user) -> dict[str, Any]:
-    """Fixture creating clean :class:`core.models.AccountModel.AccountModel` payload with data deviating from the defaults.
+    """Fixture creating clean :class:`core.models.Account.Account` payload with data deviating from the defaults.
 
     Args:
         owner_user: Depends on :func:`owner_user`.
@@ -409,12 +409,12 @@ def accountPayload(owner_user) -> dict[str, Any]:
         The clean payload.
     """
     accountData = baker.prepare(
-        AccountModel,
+        Account,
         user=owner_user,
         mail_host_port=random.randint(0, 65535),
         protocol=random.choice(EmailProtocolChoices.values),
         timeout=random.randint(1, 1000),
-        is_favorite=not AccountModel.is_favorite.field.default,
+        is_favorite=not Account.is_favorite.field.default,
     )
     payload = model_to_dict(accountData)
     payload.pop("id")
@@ -422,23 +422,23 @@ def accountPayload(owner_user) -> dict[str, Any]:
 
 
 @pytest.fixture
-def attachmentPayload(faker, emailModel) -> dict[str, Any]:
-    """Fixture creating clean :class:`core.models.AttachmentModel.AttachmentModel` payload with data deviating from the defaults.
+def attachmentPayload(faker, fake_email) -> dict[str, Any]:
+    """Fixture creating clean :class:`core.models.Attachment.Attachment` payload with data deviating from the defaults.
 
     Args:
-        emailModel: Depends on :func:`emailModel`.
+        email: Depends on :func:`email`.
 
     Returns:
         The clean payload.
     """
     attachmentData = baker.prepare(
-        AttachmentModel,
-        email=emailModel,
+        Attachment,
+        email=fake_email,
         content_disposition=faker.name(),
         content_id=faker.name(),
         content_maintype=faker.name(),
         content_subtype=faker.name(),
-        is_favorite=not AttachmentModel.is_favorite.field.default,
+        is_favorite=not Attachment.is_favorite.field.default,
     )
     payload = model_to_dict(attachmentData)
     payload.pop("id")
@@ -446,20 +446,20 @@ def attachmentPayload(faker, emailModel) -> dict[str, Any]:
 
 
 @pytest.fixture
-def correspondentPayload(faker, emailModel) -> dict[str, Any]:
-    """Fixture creating clean :class:`core.models.CorrespondentModel.CorrespondentModel` payload with data deviating from the defaults.
+def correspondentPayload(faker, fake_email) -> dict[str, Any]:
+    """Fixture creating clean :class:`core.models.Correspondent.Correspondent` payload with data deviating from the defaults.
 
     Args:
-        emailModel: Depends on :func:`emailModel`.
+        email: Depends on :func:`email`.
 
     Returns:
         The clean payload.
     """
     correspondentData = baker.prepare(
-        CorrespondentModel,
-        emails=[emailModel],
+        Correspondent,
+        emails=[fake_email],
         email_name=faker.name(),
-        is_favorite=not CorrespondentModel.is_favorite.field.default,
+        is_favorite=not Correspondent.is_favorite.field.default,
     )
     payload = model_to_dict(correspondentData)
     payload.pop("id")
@@ -467,34 +467,34 @@ def correspondentPayload(faker, emailModel) -> dict[str, Any]:
 
 
 @pytest.fixture
-def daemonPayload(faker, mailboxModel) -> dict[str, Any]:
-    """Fixture creating clean :class:`core.models.DaemonModel.DaemonModel` payload with data deviating from the defaults.
+def daemonPayload(faker, fake_mailbox) -> dict[str, Any]:
+    """Fixture creating clean :class:`core.models.Daemon.Daemon` payload with data deviating from the defaults.
 
     Args:
-        mailboxModel: Depends on :func:`mailboxModel`.
+        mailbox: Depends on :func:`mailbox`.
 
     Returns:
         The clean payload.
     """
     daemonData = baker.prepare(
-        DaemonModel,
-        mailbox=mailboxModel,
-        fetching_criterion=random.choice(mailboxModel.getAvailableFetchingCriteria()),
+        Daemon,
+        mailbox=fake_mailbox,
+        fetching_criterion=random.choice(fake_mailbox.getAvailableFetchingCriteria()),
         cycle_interval=random.randint(
-            DaemonModel.cycle_interval.field.default + 1,
-            DaemonModel.cycle_interval.field.default * 100,
+            Daemon.cycle_interval.field.default + 1,
+            Daemon.cycle_interval.field.default * 100,
         ),
         restart_time=random.randint(
-            DaemonModel.restart_time.field.default + 1,
-            DaemonModel.restart_time.field.default * 100,
+            Daemon.restart_time.field.default + 1,
+            Daemon.restart_time.field.default * 100,
         ),
         log_backup_count=random.randint(
-            DaemonModel.log_backup_count.field.default + 1,
-            DaemonModel.log_backup_count.field.default * 100,
+            Daemon.log_backup_count.field.default + 1,
+            Daemon.log_backup_count.field.default * 100,
         ),
         logfile_size=random.randint(
-            DaemonModel.logfile_size.field.default + 1,
-            DaemonModel.logfile_size.field.default * 100,
+            Daemon.logfile_size.field.default + 1,
+            Daemon.logfile_size.field.default * 100,
         ),
         log_filepath=faker.file_path(),
     )
@@ -504,22 +504,22 @@ def daemonPayload(faker, mailboxModel) -> dict[str, Any]:
 
 
 @pytest.fixture
-def emailPayload(faker, mailboxModel) -> dict[str, Any]:
-    """Fixture creating clean :class:`core.models.EMailModel.EMailModel` payload with data deviating from the defaults.
+def emailPayload(faker, fake_mailbox) -> dict[str, Any]:
+    """Fixture creating clean :class:`core.models.EMail.EMail` payload with data deviating from the defaults.
 
     Args:
-        mailboxModel: Depends on :func:`mailboxModel`.
+        mailbox: Depends on :func:`mailbox`.
 
     Returns:
         The clean payload.
     """
     emailData = baker.prepare(
-        EMailModel,
-        mailbox=mailboxModel,
+        EMail,
+        mailbox=fake_mailbox,
         email_subject=faker.sentence(),
         plain_bodytext=faker.text(),
         html_bodytext=faker.text(),
-        is_favorite=not EMailModel.is_favorite.field.default,
+        is_favorite=not EMail.is_favorite.field.default,
         x_spam="NO",
     )
     payload = model_to_dict(emailData)
@@ -528,21 +528,21 @@ def emailPayload(faker, mailboxModel) -> dict[str, Any]:
 
 
 @pytest.fixture
-def mailboxPayload(accountModel) -> dict[str, Any]:
-    """Fixture creating clean :class:`core.models.MailboxModel.MailboxModel` payload with data deviating from the defaults.
+def mailboxPayload(fake_account) -> dict[str, Any]:
+    """Fixture creating clean :class:`core.models.Mailbox.Mailbox` payload with data deviating from the defaults.
 
     Args:
-        accountModel: Depends on :func:`accountModel`.
+        account: Depends on :func:`account`.
 
     Returns:
         The clean payload.
     """
     mailboxData = baker.prepare(
-        MailboxModel,
-        account=accountModel,
-        save_attachments=not MailboxModel.save_attachments.field.default,
-        save_toEML=not MailboxModel.save_toEML.field.default,
-        is_favorite=not MailboxModel.is_favorite.field.default,
+        Mailbox,
+        account=fake_account,
+        save_attachments=not Mailbox.save_attachments.field.default,
+        save_toEML=not Mailbox.save_toEML.field.default,
+        is_favorite=not Mailbox.is_favorite.field.default,
     )
     payload = model_to_dict(mailboxData)
     payload.pop("id")
@@ -550,25 +550,25 @@ def mailboxPayload(accountModel) -> dict[str, Any]:
 
 
 @pytest.fixture
-def mailingListPayload(faker, emailModel) -> dict[str, Any]:
-    """Fixture creating clean :class:`core.models.MailingListModel.MailingListModel` payload with data deviating from the defaults.
+def mailingListPayload(faker, fake_email) -> dict[str, Any]:
+    """Fixture creating clean :class:`core.models.MailingList.MailingList` payload with data deviating from the defaults.
 
     Args:
-        emailModel: Depends on :func:`emailModel`.
+        email: Depends on :func:`email`.
 
     Returns:
         The clean payload.
     """
     mailinglistData = baker.prepare(
-        MailingListModel,
-        emails=[emailModel],
+        MailingList,
+        emails=[fake_email],
         list_owner=faker.name(),
         list_subscribe=faker.email(),
         list_unsubscribe=faker.email(),
         list_post=faker.email(),
         list_archive=faker.url(),
         list_help=faker.url(),
-        is_favorite=not MailingListModel.is_favorite.field.default,
+        is_favorite=not MailingList.is_favorite.field.default,
     )
     payload = model_to_dict(mailinglistData)
     payload.pop("id")

@@ -25,10 +25,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.views.generic import TemplateView
 
-from core.models.AttachmentModel import AttachmentModel
-from core.models.CorrespondentModel import CorrespondentModel
-from core.models.EMailModel import EMailModel
-from core.models.MailingListModel import MailingListModel
+from core.models.Attachment import Attachment
+from core.models.Correspondent import Correspondent
+from core.models.EMail import EMail
+from core.models.MailingList import MailingList
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -43,25 +43,23 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             return {}
         context = super().get_context_data(**kwargs)
 
-        context["latest_emails"] = EMailModel.objects.filter(
+        context["latest_emails"] = EMail.objects.filter(
             mailbox__account__user=self.request.user,
             created__gte=timezone.now() - timedelta(days=1),
         ).order_by("-created")
-        context["emails_count"] = EMailModel.objects.filter(
+        context["emails_count"] = EMail.objects.filter(
             mailbox__account__user=self.request.user
         ).count()
         context["mailinglists_count"] = (
-            MailingListModel.objects.filter(
-                emails__mailbox__account__user=self.request.user
-            )
+            MailingList.objects.filter(emails__mailbox__account__user=self.request.user)
             .distinct()
             .count()
         )
-        context["attachments_count"] = AttachmentModel.objects.filter(
+        context["attachments_count"] = Attachment.objects.filter(
             email__mailbox__account__user=self.request.user
         ).count()
         context["correspondents_count"] = (
-            CorrespondentModel.objects.filter(
+            Correspondent.objects.filter(
                 emails__mailbox__account__user=self.request.user
             )
             .distinct()

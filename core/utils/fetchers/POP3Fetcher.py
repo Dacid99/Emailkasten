@@ -31,8 +31,8 @@ from .exceptions import FetcherError, MailAccountError
 
 
 if TYPE_CHECKING:
-    from ...models.AccountModel import AccountModel
-    from ...models.MailboxModel import MailboxModel
+    from ...models.Account import Account
+    from ...models.Mailbox import Mailbox
 
 
 class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
@@ -53,7 +53,7 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
     """List of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`."""
 
     @override
-    def __init__(self, account: AccountModel) -> None:
+    def __init__(self, account: Account) -> None:
         """Constructor, starts the POP connection and logs into the account.
 
         Args:
@@ -99,7 +99,7 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
         self.logger.info("Successfully connected to %s.", self.account)
 
     @override
-    def test(self, mailbox: MailboxModel | None = None) -> None:
+    def test(self, mailbox: Mailbox | None = None) -> None:
         """Tests the connection to the mailserver and, if a mailbox is provided, whether messages can be listed.
 
         Args:
@@ -123,7 +123,7 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
     @override
     def fetchEmails(
         self,
-        mailbox: MailboxModel,
+        mailbox: Mailbox,
         criterion: str = EmailFetchingCriterionChoices.ALL,
     ) -> list[bytes]:
         """Fetches and returns all maildata from the server.

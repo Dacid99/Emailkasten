@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`AccountModel` model class."""
+"""Module with the :class:`Account` model class."""
 
 from __future__ import annotations
 
@@ -38,7 +38,7 @@ from ..utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
 from ..utils.fetchers.IMAPFetcher import IMAPFetcher
 from ..utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
 from ..utils.fetchers.POP3Fetcher import POP3Fetcher
-from .MailboxModel import MailboxModel
+from .Mailbox import Mailbox
 
 
 # from utils.fetchers.ExchangeFetcher import ExchangeFetcher
@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class AccountModel(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
+class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
     """Database model for the account data of a mail account."""
 
     mail_address = models.EmailField(
@@ -100,8 +100,8 @@ class AccountModel(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
 
     is_healthy = models.BooleanField(null=True)
     """Flags whether the account can be accessed using the data. `None` by default.
-    When this field changes to `False`, all mailboxes :attr:`core.models.MailboxModel.is_healthy` field will be updated accordingly.
-    When the :attr:`core.models.MailboxModel.is_healthy` field of one of the mailboxes referencing this entry becomes `True`, this field will be set to `True` as well by a signal."""
+    When this field changes to `False`, all mailboxes :attr:`core.models.Mailbox.is_healthy` field will be updated accordingly.
+    When the :attr:`core.models.Mailbox.is_healthy` field of one of the mailboxes referencing this entry becomes `True`, this field will be set to `True` as well by a signal."""
 
     is_favorite = models.BooleanField(default=False)
     """Flags favorite accounts. False by default."""
@@ -163,7 +163,7 @@ class AccountModel(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
             ValidationError: If the instance violates the constraint.
         """
         if (
-            AccountModel.objects.filter(user=self.user, mail_address=self.mail_address)
+            Account.objects.filter(user=self.user, mail_address=self.mail_address)
             .exclude(pk=self.pk)
             .exists()
         ):
@@ -226,7 +226,7 @@ class AccountModel(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         """Tests whether the data in the model is correct.
 
         Tests connecting and logging in to the mailhost and account.
-        The :attr:`core.models.AccountModel.is_healthy` flag is set accordingly.
+        The :attr:`core.models.Account.is_healthy` flag is set accordingly.
         Relies on the `test` method of the :mod:`core.utils.fetchers` classes.
 
         Raises:
@@ -266,6 +266,6 @@ class AccountModel(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         self.save(update_fields=["is_healthy"])
 
         for mailboxData in mailboxList:
-            MailboxModel.createFromData(mailboxData, self)
+            Mailbox.createFromData(mailboxData, self)
 
         logger.info("Successfully updated mailboxes.")

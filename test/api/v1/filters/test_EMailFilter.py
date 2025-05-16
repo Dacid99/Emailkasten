@@ -36,7 +36,7 @@ from .conftest import (
 )
 def test_message_id_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.message_id` field.
+    for the :attr:`core.models.EMail.EMail.message_id` field.
     """
     query = {"message_id" + lookup_expr: filterquery}
 
@@ -54,7 +54,7 @@ def test_message_id_filter(email_queryset, lookup_expr, filterquery, expected_in
 )
 def test_datetime_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.datetime` field.
+    for the :attr:`core.models.EMail.EMail.datetime` field.
     """
     query = {"datetime" + lookup_expr: filterquery}
 
@@ -74,7 +74,7 @@ def test_email_subject_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.email_subject` field.
+    for the :attr:`core.models.EMail.EMail.email_subject` field.
     """
     query = {"email_subject" + lookup_expr: filterquery}
 
@@ -94,7 +94,7 @@ def test_plain_bodytext_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.plain_bodytext` field.
+    for the :attr:`core.models.EMail.EMail.plain_bodytext` field.
     """
     query = {"plain_bodytext" + lookup_expr: filterquery}
 
@@ -114,7 +114,7 @@ def test_html_bodytext_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.html_bodytext` field.
+    for the :attr:`core.models.EMail.EMail.html_bodytext` field.
     """
     query = {"html_bodytext" + lookup_expr: filterquery}
 
@@ -132,7 +132,7 @@ def test_html_bodytext_filter(
 )
 def test_datasize_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.datasize` field.
+    for the :attr:`core.models.EMail.EMail.datasize` field.
     """
     query = {"datasize" + lookup_expr: filterquery}
 
@@ -150,7 +150,7 @@ def test_datasize_filter(email_queryset, lookup_expr, filterquery, expected_indi
 )
 def test_is_favorite_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.is_favorite` field.
+    for the :attr:`core.models.EMail.EMail.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -183,7 +183,7 @@ def test_is_favorite_filter(email_queryset, lookup_expr, filterquery, expected_i
 )
 def test_x_spam_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.x_spam` field.
+    for the :attr:`core.models.EMail.EMail.x_spam` field.
     """
     query = {"x_spam" + lookup_expr: filterquery}
 
@@ -201,7 +201,7 @@ def test_x_spam_filter(email_queryset, lookup_expr, filterquery, expected_indice
 )
 def test_created_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.created` field.
+    for the :attr:`core.models.EMail.EMail.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 
@@ -219,7 +219,7 @@ def test_created_filter(email_queryset, lookup_expr, filterquery, expected_indic
 )
 def test_updated_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.updated` field.
+    for the :attr:`core.models.EMail.EMail.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}
 
@@ -239,7 +239,7 @@ def test_mailbox__name_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the related :attr:`core.models.MailboxModel.MailboxModel.name` field.
+    for the related :attr:`core.models.Mailbox.Mailbox.name` field.
     """
     query = {"mailbox__name" + lookup_expr: filterquery}
 
@@ -259,7 +259,7 @@ def test_mailbox__account__mail_address_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the related :attr:`core.models.AccountModel.AccountModel.mail_address` field.
+    for the related :attr:`core.models.Account.Account.mail_address` field.
     """
     query = {"mailbox__account__mail_address" + lookup_expr: filterquery}
 
@@ -279,7 +279,7 @@ def test_mailbox__account__mail_host_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the related :attr:`core.models.AccountModel.AccountModel.mail_host` field.
+    for the related :attr:`core.models.Account.Account.mail_host` field.
     """
     query = {"mailbox__account__mail_host" + lookup_expr: filterquery}
 
@@ -299,7 +299,7 @@ def test_mailinglist__list_id_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the related :attr:`core.models.MailingListModel.MailingListModel.list_id` field.
+    for the related :attr:`core.models.MailingList.MailingList.list_id` field.
     """
     query = {"mailinglist__list_id" + lookup_expr: filterquery}
 
@@ -319,7 +319,7 @@ def test_mailinglist__list_owner_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the related :attr:`core.models.MailingListModel.MailingListModel.list_owner` field.
+    for the related :attr:`core.models.MailingList.MailingList.list_owner` field.
     """
     query = {"mailinglist__list_owner" + lookup_expr: filterquery}
 
@@ -339,7 +339,7 @@ def test_correspondents__email_name_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the related :attr:`core.models.CorrespondentModel.CorrespondentModel.email_name` field.
+    for the related :attr:`core.models.Correspondent.Correspondent.email_name` field.
     """
     query = {"correspondents__email_name" + lookup_expr: filterquery}
 
@@ -359,7 +359,7 @@ def test_correspondents__email_address_filter(
     email_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.EMailFilter.EMailFilter`'s filtering
-    for the related :attr:`core.models.CorrespondentModel.CorrespondentModel.email_address` field.
+    for the related :attr:`core.models.Correspondent.Correspondent.email_address` field.
     """
     query = {"correspondents__email_address" + lookup_expr: filterquery}
 

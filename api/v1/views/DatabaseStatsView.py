@@ -27,12 +27,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.models.AccountModel import AccountModel
-from core.models.AttachmentModel import AttachmentModel
-from core.models.CorrespondentModel import CorrespondentModel
-from core.models.EMailModel import EMailModel
-from core.models.MailboxModel import MailboxModel
-from core.models.MailingListModel import MailingListModel
+from core.models.Account import Account
+from core.models.Attachment import Attachment
+from core.models.Correspondent import Correspondent
+from core.models.EMail import EMail
+from core.models.Mailbox import Mailbox
+from core.models.MailingList import MailingList
 
 
 if TYPE_CHECKING:
@@ -57,23 +57,19 @@ class DatabaseStatsView(APIView):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        email_count = EMailModel.objects.filter(
-            mailbox__account__user=request.user
-        ).count()
+        email_count = EMail.objects.filter(mailbox__account__user=request.user).count()
         correspondent_count = (
-            CorrespondentModel.objects.filter(
-                emails__mailbox__account__user=request.user
-            )
+            Correspondent.objects.filter(emails__mailbox__account__user=request.user)
             .distinct()
             .count()
         )
-        attachment_count = AttachmentModel.objects.filter(
+        attachment_count = Attachment.objects.filter(
             email__mailbox__account__user=request.user
         ).count()
-        account_count = AccountModel.objects.filter(user=request.user).count()
-        mailbox_count = MailboxModel.objects.filter(account__user=request.user).count()
+        account_count = Account.objects.filter(user=request.user).count()
+        mailbox_count = Mailbox.objects.filter(account__user=request.user).count()
         mailinglist_count = (
-            MailingListModel.objects.filter(emails__mailbox__account__user=request.user)
+            MailingList.objects.filter(emails__mailbox__account__user=request.user)
             .distinct()
             .count()
         )

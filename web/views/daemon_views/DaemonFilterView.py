@@ -23,24 +23,24 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 
 from ...filters.DaemonFilter import DaemonFilter
 from ..FilterPageView import FilterPageView
 
 
 class DaemonFilterView(LoginRequiredMixin, FilterPageView):
-    """View for filtering listed :class:`core.models.DaemonModel.DaemonModel` instances."""
+    """View for filtering listed :class:`core.models.Daemon.Daemon` instances."""
 
-    URL_NAME = DaemonModel.get_list_web_url_name()
-    model = DaemonModel
+    URL_NAME = Daemon.get_list_web_url_name()
+    model = Daemon
     template_name = "web/daemon/daemon_filter_list.html"
     context_object_name = "daemons"
     filterset_class = DaemonFilter
     ordering = ["mailbox__name"]
 
     @override
-    def get_queryset(self) -> QuerySet[DaemonModel]:
+    def get_queryset(self) -> QuerySet[Daemon]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()

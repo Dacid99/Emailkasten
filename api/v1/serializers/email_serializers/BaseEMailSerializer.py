@@ -24,19 +24,19 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from rest_framework import serializers
 
-from core.models.EMailModel import EMailModel
+from core.models.EMail import EMail
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseEMailSerializer(serializers.ModelSerializer[EMailModel]):
-    """The base serializer for :class:`core.models.EMailModel.EMailModel`.
+class BaseEMailSerializer(serializers.ModelSerializer[EMail]):
+    """The base serializer for :class:`core.models.EMail.EMail`.
 
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`core.models.EMailModel.EMailModel` should inherit from this.
+    Other serializers for :class:`core.models.EMail.EMail` should inherit from this.
     """
 
     class Meta:
@@ -47,12 +47,12 @@ class BaseEMailSerializer(serializers.ModelSerializer[EMailModel]):
         :attr:`read_only_fields` and :attr:`exclude` must not be shortened in subclasses.
         """
 
-        model: Final[type[Model]] = EMailModel
+        model: Final[type[Model]] = EMail
         """The model to serialize."""
 
         exclude: ClassVar[list[str]] = ["eml_filepath", "html_filepath"]
-        """Exclude the :attr:`core.models.EMailModel.EMailModel.eml_filepath`
-        and :attr:`core.models.EMailModel.EMailModel.html_filepath` fields.
+        """Exclude the :attr:`core.models.EMail.EMail.eml_filepath`
+        and :attr:`core.models.EMail.EMail.html_filepath` fields.
         """
 
         read_only_fields: Final[list[str]] = [
@@ -71,6 +71,6 @@ class BaseEMailSerializer(serializers.ModelSerializer[EMailModel]):
             "created",
             "updated",
         ]
-        """All fields except for :attr:`core.models.EMailModel.EMailModel.is_favorite`
+        """All fields except for :attr:`core.models.EMail.EMail.is_favorite`
         are read-only.
         """

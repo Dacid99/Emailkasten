@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from django.forms import PasswordInput, Widget
 
-from core.models.AccountModel import AccountModel
+from core.models.Account import Account
 
 from ...utils.RequiredMarkerForms import RequiredMarkerModelForm
 
@@ -34,10 +34,10 @@ if TYPE_CHECKING:
 
 
 class BaseAccountForm(RequiredMarkerModelForm):
-    """The base form for :class:`core.models.AccountModel.AccountModel`.
+    """The base form for :class:`core.models.Account.Account`.
 
     Exposes all fields from the model that may be changed by the user.
-    Other forms for :class:`core.models.AccountModel.AccountModel` should inherit from this.
+    Other forms for :class:`core.models.Account.Account` should inherit from this.
     """
 
     class Meta:
@@ -47,7 +47,7 @@ class BaseAccountForm(RequiredMarkerModelForm):
         These submetaclasses must not expose fields that are not listed here.
         """
 
-        model: Final[type[Model]] = AccountModel
+        model: Final[type[Model]] = Account
         """The model to serialize."""
 
         fields: ClassVar[list[str]] = [

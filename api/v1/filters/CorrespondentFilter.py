@@ -26,7 +26,7 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.CorrespondentModel import CorrespondentModel
+from core.models.Correspondent import Correspondent
 
 
 if TYPE_CHECKING:
@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 
 class CorrespondentFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.CorrespondentModel.CorrespondentModel`."""
+    """The filter class for :class:`core.models.Correspondent.Correspondent`."""
 
     search = filters.CharFilter(
         method="filter_text_fields",
@@ -134,7 +134,7 @@ class CorrespondentFilter(filters.FilterSet):
     class Meta:
         """Metadata class for the filter."""
 
-        model: Final[type[Model]] = CorrespondentModel
+        model: Final[type[Model]] = Correspondent
 
         fields: ClassVar[dict[str, list[str]]] = {
             "email_name": FilterSetups.TEXT,
@@ -145,8 +145,8 @@ class CorrespondentFilter(filters.FilterSet):
         }
 
     def filter_text_fields(
-        self, queryset: QuerySet[CorrespondentModel], name: str, value: str
-    ) -> QuerySet[CorrespondentModel]:
+        self, queryset: QuerySet[Correspondent], name: str, value: str
+    ) -> QuerySet[Correspondent]:
         """Filters textfields in the model.
 
         Args:

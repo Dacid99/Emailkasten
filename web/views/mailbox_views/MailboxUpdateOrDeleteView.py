@@ -24,7 +24,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 
-from core.models.MailboxModel import MailboxModel
+from core.models.Mailbox import Mailbox
 from web.views.mailbox_views.MailboxFilterView import MailboxFilterView
 from web.views.UpdateOrDeleteView import UpdateOrDeleteView
 
@@ -32,17 +32,17 @@ from ...forms.mailbox_forms.BaseMailboxForm import BaseMailboxForm
 
 
 class MailboxUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
-    """View for updating or deleting a single :class:`core.models.MailboxModel.MailboxModel` instance."""
+    """View for updating or deleting a single :class:`core.models.Mailbox.Mailbox` instance."""
 
-    model = MailboxModel
+    model = Mailbox
     form_class = BaseMailboxForm
     template_name = "web/mailbox/mailbox_edit.html"
     delete_success_url = reverse_lazy("web:" + MailboxFilterView.URL_NAME)
-    URL_NAME = MailboxModel.get_edit_web_url_name()
+    URL_NAME = Mailbox.get_edit_web_url_name()
 
     @override
-    def get_queryset(self) -> QuerySet[MailboxModel]:
+    def get_queryset(self) -> QuerySet[Mailbox]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return MailboxModel.objects.none()
-        return MailboxModel.objects.filter(account__user=self.request.user)
+            return Mailbox.objects.none()
+        return Mailbox.objects.filter(account__user=self.request.user)

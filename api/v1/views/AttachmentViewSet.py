@@ -31,7 +31,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.AttachmentModel import AttachmentModel
+from core.models.Attachment import Attachment
 
 from ..filters.AttachmentFilter import AttachmentFilter
 from ..serializers.attachment_serializers.BaseAttachmentSerializer import (
@@ -45,13 +45,13 @@ if TYPE_CHECKING:
 
 
 class AttachmentViewSet(
-    viewsets.ReadOnlyModelViewSet[AttachmentModel],
+    viewsets.ReadOnlyModelViewSet[Attachment],
     mixins.DestroyModelMixin,
     ToggleFavoriteMixin,
 ):
-    """Viewset for the :class:`core.models.AttachmentModel.AttachmentModel`."""
+    """Viewset for the :class:`core.models.Attachment.Attachment`."""
 
-    BASENAME = AttachmentModel.BASENAME
+    BASENAME = Attachment.BASENAME
     serializer_class = BaseAttachmentSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = AttachmentFilter
@@ -67,17 +67,17 @@ class AttachmentViewSet(
     ordering: Final[list[str]] = ["id"]
 
     @override
-    def get_queryset(self) -> QuerySet[AttachmentModel]:
+    def get_queryset(self) -> QuerySet[Attachment]:
         """Filters the data for entries connected to the request user.
 
         Returns:
             The attachment entries matching the request user.
         """
         if getattr(self, "swagger_fake_view", False):
-            return AttachmentModel.objects.none()
+            return Attachment.objects.none()
         if not self.request.user.is_authenticated:
-            return AttachmentModel.objects.none()
-        return AttachmentModel.objects.filter(
+            return Attachment.objects.none()
+        return Attachment.objects.filter(
             email__mailbox__account__user=self.request.user
         ).select_related("email")
 

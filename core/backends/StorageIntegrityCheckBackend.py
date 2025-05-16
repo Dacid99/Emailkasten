@@ -20,11 +20,11 @@
 
 from health_check.backends import BaseHealthCheckBackend, HealthCheckException
 
-from core.models.StorageModel import StorageModel
+from core.models.Storage import Storage
 
 
 class StorageIntegrityCheckBackend(BaseHealthCheckBackend):
-    """Health check backend for :func:`core.models.StorageModel.StorageModel.healthcheck`."""
+    """Health check backend for :func:`core.models.Storage.Storage.healthcheck`."""
 
     critical_service = False
 
@@ -32,9 +32,9 @@ class StorageIntegrityCheckBackend(BaseHealthCheckBackend):
         """Implements the healthcheck.
 
         Raises:
-            HealthCheckException: If :func:`core.models.StorageModel.StorageModel.healthcheck` fails.
+            HealthCheckException: If :func:`core.models.Storage.Storage.healthcheck` fails.
         """
-        if not StorageModel.healthcheck():
+        if not Storage.healthcheck():
             raise HealthCheckException(
                 "The storage integrity is compromised, check the logs for critical level errors!"
             )

@@ -24,7 +24,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 from web.views.daemon_views.DaemonFilterView import DaemonFilterView
 from web.views.UpdateOrDeleteView import UpdateOrDeleteView
 
@@ -32,17 +32,17 @@ from ...forms.daemon_forms.BaseDaemonForm import BaseDaemonForm
 
 
 class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
-    """View for updating or deleting a single :class:`core.models.DaemonModel.DaemonModel` instance."""
+    """View for updating or deleting a single :class:`core.models.Daemon.Daemon` instance."""
 
-    model = DaemonModel
+    model = Daemon
     form_class = BaseDaemonForm
     template_name = "web/daemon/daemon_edit.html"
     delete_success_url = reverse_lazy("web:" + DaemonFilterView.URL_NAME)
-    URL_NAME = DaemonModel.get_edit_web_url_name()
+    URL_NAME = Daemon.get_edit_web_url_name()
 
     @override
-    def get_queryset(self) -> QuerySet[DaemonModel]:
+    def get_queryset(self) -> QuerySet[Daemon]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return DaemonModel.objects.none()
-        return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
+            return Daemon.objects.none()
+        return Daemon.objects.filter(mailbox__account__user=self.request.user)

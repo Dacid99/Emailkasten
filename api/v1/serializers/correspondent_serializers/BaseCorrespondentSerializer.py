@@ -24,19 +24,19 @@ from typing import TYPE_CHECKING, Final
 
 from rest_framework import serializers
 
-from core.models.CorrespondentModel import CorrespondentModel
+from core.models.Correspondent import Correspondent
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseCorrespondentSerializer(serializers.ModelSerializer[CorrespondentModel]):
-    """The base serializer for :class:`core.models.CorrespondentModel.CorrespondentModel`.
+class BaseCorrespondentSerializer(serializers.ModelSerializer[Correspondent]):
+    """The base serializer for :class:`core.models.Correspondent.Correspondent`.
 
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`core.models.CorrespondentModel.CorrespondentModel` should inherit from this.
+    Other serializers for :class:`core.models.Correspondent.Correspondent` should inherit from this.
     """
 
     class Meta:
@@ -47,14 +47,14 @@ class BaseCorrespondentSerializer(serializers.ModelSerializer[CorrespondentModel
         :attr:`read_only_fields` must not be shortened in subclasses.
         """
 
-        model: Final[type[Model]] = CorrespondentModel
+        model: Final[type[Model]] = Correspondent
         """The model to serialize."""
 
         fields = "__all__"
         """Include all fields."""
 
         read_only_fields: Final[list[str]] = ["email_address", "created", "updated"]
-        """The :attr:`core.models.CorrespondentModel.CorrespondentModel.email_address`,
-        :attr:`core.models.CorrespondentModel.CorrespondentModel.created` and
-        :attr:`core.models.CorrespondentModel.CorrespondentModel.updated` fields are read-only.
+        """The :attr:`core.models.Correspondent.Correspondent.email_address`,
+        :attr:`core.models.Correspondent.Correspondent.created` and
+        :attr:`core.models.Correspondent.Correspondent.updated` fields are read-only.
         """

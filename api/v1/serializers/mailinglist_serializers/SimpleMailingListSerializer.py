@@ -28,14 +28,14 @@ from typing import Any
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from core.models.MailingListModel import MailingListModel
+from core.models.MailingList import MailingList
 
 from ..email_serializers.BaseEMailSerializer import BaseEMailSerializer
 from .BaseMailingListSerializer import BaseMailingListSerializer
 
 
 class SimpleMailingListSerializer(BaseMailingListSerializer):
-    """A reduced serializer for a :class:`core.models.MailingListModel.MailingListModel`.
+    """A reduced serializer for a :class:`core.models.MailingList.MailingList`.
 
     Includes a method field for the count of elements in :attr:`core.models.MailingList.MailingList.emails`.
     """
@@ -43,7 +43,7 @@ class SimpleMailingListSerializer(BaseMailingListSerializer):
     emails = serializers.SerializerMethodField(read_only=True)
     """The mails by the mailinglist. Set via :func:`get_emails`."""
 
-    def get_emails(self, instance: MailingListModel) -> ReturnDict[str, Any]:
+    def get_emails(self, instance: MailingList) -> ReturnDict[str, Any]:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:

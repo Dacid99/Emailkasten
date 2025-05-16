@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="mail_host_port",
             field=models.PositiveIntegerField(
                 blank=True,
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="password",
             field=models.CharField(
                 help_text="The password to the account.",
@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="timeout",
             field=models.PositiveIntegerField(
                 blank=True,
@@ -40,12 +40,12 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="attachmentmodel",
+            model_name="attachment",
             name="datasize",
             field=models.PositiveIntegerField(),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="cycle_interval",
             field=models.PositiveIntegerField(
                 default=60,
@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="log_backup_count",
             field=models.PositiveSmallIntegerField(
                 default=5,
@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="logfile_size",
             field=models.PositiveIntegerField(
                 default=1048576,
@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="restart_time",
             field=models.PositiveIntegerField(
                 default=10,
@@ -81,7 +81,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="emailmodel",
+            model_name="email",
             name="datasize",
             field=models.PositiveIntegerField(),
         ),

@@ -26,7 +26,7 @@ from django.db.models import Q, QuerySet
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.EMailModel import EMailModel
+from core.models.EMail import EMail
 
 
 if TYPE_CHECKING:
@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 
 class EMailFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.EMailModel.EMailModel`."""
+    """The filter class for :class:`core.models.EMail.EMail`."""
 
     search = filters.CharFilter(
         method="filter_text_fields",
@@ -77,7 +77,7 @@ class EMailFilter(filters.FilterSet):
     class Meta:
         """Metadata class for the filter."""
 
-        model: Final[type[Model]] = EMailModel
+        model: Final[type[Model]] = EMail
 
         fields: ClassVar[dict[str, list[str]]] = {
             "message_id": FilterSetups.TEXT,
@@ -101,8 +101,8 @@ class EMailFilter(filters.FilterSet):
         }
 
     def filter_text_fields(
-        self, queryset: QuerySet[EMailModel], name: str, value: str
-    ) -> QuerySet[EMailModel]:
+        self, queryset: QuerySet[EMail], name: str, value: str
+    ) -> QuerySet[EMail]:
         """Filters textfields in the model.
 
         Args:

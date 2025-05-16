@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`DaemonModel` model class."""
+"""Module with the :class:`Daemon` model class."""
 
 from __future__ import annotations
 
@@ -40,21 +40,21 @@ from ..constants import EmailFetchingCriterionChoices
 
 
 if TYPE_CHECKING:
-    from .MailboxModel import MailboxModel
+    from .Mailbox import Mailbox
 
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class DaemonModel(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
+class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
     """Database model for the daemon fetching a mailbox."""
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     """The uuid of this daemon. Used to create a unique logfile."""
 
-    mailbox: models.ForeignKey[MailboxModel] = models.ForeignKey(
-        "MailboxModel", related_name="daemons", on_delete=models.CASCADE
+    mailbox: models.ForeignKey[Mailbox] = models.ForeignKey(
+        "Mailbox", related_name="daemons", on_delete=models.CASCADE
     )
     """The mailbox this daemon fetches. Unique. Deletion of that :attr:`mailbox` deletes this daemon."""
 
@@ -92,8 +92,8 @@ class DaemonModel(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
 
     is_healthy = models.BooleanField(null=True)
     """Flags whether the daemon is healthy. `None` by default.
-    When the :attr:`core.models.MailboxModel.is_healthy` field changes to `False`, this field is updated accordingly.
-    When this field changes to `True`, the :attr:`core.models.MailboxModel.is_healthy` field of :attr:`mailbox` will be set to `True` as well by a signal.
+    When the :attr:`core.models.Mailbox.is_healthy` field changes to `False`, this field is updated accordingly.
+    When this field changes to `True`, the :attr:`core.models.Mailbox.is_healthy` field of :attr:`mailbox` will be set to `True` as well by a signal.
     """
 
     log_filepath = models.FilePathField(

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`CorrespondentModel` model class."""
+"""Module with the :class:`Correspondent` model class."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for the module."""
 
 
-class CorrespondentModel(URLMixin, FavoriteMixin, models.Model):
+class Correspondent(URLMixin, FavoriteMixin, models.Model):
     """Database model for the correspondent data found in a mail."""
 
     email_name = models.CharField(
@@ -82,14 +82,14 @@ class CorrespondentModel(URLMixin, FavoriteMixin, models.Model):
     @classmethod
     def createFromCorrespondentTuple(
         cls, correspondentTuple: tuple[str, str]
-    ) -> CorrespondentModel | None:
-        """Creates a :class:`core.models.CorrespondentModel.CorrespondentModel` from email header data.
+    ) -> Correspondent | None:
+        """Creates a :class:`core.models.Correspondent.Correspondent` from email header data.
 
         Args:
             correspondentTuple: The tuple of correspondent data to create a model from.
 
         Returns:
-            The :class:`core.models.CorrespondentModel.CorrespondentModel` with the data from the header.
+            The :class:`core.models.Correspondent.Correspondent` with the data from the header.
             If the correspondent already exists in the db returns that version.
             `None` if there is no address in :attr:`correspondentTuple`.
         """

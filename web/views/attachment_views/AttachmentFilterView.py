@@ -23,24 +23,24 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 
-from core.models.AttachmentModel import AttachmentModel
+from core.models.Attachment import Attachment
 
 from ...filters.AttachmentFilter import AttachmentFilter
 from ..FilterPageView import FilterPageView
 
 
 class AttachmentFilterView(LoginRequiredMixin, FilterPageView):
-    """View for filtering listed :class:`core.models.AttachmentModel.AttachmentModel` instances."""
+    """View for filtering listed :class:`core.models.Attachment.Attachment` instances."""
 
-    URL_NAME = AttachmentModel.get_list_web_url_name()
-    model = AttachmentModel
+    URL_NAME = Attachment.get_list_web_url_name()
+    model = Attachment
     template_name = "web/attachment/attachment_filter_list.html"
     context_object_name = "attachments"
     filterset_class = AttachmentFilter
     ordering = ["file_name"]
 
     @override
-    def get_queryset(self) -> QuerySet[AttachmentModel]:
+    def get_queryset(self) -> QuerySet[Attachment]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()

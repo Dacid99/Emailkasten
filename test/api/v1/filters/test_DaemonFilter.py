@@ -38,7 +38,7 @@ def test_cycle_interval_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.DaemonModel.DaemonModel.cycle_interval` field.
+    for the :attr:`core.models.Daemon.Daemon.cycle_interval` field.
     """
     query = {"cycle_interval" + lookup_expr: filterquery}
 
@@ -56,7 +56,7 @@ def test_cycle_interval_filter(
 )
 def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.DaemonModel.DaemonModel.is_healthy` field.
+    for the :attr:`core.models.Daemon.Daemon.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
 
@@ -74,7 +74,7 @@ def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_i
 )
 def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.DaemonModel.DaemonModel.is_running` field.
+    for the :attr:`core.models.Daemon.Daemon.is_running` field.
     """
     query = {"is_running" + lookup_expr: filterquery}
 
@@ -92,7 +92,7 @@ def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_i
 )
 def test_created_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.DaemonModel.DaemonModel.created` field.
+    for the :attr:`core.models.Daemon.Daemon.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 
@@ -110,7 +110,7 @@ def test_created_filter(daemon_queryset, lookup_expr, filterquery, expected_indi
 )
 def test_updated_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.DaemonModel.DaemonModel.updated` field.
+    for the :attr:`core.models.Daemon.Daemon.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}
 
@@ -130,7 +130,7 @@ def test_mailbox__is_healthy_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the related :attr:`core.models.MailboxModel.MailboxModel.is_healthy` field.
+    for the related :attr:`core.models.Mailbox.Mailbox.is_healthy` field.
     """
     query = {"mailbox__is_healthy" + lookup_expr: filterquery}
 
@@ -150,7 +150,7 @@ def test_mail_address_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the related :attr:`core.models.AccountModel.AccountModel.mail_address` field.
+    for the related :attr:`core.models.Account.Account.mail_address` field.
     """
     query = {"mail_address" + lookup_expr: filterquery}
 
@@ -168,7 +168,7 @@ def test_mail_address_filter(
 )
 def test_mail_host_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the related :attr:`core.models.AccountModel.AccountModel.mail_host` field.
+    for the related :attr:`core.models.Account.Account.mail_host` field.
     """
     query = {"mail_host" + lookup_expr: filterquery}
 
@@ -188,7 +188,7 @@ def test_account__is_healthy_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the related :attr:`core.models.AccountModel.AccountModel.is_healthy` field.
+    for the related :attr:`core.models.Account.Account.is_healthy` field.
     """
     query = {"account__is_healthy" + lookup_expr: filterquery}
 

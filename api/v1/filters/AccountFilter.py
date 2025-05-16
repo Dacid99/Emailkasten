@@ -26,7 +26,7 @@ from django.db.models import Q, QuerySet
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.AccountModel import AccountModel
+from core.models.Account import Account
 
 
 if TYPE_CHECKING:
@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 
 class AccountFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.AccountModel.AccountModel`."""
+    """The filter class for :class:`core.models.Account.Account`."""
 
     search = filters.CharFilter(
         method="filter_text_fields",
@@ -43,7 +43,7 @@ class AccountFilter(filters.FilterSet):
     class Meta:
         """Metadata class for the filter."""
 
-        model: Final[type[Model]] = AccountModel
+        model: Final[type[Model]] = Account
 
         fields: ClassVar[dict[str, list[str]]] = {
             "mail_address": FilterSetups.TEXT,
@@ -58,8 +58,8 @@ class AccountFilter(filters.FilterSet):
         }
 
     def filter_text_fields(
-        self, queryset: QuerySet[AccountModel], name: str, value: str
-    ) -> QuerySet[AccountModel]:
+        self, queryset: QuerySet[Account], name: str, value: str
+    ) -> QuerySet[Account]:
         """Filters textfields in the model.
 
         Args:

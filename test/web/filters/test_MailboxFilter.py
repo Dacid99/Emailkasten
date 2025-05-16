@@ -35,7 +35,7 @@ from .conftest import (
 )
 def test_name_filter(mailbox_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.name` field.
+    for the :attr:`core.models.Mailbox.Mailbox.name` field.
     """
     query = {"name" + lookup_expr: filterquery}
 
@@ -55,7 +55,7 @@ def test_account__mail_address_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.name` field.
+    for the :attr:`core.models.Mailbox.Mailbox.name` field.
     """
     query = {"account__mail_address" + lookup_expr: filterquery}
 
@@ -75,7 +75,7 @@ def test_is_healthy_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.is_healthy` field.
+    for the :attr:`core.models.Mailbox.Mailbox.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
 
@@ -95,7 +95,7 @@ def test_is_favorite_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.is_favorite` field.
+    for the :attr:`core.models.Mailbox.Mailbox.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -113,7 +113,7 @@ def test_is_favorite_filter(
 )
 def test_created_filter(mailbox_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.created` field.
+    for the :attr:`core.models.Mailbox.Mailbox.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 

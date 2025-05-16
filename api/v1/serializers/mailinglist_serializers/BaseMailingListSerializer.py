@@ -24,19 +24,19 @@ from typing import TYPE_CHECKING, Final
 
 from rest_framework import serializers
 
-from core.models.MailingListModel import MailingListModel
+from core.models.MailingList import MailingList
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseMailingListSerializer(serializers.ModelSerializer[MailingListModel]):
-    """The base serializer for :class:`core.models.MailingListModel.MailingListModel`.
+class BaseMailingListSerializer(serializers.ModelSerializer[MailingList]):
+    """The base serializer for :class:`core.models.MailingList.MailingList`.
 
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`core.models.MailingListModel.MailingListModel` should inherit from this.
+    Other serializers for :class:`core.models.MailingList.MailingList` should inherit from this.
     """
 
     class Meta:
@@ -47,7 +47,7 @@ class BaseMailingListSerializer(serializers.ModelSerializer[MailingListModel]):
         :attr:`read_only_fields` must not be shortened in subclasses.
         """
 
-        model: Final[type[Model]] = MailingListModel
+        model: Final[type[Model]] = MailingList
         """The model to serialize."""
 
         fields = "__all__"
@@ -66,6 +66,6 @@ class BaseMailingListSerializer(serializers.ModelSerializer[MailingListModel]):
             "email_number",
         ]
         """All fields except for
-        :attr:`core.models.MailingListModel.MailingListModel.is_favorite`
+        :attr:`core.models.MailingList.MailingList.is_favorite`
         are read-only.
         """

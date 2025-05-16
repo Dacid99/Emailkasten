@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from core.models.MailboxModel import MailboxModel
+from core.models.Mailbox import Mailbox
 
 from ...utils.RequiredMarkerForms import RequiredMarkerModelForm
 
@@ -32,10 +32,10 @@ if TYPE_CHECKING:
 
 
 class BaseMailboxForm(RequiredMarkerModelForm):
-    """The base form for :class:`core.models.MailboxModel.MailboxModel`.
+    """The base form for :class:`core.models.Mailbox.Mailbox`.
 
     Exposes all fields from the model that may be changed by the user.
-    Other forms for :class:`core.models.MailboxModel.MailboxModel` should inherit from this.
+    Other forms for :class:`core.models.Mailbox.Mailbox` should inherit from this.
     """
 
     class Meta:
@@ -45,7 +45,7 @@ class BaseMailboxForm(RequiredMarkerModelForm):
         These submetaclasses must not expose fields that are not listed here.
         """
 
-        model: Final[type[Model]] = MailboxModel
+        model: Final[type[Model]] = Mailbox
         """The model to serialize."""
 
         fields: ClassVar[list[str]] = [

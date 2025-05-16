@@ -11,11 +11,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="prerender_filepath",
         ),
         migrations.AddField(
-            model_name="emailmodel",
+            model_name="email",
             name="html_filepath",
             field=models.FilePathField(
                 match=".*\\.html$",
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="mailboxmodel",
+            model_name="mailbox",
             name="save_toHTML",
             field=models.BooleanField(
                 default=True,
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="mail_address",
             field=models.EmailField(
                 help_text="The mail address to the account.",
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="mail_host",
             field=models.CharField(
                 help_text="The URL of the mailserver for the chosen protocol.",
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="mail_host_port",
             field=models.IntegerField(
                 blank=True,
@@ -63,12 +63,12 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="password",
             field=models.CharField(max_length=255, verbose_name="Password"),
         ),
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="protocol",
             field=models.CharField(
                 choices=[
@@ -83,7 +83,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="timeout",
             field=models.IntegerField(
                 blank=True,
@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="correspondentmodel",
+            model_name="correspondent",
             name="email_name",
             field=models.CharField(
                 blank=True,
@@ -104,7 +104,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="cycle_interval",
             field=models.IntegerField(
                 default=60,
@@ -113,7 +113,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="fetching_criterion",
             field=models.CharField(
                 choices=[
@@ -137,7 +137,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="log_backup_count",
             field=models.IntegerField(
                 default=5,
@@ -146,7 +146,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="logfile_size",
             field=models.IntegerField(
                 default=1048576,
@@ -155,7 +155,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="restart_time",
             field=models.IntegerField(
                 default=10,
@@ -164,7 +164,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="mailboxmodel",
+            model_name="mailbox",
             name="save_attachments",
             field=models.BooleanField(
                 default=True,
@@ -173,7 +173,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="mailboxmodel",
+            model_name="mailbox",
             name="save_toEML",
             field=models.BooleanField(
                 default=True,

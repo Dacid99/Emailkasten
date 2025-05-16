@@ -23,23 +23,23 @@ from typing import Any, override
 from django.db.models.query import QuerySet
 from django.views.generic.detail import SingleObjectMixin
 
-from core.models.EMailModel import EMailModel
-from core.models.MailboxModel import MailboxModel
+from core.models.EMail import EMail
+from core.models.Mailbox import Mailbox
 
 from ..email_views.EMailFilterView import EMailFilterView
 
 
 class MailboxEmailsFilterView(EMailFilterView, SingleObjectMixin):  # type: ignore[misc]  # SingleObjectMixin attributes are shadowed purposefully
-    """View for filtering listed :class:`core.models.EMailModel.EMailModel` instances belonging to a certain mailbox."""
+    """View for filtering listed :class:`core.models.EMail.EMail` instances belonging to a certain mailbox."""
 
     URL_NAME = "mailbox-emails"
     template_name = "web/mailbox/mailbox_email_filter_list.html"
 
     @override
-    def get_queryset(self) -> QuerySet[EMailModel]:
+    def get_queryset(self) -> QuerySet[EMail]:
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()
-        mailbox_queryset = MailboxModel.objects.filter(account__user=self.request.user)
+        mailbox_queryset = Mailbox.objects.filter(account__user=self.request.user)
         self.object = self.get_object(queryset=mailbox_queryset)
         return super().get_queryset().filter(mailbox=self.object)
 

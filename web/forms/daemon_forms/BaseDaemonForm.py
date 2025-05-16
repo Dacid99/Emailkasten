@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 
 from ...utils.RequiredMarkerForms import RequiredMarkerModelForm
 
@@ -32,10 +32,10 @@ if TYPE_CHECKING:
 
 
 class BaseDaemonForm(RequiredMarkerModelForm):
-    """The base form for :class:`core.models.DaemonModel.DaemonModel`.
+    """The base form for :class:`core.models.Daemon.Daemon`.
 
     Exposes all fields from the model that may be changed by the user.
-    Other forms for :class:`core.models.DaemonModel.DaemonModel` should inherit from this.
+    Other forms for :class:`core.models.Daemon.Daemon` should inherit from this.
     """
 
     class Meta:
@@ -45,7 +45,7 @@ class BaseDaemonForm(RequiredMarkerModelForm):
         These submetaclasses must not expose fields that are not listed here.
         """
 
-        model: Final[type[Model]] = DaemonModel
+        model: Final[type[Model]] = Daemon
         """The model to serialize."""
 
         fields: ClassVar[list[str]] = [

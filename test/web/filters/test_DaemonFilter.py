@@ -39,7 +39,7 @@ def test_fetching_criterion_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.fetching_criterion` field.
+    for the :attr:`core.models.Account.Account.fetching_criterion` field.
     """
     query = {
         "fetching_criterion": [
@@ -64,7 +64,7 @@ def test_cycle_interval_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.DaemonModel.DaemonModel.cycle_interval` field.
+    for the :attr:`core.models.Daemon.Daemon.cycle_interval` field.
     """
     query = {"cycle_interval_min": filterquery[0], "cycle_interval_max": filterquery[1]}
 
@@ -82,7 +82,7 @@ def test_cycle_interval_filter(
 )
 def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.DaemonModel.DaemonModel.is_healthy` field.
+    for the :attr:`core.models.Daemon.Daemon.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
 
@@ -100,7 +100,7 @@ def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_i
 )
 def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.DaemonModel.DaemonModel.is_running` field.
+    for the :attr:`core.models.Daemon.Daemon.is_running` field.
     """
     query = {"is_running" + lookup_expr: filterquery}
 
@@ -118,7 +118,7 @@ def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_i
 )
 def test_created_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.DaemonFilter.DaemonFilter`'s filtering
-    for the :attr:`core.models.DaemonModel.DaemonModel.created` field.
+    for the :attr:`core.models.Daemon.Daemon.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 

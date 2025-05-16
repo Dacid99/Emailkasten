@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="protocol",
             field=models.CharField(
                 choices=[
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddConstraint(
-            model_name="accountmodel",
+            model_name="account",
             constraint=models.CheckConstraint(
                 condition=models.Q(
                     ("protocol__in", ("IMAP", "IMAP_SSL", "POP3", "POP3_SSL"))
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddConstraint(
-            model_name="daemonmodel",
+            model_name="daemon",
             constraint=models.CheckConstraint(
                 condition=models.Q(
                     (
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddConstraint(
-            model_name="emailcorrespondentsmodel",
+            model_name="emailcorrespondents",
             constraint=models.CheckConstraint(
                 condition=models.Q(
                     (

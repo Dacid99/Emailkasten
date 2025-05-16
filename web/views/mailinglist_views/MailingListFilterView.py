@@ -23,24 +23,24 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 
-from core.models.MailingListModel import MailingListModel
+from core.models.MailingList import MailingList
 
 from ...filters.MailingListFilter import MailingListFilter
 from ..FilterPageView import FilterPageView
 
 
 class MailingListFilterView(LoginRequiredMixin, FilterPageView):
-    """View for filtering listed :class:`core.models.MailingListModel.MailingListModel` instances."""
+    """View for filtering listed :class:`core.models.MailingList.MailingList` instances."""
 
-    URL_NAME = MailingListModel.get_list_web_url_name()
-    model = MailingListModel
+    URL_NAME = MailingList.get_list_web_url_name()
+    model = MailingList
     template_name = "web/mailinglist/mailinglist_filter_list.html"
     context_object_name = "mailinglists"
     filterset_class = MailingListFilter
     ordering = ["-created"]
 
     @override
-    def get_queryset(self) -> QuerySet[MailingListModel]:
+    def get_queryset(self) -> QuerySet[MailingList]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()

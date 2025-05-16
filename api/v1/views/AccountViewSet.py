@@ -32,7 +32,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.AccountModel import AccountModel
+from core.models.Account import Account
 from core.utils.fetchers.exceptions import MailAccountError
 
 from ..filters.AccountFilter import AccountFilter
@@ -45,10 +45,10 @@ if TYPE_CHECKING:
     from rest_framework.serializers import BaseSerializer
 
 
-class AccountViewSet(viewsets.ModelViewSet[AccountModel], ToggleFavoriteMixin):
-    """Viewset for the :class:`core.models.AccountModel.AccountModel`."""
+class AccountViewSet(viewsets.ModelViewSet[Account], ToggleFavoriteMixin):
+    """Viewset for the :class:`core.models.Account.Account`."""
 
-    BASENAME = AccountModel.BASENAME
+    BASENAME = Account.BASENAME
     serializer_class = AccountSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = AccountFilter
@@ -67,22 +67,22 @@ class AccountViewSet(viewsets.ModelViewSet[AccountModel], ToggleFavoriteMixin):
     ordering: Final[list[str]] = ["id"]
 
     @override
-    def get_queryset(self) -> QuerySet[AccountModel]:
+    def get_queryset(self) -> QuerySet[Account]:
         """Fetches the queryset by filtering the data for entries connected to the request user.
 
         Returns:
             The account entries matching the request user.
         """
         if getattr(self, "swagger_fake_view", False):
-            return AccountModel.objects.none()
+            return Account.objects.none()
         if not self.request.user.is_authenticated:
-            return AccountModel.objects.none()
-        return AccountModel.objects.filter(user=self.request.user).prefetch_related(
+            return Account.objects.none()
+        return Account.objects.filter(user=self.request.user).prefetch_related(
             "mailboxes"
         )
 
     @override
-    def perform_create(self, serializer: BaseSerializer[AccountModel]) -> None:
+    def perform_create(self, serializer: BaseSerializer[Account]) -> None:
         """Adds the request user to the serializer data of the create request.
 
         Args:

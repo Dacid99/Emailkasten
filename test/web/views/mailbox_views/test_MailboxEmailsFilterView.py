@@ -26,32 +26,32 @@ from web.views.mailbox_views.MailboxEmailsFilterView import MailboxEmailsFilterV
 
 
 @pytest.mark.django_db
-def test_get_noauth(mailboxModel, client, detail_url, login_url):
+def test_get_noauth(fake_mailbox, client, detail_url, login_url):
     """Tests :class:`web.views.mailbox_views.MailboxEmailsFilterView.MailboxEmailsFilterView` with an unauthenticated user client."""
-    response = client.get(detail_url(MailboxEmailsFilterView, mailboxModel))
+    response = client.get(detail_url(MailboxEmailsFilterView, fake_mailbox))
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(MailboxEmailsFilterView, mailboxModel)}"
+        f"?next={detail_url(MailboxEmailsFilterView, fake_mailbox)}"
     )
 
 
 @pytest.mark.django_db
-def test_get_auth_other(mailboxModel, other_client, detail_url):
+def test_get_auth_other(fake_mailbox, other_client, detail_url):
     """Tests :class:`web.views.mailbox_views.MailboxEmailsFilterView.MailboxEmailsFilterView` with the authenticated other user client."""
-    response = other_client.get(detail_url(MailboxEmailsFilterView, mailboxModel))
+    response = other_client.get(detail_url(MailboxEmailsFilterView, fake_mailbox))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    assert mailboxModel.name not in response.content.decode()
+    assert fake_mailbox.name not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(mailboxModel, owner_client, detail_url):
+def test_get_auth_owner(fake_mailbox, owner_client, detail_url):
     """Tests :class:`web.views.mailbox_views.MailboxEmailsFilterView.MailboxEmailsFilterView` with the authenticated owner user client."""
-    response = owner_client.get(detail_url(MailboxEmailsFilterView, mailboxModel))
+    response = owner_client.get(detail_url(MailboxEmailsFilterView, fake_mailbox))
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)

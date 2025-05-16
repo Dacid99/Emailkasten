@@ -28,254 +28,252 @@ from core.utils.fetchers.exceptions import MailAccountError
 
 
 @pytest.fixture
-def mock_AccountModel_update_mailboxes(mocker):
+def mock_Account_update_mailboxes(mocker):
     return mocker.patch(
-        "api.v1.views.AccountViewSet.AccountModel.update_mailboxes", autospec=True
+        "api.v1.views.AccountViewSet.Account.update_mailboxes", autospec=True
     )
 
 
 @pytest.fixture
-def mock_AccountModel_test_connection(mocker):
+def mock_Account_test_connection(mocker):
     return mocker.patch(
-        "api.v1.views.AccountViewSet.AccountModel.test_connection", autospec=True
+        "api.v1.views.AccountViewSet.Account.test_connection", autospec=True
     )
 
 
 @pytest.mark.django_db
 def test_update_mailboxes_noauth(
-    accountModel,
+    fake_account,
     noauth_apiClient,
     custom_detail_action_url,
-    mock_AccountModel_update_mailboxes,
+    mock_Account_update_mailboxes,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with an unauthenticated user client."""
     response = noauth_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    mock_AccountModel_update_mailboxes.assert_not_called()
+    mock_Account_update_mailboxes.assert_not_called()
     with pytest.raises(KeyError):
         response.data["mail_address"]
 
 
 @pytest.mark.django_db
 def test_update_mailboxes_auth_other(
-    accountModel,
+    fake_account,
     other_apiClient,
     custom_detail_action_url,
-    mock_AccountModel_update_mailboxes,
+    mock_Account_update_mailboxes,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated other user client."""
     response = other_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    mock_AccountModel_update_mailboxes.assert_not_called()
+    mock_Account_update_mailboxes.assert_not_called()
     with pytest.raises(KeyError):
         response.data["mail_address"]
 
 
 @pytest.mark.django_db
 def test_update_mailboxes_success_auth_owner(
-    accountModel,
+    fake_account,
     owner_apiClient,
     custom_detail_action_url,
-    mock_AccountModel_update_mailboxes,
+    mock_Account_update_mailboxes,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated owner user client."""
     response = owner_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_200_OK
     assert (
-        response.data["account"] == AccountViewSet.serializer_class(accountModel).data
+        response.data["account"] == AccountViewSet.serializer_class(fake_account).data
     )
     assert "error" not in response.data
-    mock_AccountModel_update_mailboxes.assert_called_once_with(accountModel)
+    mock_Account_update_mailboxes.assert_called_once_with(fake_account)
 
 
 @pytest.mark.django_db
 def test_update_mailboxes_failure_auth_owner(
     faker,
-    accountModel,
+    fake_account,
     owner_apiClient,
     custom_detail_action_url,
-    mock_AccountModel_update_mailboxes,
+    mock_Account_update_mailboxes,
 ):
     fake_error_message = faker.sentence()
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated owner user client."""
-    mock_AccountModel_update_mailboxes.side_effect = MailAccountError(
-        fake_error_message
-    )
+    mock_Account_update_mailboxes.side_effect = MailAccountError(fake_error_message)
 
     response = owner_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert (
-        response.data["account"] == AccountViewSet.serializer_class(accountModel).data
+        response.data["account"] == AccountViewSet.serializer_class(fake_account).data
     )
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
-    mock_AccountModel_update_mailboxes.assert_called_once_with(accountModel)
+    mock_Account_update_mailboxes.assert_called_once_with(fake_account)
 
 
 @pytest.mark.django_db
 def test_test_noauth(
-    accountModel,
+    fake_account,
     noauth_apiClient,
     custom_detail_action_url,
-    mock_AccountModel_test_connection,
+    mock_Account_test_connection,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with an unauthenticated user client."""
-    previous_is_healthy = accountModel.is_healthy
+    previous_is_healthy = fake_account.is_healthy
 
     response = noauth_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_TEST, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_TEST, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    mock_AccountModel_test_connection.assert_not_called()
-    accountModel.refresh_from_db()
-    assert accountModel.is_healthy is previous_is_healthy
+    mock_Account_test_connection.assert_not_called()
+    fake_account.refresh_from_db()
+    assert fake_account.is_healthy is previous_is_healthy
     with pytest.raises(KeyError):
         response.data["mail_address"]
 
 
 @pytest.mark.django_db
 def test_test_auth_other(
-    accountModel,
+    fake_account,
     other_apiClient,
     custom_detail_action_url,
-    mock_AccountModel_test_connection,
+    mock_Account_test_connection,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated other user client."""
 
-    previous_is_healthy = accountModel.is_healthy
+    previous_is_healthy = fake_account.is_healthy
 
     response = other_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_TEST, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_TEST, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    mock_AccountModel_test_connection.assert_not_called()
-    accountModel.refresh_from_db()
-    assert accountModel.is_healthy is previous_is_healthy
+    mock_Account_test_connection.assert_not_called()
+    fake_account.refresh_from_db()
+    assert fake_account.is_healthy is previous_is_healthy
     with pytest.raises(KeyError):
         response.data["mail_address"]
 
 
 @pytest.mark.django_db
 def test_test_success_auth_owner(
-    accountModel,
+    fake_account,
     owner_apiClient,
     custom_detail_action_url,
-    mock_AccountModel_test_connection,
+    mock_Account_test_connection,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated owner user client."""
 
     response = owner_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_TEST, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_TEST, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_200_OK
     assert (
-        response.data["account"] == AccountViewSet.serializer_class(accountModel).data
+        response.data["account"] == AccountViewSet.serializer_class(fake_account).data
     )
     assert response.data["result"] is True
     assert "error" not in response.data
-    mock_AccountModel_test_connection.assert_called_once_with(accountModel)
+    mock_Account_test_connection.assert_called_once_with(fake_account)
 
 
 @pytest.mark.django_db
 def test_test_failure_auth_owner(
     faker,
-    accountModel,
+    fake_account,
     owner_apiClient,
     custom_detail_action_url,
-    mock_AccountModel_test_connection,
+    mock_Account_test_connection,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated owner user client."""
     fake_error_message = faker.sentence()
-    mock_AccountModel_test_connection.side_effect = MailAccountError(fake_error_message)
+    mock_Account_test_connection.side_effect = MailAccountError(fake_error_message)
 
     response = owner_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_TEST, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_TEST, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_200_OK
     assert (
-        response.data["account"] == AccountViewSet.serializer_class(accountModel).data
+        response.data["account"] == AccountViewSet.serializer_class(fake_account).data
     )
     assert response.data["result"] is False
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
-    mock_AccountModel_test_connection.assert_called_once_with(accountModel)
+    mock_Account_test_connection.assert_called_once_with(fake_account)
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    accountModel, noauth_apiClient, custom_detail_action_url
+    fake_account, noauth_apiClient, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.toggle_favorite` action with an unauthenticated user client."""
     response = noauth_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    accountModel.refresh_from_db()
-    assert accountModel.is_favorite is False
+    fake_account.refresh_from_db()
+    assert fake_account.is_favorite is False
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    accountModel, other_apiClient, custom_detail_action_url
+    fake_account, other_apiClient, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.toggle_favorite` action with the authenticated other user client."""
     response = other_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    accountModel.refresh_from_db()
-    assert accountModel.is_favorite is False
+    fake_account.refresh_from_db()
+    assert fake_account.is_favorite is False
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    accountModel, owner_apiClient, custom_detail_action_url
+    fake_account, owner_apiClient, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.toggle_favorite` action with the authenticated owner user client."""
     response = owner_apiClient.post(
         custom_detail_action_url(
-            AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, accountModel
+            AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, fake_account
         )
     )
 
     assert response.status_code == status.HTTP_200_OK
-    accountModel.refresh_from_db()
-    assert accountModel.is_favorite is True
+    fake_account.refresh_from_db()
+    assert fake_account.is_favorite is True

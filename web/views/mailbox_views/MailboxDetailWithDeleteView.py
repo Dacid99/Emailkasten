@@ -29,9 +29,9 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
 from core.constants import EmailFetchingCriterionChoices
-from core.models.DaemonModel import DaemonModel
-from core.models.EMailModel import EMailModel
-from core.models.MailboxModel import MailboxModel
+from core.models.Daemon import Daemon
+from core.models.EMail import EMail
+from core.models.Mailbox import Mailbox
 from core.utils.fetchers.exceptions import FetcherError
 from web.mixins.CustomActionMixin import CustomActionMixin
 from web.mixins.TestActionMixin import TestActionMixin
@@ -45,20 +45,20 @@ class MailboxDetailWithDeleteView(
     CustomActionMixin,
     TestActionMixin,
 ):
-    """View for a single :class:`core.models.MailboxModel.MailboxModel` instance."""
+    """View for a single :class:`core.models.Mailbox.Mailbox` instance."""
 
-    URL_NAME = MailboxModel.get_detail_web_url_name()
-    model = MailboxModel
+    URL_NAME = Mailbox.get_detail_web_url_name()
+    model = Mailbox
     template_name = "web/mailbox/mailbox_detail.html"
     success_url = reverse_lazy("web:" + MailboxFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet[MailboxModel]:
+    def get_queryset(self) -> QuerySet[Mailbox]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return MailboxModel.objects.none()
+            return Mailbox.objects.none()
         return (
-            MailboxModel.objects.filter(account__user=self.request.user)
+            Mailbox.objects.filter(account__user=self.request.user)
             .select_related("account")
             .prefetch_related("daemons")
         )
@@ -68,7 +68,7 @@ class MailboxDetailWithDeleteView(
         """Extended to add the mailboxes latest emails to the context."""
         context = super().get_context_data(**kwargs)
         context["latest_emails"] = (
-            EMailModel.objects.filter(mailbox=self.object)
+            EMail.objects.filter(mailbox=self.object)
             .select_related("mailbox", "mailbox__account")
             .order_by("-created")[:25]
         )
@@ -128,5 +128,5 @@ class MailboxDetailWithDeleteView(
             A template response with the updated view after the action.
         """
         self.object = self.get_object()
-        new_daemon = DaemonModel.objects.create(mailbox=self.object)
+        new_daemon = Daemon.objects.create(mailbox=self.object)
         return HttpResponseRedirect(new_daemon.get_absolute_edit_url())

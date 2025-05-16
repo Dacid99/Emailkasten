@@ -25,16 +25,16 @@ from web.forms.correspondent_forms.BaseCorrespondentForm import BaseCorresponden
 
 
 @pytest.mark.django_db
-def test_post(correspondentModel):
+def test_post(fake_correspondent):
     """Tests post direction of :class:`web.forms.correspondent_forms.BaseCorrespondentForm.BaseCorrespondentForm`."""
-    form = BaseCorrespondentForm(data=model_to_dict(correspondentModel))
+    form = BaseCorrespondentForm(data=model_to_dict(fake_correspondent))
 
     assert form.is_valid()
     form_data = form.cleaned_data
     assert "email_name" in form_data
-    assert form_data["email_name"] == correspondentModel.email_name
+    assert form_data["email_name"] == fake_correspondent.email_name
     assert "is_favorite" in form_data
-    assert form_data["is_favorite"] == correspondentModel.is_favorite
+    assert form_data["is_favorite"] == fake_correspondent.is_favorite
     assert "email_address" not in form_data
     assert "created" not in form_data
     assert "updated" not in form_data
@@ -42,18 +42,18 @@ def test_post(correspondentModel):
 
 
 @pytest.mark.django_db
-def test_get(correspondentModel):
+def test_get(fake_correspondent):
     """Tests get direction of :class:`web.forms.correspondent_forms.BaseCorrespondentForm.BaseCorrespondentForm`."""
-    form = BaseCorrespondentForm(instance=correspondentModel)
+    form = BaseCorrespondentForm(instance=fake_correspondent)
     form_initial_data = form.initial
     form_fields = form.fields
 
     assert "email_name" in form_fields
     assert "email_name" in form_initial_data
-    assert form_initial_data["email_name"] == correspondentModel.email_name
+    assert form_initial_data["email_name"] == fake_correspondent.email_name
     assert "is_favorite" in form_fields
     assert "is_favorite" in form_initial_data
-    assert form_initial_data["is_favorite"] == correspondentModel.is_favorite
+    assert form_initial_data["is_favorite"] == fake_correspondent.is_favorite
     assert "email_address" not in form_fields
     assert "created" not in form_fields
     assert "updated" not in form_fields

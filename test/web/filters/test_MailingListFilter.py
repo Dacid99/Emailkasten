@@ -37,7 +37,7 @@ def test_text_search_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.text_search` field.
+    for the :attr:`core.models.MailingList.MailingList.text_search` field.
     """
     query = {"text_search": filterquery}
 
@@ -57,7 +57,7 @@ def test_is_favorite_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.is_favorite` field.
+    for the :attr:`core.models.MailingList.MailingList.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -77,7 +77,7 @@ def test_created_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.created` field.
+    for the :attr:`core.models.MailingList.MailingList.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 

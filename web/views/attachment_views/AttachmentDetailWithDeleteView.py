@@ -26,23 +26,23 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
-from core.models.AttachmentModel import AttachmentModel
+from core.models.Attachment import Attachment
 from web.views.attachment_views.AttachmentFilterView import AttachmentFilterView
 
 
 class AttachmentDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
-    """View for a single :class:`core.models.AttachmentModel.AttachmentModel` instance."""
+    """View for a single :class:`core.models.Attachment.Attachment` instance."""
 
-    URL_NAME = AttachmentModel.get_detail_web_url_name()
-    model = AttachmentModel
+    URL_NAME = Attachment.get_detail_web_url_name()
+    model = Attachment
     template_name = "web/attachment/attachment_detail.html"
     success_url = reverse_lazy("web:" + AttachmentFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet[AttachmentModel]:
+    def get_queryset(self) -> QuerySet[Attachment]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return AttachmentModel.objects.none()
-        return AttachmentModel.objects.filter(
+            return Attachment.objects.none()
+        return Attachment.objects.filter(
             email__mailbox__account__user=self.request.user
         ).select_related("email")

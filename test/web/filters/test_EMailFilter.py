@@ -38,7 +38,7 @@ from .conftest import (
 )
 def test_text_search_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.message_id` field.
+    for the :attr:`core.models.EMail.EMail.message_id` field.
     """
     query = {"text_search": filterquery}
 
@@ -56,7 +56,7 @@ def test_text_search_filter(email_queryset, lookup_expr, filterquery, expected_i
 )
 def test_datetime_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.datetime` field.
+    for the :attr:`core.models.EMail.EMail.datetime` field.
     """
     query = {"datetime" + lookup_expr: filterquery}
 
@@ -74,7 +74,7 @@ def test_datetime_filter(email_queryset, lookup_expr, filterquery, expected_indi
 )
 def test_datasize_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.datasize` field.
+    for the :attr:`core.models.EMail.EMail.datasize` field.
     """
     query = {"datasize_min": filterquery[0], "datasize_max": filterquery[1]}
 
@@ -92,7 +92,7 @@ def test_datasize_filter(email_queryset, lookup_expr, filterquery, expected_indi
 )
 def test_is_favorite_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.is_favorite` field.
+    for the :attr:`core.models.EMail.EMail.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -110,7 +110,7 @@ def test_is_favorite_filter(email_queryset, lookup_expr, filterquery, expected_i
 )
 def test_x_spam_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.EMailFilter.EMailFilter`'s filtering
-    for the :attr:`core.models.EMailModel.EMailModel.x_spam` field.
+    for the :attr:`core.models.EMail.EMail.x_spam` field.
     """
     query = {"x_spam": [TEXT_TEST_ITEMS[index] for index in filterquery]}
 

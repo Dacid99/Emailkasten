@@ -28,12 +28,12 @@ from model_bakery import baker
 from rest_framework.request import Request
 
 from core.constants import HeaderFields
-from core.models.AccountModel import AccountModel
-from core.models.AttachmentModel import AttachmentModel
-from core.models.DaemonModel import DaemonModel
-from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from core.models.EMailModel import EMailModel
-from core.models.MailboxModel import MailboxModel
+from core.models.Account import Account
+from core.models.Attachment import Attachment
+from core.models.Daemon import Daemon
+from core.models.EMail import EMail
+from core.models.EMailCorrespondents import EMailCorrespondents
+from core.models.Mailbox import Mailbox
 
 
 @pytest.fixture(autouse=True)
@@ -49,37 +49,38 @@ def complete_database(
     faker,
     owner_user,
     other_user,
-    accountModel,
-    attachmentModel,
-    correspondentModel,
-    daemonModel,
-    emailModel,
-    mailboxModel,
-    mailingListModel,
+    fake_account,
+    fake_attachment,
+    fake_correspondent,
+    fake_daemon,
+    fake_email,
+    fake_emailCorrespondent,
+    fake_mailbox,
+    fake_mailingList,
 ):
     """Autouse all models for the tests."""
-    other_accountModel = baker.make(AccountModel, user=other_user)
-    other_mailboxModel = baker.make(MailboxModel, account=other_accountModel)
+    other_account = baker.make(Account, user=other_user)
+    other_mailbox = baker.make(Mailbox, account=other_account)
     baker.make(
-        DaemonModel,
+        Daemon,
         log_filepath=faker.file_path(extension="log"),
-        mailbox=other_mailboxModel,
+        mailbox=other_mailbox,
     )
-    other_emailModel = baker.make(
-        EMailModel,
-        mailbox=other_mailboxModel,
-        mailinglist=mailingListModel,
+    other_email = baker.make(
+        EMail,
+        mailbox=other_mailbox,
+        mailinglist=fake_mailingList,
         eml_filepath=faker.file_path(extension="eml"),
         html_filepath=faker.file_path(extension="png"),
     )
     baker.make(
-        EMailCorrespondentsModel,
-        email=other_emailModel,
-        correspondent=correspondentModel,
+        EMailCorrespondents,
+        email=other_email,
+        correspondent=fake_correspondent,
         mention=HeaderFields.Correspondents.FROM,
     )
     baker.make(
-        AttachmentModel,
-        email=other_emailModel,
+        Attachment,
+        email=other_email,
         file_path=faker.file_path(extension="pdf"),
     )

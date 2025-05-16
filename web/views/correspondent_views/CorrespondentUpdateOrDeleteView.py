@@ -24,7 +24,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 
-from core.models.CorrespondentModel import CorrespondentModel
+from core.models.Correspondent import Correspondent
 from web.views.correspondent_views.CorrespondentFilterView import (
     CorrespondentFilterView,
 )
@@ -34,19 +34,19 @@ from ...forms.correspondent_forms.BaseCorrespondentForm import BaseCorrespondent
 
 
 class CorrespondentUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
-    """View for updating or deleting a single :class:`core.models.CorrespondentModel.CorrespondentModel` instance."""
+    """View for updating or deleting a single :class:`core.models.Correspondent.Correspondent` instance."""
 
-    model = CorrespondentModel
+    model = Correspondent
     form_class = BaseCorrespondentForm
     template_name = "web/correspondent/correspondent_edit.html"
     delete_success_url = reverse_lazy("web:" + CorrespondentFilterView.URL_NAME)
-    URL_NAME = CorrespondentModel.get_edit_web_url_name()
+    URL_NAME = Correspondent.get_edit_web_url_name()
 
     @override
-    def get_queryset(self) -> QuerySet[CorrespondentModel]:
+    def get_queryset(self) -> QuerySet[Correspondent]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return CorrespondentModel.objects.none()
-        return CorrespondentModel.objects.filter(
+            return Correspondent.objects.none()
+        return Correspondent.objects.filter(
             emails__mailbox__account__user=self.request.user
         ).distinct()

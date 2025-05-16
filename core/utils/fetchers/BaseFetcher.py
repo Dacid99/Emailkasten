@@ -32,8 +32,8 @@ if TYPE_CHECKING:
     from poplib import POP3
     from types import TracebackType
 
-    from core.models.AccountModel import AccountModel
-    from core.models.MailboxModel import MailboxModel
+    from core.models.Account import Account
+    from core.models.Mailbox import Mailbox
 
 
 class BaseFetcher(ABC):
@@ -49,7 +49,7 @@ class BaseFetcher(ABC):
     """List of all criteria available for fetching. Should refer to :class:`MailFetchingCriteria`."""
 
     @abstractmethod
-    def __init__(self, account: AccountModel):
+    def __init__(self, account: Account):
         """Constructor basis, sets up the instance logger.
 
         Args:
@@ -73,7 +73,7 @@ class BaseFetcher(ABC):
         """Opens the connection to the mailserver."""
 
     @abstractmethod
-    def test(self, mailbox: MailboxModel | None = None) -> None:
+    def test(self, mailbox: Mailbox | None = None) -> None:
         """Tests the connection to the mailaccount and, if given, the mailbox.
 
         Args:
@@ -89,7 +89,7 @@ class BaseFetcher(ABC):
     @abstractmethod
     def fetchEmails(  # type: ignore[return]  # this abstractmethod just provides basic arg-checking
         self,
-        mailbox: MailboxModel,
+        mailbox: Mailbox,
         criterion: str = EmailFetchingCriterionChoices.ALL,
     ) -> list[bytes]:
         """Fetches emails based on a criterion from the server.

@@ -12,26 +12,26 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveConstraint(
-            model_name="emailmodel",
+            model_name="email",
             name="email_unique_together_message_id_account",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="account",
         ),
         migrations.AddField(
-            model_name="emailmodel",
+            model_name="email",
             name="mailbox",
             field=models.ForeignKey(
                 default=1,
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="emails",
-                to="core.mailboxmodel",
+                to="core.mailbox",
             ),
             preserve_default=False,
         ),
         migrations.AddConstraint(
-            model_name="emailmodel",
+            model_name="email",
             constraint=models.UniqueConstraint(
                 fields=("message_id", "mailbox"),
                 name="email_unique_together_message_id_mailbox",

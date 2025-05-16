@@ -16,4 +16,4 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""api.v1.serializers.mailinglist_serializers package containing serializers for the :mod:`core.models.MailingListModel` data."""
+"""api.v1.serializers.mailinglist_serializers package containing serializers for the :mod:`core.models.MailingList` data."""

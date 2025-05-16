@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="fetching_criterion",
             field=models.CharField(
                 choices=[

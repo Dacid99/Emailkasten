@@ -26,27 +26,25 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
-from core.models.MailingListModel import MailingListModel
+from core.models.MailingList import MailingList
 from web.views.mailinglist_views.MailingListFilterView import MailingListFilterView
 
 
 class MailingListDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
-    """View for a single :class:`core.models.MailingListModel.MailingListModel` instance."""
+    """View for a single :class:`core.models.MailingList.MailingList` instance."""
 
-    URL_NAME = MailingListModel.get_detail_web_url_name()
-    model = MailingListModel
+    URL_NAME = MailingList.get_detail_web_url_name()
+    model = MailingList
     template_name = "web/mailinglist/mailinglist_detail.html"
     success_url = reverse_lazy("web:" + MailingListFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet[MailingListModel]:
+    def get_queryset(self) -> QuerySet[MailingList]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return MailingListModel.objects.none()
+            return MailingList.objects.none()
         return (
-            MailingListModel.objects.filter(
-                emails__mailbox__account__user=self.request.user
-            )
+            MailingList.objects.filter(emails__mailbox__account__user=self.request.user)
             .distinct()
             .prefetch_related("emails")
         )

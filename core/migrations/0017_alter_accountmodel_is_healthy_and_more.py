@@ -11,22 +11,22 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="is_healthy",
             field=models.BooleanField(null=True),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="is_healthy",
             field=models.BooleanField(null=True),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="log_filepath",
             field=models.FilePathField(path="/var/lib", recursive=True, unique=True),
         ),
         migrations.AlterField(
-            model_name="mailboxmodel",
+            model_name="mailbox",
             name="is_healthy",
             field=models.BooleanField(null=True),
         ),

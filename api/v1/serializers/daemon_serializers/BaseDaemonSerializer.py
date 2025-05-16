@@ -24,19 +24,19 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from rest_framework import serializers
 
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseDaemonSerializer(serializers.ModelSerializer[DaemonModel]):
-    """The base serializer for :class:`core.models.DaemonModel.DaemonModel`.
+class BaseDaemonSerializer(serializers.ModelSerializer[Daemon]):
+    """The base serializer for :class:`core.models.Daemon.Daemon`.
 
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`core.models.DaemonModel.DaemonModel` should inherit from this.
+    Other serializers for :class:`core.models.Daemon.Daemon` should inherit from this.
     """
 
     class Meta:
@@ -47,11 +47,11 @@ class BaseDaemonSerializer(serializers.ModelSerializer[DaemonModel]):
         :attr:`read_only_fields` and :attr:`exclude` must not be shortened in subclasses.
         """
 
-        model: Final[type[Model]] = DaemonModel
+        model: Final[type[Model]] = Daemon
         """The model to serialize."""
 
         exclude: ClassVar[list[str]] = ["log_filepath"]
-        """Exclude the :attr:`core.models.DaemonModel.log_filepath` field."""
+        """Exclude the :attr:`core.models.Daemon.log_filepath` field."""
 
         read_only_fields: Final[list[str]] = [
             "uuid",
@@ -61,10 +61,10 @@ class BaseDaemonSerializer(serializers.ModelSerializer[DaemonModel]):
             "created",
             "updated",
         ]
-        """The :attr:`core.models.DaemonModel.DaemonModel.uuid`,
-        :attr:`core.models.DaemonModel.DaemonModel.mailbox`,
-        :attr:`core.models.DaemonModel.DaemonModel.is_running`,
-        :attr:`core.models.DaemonModel.DaemonModel.is_healthy`,
-        :attr:`core.models.DaemonModel.DaemonModel.created` and
-        :attr:`core.models.DaemonModel.DaemonModel.updated` fields are read-only.
+        """The :attr:`core.models.Daemon.Daemon.uuid`,
+        :attr:`core.models.Daemon.Daemon.mailbox`,
+        :attr:`core.models.Daemon.Daemon.is_running`,
+        :attr:`core.models.Daemon.Daemon.is_healthy`,
+        :attr:`core.models.Daemon.Daemon.created` and
+        :attr:`core.models.Daemon.Daemon.updated` fields are read-only.
         """

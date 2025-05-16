@@ -23,7 +23,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.CorrespondentModel import CorrespondentModel
+from core.models.Correspondent import Correspondent
 from web.views.correspondent_views.CorrespondentDetailWithDeleteView import (
     CorrespondentDetailWithDeleteView,
 )
@@ -33,38 +33,38 @@ from web.views.correspondent_views.CorrespondentFilterView import (
 
 
 @pytest.mark.django_db
-def test_get_noauth(correspondentModel, client, detail_url, login_url):
+def test_get_noauth(fake_correspondent, client, detail_url, login_url):
     """Tests :class:`web.views.correspondent_views.CorrespondentDetailWithDeleteView.CorrespondentDetailWithDeleteView` with an unauthenticated user client."""
     response = client.get(
-        detail_url(CorrespondentDetailWithDeleteView, correspondentModel)
+        detail_url(CorrespondentDetailWithDeleteView, fake_correspondent)
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(CorrespondentDetailWithDeleteView, correspondentModel)}"
+        f"?next={detail_url(CorrespondentDetailWithDeleteView, fake_correspondent)}"
     )
-    assert correspondentModel.email_address not in response.content.decode()
+    assert fake_correspondent.email_address not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_other(correspondentModel, other_client, detail_url):
+def test_get_auth_other(fake_correspondent, other_client, detail_url):
     """Tests :class:`web.views.correspondent_views.CorrespondentDetailWithDeleteView.CorrespondentDetailWithDeleteView` with the authenticated other user client."""
     response = other_client.get(
-        detail_url(CorrespondentDetailWithDeleteView, correspondentModel)
+        detail_url(CorrespondentDetailWithDeleteView, fake_correspondent)
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    assert correspondentModel.email_address not in response.content.decode()
+    assert fake_correspondent.email_address not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(correspondentModel, owner_client, detail_url):
+def test_get_auth_owner(fake_correspondent, owner_client, detail_url):
     """Tests :class:`web.views.correspondent_views.CorrespondentDetailWithDeleteView.CorrespondentDetailWithDeleteView` with the authenticated owner user client."""
     response = owner_client.get(
-        detail_url(CorrespondentDetailWithDeleteView, correspondentModel)
+        detail_url(CorrespondentDetailWithDeleteView, fake_correspondent)
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -73,49 +73,49 @@ def test_get_auth_owner(correspondentModel, owner_client, detail_url):
         t.name for t in response.templates
     ]
     assert "object" in response.context
-    assert isinstance(response.context["object"], CorrespondentModel)
-    assert correspondentModel.email_address in response.content.decode()
+    assert isinstance(response.context["object"], Correspondent)
+    assert fake_correspondent.email_address in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_post_delete_noauth(correspondentModel, client, detail_url, login_url):
+def test_post_delete_noauth(fake_correspondent, client, detail_url, login_url):
     """Tests :class:`web.views.correspondent_views.CorrespondentDetailWithDeleteView.CorrespondentDetailWithDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(CorrespondentDetailWithDeleteView, correspondentModel)
+        detail_url(CorrespondentDetailWithDeleteView, fake_correspondent)
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(CorrespondentDetailWithDeleteView, correspondentModel)}"
+        f"?next={detail_url(CorrespondentDetailWithDeleteView, fake_correspondent)}"
     )
-    correspondentModel.refresh_from_db()
-    assert correspondentModel is not None
+    fake_correspondent.refresh_from_db()
+    assert fake_correspondent is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_other(correspondentModel, other_client, detail_url):
+def test_post_delete_auth_other(fake_correspondent, other_client, detail_url):
     """Tests :class:`web.views.correspondent_views.CorrespondentDetailWithDeleteView.CorrespondentDetailWithDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(CorrespondentDetailWithDeleteView, correspondentModel)
+        detail_url(CorrespondentDetailWithDeleteView, fake_correspondent)
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    correspondentModel.refresh_from_db()
-    assert correspondentModel is not None
+    fake_correspondent.refresh_from_db()
+    assert fake_correspondent is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_owner(correspondentModel, owner_client, detail_url):
+def test_post_delete_auth_owner(fake_correspondent, owner_client, detail_url):
     """Tests :class:`web.views.correspondent_views.CorrespondentDetailWithDeleteView.CorrespondentDetailWithDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(CorrespondentDetailWithDeleteView, correspondentModel)
+        detail_url(CorrespondentDetailWithDeleteView, fake_correspondent)
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:" + CorrespondentFilterView.URL_NAME))
-    with pytest.raises(CorrespondentModel.DoesNotExist):
-        correspondentModel.refresh_from_db()
+    with pytest.raises(Correspondent.DoesNotExist):
+        fake_correspondent.refresh_from_db()

@@ -26,32 +26,32 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
-from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from core.models.EMailModel import EMailModel
+from core.models.EMail import EMail
+from core.models.EMailCorrespondents import EMailCorrespondents
 from web.views.email_views.EMailFilterView import EMailFilterView
 
 
 class EMailDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
-    """View for a single :class:`core.models.EMailModel.EMailModel` instance."""
+    """View for a single :class:`core.models.EMail.EMail` instance."""
 
-    URL_NAME = EMailModel.get_detail_web_url_name()
-    model = EMailModel
+    URL_NAME = EMail.get_detail_web_url_name()
+    model = EMail
     template_name = "web/email/email_detail.html"
     success_url = reverse_lazy("web:" + EMailFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet[EMailModel]:
+    def get_queryset(self) -> QuerySet[EMail]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return EMailModel.objects.none()
+            return EMail.objects.none()
         return (
-            EMailModel.objects.filter(mailbox__account__user=self.request.user)
+            EMail.objects.filter(mailbox__account__user=self.request.user)
             .select_related("mailinglist", "mailbox", "mailbox__account", "inReplyTo")
             .prefetch_related("attachments")
             .prefetch_related(
                 Prefetch(
                     "emailcorrespondents",
-                    queryset=EMailCorrespondentsModel.objects.select_related(
+                    queryset=EMailCorrespondents.objects.select_related(
                         "correspondent"
                     ),
                 )

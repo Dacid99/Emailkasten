@@ -28,8 +28,8 @@ from django.views.generic import DetailView
 from django.views.generic.edit import FormView
 
 from core.constants import SupportedEmailUploadFormats
-from core.models.EMailModel import EMailModel
-from core.models.MailboxModel import MailboxModel
+from core.models.EMail import EMail
+from core.models.Mailbox import Mailbox
 
 from ...forms.UploadEmailForm import UploadEmailForm
 
@@ -37,8 +37,8 @@ from ...forms.UploadEmailForm import UploadEmailForm
 class UploadEmailView(LoginRequiredMixin, DetailView, FormView):
     """View for uploading email and mailbox files to a maibox."""
 
-    URL_NAME = MailboxModel.get_upload_web_url_name()
-    model = MailboxModel
+    URL_NAME = Mailbox.get_upload_web_url_name()
+    model = Mailbox
     context_object_name = "mailbox"
     form_class = UploadEmailForm
     template_name = "web/mailbox/upload_email.html"
@@ -50,14 +50,14 @@ class UploadEmailView(LoginRequiredMixin, DetailView, FormView):
         Returns:
             The detail url of the mailbox.
         """
-        return self.object.get_absolute_url()  # type: ignore[no-any-return]  # self.object is set during dispatch via get_queryset().get(), so it is always a MailboxModel
+        return self.object.get_absolute_url()  # type: ignore[no-any-return]  # self.object is set during dispatch via get_queryset().get(), so it is always a Mailbox
 
     @override
-    def get_queryset(self) -> QuerySet[MailboxModel]:
+    def get_queryset(self) -> QuerySet[Mailbox]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return MailboxModel.objects.none()
-        return MailboxModel.objects.filter(account__user=self.request.user)
+            return Mailbox.objects.none()
+        return Mailbox.objects.filter(account__user=self.request.user)
 
     @override
     def form_valid(self, form: UploadEmailForm) -> HttpResponse:
@@ -102,6 +102,6 @@ class UploadEmailView(LoginRequiredMixin, DetailView, FormView):
         """
         self.object = self.get_object()
         if file_format == SupportedEmailUploadFormats.EML:
-            EMailModel.createFromEmailBytes(file.read(), mailbox=self.object)
+            EMail.createFromEmailBytes(file.read(), mailbox=self.object)
         else:
             self.object.addFromMailboxFile(file.read(), file_format)

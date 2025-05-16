@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="emailmodel",
+            model_name="email",
             name="email_subject",
             field=models.CharField(max_length=255, null=True),
         ),

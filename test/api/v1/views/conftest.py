@@ -41,13 +41,14 @@ if TYPE_CHECKING:
 def complete_database(
     owner_user,
     other_user,
-    accountModel,
-    attachmentModel,
-    correspondentModel,
-    daemonModel,
-    emailModel,
-    mailboxModel,
-    mailingListModel,
+    fake_account,
+    fake_attachment,
+    fake_correspondent,
+    fake_daemon,
+    fake_email,
+    fake_emailCorrespondent,
+    fake_mailbox,
+    fake_mailingList,
 ):
     """Fixture providing a complete database setup."""
 

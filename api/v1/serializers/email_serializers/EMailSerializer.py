@@ -28,7 +28,7 @@ from typing import Any, ClassVar
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from core.models.EMailModel import EMailModel
+from core.models.EMail import EMail
 
 from ..attachment_serializers.BaseAttachmentSerializer import BaseAttachmentSerializer
 from ..emailcorrespondents_serializers.EMailCorrespondentsSerializer import (
@@ -41,16 +41,16 @@ from .BaseEMailSerializer import BaseEMailSerializer
 
 
 class EMailSerializer(BaseEMailSerializer):
-    """The standard serializer for a :class:`core.models.EMailModel.EMailModel`.
+    """The standard serializer for a :class:`core.models.EMail.EMail`.
 
     Includes only the most relevant model fields.
-    Includes nested serializers for the :attr:`core.models.EMailModel.EMailModel.replies`,
-    :attr:`core.models.EMailModel.EMailModel.attachments`,
-    :attr:`core.models.EMailModel.EMailModel.mailinglist` and
-    :attr:`core.models.EMailModel.EMailModel.correspondents` foreign key and related fields.
+    Includes nested serializers for the :attr:`core.models.EMail.EMail.replies`,
+    :attr:`core.models.EMail.EMail.attachments`,
+    :attr:`core.models.EMail.EMail.mailinglist` and
+    :attr:`core.models.EMail.EMail.correspondents` foreign key and related fields.
     """
 
-    replies: serializers.PrimaryKeyRelatedField[EMailModel] = (
+    replies: serializers.PrimaryKeyRelatedField[EMail] = (
         serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     )
     """The replies mails are included by id only to prevent recursion."""
@@ -67,7 +67,7 @@ class EMailSerializer(BaseEMailSerializer):
 
     correspondents = serializers.SerializerMethodField(read_only=True)
     """The emails are set from the
-    :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`
+    :class:`core.models.EMailCorrespondents.EMailCorrespondents`
     via :func:`get_correspondents`.
     """
 
@@ -77,7 +77,7 @@ class EMailSerializer(BaseEMailSerializer):
         exclude: ClassVar[list[str]] = [*BaseEMailSerializer.Meta.exclude, "headers"]
         """Omit the other header fields."""
 
-    def get_correspondents(self, instance: EMailModel) -> ReturnDict[str, Any]:
+    def get_correspondents(self, instance: EMail) -> ReturnDict[str, Any]:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:

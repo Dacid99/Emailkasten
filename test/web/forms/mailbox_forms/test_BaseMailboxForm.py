@@ -25,20 +25,20 @@ from web.forms.mailbox_forms.BaseMailboxForm import BaseMailboxForm
 
 
 @pytest.mark.django_db
-def test_post(mailboxModel):
+def test_post(fake_mailbox):
     """Tests post direction of :class:`web.forms.mailbox_forms.BaseMailboxForm.BaseMailboxForm`."""
-    form = BaseMailboxForm(data=model_to_dict(mailboxModel))
+    form = BaseMailboxForm(data=model_to_dict(fake_mailbox))
 
     assert form.is_valid()
     form_data = form.cleaned_data
     assert "save_toEML" in form_data
-    assert form_data["save_toEML"] == mailboxModel.save_toEML
+    assert form_data["save_toEML"] == fake_mailbox.save_toEML
     assert "save_toHTML" in form_data
-    assert form_data["save_toHTML"] == mailboxModel.save_toHTML
+    assert form_data["save_toHTML"] == fake_mailbox.save_toHTML
     assert "save_attachments" in form_data
-    assert form_data["save_attachments"] == mailboxModel.save_attachments
+    assert form_data["save_attachments"] == fake_mailbox.save_attachments
     assert "is_favorite" in form_data
-    assert form_data["is_favorite"] == mailboxModel.is_favorite
+    assert form_data["is_favorite"] == fake_mailbox.is_favorite
     assert "name" not in form_data
     assert "account" not in form_data
     assert "is_healthy" not in form_data
@@ -48,23 +48,23 @@ def test_post(mailboxModel):
 
 
 @pytest.mark.django_db
-def test_get(mailboxModel):
+def test_get(fake_mailbox):
     """Tests get direction of :class:`web.forms.mailbox_forms.BaseMailboxForm.BaseMailboxForm`."""
-    form = BaseMailboxForm(instance=mailboxModel)
+    form = BaseMailboxForm(instance=fake_mailbox)
     form_initial_data = form.initial
     form_fields = form.fields
 
     assert "save_toEML" in form_fields
     assert "save_toEML" in form_initial_data
-    assert form_initial_data["save_toEML"] == mailboxModel.save_toEML
+    assert form_initial_data["save_toEML"] == fake_mailbox.save_toEML
     assert "save_toHTML" in form_initial_data
-    assert form_initial_data["save_toHTML"] == mailboxModel.save_toHTML
+    assert form_initial_data["save_toHTML"] == fake_mailbox.save_toHTML
     assert "save_attachments" in form_fields
     assert "save_attachments" in form_initial_data
-    assert form_initial_data["save_attachments"] == mailboxModel.save_attachments
+    assert form_initial_data["save_attachments"] == fake_mailbox.save_attachments
     assert "is_favorite" in form_fields
     assert "is_favorite" in form_initial_data
-    assert form_initial_data["is_favorite"] == mailboxModel.is_favorite
+    assert form_initial_data["is_favorite"] == fake_mailbox.is_favorite
     assert "name" not in form_fields
     assert "account" not in form_fields
     assert "is_healthy" not in form_fields

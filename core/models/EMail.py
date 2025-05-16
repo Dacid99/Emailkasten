@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`EMailModel` model class."""
+"""Module with the :class:`EMail` model class."""
 
 from __future__ import annotations
 
@@ -38,31 +38,29 @@ from core.mixins.FavoriteMixin import FavoriteMixin
 from core.mixins.HasDownloadMixin import HasDownloadMixin
 from core.mixins.HasThumbnailMixin import HasThumbnailMixin
 from core.mixins.URLMixin import URLMixin
-from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.EMailCorrespondents import EMailCorrespondents
 from core.utils.fileManagment import clean_filename, saveStore
 from core.utils.mailParsing import eml2html, is_X_Spam
 from Emailkasten.utils.workarounds import get_config
 
 from ..utils.mailParsing import get_bodytexts, getHeader, parseDatetimeHeader
-from .AttachmentModel import AttachmentModel
-from .MailingListModel import MailingListModel
-from .StorageModel import StorageModel
+from .Attachment import Attachment
+from .MailingList import MailingList
+from .Storage import Storage
 
 
 if TYPE_CHECKING:
     from io import BufferedWriter
 
-    from .CorrespondentModel import CorrespondentModel
-    from .MailboxModel import MailboxModel
+    from .Correspondent import Correspondent
+    from .Mailbox import Mailbox
 
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class EMailModel(
-    HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models.Model
-):
+class EMail(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models.Model):
     """Database model for an email."""
 
     message_id = models.CharField(max_length=255)
@@ -80,10 +78,8 @@ class EMailModel(
     html_bodytext = models.TextField(blank=True, default="")
     """The html bodytext of the mail. Can be blank."""
 
-    inReplyTo: models.ForeignKey[EMailModel | None, EMailModel | None] = (
-        models.ForeignKey(
-            "self", null=True, related_name="replies", on_delete=models.SET_NULL
-        )
+    inReplyTo: models.ForeignKey[EMail | None, EMail | None] = models.ForeignKey(
+        "self", null=True, related_name="replies", on_delete=models.SET_NULL
     )
     """The mail that this mail is a response to. Can be null. Deletion of that replied-to mail sets this field to NULL."""
 
@@ -100,7 +96,7 @@ class EMailModel(
     """The path where the mail is stored in .eml format.
     Can be null if the mail has not been saved.
     Must contain :attr:`constance.get_config('STORAGE_PATH')` and end on .eml .
-    When this entry is deleted, the file will be removed by :func:`core.signals.delete_EMailModel.post_delete_email_files`.
+    When this entry is deleted, the file will be removed by :func:`core.signals.delete_EMail.post_delete_email_files`.
     """
 
     html_filepath = models.FilePathField(
@@ -113,23 +109,23 @@ class EMailModel(
     """The path where the html version of the mail is stored.
     Can be null if the conversion process was no successful.
     Must contain :attr:`constance.get_config('STORAGE_PATH')` and end on `.html`.
-    When this entry is deleted, the file will be removed by :func:`core.signals.delete_EMailModel.post_delete_email_files`."""
+    When this entry is deleted, the file will be removed by :func:`core.signals.delete_EMail.post_delete_email_files`."""
 
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mails. False by default."""
 
-    correspondents: models.ManyToManyField[CorrespondentModel, CorrespondentModel] = (
+    correspondents: models.ManyToManyField[Correspondent, Correspondent] = (
         models.ManyToManyField(
-            "CorrespondentModel",
-            through="EMailCorrespondentsModel",
+            "Correspondent",
+            through="EMailCorrespondents",
             related_name="emails",
         )
     )
-    """The correspondents that are mentioned in this mail. Bridges through :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`."""
+    """The correspondents that are mentioned in this mail. Bridges through :class:`core.models.EMailCorrespondents.EMailCorrespondents`."""
 
-    mailinglist: models.ForeignKey[MailingListModel | None, MailingListModel | None] = (
+    mailinglist: models.ForeignKey[MailingList | None, MailingList | None] = (
         models.ForeignKey(
-            "MailingListModel",
+            "MailingList",
             null=True,
             related_name="emails",
             on_delete=models.CASCADE,
@@ -137,8 +133,8 @@ class EMailModel(
     )
     """The mailinglist that this mail has been sent from. Can be null. Deletion of that `mailinglist` deletes this mail."""
 
-    mailbox: models.ForeignKey[MailboxModel] = models.ForeignKey(
-        "MailboxModel", related_name="emails", on_delete=models.CASCADE
+    mailbox: models.ForeignKey[Mailbox] = models.ForeignKey(
+        "Mailbox", related_name="emails", on_delete=models.CASCADE
     )
     """The mailbox that this mail has been found in. Unique together with :attr:`message_id`. Deletion of that `mailbox` deletes this mail."""
 
@@ -258,7 +254,7 @@ class EMailModel(
 
         logger.debug("Storing %s as eml ...", self)
 
-        dirPath = StorageModel.getSubdirectory(self.message_id)
+        dirPath = Storage.getSubdirectory(self.message_id)
         clean_message_id = clean_filename(self.message_id)
         preliminary_file_path = os.path.join(dirPath, clean_message_id + ".eml")
         file_path = writeMessageToEML(preliminary_file_path, emailData)
@@ -294,7 +290,7 @@ class EMailModel(
 
         logger.debug("Rendering and storing %s  ...", self)
 
-        dirPath = StorageModel.getSubdirectory(self.message_id)
+        dirPath = Storage.getSubdirectory(self.message_id)
         clean_message_id = clean_filename(self.message_id)
         preliminary_file_path = os.path.join(dirPath, clean_message_id + ".html")
         file_path = convertAndStoreHtmlMessage(preliminary_file_path, emailData)
@@ -305,7 +301,7 @@ class EMailModel(
         else:
             logger.error("Failed to convert and store %s!", self)
 
-    def subConversation(self) -> list[EMailModel]:
+    def subConversation(self) -> list[EMail]:
         """Gets all emails that are follow this email in the conversation.
 
         Returns:
@@ -316,10 +312,10 @@ class EMailModel(
             subConversationEmails.extend(replyEmail.subConversation())
         return subConversationEmails
 
-    def fullConversation(self) -> list[EMailModel]:
+    def fullConversation(self) -> list[EMail]:
         """Gets all emails that are connected to this email via inReplyTo.
 
-        Based on :func:`core.models.EMailModel.EMailModel.subConversation`
+        Based on :func:`core.models.EMail.EMail.subConversation`
         to recurse through the entire conversation.
 
         Returns:
@@ -339,14 +335,14 @@ class EMailModel(
         return is_X_Spam(self.x_spam)
 
     @classmethod
-    def fillFromEmailBytes(cls, email_bytes: bytes) -> EMailModel:
-        """Constructs an :class:`core.models.EMailModel.EMailModel` from an email in bytes form.
+    def fillFromEmailBytes(cls, email_bytes: bytes) -> EMail:
+        """Constructs an :class:`core.models.EMail.EMail` from an email in bytes form.
 
         Args:
             emailBytes: The email bytes to parse the emaildata from.
 
         Returns:
-            The :class:`core.models.EMailModel.EMailModel` instance with data from the bytes.
+            The :class:`core.models.EMail.EMail` instance with data from the bytes.
         """
         email_message = email.message_from_bytes(email_bytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
         headerDict = {}
@@ -355,8 +351,8 @@ class EMailModel(
         inReplyTo_message_id = headerDict.get(HeaderFields.IN_REPLY_TO)
         inReplyTo = None
         if inReplyTo_message_id:
-            with contextlib.suppress(EMailModel.DoesNotExist):
-                inReplyTo = EMailModel.objects.get(message_id=inReplyTo_message_id)
+            with contextlib.suppress(EMail.DoesNotExist):
+                inReplyTo = EMail.objects.get(message_id=inReplyTo_message_id)
         bodytexts = get_bodytexts(email_message)
         return cls(
             headers=headerDict,
@@ -372,17 +368,15 @@ class EMailModel(
         )
 
     @classmethod
-    def createFromEmailBytes(
-        cls, emailBytes: bytes, mailbox: MailboxModel
-    ) -> EMailModel | None:
-        """Creates an :class:`core.models.EMailModel.EMailModel` from an email in bytes form.
+    def createFromEmailBytes(cls, emailBytes: bytes, mailbox: Mailbox) -> EMail | None:
+        """Creates an :class:`core.models.EMail.EMail` from an email in bytes form.
 
         Args:
             emailBytes: The email bytes to parse the emaildata from.
             mailbox: The mailbox the email is in.
 
         Returns:
-            The :class:`core.models.EMailModel.EMailModel` instance with data from the bytes.
+            The :class:`core.models.EMail.EMail` instance with data from the bytes.
             None if there is no Message-ID header in :attr:`emailMessage`,
             if the mail already exists in the db or
             if the mail is spam and is supposed to be thrown out.
@@ -419,20 +413,16 @@ class EMailModel(
         logger.debug("Successfully parsed email.")
         try:
             with transaction.atomic():
-                new_email.mailinglist = MailingListModel.createFromEmailMessage(
-                    emailMessage
-                )
+                new_email.mailinglist = MailingList.createFromEmailMessage(emailMessage)
                 new_email.save(emailData=emailBytes)
                 if new_email.headers:
                     for mention in HeaderFields.Correspondents.values:
                         correspondentHeader = new_email.headers.get(mention)
                         if correspondentHeader:
-                            EMailCorrespondentsModel.createFromHeader(
+                            EMailCorrespondents.createFromHeader(
                                 correspondentHeader, mention, new_email
                             )
-                attachments = AttachmentModel.createFromEmailMessage(
-                    emailMessage, new_email
-                )
+                attachments = Attachment.createFromEmailMessage(emailMessage, new_email)
         except Exception:
             logger.exception(
                 "Failed creating email from bytes: Error while saving email to db!"

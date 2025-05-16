@@ -24,18 +24,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.views.generic import CreateView
 
-from core.models.AccountModel import AccountModel
+from core.models.Account import Account
 
 from ...forms.account_forms.BaseAccountForm import BaseAccountForm
 
 
 class AccountCreateView(LoginRequiredMixin, CreateView):
-    """View for creating a single :class:`core.models.AccountModel.AccountModel` instance."""
+    """View for creating a single :class:`core.models.Account.Account` instance."""
 
-    model = AccountModel
+    model = Account
     form_class = BaseAccountForm
     template_name = "web/account/account_create.html"
-    URL_NAME = AccountModel.BASENAME + "-create"
+    URL_NAME = Account.BASENAME + "-create"
 
     @override
     def get_form(

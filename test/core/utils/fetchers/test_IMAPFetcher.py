@@ -28,7 +28,7 @@ from imap_tools.imap_utf7 import utf7_encode
 from model_bakery import baker
 
 from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
-from core.models.MailboxModel import MailboxModel
+from core.models.Mailbox import Mailbox
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 from core.utils.fetchers.IMAPFetcher import IMAPFetcher
 
@@ -49,10 +49,10 @@ def mock_logger(mocker):
 
 
 @pytest.fixture
-def imap_mailboxModel(mailboxModel):
-    mailboxModel.account.protocol = EmailProtocolChoices.IMAP
-    mailboxModel.account.save(update_fields=["protocol"])
-    return mailboxModel
+def imap_mailbox(fake_mailbox):
+    fake_mailbox.account.protocol = EmailProtocolChoices.IMAP
+    fake_mailbox.account.save(update_fields=["protocol"])
+    return fake_mailbox
 
 
 @pytest.fixture(autouse=True)
@@ -124,18 +124,16 @@ def test_IMAPFetcher_makeFetchingCriterion_otherCriterion(
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher___init___success(
-    mocker, imap_mailboxModel, mock_logger, mock_IMAP4
-):
+def test_IMAPFetcher___init___success(mocker, imap_mailbox, mock_logger, mock_IMAP4):
     spy_IMAPFetcher_connectToHost = mocker.spy(IMAPFetcher, "connectToHost")
 
-    result = IMAPFetcher(imap_mailboxModel.account)
+    result = IMAPFetcher(imap_mailbox.account)
 
-    assert result.account == imap_mailboxModel.account
+    assert result.account == imap_mailbox.account
     assert result._mailClient == mock_IMAP4.return_value
     spy_IMAPFetcher_connectToHost.assert_called_once()
     mock_IMAP4.return_value.login.assert_called_once_with(
-        imap_mailboxModel.account.mail_address, imap_mailboxModel.account.password
+        imap_mailbox.account.mail_address, imap_mailbox.account.password
     )
     mock_logger.exception.assert_not_called()
     mock_logger.error.assert_not_called()
@@ -143,7 +141,7 @@ def test_IMAPFetcher___init___success(
 
 @pytest.mark.django_db
 def test_IMAPFetcher___init___connectionError(
-    mocker, faker, imap_mailboxModel, mock_logger, mock_IMAP4
+    mocker, faker, imap_mailbox, mock_logger, mock_IMAP4
 ):
     spy_IMAPFetcher_connectToHost = mocker.spy(IMAPFetcher, "connectToHost")
     fake_error_message = faker.sentence()
@@ -152,7 +150,7 @@ def test_IMAPFetcher___init___connectionError(
     with pytest.raises(
         MailAccountError, match=f"AssertionError.*?{fake_error_message}"
     ):
-        IMAPFetcher(imap_mailboxModel.account)
+        IMAPFetcher(imap_mailbox.account)
 
     spy_IMAPFetcher_connectToHost.assert_called_once()
     mock_IMAP4.return_value.login.assert_not_called()
@@ -161,13 +159,13 @@ def test_IMAPFetcher___init___connectionError(
 
 @pytest.mark.django_db
 def test_IMAPFetcher___init___badProtocol(
-    mocker, imap_mailboxModel, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, mock_logger, mock_IMAP4
 ):
     spy_IMAPFetcher_connectToHost = mocker.spy(IMAPFetcher, "connectToHost")
-    imap_mailboxModel.account.protocol = EmailProtocolChoices.POP3
+    imap_mailbox.account.protocol = EmailProtocolChoices.POP3
 
     with pytest.raises(ValueError, match="not supported"):
-        IMAPFetcher(imap_mailboxModel.account)
+        IMAPFetcher(imap_mailbox.account)
 
     spy_IMAPFetcher_connectToHost.assert_not_called()
     mock_IMAP4.return_value.login.assert_not_called()
@@ -176,7 +174,7 @@ def test_IMAPFetcher___init___badProtocol(
 
 @pytest.mark.django_db
 def test_IMAPFetcher___init___loginError(
-    mocker, faker, imap_mailboxModel, mock_logger, mock_IMAP4
+    mocker, faker, imap_mailbox, mock_logger, mock_IMAP4
 ):
     spy_IMAPFetcher_connectToHost = mocker.spy(IMAPFetcher, "connectToHost")
     fake_error_message = faker.sentence()
@@ -185,28 +183,28 @@ def test_IMAPFetcher___init___loginError(
     with pytest.raises(
         MailAccountError, match=f"AssertionError.*?{fake_error_message}"
     ):
-        IMAPFetcher(imap_mailboxModel.account)
+        IMAPFetcher(imap_mailbox.account)
 
     spy_IMAPFetcher_connectToHost.assert_called_once()
     mock_IMAP4.return_value.login.assert_called_once_with(
-        imap_mailboxModel.account.mail_address, imap_mailboxModel.account.password
+        imap_mailbox.account.mail_address, imap_mailbox.account.password
     )
     mock_logger.exception.assert_called()
 
 
 @pytest.mark.django_db
 def test_IMAPFetcher___init___loginBadResponse(
-    mocker, imap_mailboxModel, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, mock_logger, mock_IMAP4
 ):
     spy_IMAPFetcher_connectToHost = mocker.spy(IMAPFetcher, "connectToHost")
     mock_IMAP4.return_value.login.return_value = ("NO", [b""])
 
     with pytest.raises(MailAccountError, match="Bad server response"):
-        IMAPFetcher(imap_mailboxModel.account)
+        IMAPFetcher(imap_mailbox.account)
 
     spy_IMAPFetcher_connectToHost.assert_called_once()
     mock_IMAP4.return_value.login.assert_called_once_with(
-        imap_mailboxModel.account.mail_address, imap_mailboxModel.account.password
+        imap_mailbox.account.mail_address, imap_mailbox.account.password
     )
     mock_logger.error.assert_called()
 
@@ -222,14 +220,14 @@ def test_IMAPFetcher___init___loginBadResponse(
     ],
 )
 def test_IMAPFetcher_connectToHost_success(
-    imap_mailboxModel, mock_logger, mock_IMAP4, mail_host_port, timeout
+    imap_mailbox, mock_logger, mock_IMAP4, mail_host_port, timeout
 ):
-    imap_mailboxModel.account.mail_host_port = mail_host_port
-    imap_mailboxModel.account.timeout = timeout
+    imap_mailbox.account.mail_host_port = mail_host_port
+    imap_mailbox.account.timeout = timeout
 
-    IMAPFetcher(imap_mailboxModel.account)
+    IMAPFetcher(imap_mailbox.account)
 
-    kwargs = {"host": imap_mailboxModel.account.mail_host}
+    kwargs = {"host": imap_mailbox.account.mail_host}
     if mail_host_port:
         kwargs["port"] = mail_host_port
     if timeout:
@@ -242,7 +240,7 @@ def test_IMAPFetcher_connectToHost_success(
 
 @pytest.mark.django_db
 def test_IMAPFetcher_connectToHost_exception(
-    faker, imap_mailboxModel, mock_logger, mock_IMAP4
+    faker, imap_mailbox, mock_logger, mock_IMAP4
 ):
     fake_error_message = faker.sentence()
     mock_IMAP4.side_effect = AssertionError(fake_error_message)
@@ -250,12 +248,12 @@ def test_IMAPFetcher_connectToHost_exception(
     with pytest.raises(
         MailAccountError, match=f"AssertionError.*?{fake_error_message}"
     ):
-        IMAPFetcher(imap_mailboxModel.account)
+        IMAPFetcher(imap_mailbox.account)
 
-    kwargs = {"host": imap_mailboxModel.account.mail_host}
-    if port := imap_mailboxModel.account.mail_host_port:
+    kwargs = {"host": imap_mailbox.account.mail_host}
+    if port := imap_mailbox.account.mail_host_port:
         kwargs["port"] = port
-    if timeout := imap_mailboxModel.account.timeout:
+    if timeout := imap_mailbox.account.timeout:
         kwargs["timeout"] = timeout
     mock_IMAP4.assert_called_with(**kwargs)
     mock_logger.debug.assert_called()
@@ -263,8 +261,8 @@ def test_IMAPFetcher_connectToHost_exception(
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_test_account_success(imap_mailboxModel, mock_logger, mock_IMAP4):
-    result = IMAPFetcher(imap_mailboxModel.account).test()
+def test_IMAPFetcher_test_account_success(imap_mailbox, mock_logger, mock_IMAP4):
+    result = IMAPFetcher(imap_mailbox.account).test()
 
     assert result is None
     mock_IMAP4.return_value.noop.assert_called_once_with()
@@ -274,13 +272,11 @@ def test_IMAPFetcher_test_account_success(imap_mailboxModel, mock_logger, mock_I
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_test_account_badResponse(
-    imap_mailboxModel, mock_logger, mock_IMAP4
-):
+def test_IMAPFetcher_test_account_badResponse(imap_mailbox, mock_logger, mock_IMAP4):
     mock_IMAP4.return_value.noop.return_value = ("NO", [b""])
 
     with pytest.raises(MailAccountError, match="Bad server response"):
-        IMAPFetcher(imap_mailboxModel.account).test()
+        IMAPFetcher(imap_mailbox.account).test()
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
     mock_logger.debug.assert_called()
@@ -289,7 +285,7 @@ def test_IMAPFetcher_test_account_badResponse(
 
 @pytest.mark.django_db
 def test_IMAPFetcher_test_account_exception(
-    faker, imap_mailboxModel, mock_logger, mock_IMAP4
+    faker, imap_mailbox, mock_logger, mock_IMAP4
 ):
     fake_error_message = faker.sentence()
     mock_IMAP4.return_value.noop.side_effect = AssertionError(fake_error_message)
@@ -297,7 +293,7 @@ def test_IMAPFetcher_test_account_exception(
     with pytest.raises(
         MailAccountError, match=f"AssertionError.*?{fake_error_message}"
     ):
-        IMAPFetcher(imap_mailboxModel.account).test()
+        IMAPFetcher(imap_mailbox.account).test()
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
     mock_logger.debug.assert_called()
@@ -305,13 +301,13 @@ def test_IMAPFetcher_test_account_exception(
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_test_mailbox_success(imap_mailboxModel, mock_logger, mock_IMAP4):
-    result = IMAPFetcher(imap_mailboxModel.account).test(imap_mailboxModel)
+def test_IMAPFetcher_test_mailbox_success(imap_mailbox, mock_logger, mock_IMAP4):
+    result = IMAPFetcher(imap_mailbox.account).test(imap_mailbox)
 
     assert result is None
     mock_IMAP4.return_value.noop.assert_called_once_with()
     mock_IMAP4.return_value.select.assert_called_once_with(
-        utf7_encode(imap_mailboxModel.name), readonly=True
+        utf7_encode(imap_mailbox.name), readonly=True
     )
     mock_IMAP4.return_value.check.assert_called_once_with()
     mock_IMAP4.return_value.unselect.assert_called_once_with()
@@ -321,13 +317,11 @@ def test_IMAPFetcher_test_mailbox_success(imap_mailboxModel, mock_logger, mock_I
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_test_mailbox_wrongMailbox(
-    imap_mailboxModel, mock_logger, mock_IMAP4
-):
-    wrongMailbox = baker.make(MailboxModel)
+def test_IMAPFetcher_test_mailbox_wrongMailbox(imap_mailbox, mock_logger, mock_IMAP4):
+    wrongMailbox = baker.make(Mailbox)
 
     with pytest.raises(ValueError, match="is not in"):
-        IMAPFetcher(imap_mailboxModel.account).test(wrongMailbox)
+        IMAPFetcher(imap_mailbox.account).test(wrongMailbox)
 
     mock_IMAP4.return_value.noop.assert_not_called()
     mock_logger.error.assert_called()
@@ -338,18 +332,18 @@ def test_IMAPFetcher_test_mailbox_wrongMailbox(
     "raisingFunction, expectedCalls", [("select", (1, 0)), ("check", (1, 1))]
 )
 def test_IMAPFetcher_test_mailbox_badResponse(
-    imap_mailboxModel, mock_logger, mock_IMAP4, raisingFunction, expectedCalls
+    imap_mailbox, mock_logger, mock_IMAP4, raisingFunction, expectedCalls
 ):
     getattr(mock_IMAP4.return_value, raisingFunction).return_value = ("NO", [b""])
 
     with pytest.raises(MailboxError, match="Bad server response"):
-        IMAPFetcher(imap_mailboxModel.account).test(imap_mailboxModel)
+        IMAPFetcher(imap_mailbox.account).test(imap_mailbox)
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
     assert mock_IMAP4.return_value.select.call_count == expectedCalls[0]
     if expectedCalls[0]:
         mock_IMAP4.return_value.select.assert_called_with(
-            utf7_encode(imap_mailboxModel.name), readonly=True
+            utf7_encode(imap_mailbox.name), readonly=True
         )
     assert mock_IMAP4.return_value.check.call_count == expectedCalls[1]
     if expectedCalls[1]:
@@ -364,7 +358,7 @@ def test_IMAPFetcher_test_mailbox_badResponse(
     "raisingFunction, expectedCalls", [("select", (1, 0)), ("check", (1, 1))]
 )
 def test_IMAPFetcher_test_mailbox_exception(
-    faker, imap_mailboxModel, mock_logger, mock_IMAP4, raisingFunction, expectedCalls
+    faker, imap_mailbox, mock_logger, mock_IMAP4, raisingFunction, expectedCalls
 ):
     fake_error_message = faker.sentence()
     getattr(mock_IMAP4.return_value, raisingFunction).side_effect = AssertionError(
@@ -372,13 +366,13 @@ def test_IMAPFetcher_test_mailbox_exception(
     )
 
     with pytest.raises(MailboxError, match=f"AssertionError.*?{fake_error_message}"):
-        IMAPFetcher(imap_mailboxModel.account).test(imap_mailboxModel)
+        IMAPFetcher(imap_mailbox.account).test(imap_mailbox)
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
     assert mock_IMAP4.return_value.select.call_count == expectedCalls[0]
     if expectedCalls[0]:
         mock_IMAP4.return_value.select.assert_called_with(
-            utf7_encode(imap_mailboxModel.name), readonly=True
+            utf7_encode(imap_mailbox.name), readonly=True
         )
     assert mock_IMAP4.return_value.check.call_count == expectedCalls[1]
     if expectedCalls[1]:
@@ -389,15 +383,15 @@ def test_IMAPFetcher_test_mailbox_exception(
 
 @pytest.mark.django_db
 def test_IMAPFetcher_test_mailbox_badResponse_ignored(
-    imap_mailboxModel, mock_logger, mock_IMAP4
+    imap_mailbox, mock_logger, mock_IMAP4
 ):
     mock_IMAP4.return_value.unselect.return_value = ("NO", [b""])
 
-    IMAPFetcher(imap_mailboxModel.account).test(imap_mailboxModel)
+    IMAPFetcher(imap_mailbox.account).test(imap_mailbox)
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
     mock_IMAP4.return_value.select.assert_called_once_with(
-        utf7_encode(imap_mailboxModel.name), readonly=True
+        utf7_encode(imap_mailbox.name), readonly=True
     )
     mock_IMAP4.return_value.check.assert_called_once_with()
     mock_IMAP4.return_value.unselect.assert_called_once_with()
@@ -407,15 +401,15 @@ def test_IMAPFetcher_test_mailbox_badResponse_ignored(
 
 @pytest.mark.django_db
 def test_IMAPFetcher_test_mailbox_exception_ignored(
-    imap_mailboxModel, mock_logger, mock_IMAP4
+    imap_mailbox, mock_logger, mock_IMAP4
 ):
     mock_IMAP4.return_value.unselect.side_effect = AssertionError
 
-    IMAPFetcher(imap_mailboxModel.account).test(imap_mailboxModel)
+    IMAPFetcher(imap_mailbox.account).test(imap_mailbox)
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
     mock_IMAP4.return_value.select.assert_called_once_with(
-        utf7_encode(imap_mailboxModel.name), readonly=True
+        utf7_encode(imap_mailbox.name), readonly=True
     )
     mock_IMAP4.return_value.check.assert_called_once_with()
     mock_logger.debug.assert_called()
@@ -423,21 +417,19 @@ def test_IMAPFetcher_test_mailbox_exception_ignored(
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_fetchEmails_success(
-    mocker, imap_mailboxModel, mock_logger, mock_IMAP4
-):
+def test_IMAPFetcher_fetchEmails_success(mocker, imap_mailbox, mock_logger, mock_IMAP4):
     expectedUidFetchCalls = [
         mocker.call("FETCH", uID, "(RFC822)")
         for uID in mock_IMAP4.return_value.uid.return_value[1][0].split()
     ]
 
-    result = IMAPFetcher(imap_mailboxModel.account).fetchEmails(imap_mailboxModel)
+    result = IMAPFetcher(imap_mailbox.account).fetchEmails(imap_mailbox)
 
     assert result == [mock_IMAP4.return_value.uid.return_value[1][0][1]] * len(
         expectedUidFetchCalls
     )
     mock_IMAP4.return_value.select.assert_called_once_with(
-        utf7_encode(imap_mailboxModel.name), readonly=True
+        utf7_encode(imap_mailbox.name), readonly=True
     )
     assert mock_IMAP4.return_value.uid.call_count == len(expectedUidFetchCalls) + 1
     mock_IMAP4.return_value.uid.assert_has_calls(
@@ -451,19 +443,19 @@ def test_IMAPFetcher_fetchEmails_success(
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_fetchEmails_wrongMailbox(imap_mailboxModel, mock_logger):
-    wrongMailbox = baker.make(MailboxModel)
+def test_IMAPFetcher_fetchEmails_wrongMailbox(imap_mailbox, mock_logger):
+    wrongMailbox = baker.make(Mailbox)
 
     with pytest.raises(ValueError, match="is not in"):
-        IMAPFetcher(imap_mailboxModel.account).fetchEmails(wrongMailbox)
+        IMAPFetcher(imap_mailbox.account).fetchEmails(wrongMailbox)
 
     mock_logger.error.assert_called()
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_fetchEmails_badCriterion(imap_mailboxModel, mock_logger):
+def test_IMAPFetcher_fetchEmails_badCriterion(imap_mailbox, mock_logger):
     with pytest.raises(ValueError, match="not available via"):
-        IMAPFetcher(imap_mailboxModel.account).fetchEmails(imap_mailboxModel, "NONE")
+        IMAPFetcher(imap_mailbox.account).fetchEmails(imap_mailbox, "NONE")
 
     mock_logger.error.assert_called()
 
@@ -473,17 +465,17 @@ def test_IMAPFetcher_fetchEmails_badCriterion(imap_mailboxModel, mock_logger):
     "raisingFunction, expectedCalls", [("select", (1, 0)), ("uid", (1, 1))]
 )
 def test_IMAPFetcher_fetchEmails_badResponse(
-    imap_mailboxModel, mock_logger, mock_IMAP4, raisingFunction, expectedCalls
+    imap_mailbox, mock_logger, mock_IMAP4, raisingFunction, expectedCalls
 ):
     getattr(mock_IMAP4.return_value, raisingFunction).return_value = ("NO", [b""])
 
     with pytest.raises(MailboxError, match="Bad server response"):
-        IMAPFetcher(imap_mailboxModel.account).fetchEmails(imap_mailboxModel)
+        IMAPFetcher(imap_mailbox.account).fetchEmails(imap_mailbox)
 
     assert mock_IMAP4.return_value.select.call_count == expectedCalls[0]
     if expectedCalls[0]:
         mock_IMAP4.return_value.select.assert_called_with(
-            utf7_encode(imap_mailboxModel.name), readonly=True
+            utf7_encode(imap_mailbox.name), readonly=True
         )
 
     assert mock_IMAP4.return_value.uid.call_count == expectedCalls[1]
@@ -499,7 +491,7 @@ def test_IMAPFetcher_fetchEmails_badResponse(
     "raisingFunction, expectedCalls", [("select", (1, 0)), ("uid", (1, 1))]
 )
 def test_IMAPFetcher_fetchEmails_exception(
-    faker, imap_mailboxModel, mock_logger, mock_IMAP4, raisingFunction, expectedCalls
+    faker, imap_mailbox, mock_logger, mock_IMAP4, raisingFunction, expectedCalls
 ):
     fake_error_message = faker.sentence()
     getattr(mock_IMAP4.return_value, raisingFunction).side_effect = AssertionError(
@@ -507,12 +499,12 @@ def test_IMAPFetcher_fetchEmails_exception(
     )
 
     with pytest.raises(MailboxError, match=f"AssertionError.*?{fake_error_message}"):
-        IMAPFetcher(imap_mailboxModel.account).fetchEmails(imap_mailboxModel)
+        IMAPFetcher(imap_mailbox.account).fetchEmails(imap_mailbox)
 
     assert mock_IMAP4.return_value.select.call_count == expectedCalls[0]
     if expectedCalls[0]:
         mock_IMAP4.return_value.select.assert_called_with(
-            utf7_encode(imap_mailboxModel.name), readonly=True
+            utf7_encode(imap_mailbox.name), readonly=True
         )
 
     assert mock_IMAP4.return_value.uid.call_count == expectedCalls[1]
@@ -525,7 +517,7 @@ def test_IMAPFetcher_fetchEmails_exception(
 
 @pytest.mark.django_db
 def test_IMAPFetcher_fetchEmails_badResponse_ignored(
-    mocker, imap_mailboxModel, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, mock_logger, mock_IMAP4
 ):
     expectedUidFetchCalls = [
         mocker.call("FETCH", uID, "(RFC822)")
@@ -533,13 +525,13 @@ def test_IMAPFetcher_fetchEmails_badResponse_ignored(
     ]
     mock_IMAP4.return_value.unselect.return_value = ("NO", [b""])
 
-    result = IMAPFetcher(imap_mailboxModel.account).fetchEmails(imap_mailboxModel)
+    result = IMAPFetcher(imap_mailbox.account).fetchEmails(imap_mailbox)
 
     assert result == [mock_IMAP4.return_value.uid.return_value[1][0][1]] * len(
         expectedUidFetchCalls
     )
     mock_IMAP4.return_value.select.assert_called_once_with(
-        utf7_encode(imap_mailboxModel.name), readonly=True
+        utf7_encode(imap_mailbox.name), readonly=True
     )
     assert mock_IMAP4.return_value.uid.call_count == len(expectedUidFetchCalls) + 1
     mock_IMAP4.return_value.uid.assert_has_calls(
@@ -553,7 +545,7 @@ def test_IMAPFetcher_fetchEmails_badResponse_ignored(
 
 @pytest.mark.django_db
 def test_IMAPFetcher_fetchEmails_exception_ignored(
-    mocker, imap_mailboxModel, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, mock_logger, mock_IMAP4
 ):
     expectedUidFetchCalls = [
         mocker.call("FETCH", uID, "(RFC822)")
@@ -561,13 +553,13 @@ def test_IMAPFetcher_fetchEmails_exception_ignored(
     ]
     mock_IMAP4.return_value.unselect.side_effect = AssertionError
 
-    result = IMAPFetcher(imap_mailboxModel.account).fetchEmails(imap_mailboxModel)
+    result = IMAPFetcher(imap_mailbox.account).fetchEmails(imap_mailbox)
 
     assert result == [mock_IMAP4.return_value.uid.return_value[1][0][1]] * len(
         expectedUidFetchCalls
     )
     mock_IMAP4.return_value.select.assert_called_with(
-        utf7_encode(imap_mailboxModel.name), readonly=True
+        utf7_encode(imap_mailbox.name), readonly=True
     )
     assert mock_IMAP4.return_value.uid.call_count == len(expectedUidFetchCalls) + 1
     mock_IMAP4.return_value.uid.assert_has_calls(
@@ -580,8 +572,8 @@ def test_IMAPFetcher_fetchEmails_exception_ignored(
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_fetchMailboxes_success(imap_mailboxModel, mock_logger, mock_IMAP4):
-    result = IMAPFetcher(imap_mailboxModel.account).fetchMailboxes()
+def test_IMAPFetcher_fetchMailboxes_success(imap_mailbox, mock_logger, mock_IMAP4):
+    result = IMAPFetcher(imap_mailbox.account).fetchMailboxes()
 
     assert result == mock_IMAP4.return_value.list.return_value[1]
     mock_IMAP4.return_value.list.assert_called_once()
@@ -591,13 +583,11 @@ def test_IMAPFetcher_fetchMailboxes_success(imap_mailboxModel, mock_logger, mock
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_fetchMailboxes_badResponse(
-    imap_mailboxModel, mock_logger, mock_IMAP4
-):
+def test_IMAPFetcher_fetchMailboxes_badResponse(imap_mailbox, mock_logger, mock_IMAP4):
     mock_IMAP4.return_value.list.return_value = ("NO", [b""])
 
     with pytest.raises(MailAccountError, match="Bad server response"):
-        IMAPFetcher(imap_mailboxModel.account).fetchMailboxes()
+        IMAPFetcher(imap_mailbox.account).fetchMailboxes()
 
     mock_IMAP4.return_value.list.assert_called_once()
     mock_logger.debug.assert_called()
@@ -606,7 +596,7 @@ def test_IMAPFetcher_fetchMailboxes_badResponse(
 
 @pytest.mark.django_db
 def test_IMAPFetcher_fetchMailboxes_exception(
-    faker, imap_mailboxModel, mock_logger, mock_IMAP4
+    faker, imap_mailbox, mock_logger, mock_IMAP4
 ):
     fake_error_message = faker.sentence()
     mock_IMAP4.return_value.list.side_effect = AssertionError(fake_error_message)
@@ -614,7 +604,7 @@ def test_IMAPFetcher_fetchMailboxes_exception(
     with pytest.raises(
         MailAccountError, match=f"AssertionError.*?{fake_error_message}"
     ):
-        IMAPFetcher(imap_mailboxModel.account).fetchMailboxes()
+        IMAPFetcher(imap_mailbox.account).fetchMailboxes()
 
     mock_IMAP4.return_value.list.assert_called_once()
     mock_logger.debug.assert_called()
@@ -622,8 +612,8 @@ def test_IMAPFetcher_fetchMailboxes_exception(
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_close_success(imap_mailboxModel, mock_logger, mock_IMAP4):
-    IMAPFetcher(imap_mailboxModel.account).close()
+def test_IMAPFetcher_close_success(imap_mailbox, mock_logger, mock_IMAP4):
+    IMAPFetcher(imap_mailbox.account).close()
 
     mock_IMAP4.return_value.logout.assert_called_once()
     mock_logger.debug.assert_called()
@@ -632,8 +622,8 @@ def test_IMAPFetcher_close_success(imap_mailboxModel, mock_logger, mock_IMAP4):
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_close_noClient(imap_mailboxModel, mock_logger, mock_IMAP4):
-    fetcher = IMAPFetcher(imap_mailboxModel.account)
+def test_IMAPFetcher_close_noClient(imap_mailbox, mock_logger, mock_IMAP4):
+    fetcher = IMAPFetcher(imap_mailbox.account)
     fetcher._mailClient = None
 
     fetcher.close()
@@ -645,10 +635,10 @@ def test_IMAPFetcher_close_noClient(imap_mailboxModel, mock_logger, mock_IMAP4):
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_close_badResponse(imap_mailboxModel, mock_logger, mock_IMAP4):
+def test_IMAPFetcher_close_badResponse(imap_mailbox, mock_logger, mock_IMAP4):
     mock_IMAP4.return_value.logout.return_value = ("NO", [b""])
 
-    IMAPFetcher(imap_mailboxModel.account).close()
+    IMAPFetcher(imap_mailbox.account).close()
 
     mock_IMAP4.return_value.logout.assert_called_once()
     mock_logger.debug.assert_called()
@@ -656,10 +646,10 @@ def test_IMAPFetcher_close_badResponse(imap_mailboxModel, mock_logger, mock_IMAP
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_close_exception(imap_mailboxModel, mock_logger, mock_IMAP4):
+def test_IMAPFetcher_close_exception(imap_mailbox, mock_logger, mock_IMAP4):
     mock_IMAP4.return_value.logout.side_effect = AssertionError
 
-    IMAPFetcher(imap_mailboxModel.account).close()
+    IMAPFetcher(imap_mailbox.account).close()
 
     mock_IMAP4.return_value.logout.assert_called_once()
     mock_logger.debug.assert_called()
@@ -667,16 +657,16 @@ def test_IMAPFetcher_close_exception(imap_mailboxModel, mock_logger, mock_IMAP4)
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher___str__(imap_mailboxModel):
-    result = str(IMAPFetcher(imap_mailboxModel.account))
+def test_IMAPFetcher___str__(imap_mailbox):
+    result = str(IMAPFetcher(imap_mailbox.account))
 
-    assert str(imap_mailboxModel.account) in result
+    assert str(imap_mailbox.account) in result
     assert IMAPFetcher.__name__ in result
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_context_manager(imap_mailboxModel, mock_logger, mock_IMAP4):
-    with IMAPFetcher(imap_mailboxModel.account):
+def test_IMAPFetcher_context_manager(imap_mailbox, mock_logger, mock_IMAP4):
+    with IMAPFetcher(imap_mailbox.account):
         pass
 
     mock_IMAP4.return_value.logout.assert_called_once()
@@ -684,10 +674,8 @@ def test_IMAPFetcher_context_manager(imap_mailboxModel, mock_logger, mock_IMAP4)
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_context_manager_exception(
-    imap_mailboxModel, mock_logger, mock_IMAP4
-):
-    with pytest.raises(AssertionError), IMAPFetcher(imap_mailboxModel.account):
+def test_IMAPFetcher_context_manager_exception(imap_mailbox, mock_logger, mock_IMAP4):
+    with pytest.raises(AssertionError), IMAPFetcher(imap_mailbox.account):
         raise AssertionError
 
     mock_IMAP4.return_value.logout.assert_called_once()

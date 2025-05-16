@@ -29,8 +29,8 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.CorrespondentModel import CorrespondentModel
-from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.Correspondent import Correspondent
+from core.models.EMailCorrespondents import EMailCorrespondents
 
 from ..filters.CorrespondentFilter import CorrespondentFilter
 from ..serializers.correspondent_serializers.BaseCorrespondentSerializer import (
@@ -47,16 +47,16 @@ if TYPE_CHECKING:
 
 
 class CorrespondentViewSet(
-    viewsets.ReadOnlyModelViewSet[CorrespondentModel],
+    viewsets.ReadOnlyModelViewSet[Correspondent],
     mixins.DestroyModelMixin,
     ToggleFavoriteMixin,
 ):
-    """Viewset for the :class:`core.models.CorrespondentModel.CorrespondentModel`.
+    """Viewset for the :class:`core.models.Correspondent.Correspondent`.
 
     Provides every read-only and a destroy action.
     """
 
-    BASENAME = CorrespondentModel.BASENAME
+    BASENAME = Correspondent.BASENAME
     serializer_class = CorrespondentSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = CorrespondentFilter
@@ -71,25 +71,25 @@ class CorrespondentViewSet(
     ordering: Final[list[str]] = ["id"]
 
     @override
-    def get_queryset(self) -> QuerySet[CorrespondentModel]:
+    def get_queryset(self) -> QuerySet[Correspondent]:
         """Filters the data for entries connected to the request user.
 
         Returns:
             The correspondent entries matching the request user.
         """
         if getattr(self, "swagger_fake_view", False):
-            return CorrespondentModel.objects.none()
+            return Correspondent.objects.none()
         if not self.request.user.is_authenticated:
-            return CorrespondentModel.objects.none()
+            return Correspondent.objects.none()
         return (
-            CorrespondentModel.objects.filter(
+            Correspondent.objects.filter(
                 emails__mailbox__account__user=self.request.user
             )
             .distinct()
             .prefetch_related(
                 Prefetch(
                     "correspondentemails",
-                    queryset=EMailCorrespondentsModel.objects.filter(
+                    queryset=EMailCorrespondents.objects.filter(
                         email__mailbox__account__user=self.request.user
                     ).select_related("email"),
                 )
@@ -97,7 +97,7 @@ class CorrespondentViewSet(
         )
 
     @override
-    def get_serializer_class(self) -> type[BaseSerializer[CorrespondentModel]]:
+    def get_serializer_class(self) -> type[BaseSerializer[Correspondent]]:
         """Sets the serializer for `list` requests to the simplified version."""
         if self.action == "list":
             return BaseCorrespondentSerializer

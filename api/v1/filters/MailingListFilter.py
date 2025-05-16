@@ -26,7 +26,7 @@ from django.db.models import Q, QuerySet
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.MailingListModel import MailingListModel
+from core.models.MailingList import MailingList
 
 
 if TYPE_CHECKING:
@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 
 class MailingListFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.MailingListModel.MailingListModel`."""
+    """The filter class for :class:`core.models.MailingList.MailingList`."""
 
     search = filters.CharFilter(
         method="filter_text_fields",
@@ -43,7 +43,7 @@ class MailingListFilter(filters.FilterSet):
     class Meta:
         """Metadata class for the filter."""
 
-        model: Final[type[Model]] = MailingListModel
+        model: Final[type[Model]] = MailingList
 
         fields: ClassVar[dict[str, list[str]]] = {
             "list_id": FilterSetups.TEXT,
@@ -59,8 +59,8 @@ class MailingListFilter(filters.FilterSet):
         }
 
     def filter_text_fields(
-        self, queryset: QuerySet[MailingListModel], name: str, value: str
-    ) -> QuerySet[MailingListModel]:
+        self, queryset: QuerySet[MailingList], name: str, value: str
+    ) -> QuerySet[MailingList]:
         """Filters textfields in the model.
 
         Args:

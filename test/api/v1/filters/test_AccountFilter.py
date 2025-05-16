@@ -39,7 +39,7 @@ def test_mail_address_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.mail_address` field.
+    for the :attr:`core.models.Account.Account.mail_address` field.
     """
     query = {"mail_address" + lookup_expr: filterquery}
 
@@ -57,7 +57,7 @@ def test_mail_address_filter(
 )
 def test_mail_host_filter(account_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.mail_host` field.
+    for the :attr:`core.models.Account.Account.mail_host` field.
     """
     query = {"mail_host" + lookup_expr: filterquery}
 
@@ -77,7 +77,7 @@ def test_mail_host_port_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.mail_host_port` field.
+    for the :attr:`core.models.Account.Account.mail_host_port` field.
     """
     query = {"mail_host_port" + lookup_expr: filterquery}
 
@@ -95,7 +95,7 @@ def test_mail_host_port_filter(
 )
 def test_timeout_filter(account_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.timeout` field.
+    for the :attr:`core.models.Account.Account.timeout` field.
     """
     query = {"timeout" + lookup_expr: filterquery}
 
@@ -115,7 +115,7 @@ def test_is_healthy_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.is_healthy` field.
+    for the :attr:`core.models.Account.Account.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
 
@@ -135,7 +135,7 @@ def test_is_favorite_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.is_favorite` field.
+    for the :attr:`core.models.Account.Account.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -153,7 +153,7 @@ def test_is_favorite_filter(
 )
 def test_created_filter(account_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.created` field.
+    for the :attr:`core.models.Account.Account.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 
@@ -171,7 +171,7 @@ def test_created_filter(account_queryset, lookup_expr, filterquery, expected_ind
 )
 def test_updated_filter(account_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.updated` field.
+    for the :attr:`core.models.Account.Account.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}
 

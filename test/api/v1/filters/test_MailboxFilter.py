@@ -35,7 +35,7 @@ from .conftest import (
 )
 def test_name_filter(mailbox_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.name` field.
+    for the :attr:`core.models.Mailbox.Mailbox.name` field.
     """
     query = {"name" + lookup_expr: filterquery}
 
@@ -55,7 +55,7 @@ def test_save_toEML_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.save_toEML` field.
+    for the :attr:`core.models.Mailbox.Mailbox.save_toEML` field.
     """
     query = {"save_toEML" + lookup_expr: filterquery}
 
@@ -75,7 +75,7 @@ def test_save_attachments_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.save_attachments` field.
+    for the :attr:`core.models.Mailbox.Mailbox.save_attachments` field.
     """
     query = {"save_attachments" + lookup_expr: filterquery}
 
@@ -95,7 +95,7 @@ def test_is_healthy_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.is_healthy` field.
+    for the :attr:`core.models.Mailbox.Mailbox.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
 
@@ -115,7 +115,7 @@ def test_is_favorite_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.is_favorite` field.
+    for the :attr:`core.models.Mailbox.Mailbox.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -133,7 +133,7 @@ def test_is_favorite_filter(
 )
 def test_created_filter(mailbox_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.created` field.
+    for the :attr:`core.models.Mailbox.Mailbox.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 
@@ -151,7 +151,7 @@ def test_created_filter(mailbox_queryset, lookup_expr, filterquery, expected_ind
 )
 def test_updated_filter(mailbox_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the :attr:`core.models.MailboxModel.MailboxModel.updated` field.
+    for the :attr:`core.models.Mailbox.Mailbox.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}
 
@@ -171,7 +171,7 @@ def test_account__mail_address_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the related :attr:`core.models.AccountModel.AccountModel.mail_address` field.
+    for the related :attr:`core.models.Account.Account.mail_address` field.
     """
     query = {"account__mail_address" + lookup_expr: filterquery}
 
@@ -191,7 +191,7 @@ def test_account__mail_host_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the related :attr:`core.models.AccountModel.AccountModel.mail_host` field.
+    for the related :attr:`core.models.Account.Account.mail_host` field.
     """
     query = {"account__mail_host" + lookup_expr: filterquery}
 
@@ -211,7 +211,7 @@ def test_account__is_healthy_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilter.MailboxFilter`'s filtering
-    for the related :attr:`core.models.AccountModel.AccountModel.is_healthy` field.
+    for the related :attr:`core.models.Account.Account.is_healthy` field.
     """
     query = {"account__is_healthy" + lookup_expr: filterquery}
 

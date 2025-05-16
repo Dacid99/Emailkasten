@@ -32,7 +32,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 
 from ..filters.DaemonFilter import DaemonFilter
 from ..mixins.NoCreateMixin import NoCreateMixin
@@ -44,13 +44,13 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
-class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[DaemonModel]):
-    """Viewset for the :class:`core.models.DaemonModel.DaemonModel`.
+class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
+    """Viewset for the :class:`core.models.Daemon.Daemon`.
 
     Provides all but the create method.
     """
 
-    BASENAME = DaemonModel.BASENAME
+    BASENAME = Daemon.BASENAME
     serializer_class = BaseDaemonSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = DaemonFilter
@@ -72,17 +72,17 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[DaemonModel]):
     ordering: Final[list[str]] = ["id"]
 
     @override
-    def get_queryset(self) -> QuerySet[DaemonModel]:
+    def get_queryset(self) -> QuerySet[Daemon]:
         """Filters the data for entries connected to the request user.
 
         Returns:
             The daemon entries matching the request user.
         """
         if getattr(self, "swagger_fake_view", False):
-            return DaemonModel.objects.none()
+            return Daemon.objects.none()
         if not self.request.user.is_authenticated:
-            return DaemonModel.objects.none()
-        return DaemonModel.objects.filter(mailbox__account__user=self.request.user)
+            return Daemon.objects.none()
+        return Daemon.objects.filter(mailbox__account__user=self.request.user)
 
     URL_PATH_FETCHING_OPTIONS = "fetching-options"
     URL_NAME_FETCHING_OPTIONS = "fetching-options"

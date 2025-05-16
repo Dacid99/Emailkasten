@@ -28,8 +28,8 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
-from core.models.AccountModel import AccountModel
-from core.models.EMailModel import EMailModel
+from core.models.Account import Account
+from core.models.EMail import EMail
 from core.utils.fetchers.exceptions import MailAccountError
 from web.mixins.CustomActionMixin import CustomActionMixin
 from web.mixins.TestActionMixin import TestActionMixin
@@ -43,15 +43,15 @@ class AccountDetailWithDeleteView(
     CustomActionMixin,
     TestActionMixin,
 ):
-    """View for a single :class:`core.models.AccountModel.AccountModel` instance."""
+    """View for a single :class:`core.models.Account.Account` instance."""
 
-    URL_NAME = AccountModel.get_detail_web_url_name()
-    model = AccountModel
+    URL_NAME = Account.get_detail_web_url_name()
+    model = Account
     template_name = "web/account/account_detail.html"
     success_url = reverse_lazy("web:" + AccountFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet[AccountModel]:
+    def get_queryset(self) -> QuerySet[Account]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()
@@ -67,7 +67,7 @@ class AccountDetailWithDeleteView(
         """Extended to add the accounts latest emails to the context."""
         context = super().get_context_data(**kwargs)
         context["latest_emails"] = (
-            EMailModel.objects.filter(mailbox__account=self.object)
+            EMail.objects.filter(mailbox__account=self.object)
             .order_by("-created")
             .select_related("mailbox", "mailbox__account")[:25]
         )

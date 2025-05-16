@@ -23,107 +23,107 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.AccountModel import AccountModel
+from core.models.Account import Account
 from web.views.account_views.AccountUpdateOrDeleteView import AccountUpdateOrDeleteView
 
 
 @pytest.mark.django_db
-def test_get_noauth(accountModel, client, detail_url, login_url):
+def test_get_noauth(fake_account, client, detail_url, login_url):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with an unauthenticated user client."""
-    response = client.get(detail_url(AccountUpdateOrDeleteView, accountModel))
+    response = client.get(detail_url(AccountUpdateOrDeleteView, fake_account))
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(AccountUpdateOrDeleteView, accountModel)}"
+        f"?next={detail_url(AccountUpdateOrDeleteView, fake_account)}"
     )
-    assert accountModel.mail_address not in response.content.decode()
+    assert fake_account.mail_address not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_other(accountModel, other_client, detail_url):
+def test_get_auth_other(fake_account, other_client, detail_url):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with the authenticated other user client."""
-    response = other_client.get(detail_url(AccountUpdateOrDeleteView, accountModel))
+    response = other_client.get(detail_url(AccountUpdateOrDeleteView, fake_account))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    assert accountModel.mail_address not in response.content.decode()
+    assert fake_account.mail_address not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(accountModel, owner_client, detail_url):
+def test_get_auth_owner(fake_account, owner_client, detail_url):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with the authenticated owner user client."""
-    response = owner_client.get(detail_url(AccountUpdateOrDeleteView, accountModel))
+    response = owner_client.get(detail_url(AccountUpdateOrDeleteView, fake_account))
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/account/account_edit.html" in [t.name for t in response.templates]
     assert "object" in response.context
-    assert isinstance(response.context["object"], AccountModel)
+    assert isinstance(response.context["object"], Account)
     assert "form" in response.context
-    assert accountModel.mail_address in response.content.decode()
+    assert fake_account.mail_address in response.content.decode()
     with open("edit.html", "w") as f:
         f.write(response.content.decode())
 
 
 @pytest.mark.django_db
 def test_post_update_noauth(
-    accountModel, accountPayload, client, detail_url, login_url
+    fake_account, accountPayload, client, detail_url, login_url
 ):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(AccountUpdateOrDeleteView, accountModel), accountPayload
+        detail_url(AccountUpdateOrDeleteView, fake_account), accountPayload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(AccountUpdateOrDeleteView, accountModel)}"
+        f"?next={detail_url(AccountUpdateOrDeleteView, fake_account)}"
     )
-    accountModel.refresh_from_db()
-    assert accountModel.mail_address != accountPayload["mail_address"]
-    assert accountModel.password != accountPayload["password"]
-    assert accountModel.mail_host != accountPayload["mail_host"]
+    fake_account.refresh_from_db()
+    assert fake_account.mail_address != accountPayload["mail_address"]
+    assert fake_account.password != accountPayload["password"]
+    assert fake_account.mail_host != accountPayload["mail_host"]
 
 
 @pytest.mark.django_db
-def test_post_update_auth_other(accountModel, accountPayload, other_client, detail_url):
+def test_post_update_auth_other(fake_account, accountPayload, other_client, detail_url):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(AccountUpdateOrDeleteView, accountModel), accountPayload
+        detail_url(AccountUpdateOrDeleteView, fake_account), accountPayload
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    accountModel.refresh_from_db()
-    assert accountModel.mail_address != accountPayload["mail_address"]
-    assert accountModel.password != accountPayload["password"]
-    assert accountModel.mail_host != accountPayload["mail_host"]
+    fake_account.refresh_from_db()
+    assert fake_account.mail_address != accountPayload["mail_address"]
+    assert fake_account.password != accountPayload["password"]
+    assert fake_account.mail_host != accountPayload["mail_host"]
 
 
 @pytest.mark.django_db
-def test_post_update_auth_owner(accountModel, accountPayload, owner_client, detail_url):
+def test_post_update_auth_owner(fake_account, accountPayload, owner_client, detail_url):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(AccountUpdateOrDeleteView, accountModel), accountPayload
+        detail_url(AccountUpdateOrDeleteView, fake_account), accountPayload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
-    assert response.url.startswith(accountModel.get_absolute_url())
-    accountModel.refresh_from_db()
-    assert accountModel.mail_address == accountPayload["mail_address"]
-    assert accountModel.password == accountPayload["password"]
-    assert accountModel.mail_host == accountPayload["mail_host"]
+    assert response.url.startswith(fake_account.get_absolute_url())
+    fake_account.refresh_from_db()
+    assert fake_account.mail_address == accountPayload["mail_address"]
+    assert fake_account.password == accountPayload["password"]
+    assert fake_account.mail_host == accountPayload["mail_host"]
 
 
 @pytest.mark.django_db
-def test_post_delete_noauth(accountModel, client, detail_url, login_url):
+def test_post_delete_noauth(fake_account, client, detail_url, login_url):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(AccountUpdateOrDeleteView, accountModel),
+        detail_url(AccountUpdateOrDeleteView, fake_account),
         {"delete": "Delete"},
     )
 
@@ -131,38 +131,36 @@ def test_post_delete_noauth(accountModel, client, detail_url, login_url):
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(AccountUpdateOrDeleteView, accountModel)}"
+        f"?next={detail_url(AccountUpdateOrDeleteView, fake_account)}"
     )
-    accountModel.refresh_from_db()
-    assert accountModel is not None
+    fake_account.refresh_from_db()
+    assert fake_account is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_other(accountModel, other_client, detail_url):
+def test_post_delete_auth_other(fake_account, other_client, detail_url):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(AccountUpdateOrDeleteView, accountModel),
+        detail_url(AccountUpdateOrDeleteView, fake_account),
         {"delete": "Delete"},
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    accountModel.refresh_from_db()
-    assert accountModel is not None
+    fake_account.refresh_from_db()
+    assert fake_account is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_owner(accountModel, owner_client, detail_url):
+def test_post_delete_auth_owner(fake_account, owner_client, detail_url):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(AccountUpdateOrDeleteView, accountModel),
+        detail_url(AccountUpdateOrDeleteView, fake_account),
         {"delete": "Delete"},
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
-    assert response.url.startswith(
-        reverse("web:" + AccountModel.get_list_web_url_name())
-    )
-    with pytest.raises(AccountModel.DoesNotExist):
-        accountModel.refresh_from_db()
+    assert response.url.startswith(reverse("web:" + Account.get_list_web_url_name()))
+    with pytest.raises(Account.DoesNotExist):
+        fake_account.refresh_from_db()

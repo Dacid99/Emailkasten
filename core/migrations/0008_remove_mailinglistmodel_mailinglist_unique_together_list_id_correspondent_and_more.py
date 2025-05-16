@@ -14,15 +14,15 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveConstraint(
-            model_name="mailinglistmodel",
+            model_name="mailinglist",
             name="mailinglist_unique_together_list_id_correspondent",
         ),
         migrations.RemoveField(
-            model_name="mailinglistmodel",
+            model_name="mailinglist",
             name="correspondent",
         ),
         migrations.AlterField(
-            model_name="emailmodel",
+            model_name="email",
             name="prerender_filepath",
             field=models.FilePathField(
                 match=".*\\.JPEG$",
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="mailinglistmodel",
+            model_name="mailinglist",
             name="list_id",
             field=models.CharField(max_length=255, unique=True),
         ),

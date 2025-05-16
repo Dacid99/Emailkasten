@@ -25,27 +25,27 @@ from web.forms.account_forms.BaseAccountForm import BaseAccountForm
 
 
 @pytest.mark.django_db
-def test_post_create(accountModel, other_user):
+def test_post_create(fake_account, other_user):
     """Tests post direction of :class:`web.forms.account_forms.BaseAccountForm.BaseAccountForm`."""
-    form = BaseAccountForm(data=model_to_dict(accountModel))
+    form = BaseAccountForm(data=model_to_dict(fake_account))
     form.instance.user = other_user
 
     assert form.is_valid()
     form_data = form.cleaned_data
     assert "mail_address" in form_data
-    assert form_data["mail_address"] == accountModel.mail_address
+    assert form_data["mail_address"] == fake_account.mail_address
     assert "password" in form_data
-    assert form_data["password"] == accountModel.password
+    assert form_data["password"] == fake_account.password
     assert "mail_host" in form_data
-    assert form_data["mail_host"] == accountModel.mail_host
+    assert form_data["mail_host"] == fake_account.mail_host
     assert "protocol" in form_data
-    assert form_data["protocol"] == accountModel.protocol
+    assert form_data["protocol"] == fake_account.protocol
     assert "mail_host_port" in form_data
-    assert form_data["mail_host_port"] == accountModel.mail_host_port
+    assert form_data["mail_host_port"] == fake_account.mail_host_port
     assert "timeout" in form_data
-    assert form_data["timeout"] == accountModel.timeout
+    assert form_data["timeout"] == fake_account.timeout
     assert "is_favorite" in form_data
-    assert form_data["is_favorite"] == accountModel.is_favorite
+    assert form_data["is_favorite"] == fake_account.is_favorite
     assert "user" not in form_data
     assert "is_healthy" not in form_data
     assert "created" not in form_data
@@ -54,26 +54,26 @@ def test_post_create(accountModel, other_user):
 
 
 @pytest.mark.django_db
-def test_post_update(accountModel):
+def test_post_update(fake_account):
     """Tests post direction of :class:`web.forms.account_forms.BaseAccountForm.BaseAccountForm`."""
-    form = BaseAccountForm(instance=accountModel, data=model_to_dict(accountModel))
+    form = BaseAccountForm(instance=fake_account, data=model_to_dict(fake_account))
 
     assert form.is_valid()
     form_data = form.cleaned_data
     assert "mail_address" in form_data
-    assert form_data["mail_address"] == accountModel.mail_address
+    assert form_data["mail_address"] == fake_account.mail_address
     assert "password" in form_data
-    assert form_data["password"] == accountModel.password
+    assert form_data["password"] == fake_account.password
     assert "mail_host" in form_data
-    assert form_data["mail_host"] == accountModel.mail_host
+    assert form_data["mail_host"] == fake_account.mail_host
     assert "protocol" in form_data
-    assert form_data["protocol"] == accountModel.protocol
+    assert form_data["protocol"] == fake_account.protocol
     assert "mail_host_port" in form_data
-    assert form_data["mail_host_port"] == accountModel.mail_host_port
+    assert form_data["mail_host_port"] == fake_account.mail_host_port
     assert "timeout" in form_data
-    assert form_data["timeout"] == accountModel.timeout
+    assert form_data["timeout"] == fake_account.timeout
     assert "is_favorite" in form_data
-    assert form_data["is_favorite"] == accountModel.is_favorite
+    assert form_data["is_favorite"] == fake_account.is_favorite
     assert "user" not in form_data
     assert "is_healthy" not in form_data
     assert "created" not in form_data
@@ -82,33 +82,33 @@ def test_post_update(accountModel):
 
 
 @pytest.mark.django_db
-def test_get(accountModel):
+def test_get(fake_account):
     """Tests get direction of :class:`web.forms.account_forms.BaseAccountForm.BaseAccountForm`."""
-    form = BaseAccountForm(instance=accountModel)
+    form = BaseAccountForm(instance=fake_account)
     form_initial_data = form.initial
     form_fields = form.fields
 
     assert "mail_address" in form_fields
     assert "mail_address" in form_initial_data
-    assert form_initial_data["mail_address"] == accountModel.mail_address
+    assert form_initial_data["mail_address"] == fake_account.mail_address
     assert "password" in form_fields
     assert "password" in form_initial_data
-    assert form_initial_data["mail_address"] == accountModel.mail_address
+    assert form_initial_data["mail_address"] == fake_account.mail_address
     assert "mail_host" in form_fields
     assert "mail_host" in form_initial_data
-    assert form_initial_data["mail_host"] == accountModel.mail_host
+    assert form_initial_data["mail_host"] == fake_account.mail_host
     assert "protocol" in form_fields
     assert "protocol" in form_initial_data
-    assert form_initial_data["protocol"] == accountModel.protocol
+    assert form_initial_data["protocol"] == fake_account.protocol
     assert "mail_host_port" in form_fields
     assert "mail_host_port" in form_initial_data
-    assert form_initial_data["mail_host_port"] == accountModel.mail_host_port
+    assert form_initial_data["mail_host_port"] == fake_account.mail_host_port
     assert "timeout" in form_fields
     assert "timeout" in form_initial_data
-    assert form_initial_data["timeout"] == accountModel.timeout
+    assert form_initial_data["timeout"] == fake_account.timeout
     assert "is_favorite" in form_fields
     assert "is_favorite" in form_initial_data
-    assert form_initial_data["is_favorite"] == accountModel.is_favorite
+    assert form_initial_data["is_favorite"] == fake_account.is_favorite
     assert "user" not in form_fields
     assert "is_healthy" not in form_fields
     assert "created" not in form_fields

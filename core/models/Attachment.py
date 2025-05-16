@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`AttachmentModel` model class."""
+"""Module with the :class:`Attachment` model class."""
 
 from __future__ import annotations
 
@@ -38,20 +38,20 @@ from core.mixins.URLMixin import URLMixin
 from Emailkasten.utils.workarounds import get_config
 
 from ..utils.fileManagment import clean_filename, saveStore
-from .StorageModel import StorageModel
+from .Storage import Storage
 
 
 if TYPE_CHECKING:
     from email.message import Message
     from io import BufferedWriter
 
-    from .EMailModel import EMailModel
+    from .EMail import EMail
 
 
 logger = logging.getLogger(__name__)
 
 
-class AttachmentModel(
+class Attachment(
     HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models.Model
 ):
     """Database model for an attachment file in a mail."""
@@ -65,7 +65,7 @@ class AttachmentModel(
     """The path where the attachment is stored. Unique together with :attr:`email`.
     Can be null if the attachment has not been saved (null does not collide with the unique constraint.).
     Must contain :attr:`constance.get_config('STORAGE_PATH')`.
-    When this entry is deleted, the file will be removed by :func:`core.signals.delete_AttachmentModel.post_delete_attachment`."""
+    When this entry is deleted, the file will be removed by :func:`core.signals.delete_Attachment.post_delete_attachment`."""
 
     content_disposition = models.CharField(blank=True, default="", max_length=255)
     """The disposition of the file. Typically 'attachment', 'inline' or ''."""
@@ -85,8 +85,8 @@ class AttachmentModel(
     is_favorite = models.BooleanField(default=False)
     """Flags favorite attachments. False by default."""
 
-    email: models.ForeignKey[EMailModel] = models.ForeignKey(
-        "EMailModel", related_name="attachments", on_delete=models.CASCADE
+    email: models.ForeignKey[EMail] = models.ForeignKey(
+        "EMail", related_name="attachments", on_delete=models.CASCADE
     )
     """The mail that the attachment was found in.  Deletion of that `email` deletes this attachment."""
 
@@ -182,7 +182,7 @@ class AttachmentModel(
 
         logger.debug("Storing %s ...", self)
 
-        dirPath = StorageModel.getSubdirectory(self.email.message_id)
+        dirPath = Storage.getSubdirectory(self.email.message_id)
         preliminary_file_path = os.path.join(dirPath, self.file_name)
         file_path = writeAttachment(preliminary_file_path, attachment_payload)
         if file_path:
@@ -194,15 +194,15 @@ class AttachmentModel(
 
     @classmethod
     def createFromEmailMessage(
-        cls, email_message: Message[str, str], email: EMailModel
-    ) -> list[AttachmentModel]:
-        """Creates :class:`core.models.AttachmentModel.AttachmentModel`s from an email message.
+        cls, email_message: Message[str, str], email: EMail
+    ) -> list[Attachment]:
+        """Creates :class:`core.models.Attachment.Attachment`s from an email message.
 
         Args:
             email_message: The email_message to get and create all attachments from.
 
         Returns:
-            A list of :class:`core.models.AttachmentModel.AttachmentModel` in the email message.
+            A list of :class:`core.models.Attachment.Attachment` in the email message.
         """
         if email.pk is None:
             raise ValueError("Email is not in db!")

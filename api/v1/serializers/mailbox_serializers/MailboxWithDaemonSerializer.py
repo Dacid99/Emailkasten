@@ -25,9 +25,9 @@ from .BaseMailboxSerializer import BaseMailboxSerializer
 
 
 class MailboxWithDaemonSerializer(BaseMailboxSerializer):
-    """The standard serializer for a :class:`core.models.DaemonModel.DaemonModel`.
+    """The standard serializer for a :class:`core.models.Daemon.Daemon`.
 
-    Includes a nested serializer for the :attr:`core.models.DaemonModel.DaemonModel.daemons` related field.
+    Includes a nested serializer for the :attr:`core.models.Daemon.Daemon.daemons` related field.
     """
 
     daemons = BaseDaemonSerializer(many=True, read_only=True)

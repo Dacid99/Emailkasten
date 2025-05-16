@@ -45,8 +45,8 @@ class CoreConfig(AppConfig):
         plugin_dir.register(DaemonHealthCheckBackend)
 
         from .signals import (
-            delete_DaemonModel,
-            save_AccountModel,
-            save_DaemonModel,
-            save_MailboxModel,
+            delete_Daemon,
+            save_Account,
+            save_Daemon,
+            save_Mailbox,
         )

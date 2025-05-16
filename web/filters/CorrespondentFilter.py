@@ -32,11 +32,11 @@ from ..utils.widgets import AdaptedSelectDateWidget
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
-    from core.models.CorrespondentModel import CorrespondentModel
+    from core.models.Correspondent import Correspondent
 
 
 class CorrespondentFilter(django_filters.FilterSet):
-    """The filter class for :class:`core.models.CorrespondentModel.CorrespondentModel`."""
+    """The filter class for :class:`core.models.Correspondent.Correspondent`."""
 
     order = django_filters.OrderingFilter(
         fields=[
@@ -70,8 +70,8 @@ class CorrespondentFilter(django_filters.FilterSet):
     )
 
     def filter_text_fields(
-        self, queryset: QuerySet[CorrespondentModel], name: str, value: str
-    ) -> QuerySet[CorrespondentModel]:
+        self, queryset: QuerySet[Correspondent], name: str, value: str
+    ) -> QuerySet[Correspondent]:
         """Filters textfields in the model.
 
         Args:

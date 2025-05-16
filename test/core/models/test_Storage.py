@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`core.models.StorageModel`."""
+"""Test module for :mod:`core.models.Storage`."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from typing import TYPE_CHECKING
 import pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
-from core.models.StorageModel import StorageModel
+from core.models.Storage import Storage
 
 
 if TYPE_CHECKING:
@@ -38,8 +38,8 @@ if TYPE_CHECKING:
 
 @pytest.fixture(autouse=True)
 def mock_logger(mocker) -> MagicMock:
-    """Mocks :attr:`core.models.StorageModel.logger` of the module."""
-    return mocker.patch("core.models.StorageModel.logger", autospec=True)
+    """Mocks :attr:`core.models.Storage.logger` of the module."""
+    return mocker.patch("core.models.Storage.logger", autospec=True)
 
 
 @pytest.fixture(autouse=True)
@@ -81,7 +81,7 @@ def mock_filesystem() -> Generator[FakeFilesystem, None, None]:
 def test___str__(faker, is_current, expected_status_str):
     fake_filepath = faker.file_path()
 
-    result = str(StorageModel(current=is_current, path=fake_filepath))
+    result = str(Storage(current=is_current, path=fake_filepath))
 
     assert expected_status_str in result
     assert fake_filepath in result
@@ -97,24 +97,24 @@ def test___str__(faker, is_current, expected_status_str):
         ("conflicting-storage-v2"),
     ],
 )
-def test_StorageModel_initial_single_creation(
+def test_Storage_initial_single_creation(
     settings,
     override_config,
     mock_logger,
     STORAGE_PATH,
 ):
-    """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
+    """Tests the correct initial allocation of storage by :class:`core.models.Storage.Storage`."""
     settings.STORAGE_PATH = STORAGE_PATH
 
     with override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3):
-        subdirectory = StorageModel.getSubdirectory("test")
+        subdirectory = Storage.getSubdirectory("test")
 
     assert os.path.isdir(subdirectory)
     assert subdirectory.startswith(STORAGE_PATH)
     mock_logger.info.assert_called()
 
-    assert StorageModel.objects.count() == 1
-    storage = StorageModel.objects.get(current=True)
+    assert Storage.objects.count() == 1
+    storage = Storage.objects.get(current=True)
     assert storage.directory_number == 0
     assert storage.path == os.path.dirname(subdirectory)
     assert storage.subdirectory_count == 1
@@ -123,21 +123,21 @@ def test_StorageModel_initial_single_creation(
 @pytest.mark.django_db
 @pytest.mark.override_setting(STORAGE_PATH="empty-storage")
 @pytest.mark.override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3)
-def test_StorageModel_initial_many_creation(mock_logger):
-    """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
+def test_Storage_initial_many_creation(mock_logger):
+    """Tests the correct initial allocation of storage by :class:`core.models.Storage.Storage`."""
 
     for number in range(2 * 3 + 1):
-        StorageModel.getSubdirectory(f"test_{number}")
+        Storage.getSubdirectory(f"test_{number}")
 
     mock_logger.info.assert_called()
 
-    assert StorageModel.objects.filter(current=True).count() == 1
-    assert StorageModel.objects.count() == 3
+    assert Storage.objects.filter(current=True).count() == 1
+    assert Storage.objects.count() == 3
     assert all(
         storage.subdirectory_count == len(os.listdir(storage.path))
-        for storage in StorageModel.objects.all()
+        for storage in Storage.objects.all()
     )
-    storage = StorageModel.objects.get(current=True)
+    storage = Storage.objects.get(current=True)
     assert storage.directory_number == 2
     assert storage.subdirectory_count == 1
 
@@ -145,12 +145,12 @@ def test_StorageModel_initial_many_creation(mock_logger):
 @pytest.mark.django_db
 @pytest.mark.override_setting(STORAGE_PATH="empty-storage")
 @pytest.mark.override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3)
-def test_StorageModel_single_creation_healthcheck_success():
-    """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
+def test_Storage_single_creation_healthcheck_success():
+    """Tests the correct initial allocation of storage by :class:`core.models.Storage.Storage`."""
 
-    StorageModel.getSubdirectory("test")
+    Storage.getSubdirectory("test")
 
-    health = StorageModel.healthcheck()
+    health = Storage.healthcheck()
 
     assert health
 
@@ -159,13 +159,13 @@ def test_StorageModel_single_creation_healthcheck_success():
 @pytest.mark.override_setting(
     STORAGE_PATH="empty-storage", STORAGE_MAX_SUBDIRS_PER_DIR=3
 )
-def test_StorageModel_many_creation_health_check_success():
-    """Tests the correct initial allocation of storage by :class:`core.models.StorageModel.StorageModel`."""
+def test_Storage_many_creation_health_check_success():
+    """Tests the correct initial allocation of storage by :class:`core.models.Storage.Storage`."""
 
     for number in range(2 * 3 + 1):
-        StorageModel.getSubdirectory(f"test_{number}")
+        Storage.getSubdirectory(f"test_{number}")
 
-    health = StorageModel.healthcheck()
+    health = Storage.healthcheck()
 
     assert health
 
@@ -173,13 +173,13 @@ def test_StorageModel_many_creation_health_check_success():
 @pytest.mark.django_db
 @pytest.mark.override_setting(STORAGE_PATH="empty-storage")
 @pytest.mark.override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3)
-def test_StorageModel_health_check_failed_duplicate_current(mock_logger):
+def test_Storage_health_check_failed_duplicate_current(mock_logger):
     """Tests the storage healthcheck in case of a duplicate `current` directory."""
     for number in range(2 * 3 + 1):
-        StorageModel.getSubdirectory(f"test_{number}")
-    StorageModel.objects.create(directory_number=10, current=True)
+        Storage.getSubdirectory(f"test_{number}")
+    Storage.objects.create(directory_number=10, current=True)
 
-    health = StorageModel.healthcheck()
+    health = Storage.healthcheck()
 
     assert not health
     mock_logger.critical.assert_called()
@@ -194,7 +194,7 @@ def test_StorageModel_health_check_failed_duplicate_current(mock_logger):
         ("conflicting-storage-v2"),
     ],
 )
-def test_StorageModel_health_check_failed_dirty_storage(
+def test_Storage_health_check_failed_dirty_storage(
     settings, override_config, mock_logger, STORAGE_PATH
 ):
     """Tests the storage healthcheck in case of dirty storage."""
@@ -202,9 +202,9 @@ def test_StorageModel_health_check_failed_dirty_storage(
 
     with override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3):
         for number in range(2 * 3 + 1):
-            StorageModel.getSubdirectory(f"test_{number}")
+            Storage.getSubdirectory(f"test_{number}")
 
-    health = StorageModel.healthcheck()
+    health = Storage.healthcheck()
 
     assert not health
     mock_logger.critical.assert_called()

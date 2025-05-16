@@ -16,4 +16,4 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""web.views.mailinglist_views package containing views for the :class:`core.models.MailingListModel.MailingListModel` data."""
+"""web.views.mailinglist_views package containing views for the :class:`core.models.MailingList.MailingList` data."""

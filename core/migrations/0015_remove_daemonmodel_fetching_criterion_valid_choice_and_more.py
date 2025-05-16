@@ -11,11 +11,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveConstraint(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="fetching_criterion_valid_choice",
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="fetching_criterion",
             field=models.CharField(
                 choices=[
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddConstraint(
-            model_name="daemonmodel",
+            model_name="daemon",
             constraint=models.CheckConstraint(
                 condition=models.Q(
                     (

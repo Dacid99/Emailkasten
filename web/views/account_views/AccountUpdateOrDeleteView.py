@@ -24,7 +24,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 
-from core.models.AccountModel import AccountModel
+from core.models.Account import Account
 from web.views.UpdateOrDeleteView import UpdateOrDeleteView
 
 from ...forms.account_forms.BaseAccountForm import BaseAccountForm
@@ -32,16 +32,16 @@ from .AccountFilterView import AccountFilterView
 
 
 class AccountUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
-    """View for updating or deleting a single :class:`core.models.AccountModel.AccountModel` instance."""
+    """View for updating or deleting a single :class:`core.models.Account.Account` instance."""
 
-    model = AccountModel
+    model = Account
     form_class = BaseAccountForm
     template_name = "web/account/account_edit.html"
     delete_success_url = reverse_lazy("web:" + AccountFilterView.URL_NAME)
-    URL_NAME = AccountModel.get_edit_web_url_name()
+    URL_NAME = Account.get_edit_web_url_name()
 
     @override
-    def get_queryset(self) -> QuerySet[AccountModel]:
+    def get_queryset(self) -> QuerySet[Account]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()

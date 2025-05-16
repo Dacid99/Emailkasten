@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.AttachmentModel import AttachmentModel
+from core.models.Attachment import Attachment
 
 
 if TYPE_CHECKING:
@@ -33,12 +33,12 @@ if TYPE_CHECKING:
 
 
 class AttachmentFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.AttachmentModel.AttachmentModel`."""
+    """The filter class for :class:`core.models.Attachment.Attachment`."""
 
     class Meta:
         """Metadata class for the filter."""
 
-        model: Final[type[Model]] = AttachmentModel
+        model: Final[type[Model]] = Attachment
 
         fields: ClassVar[dict[str, list[str]]] = {
             "file_name": FilterSetups.TEXT,

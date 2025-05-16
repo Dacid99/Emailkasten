@@ -25,22 +25,22 @@ from web.forms.daemon_forms.BaseDaemonForm import BaseDaemonForm
 
 
 @pytest.mark.django_db
-def test_post_update(daemonModel):
+def test_post_update(fake_daemon):
     """Tests post direction of :class:`web.forms.daemon_forms.BaseDaemonForm.BaseDaemonForm`."""
-    form = BaseDaemonForm(instance=daemonModel, data=model_to_dict(daemonModel))
+    form = BaseDaemonForm(instance=fake_daemon, data=model_to_dict(fake_daemon))
 
     assert form.is_valid()
     form_data = form.cleaned_data
     assert "fetching_criterion" in form_data
-    assert form_data["fetching_criterion"] == daemonModel.fetching_criterion
+    assert form_data["fetching_criterion"] == fake_daemon.fetching_criterion
     assert "cycle_interval" in form_data
-    assert form_data["cycle_interval"] == daemonModel.cycle_interval
+    assert form_data["cycle_interval"] == fake_daemon.cycle_interval
     assert "restart_time" in form_data
-    assert form_data["restart_time"] == daemonModel.restart_time
+    assert form_data["restart_time"] == fake_daemon.restart_time
     assert "log_backup_count" in form_data
-    assert form_data["log_backup_count"] == daemonModel.log_backup_count
+    assert form_data["log_backup_count"] == fake_daemon.log_backup_count
     assert "logfile_size" in form_data
-    assert form_data["logfile_size"] == daemonModel.logfile_size
+    assert form_data["logfile_size"] == fake_daemon.logfile_size
     assert "mailbox" not in form_data
     assert "is_running" not in form_data
     assert "is_healthy" not in form_data
@@ -51,27 +51,27 @@ def test_post_update(daemonModel):
 
 
 @pytest.mark.django_db
-def test_get(daemonModel):
+def test_get(fake_daemon):
     """Tests get direction of :class:`web.forms.daemon_forms.BaseDaemonForm.BaseDaemonForm`."""
-    form = BaseDaemonForm(instance=daemonModel)
+    form = BaseDaemonForm(instance=fake_daemon)
     form_initial_data = form.initial
     form_fields = form.fields
 
     assert "fetching_criterion" in form_fields
     assert "fetching_criterion" in form_initial_data
-    assert form_initial_data["fetching_criterion"] == daemonModel.fetching_criterion
+    assert form_initial_data["fetching_criterion"] == fake_daemon.fetching_criterion
     assert "cycle_interval" in form_fields
     assert "cycle_interval" in form_initial_data
-    assert form_initial_data["cycle_interval"] == daemonModel.cycle_interval
+    assert form_initial_data["cycle_interval"] == fake_daemon.cycle_interval
     assert "restart_time" in form_fields
     assert "restart_time" in form_initial_data
-    assert form_initial_data["restart_time"] == daemonModel.restart_time
+    assert form_initial_data["restart_time"] == fake_daemon.restart_time
     assert "log_backup_count" in form_fields
     assert "log_backup_count" in form_initial_data
-    assert form_initial_data["log_backup_count"] == daemonModel.log_backup_count
+    assert form_initial_data["log_backup_count"] == fake_daemon.log_backup_count
     assert "logfile_size" in form_fields
     assert "logfile_size" in form_initial_data
-    assert form_initial_data["logfile_size"] == daemonModel.logfile_size
+    assert form_initial_data["logfile_size"] == fake_daemon.logfile_size
     assert "mailbox" not in form_fields
     assert "is_running" not in form_fields
     assert "is_healthy" not in form_fields

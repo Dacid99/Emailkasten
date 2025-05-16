@@ -23,24 +23,24 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 
-from core.models.EMailModel import EMailModel
+from core.models.EMail import EMail
 
 from ...filters.EMailFilter import EMailFilter
 from ..FilterPageView import FilterPageView
 
 
 class EMailFilterView(LoginRequiredMixin, FilterPageView):
-    """View for filtering listed :class:`core.models.EMailModel.EMailModel` instances."""
+    """View for filtering listed :class:`core.models.EMail.EMail` instances."""
 
-    URL_NAME = EMailModel.get_list_web_url_name()
-    model = EMailModel
+    URL_NAME = EMail.get_list_web_url_name()
+    model = EMail
     template_name = "web/email/email_filter_list.html"
     context_object_name = "emails"
     filterset_class = EMailFilter
     ordering = ["-created"]
 
     @override
-    def get_queryset(self) -> QuerySet[EMailModel]:
+    def get_queryset(self) -> QuerySet[EMail]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()

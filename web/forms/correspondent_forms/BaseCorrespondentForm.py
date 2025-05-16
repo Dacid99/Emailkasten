@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from core.models.CorrespondentModel import CorrespondentModel
+from core.models.Correspondent import Correspondent
 
 from ...utils.RequiredMarkerForms import RequiredMarkerModelForm
 
@@ -32,10 +32,10 @@ if TYPE_CHECKING:
 
 
 class BaseCorrespondentForm(RequiredMarkerModelForm):
-    """The form for :class:`core.models.CorrespondentModel.CorrespondentModel`.
+    """The form for :class:`core.models.Correspondent.Correspondent`.
 
     Exposes all fields from the model that may be changed by the user.
-    Other forms for :class:`core.models.CorrespondentModel.CorrespondentModel` should inherit from this.
+    Other forms for :class:`core.models.Correspondent.Correspondent` should inherit from this.
     """
 
     class Meta:
@@ -45,8 +45,8 @@ class BaseCorrespondentForm(RequiredMarkerModelForm):
         These submetaclasses must not expose fields that are not listed here.
         """
 
-        model: Final[type[Model]] = CorrespondentModel
+        model: Final[type[Model]] = Correspondent
         """The model behind the form."""
 
         fields: ClassVar[list[str]] = ["email_name", "is_favorite"]
-        """Exposes only the :attr:`core.models.CorrespondentModel.CorrespondentModel.email_name` field."""
+        """Exposes only the :attr:`core.models.Correspondent.Correspondent.email_name` field."""

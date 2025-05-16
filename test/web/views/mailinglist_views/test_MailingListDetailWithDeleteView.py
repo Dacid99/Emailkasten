@@ -23,7 +23,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.MailingListModel import MailingListModel
+from core.models.MailingList import MailingList
 from web.views.mailinglist_views.MailingListDetailWithDeleteView import (
     MailingListDetailWithDeleteView,
 )
@@ -31,36 +31,36 @@ from web.views.mailinglist_views.MailingListFilterView import MailingListFilterV
 
 
 @pytest.mark.django_db
-def test_get_noauth(mailingListModel, client, detail_url, login_url):
+def test_get_noauth(fake_mailingList, client, detail_url, login_url):
     """Tests :class:`web.views.mailinglist_views.MailingListDetailWithDeleteView.MailingListDetailWithDeleteView` with an unauthenticated user client."""
-    response = client.get(detail_url(MailingListDetailWithDeleteView, mailingListModel))
+    response = client.get(detail_url(MailingListDetailWithDeleteView, fake_mailingList))
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(MailingListDetailWithDeleteView, mailingListModel)}"
+        f"?next={detail_url(MailingListDetailWithDeleteView, fake_mailingList)}"
     )
-    assert mailingListModel.list_id not in response.content.decode()
+    assert fake_mailingList.list_id not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_other(mailingListModel, other_client, detail_url):
+def test_get_auth_other(fake_mailingList, other_client, detail_url):
     """Tests :class:`web.views.mailinglist_views.MailingListDetailWithDeleteView.MailingListDetailWithDeleteView` with the authenticated other user client."""
     response = other_client.get(
-        detail_url(MailingListDetailWithDeleteView, mailingListModel)
+        detail_url(MailingListDetailWithDeleteView, fake_mailingList)
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    assert mailingListModel.list_id not in response.content.decode()
+    assert fake_mailingList.list_id not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(mailingListModel, owner_client, detail_url):
+def test_get_auth_owner(fake_mailingList, owner_client, detail_url):
     """Tests :class:`web.views.mailinglist_views.MailingListDetailWithDeleteView.MailingListDetailWithDeleteView` with the authenticated owner user client."""
     response = owner_client.get(
-        detail_url(MailingListDetailWithDeleteView, mailingListModel)
+        detail_url(MailingListDetailWithDeleteView, fake_mailingList)
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -69,49 +69,49 @@ def test_get_auth_owner(mailingListModel, owner_client, detail_url):
         t.name for t in response.templates
     ]
     assert "object" in response.context
-    assert isinstance(response.context["object"], MailingListModel)
-    assert mailingListModel.list_id in response.content.decode()
+    assert isinstance(response.context["object"], MailingList)
+    assert fake_mailingList.list_id in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_post_delete_noauth(mailingListModel, client, detail_url, login_url):
+def test_post_delete_noauth(fake_mailingList, client, detail_url, login_url):
     """Tests :class:`web.views.mailinglist_views.MailingListDetailWithDeleteView.MailingListDetailWithDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(MailingListDetailWithDeleteView, mailingListModel)
+        detail_url(MailingListDetailWithDeleteView, fake_mailingList)
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(MailingListDetailWithDeleteView, mailingListModel)}"
+        f"?next={detail_url(MailingListDetailWithDeleteView, fake_mailingList)}"
     )
-    mailingListModel.refresh_from_db()
-    assert mailingListModel is not None
+    fake_mailingList.refresh_from_db()
+    assert fake_mailingList is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_other(mailingListModel, other_client, detail_url):
+def test_post_delete_auth_other(fake_mailingList, other_client, detail_url):
     """Tests :class:`web.views.mailinglist_views.MailingListDetailWithDeleteView.MailingListDetailWithDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(MailingListDetailWithDeleteView, mailingListModel)
+        detail_url(MailingListDetailWithDeleteView, fake_mailingList)
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    mailingListModel.refresh_from_db()
-    assert mailingListModel is not None
+    fake_mailingList.refresh_from_db()
+    assert fake_mailingList is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_owner(mailingListModel, owner_client, detail_url):
+def test_post_delete_auth_owner(fake_mailingList, owner_client, detail_url):
     """Tests :class:`web.views.mailinglist_views.MailingListDetailWithDeleteView.MailingListDetailWithDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(MailingListDetailWithDeleteView, mailingListModel)
+        detail_url(MailingListDetailWithDeleteView, fake_mailingList)
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:" + MailingListFilterView.URL_NAME))
-    with pytest.raises(MailingListModel.DoesNotExist):
-        mailingListModel.refresh_from_db()
+    with pytest.raises(MailingList.DoesNotExist):
+        fake_mailingList.refresh_from_db()

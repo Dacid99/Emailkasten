@@ -28,7 +28,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.MailingListModel import MailingListModel
+from core.models.MailingList import MailingList
 
 from ..filters.MailingListFilter import MailingListFilter
 from ..serializers.mailinglist_serializers.MailingListSerializer import (
@@ -41,16 +41,16 @@ if TYPE_CHECKING:
 
 
 class MailingListViewSet(
-    viewsets.ReadOnlyModelViewSet[MailingListModel],
+    viewsets.ReadOnlyModelViewSet[MailingList],
     mixins.DestroyModelMixin,
     ToggleFavoriteMixin,
 ):
-    """Viewset for the :class:`core.models.MailingListModel.MailingListModel`.
+    """Viewset for the :class:`core.models.MailingList.MailingList`.
 
     Provides every read-only and a destroy action.
     """
 
-    BASENAME = MailingListModel.BASENAME
+    BASENAME = MailingList.BASENAME
     serializer_class = MailingListSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = MailingListFilter
@@ -70,20 +70,18 @@ class MailingListViewSet(
     ordering: Final[list[str]] = ["id"]
 
     @override
-    def get_queryset(self) -> QuerySet[MailingListModel]:
+    def get_queryset(self) -> QuerySet[MailingList]:
         """Filters the data for entries connected to the request user.
 
         Returns:
             The mailingslist entries matching the request user.
         """
         if getattr(self, "swagger_fake_view", False):
-            return MailingListModel.objects.none()
+            return MailingList.objects.none()
         if not self.request.user.is_authenticated:
-            return MailingListModel.objects.none()
+            return MailingList.objects.none()
         return (
-            MailingListModel.objects.filter(
-                emails__mailbox__account__user=self.request.user
-            )
+            MailingList.objects.filter(emails__mailbox__account__user=self.request.user)
             .distinct()
             .prefetch_related("emails")
         )

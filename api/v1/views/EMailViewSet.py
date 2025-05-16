@@ -33,8 +33,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
-from core.models.EMailModel import EMailModel
+from core.models.EMail import EMail
+from core.models.EMailCorrespondents import EMailCorrespondents
 
 from ..filters.EMailFilter import EMailFilter
 from ..serializers.email_serializers.EMailSerializer import EMailSerializer
@@ -47,16 +47,16 @@ if TYPE_CHECKING:
 
 
 class EMailViewSet(
-    viewsets.ReadOnlyModelViewSet[EMailModel],
+    viewsets.ReadOnlyModelViewSet[EMail],
     mixins.DestroyModelMixin,
     ToggleFavoriteMixin,
 ):
-    """Viewset for the :class:`core.models.EMailModel.EMailModel`.
+    """Viewset for the :class:`core.models.EMail.EMail`.
 
     Provides every read-only and a destroy action.
     """
 
-    BASENAME = EMailModel.BASENAME
+    BASENAME = EMail.BASENAME
     serializer_class = FullEMailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = EMailFilter
@@ -80,24 +80,24 @@ class EMailViewSet(
     ordering: Final[list[str]] = ["id"]
 
     @override
-    def get_queryset(self) -> QuerySet[EMailModel]:
+    def get_queryset(self) -> QuerySet[EMail]:
         """Filters the data for entries connected to the request user.
 
         Returns:
             The email entries matching the request user.
         """
         if getattr(self, "swagger_fake_view", False):
-            return EMailModel.objects.none()
+            return EMail.objects.none()
         if not self.request.user.is_authenticated:
-            return EMailModel.objects.none()
+            return EMail.objects.none()
         return (
-            EMailModel.objects.filter(mailbox__account__user=self.request.user)
+            EMail.objects.filter(mailbox__account__user=self.request.user)
             .select_related("mailinglist", "inReplyTo")
             .prefetch_related("attachments")
             .prefetch_related(
                 Prefetch(
                     "emailcorrespondents",
-                    queryset=EMailCorrespondentsModel.objects.select_related(
+                    queryset=EMailCorrespondents.objects.select_related(
                         "correspondent"
                     ),
                 )

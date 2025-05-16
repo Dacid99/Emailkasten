@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from rest_framework import serializers
 
-from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.EMailCorrespondents import EMailCorrespondents
 
 
 if TYPE_CHECKING:
@@ -32,13 +32,13 @@ if TYPE_CHECKING:
 
 
 class BaseEMailCorrespondentSerializer(
-    serializers.ModelSerializer[EMailCorrespondentsModel]
+    serializers.ModelSerializer[EMailCorrespondents]
 ):
-    """The base serializer for :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`.
+    """The base serializer for :class:`core.models.EMailCorrespondents.EMailCorrespondents`.
 
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` should inherit from this.
+    Other serializers for :class:`core.models.EMailCorrespondents.EMailCorrespondents` should inherit from this.
     """
 
     class Meta:
@@ -49,7 +49,7 @@ class BaseEMailCorrespondentSerializer(
         :attr:`read_only_fields` must not be shortened in subclasses.
         """
 
-        model: Final[type[Model]] = EMailCorrespondentsModel
+        model: Final[type[Model]] = EMailCorrespondents
         """The model to serialize."""
 
         fields: ClassVar[list[str] | str] = "__all__"

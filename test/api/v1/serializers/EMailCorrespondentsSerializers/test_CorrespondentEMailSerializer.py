@@ -27,12 +27,10 @@ from api.v1.serializers.emailcorrespondents_serializers.CorrespondentEMailSerial
 
 
 @pytest.mark.django_db
-def test_output(emailModel, request_context):
+def test_output(fake_emailCorrespondent, request_context):
     """Tests for the expected output of the serializer."""
-    emailCorrespondentModel = emailModel.emailcorrespondents.first()
-
     serializerData = CorrespondentEMailSerializer(
-        instance=emailCorrespondentModel, context=request_context
+        instance=fake_emailCorrespondent, context=request_context
     ).data
 
     assert "id" not in serializerData
@@ -40,19 +38,17 @@ def test_output(emailModel, request_context):
     assert isinstance(serializerData["email"], dict)
     assert "correspondent" not in serializerData
     assert "mention" in serializerData
-    assert serializerData["mention"] == emailCorrespondentModel.mention
+    assert serializerData["mention"] == fake_emailCorrespondent.mention
     assert "created" not in serializerData
     assert "updated" not in serializerData
     assert len(serializerData) == 2
 
 
 @pytest.mark.django_db
-def test_input(emailModel, request_context):
+def test_input(fake_emailCorrespondent, request_context):
     """Tests for the expected input of the serializer."""
-    emailCorrespondentModel = emailModel.emailcorrespondents.first()
-
     serializer = CorrespondentEMailSerializer(
-        data=model_to_dict(emailCorrespondentModel), context=request_context
+        data=model_to_dict(fake_emailCorrespondent), context=request_context
     )
     assert serializer.is_valid()
     serializerData = serializer.validated_data

@@ -23,53 +23,53 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 from web.views.daemon_views.DaemonDetailWithDeleteView import DaemonDetailWithDeleteView
 from web.views.daemon_views.DaemonFilterView import DaemonFilterView
 
 
 @pytest.mark.django_db
-def test_get_noauth(daemonModel, client, detail_url, login_url):
+def test_get_noauth(fake_daemon, client, detail_url, login_url):
     """Tests :class:`web.views.daemon_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with an unauthenticated user client."""
-    response = client.get(detail_url(DaemonDetailWithDeleteView, daemonModel))
+    response = client.get(detail_url(DaemonDetailWithDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(DaemonDetailWithDeleteView, daemonModel)}"
+        f"?next={detail_url(DaemonDetailWithDeleteView, fake_daemon)}"
     )
-    assert daemonModel.mailbox.name not in response.content.decode()
+    assert fake_daemon.mailbox.name not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_other(daemonModel, other_client, detail_url):
+def test_get_auth_other(fake_daemon, other_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated other user client."""
-    response = other_client.get(detail_url(DaemonDetailWithDeleteView, daemonModel))
+    response = other_client.get(detail_url(DaemonDetailWithDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    assert daemonModel.mailbox.name not in response.content.decode()
+    assert fake_daemon.mailbox.name not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(daemonModel, owner_client, detail_url):
+def test_get_auth_owner(fake_daemon, owner_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated owner user client."""
-    response = owner_client.get(detail_url(DaemonDetailWithDeleteView, daemonModel))
+    response = owner_client.get(detail_url(DaemonDetailWithDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     assert "object" in response.context
-    assert isinstance(response.context["object"], DaemonModel)
-    assert daemonModel.mailbox.name in response.content.decode()
+    assert isinstance(response.context["object"], Daemon)
+    assert fake_daemon.mailbox.name in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_post_delete_noauth(daemonModel, client, detail_url, login_url):
+def test_post_delete_noauth(fake_daemon, client, detail_url, login_url):
     """Tests :class:`web.views.daemon_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"delete": "Delete"},
     )
 
@@ -77,44 +77,44 @@ def test_post_delete_noauth(daemonModel, client, detail_url, login_url):
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(DaemonDetailWithDeleteView, daemonModel)}"
+        f"?next={detail_url(DaemonDetailWithDeleteView, fake_daemon)}"
     )
-    daemonModel.refresh_from_db()
-    assert daemonModel is not None
+    fake_daemon.refresh_from_db()
+    assert fake_daemon is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_other(daemonModel, other_client, detail_url):
+def test_post_delete_auth_other(fake_daemon, other_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"delete": "Delete"},
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    daemonModel.refresh_from_db()
-    assert daemonModel is not None
+    fake_daemon.refresh_from_db()
+    assert fake_daemon is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_owner(daemonModel, owner_client, detail_url):
+def test_post_delete_auth_owner(fake_daemon, owner_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"delete": "Delete"},
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:" + DaemonFilterView.URL_NAME))
-    with pytest.raises(DaemonModel.DoesNotExist):
-        daemonModel.refresh_from_db()
+    with pytest.raises(Daemon.DoesNotExist):
+        fake_daemon.refresh_from_db()
 
 
 @pytest.mark.django_db
 def test_post_start_noauth(
-    daemonModel,
+    fake_daemon,
     client,
     detail_url,
     login_url,
@@ -122,7 +122,7 @@ def test_post_start_noauth(
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"start_daemon": "Start"},
     )
 
@@ -130,18 +130,18 @@ def test_post_start_noauth(
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(DaemonDetailWithDeleteView, daemonModel)}"
+        f"?next={detail_url(DaemonDetailWithDeleteView, fake_daemon)}"
     )
     mock_EMailArchiverDaemonRegistry_startDaemon.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_post_start_auth_other(
-    daemonModel, other_client, detail_url, mock_EMailArchiverDaemonRegistry_startDaemon
+    fake_daemon, other_client, detail_url, mock_EMailArchiverDaemonRegistry_startDaemon
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"start_daemon": "Start"},
     )
 
@@ -152,11 +152,11 @@ def test_post_start_auth_other(
 
 @pytest.mark.django_db
 def test_post_start_success_auth_owner(
-    daemonModel, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_startDaemon
+    fake_daemon, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_startDaemon
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"start_daemon": "Start"},
     )
 
@@ -164,20 +164,20 @@ def test_post_start_success_auth_owner(
     assert isinstance(response, HttpResponse)
     assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     assert "object" in response.context
-    assert isinstance(response.context["object"], DaemonModel)
+    assert isinstance(response.context["object"], Daemon)
     assert "start_result" in response.context
-    mock_EMailArchiverDaemonRegistry_startDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemonRegistry_startDaemon.assert_called_once_with(fake_daemon)
 
 
 @pytest.mark.django_db
 def test_post_start_failure_auth_owner(
-    daemonModel, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_startDaemon
+    fake_daemon, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_startDaemon
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated owner user client."""
     mock_EMailArchiverDaemonRegistry_startDaemon.return_value = False
 
     response = owner_client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"start_daemon": "Start"},
     )
 
@@ -185,19 +185,19 @@ def test_post_start_failure_auth_owner(
     assert isinstance(response, HttpResponse)
     assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     assert "object" in response.context
-    assert isinstance(response.context["object"], DaemonModel)
+    assert isinstance(response.context["object"], Daemon)
     assert "start_result" in response.context
-    mock_EMailArchiverDaemonRegistry_startDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemonRegistry_startDaemon.assert_called_once_with(fake_daemon)
 
 
 @pytest.mark.django_db
 def test_post_start_missing_action_auth_owner(
-    daemonModel, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_startDaemon
+    fake_daemon, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_startDaemon
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated owner user client."""
     mock_EMailArchiverDaemonRegistry_startDaemon.return_value = False
 
-    response = owner_client.post(detail_url(DaemonDetailWithDeleteView, daemonModel))
+    response = owner_client.post(detail_url(DaemonDetailWithDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert isinstance(response, HttpResponse)
@@ -206,7 +206,7 @@ def test_post_start_missing_action_auth_owner(
 
 @pytest.mark.django_db
 def test_post_stop_noauth(
-    daemonModel,
+    fake_daemon,
     client,
     detail_url,
     login_url,
@@ -214,7 +214,7 @@ def test_post_stop_noauth(
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"stop_daemon": "Stop"},
     )
 
@@ -222,18 +222,18 @@ def test_post_stop_noauth(
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(DaemonDetailWithDeleteView, daemonModel)}"
+        f"?next={detail_url(DaemonDetailWithDeleteView, fake_daemon)}"
     )
     mock_EMailArchiverDaemonRegistry_stopDaemon.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_post_stop_auth_other(
-    daemonModel, other_client, detail_url, mock_EMailArchiverDaemonRegistry_stopDaemon
+    fake_daemon, other_client, detail_url, mock_EMailArchiverDaemonRegistry_stopDaemon
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"stop_daemon": "Stop"},
     )
 
@@ -244,11 +244,11 @@ def test_post_stop_auth_other(
 
 @pytest.mark.django_db
 def test_post_stop_success_auth_owner(
-    daemonModel, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_stopDaemon
+    fake_daemon, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_stopDaemon
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"stop_daemon": "Stop"},
     )
 
@@ -256,20 +256,20 @@ def test_post_stop_success_auth_owner(
     assert isinstance(response, HttpResponse)
     assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     assert "object" in response.context
-    assert isinstance(response.context["object"], DaemonModel)
+    assert isinstance(response.context["object"], Daemon)
     assert "stop_result" in response.context
-    mock_EMailArchiverDaemonRegistry_stopDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemonRegistry_stopDaemon.assert_called_once_with(fake_daemon)
 
 
 @pytest.mark.django_db
 def test_post_stop_failure_auth_owner(
-    daemonModel, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_stopDaemon
+    fake_daemon, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_stopDaemon
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated owner user client."""
     mock_EMailArchiverDaemonRegistry_stopDaemon.return_value = False
 
     response = owner_client.post(
-        detail_url(DaemonDetailWithDeleteView, daemonModel),
+        detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"stop_daemon": "Stop"},
     )
 
@@ -277,19 +277,19 @@ def test_post_stop_failure_auth_owner(
     assert isinstance(response, HttpResponse)
     assert "web/daemon/daemon_detail.html" in [t.name for t in response.templates]
     assert "object" in response.context
-    assert isinstance(response.context["object"], DaemonModel)
+    assert isinstance(response.context["object"], Daemon)
     assert "stop_result" in response.context
-    mock_EMailArchiverDaemonRegistry_stopDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemonRegistry_stopDaemon.assert_called_once_with(fake_daemon)
 
 
 @pytest.mark.django_db
 def test_post_stop_missing_action_auth_owner(
-    daemonModel, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_stopDaemon
+    fake_daemon, owner_client, detail_url, mock_EMailArchiverDaemonRegistry_stopDaemon
 ):
     """Tests :class:`web.views.account_views.DaemonDetailWithDeleteView.DaemonDetailWithDeleteView` with the authenticated owner user client."""
     mock_EMailArchiverDaemonRegistry_stopDaemon.return_value = False
 
-    response = owner_client.post(detail_url(DaemonDetailWithDeleteView, daemonModel))
+    response = owner_client.post(detail_url(DaemonDetailWithDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert isinstance(response, HttpResponse)

@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_delete_configurationmodel'),
+        ("core", "0002_delete_configurationmodel"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='daemonmodel',
-            name='log_backup_count',
+            model_name="daemon",
+            name="log_backup_count",
             field=models.IntegerField(default=5),
         ),
         migrations.AddField(
-            model_name='daemonmodel',
-            name='logfile_size',
+            model_name="daemon",
+            name="logfile_size",
             field=models.IntegerField(default=1048576),
         ),
     ]

@@ -23,8 +23,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from rest_framework import status
 
 from test.api.v1.views.test_MailboxViewSet_custom_actions import (
-    mock_EMailModel_createFromEmailBytes,
-    mock_MailboxModel_addFromMailboxFile,
+    mock_EMail_createFromEmailBytes,
+    mock_Mailbox_addFromMailboxFile,
 )
 from web.views.mailbox_views.UploadEmailView import UploadEmailView
 
@@ -35,29 +35,29 @@ def emailUploadPayload(faker, fake_file) -> dict:
 
 
 @pytest.mark.django_db
-def test_get_noauth(mailboxModel, client, detail_url, login_url):
+def test_get_noauth(fake_mailbox, client, detail_url, login_url):
     """Tests :class:`web.views.mailbox_views.UploadEmailView.UploadEmailView` with an unauthenticated user client."""
-    response = client.get(detail_url(UploadEmailView, mailboxModel))
+    response = client.get(detail_url(UploadEmailView, fake_mailbox))
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
-    assert response.url.endswith(f"?next={detail_url(UploadEmailView, mailboxModel)}")
+    assert response.url.endswith(f"?next={detail_url(UploadEmailView, fake_mailbox)}")
 
 
 @pytest.mark.django_db
-def test_get_auth_other(mailboxModel, other_client, detail_url):
+def test_get_auth_other(fake_mailbox, other_client, detail_url):
     """Tests :class:`web.views.mailbox_views.UploadEmailView.UploadEmailView` with the authenticated other user client."""
-    response = other_client.get(detail_url(UploadEmailView, mailboxModel))
+    response = other_client.get(detail_url(UploadEmailView, fake_mailbox))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(mailboxModel, owner_client, detail_url):
+def test_get_auth_owner(fake_mailbox, owner_client, detail_url):
     """Tests :class:`web.views.mailbox_views.UploadEmailView.UploadEmailView` with the authenticated owner user client."""
-    response = owner_client.get(detail_url(UploadEmailView, mailboxModel))
+    response = owner_client.get(detail_url(UploadEmailView, fake_mailbox))
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
@@ -68,70 +68,70 @@ def test_get_auth_owner(mailboxModel, owner_client, detail_url):
 
 @pytest.mark.django_db
 def test_post_upload_noauth(
-    mailboxModel,
+    fake_mailbox,
     client,
     detail_url,
     login_url,
-    mock_EMailModel_createFromEmailBytes,
-    mock_MailboxModel_addFromMailboxFile,
+    mock_EMail_createFromEmailBytes,
+    mock_Mailbox_addFromMailboxFile,
     emailUploadPayload,
 ):
     """Tests :class:`web.views.mailbox_views.UploadEmailView.UploadEmailView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(UploadEmailView, mailboxModel), emailUploadPayload
+        detail_url(UploadEmailView, fake_mailbox), emailUploadPayload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
-    assert response.url.endswith(f"?next={detail_url(UploadEmailView, mailboxModel)}")
-    mock_EMailModel_createFromEmailBytes.assert_not_called()
-    mock_MailboxModel_addFromMailboxFile.assert_not_called()
+    assert response.url.endswith(f"?next={detail_url(UploadEmailView, fake_mailbox)}")
+    mock_EMail_createFromEmailBytes.assert_not_called()
+    mock_Mailbox_addFromMailboxFile.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_post_upload_auth_other(
-    mailboxModel,
+    fake_mailbox,
     other_client,
     detail_url,
-    mock_EMailModel_createFromEmailBytes,
-    mock_MailboxModel_addFromMailboxFile,
+    mock_EMail_createFromEmailBytes,
+    mock_Mailbox_addFromMailboxFile,
     emailUploadPayload,
 ):
     """Tests :class:`web.views.mailbox_views.UploadEmailView.UploadEmailView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(UploadEmailView, mailboxModel), emailUploadPayload
+        detail_url(UploadEmailView, fake_mailbox), emailUploadPayload
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    mock_EMailModel_createFromEmailBytes.assert_not_called()
-    mock_MailboxModel_addFromMailboxFile.assert_not_called()
+    mock_EMail_createFromEmailBytes.assert_not_called()
+    mock_Mailbox_addFromMailboxFile.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_post_upload_eml_auth_owner(
-    mailboxModel,
+    fake_mailbox,
     owner_client,
     detail_url,
-    mock_EMailModel_createFromEmailBytes,
-    mock_MailboxModel_addFromMailboxFile,
+    mock_EMail_createFromEmailBytes,
+    mock_Mailbox_addFromMailboxFile,
     emailUploadPayload,
 ):
     """Tests :class:`web.views.mailbox_views.UploadEmailView.UploadEmailView` with the authenticated owner user client."""
     emailUploadPayload["file_format"] = "eml"
 
     response = owner_client.post(
-        detail_url(UploadEmailView, mailboxModel), emailUploadPayload
+        detail_url(UploadEmailView, fake_mailbox), emailUploadPayload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
-    assert response.url.startswith(mailboxModel.get_absolute_url())
-    mock_EMailModel_createFromEmailBytes.assert_called_once_with(
-        emailUploadPayload["file"].getvalue(), mailbox=mailboxModel
+    assert response.url.startswith(fake_mailbox.get_absolute_url())
+    mock_EMail_createFromEmailBytes.assert_called_once_with(
+        emailUploadPayload["file"].getvalue(), mailbox=fake_mailbox
     )
-    mock_MailboxModel_addFromMailboxFile.assert_not_called()
+    mock_Mailbox_addFromMailboxFile.assert_not_called()
 
 
 @pytest.mark.django_db
@@ -139,11 +139,11 @@ def test_post_upload_eml_auth_owner(
     "mailbox_file_format", ["mbox", "maildir", "mh", "babyl", "mmdf"]
 )
 def test_post_upload_mailbox_auth_owner(
-    mailboxModel,
+    fake_mailbox,
     owner_client,
     detail_url,
-    mock_EMailModel_createFromEmailBytes,
-    mock_MailboxModel_addFromMailboxFile,
+    mock_EMail_createFromEmailBytes,
+    mock_Mailbox_addFromMailboxFile,
     emailUploadPayload,
     mailbox_file_format,
 ):
@@ -151,62 +151,62 @@ def test_post_upload_mailbox_auth_owner(
     emailUploadPayload["file_format"] = mailbox_file_format
 
     response = owner_client.post(
-        detail_url(UploadEmailView, mailboxModel), emailUploadPayload
+        detail_url(UploadEmailView, fake_mailbox), emailUploadPayload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
-    assert response.url.startswith(mailboxModel.get_absolute_url())
-    mock_EMailModel_createFromEmailBytes.assert_not_called()
-    mock_MailboxModel_addFromMailboxFile.assert_called_once_with(
-        mailboxModel, emailUploadPayload["file"].getvalue(), mailbox_file_format
+    assert response.url.startswith(fake_mailbox.get_absolute_url())
+    mock_EMail_createFromEmailBytes.assert_not_called()
+    mock_Mailbox_addFromMailboxFile.assert_called_once_with(
+        fake_mailbox, emailUploadPayload["file"].getvalue(), mailbox_file_format
     )
 
 
 @pytest.mark.django_db
 def test_post_upload_auth_owner_bad_format(
-    mailboxModel,
+    fake_mailbox,
     owner_client,
     detail_url,
-    mock_EMailModel_createFromEmailBytes,
-    mock_MailboxModel_addFromMailboxFile,
+    mock_EMail_createFromEmailBytes,
+    mock_Mailbox_addFromMailboxFile,
     emailUploadPayload,
 ):
     """Tests :class:`web.views.mailbox_views.UploadEmailView.UploadEmailView` with the authenticated other user client."""
     emailUploadPayload["file_format"] = "something"
 
     response = owner_client.post(
-        detail_url(UploadEmailView, mailboxModel), emailUploadPayload
+        detail_url(UploadEmailView, fake_mailbox), emailUploadPayload
     )
 
     assert response.status_code == status.HTTP_200_OK
     assert "web/mailbox/upload_email.html" in [t.name for t in response.templates]
     assert "form" in response.context
     assert "mailbox" in response.context
-    mock_EMailModel_createFromEmailBytes.assert_not_called()
-    mock_MailboxModel_addFromMailboxFile.assert_not_called()
+    mock_EMail_createFromEmailBytes.assert_not_called()
+    mock_Mailbox_addFromMailboxFile.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_post_upload_auth_owner_bad_file(
     faker,
-    mailboxModel,
+    fake_mailbox,
     owner_client,
     detail_url,
-    mock_EMailModel_createFromEmailBytes,
-    mock_MailboxModel_addFromMailboxFile,
+    mock_EMail_createFromEmailBytes,
+    mock_Mailbox_addFromMailboxFile,
     emailUploadPayload,
 ):
     """Tests :class:`web.views.mailbox_views.UploadEmailView.UploadEmailView` with the authenticated other user client."""
     emailUploadPayload["file"] = faker.sentence().encode()
 
     response = owner_client.post(
-        detail_url(UploadEmailView, mailboxModel), emailUploadPayload
+        detail_url(UploadEmailView, fake_mailbox), emailUploadPayload
     )
 
     assert response.status_code == status.HTTP_200_OK
     assert "web/mailbox/upload_email.html" in [t.name for t in response.templates]
     assert "form" in response.context
     assert "mailbox" in response.context
-    mock_EMailModel_createFromEmailBytes.assert_not_called()
-    mock_MailboxModel_addFromMailboxFile.assert_not_called()
+    mock_EMail_createFromEmailBytes.assert_not_called()
+    mock_Mailbox_addFromMailboxFile.assert_not_called()

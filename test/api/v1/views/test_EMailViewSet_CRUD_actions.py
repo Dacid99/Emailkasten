@@ -24,11 +24,11 @@ import pytest
 from rest_framework import status
 
 from api.v1.views.EMailViewSet import EMailViewSet
-from core.models.EMailModel import EMailModel
+from core.models.EMail import EMail
 
 
 @pytest.mark.django_db
-def test_list_noauth(emailModel, noauth_apiClient, list_url):
+def test_list_noauth(fake_email, noauth_apiClient, list_url):
     """Tests the list method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with an unauthenticated user client."""
     response = noauth_apiClient.get(list_url(EMailViewSet))
 
@@ -38,7 +38,7 @@ def test_list_noauth(emailModel, noauth_apiClient, list_url):
 
 
 @pytest.mark.django_db
-def test_list_auth_other(emailModel, other_apiClient, list_url):
+def test_list_auth_other(fake_email, other_apiClient, list_url):
     """Tests the list method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated other user client."""
     response = other_apiClient.get(list_url(EMailViewSet))
 
@@ -48,7 +48,7 @@ def test_list_auth_other(emailModel, other_apiClient, list_url):
 
 
 @pytest.mark.django_db
-def test_list_auth_owner(emailModel, owner_apiClient, list_url):
+def test_list_auth_owner(fake_email, owner_apiClient, list_url):
     """Tests the list method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated owner user client."""
     response = owner_apiClient.get(list_url(EMailViewSet))
 
@@ -58,9 +58,9 @@ def test_list_auth_owner(emailModel, owner_apiClient, list_url):
 
 
 @pytest.mark.django_db
-def test_get_noauth(emailModel, noauth_apiClient, detail_url):
+def test_get_noauth(fake_email, noauth_apiClient, detail_url):
     """Tests the get method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.get(detail_url(EMailViewSet, emailModel))
+    response = noauth_apiClient.get(detail_url(EMailViewSet, fake_email))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
@@ -68,9 +68,9 @@ def test_get_noauth(emailModel, noauth_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_get_auth_other(emailModel, other_apiClient, detail_url):
+def test_get_auth_other(fake_email, other_apiClient, detail_url):
     """Tests the get method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated other user client."""
-    response = other_apiClient.get(detail_url(EMailViewSet, emailModel))
+    response = other_apiClient.get(detail_url(EMailViewSet, fake_email))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     with pytest.raises(KeyError):
@@ -78,96 +78,96 @@ def test_get_auth_other(emailModel, other_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(emailModel, owner_apiClient, detail_url):
+def test_get_auth_owner(fake_email, owner_apiClient, detail_url):
     """Tests the list method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.get(detail_url(EMailViewSet, emailModel))
+    response = owner_apiClient.get(detail_url(EMailViewSet, fake_email))
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data["message_id"] == emailModel.message_id
+    assert response.data["message_id"] == fake_email.message_id
 
 
 @pytest.mark.django_db
-def test_patch_noauth(emailModel, noauth_apiClient, emailPayload, detail_url):
+def test_patch_noauth(fake_email, noauth_apiClient, emailPayload, detail_url):
     """Tests the patch method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with an unauthenticated user client."""
     response = noauth_apiClient.patch(
-        detail_url(EMailViewSet, emailModel), data=emailPayload
+        detail_url(EMailViewSet, fake_email), data=emailPayload
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
         response.data["message_id"]
-    emailModel.refresh_from_db()
-    assert emailModel.message_id != emailPayload["message_id"]
+    fake_email.refresh_from_db()
+    assert fake_email.message_id != emailPayload["message_id"]
 
 
 @pytest.mark.django_db
-def test_patch_auth_other(emailModel, other_apiClient, emailPayload, detail_url):
+def test_patch_auth_other(fake_email, other_apiClient, emailPayload, detail_url):
     """Tests the patch method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated other user client."""
     response = other_apiClient.patch(
-        detail_url(EMailViewSet, emailModel), data=emailPayload
+        detail_url(EMailViewSet, fake_email), data=emailPayload
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
         response.data["message_id"]
-    emailModel.refresh_from_db()
-    assert emailModel.message_id != emailPayload["message_id"]
+    fake_email.refresh_from_db()
+    assert fake_email.message_id != emailPayload["message_id"]
 
 
 @pytest.mark.django_db
-def test_patch_auth_owner(emailModel, owner_apiClient, emailPayload, detail_url):
+def test_patch_auth_owner(fake_email, owner_apiClient, emailPayload, detail_url):
     """Tests the patch method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated owner user client."""
     response = owner_apiClient.patch(
-        detail_url(EMailViewSet, emailModel), data=emailPayload
+        detail_url(EMailViewSet, fake_email), data=emailPayload
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
         response.data["message_id"]
-    emailModel.refresh_from_db()
-    assert emailModel.message_id != emailPayload["message_id"]
+    fake_email.refresh_from_db()
+    assert fake_email.message_id != emailPayload["message_id"]
 
 
 @pytest.mark.django_db
-def test_put_noauth(emailModel, noauth_apiClient, emailPayload, detail_url):
+def test_put_noauth(fake_email, noauth_apiClient, emailPayload, detail_url):
     """Tests the put method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with an unauthenticated user client."""
     response = noauth_apiClient.put(
-        detail_url(EMailViewSet, emailModel), data=emailPayload
+        detail_url(EMailViewSet, fake_email), data=emailPayload
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
         response.data["message_id"]
-    emailModel.refresh_from_db()
-    assert emailModel.message_id != emailPayload["message_id"]
+    fake_email.refresh_from_db()
+    assert fake_email.message_id != emailPayload["message_id"]
 
 
 @pytest.mark.django_db
-def test_put_auth_other(emailModel, other_apiClient, emailPayload, detail_url):
+def test_put_auth_other(fake_email, other_apiClient, emailPayload, detail_url):
     """Tests the put method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated other user client."""
     response = other_apiClient.put(
-        detail_url(EMailViewSet, emailModel), data=emailPayload
+        detail_url(EMailViewSet, fake_email), data=emailPayload
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
         response.data["message_id"]
-    emailModel.refresh_from_db()
-    assert emailModel.message_id != emailPayload["message_id"]
+    fake_email.refresh_from_db()
+    assert fake_email.message_id != emailPayload["message_id"]
 
 
 @pytest.mark.django_db
-def test_put_auth_owner(emailModel, owner_apiClient, emailPayload, detail_url):
+def test_put_auth_owner(fake_email, owner_apiClient, emailPayload, detail_url):
     """Tests the put method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated owner user client."""
     response = owner_apiClient.put(
-        detail_url(EMailViewSet, emailModel), data=emailPayload
+        detail_url(EMailViewSet, fake_email), data=emailPayload
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
         response.data["message_id"]
-    emailModel.refresh_from_db()
-    assert emailModel.message_id != emailPayload["message_id"]
+    fake_email.refresh_from_db()
+    assert fake_email.message_id != emailPayload["message_id"]
 
 
 @pytest.mark.django_db
@@ -178,8 +178,8 @@ def test_post_noauth(noauth_apiClient, emailPayload, list_url):
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
         response.data["message_id"]
-    with pytest.raises(EMailModel.DoesNotExist):
-        EMailModel.objects.get(message_id=emailPayload["message_id"])
+    with pytest.raises(EMail.DoesNotExist):
+        EMail.objects.get(message_id=emailPayload["message_id"])
 
 
 @pytest.mark.django_db
@@ -190,8 +190,8 @@ def test_post_auth_other(other_apiClient, emailPayload, list_url):
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
         response.data["message_id"]
-    with pytest.raises(EMailModel.DoesNotExist):
-        EMailModel.objects.get(message_id=emailPayload["message_id"])
+    with pytest.raises(EMail.DoesNotExist):
+        EMail.objects.get(message_id=emailPayload["message_id"])
 
 
 @pytest.mark.django_db
@@ -202,48 +202,48 @@ def test_post_auth_owner(owner_apiClient, emailPayload, list_url):
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
         response.data["message_id"]
-    with pytest.raises(EMailModel.DoesNotExist):
-        EMailModel.objects.get(message_id=emailPayload["message_id"])
+    with pytest.raises(EMail.DoesNotExist):
+        EMail.objects.get(message_id=emailPayload["message_id"])
 
 
 @pytest.mark.django_db
-def test_delete_noauth(emailModel, noauth_apiClient, detail_url):
+def test_delete_noauth(fake_email, noauth_apiClient, detail_url):
     """Tests the delete method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.delete(detail_url(EMailViewSet, emailModel))
+    response = noauth_apiClient.delete(detail_url(EMailViewSet, fake_email))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    emailModel.refresh_from_db()
-    assert emailModel.message_id is not None
+    fake_email.refresh_from_db()
+    assert fake_email.message_id is not None
 
 
 @pytest.mark.django_db
-def test_delete_auth_other(emailModel, other_apiClient, detail_url):
+def test_delete_auth_other(fake_email, other_apiClient, detail_url):
     """Tests the delete method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated other user client."""
-    response = other_apiClient.delete(detail_url(EMailViewSet, emailModel))
+    response = other_apiClient.delete(detail_url(EMailViewSet, fake_email))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    emailModel.refresh_from_db()
-    assert emailModel.message_id is not None
+    fake_email.refresh_from_db()
+    assert fake_email.message_id is not None
 
 
 @pytest.mark.django_db
-def test_delete_auth_owner(emailModel, owner_apiClient, detail_url):
+def test_delete_auth_owner(fake_email, owner_apiClient, detail_url):
     """Tests the delete method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.delete(detail_url(EMailViewSet, emailModel))
+    response = owner_apiClient.delete(detail_url(EMailViewSet, fake_email))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
-    with pytest.raises(EMailModel.DoesNotExist):
-        emailModel.refresh_from_db()
+    with pytest.raises(EMail.DoesNotExist):
+        fake_email.refresh_from_db()
 
 
 @pytest.mark.django_db
-def test_delete_nonexistant_auth_owner(emailModel, owner_apiClient, detail_url):
+def test_delete_nonexistant_auth_owner(fake_email, owner_apiClient, detail_url):
     """Tests the delete method on :class:`api.v1.views.EMailViewSet.EMailViewSet` with the authenticated owner user client."""
-    old_id = emailModel.id
-    emailModel.id = 10
-    response = owner_apiClient.delete(detail_url(EMailViewSet, emailModel))
+    old_id = fake_email.id
+    fake_email.id = 10
+    response = owner_apiClient.delete(detail_url(EMailViewSet, fake_email))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    emailModel.id = old_id
-    emailModel.refresh_from_db()
-    assert emailModel.message_id is not None
+    fake_email.id = old_id
+    fake_email.refresh_from_db()
+    assert fake_email.message_id is not None

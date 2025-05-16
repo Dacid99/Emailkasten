@@ -20,23 +20,23 @@ import pytest
 from model_bakery import baker
 
 from api.v1.views.EMailViewSet import EMailViewSet
-from core.models.EMailModel import EMailModel
+from core.models.EMail import EMail
 from Emailkasten.utils.workarounds import get_config
 
 
 @pytest.fixture(autouse=True)
-def emailBunchCount(mailboxModel):
-    """Create a bunch of :class:`core.models.EMailModel.EMailModel`s owned by :attr:`owner_user`.
+def emailBunchCount(fake_mailbox):
+    """Create a bunch of :class:`core.models.EMail.EMail`s owned by :attr:`owner_user`.
 
     Args:
-        mailboxModel: Depends on :func:`fixture_mailboxModel`.
+        mailbox: Depends on :func:`fixture_mailbox`.
 
     Returns:
         All emails in the db belonging to `owner_user`.
     """
-    baker.make(EMailModel, mailbox=mailboxModel, _quantity=24)
-    return EMailModel.objects.filter(
-        mailbox__account__user=mailboxModel.account.user
+    baker.make(EMail, mailbox=fake_mailbox, _quantity=24)
+    return EMail.objects.filter(
+        mailbox__account__user=fake_mailbox.account.user
     ).count()
 
 

@@ -45,7 +45,7 @@ def mock_os_path_exists(mocker):
 
 @pytest.mark.django_db
 def test_download_noauth(
-    attachmentModel,
+    fake_attachment,
     noauth_apiClient,
     custom_detail_action_url,
     mock_open,
@@ -56,7 +56,7 @@ def test_download_noauth(
     """
     response = noauth_apiClient.get(
         custom_detail_action_url(
-            AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, attachmentModel
+            AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, fake_attachment
         )
     )
 
@@ -67,7 +67,7 @@ def test_download_noauth(
 
 @pytest.mark.django_db
 def test_download_auth_other(
-    attachmentModel,
+    fake_attachment,
     other_apiClient,
     custom_detail_action_url,
     mock_open,
@@ -78,7 +78,7 @@ def test_download_auth_other(
     """
     response = other_apiClient.get(
         custom_detail_action_url(
-            AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, attachmentModel
+            AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, fake_attachment
         )
     )
 
@@ -89,7 +89,7 @@ def test_download_auth_other(
 
 @pytest.mark.django_db
 def test_download_no_file_auth_owner(
-    attachmentModel,
+    fake_attachment,
     owner_apiClient,
     custom_detail_action_url,
     mock_open,
@@ -103,18 +103,18 @@ def test_download_no_file_auth_owner(
 
     response = owner_apiClient.get(
         custom_detail_action_url(
-            AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, attachmentModel
+            AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, fake_attachment
         )
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_open.assert_not_called()
-    mock_os_path_exists.assert_called_once_with(attachmentModel.file_path)
+    mock_os_path_exists.assert_called_once_with(fake_attachment.file_path)
 
 
 @pytest.mark.django_db
 def test_download_auth_owner(
-    attachmentModel,
+    fake_attachment,
     owner_apiClient,
     custom_detail_action_url,
     mock_open,
@@ -125,21 +125,21 @@ def test_download_auth_owner(
     """
     response = owner_apiClient.get(
         custom_detail_action_url(
-            AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, attachmentModel
+            AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, fake_attachment
         )
     )
 
     assert response.status_code == status.HTTP_200_OK
-    mock_os_path_exists.assert_called_once_with(attachmentModel.file_path)
-    mock_open.assert_called_once_with(attachmentModel.file_path, "rb")
+    mock_os_path_exists.assert_called_once_with(fake_attachment.file_path)
+    mock_open.assert_called_once_with(fake_attachment.file_path, "rb")
     assert "Content-Disposition" in response.headers
-    assert f'filename="{attachmentModel.file_name}"' in response["Content-Disposition"]
+    assert f'filename="{fake_attachment.file_name}"' in response["Content-Disposition"]
     assert b"".join(response.streaming_content) == mock_open().read()
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    attachmentModel, noauth_apiClient, custom_detail_action_url
+    fake_attachment, noauth_apiClient, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.toggle_favorite` action
     with an unauthenticated user client.
@@ -148,18 +148,18 @@ def test_toggle_favorite_noauth(
         custom_detail_action_url(
             AttachmentViewSet,
             AttachmentViewSet.URL_NAME_TOGGLE_FAVORITE,
-            attachmentModel,
+            fake_attachment,
         )
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    attachmentModel.refresh_from_db()
-    assert attachmentModel.is_favorite is False
+    fake_attachment.refresh_from_db()
+    assert fake_attachment.is_favorite is False
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    attachmentModel, other_apiClient, custom_detail_action_url
+    fake_attachment, other_apiClient, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.toggle_favorite` action
     with the authenticated other user client.
@@ -168,18 +168,18 @@ def test_toggle_favorite_auth_other(
         custom_detail_action_url(
             AttachmentViewSet,
             AttachmentViewSet.URL_NAME_TOGGLE_FAVORITE,
-            attachmentModel,
+            fake_attachment,
         )
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    attachmentModel.refresh_from_db()
-    assert attachmentModel.is_favorite is False
+    fake_attachment.refresh_from_db()
+    assert fake_attachment.is_favorite is False
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    attachmentModel, owner_apiClient, custom_detail_action_url
+    fake_attachment, owner_apiClient, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.toggle_favorite` action
     with the authenticated owner user client.
@@ -188,10 +188,10 @@ def test_toggle_favorite_auth_owner(
         custom_detail_action_url(
             AttachmentViewSet,
             AttachmentViewSet.URL_NAME_TOGGLE_FAVORITE,
-            attachmentModel,
+            fake_attachment,
         )
     )
 
     assert response.status_code == status.HTTP_200_OK
-    attachmentModel.refresh_from_db()
-    assert attachmentModel.is_favorite is True
+    fake_attachment.refresh_from_db()
+    assert fake_attachment.is_favorite is True

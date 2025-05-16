@@ -34,11 +34,11 @@ from ..utils.widgets import AdaptedSelectDateWidget
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
-    from core.models.AccountModel import AccountModel
+    from core.models.Account import Account
 
 
 class AccountFilter(django_filters.FilterSet):
-    """The filter class for :class:`core.models.AccountModel.AccountModel`."""
+    """The filter class for :class:`core.models.Account.Account`."""
 
     order = django_filters.OrderingFilter(
         fields=[
@@ -82,8 +82,8 @@ class AccountFilter(django_filters.FilterSet):
     )
 
     def filter_text_fields(
-        self, queryset: QuerySet[AccountModel], name: str, value: str
-    ) -> QuerySet[AccountModel]:
+        self, queryset: QuerySet[Account], name: str, value: str
+    ) -> QuerySet[Account]:
         """Filters textfields in the model.
 
         Args:

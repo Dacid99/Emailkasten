@@ -23,24 +23,24 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 
-from core.models.CorrespondentModel import CorrespondentModel
+from core.models.Correspondent import Correspondent
 
 from ...filters.CorrespondentFilter import CorrespondentFilter
 from ..FilterPageView import FilterPageView
 
 
 class CorrespondentFilterView(LoginRequiredMixin, FilterPageView):
-    """View for filtering listed :class:`core.models.CorrespondentModel.CorrespondentModel` instances."""
+    """View for filtering listed :class:`core.models.Correspondent.Correspondent` instances."""
 
-    URL_NAME = CorrespondentModel.get_list_web_url_name()
-    model = CorrespondentModel
+    URL_NAME = Correspondent.get_list_web_url_name()
+    model = Correspondent
     template_name = "web/correspondent/correspondent_filter_list.html"
     context_object_name = "correspondents"
     filterset_class = CorrespondentFilter
     ordering = ["email_address"]
 
     @override
-    def get_queryset(self) -> QuerySet[CorrespondentModel]:
+    def get_queryset(self) -> QuerySet[Correspondent]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()

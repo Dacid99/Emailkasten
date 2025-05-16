@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="log_filepath",
             field=models.FilePathField(
                 path=pathlib.PurePosixPath("/var/lib"), recursive=True, unique=True

@@ -37,7 +37,7 @@ def test_email_name_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.CorrespondentFilter.CorrespondentFilter`'s filtering
-    for the :attr:`core.models.CorrespondentModel.CorrespondentModel.email_name` field.
+    for the :attr:`core.models.Correspondent.Correspondent.email_name` field.
     """
     query = {"email_name" + lookup_expr: filterquery}
 
@@ -57,7 +57,7 @@ def test_email_address_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.CorrespondentFilter.CorrespondentFilter`'s filtering
-    for the :attr:`core.models.CorrespondentModel.CorrespondentModel.email_address` field.
+    for the :attr:`core.models.Correspondent.Correspondent.email_address` field.
     """
     query = {"email_address" + lookup_expr: filterquery}
 
@@ -77,7 +77,7 @@ def test_is_favorite_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.CorrespondentFilter.CorrespondentFilter`'s filtering
-    for the :attr:`core.models.CorrespondentModel.CorrespondentModel.is_favorite` field.
+    for the :attr:`core.models.Correspondent.Correspondent.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -97,7 +97,7 @@ def test_created_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.CorrespondentFilter.CorrespondentFilter`'s filtering
-    for the :attr:`core.models.CorrespondentModel.CorrespondentModel.created` field.
+    for the :attr:`core.models.Correspondent.Correspondent.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 
@@ -117,7 +117,7 @@ def test_updated_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.CorrespondentFilter.CorrespondentFilter`'s filtering
-    for the :attr:`core.models.CorrespondentModel.CorrespondentModel.updated` field.
+    for the :attr:`core.models.Correspondent.Correspondent.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}
 

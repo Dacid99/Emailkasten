@@ -29,7 +29,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
 from core.EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 from web.mixins.CustomActionMixin import CustomActionMixin
 from web.views.daemon_views.DaemonFilterView import DaemonFilterView
 
@@ -40,19 +40,19 @@ class DaemonDetailWithDeleteView(
     DeletionMixin,
     CustomActionMixin,
 ):
-    """View for a single :class:`core.models.DaemonModel.DaemonModel` instance."""
+    """View for a single :class:`core.models.Daemon.Daemon` instance."""
 
-    URL_NAME = DaemonModel.get_detail_web_url_name()
-    model = DaemonModel
+    URL_NAME = Daemon.get_detail_web_url_name()
+    model = Daemon
     template_name = "web/daemon/daemon_detail.html"
     success_url = reverse_lazy("web:" + DaemonFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet[DaemonModel]:
+    def get_queryset(self) -> QuerySet[Daemon]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return DaemonModel.objects.none()
-        return DaemonModel.objects.filter(
+            return Daemon.objects.none()
+        return Daemon.objects.filter(
             mailbox__account__user=self.request.user
         ).select_related("mailbox", "mailbox__account")
 

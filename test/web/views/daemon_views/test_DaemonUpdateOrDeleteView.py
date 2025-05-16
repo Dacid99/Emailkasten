@@ -23,100 +23,100 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 from web.views.daemon_views.DaemonUpdateOrDeleteView import DaemonUpdateOrDeleteView
 
 
 @pytest.mark.django_db
-def test_get_noauth(daemonModel, client, detail_url, login_url):
+def test_get_noauth(fake_daemon, client, detail_url, login_url):
     """Tests :class:`web.views.daemon_views.DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView` with an unauthenticated user client."""
-    response = client.get(detail_url(DaemonUpdateOrDeleteView, daemonModel))
+    response = client.get(detail_url(DaemonUpdateOrDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(DaemonUpdateOrDeleteView, daemonModel)}"
+        f"?next={detail_url(DaemonUpdateOrDeleteView, fake_daemon)}"
     )
-    assert str(daemonModel.uuid) not in response.content.decode()
+    assert str(fake_daemon.uuid) not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_other(daemonModel, other_client, detail_url):
+def test_get_auth_other(fake_daemon, other_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView` with the authenticated other user client."""
-    response = other_client.get(detail_url(DaemonUpdateOrDeleteView, daemonModel))
+    response = other_client.get(detail_url(DaemonUpdateOrDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    assert str(daemonModel.uuid) not in response.content.decode()
+    assert str(fake_daemon.uuid) not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(daemonModel, owner_client, detail_url):
+def test_get_auth_owner(fake_daemon, owner_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView` with the authenticated owner user client."""
-    response = owner_client.get(detail_url(DaemonUpdateOrDeleteView, daemonModel))
+    response = owner_client.get(detail_url(DaemonUpdateOrDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/daemon/daemon_edit.html" in [t.name for t in response.templates]
     assert "object" in response.context
-    assert isinstance(response.context["object"], DaemonModel)
+    assert isinstance(response.context["object"], Daemon)
     assert "form" in response.context
-    assert str(daemonModel.uuid) in response.content.decode()
+    assert str(fake_daemon.uuid) in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_post_update_noauth(daemonModel, daemonPayload, client, detail_url, login_url):
+def test_post_update_noauth(fake_daemon, daemonPayload, client, detail_url, login_url):
     """Tests :class:`web.views.daemon_views.DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(DaemonUpdateOrDeleteView, daemonModel), daemonPayload
+        detail_url(DaemonUpdateOrDeleteView, fake_daemon), daemonPayload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(DaemonUpdateOrDeleteView, daemonModel)}"
+        f"?next={detail_url(DaemonUpdateOrDeleteView, fake_daemon)}"
     )
-    daemonModel.refresh_from_db()
-    assert daemonModel.log_backup_count != daemonPayload["log_backup_count"]
-    assert daemonModel.logfile_size != daemonPayload["logfile_size"]
+    fake_daemon.refresh_from_db()
+    assert fake_daemon.log_backup_count != daemonPayload["log_backup_count"]
+    assert fake_daemon.logfile_size != daemonPayload["logfile_size"]
 
 
 @pytest.mark.django_db
-def test_post_update_auth_other(daemonModel, daemonPayload, other_client, detail_url):
+def test_post_update_auth_other(fake_daemon, daemonPayload, other_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(DaemonUpdateOrDeleteView, daemonModel), daemonPayload
+        detail_url(DaemonUpdateOrDeleteView, fake_daemon), daemonPayload
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    daemonModel.refresh_from_db()
-    assert daemonModel.restart_time != daemonPayload["restart_time"]
-    assert daemonModel.log_backup_count != daemonPayload["log_backup_count"]
+    fake_daemon.refresh_from_db()
+    assert fake_daemon.restart_time != daemonPayload["restart_time"]
+    assert fake_daemon.log_backup_count != daemonPayload["log_backup_count"]
 
 
 @pytest.mark.django_db
-def test_post_update_auth_owner(daemonModel, daemonPayload, owner_client, detail_url):
+def test_post_update_auth_owner(fake_daemon, daemonPayload, owner_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(DaemonUpdateOrDeleteView, daemonModel), daemonPayload
+        detail_url(DaemonUpdateOrDeleteView, fake_daemon), daemonPayload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:daemon-filter-list"))
-    daemonModel.refresh_from_db()
-    assert daemonModel.restart_time == daemonPayload["restart_time"]
-    assert daemonModel.log_backup_count == daemonPayload["log_backup_count"]
+    fake_daemon.refresh_from_db()
+    assert fake_daemon.restart_time == daemonPayload["restart_time"]
+    assert fake_daemon.log_backup_count == daemonPayload["log_backup_count"]
 
 
 @pytest.mark.django_db
-def test_post_delete_noauth(daemonModel, client, detail_url, login_url):
+def test_post_delete_noauth(fake_daemon, client, detail_url, login_url):
     """Tests :class:`web.views.daemon_views.DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(DaemonUpdateOrDeleteView, daemonModel),
+        detail_url(DaemonUpdateOrDeleteView, fake_daemon),
         {"delete": "Delete"},
     )
 
@@ -124,36 +124,36 @@ def test_post_delete_noauth(daemonModel, client, detail_url, login_url):
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(DaemonUpdateOrDeleteView, daemonModel)}"
+        f"?next={detail_url(DaemonUpdateOrDeleteView, fake_daemon)}"
     )
-    daemonModel.refresh_from_db()
-    assert daemonModel is not None
+    fake_daemon.refresh_from_db()
+    assert fake_daemon is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_other(daemonModel, other_client, detail_url):
+def test_post_delete_auth_other(fake_daemon, other_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(DaemonUpdateOrDeleteView, daemonModel),
+        detail_url(DaemonUpdateOrDeleteView, fake_daemon),
         {"delete": "Delete"},
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    daemonModel.refresh_from_db()
-    assert daemonModel is not None
+    fake_daemon.refresh_from_db()
+    assert fake_daemon is not None
 
 
 @pytest.mark.django_db
-def test_post_delete_auth_owner(daemonModel, owner_client, detail_url):
+def test_post_delete_auth_owner(fake_daemon, owner_client, detail_url):
     """Tests :class:`web.views.daemon_views.DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(DaemonUpdateOrDeleteView, daemonModel),
+        detail_url(DaemonUpdateOrDeleteView, fake_daemon),
         {"delete": "Delete"},
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:daemon-filter-list"))
-    with pytest.raises(DaemonModel.DoesNotExist):
-        daemonModel.refresh_from_db()
+    with pytest.raises(Daemon.DoesNotExist):
+        fake_daemon.refresh_from_db()

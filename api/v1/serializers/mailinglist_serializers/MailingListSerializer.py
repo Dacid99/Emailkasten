@@ -29,8 +29,8 @@ from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
 from core.constants import HeaderFields
-from core.models.CorrespondentModel import CorrespondentModel
-from core.models.MailingListModel import MailingListModel
+from core.models.Correspondent import Correspondent
+from core.models.MailingList import MailingList
 
 from ..correspondent_serializers.BaseCorrespondentSerializer import (
     BaseCorrespondentSerializer,
@@ -57,7 +57,7 @@ class MailingListSerializer(BaseMailingListSerializer):
     by :class:`api.v1.serializers.CorrespondentSerializers.BaseCorrespondentSerializer.BaseCorrespondentSerializer`.
     """
 
-    def get_emails(self, instance: MailingListModel) -> ReturnDict[str, Any]:
+    def get_emails(self, instance: MailingList) -> ReturnDict[str, Any]:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:
@@ -75,9 +75,7 @@ class MailingListSerializer(BaseMailingListSerializer):
             emails = instance.emails.none()
         return BaseEMailSerializer(emails, many=True, read_only=True).data
 
-    def get_from_correspondents(
-        self, instance: MailingListModel
-    ) -> ReturnDict[str, Any]:
+    def get_from_correspondents(self, instance: MailingList) -> ReturnDict[str, Any]:
         """Serializes the correspondents connected to the instance to be serialized.
 
         Args:
@@ -90,13 +88,13 @@ class MailingListSerializer(BaseMailingListSerializer):
         request = self.context.get("request")
         user = getattr(request, "user", None)
         if user is not None:
-            from_correspondents = CorrespondentModel.objects.filter(
+            from_correspondents = Correspondent.objects.filter(
                 emails__mailinglist=instance,
                 correspondentemails__mention=HeaderFields.Correspondents.FROM,
                 emails__mailbox__account__user=user,
             ).distinct()
         else:
-            from_correspondents = CorrespondentModel.objects.none()
+            from_correspondents = Correspondent.objects.none()
         return BaseCorrespondentSerializer(
             from_correspondents, many=True, read_only=True
         ).data

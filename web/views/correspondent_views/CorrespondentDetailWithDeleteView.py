@@ -26,8 +26,8 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
-from core.models.CorrespondentModel import CorrespondentModel
-from core.models.EMailCorrespondentsModel import EMailCorrespondentsModel
+from core.models.Correspondent import Correspondent
+from core.models.EMailCorrespondents import EMailCorrespondents
 from web.views.correspondent_views.CorrespondentFilterView import (
     CorrespondentFilterView,
 )
@@ -38,27 +38,27 @@ class CorrespondentDetailWithDeleteView(
     DetailView,
     DeletionMixin,
 ):
-    """View for a single :class:`core.models.CorrespondentModel.CorrespondentModel` instance."""
+    """View for a single :class:`core.models.Correspondent.Correspondent` instance."""
 
-    URL_NAME = CorrespondentModel.get_detail_web_url_name()
-    model = CorrespondentModel
+    URL_NAME = Correspondent.get_detail_web_url_name()
+    model = Correspondent
     template_name = "web/correspondent/correspondent_detail.html"
     success_url = reverse_lazy("web:" + CorrespondentFilterView.URL_NAME)
 
     @override
-    def get_queryset(self) -> QuerySet[CorrespondentModel]:
+    def get_queryset(self) -> QuerySet[Correspondent]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
-            return CorrespondentModel.objects.none()
+            return Correspondent.objects.none()
         return (
-            CorrespondentModel.objects.filter(
+            Correspondent.objects.filter(
                 emails__mailbox__account__user=self.request.user
             )
             .distinct()
             .prefetch_related(
                 Prefetch(
                     "correspondentemails",
-                    queryset=EMailCorrespondentsModel.objects.filter(
+                    queryset=EMailCorrespondents.objects.filter(
                         email__mailbox__account__user=self.request.user
                     ).select_related("email"),
                 )

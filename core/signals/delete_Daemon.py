@@ -16,43 +16,31 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Save signal receivers for the :class:`core.models.DaemonModel.DaemonModel` model."""
+"""Delete signal receivers for the :class:`core.models.Daemon.Daemon` model."""
 from __future__ import annotations
 
 import logging
 from typing import Any
 
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
 from core.EMailArchiverDaemonRegistry import EMailArchiverDaemonRegistry
-from core.models.DaemonModel import DaemonModel
+from core.models.Daemon import Daemon
 
 
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender=DaemonModel)
-def post_save_daemon(
-    sender: DaemonModel, instance: DaemonModel, created: bool, **kwargs: Any
-) -> None:
-    """Receiver function flagging the mailbox of a daemon as healthy once that daemon becomes healthy again.
+@receiver(pre_delete, sender=Daemon)
+def pre_delete_stop_daemon(sender: Daemon, instance: Daemon, **kwargs: Any) -> None:
+    """Receiver function stopping the daemon once its daemon database entry is deleted.
 
     Args:
-        sender: The class type that sent the post_save signal.
+        sender: The class type that sent the pre_delete signal.
         instance: The instance that has been saved.
-        created: Whether the instance was newly created.
         **kwargs: Other keyword arguments.
     """
-    if created or instance.is_healthy is None:
-        return
-
-    EMailArchiverDaemonRegistry.updateDaemon(instance)
-
-    if instance.is_healthy and "is_healthy" in instance.get_dirty_fields():
-        logger.debug(
-            "%s has become healthy, flagging its mailbox as healthy ...", instance
-        )
-        instance.mailbox.is_healthy = True
-        instance.mailbox.save(update_fields=["is_healthy"])
-        logger.debug("Successfully flagged mailbox as healthy.")
+    logger.debug("Stopping daemon of deleted daemon %s ..", instance)
+    EMailArchiverDaemonRegistry.stopDaemon(instance)
+    logger.debug("Successfully stopped daemon of deleted daemon %s.", instance)

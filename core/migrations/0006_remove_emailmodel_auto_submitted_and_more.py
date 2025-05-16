@@ -11,78 +11,78 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="auto_submitted",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="comments",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="content_language",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="content_location",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="content_type",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="importance",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="keywords",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="precedence",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="priority",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="received",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="user_agent",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="x_originated_client",
         ),
         migrations.RemoveField(
-            model_name="emailmodel",
+            model_name="email",
             name="x_priority",
         ),
         migrations.RemoveField(
-            model_name="mailboxmodel",
+            model_name="mailbox",
             name="save_images",
         ),
         migrations.AddField(
-            model_name="attachmentmodel",
+            model_name="attachment",
             name="content_disposition",
             field=models.CharField(max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name="attachmentmodel",
+            model_name="attachment",
             name="content_type",
             field=models.CharField(default="", max_length=255),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name="emailmodel",
+            model_name="email",
             name="headers",
             field=models.JSONField(null=True),
         ),
         migrations.DeleteModel(
-            name="ImageModel",
+            name="Image",
         ),
     ]

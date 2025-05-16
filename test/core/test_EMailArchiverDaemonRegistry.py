@@ -33,12 +33,12 @@ def mock_logger(mocker):
 
 
 @pytest.fixture
-def mock_runningDaemon(mocker, daemonModel):
+def mock_runningDaemon(mocker, fake_daemon):
     mock_runningDaemon = mocker.MagicMock()
-    EMailArchiverDaemonRegistry._runningDaemons[daemonModel.id] = mock_runningDaemon
+    EMailArchiverDaemonRegistry._runningDaemons[fake_daemon.id] = mock_runningDaemon
     yield mock_runningDaemon
     with contextlib.suppress(KeyError):
-        EMailArchiverDaemonRegistry._runningDaemons.pop(daemonModel.id)
+        EMailArchiverDaemonRegistry._runningDaemons.pop(fake_daemon.id)
 
 
 @pytest.fixture
@@ -51,47 +51,47 @@ def mock_EMailArchiverDaemon(mocker):
 
 
 @pytest.mark.django_db
-def test_isRunning_active(mock_runningDaemon, daemonModel):
-    result = EMailArchiverDaemonRegistry.isRunning(daemonModel)
+def test_isRunning_active(mock_runningDaemon, fake_daemon):
+    result = EMailArchiverDaemonRegistry.isRunning(fake_daemon)
 
     assert result is True
 
 
 @pytest.mark.django_db
-def test_isRunning_inactive(daemonModel):
-    result = EMailArchiverDaemonRegistry.isRunning(daemonModel)
+def test_isRunning_inactive(fake_daemon):
+    result = EMailArchiverDaemonRegistry.isRunning(fake_daemon)
 
     assert result is False
 
 
 @pytest.mark.django_db
-def test_updateDaemon(mock_logger, mock_runningDaemon, daemonModel):
-    EMailArchiverDaemonRegistry.updateDaemon(daemonModel)
+def test_updateDaemon(mock_logger, mock_runningDaemon, fake_daemon):
+    EMailArchiverDaemonRegistry.updateDaemon(fake_daemon)
 
     mock_runningDaemon.update.assert_called_once()
     mock_logger.debug.assert_called()
 
 
 @pytest.mark.django_db
-def test_testDaemon_success(mock_logger, mock_EMailArchiverDaemon, daemonModel):
-    result = EMailArchiverDaemonRegistry.testDaemon(daemonModel)
+def test_testDaemon_success(mock_logger, mock_EMailArchiverDaemon, fake_daemon):
+    result = EMailArchiverDaemonRegistry.testDaemon(fake_daemon)
 
     assert result is True
-    mock_EMailArchiverDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemon.assert_called_once_with(fake_daemon)
     mock_EMailArchiverDaemon.return_value.cycle.assert_called_once_with()
     mock_logger.debug.assert_called()
 
 
 @pytest.mark.django_db
 def test_testDaemon_failure_exception(
-    mock_logger, mock_EMailArchiverDaemon, daemonModel
+    mock_logger, mock_EMailArchiverDaemon, fake_daemon
 ):
     mock_EMailArchiverDaemon.return_value.cycle.side_effect = Exception
 
-    result = EMailArchiverDaemonRegistry.testDaemon(daemonModel)
+    result = EMailArchiverDaemonRegistry.testDaemon(fake_daemon)
 
     assert result is False
-    mock_EMailArchiverDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemon.assert_called_once_with(fake_daemon)
     mock_EMailArchiverDaemon.return_value.cycle.assert_called_once_with()
     mock_logger.debug.assert_called()
     mock_logger.exception.assert_called()
@@ -99,42 +99,42 @@ def test_testDaemon_failure_exception(
 
 @pytest.mark.django_db
 def test_startDaemon_active(
-    mock_logger, mock_EMailArchiverDaemon, mock_runningDaemon, daemonModel
+    mock_logger, mock_EMailArchiverDaemon, mock_runningDaemon, fake_daemon
 ):
-    result = EMailArchiverDaemonRegistry.startDaemon(daemonModel)
+    result = EMailArchiverDaemonRegistry.startDaemon(fake_daemon)
 
     assert result is False
     mock_EMailArchiverDaemon.assert_not_called()
     mock_EMailArchiverDaemon.return_value.start.assert_not_called()
-    assert daemonModel.id in EMailArchiverDaemonRegistry._runningDaemons
+    assert fake_daemon.id in EMailArchiverDaemonRegistry._runningDaemons
     mock_logger.debug.assert_called()
 
 
 @pytest.mark.django_db
-def test_startDaemon_inactive(mock_logger, mock_EMailArchiverDaemon, daemonModel):
-    result = EMailArchiverDaemonRegistry.startDaemon(daemonModel)
+def test_startDaemon_inactive(mock_logger, mock_EMailArchiverDaemon, fake_daemon):
+    result = EMailArchiverDaemonRegistry.startDaemon(fake_daemon)
 
     assert result is True
-    mock_EMailArchiverDaemon.assert_called_once_with(daemonModel)
+    mock_EMailArchiverDaemon.assert_called_once_with(fake_daemon)
     mock_EMailArchiverDaemon.return_value.start.assert_called_once_with()
-    assert daemonModel.id in EMailArchiverDaemonRegistry._runningDaemons
+    assert fake_daemon.id in EMailArchiverDaemonRegistry._runningDaemons
     mock_logger.debug.assert_called()
 
 
 @pytest.mark.django_db
-def test_stopDaemon_active(mock_logger, mock_runningDaemon, daemonModel):
-    result = EMailArchiverDaemonRegistry.stopDaemon(daemonModel)
+def test_stopDaemon_active(mock_logger, mock_runningDaemon, fake_daemon):
+    result = EMailArchiverDaemonRegistry.stopDaemon(fake_daemon)
 
     assert result is True
     mock_runningDaemon.stop.assert_called_once_with()
-    assert daemonModel.id not in EMailArchiverDaemonRegistry._runningDaemons
+    assert fake_daemon.id not in EMailArchiverDaemonRegistry._runningDaemons
     mock_logger.debug.assert_called()
 
 
 @pytest.mark.django_db
-def test_stopDaemon_inactive(mock_logger, daemonModel):
-    result = EMailArchiverDaemonRegistry.stopDaemon(daemonModel)
+def test_stopDaemon_inactive(mock_logger, fake_daemon):
+    result = EMailArchiverDaemonRegistry.stopDaemon(fake_daemon)
 
     assert result is False
-    assert daemonModel.id not in EMailArchiverDaemonRegistry._runningDaemons
+    assert fake_daemon.id not in EMailArchiverDaemonRegistry._runningDaemons
     mock_logger.debug.assert_called()

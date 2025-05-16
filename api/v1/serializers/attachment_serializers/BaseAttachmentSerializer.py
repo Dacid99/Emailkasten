@@ -24,19 +24,19 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from rest_framework import serializers
 
-from core.models.AttachmentModel import AttachmentModel
+from core.models.Attachment import Attachment
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseAttachmentSerializer(serializers.ModelSerializer[AttachmentModel]):
-    """The base serializer for :class:`core.models.AttachmentModel.AttachmentModel`.
+class BaseAttachmentSerializer(serializers.ModelSerializer[Attachment]):
+    """The base serializer for :class:`core.models.Attachment.Attachment`.
 
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`core.models.AttachmentModel.AttachmentModel` should inherit from this.
+    Other serializers for :class:`core.models.Attachment.Attachment` should inherit from this.
     """
 
     class Meta:
@@ -47,11 +47,11 @@ class BaseAttachmentSerializer(serializers.ModelSerializer[AttachmentModel]):
         :attr:`read_only_fields` and :attr:`exclude` must not be shortened in subclasses.
         """
 
-        model: Final[type[Model]] = AttachmentModel
+        model: Final[type[Model]] = Attachment
         """The model to serialize."""
 
         exclude: ClassVar[list[str]] = ["file_path"]
-        """Exclude the :attr:`core.models.AttachmentModel.AttachmentModel.file_path` field."""
+        """Exclude the :attr:`core.models.Attachment.Attachment.file_path` field."""
 
         read_only_fields: Final[list[str]] = [
             "file_name",
@@ -64,9 +64,9 @@ class BaseAttachmentSerializer(serializers.ModelSerializer[AttachmentModel]):
             "created",
             "updated",
         ]
-        """The :attr:`core.models.AttachmentModel.AttachmentModel.is_healthy`,
-        :attr:`core.models.AttachmentModel.AttachmentModel.datasize`,
-        :attr:`core.models.AttachmentModel.AttachmentModel.email`,
-        :attr:`core.models.AttachmentModel.AttachmentModel.created` and
-        :attr:`core.models.AttachmentModel.AttachmentModel.updated` fields are read-only.
+        """The :attr:`core.models.Attachment.Attachment.is_healthy`,
+        :attr:`core.models.Attachment.Attachment.datasize`,
+        :attr:`core.models.Attachment.Attachment.email`,
+        :attr:`core.models.Attachment.Attachment.created` and
+        :attr:`core.models.Attachment.Attachment.updated` fields are read-only.
         """

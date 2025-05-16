@@ -21,28 +21,28 @@
 from django.contrib import admin
 
 from .models import (
-    AccountModel,
-    AttachmentModel,
-    CorrespondentModel,
-    DaemonModel,
-    EMailCorrespondentsModel,
-    EMailModel,
-    MailboxModel,
-    MailingListModel,
-    StorageModel,
+    Account,
+    Attachment,
+    Correspondent,
+    Daemon,
+    EMail,
+    EMailCorrespondents,
+    Mailbox,
+    MailingList,
+    Storage,
 )
 
 
 admin.site.register(
     [
-        AccountModel.AccountModel,
-        AttachmentModel.AttachmentModel,
-        CorrespondentModel.CorrespondentModel,
-        DaemonModel.DaemonModel,
-        EMailModel.EMailModel,
-        EMailCorrespondentsModel.EMailCorrespondentsModel,
-        MailboxModel.MailboxModel,
-        MailingListModel.MailingListModel,
-        StorageModel.StorageModel,
+        Account.Account,
+        Attachment.Attachment,
+        Correspondent.Correspondent,
+        Daemon.Daemon,
+        EMail.EMail,
+        EMailCorrespondents.EMailCorrespondents,
+        Mailbox.Mailbox,
+        MailingList.MailingList,
+        Storage.Storage,
     ]
 )

@@ -24,19 +24,19 @@ from typing import TYPE_CHECKING, Final
 
 from rest_framework import serializers
 
-from core.models.MailboxModel import MailboxModel
+from core.models.Mailbox import Mailbox
 
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
 
-class BaseMailboxSerializer(serializers.ModelSerializer[MailboxModel]):
-    """The base serializer for :class:`core.models.MailboxModel.MailboxModel`.
+class BaseMailboxSerializer(serializers.ModelSerializer[Mailbox]):
+    """The base serializer for :class:`core.models.Mailbox.Mailbox`.
 
     Includes all viable fields from the model.
     Sets all constraints that must be implemented in all serializers.
-    Other serializers for :class:`core.models.MailboxModel.MailboxModel` should inherit from this.
+    Other serializers for :class:`core.models.Mailbox.Mailbox` should inherit from this.
     """
 
     class Meta:
@@ -47,7 +47,7 @@ class BaseMailboxSerializer(serializers.ModelSerializer[MailboxModel]):
         :attr:`read_only_fields` must not be shortened in subclasses.
         """
 
-        model: Final[type[Model]] = MailboxModel
+        model: Final[type[Model]] = Mailbox
         """The model to serialize."""
 
         fields = "__all__"
@@ -60,9 +60,9 @@ class BaseMailboxSerializer(serializers.ModelSerializer[MailboxModel]):
             "created",
             "updated",
         ]
-        """The :attr:`core.models.MailboxModel.MailboxModel.name`,
-        :attr:`core.models.MailboxModel.MailboxModel.account`,
-        :attr:`core.models.MailboxModel.MailboxModel.is_healthy`,
-        :attr:`core.models.MailboxModel.MailboxModel.created` and
-        :attr:`core.models.MailboxModel.MailboxModel.updated` fields are read-only.
+        """The :attr:`core.models.Mailbox.Mailbox.name`,
+        :attr:`core.models.Mailbox.Mailbox.account`,
+        :attr:`core.models.Mailbox.Mailbox.is_healthy`,
+        :attr:`core.models.Mailbox.Mailbox.created` and
+        :attr:`core.models.Mailbox.Mailbox.updated` fields are read-only.
         """

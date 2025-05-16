@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`EMailCorrespondentsModel` model class."""
+"""Module with the :class:`EMailCorrespondents` model class."""
 
 from __future__ import annotations
 
@@ -28,23 +28,23 @@ from django.utils.translation import gettext_lazy as _
 
 from core.constants import HeaderFields
 
-from .CorrespondentModel import CorrespondentModel
+from .Correspondent import Correspondent
 
 
 if TYPE_CHECKING:
-    from .EMailModel import EMailModel
+    from .EMail import EMail
 
 
-class EMailCorrespondentsModel(models.Model):
+class EMailCorrespondents(models.Model):
     """Database model for connecting emails and their correspondents."""
 
     email = models.ForeignKey(
-        "EMailModel", related_name="emailcorrespondents", on_delete=models.CASCADE
+        "EMail", related_name="emailcorrespondents", on_delete=models.CASCADE
     )
     """The email :attr:`correspondent` was mentioned in. Unique together with :attr:`correspondent` and :attr:`mention`."""
 
     correspondent = models.ForeignKey(
-        "CorrespondentModel",
+        "Correspondent",
         related_name="correspondentemails",
         on_delete=models.CASCADE,
     )
@@ -98,9 +98,9 @@ class EMailCorrespondentsModel(models.Model):
 
     @classmethod
     def createFromHeader(
-        cls, header: str, headerName: str, email: EMailModel
-    ) -> list[EMailCorrespondentsModel] | None:
-        """Prepares a list :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` from an email header.
+        cls, header: str, headerName: str, email: EMail
+    ) -> list[EMailCorrespondents] | None:
+        """Prepares a list :class:`core.models.EMailCorrespondents.EMailCorrespondents` from an email header.
 
         Args:
             header: The header to parse the malinglistdata from.
@@ -108,7 +108,7 @@ class EMailCorrespondentsModel(models.Model):
             email: The email for the new emailcorrespondent.
 
         Returns:
-            The list of :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel` instances with data from the header.
+            The list of :class:`core.models.EMailCorrespondents.EMailCorrespondents` instances with data from the header.
             If the correspondent already exists in the db.
             `None` if the correspondent could not be parsed.
 
@@ -119,7 +119,7 @@ class EMailCorrespondentsModel(models.Model):
             raise ValueError("Email is not in the db!")
         new_emailCorrespondentModels = []
         for correspondentTuple in getaddresses([header]):
-            new_correspondent = CorrespondentModel.createFromCorrespondentTuple(
+            new_correspondent = Correspondent.createFromCorrespondentTuple(
                 correspondentTuple
             )
             if new_correspondent is None:

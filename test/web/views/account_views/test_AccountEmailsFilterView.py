@@ -26,32 +26,32 @@ from web.views.account_views.AccountEmailsFilterView import AccountEmailsFilterV
 
 
 @pytest.mark.django_db
-def test_get_noauth(accountModel, client, detail_url, login_url):
+def test_get_noauth(fake_account, client, detail_url, login_url):
     """Tests :class:`web.views.account_views.AccountEmailsFilterView.AccountEmailsFilterView` with an unauthenticated user client."""
-    response = client.get(detail_url(AccountEmailsFilterView, accountModel))
+    response = client.get(detail_url(AccountEmailsFilterView, fake_account))
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(login_url)
     assert response.url.endswith(
-        f"?next={detail_url(AccountEmailsFilterView, accountModel)}"
+        f"?next={detail_url(AccountEmailsFilterView, fake_account)}"
     )
 
 
 @pytest.mark.django_db
-def test_get_auth_other(accountModel, other_client, detail_url):
+def test_get_auth_other(fake_account, other_client, detail_url):
     """Tests :class:`web.views.account_views.AccountEmailsFilterView.AccountEmailsFilterView` with the authenticated other user client."""
-    response = other_client.get(detail_url(AccountEmailsFilterView, accountModel))
+    response = other_client.get(detail_url(AccountEmailsFilterView, fake_account))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
-    assert accountModel.mail_address not in response.content.decode()
+    assert fake_account.mail_address not in response.content.decode()
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(accountModel, owner_client, detail_url):
+def test_get_auth_owner(fake_account, owner_client, detail_url):
     """Tests :class:`web.views.account_views.AccountEmailsFilterView.AccountEmailsFilterView` with the authenticated owner user client."""
-    response = owner_client.get(detail_url(AccountEmailsFilterView, accountModel))
+    response = owner_client.get(detail_url(AccountEmailsFilterView, fake_account))
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)

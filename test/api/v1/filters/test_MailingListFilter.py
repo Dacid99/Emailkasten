@@ -37,7 +37,7 @@ def test_list_id_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.list_id` field.
+    for the :attr:`core.models.MailingList.MailingList.list_id` field.
     """
     query = {"list_id" + lookup_expr: filterquery}
 
@@ -57,7 +57,7 @@ def test_list_owner_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.list_owner` field.
+    for the :attr:`core.models.MailingList.MailingList.list_owner` field.
     """
     query = {"list_owner" + lookup_expr: filterquery}
 
@@ -77,7 +77,7 @@ def test_list_subscribe_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.list_subscribe` field.
+    for the :attr:`core.models.MailingList.MailingList.list_subscribe` field.
     """
     query = {"list_subscribe" + lookup_expr: filterquery}
 
@@ -97,7 +97,7 @@ def test_list_unsubscribe_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.list_unsubscribe` field.
+    for the :attr:`core.models.MailingList.MailingList.list_unsubscribe` field.
     """
     query = {"list_unsubscribe" + lookup_expr: filterquery}
 
@@ -117,7 +117,7 @@ def test_list_post_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.list_post` field.
+    for the :attr:`core.models.MailingList.MailingList.list_post` field.
     """
     query = {"list_post" + lookup_expr: filterquery}
 
@@ -137,7 +137,7 @@ def test_list_help_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.list_help` field.
+    for the :attr:`core.models.MailingList.MailingList.list_help` field.
     """
     query = {"list_help" + lookup_expr: filterquery}
 
@@ -157,7 +157,7 @@ def test_list_archive_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.list_archive` field.
+    for the :attr:`core.models.MailingList.MailingList.list_archive` field.
     """
     query = {"list_archive" + lookup_expr: filterquery}
 
@@ -177,7 +177,7 @@ def test_is_favorite_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.is_favorite` field.
+    for the :attr:`core.models.MailingList.MailingList.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -197,7 +197,7 @@ def test_created_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.created` field.
+    for the :attr:`core.models.MailingList.MailingList.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 
@@ -217,7 +217,7 @@ def test_updated_filter(
     mailinglist_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailingListFilter.MailingListFilter`'s filtering
-    for the :attr:`core.models.MailingListModel.MailingListModel.updated` field.
+    for the :attr:`core.models.MailingList.MailingList.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}
 

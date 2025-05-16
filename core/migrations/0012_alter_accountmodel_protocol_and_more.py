@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="accountmodel",
+            model_name="account",
             name="protocol",
             field=models.CharField(
                 choices=[
@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="fetching_criterion",
             field=models.CharField(
                 choices=[
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="emailcorrespondentsmodel",
+            model_name="emailcorrespondents",
             name="mention",
             field=models.CharField(
                 choices=[

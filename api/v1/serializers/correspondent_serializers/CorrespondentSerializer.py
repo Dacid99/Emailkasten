@@ -29,8 +29,8 @@ from django.db.models import Subquery
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from core.models.CorrespondentModel import CorrespondentModel
-from core.models.MailingListModel import MailingListModel
+from core.models.Correspondent import Correspondent
+from core.models.MailingList import MailingList
 
 from ..emailcorrespondents_serializers.CorrespondentEMailSerializer import (
     CorrespondentEMailSerializer,
@@ -42,16 +42,16 @@ from .BaseCorrespondentSerializer import BaseCorrespondentSerializer
 
 
 class CorrespondentSerializer(BaseCorrespondentSerializer):
-    """The standard serializer for a :class:`core.models.CorrespondentModel.CorrespondentModel`.
+    """The standard serializer for a :class:`core.models.Correspondent.Correspondent`.
 
     Includes a nested serializer for
-    the :attr:`core.models.CorrespondentModel.CorrespondentModel.emails`
-    and :attr:`core.models.CorrespondentModel.CorrespondentModel.mailinglist` fields.
+    the :attr:`core.models.Correspondent.Correspondent.emails`
+    and :attr:`core.models.Correspondent.Correspondent.mailinglist` fields.
     """
 
     emails = serializers.SerializerMethodField(read_only=True)
     """The emails are set from the
-    :class:`core.models.EMailCorrespondentsModel.EMailCorrespondentsModel`
+    :class:`core.models.EMailCorrespondents.EMailCorrespondents`
     via :func:`get_emails`.
     """
 
@@ -60,7 +60,7 @@ class CorrespondentSerializer(BaseCorrespondentSerializer):
     via :func:`get_mailinglists`.
     """
 
-    def get_emails(self, instance: CorrespondentModel) -> ReturnDict[str, Any]:
+    def get_emails(self, instance: Correspondent) -> ReturnDict[str, Any]:
         """Serializes the emails connected to the instance to be serialized.
 
         Args:
@@ -82,7 +82,7 @@ class CorrespondentSerializer(BaseCorrespondentSerializer):
             correspondentemails, many=True, read_only=True
         ).data
 
-    def get_mailinglists(self, instance: CorrespondentModel) -> ReturnDict[str, Any]:
+    def get_mailinglists(self, instance: Correspondent) -> ReturnDict[str, Any]:
         """Serializes the emails connected to the instance to be serialized.
 
         Args:
@@ -94,7 +94,7 @@ class CorrespondentSerializer(BaseCorrespondentSerializer):
         request = self.context.get("request")
         user = getattr(request, "user", None)
         if user is not None:
-            mailinglists = MailingListModel.objects.filter(
+            mailinglists = MailingList.objects.filter(
                 id__in=Subquery(
                     instance.emails.filter(
                         mailbox__account__user=user,
@@ -103,5 +103,5 @@ class CorrespondentSerializer(BaseCorrespondentSerializer):
                 )
             ).distinct()
         else:
-            mailinglists = MailingListModel.objects.none()
+            mailinglists = MailingList.objects.none()
         return SimpleMailingListSerializer(mailinglists, many=True, read_only=True).data

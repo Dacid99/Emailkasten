@@ -37,7 +37,7 @@ def test_text_search_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.CorrespondentFilter.CorrespondentFilter`'s filtering
-    for the :attr:`core.models.CorrespondentModel.CorrespondentModel.text_search` field.
+    for the :attr:`core.models.Correspondent.Correspondent.text_search` field.
     """
     query = {"text_search": filterquery}
 
@@ -57,7 +57,7 @@ def test_is_favorite_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.CorrespondentFilter.CorrespondentFilter`'s filtering
-    for the :attr:`core.models.CorrespondentModel.CorrespondentModel.is_favorite` field.
+    for the :attr:`core.models.Correspondent.Correspondent.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -77,7 +77,7 @@ def test_created_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.CorrespondentFilter.CorrespondentFilter`'s filtering
-    for the :attr:`core.models.CorrespondentModel.CorrespondentModel.created` field.
+    for the :attr:`core.models.Correspondent.Correspondent.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 

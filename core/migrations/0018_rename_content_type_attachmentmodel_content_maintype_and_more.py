@@ -11,22 +11,22 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name="attachmentmodel",
+            model_name="attachment",
             old_name="content_type",
             new_name="content_maintype",
         ),
         migrations.AddField(
-            model_name="attachmentmodel",
+            model_name="attachment",
             name="content_id",
             field=models.CharField(default="", max_length=255),
         ),
         migrations.AddField(
-            model_name="attachmentmodel",
+            model_name="attachment",
             name="content_subtype",
             field=models.CharField(default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name="daemonmodel",
+            model_name="daemon",
             name="log_filepath",
             field=models.FilePathField(path="/var/log", recursive=True, unique=True),
         ),

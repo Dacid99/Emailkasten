@@ -39,7 +39,7 @@ def test_text_search_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.text_search` field.
+    for the :attr:`core.models.Account.Account.text_search` field.
     """
     query = {"text_search": filterquery}
 
@@ -57,7 +57,7 @@ def test_text_search_filter(
 )
 def test_protocol_filter(account_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.text_search` field.
+    for the :attr:`core.models.Account.Account.text_search` field.
     """
     query = {
         "protocol": [
@@ -82,7 +82,7 @@ def test_is_healthy_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.is_healthy` field.
+    for the :attr:`core.models.Account.Account.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
 
@@ -102,7 +102,7 @@ def test_is_favorite_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.is_favorite` field.
+    for the :attr:`core.models.Account.Account.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
 
@@ -120,7 +120,7 @@ def test_is_favorite_filter(
 )
 def test_created_filter(account_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`web.filters.AccountFilter.AccountFilter`'s filtering
-    for the :attr:`core.models.AccountModel.AccountModel.created` field.
+    for the :attr:`core.models.Account.Account.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
 

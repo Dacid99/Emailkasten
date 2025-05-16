@@ -41,13 +41,14 @@ if TYPE_CHECKING:
 def complete_database(
     owner_user,
     other_user,
-    accountModel,
-    attachmentModel,
-    correspondentModel,
-    daemonModel,
-    emailModel,
-    mailboxModel,
-    mailingListModel,
+    fake_account,
+    fake_attachment,
+    fake_correspondent,
+    fake_daemon,
+    fake_email,
+    fake_emailCorrespondent,
+    fake_mailbox,
+    fake_mailingList,
 ):
     """Fixture providing a complete database setup."""
 
@@ -140,37 +141,37 @@ def mock_os_remove(mocker):
 
 
 @pytest.fixture
-def mock_AccountModel_test_connection(mocker):
-    """Patches :func:`core.models.AccountModel.AccountModel.test_connection` for testing of the test action."""
+def mock_Account_test_connection(mocker):
+    """Patches :func:`core.models.Account.Account.test_connection` for testing of the test action."""
     return mocker.patch(
-        "core.models.AccountModel.AccountModel.test_connection",
+        "core.models.Account.Account.test_connection",
         autospec=True,
     )
 
 
 @pytest.fixture
-def mock_AccountModel_update_mailboxes(mocker):
-    """Patches :func:`core.models.AccountModel.AccountModel.update_mailboxes` for testing of the test action."""
+def mock_Account_update_mailboxes(mocker):
+    """Patches :func:`core.models.Account.Account.update_mailboxes` for testing of the test action."""
     return mocker.patch(
-        "core.models.AccountModel.AccountModel.update_mailboxes",
+        "core.models.Account.Account.update_mailboxes",
         autospec=True,
     )
 
 
 @pytest.fixture
-def mock_MailboxModel_test_connection(mocker):
-    """Patches :func:`core.models.MailboxModel.MailboxModel.test_connection` for testing of the test action."""
+def mock_Mailbox_test_connection(mocker):
+    """Patches :func:`core.models.Mailbox.Mailbox.test_connection` for testing of the test action."""
     return mocker.patch(
-        "core.models.MailboxModel.MailboxModel.test_connection",
+        "core.models.Mailbox.Mailbox.test_connection",
         autospec=True,
     )
 
 
 @pytest.fixture
-def mock_MailboxModel_fetch(mocker):
-    """Patches :func:`core.models.MailboxModel.MailboxModel.fetch` for testing of the test action."""
+def mock_Mailbox_fetch(mocker):
+    """Patches :func:`core.models.Mailbox.Mailbox.fetch` for testing of the test action."""
     return mocker.patch(
-        "core.models.MailboxModel.MailboxModel.fetch",
+        "core.models.Mailbox.Mailbox.fetch",
         autospec=True,
     )
 

@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.MailboxModel import MailboxModel
+from core.models.Mailbox import Mailbox
 
 
 if TYPE_CHECKING:
@@ -33,12 +33,12 @@ if TYPE_CHECKING:
 
 
 class MailboxFilter(filters.FilterSet):
-    """The filter class for :class:`core.models.MailboxModel.MailboxModel`."""
+    """The filter class for :class:`core.models.Mailbox.Mailbox`."""
 
     class Meta:
         """Metadata class for the filter."""
 
-        model: Final[type[Model]] = MailboxModel
+        model: Final[type[Model]] = Mailbox
 
         fields: ClassVar[dict[str, list[str]]] = {
             "name": FilterSetups.TEXT,

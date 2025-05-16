@@ -31,9 +31,9 @@ from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
 from core import constants
-from core.models.DaemonModel import DaemonModel
-from core.models.EMailModel import EMailModel
-from core.models.MailboxModel import MailboxModel
+from core.models.Daemon import Daemon
+from core.models.EMail import EMail
+from core.models.Mailbox import Mailbox
 from core.utils.fetchers.exceptions import FetcherError
 
 from ..filters.MailboxFilter import MailboxFilter
@@ -49,14 +49,14 @@ if TYPE_CHECKING:
 
 
 class MailboxViewSet(
-    NoCreateMixin, viewsets.ModelViewSet[MailboxModel], ToggleFavoriteMixin
+    NoCreateMixin, viewsets.ModelViewSet[Mailbox], ToggleFavoriteMixin
 ):
-    """Viewset for the :class:`core.models.MailboxModel.MailboxModel`.
+    """Viewset for the :class:`core.models.Mailbox.Mailbox`.
 
     Provides all but the create method.
     """
 
-    BASENAME = MailboxModel.BASENAME
+    BASENAME = Mailbox.BASENAME
     serializer_class = MailboxWithDaemonSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = MailboxFilter
@@ -76,19 +76,19 @@ class MailboxViewSet(
     ordering: Final[list[str]] = ["id"]
 
     @override
-    def get_queryset(self) -> QuerySet[MailboxModel]:
+    def get_queryset(self) -> QuerySet[Mailbox]:
         """Filters the data for entries connected to the request user.
 
         Returns:
             The mailbox entries matching the request user.
         """
         if getattr(self, "swagger_fake_view", False):
-            return MailboxModel.objects.none()
+            return Mailbox.objects.none()
         if not self.request.user.is_authenticated:
-            return MailboxModel.objects.none()
-        return MailboxModel.objects.filter(
-            account__user=self.request.user
-        ).prefetch_related("daemons")
+            return Mailbox.objects.none()
+        return Mailbox.objects.filter(account__user=self.request.user).prefetch_related(
+            "daemons"
+        )
 
     URL_PATH_ADD_DAEMON = "add-daemon"
     URL_NAME_ADD_DAEMON = "add-daemon"
@@ -110,7 +110,7 @@ class MailboxViewSet(
             A response containing the updated mailbox data.
         """
         mailbox = self.get_object()
-        DaemonModel.objects.create(mailbox=mailbox)
+        Daemon.objects.create(mailbox=mailbox)
         mailbox.refresh_from_db()
         return Response(
             {
@@ -214,7 +214,7 @@ class MailboxViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
         mailbox = self.get_object()
-        EMailModel.createFromEmailBytes(uploaded_mailbox_file.read(), mailbox)
+        EMail.createFromEmailBytes(uploaded_mailbox_file.read(), mailbox)
         mailboxSerializer = self.get_serializer(mailbox)
         return Response(
             {

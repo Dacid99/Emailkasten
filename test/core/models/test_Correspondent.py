@@ -1,0 +1,171 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Emailkasten - a open-source self-hostable email archiving server
+# Copyright (C) 2024  David & Philipp Aderbauer
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+"""Test module for :mod:`core.models.Correspondent`."""
+
+from __future__ import annotations
+
+import datetime
+from typing import TYPE_CHECKING
+
+import pytest
+from django.db import IntegrityError
+from django.urls import reverse
+from model_bakery import baker
+
+from core.models.Correspondent import Correspondent
+
+
+if TYPE_CHECKING:
+    from unittest.mock import MagicMock
+
+
+@pytest.fixture
+def fake_correspondentTuple(faker):
+    return (faker.name(), faker.email())
+
+
+@pytest.fixture(autouse=True)
+def mock_logger(mocker) -> MagicMock:
+    """Mocks the :attr:`core.models.Correspondent.logger`.
+
+    Returns:
+        The mocked logger instance.
+    """
+    return mocker.patch("core.models.Correspondent.logger", autospec=True)
+
+
+@pytest.mark.django_db
+def test_Correspondent_fields(fake_correspondent):
+    """Tests the fields of :class:`core.models.Correspondent.Correspondent`."""
+
+    assert fake_correspondent.email_name is not None
+    assert isinstance(fake_correspondent.email_name, str)
+    assert fake_correspondent.email_address is not None
+    assert isinstance(fake_correspondent.email_address, str)
+    assert fake_correspondent.is_favorite is False
+    assert fake_correspondent.updated is not None
+    assert isinstance(fake_correspondent.updated, datetime.datetime)
+    assert fake_correspondent.created is not None
+    assert isinstance(fake_correspondent.created, datetime.datetime)
+
+
+@pytest.mark.django_db
+def test_Correspondent___str__(fake_correspondent):
+    """Tests the string representation of :class:`core.models.Correspondent.Correspondent`."""
+    assert fake_correspondent.email_address in str(fake_correspondent)
+
+
+@pytest.mark.django_db
+def test_Correspondent_unique_constraints(fake_correspondent):
+    """Tests the unique constraint in :class:`core.models.Correspondent.Correspondent`."""
+
+    with pytest.raises(IntegrityError):
+        baker.make(
+            Correspondent,
+            email_name=fake_correspondent.email_name,
+            email_address=fake_correspondent.email_address,
+        )
+
+
+@pytest.mark.django_db
+def test_Correspondent_createFromCorrespondentTuple_success(
+    fake_correspondentTuple,
+):
+    """Tests :func:`core.models.Correspondent.Correspondent.createFromCorrespondentTuple`
+    in case of success.
+    """
+    assert Correspondent.objects.count() == 0
+
+    result = Correspondent.createFromCorrespondentTuple(fake_correspondentTuple)
+
+    assert isinstance(result, Correspondent)
+    assert result.pk is not None
+    assert Correspondent.objects.count() == 1
+    assert result.email_name == fake_correspondentTuple[0]
+    assert result.email_address == fake_correspondentTuple[1]
+
+
+@pytest.mark.django_db
+def test_Correspondent_createFromCorrespondentTuple_duplicate(
+    fake_correspondent, fake_correspondentTuple
+):
+    """Tests :func:`core.models.Correspondent.Correspondent.createFromCorrespondentTuple`
+    in case the correspondent to be prepared is already being in the database.
+    """
+    fake_correspondentTuple = (
+        fake_correspondentTuple[0],
+        fake_correspondent.email_address,
+    )
+
+    assert Correspondent.objects.count() == 1
+
+    result = Correspondent.createFromCorrespondentTuple(fake_correspondentTuple)
+
+    assert result == fake_correspondent
+    assert Correspondent.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_Correspondent_createFromCorrespondentTuple_no_address(
+    mock_logger, fake_correspondentTuple
+):
+    """Tests :func:`core.models.Correspondent.Correspondent.createFromCorrespondentTuple`
+    in case of there is no address in the header.
+    """
+    fake_correspondentTuple = (fake_correspondentTuple[0], "")
+
+    assert Correspondent.objects.count() == 0
+
+    result = Correspondent.createFromCorrespondentTuple(fake_correspondentTuple)
+
+    assert result is None
+    assert Correspondent.objects.count() == 0
+    mock_logger.debug.assert_called()
+
+
+@pytest.mark.django_db
+def test_Correspondent_get_absolute_url(fake_correspondent):
+    """Tests :func:`core.models.Correspondent.Correspondent.get_absolute_url`."""
+    result = fake_correspondent.get_absolute_url()
+
+    assert result == reverse(
+        f"web:{fake_correspondent.BASENAME}-detail",
+        kwargs={"pk": fake_correspondent.pk},
+    )
+
+
+@pytest.mark.django_db
+def test_Correspondent_get_absolute_edit_url(fake_correspondent):
+    """Tests :func:`core.models.Correspondent.Correspondent.get_absolute_edit_url`."""
+    result = fake_correspondent.get_absolute_edit_url()
+
+    assert result == reverse(
+        f"web:{fake_correspondent.BASENAME}-edit",
+        kwargs={"pk": fake_correspondent.pk},
+    )
+
+
+@pytest.mark.django_db
+def test_Correspondent_get_absolute_list_url(fake_correspondent):
+    """Tests :func:`core.models.Correspondent.Correspondent.get_absolute_list_url`."""
+    result = fake_correspondent.get_absolute_list_url()
+
+    assert result == reverse(
+        f"web:{fake_correspondent.BASENAME}-filter-list",
+    )

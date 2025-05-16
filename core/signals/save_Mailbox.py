@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Delete signal receivers for the :class:`core.models.MailboxModel.MailboxModel` model."""
+"""Delete signal receivers for the :class:`core.models.Mailbox.Mailbox` model."""
 from __future__ import annotations
 
 import logging
@@ -25,16 +25,16 @@ from typing import Any
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from core.models.MailboxModel import MailboxModel
+from core.models.Mailbox import Mailbox
 
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-@receiver(post_save, sender=MailboxModel)
+@receiver(post_save, sender=Mailbox)
 def post_save_is_healthy(
-    sender: MailboxModel, instance: MailboxModel, created: bool, **kwargs: Any
+    sender: Mailbox, instance: Mailbox, created: bool, **kwargs: Any
 ) -> None:
     """Receiver function flagging account and daemons of a mailbox according to a healthflag change.
 

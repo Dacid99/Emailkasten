@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`MailboxModel` model class."""
+"""Module with the :class:`Mailbox` model class."""
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ from django.utils.translation import gettext_lazy as _
 from core.mixins.FavoriteMixin import FavoriteMixin
 from core.mixins.UploadMixin import UploadMixin
 from core.mixins.URLMixin import URLMixin
-from core.models.EMailModel import EMailModel
+from core.models.EMail import EMail
 from Emailkasten.utils.workarounds import get_config
 
 from ..utils.fetchers.exceptions import MailAccountError, MailboxError
@@ -40,23 +40,21 @@ from ..utils.mailParsing import parseMailboxName
 
 
 if TYPE_CHECKING:
-    from .AccountModel import AccountModel
+    from .Account import Account
 
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class MailboxModel(
-    DirtyFieldsMixin, URLMixin, UploadMixin, FavoriteMixin, models.Model
-):
+class Mailbox(DirtyFieldsMixin, URLMixin, UploadMixin, FavoriteMixin, models.Model):
     """Database model for a mailbox in a mail account."""
 
     name = models.CharField(max_length=255)
     """The mailaccount internal name of the mailbox. Unique together with :attr:`account`."""
 
-    account: models.ForeignKey[AccountModel] = models.ForeignKey(
-        "AccountModel", related_name="mailboxes", on_delete=models.CASCADE
+    account: models.ForeignKey[Account] = models.ForeignKey(
+        "Account", related_name="mailboxes", on_delete=models.CASCADE
     )
     """The mailaccount this mailbox was found in. Unique together with :attr:`name`. Deletion of that `account` deletes this mailbox."""
 
@@ -90,8 +88,8 @@ class MailboxModel(
 
     is_healthy = models.BooleanField(null=True)
     """Flags whether the mailbox can be accessed and read. `None` by default.
-    When the :attr:`core.models.AccountModel.is_healthy` field changes to `False`, this field is updated accordingly.
-    When this field changes to `True`, the :attr:`core.models.AccountModel.is_healthy` field of :attr:`account` will be set to `True` as well by a signal."""
+    When the :attr:`core.models.Account.is_healthy` field changes to `False`, this field is updated accordingly.
+    When this field changes to `True`, the :attr:`core.models.Account.is_healthy` field of :attr:`account` will be set to `True` as well by a signal."""
 
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""
@@ -147,7 +145,7 @@ class MailboxModel(
         """Tests whether the data in the model is correct.
 
         Tests connecting and logging in to the mailhost and account.
-        The :attr:`core.models.MailboxModel.is_healthy` flag is set accordingly.
+        The :attr:`core.models.Mailbox.is_healthy` flag is set accordingly.
         Relies on the `test` method of the :mod:`core.utils.fetchers` classes.
 
         Raises:
@@ -198,7 +196,7 @@ class MailboxModel(
 
         logger.info("Saving fetched emails ...")
         for fetchedMail in fetchedMails:
-            EMailModel.createFromEmailBytes(fetchedMail, self)
+            EMail.createFromEmailBytes(fetchedMail, self)
 
         logger.info("Successfully saved fetched emails.")
 
@@ -240,19 +238,19 @@ class MailboxModel(
             file.write(file_data)
         mailboxFile = formatClass(dump_filepath)  # type: ignore[abstract]  # Mailbox class is never implemented, it's just used for typing
         for key in mailboxFile.iterkeys():
-            EMailModel.createFromEmailBytes(mailboxFile.get_bytes(key), self)
+            EMail.createFromEmailBytes(mailboxFile.get_bytes(key), self)
         logger.info("Successfully added emails from mailbox file.")
 
     @classmethod
-    def createFromData(cls, mailboxData: bytes, account: AccountModel) -> MailboxModel:
-        """Creates a :class:`core.models.MailboxModel.MailboxModel` from the mailboxname in bytes.
+    def createFromData(cls, mailboxData: bytes, account: Account) -> Mailbox:
+        """Creates a :class:`core.models.Mailbox.Mailbox` from the mailboxname in bytes.
 
         Args:
             mailboxData: The bytes with the mailboxname.
             account: The account the mailbox is in.
 
         Returns:
-            The :class:`core.models.MailboxModel.MailboxModel` instance with data from the bytes.
+            The :class:`core.models.Mailbox.Mailbox` instance with data from the bytes.
             `None` if the mailbox already exists in the db.
         """
         if account.pk is None:
@@ -261,7 +259,7 @@ class MailboxModel(
         try:
             new_mailbox = cls.objects.get(account=account, name=mailbox_name)
             logger.debug("%s already exists in db, it is skipped!", new_mailbox)
-        except MailboxModel.DoesNotExist:
+        except Mailbox.DoesNotExist:
             new_mailbox = cls(account=account, name=mailbox_name)
             new_mailbox.save()
             logger.debug("Successfully saved mailbox to db!")

@@ -23,23 +23,23 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 
-from core.models.AccountModel import AccountModel
+from core.models.Account import Account
 
 from ...filters.AccountFilter import AccountFilter
 from ..FilterPageView import FilterPageView
 
 
 class AccountFilterView(LoginRequiredMixin, FilterPageView):
-    """View for filtering listed :class:`core.models.AccountModel.AccountModel` instances."""
+    """View for filtering listed :class:`core.models.Account.Account` instances."""
 
-    URL_NAME = AccountModel.get_list_web_url_name()
-    model = AccountModel
+    URL_NAME = Account.get_list_web_url_name()
+    model = Account
     template_name = "web/account/account_filter_list.html"
     filterset_class = AccountFilter
     ordering = ["mail_address"]
 
     @override
-    def get_queryset(self) -> QuerySet[AccountModel]:
+    def get_queryset(self) -> QuerySet[Account]:
         """Restricts the queryset to objects owned by the requesting user."""
         if not self.request.user.is_authenticated:
             return super().get_queryset().none()

@@ -68,7 +68,7 @@ def test_list_auth_other(other_apiClient, url):
 
 
 @pytest.mark.django_db
-def test_list_auth_owner(emailModel, owner_apiClient, url):
+def test_list_auth_owner(fake_email, owner_apiClient, url):
     """Tests the list method with the authenticated owner user client."""
     response = owner_apiClient.get(url(DatabaseStatsView))
 

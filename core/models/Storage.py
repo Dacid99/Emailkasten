@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`StorageModel` model class."""
+"""Module with the :class:`Storage` model class."""
 
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class StorageModel(models.Model):
+class Storage(models.Model):
     """A database model to keep track of and manage the sharded storage's status and structure.
 
     Important:
@@ -129,7 +129,7 @@ class StorageModel(models.Model):
         """
         self.current = False
         self.save(update_fields=["current"])
-        StorageModel.objects.create(
+        Storage.objects.create(
             directory_number=self.directory_number + 1,
             current=True,
             subdirectory_count=0,
@@ -149,10 +149,10 @@ class StorageModel(models.Model):
         Returns:
             The path of the subdirectory in the storage.
         """
-        storageEntry = StorageModel.objects.filter(current=True).first()
+        storageEntry = Storage.objects.filter(current=True).first()
         if not storageEntry:
             logger.info("Creating first storage directory...")
-            storageEntry = StorageModel.objects.create(
+            storageEntry = Storage.objects.create(
                 directory_number=0, current=True, subdirectory_count=0
             )
             logger.info("Successfully created first storage directory.")
@@ -183,12 +183,12 @@ class StorageModel(models.Model):
             False if there is no unique current storage directory
             or the count of subdirectories for one of the directories is wrong.
         """
-        uniqueCurrent = StorageModel.objects.filter(current=True).count() < 2
+        uniqueCurrent = Storage.objects.filter(current=True).count() < 2
         if not uniqueCurrent:
             logger.critical("More than one currently used storage direcory!!!")
             return False
 
-        correctDirCount = StorageModel.objects.count() == len(
+        correctDirCount = Storage.objects.count() == len(
             os.listdir(settings.STORAGE_PATH)
         )
         if not correctDirCount:
@@ -199,7 +199,7 @@ class StorageModel(models.Model):
 
         correctSubdirCount = all(
             storage.subdirectory_count == len(os.listdir(storage.path))
-            for storage in StorageModel.objects.all()
+            for storage in Storage.objects.all()
         )
         if not correctSubdirCount:
             logger.critical(

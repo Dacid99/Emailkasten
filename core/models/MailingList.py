@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`MailingListModel` model class."""
+"""Module with the :class:`MailingList` model class."""
 
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class MailingListModel(URLMixin, FavoriteMixin, models.Model):
+class MailingList(URLMixin, FavoriteMixin, models.Model):
     """Database model for a mailinglist."""
 
     list_id = models.CharField(max_length=255, unique=True)
@@ -98,14 +98,14 @@ class MailingListModel(URLMixin, FavoriteMixin, models.Model):
     @classmethod
     def createFromEmailMessage(
         cls, emailMessage: Message[str, str]
-    ) -> MailingListModel | None:
-        """Prepares a :class:`core.models.MailingListModel.MailingListModel` from an email message.
+    ) -> MailingList | None:
+        """Prepares a :class:`core.models.MailingList.MailingList` from an email message.
 
         Args:
             emailMessage: The email message to parse the malinglistdata from.
 
         Returns:
-            The :class:`core.models.MailingListModel.MailingListModel` instance with data from the message.
+            The :class:`core.models.MailingList.MailingList` instance with data from the message.
             If the correspondent already exists in the db returns that version.
             None if there is no List-ID header in :attr:`emailMessage`.
         """
