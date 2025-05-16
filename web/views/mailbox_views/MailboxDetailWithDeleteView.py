@@ -25,7 +25,6 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
 from core.constants import EmailFetchingCriterionChoices
@@ -37,11 +36,12 @@ from web.mixins.CustomActionMixin import CustomActionMixin
 from web.mixins.TestActionMixin import TestActionMixin
 from web.views.mailbox_views.MailboxFilterView import MailboxFilterView
 
+from ..DetailWithDeleteView import DetailWithDeleteView
+
 
 class MailboxDetailWithDeleteView(
     LoginRequiredMixin,
-    DetailView,
-    DeletionMixin,
+    DetailWithDeleteView,
     CustomActionMixin,
     TestActionMixin,
 ):

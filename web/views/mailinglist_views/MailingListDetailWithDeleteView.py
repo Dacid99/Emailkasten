@@ -23,14 +23,14 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
-from django.views.generic.edit import DeletionMixin
 
 from core.models.MailingList import MailingList
 from web.views.mailinglist_views.MailingListFilterView import MailingListFilterView
 
+from ..DetailWithDeleteView import DetailWithDeleteView
 
-class MailingListDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
+
+class MailingListDetailWithDeleteView(LoginRequiredMixin, DetailWithDeleteView):
     """View for a single :class:`core.models.MailingList.MailingList` instance."""
 
     URL_NAME = MailingList.get_detail_web_url_name()

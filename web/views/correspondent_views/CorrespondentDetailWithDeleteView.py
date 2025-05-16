@@ -23,8 +23,6 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, QuerySet
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
-from django.views.generic.edit import DeletionMixin
 
 from core.models.Correspondent import Correspondent
 from core.models.EmailCorrespondent import EmailCorrespondent
@@ -32,11 +30,12 @@ from web.views.correspondent_views.CorrespondentFilterView import (
     CorrespondentFilterView,
 )
 
+from ..DetailWithDeleteView import DetailWithDeleteView
+
 
 class CorrespondentDetailWithDeleteView(
     LoginRequiredMixin,
-    DetailView,
-    DeletionMixin,
+    DetailWithDeleteView,
 ):
     """View for a single :class:`core.models.Correspondent.Correspondent` instance."""
 

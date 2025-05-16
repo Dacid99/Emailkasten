@@ -23,14 +23,14 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
-from django.views.generic.edit import DeletionMixin
 
 from core.models.Attachment import Attachment
 from web.views.attachment_views.AttachmentFilterView import AttachmentFilterView
 
+from ..DetailWithDeleteView import DetailWithDeleteView
 
-class AttachmentDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
+
+class AttachmentDetailWithDeleteView(LoginRequiredMixin, DetailWithDeleteView):
     """View for a single :class:`core.models.Attachment.Attachment` instance."""
 
     URL_NAME = Attachment.get_detail_web_url_name()

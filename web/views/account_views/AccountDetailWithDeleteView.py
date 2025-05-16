@@ -25,7 +25,6 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
 from core.models.Account import Account
@@ -35,11 +34,12 @@ from web.mixins.CustomActionMixin import CustomActionMixin
 from web.mixins.TestActionMixin import TestActionMixin
 from web.views.account_views.AccountFilterView import AccountFilterView
 
+from ..DetailWithDeleteView import DetailWithDeleteView
+
 
 class AccountDetailWithDeleteView(
     LoginRequiredMixin,
-    DetailView,
-    DeletionMixin,
+    DetailWithDeleteView,
     CustomActionMixin,
     TestActionMixin,
 ):

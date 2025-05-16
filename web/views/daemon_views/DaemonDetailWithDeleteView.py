@@ -25,7 +25,6 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin
 
 from core.EmailArchiverDaemonRegistry import EmailArchiverDaemonRegistry
@@ -33,11 +32,12 @@ from core.models.Daemon import Daemon
 from web.mixins.CustomActionMixin import CustomActionMixin
 from web.views.daemon_views.DaemonFilterView import DaemonFilterView
 
+from ..DetailWithDeleteView import DetailWithDeleteView
+
 
 class DaemonDetailWithDeleteView(
     LoginRequiredMixin,
-    DetailView,
-    DeletionMixin,
+    DetailWithDeleteView,
     CustomActionMixin,
 ):
     """View for a single :class:`core.models.Daemon.Daemon` instance."""

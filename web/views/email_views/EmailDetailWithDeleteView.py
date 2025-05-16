@@ -23,15 +23,15 @@ from typing import override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, QuerySet
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
-from django.views.generic.edit import DeletionMixin
 
 from core.models.Email import Email
 from core.models.EmailCorrespondent import EmailCorrespondent
 from web.views.email_views.EmailFilterView import EmailFilterView
 
+from ..DetailWithDeleteView import DetailWithDeleteView
 
-class EmailDetailWithDeleteView(LoginRequiredMixin, DetailView, DeletionMixin):
+
+class EmailDetailWithDeleteView(LoginRequiredMixin, DetailWithDeleteView):
     """View for a single :class:`core.models.Email.Email` instance."""
 
     URL_NAME = Email.get_detail_web_url_name()
