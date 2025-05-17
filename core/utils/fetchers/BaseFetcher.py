@@ -66,10 +66,10 @@ class BaseFetcher(ABC):
             raise ValueError(
                 f"The protocol of {account} is not supported by fetcher {self.__class__.__name__}!"
             )
-        self._mailClient: IMAP4 | POP3 | None = None
+        self._mail_client: IMAP4 | POP3 | None = None
 
     @abstractmethod
-    def connectToHost(self) -> None:
+    def connect_to_host(self) -> None:
         """Opens the connection to the mailserver."""
 
     @abstractmethod
@@ -87,7 +87,7 @@ class BaseFetcher(ABC):
             raise ValueError(f"{mailbox} is not in {self.account}!")
 
     @abstractmethod
-    def fetchEmails(  # type: ignore[return]  # this abstractmethod just provides basic arg-checking
+    def fetch_emails(  # type: ignore[return]  # this abstractmethod just provides basic arg-checking
         self,
         mailbox: Mailbox,
         criterion: str = EmailFetchingCriterionChoices.ALL,
@@ -104,7 +104,7 @@ class BaseFetcher(ABC):
             Empty if no such messages are found.
 
         Raises:
-            ValueError: If the :attr:`fetchingCriterion` is not available for this fetcher.
+            ValueError: If the :attr:`fetching_criterion` is not available for this fetcher.
         """
         if criterion not in self.AVAILABLE_FETCHING_CRITERIA:
             self.logger.error(
@@ -120,7 +120,7 @@ class BaseFetcher(ABC):
             raise ValueError(f"{mailbox} is not in {self.account}!")
 
     @abstractmethod
-    def fetchMailboxes(self) -> list[bytes]:
+    def fetch_mailboxes(self) -> list[bytes]:
         """Fetches all mailbox names from the server.
 
         Returns:

@@ -24,7 +24,8 @@
 
 ## To refactor
 
-- consistent naming_style
+- safeimap and pop classes
+- enable imports from app/module level
 - move all signals into models
 - rework test:
   - disable all signals in tests

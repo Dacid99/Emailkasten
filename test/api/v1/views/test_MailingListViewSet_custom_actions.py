@@ -28,53 +28,53 @@ from api.v1.views.MailingListViewSet import MailingListViewSet
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    fake_mailingList, fake_email, noauth_apiClient, custom_detail_action_url
+    fake_mailing_list, fake_email, noauth_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.MailingListViewSet.MailingListViewSet.toggle_favorite` action with an unauthenticated user client."""
-    response = noauth_apiClient.post(
+    response = noauth_api_client.post(
         custom_detail_action_url(
             MailingListViewSet,
             MailingListViewSet.URL_NAME_TOGGLE_FAVORITE,
-            fake_mailingList,
+            fake_mailing_list,
         )
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    fake_mailingList.refresh_from_db()
-    assert fake_mailingList.is_favorite is False
+    fake_mailing_list.refresh_from_db()
+    assert fake_mailing_list.is_favorite is False
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    fake_mailingList, fake_email, other_apiClient, custom_detail_action_url
+    fake_mailing_list, fake_email, other_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.MailingListViewSet.MailingListViewSet.toggle_favorite` action with the authenticated other user client."""
-    response = other_apiClient.post(
+    response = other_api_client.post(
         custom_detail_action_url(
             MailingListViewSet,
             MailingListViewSet.URL_NAME_TOGGLE_FAVORITE,
-            fake_mailingList,
+            fake_mailing_list,
         )
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    fake_mailingList.refresh_from_db()
-    assert fake_mailingList.is_favorite is False
+    fake_mailing_list.refresh_from_db()
+    assert fake_mailing_list.is_favorite is False
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    fake_mailingList, fake_email, owner_apiClient, custom_detail_action_url
+    fake_mailing_list, fake_email, owner_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.MailingListViewSet.MailingListViewSet.toggle_favorite` action with the authenticated owner user client."""
-    response = owner_apiClient.post(
+    response = owner_api_client.post(
         custom_detail_action_url(
             MailingListViewSet,
             MailingListViewSet.URL_NAME_TOGGLE_FAVORITE,
-            fake_mailingList,
+            fake_mailing_list,
         )
     )
 
     assert response.status_code == status.HTTP_200_OK
-    fake_mailingList.refresh_from_db()
-    assert fake_mailingList.is_favorite is True
+    fake_mailing_list.refresh_from_db()
+    assert fake_mailing_list.is_favorite is True

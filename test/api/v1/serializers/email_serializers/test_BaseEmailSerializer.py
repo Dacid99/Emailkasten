@@ -29,49 +29,49 @@ from api.v1.serializers.email_serializers.BaseEmailSerializer import BaseEmailSe
 @pytest.mark.django_db
 def test_output(fake_email, request_context):
     """Tests for the expected output of the serializer."""
-    serializerData = BaseEmailSerializer(
+    serializer_data = BaseEmailSerializer(
         instance=fake_email, context=request_context
     ).data
 
-    assert "id" in serializerData
-    assert serializerData["id"] == fake_email.id
-    assert "message_id" in serializerData
-    assert serializerData["message_id"] == fake_email.message_id
-    assert "datetime" in serializerData
-    assert datetime.fromisoformat(serializerData["datetime"]) == fake_email.datetime
-    assert "email_subject" in serializerData
-    assert serializerData["email_subject"] == fake_email.email_subject
-    assert "plain_bodytext" in serializerData
-    assert serializerData["plain_bodytext"] == fake_email.plain_bodytext
-    assert "html_bodytext" in serializerData
-    assert serializerData["html_bodytext"] == fake_email.html_bodytext
-    assert "inReplyTo" in serializerData
-    assert serializerData["inReplyTo"] is None
-    assert "datasize" in serializerData
-    assert serializerData["datasize"] == fake_email.datasize
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_email.is_favorite
-    assert "eml_filepath" not in serializerData
-    assert "html_filepath" not in serializerData
-    assert "mailbox" in serializerData
-    assert serializerData["mailbox"] == fake_email.mailbox.id
-    assert "headers" in serializerData
-    assert serializerData["headers"] == fake_email.headers
-    assert "x_spam" in serializerData
-    assert serializerData["x_spam"] == fake_email.x_spam
-    assert "created" in serializerData
-    assert datetime.fromisoformat(serializerData["created"]) == fake_email.created
-    assert "updated" in serializerData
-    assert datetime.fromisoformat(serializerData["updated"]) == fake_email.updated
-    assert "attachments" not in serializerData
-    assert "mailinglist" in serializerData
-    assert serializerData["mailinglist"] == fake_email.mailinglist.id
-    assert "correspondents" in serializerData
-    assert isinstance(serializerData["correspondents"], list)
-    assert len(serializerData["correspondents"]) == 1
-    assert isinstance(serializerData["correspondents"][0], int)
+    assert "id" in serializer_data
+    assert serializer_data["id"] == fake_email.id
+    assert "message_id" in serializer_data
+    assert serializer_data["message_id"] == fake_email.message_id
+    assert "datetime" in serializer_data
+    assert datetime.fromisoformat(serializer_data["datetime"]) == fake_email.datetime
+    assert "email_subject" in serializer_data
+    assert serializer_data["email_subject"] == fake_email.email_subject
+    assert "plain_bodytext" in serializer_data
+    assert serializer_data["plain_bodytext"] == fake_email.plain_bodytext
+    assert "html_bodytext" in serializer_data
+    assert serializer_data["html_bodytext"] == fake_email.html_bodytext
+    assert "in_reply_to" in serializer_data
+    assert serializer_data["in_reply_to"] is None
+    assert "datasize" in serializer_data
+    assert serializer_data["datasize"] == fake_email.datasize
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_email.is_favorite
+    assert "eml_filepath" not in serializer_data
+    assert "html_filepath" not in serializer_data
+    assert "mailbox" in serializer_data
+    assert serializer_data["mailbox"] == fake_email.mailbox.id
+    assert "headers" in serializer_data
+    assert serializer_data["headers"] == fake_email.headers
+    assert "x_spam" in serializer_data
+    assert serializer_data["x_spam"] == fake_email.x_spam
+    assert "created" in serializer_data
+    assert datetime.fromisoformat(serializer_data["created"]) == fake_email.created
+    assert "updated" in serializer_data
+    assert datetime.fromisoformat(serializer_data["updated"]) == fake_email.updated
+    assert "attachments" not in serializer_data
+    assert "mailinglist" in serializer_data
+    assert serializer_data["mailinglist"] == fake_email.mailinglist.id
+    assert "correspondents" in serializer_data
+    assert isinstance(serializer_data["correspondents"], list)
+    assert len(serializer_data["correspondents"]) == 1
+    assert isinstance(serializer_data["correspondents"][0], int)
 
-    assert len(serializerData) == 16
+    assert len(serializer_data) == 16
 
 
 @pytest.mark.django_db
@@ -81,27 +81,27 @@ def test_input(fake_email, request_context):
         data=model_to_dict(fake_email), context=request_context
     )
     assert serializer.is_valid()
-    serializerData = serializer.validated_data
+    serializer_data = serializer.validated_data
 
-    assert "id" not in serializerData
-    assert "message_id" not in serializerData
-    assert "datetime" not in serializerData
-    assert "email_subject" not in serializerData
-    assert "plain_bodytext" not in serializerData
-    assert "html_bodytext" not in serializerData
-    assert "inReplyTo" not in serializerData
-    assert "datasize" not in serializerData
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_email.is_favorite
-    assert "eml_filepath" not in serializerData
-    assert "html_filepath" not in serializerData
-    assert "mailbox" not in serializerData
-    assert "headers" not in serializerData
-    assert "x_spam" not in serializerData
-    assert "created" not in serializerData
-    assert "updated" not in serializerData
-    assert "attachments" not in serializerData
-    assert "mailinglist" not in serializerData
-    assert "correspondents" not in serializerData
+    assert "id" not in serializer_data
+    assert "message_id" not in serializer_data
+    assert "datetime" not in serializer_data
+    assert "email_subject" not in serializer_data
+    assert "plain_bodytext" not in serializer_data
+    assert "html_bodytext" not in serializer_data
+    assert "in_reply_to" not in serializer_data
+    assert "datasize" not in serializer_data
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_email.is_favorite
+    assert "eml_filepath" not in serializer_data
+    assert "html_filepath" not in serializer_data
+    assert "mailbox" not in serializer_data
+    assert "headers" not in serializer_data
+    assert "x_spam" not in serializer_data
+    assert "created" not in serializer_data
+    assert "updated" not in serializer_data
+    assert "attachments" not in serializer_data
+    assert "mailinglist" not in serializer_data
+    assert "correspondents" not in serializer_data
 
-    assert len(serializerData) == 1
+    assert len(serializer_data) == 1

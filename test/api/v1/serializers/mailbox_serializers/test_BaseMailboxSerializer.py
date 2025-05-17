@@ -31,31 +31,31 @@ from api.v1.serializers.mailbox_serializers.BaseMailboxSerializer import (
 @pytest.mark.django_db
 def test_output(fake_mailbox, request_context):
     """Tests for the expected output of the serializer."""
-    serializerData = BaseMailboxSerializer(
+    serializer_data = BaseMailboxSerializer(
         instance=fake_mailbox, context=request_context
     ).data
 
-    assert "id" in serializerData
-    assert serializerData["id"] == fake_mailbox.id
-    assert "name" in serializerData
-    assert serializerData["name"] == fake_mailbox.name
-    assert "account" in serializerData
-    assert serializerData["account"] == fake_mailbox.account.id
-    assert "save_attachments" in serializerData
-    assert serializerData["save_attachments"] == fake_mailbox.save_attachments
-    assert "save_toEML" in serializerData
-    assert serializerData["save_toEML"] == fake_mailbox.save_toEML
-    assert "save_toHTML" in serializerData
-    assert serializerData["save_toHTML"] == fake_mailbox.save_toHTML
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_mailbox.is_favorite
-    assert "is_healthy" in serializerData
-    assert serializerData["is_healthy"] == fake_mailbox.is_healthy
-    assert "created" in serializerData
-    assert datetime.fromisoformat(serializerData["created"]) == fake_mailbox.created
-    assert "updated" in serializerData
-    assert datetime.fromisoformat(serializerData["updated"]) == fake_mailbox.updated
-    assert len(serializerData) == 10
+    assert "id" in serializer_data
+    assert serializer_data["id"] == fake_mailbox.id
+    assert "name" in serializer_data
+    assert serializer_data["name"] == fake_mailbox.name
+    assert "account" in serializer_data
+    assert serializer_data["account"] == fake_mailbox.account.id
+    assert "save_attachments" in serializer_data
+    assert serializer_data["save_attachments"] == fake_mailbox.save_attachments
+    assert "save_to_eml" in serializer_data
+    assert serializer_data["save_to_eml"] == fake_mailbox.save_to_eml
+    assert "save_to_html" in serializer_data
+    assert serializer_data["save_to_html"] == fake_mailbox.save_to_html
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_mailbox.is_favorite
+    assert "is_healthy" in serializer_data
+    assert serializer_data["is_healthy"] == fake_mailbox.is_healthy
+    assert "created" in serializer_data
+    assert datetime.fromisoformat(serializer_data["created"]) == fake_mailbox.created
+    assert "updated" in serializer_data
+    assert datetime.fromisoformat(serializer_data["updated"]) == fake_mailbox.updated
+    assert len(serializer_data) == 10
 
 
 @pytest.mark.django_db
@@ -65,20 +65,20 @@ def test_input(fake_mailbox, request_context):
         data=model_to_dict(fake_mailbox), context=request_context
     )
     assert serializer.is_valid()
-    serializerData = serializer.validated_data
+    serializer_data = serializer.validated_data
 
-    assert "id" not in serializerData
-    assert "name" not in serializerData
-    assert "account" not in serializerData
-    assert "save_attachments" in serializerData
-    assert serializerData["save_attachments"] == fake_mailbox.save_attachments
-    assert "save_toEML" in serializerData
-    assert serializerData["save_toEML"] == fake_mailbox.save_toEML
-    assert "save_toHTML" in serializerData
-    assert serializerData["save_toHTML"] == fake_mailbox.save_toHTML
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_mailbox.is_favorite
-    assert "is_healthy" not in serializerData
-    assert "created" not in serializerData
-    assert "updated" not in serializerData
-    assert len(serializerData) == 4
+    assert "id" not in serializer_data
+    assert "name" not in serializer_data
+    assert "account" not in serializer_data
+    assert "save_attachments" in serializer_data
+    assert serializer_data["save_attachments"] == fake_mailbox.save_attachments
+    assert "save_to_eml" in serializer_data
+    assert serializer_data["save_to_eml"] == fake_mailbox.save_to_eml
+    assert "save_to_html" in serializer_data
+    assert serializer_data["save_to_html"] == fake_mailbox.save_to_html
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_mailbox.is_favorite
+    assert "is_healthy" not in serializer_data
+    assert "created" not in serializer_data
+    assert "updated" not in serializer_data
+    assert len(serializer_data) == 4

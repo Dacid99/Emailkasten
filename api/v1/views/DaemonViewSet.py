@@ -105,8 +105,8 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
         """
         daemon = self.get_object()
 
-        availableFetchingOptions = daemon.mailbox.getAvailableFetchingCriteria()
-        return Response({"options": availableFetchingOptions})
+        available_fetching_options = daemon.mailbox.get_available_fetching_criteria()
+        return Response({"options": available_fetching_options})
 
     URL_PATH_TEST = "test"
     URL_NAME_TEST = "test"
@@ -125,9 +125,9 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
             A response detailing the test result for the daemon.
         """
         daemon = self.get_object()
-        result = EmailArchiverDaemonRegistry.testDaemon(daemon)
+        result = EmailArchiverDaemonRegistry.test_daemon(daemon)
         daemon.refresh_from_db()
-        daemonData = self.get_serializer(daemon).data
+        daemon_data = self.get_serializer(daemon).data
         return Response(
             {
                 "detail": (
@@ -135,7 +135,7 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
                     if result
                     else "Daemon testrun failed!"
                 ),
-                "daemon": daemonData,
+                "daemon": daemon_data,
                 "result": result,
             }
         )
@@ -157,7 +157,7 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
             A response detailing the start result of the daemon.
         """
         daemon = self.get_object()
-        result = EmailArchiverDaemonRegistry.startDaemon(daemon)
+        result = EmailArchiverDaemonRegistry.start_daemon(daemon)
         if result:
             response = Response({"detail": "Daemon started"})
         else:
@@ -166,8 +166,8 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         daemon.refresh_from_db()
-        daemonData = self.get_serializer(daemon).data
-        response.data["daemon"] = daemonData
+        daemon_data = self.get_serializer(daemon).data
+        response.data["daemon"] = daemon_data
         return response
 
     URL_PATH_STOP = "stop"
@@ -187,7 +187,7 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
             A response detailing the stop result for the daemon.
         """
         daemon = self.get_object()
-        result = EmailArchiverDaemonRegistry.stopDaemon(daemon)
+        result = EmailArchiverDaemonRegistry.stop_daemon(daemon)
         if result:
             response = Response({"status": "Daemon stopped"})
         else:
@@ -196,8 +196,8 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         daemon.refresh_from_db()
-        daemonData = self.get_serializer(daemon).data
-        response.data["daemon"] = daemonData
+        daemon_data = self.get_serializer(daemon).data
+        response.data["daemon"] = daemon_data
         return response
 
     URL_PATH_LOG_DOWNLOAD = "log/download"
@@ -230,13 +230,13 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
         except ValueError:
             number = 0
         number_suffix = f".{number}" if number > 0 else ""
-        daemonLogFilepath = daemon.log_filepath + number_suffix
-        if not daemonLogFilepath or not os.path.exists(daemonLogFilepath):
+        daemon_log_filepath = daemon.log_filepath + number_suffix
+        if not daemon_log_filepath or not os.path.exists(daemon_log_filepath):
             raise Http404("Log file not found")
 
-        daemonLogFilename = os.path.basename(daemonLogFilepath)
+        daemon_log_filename = os.path.basename(daemon_log_filepath)
         return FileResponse(
-            open(daemonLogFilepath, "rb"),
+            open(daemon_log_filepath, "rb"),
             as_attachment=True,
-            filename=daemonLogFilename,
+            filename=daemon_log_filename,
         )

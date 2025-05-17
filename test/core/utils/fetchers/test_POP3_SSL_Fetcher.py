@@ -60,7 +60,7 @@ def mock_POP3_SSL(mocker, faker):
         (None, None),
     ],
 )
-def test_POP3Fetcher_connectToHost_success(
+def test_POP3Fetcher_connect_to_host_success(
     pop3_ssl_mailbox, mock_logger, mock_POP3_SSL, mail_host_port, timeout
 ):
     pop3_ssl_mailbox.account.mail_host_port = mail_host_port
@@ -80,7 +80,7 @@ def test_POP3Fetcher_connectToHost_success(
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_connectToHost_exception(
+def test_POP3Fetcher_connect_to_host_exception(
     pop3_ssl_mailbox, mock_logger, mock_POP3_SSL
 ):
     mock_POP3_SSL.side_effect = AssertionError

@@ -105,13 +105,13 @@ class AttachmentViewSet(
         """
         attachment = self.get_object()
 
-        attachmentFilePath = attachment.file_path
-        if not attachmentFilePath or not os.path.exists(attachmentFilePath):
+        attachment_file_path = attachment.file_path
+        if not attachment_file_path or not os.path.exists(attachment_file_path):
             raise Http404("Attachment file not found")
 
-        attachmentFileName = attachment.file_name
+        attachment_file_name = attachment.file_name
         return FileResponse(
-            open(attachmentFilePath, "rb"),
+            open(attachment_file_path, "rb"),
             as_attachment=True,
-            filename=attachmentFileName,
+            filename=attachment_file_name,
         )

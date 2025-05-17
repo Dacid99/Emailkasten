@@ -61,7 +61,7 @@ class BaseEmailSerializer(serializers.ModelSerializer[Email]):
             "email_subject",
             "plain_bodytext",
             "html_bodytext",
-            "inReplyTo",
+            "in_reply_to",
             "datasize",
             "correspondents",
             "mailinglist",

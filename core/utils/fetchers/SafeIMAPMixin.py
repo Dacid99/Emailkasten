@@ -43,7 +43,7 @@ IMAP4ActionResponse = TypeVar("IMAP4ActionResponse", bound=IMAP4Response)
 class IMAP4FetcherClass(Protocol):
     """Protocol defining the required attributes of a class implementing this mixin."""
 
-    _mailClient: imaplib.IMAP4
+    _mail_client: imaplib.IMAP4
     logger: logging.Logger
 
 
@@ -51,7 +51,7 @@ class SafeIMAPMixin:
     """Mixin with safe IMAP operations.
 
     The implementing class must have
-    an :attr:`_mailClient` that is an :class:`imaplib.IMAP4` or :class:`imaplib.IMAP4_SSL`
+    an :attr:`_mail_client` that is an :class:`imaplib.IMAP4` or :class:`imaplib.IMAP4_SSL`
     and an instance logger.
 
     Only errors leading up to and during the fetching process raise outside of the class.
@@ -59,12 +59,12 @@ class SafeIMAPMixin:
 
     """
 
-    def checkResponse(
+    def check_response(
         self,
         response: IMAP4Response,
-        commandName: str,
+        command_name: str,
         exception: type[FetcherError] | None,
-        expectedStatus: str = "OK",
+        expected_status: str = "OK",
     ) -> None:
         """Checks the status response of an IMAP action.
 
@@ -75,23 +75,23 @@ class SafeIMAPMixin:
 
         Args:
             response: The complete response to the IMAP action.
-            commandName: The name of the action.
+            command_name: The name of the action.
             exception: The expection to raise if the status doesnt match the expectation. Defaults to :class:`core.utils.fetchers.exceptions.FetcherError`.
-            expectedStatus: The expected status response. Defaults to `"OK"`.
+            expected_status: The expected status response. Defaults to `"OK"`.
 
         Raises:
             exception: If the response status doesnt match the expectation.
         """
-        if response[0] != expectedStatus:
+        if response[0] != expected_status:
             self.logger.error(
                 "Bad server response for %s:\n%s",
-                commandName,
+                command_name,
                 response,
             )
             if exception is not None:
                 raise exception(
-                    _("Bad server response for %(commandName)s:\n%(response)s")
-                    % {"commandName": commandName, "response": response}
+                    _("Bad server response for %(command_name)s:\n%(response)s")
+                    % {"command_name": command_name, "response": response}
                 )
         self.logger.debug("Server responded %s as expected.", response[0])
 
@@ -99,7 +99,7 @@ class SafeIMAPMixin:
     @staticmethod
     def safe(
         exception: type[FetcherError],
-        expectedStatus: str = "OK",
+        expected_status: str = "OK",
     ) -> Callable[
         [Callable[..., IMAP4ActionResponse]], Callable[..., IMAP4ActionResponse]
     ]: ...
@@ -108,14 +108,14 @@ class SafeIMAPMixin:
     @staticmethod
     def safe(
         exception: None,
-        expectedStatus: str = "OK",
+        expected_status: str = "OK",
     ) -> Callable[
         [Callable[..., IMAP4ActionResponse]], Callable[..., IMAP4ActionResponse | None]
     ]: ...
 
     @staticmethod
     def safe(
-        exception: type[FetcherError] | None, expectedStatus: str = "OK"
+        exception: type[FetcherError] | None, expected_status: str = "OK"
     ) -> Callable[
         [Callable[..., IMAP4ActionResponse]], Callable[..., IMAP4ActionResponse | None]
     ]:
@@ -130,7 +130,7 @@ class SafeIMAPMixin:
             exception: The exception to raise if an error occurs or the status doesnt match the expectation.
                 Defaults to :class:`core.utils.fetchers.exceptions.FetcherError`.
                 If `None` is passed, no exception is raised, all errors are logged nonetheless.
-            expectedStatus: The expected status response. Defaults to `"OK"`.
+            expected_status: The expected status response. Defaults to `"OK"`.
 
         Returns:
             The return value of the wrapped action.
@@ -140,20 +140,20 @@ class SafeIMAPMixin:
             exception: If an error occurs or the status doesnt match the expectation.
         """
 
-        def safeWrapper(
-            imapAction: Callable[..., IMAP4ActionResponse],
+        def safe_wrapper(
+            imap_action: Callable[..., IMAP4ActionResponse],
         ) -> Callable[..., IMAP4ActionResponse | None]:
 
-            def safeAction(
+            def safe_action(
                 self: Self, *args: Any, **kwargs: Any
             ) -> IMAP4ActionResponse | None:
                 try:
-                    response = imapAction(self, *args, **kwargs)
+                    response = imap_action(self, *args, **kwargs)
                 except Exception as error:
                     self.logger.exception(
                         "An %s occured during %s!",
                         error.__class__.__name__,
-                        imapAction.__name__,
+                        imap_action.__name__,
                     )
                     if exception is not None:
                         raise exception(
@@ -163,72 +163,72 @@ class SafeIMAPMixin:
                             % {
                                 "error_class_name": error.__class__.__name__,
                                 "error": error,
-                                "action_name": imapAction.__name__,
+                                "action_name": imap_action.__name__,
                             },
                         ) from error
                     return None
                 else:
-                    self.checkResponse(
-                        response, imapAction.__name__, exception, expectedStatus
+                    self.check_response(
+                        response, imap_action.__name__, exception, expected_status
                     )
                     return response
 
-            return safeAction
+            return safe_action
 
-        return safeWrapper
+        return safe_wrapper
 
     @safe(exception=MailAccountError)
     def safe_login(
         self: IMAP4FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[Literal["OK"], list[bytes]]:
         """The :func:`safe` wrapped version of :func:`imaplib.IMAP4.login`."""
-        return self._mailClient.login(*args, **kwargs)
+        return self._mail_client.login(*args, **kwargs)
 
     @safe(exception=MailboxError)
     def safe_select(
         self: IMAP4FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[str, list[bytes | None]]:
         """The :func:`safe` wrapped version of :func:`imaplib.IMAP4.select`."""
-        return self._mailClient.select(*args, **kwargs)
+        return self._mail_client.select(*args, **kwargs)
 
     @safe(exception=None)
     def safe_unselect(
         self: IMAP4FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[str, list[Any]]:
         """The :func:`safe` wrapped version of :func:`imaplib.IMAP4.select`."""
-        return self._mailClient.unselect(*args, **kwargs)
+        return self._mail_client.unselect(*args, **kwargs)
 
     @safe(exception=MailAccountError)
     def safe_list(
         self: IMAP4FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[str, list[None] | list[bytes | tuple[bytes, bytes]]]:
         """The :func:`safe` wrapped version of :func:`imaplib.IMAP4.list`."""
-        return self._mailClient.list(*args, **kwargs)
+        return self._mail_client.list(*args, **kwargs)
 
     @safe(exception=MailboxError)
     def safe_uid(
         self: IMAP4FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[str, list[Any]]:
         """The :func:`safe` wrapped version of :func:`imaplib.IMAP4.uid`."""
-        return self._mailClient.uid(*args, **kwargs)
+        return self._mail_client.uid(*args, **kwargs)
 
     @safe(exception=MailAccountError)
     def safe_noop(
         self: IMAP4FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[str, list[bytes]]:
         """The :func:`safe` wrapped version of :func:`imaplib.IMAP4.noop`."""
-        return self._mailClient.noop(*args, **kwargs)
+        return self._mail_client.noop(*args, **kwargs)
 
     @safe(exception=MailboxError)
     def safe_check(
         self: IMAP4FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[str, list[Any]]:
         """The :func:`safe` wrapped version of :func:`imaplib.IMAP4.check`."""
-        return self._mailClient.check(*args, **kwargs)
+        return self._mail_client.check(*args, **kwargs)
 
-    @safe(exception=None, expectedStatus="BYE")
+    @safe(exception=None, expected_status="BYE")
     def safe_logout(
         self: IMAP4FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[str, list[None] | list[bytes | tuple[bytes, bytes]]]:
         """The :func:`safe` wrapped version of :func:`imaplib.IMAP4.logout`."""
-        return self._mailClient.logout(*args, **kwargs)
+        return self._mail_client.logout(*args, **kwargs)

@@ -30,7 +30,7 @@ from django.utils.translation import gettext_lazy as _
 
 from Emailkasten.utils.workarounds import get_config
 
-from ..utils.fileManagment import clean_filename
+from ..utils.file_managment import clean_filename
 
 
 logger = logging.getLogger(__name__)
@@ -102,10 +102,10 @@ class Storage(models.Model):
 
         super().save(*args, **kwargs)
 
-    def incrementSubdirectoryCount(self) -> None:
+    def increment_subdirectory_count(self) -> None:
         """Increments the :attr:`subdirectory_count` within the limits of :attr:`constance.get_config('STORAGE_MAX_SUBDIRS_PER_DIR')`.
 
-        If the result exceeds this limit, creates a new storage directory via :func:`_addNewDirectory`.
+        If the result exceeds this limit, creates a new storage directory via :func:`_add_new_directory`.
         """
         logger.debug("Incrementing subdirectory count of %s ..", self)
 
@@ -116,12 +116,12 @@ class Storage(models.Model):
                 "Max number of subdirectories in %s reached, adding new storage ...",
                 self,
             )
-            self._addNewDirectory()
+            self._add_new_directory()
             logger.debug("Successfully added new storage.")
 
         logger.debug("Successfully incremented subdirectory count.")
 
-    def _addNewDirectory(self) -> None:
+    def _add_new_directory(self) -> None:
         """Adds a new storage directory.
 
         Setting this entries :attr:`current` to `False`
@@ -136,7 +136,7 @@ class Storage(models.Model):
         )
 
     @staticmethod
-    def getSubdirectory(subdirectoryName: str) -> str:
+    def get_subdirectory(subdirectory_name: str) -> str:
         """Static utility to acquire a path for a subdirectory in the storage.
 
         If that subdirectory does not exist yet,
@@ -144,35 +144,35 @@ class Storage(models.Model):
         If a file exists at the projected path, adds suffixes to the path until it does no longer point to a file.
 
         Args:
-            subdirectoryName: The name of the subdirectory to be stored.
+            subdirectory_name: The name of the subdirectory to be stored.
 
         Returns:
             The path of the subdirectory in the storage.
         """
-        storageEntry = Storage.objects.filter(current=True).first()
-        if not storageEntry:
+        storage_entry = Storage.objects.filter(current=True).first()
+        if not storage_entry:
             logger.info("Creating first storage directory...")
-            storageEntry = Storage.objects.create(
+            storage_entry = Storage.objects.create(
                 directory_number=0, current=True, subdirectory_count=0
             )
             logger.info("Successfully created first storage directory.")
 
-        clean_subdirectoryPath = clean_filename(subdirectoryName)
-        subdirectoryPath = os.path.join(storageEntry.path, clean_subdirectoryPath)
-        if not os.path.isdir(subdirectoryPath):
-            while os.path.isfile(subdirectoryPath):
-                subdirectoryPath += ".a"
+        clean_subdirectory_path = clean_filename(subdirectory_name)
+        subdirectory_path = os.path.join(storage_entry.path, clean_subdirectory_path)
+        if not os.path.isdir(subdirectory_path):
+            while os.path.isfile(subdirectory_path):
+                subdirectory_path += ".a"
             logger.debug(
                 "Creating new subdirectory in the current storage directory ..."
             )
-            os.makedirs(subdirectoryPath)
+            os.makedirs(subdirectory_path)
 
-            storageEntry.incrementSubdirectoryCount()
+            storage_entry.increment_subdirectory_count()
             logger.debug(
                 "Successfully created new subdirectory in the current storage directory."
             )
 
-        return subdirectoryPath
+        return subdirectory_path
 
     @staticmethod
     def healthcheck() -> bool:
@@ -183,25 +183,25 @@ class Storage(models.Model):
             False if there is no unique current storage directory
             or the count of subdirectories for one of the directories is wrong.
         """
-        uniqueCurrent = Storage.objects.filter(current=True).count() < 2
-        if not uniqueCurrent:
+        unique_current = Storage.objects.filter(current=True).count() < 2
+        if not unique_current:
             logger.critical("More than one currently used storage direcory!!!")
             return False
 
-        correctDirCount = Storage.objects.count() == len(
+        correct_dir_count = Storage.objects.count() == len(
             os.listdir(settings.STORAGE_PATH)
         )
-        if not correctDirCount:
+        if not correct_dir_count:
             logger.critical(
                 "Number of paths in storage doesnt match the index in the database!!!"
             )
             return False
 
-        correctSubdirCount = all(
+        correct_subdir_count = all(
             storage.subdirectory_count == len(os.listdir(storage.path))
             for storage in Storage.objects.all()
         )
-        if not correctSubdirCount:
+        if not correct_subdir_count:
             logger.critical(
                 "Number of paths in a storage directory doesnt match the index in the database!!!"
             )

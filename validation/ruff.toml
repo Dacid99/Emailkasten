@@ -36,9 +36,9 @@ select = [
   "INP",  # flake8-no-pep420
   "ISC",  # flake8-implicit-str-concat
   "LOG",  # flake8-logging
-#  "N",    # pep8-naming, disabled while still using Javastyle naming
+  "N",    # pep8-naming
   "PERF", # perflint
-  "PGH", # pygrep-hooks
+  "PGH",  # pygrep-hooks
   "PIE",  # flake8-pie
   "PL",   # pylint
   "PT",   # flake8-pytest-style
@@ -50,8 +50,8 @@ select = [
   "SLF",  # flake8-self
   "SLOT", # flake8-slots
   "T20",  # flake8-print
-  "T10", # flake8-debugger
-  "TC",  # flake8-type-checking
+  "T10",  # flake8-debugger
+  "TC",   # flake8-type-checking
   "TRY",  # tryceratops
   "UP",   # pyupgrade
   "W",    # pycodestyle
@@ -60,13 +60,14 @@ select = [
 ignore = [
   "ARG001",  # allow unaccessed args
   "ARG002",  # allow unaccessed args
-  "COM812", # trailing comma, redundant with `black`
-  "D202",   # allow blank line after function docstring
-  "D203",   # no blank line before class docstring
-  "D205",   # docstring summary can span more than one line
-  "D401",   # docstring does not need to be imperative
-  "D417",  # must be disabled for google style docs
+  "COM812",  # trailing comma, redundant with `black`
+  "D202",    # allow blank line after function docstring
+  "D203",    # no blank line before class docstring
+  "D205",    # docstring summary can span more than one line
+  "D401",    # docstring does not need to be imperative
+  "D417",    # must be disabled for google style docs
   "ISC003",  # prefer explicit string concat over implicit concat
+  "N999",    # module names can be PascalCase too
   "PLR09",   # we have our own complexity rules
   "TRY003",  # long exception messages from `tryceratops`
 ]
@@ -101,6 +102,8 @@ parametrize-values-type = "list"
   "SLF001", # private accessed
   "PLR2004", # magic numbers
   "ANN",  # no type annotations in tests needed
+  "N802",  # class names must be allowed as part of test function names
+  "N803",  # class names must be allowed as part of fixture names
 ]
 
 [lint.extend-per-file-ignores]

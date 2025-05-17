@@ -29,9 +29,9 @@ from core.models.Account import Account
 
 
 @pytest.mark.django_db
-def test_list_noauth(fake_account, noauth_apiClient, list_url):
+def test_list_noauth(fake_account, noauth_api_client, list_url):
     """Tests the list method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.get(list_url(AccountViewSet))
+    response = noauth_api_client.get(list_url(AccountViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
@@ -39,9 +39,9 @@ def test_list_noauth(fake_account, noauth_apiClient, list_url):
 
 
 @pytest.mark.django_db
-def test_list_auth_other(fake_account, other_apiClient, list_url):
+def test_list_auth_other(fake_account, other_api_client, list_url):
     """Tests the list method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated other user client."""
-    response = other_apiClient.get(list_url(AccountViewSet))
+    response = other_api_client.get(list_url(AccountViewSet))
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["count"] == 0
@@ -49,9 +49,9 @@ def test_list_auth_other(fake_account, other_apiClient, list_url):
 
 
 @pytest.mark.django_db
-def test_list_auth_owner(fake_account, owner_apiClient, list_url):
+def test_list_auth_owner(fake_account, owner_api_client, list_url):
     """Tests the list method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.get(list_url(AccountViewSet))
+    response = owner_api_client.get(list_url(AccountViewSet))
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["count"] == 1
@@ -61,9 +61,9 @@ def test_list_auth_owner(fake_account, owner_apiClient, list_url):
 
 
 @pytest.mark.django_db
-def test_get_noauth(fake_account, noauth_apiClient, detail_url):
+def test_get_noauth(fake_account, noauth_api_client, detail_url):
     """Tests the get method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.get(detail_url(AccountViewSet, fake_account))
+    response = noauth_api_client.get(detail_url(AccountViewSet, fake_account))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
@@ -71,9 +71,9 @@ def test_get_noauth(fake_account, noauth_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_get_auth_other(fake_account, other_apiClient, detail_url):
+def test_get_auth_other(fake_account, other_api_client, detail_url):
     """Tests the get method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated other user client."""
-    response = other_apiClient.get(detail_url(AccountViewSet, fake_account))
+    response = other_api_client.get(detail_url(AccountViewSet, fake_account))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     with pytest.raises(KeyError):
@@ -81,9 +81,9 @@ def test_get_auth_other(fake_account, other_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(fake_account, owner_apiClient, detail_url):
+def test_get_auth_owner(fake_account, owner_api_client, detail_url):
     """Tests the list method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.get(detail_url(AccountViewSet, fake_account))
+    response = owner_api_client.get(detail_url(AccountViewSet, fake_account))
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["mail_address"] == fake_account.mail_address
@@ -92,10 +92,10 @@ def test_get_auth_owner(fake_account, owner_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_patch_noauth(fake_account, noauth_apiClient, accountPayload, detail_url):
+def test_patch_noauth(fake_account, noauth_api_client, account_payload, detail_url):
     """Tests the patch method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.patch(
-        detail_url(AccountViewSet, fake_account), data=accountPayload
+    response = noauth_api_client.patch(
+        detail_url(AccountViewSet, fake_account), data=account_payload
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -104,15 +104,15 @@ def test_patch_noauth(fake_account, noauth_apiClient, accountPayload, detail_url
     with pytest.raises(KeyError):
         response.data["password"]
     fake_account.refresh_from_db()
-    assert fake_account.mail_address != accountPayload["mail_address"]
-    assert fake_account.password != accountPayload["password"]
+    assert fake_account.mail_address != account_payload["mail_address"]
+    assert fake_account.password != account_payload["password"]
 
 
 @pytest.mark.django_db
-def test_patch_auth_other(fake_account, other_apiClient, accountPayload, detail_url):
+def test_patch_auth_other(fake_account, other_api_client, account_payload, detail_url):
     """Tests the patch method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated other user client."""
-    response = other_apiClient.patch(
-        detail_url(AccountViewSet, fake_account), data=accountPayload
+    response = other_api_client.patch(
+        detail_url(AccountViewSet, fake_account), data=account_payload
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -121,31 +121,31 @@ def test_patch_auth_other(fake_account, other_apiClient, accountPayload, detail_
     with pytest.raises(KeyError):
         response.data["password"]
     fake_account.refresh_from_db()
-    assert fake_account.mail_address != accountPayload["mail_address"]
-    assert fake_account.password != accountPayload["password"]
+    assert fake_account.mail_address != account_payload["mail_address"]
+    assert fake_account.password != account_payload["password"]
 
 
 @pytest.mark.django_db
-def test_patch_auth_owner(fake_account, owner_apiClient, accountPayload, detail_url):
+def test_patch_auth_owner(fake_account, owner_api_client, account_payload, detail_url):
     """Tests the patch method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.patch(
-        detail_url(AccountViewSet, fake_account), data=accountPayload
+    response = owner_api_client.patch(
+        detail_url(AccountViewSet, fake_account), data=account_payload
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data["mail_address"] == accountPayload["mail_address"]
+    assert response.data["mail_address"] == account_payload["mail_address"]
     with pytest.raises(KeyError):
         response.data["password"]
     fake_account.refresh_from_db()
-    assert fake_account.mail_address == accountPayload["mail_address"]
-    assert fake_account.password == accountPayload["password"]
+    assert fake_account.mail_address == account_payload["mail_address"]
+    assert fake_account.password == account_payload["password"]
 
 
 @pytest.mark.django_db
-def test_put_noauth(fake_account, noauth_apiClient, accountPayload, detail_url):
+def test_put_noauth(fake_account, noauth_api_client, account_payload, detail_url):
     """Tests the put method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.put(
-        detail_url(AccountViewSet, fake_account), data=accountPayload
+    response = noauth_api_client.put(
+        detail_url(AccountViewSet, fake_account), data=account_payload
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -154,14 +154,14 @@ def test_put_noauth(fake_account, noauth_apiClient, accountPayload, detail_url):
     with pytest.raises(KeyError):
         response.data["password"]
     fake_account.refresh_from_db()
-    assert fake_account.mail_host != accountPayload["mail_host"]
+    assert fake_account.mail_host != account_payload["mail_host"]
 
 
 @pytest.mark.django_db
-def test_put_auth_other(fake_account, other_apiClient, accountPayload, detail_url):
+def test_put_auth_other(fake_account, other_api_client, account_payload, detail_url):
     """Tests the put method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated other user client."""
-    response = other_apiClient.put(
-        detail_url(AccountViewSet, fake_account), data=accountPayload
+    response = other_api_client.put(
+        detail_url(AccountViewSet, fake_account), data=account_payload
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -170,28 +170,28 @@ def test_put_auth_other(fake_account, other_apiClient, accountPayload, detail_ur
     with pytest.raises(KeyError):
         response.data["password"]
     fake_account.refresh_from_db()
-    assert fake_account.mail_host != accountPayload["mail_host"]
+    assert fake_account.mail_host != account_payload["mail_host"]
 
 
 @pytest.mark.django_db
-def test_put_auth_owner(fake_account, owner_apiClient, accountPayload, detail_url):
+def test_put_auth_owner(fake_account, owner_api_client, account_payload, detail_url):
     """Tests the put method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.put(
-        detail_url(AccountViewSet, fake_account), data=accountPayload
+    response = owner_api_client.put(
+        detail_url(AccountViewSet, fake_account), data=account_payload
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data["mail_host"] == accountPayload["mail_host"]
+    assert response.data["mail_host"] == account_payload["mail_host"]
     with pytest.raises(KeyError):
         response.data["password"]
     fake_account.refresh_from_db()
-    assert fake_account.mail_host == accountPayload["mail_host"]
+    assert fake_account.mail_host == account_payload["mail_host"]
 
 
 @pytest.mark.django_db
-def test_post_noauth(noauth_apiClient, accountPayload, list_url):
+def test_post_noauth(noauth_api_client, account_payload, list_url):
     """Tests the post method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.post(list_url(AccountViewSet), data=accountPayload)
+    response = noauth_api_client.post(list_url(AccountViewSet), data=account_payload)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
@@ -199,53 +199,53 @@ def test_post_noauth(noauth_apiClient, accountPayload, list_url):
     with pytest.raises(KeyError):
         response.data["password"]
     with pytest.raises(Account.DoesNotExist):
-        Account.objects.get(mail_host=accountPayload["mail_host"])
+        Account.objects.get(mail_host=account_payload["mail_host"])
 
 
 @pytest.mark.django_db
-def test_post_auth_other(other_user, other_apiClient, accountPayload, list_url):
+def test_post_auth_other(other_user, other_api_client, account_payload, list_url):
     """Tests the post method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated other user client."""
-    response = other_apiClient.post(list_url(AccountViewSet), data=accountPayload)
+    response = other_api_client.post(list_url(AccountViewSet), data=account_payload)
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert response.data["mail_host"] == accountPayload["mail_host"]
+    assert response.data["mail_host"] == account_payload["mail_host"]
     with pytest.raises(KeyError):
         response.data["password"]
-    postedAccount = Account.objects.get(mail_host=accountPayload["mail_host"])
-    assert postedAccount is not None
-    assert postedAccount.user == other_user
+    posted_account = Account.objects.get(mail_host=account_payload["mail_host"])
+    assert posted_account is not None
+    assert posted_account.user == other_user
 
 
 @pytest.mark.django_db
-def test_post_auth_owner(owner_user, owner_apiClient, accountPayload, list_url):
+def test_post_auth_owner(owner_user, owner_api_client, account_payload, list_url):
     """Tests the post method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.post(list_url(AccountViewSet), data=accountPayload)
+    response = owner_api_client.post(list_url(AccountViewSet), data=account_payload)
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert response.data["mail_host"] == accountPayload["mail_host"]
+    assert response.data["mail_host"] == account_payload["mail_host"]
     with pytest.raises(KeyError):
         response.data["password"]
-    postedAccount = Account.objects.get(mail_host=accountPayload["mail_host"])
-    assert postedAccount is not None
-    assert postedAccount.user == owner_user
+    posted_account = Account.objects.get(mail_host=account_payload["mail_host"])
+    assert posted_account is not None
+    assert posted_account.user == owner_user
 
 
 @pytest.mark.django_db
-def test_post_duplicate_auth_owner(fake_account, owner_apiClient, list_url):
+def test_post_duplicate_auth_owner(fake_account, owner_api_client, list_url):
     """Tests the post method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated owner user client and duplicate data."""
     payload = model_to_dict(fake_account)
     payload.pop("id")
-    cleanPayload = {key: value for key, value in payload.items() if value is not None}
+    clean_payload = {key: value for key, value in payload.items() if value is not None}
 
-    response = owner_apiClient.post(list_url(AccountViewSet), data=cleanPayload)
+    response = owner_api_client.post(list_url(AccountViewSet), data=clean_payload)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.django_db
-def test_delete_noauth(fake_account, noauth_apiClient, detail_url):
+def test_delete_noauth(fake_account, noauth_api_client, detail_url):
     """Tests the delete method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.delete(detail_url(AccountViewSet, fake_account))
+    response = noauth_api_client.delete(detail_url(AccountViewSet, fake_account))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_account.refresh_from_db()
@@ -253,9 +253,9 @@ def test_delete_noauth(fake_account, noauth_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_delete_auth_other(fake_account, other_apiClient, detail_url):
+def test_delete_auth_other(fake_account, other_api_client, detail_url):
     """Tests the delete method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated other user client."""
-    response = other_apiClient.delete(detail_url(AccountViewSet, fake_account))
+    response = other_api_client.delete(detail_url(AccountViewSet, fake_account))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_account.refresh_from_db()
@@ -263,9 +263,9 @@ def test_delete_auth_other(fake_account, other_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_delete_auth_owner(fake_account, owner_apiClient, detail_url):
+def test_delete_auth_owner(fake_account, owner_api_client, detail_url):
     """Tests the delete method on :class:`api.v1.views.AccountViewSet.AccountViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.delete(detail_url(AccountViewSet, fake_account))
+    response = owner_api_client.delete(detail_url(AccountViewSet, fake_account))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     with pytest.raises(Account.DoesNotExist):

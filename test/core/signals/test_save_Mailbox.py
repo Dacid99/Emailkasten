@@ -33,7 +33,7 @@ def mock_logger(mocker):
 
 @pytest.mark.django_db
 def test_Mailbox_post_save_from_healthy(mailbox_with_daemons, mock_logger):
-    """Tests behaviour of :func:`core.signals.saveMailbox.post_save_is_healthy`."""
+    """Tests behaviour of :func:`core.signals.save_mailbox.post_save_is_healthy`."""
     mailbox_with_daemons.account.is_healthy = True
     mailbox_with_daemons.account.save(update_fields=["is_healthy"])
     mailbox_with_daemons.is_healthy = True
@@ -63,7 +63,7 @@ def test_Mailbox_post_save_from_healthy(mailbox_with_daemons, mock_logger):
 
 @pytest.mark.django_db
 def test_Mailbox_post_save_from_unhealthy(mailbox_with_daemons, mock_logger):
-    """Tests behaviour of :func:`core.signals.saveMailbox.post_save_is_healthy`."""
+    """Tests behaviour of :func:`core.signals.save_mailbox.post_save_is_healthy`."""
     mailbox_with_daemons.account.is_healthy = False
     mailbox_with_daemons.account.save(update_fields=["is_healthy"])
     mailbox_with_daemons.is_healthy = False

@@ -27,36 +27,36 @@ from api.v1.serializers.emailcorrespondent_serializers.CorrespondentEmailSeriali
 
 
 @pytest.mark.django_db
-def test_output(fake_emailCorrespondent, request_context):
+def test_output(fake_email_correspondent, request_context):
     """Tests for the expected output of the serializer."""
-    serializerData = CorrespondentEmailSerializer(
-        instance=fake_emailCorrespondent, context=request_context
+    serializer_data = CorrespondentEmailSerializer(
+        instance=fake_email_correspondent, context=request_context
     ).data
 
-    assert "id" not in serializerData
-    assert "email" in serializerData
-    assert isinstance(serializerData["email"], dict)
-    assert "correspondent" not in serializerData
-    assert "mention" in serializerData
-    assert serializerData["mention"] == fake_emailCorrespondent.mention
-    assert "created" not in serializerData
-    assert "updated" not in serializerData
-    assert len(serializerData) == 2
+    assert "id" not in serializer_data
+    assert "email" in serializer_data
+    assert isinstance(serializer_data["email"], dict)
+    assert "correspondent" not in serializer_data
+    assert "mention" in serializer_data
+    assert serializer_data["mention"] == fake_email_correspondent.mention
+    assert "created" not in serializer_data
+    assert "updated" not in serializer_data
+    assert len(serializer_data) == 2
 
 
 @pytest.mark.django_db
-def test_input(fake_emailCorrespondent, request_context):
+def test_input(fake_email_correspondent, request_context):
     """Tests for the expected input of the serializer."""
     serializer = CorrespondentEmailSerializer(
-        data=model_to_dict(fake_emailCorrespondent), context=request_context
+        data=model_to_dict(fake_email_correspondent), context=request_context
     )
     assert serializer.is_valid()
-    serializerData = serializer.validated_data
+    serializer_data = serializer.validated_data
 
-    assert "id" not in serializerData
-    assert "email" not in serializerData
-    assert "correspondent" not in serializerData
-    assert "mention" not in serializerData
-    assert "created" not in serializerData
-    assert "updated" not in serializerData
-    assert len(serializerData) == 0
+    assert "id" not in serializer_data
+    assert "email" not in serializer_data
+    assert "correspondent" not in serializer_data
+    assert "mention" not in serializer_data
+    assert "created" not in serializer_data
+    assert "updated" not in serializer_data
+    assert len(serializer_data) == 0

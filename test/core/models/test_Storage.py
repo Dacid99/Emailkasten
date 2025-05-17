@@ -107,7 +107,7 @@ def test_Storage_initial_single_creation(
     settings.STORAGE_PATH = STORAGE_PATH
 
     with override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3):
-        subdirectory = Storage.getSubdirectory("test")
+        subdirectory = Storage.get_subdirectory("test")
 
     assert os.path.isdir(subdirectory)
     assert subdirectory.startswith(STORAGE_PATH)
@@ -127,7 +127,7 @@ def test_Storage_initial_many_creation(mock_logger):
     """Tests the correct initial allocation of storage by :class:`core.models.Storage.Storage`."""
 
     for number in range(2 * 3 + 1):
-        Storage.getSubdirectory(f"test_{number}")
+        Storage.get_subdirectory(f"test_{number}")
 
     mock_logger.info.assert_called()
 
@@ -148,7 +148,7 @@ def test_Storage_initial_many_creation(mock_logger):
 def test_Storage_single_creation_healthcheck_success():
     """Tests the correct initial allocation of storage by :class:`core.models.Storage.Storage`."""
 
-    Storage.getSubdirectory("test")
+    Storage.get_subdirectory("test")
 
     health = Storage.healthcheck()
 
@@ -163,7 +163,7 @@ def test_Storage_many_creation_health_check_success():
     """Tests the correct initial allocation of storage by :class:`core.models.Storage.Storage`."""
 
     for number in range(2 * 3 + 1):
-        Storage.getSubdirectory(f"test_{number}")
+        Storage.get_subdirectory(f"test_{number}")
 
     health = Storage.healthcheck()
 
@@ -176,7 +176,7 @@ def test_Storage_many_creation_health_check_success():
 def test_Storage_health_check_failed_duplicate_current(mock_logger):
     """Tests the storage healthcheck in case of a duplicate `current` directory."""
     for number in range(2 * 3 + 1):
-        Storage.getSubdirectory(f"test_{number}")
+        Storage.get_subdirectory(f"test_{number}")
     Storage.objects.create(directory_number=10, current=True)
 
     health = Storage.healthcheck()
@@ -202,7 +202,7 @@ def test_Storage_health_check_failed_dirty_storage(
 
     with override_config(STORAGE_MAX_SUBDIRS_PER_DIR=3):
         for number in range(2 * 3 + 1):
-            Storage.getSubdirectory(f"test_{number}")
+            Storage.get_subdirectory(f"test_{number}")
 
     health = Storage.healthcheck()
 

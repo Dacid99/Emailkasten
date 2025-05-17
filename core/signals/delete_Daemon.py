@@ -42,5 +42,5 @@ def pre_delete_stop_daemon(sender: Daemon, instance: Daemon, **kwargs: Any) -> N
         **kwargs: Other keyword arguments.
     """
     logger.debug("Stopping daemon of deleted daemon %s ..", instance)
-    EmailArchiverDaemonRegistry.stopDaemon(instance)
+    EmailArchiverDaemonRegistry.stop_daemon(instance)
     logger.debug("Successfully stopped daemon of deleted daemon %s.", instance)

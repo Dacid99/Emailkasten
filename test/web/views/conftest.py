@@ -46,9 +46,9 @@ def complete_database(
     fake_correspondent,
     fake_daemon,
     fake_email,
-    fake_emailCorrespondent,
+    fake_email_correspondent,
     fake_mailbox,
-    fake_mailingList,
+    fake_mailing_list,
 ):
     """Fixture providing a complete database setup."""
 
@@ -92,7 +92,7 @@ def list_url() -> Callable[[type[ModelViewSet]], str]:
     Returns:
         The list url.
     """
-    return lambda viewClass: reverse(f"web:{viewClass.URL_NAME}")
+    return lambda view_class: reverse(f"web:{view_class.URL_NAME}")
 
 
 @pytest.fixture(scope="package")
@@ -102,8 +102,8 @@ def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
     Returns:
         The detail url.
     """
-    return lambda viewClass, instance: reverse(
-        f"web:{viewClass.URL_NAME}", args=[instance.id]
+    return lambda view_class, instance: reverse(
+        f"web:{view_class.URL_NAME}", args=[instance.id]
     )
 
 
@@ -114,8 +114,8 @@ def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
     Returns:
         A callable that gets the list url of the viewset from the custom action name.
     """
-    return lambda viewClass, custom_list_action_url_name: (
-        reverse(f"web:{viewClass.URL_NAME}-{custom_list_action_url_name}")
+    return lambda view_class, custom_list_action_url_name: (
+        reverse(f"web:{view_class.URL_NAME}-{custom_list_action_url_name}")
     )
 
 
@@ -126,9 +126,9 @@ def custom_detail_action_url() -> Callable[[type[ModelViewSet], str, Model], str
     Returns:
         A callable that gets the detail url of the viewset from the custom action name.
     """
-    return lambda viewClass, custom_detail_action_url_name, instance: (
+    return lambda view_class, custom_detail_action_url_name, instance: (
         reverse(
-            f"web:{viewClass.URL_NAME}-{custom_detail_action_url_name}",
+            f"web:{view_class.URL_NAME}-{custom_detail_action_url_name}",
             args=[instance.id],
         )
     )
@@ -177,20 +177,20 @@ def mock_Mailbox_fetch(mocker):
 
 
 @pytest.fixture
-def mock_EmailArchiverDaemonRegistry_startDaemon(mocker):
-    """Patches :func:`core.EmailArchiverDaemonRegistry.EmailArchiverDaemonRegistry.startDaemon` for testing of the start action."""
+def mock_EmailArchiverDaemonRegistry_start_daemon(mocker):
+    """Patches :func:`core.EmailArchiverDaemonRegistry.EmailArchiverDaemonRegistry.start_daemon` for testing of the start action."""
     return mocker.patch(
-        "core.EmailArchiverDaemonRegistry.EmailArchiverDaemonRegistry.startDaemon",
+        "core.EmailArchiverDaemonRegistry.EmailArchiverDaemonRegistry.start_daemon",
         autospec=True,
         return_value=True,
     )
 
 
 @pytest.fixture
-def mock_EmailArchiverDaemonRegistry_stopDaemon(mocker):
-    """Patches :func:`core.EmailArchiverDaemonRegistry.EmailArchiverDaemonRegistry.stopDaemon` for testing of the stop action."""
+def mock_EmailArchiverDaemonRegistry_stop_daemon(mocker):
+    """Patches :func:`core.EmailArchiverDaemonRegistry.EmailArchiverDaemonRegistry.stop_daemon` for testing of the stop action."""
     return mocker.patch(
-        "core.EmailArchiverDaemonRegistry.EmailArchiverDaemonRegistry.stopDaemon",
+        "core.EmailArchiverDaemonRegistry.EmailArchiverDaemonRegistry.stop_daemon",
         autospec=True,
         return_value=True,
     )

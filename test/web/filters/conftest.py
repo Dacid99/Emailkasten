@@ -138,7 +138,7 @@ def mailbox_queryset(unblocked_db, account_queryset) -> QuerySet[Mailbox, Mailbo
             baker.make(
                 Mailbox,
                 name=text_test_item,
-                save_toEML=BOOL_TEST_ITEMS[number],
+                save_to_eml=BOOL_TEST_ITEMS[number],
                 save_attachments=BOOL_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 is_healthy=BOOL_TEST_ITEMS[number],

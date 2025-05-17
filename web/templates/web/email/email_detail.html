@@ -7,7 +7,7 @@
 {% endblock title %}
 
 {% block card_class %}
-    {% if object.isSpam %}border-danger bg-danger-subtle{% endif %}
+    {% if object.is_spam %}border-danger bg-danger-subtle{% endif %}
 {% endblock card_class %}
 
 {% block badges %}
@@ -53,10 +53,10 @@
             {% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.mailbox.account.mail_address }}</a>
         </li>
-        {% if object.inReplyTo %}
+        {% if object.in_reply_to %}
             <li class="list-group-item list-group-item-action">
-                {% translate "In reply to" %}: <a href="{{ object.inReplyTo.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.inReplyTo.message_id }}</a>
+                {% translate "In reply to" %}: <a href="{{ object.in_reply_to.get_absolute_url }}"
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.in_reply_to.message_id }}</a>
             </li>
         {% endif %}
         <div class="accordion accordion-flush" id="content-accordion">
@@ -154,7 +154,7 @@
         <div class="card-body">
             <h4 class="card-title">{% translate "Conversation" %}</h4>
 
-            {% include "web/email/partials/_email_list.html" with emails=object.fullConversation %}
+            {% include "web/email/partials/_email_list.html" with emails=object.full_conversation %}
 
         </div>
     </div>

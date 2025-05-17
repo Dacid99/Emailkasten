@@ -97,14 +97,14 @@ class EmailCorrespondent(models.Model):
         }
 
     @classmethod
-    def createFromHeader(
-        cls, header: str, headerName: str, email: Email
+    def create_from_header(
+        cls, header: str, header_name: str, email: Email
     ) -> list[EmailCorrespondent] | None:
         """Prepares a list :class:`core.models.EmailCorrespondent.EmailCorrespondent` from an email header.
 
         Args:
             header: The header to parse the malinglistdata from.
-            headerName: The name of the header, the mention type of the correspondent.
+            header_name: The name of the header, the mention type of the correspondent.
             email: The email for the new emailcorrespondent.
 
         Returns:
@@ -117,16 +117,16 @@ class EmailCorrespondent(models.Model):
         """
         if email.pk is None:
             raise ValueError("Email is not in the db!")
-        new_emailCorrespondentModels = []
-        for correspondentTuple in getaddresses([header]):
-            new_correspondent = Correspondent.createFromCorrespondentTuple(
-                correspondentTuple
+        new_email_correspondent_models = []
+        for correspondent_tuple in getaddresses([header]):
+            new_correspondent = Correspondent.create_from_correspondent_tuple(
+                correspondent_tuple
             )
             if new_correspondent is None:
                 continue
-            new_emailCorrespondent = cls(
-                correspondent=new_correspondent, email=email, mention=headerName
+            new_email_correspondent = cls(
+                correspondent=new_correspondent, email=email, mention=header_name
             )
-            new_emailCorrespondent.save()
-            new_emailCorrespondentModels.append(new_emailCorrespondent)
-        return new_emailCorrespondentModels
+            new_email_correspondent.save()
+            new_email_correspondent_models.append(new_email_correspondent)
+        return new_email_correspondent_models

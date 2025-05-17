@@ -30,14 +30,14 @@ from .models.Daemon import Daemon
 class EmailArchiverDaemonRegistry:
     """Daemon registry for managment of the running :class:`core.EmailArchiverDaemon.EmailArchiverDaemon` instances."""
 
-    _runningDaemons: ClassVar[dict[int, EmailArchiverDaemon]] = {}
+    _running_daemons: ClassVar[dict[int, EmailArchiverDaemon]] = {}
     """A static dictionary of all active daemon instances with their database IDs as keys."""
 
     logger: logging.Logger = logging.getLogger(__name__)
     """The logger instance for this singleton."""
 
     @classmethod
-    def isRunning(cls, daemon: Daemon) -> bool:
+    def is_running(cls, daemon: Daemon) -> bool:
         """Class method to check whether a daemon is active.
 
         Args:
@@ -46,22 +46,22 @@ class EmailArchiverDaemonRegistry:
         Returns:
             Whether the daemon is active.
         """
-        return daemon.id in cls._runningDaemons
+        return daemon.id in cls._running_daemons
 
     @classmethod
-    def updateDaemon(cls, daemon: Daemon) -> None:
+    def update_daemon(cls, daemon: Daemon) -> None:
         """Class method to update a daemon instance.
 
         Args:
             daemon: The data for the daemon to update.
         """
-        if cls.isRunning(daemon):
-            daemonInstance = cls._runningDaemons[daemon.id]
-            daemonInstance.update()
+        if cls.is_running(daemon):
+            daemon_instance = cls._running_daemons[daemon.id]
+            daemon_instance.update()
             cls.logger.debug("Updated daemon %s", daemon)
 
     @classmethod
-    def testDaemon(cls, daemon: Daemon) -> bool:
+    def test_daemon(cls, daemon: Daemon) -> bool:
         """Class method to test data for a daemon.
 
         Args:
@@ -71,9 +71,9 @@ class EmailArchiverDaemonRegistry:
             Whether the test was successful.
         """
         try:
-            newDaemon = EmailArchiverDaemon(daemon)
+            new_daemon = EmailArchiverDaemon(daemon)
             cls.logger.debug("Testing daemon %s ...", daemon)
-            newDaemon.cycle()
+            new_daemon.cycle()
         except Exception:
             cls.logger.exception("Test for daemon %s failed!", daemon)
             daemon.is_healthy = False
@@ -84,8 +84,8 @@ class EmailArchiverDaemonRegistry:
             return True
 
     @classmethod
-    def startDaemon(cls, daemon: Daemon) -> bool:
-        """Class method to create, start and add a new daemon to :attr:`_runningDaemons`.
+    def start_daemon(cls, daemon: Daemon) -> bool:
+        """Class method to create, start and add a new daemon to :attr:`_running_daemons`.
 
         Args:
             daemon: The data for the daemon.
@@ -93,19 +93,19 @@ class EmailArchiverDaemonRegistry:
         Returns:
             `True` if the daemon was started, `False` if it was already running.
         """
-        if not cls.isRunning(daemon):
+        if not cls.is_running(daemon):
             cls.logger.debug("Starting daemon %s ...", daemon)
-            newDaemon = EmailArchiverDaemon(daemon)
-            newDaemon.start()
-            cls._runningDaemons[daemon.id] = newDaemon
+            new_daemon = EmailArchiverDaemon(daemon)
+            new_daemon.start()
+            cls._running_daemons[daemon.id] = new_daemon
             cls.logger.debug("Successfully started daemon %s .", daemon)
             return True
         cls.logger.debug("Did not start daemon %s, it was already running.", daemon)
         return False
 
     @classmethod
-    def stopDaemon(cls, daemon: Daemon) -> bool:
-        """Class method to stop and remove a daemon from :attr:`_runningDaemons`.
+    def stop_daemon(cls, daemon: Daemon) -> bool:
+        """Class method to stop and remove a daemon from :attr:`_running_daemons`.
 
         Args:
             daemon: The data of the daemon.
@@ -113,9 +113,9 @@ class EmailArchiverDaemonRegistry:
         Returns:
             `True` if the daemon was stopped, `False` if it wasnt running.
         """
-        if cls.isRunning(daemon):
+        if cls.is_running(daemon):
             cls.logger.debug("Stopping daemon %s ...", daemon)
-            daemon = cls._runningDaemons.pop(daemon.id)
+            daemon = cls._running_daemons.pop(daemon.id)
             daemon.stop()
             cls.logger.debug("Successfully stopped daemon %s .", daemon)
             return True
@@ -127,6 +127,6 @@ class EmailArchiverDaemonRegistry:
     def healthcheck() -> bool:
         """Checks whether the :attr:`is_running` flag on every :class:`core.models.Daemon.Daemon` is correct."""
         return all(
-            daemon.is_running is EmailArchiverDaemonRegistry.isRunning(daemon)
+            daemon.is_running is EmailArchiverDaemonRegistry.is_running(daemon)
             for daemon in Daemon.objects.all()
         )

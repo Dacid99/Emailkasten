@@ -51,13 +51,13 @@ def test_name_filter(mailbox_queryset, lookup_expr, filterquery, expected_indice
 @pytest.mark.parametrize(
     "lookup_expr, filterquery, expected_indices", BOOL_TEST_PARAMETERS
 )
-def test_save_toEML_filter(
+def test_save_to_eml_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
-    for the :attr:`core.models.Mailbox.Mailbox.save_toEML` field.
+    for the :attr:`core.models.Mailbox.Mailbox.save_to_eml` field.
     """
-    query = {"save_toEML" + lookup_expr: filterquery}
+    query = {"save_to_eml" + lookup_expr: filterquery}
 
     filtered_data = MailboxFilterSet(query, queryset=mailbox_queryset).qs
 

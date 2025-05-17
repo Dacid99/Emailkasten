@@ -72,7 +72,7 @@ class DaemonDetailWithDeleteView(
             A template response with the updated view after the action.
         """
         self.object = self.get_object()
-        result = EmailArchiverDaemonRegistry.startDaemon(self.object)
+        result = EmailArchiverDaemonRegistry.start_daemon(self.object)
         self.object.refresh_from_db()
         context = self.get_context_data(object=self.object)
         context["start_result"] = {"status": result}
@@ -88,7 +88,7 @@ class DaemonDetailWithDeleteView(
             A template response with the updated view after the action.
         """
         self.object = self.get_object()
-        result = EmailArchiverDaemonRegistry.stopDaemon(self.object)
+        result = EmailArchiverDaemonRegistry.stop_daemon(self.object)
         self.object.refresh_from_db()
         context = self.get_context_data(object=self.object)
         context["stop_result"] = {"status": result}

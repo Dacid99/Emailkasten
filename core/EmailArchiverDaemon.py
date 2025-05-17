@@ -43,9 +43,9 @@ class EmailArchiverDaemon(threading.Thread):
         self._daemon: Daemon = daemon
         super().__init__(daemon=True, name=str(self))
 
-        self._stopEvent: threading.Event = threading.Event()
+        self._stop_event: threading.Event = threading.Event()
 
-        self._setupLogger()
+        self._setup_logger()
 
     @override
     def __str__(self) -> str:
@@ -56,15 +56,15 @@ class EmailArchiverDaemon(threading.Thread):
         """
         return f"{self.__class__.__name__} {self._daemon}"
 
-    def _setupLogger(self) -> None:
+    def _setup_logger(self) -> None:
         """Sets up the logger for the daemon with an additional filehandler for its own logfile."""
         self.logger = logging.getLogger(str(self))
-        fileHandler = logging.handlers.RotatingFileHandler(
+        file_handler = logging.handlers.RotatingFileHandler(
             filename=self._daemon.log_filepath,
             backupCount=self._daemon.log_backup_count,
             maxBytes=self._daemon.logfile_size,
         )
-        self.logger.addHandler(fileHandler)
+        self.logger.addHandler(file_handler)
 
     @override
     def start(self) -> None:
@@ -77,21 +77,21 @@ class EmailArchiverDaemon(threading.Thread):
             )
             return
 
-        self.logger.info("-----------------\nDaemon started\n-----------------")
+        self.logger.info("-----------------\n_daemon started\n-----------------")
         self._daemon.is_running = True
         self._daemon.save(update_fields=["is_running"])
 
     def stop(self) -> None:
         """Stops this daemon instance if it is active. The thread finishes by itself later."""
 
-        if self._stopEvent.is_set():
+        if self._stop_event.is_set():
             self.logger.debug(
                 "Attempt to stop this inactive daemon recorded.", stack_info=True
             )
             return
 
-        self._stopEvent.set()
-        self.logger.info("-----------------\nDaemon stopped\n-----------------")
+        self._stop_event.set()
+        self.logger.info("-----------------\n_daemon stopped\n-----------------")
         self._daemon.is_running = False
         self._daemon.save(update_fields=["is_running"])
 
@@ -108,7 +108,7 @@ class EmailArchiverDaemon(threading.Thread):
         and sets health flag of daemon to `False`.
         """
         try:
-            while not self._stopEvent.is_set():
+            while not self._stop_event.is_set():
                 self.cycle()
                 time.sleep(self._daemon.cycle_interval)
             self.logger.info("%s finished successfully", self._daemon)
@@ -131,9 +131,9 @@ class EmailArchiverDaemon(threading.Thread):
         Raises:
             Exception: Any exception thrown during execution of the routine.
         """
-        self.logger.debug("---------------------------------------\nNew cycle")
+        self.logger.debug("---------------------------------------\n_new cycle")
 
-        startTime = time.time()
+        start_time = time.time()
         self._daemon.mailbox.fetch(self._daemon.fetching_criterion)
         endtime = time.time()
 
@@ -142,5 +142,5 @@ class EmailArchiverDaemon(threading.Thread):
 
         self.logger.debug(
             "Cycle complete after %s seconds\n-------------------------------------------",
-            endtime - startTime,
+            endtime - start_time,
         )

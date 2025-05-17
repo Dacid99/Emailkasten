@@ -31,29 +31,29 @@ from api.v1.serializers.correspondent_serializers.BaseCorrespondentSerializer im
 @pytest.mark.django_db
 def test_output(fake_correspondent, request_context):
     """Tests for the expected output of the serializer."""
-    serializerData = BaseCorrespondentSerializer(
+    serializer_data = BaseCorrespondentSerializer(
         instance=fake_correspondent, context=request_context
     ).data
 
-    assert "id" in serializerData
-    assert serializerData["id"] == fake_correspondent.id
-    assert "emails" not in serializerData
-    assert "mailinglist" not in serializerData
-    assert "email_name" in serializerData
-    assert serializerData["email_name"] == fake_correspondent.email_name
-    assert "email_address" in serializerData
-    assert serializerData["email_address"] == fake_correspondent.email_address
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_correspondent.is_favorite
-    assert "created" in serializerData
+    assert "id" in serializer_data
+    assert serializer_data["id"] == fake_correspondent.id
+    assert "emails" not in serializer_data
+    assert "mailinglist" not in serializer_data
+    assert "email_name" in serializer_data
+    assert serializer_data["email_name"] == fake_correspondent.email_name
+    assert "email_address" in serializer_data
+    assert serializer_data["email_address"] == fake_correspondent.email_address
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_correspondent.is_favorite
+    assert "created" in serializer_data
     assert (
-        datetime.fromisoformat(serializerData["created"]) == fake_correspondent.created
+        datetime.fromisoformat(serializer_data["created"]) == fake_correspondent.created
     )
-    assert "updated" in serializerData
+    assert "updated" in serializer_data
     assert (
-        datetime.fromisoformat(serializerData["updated"]) == fake_correspondent.updated
+        datetime.fromisoformat(serializer_data["updated"]) == fake_correspondent.updated
     )
-    assert len(serializerData) == 6
+    assert len(serializer_data) == 6
 
 
 @pytest.mark.django_db
@@ -63,16 +63,16 @@ def test_input(fake_correspondent, request_context):
         data=model_to_dict(fake_correspondent), context=request_context
     )
     assert serializer.is_valid()
-    serializerData = serializer.validated_data
+    serializer_data = serializer.validated_data
 
-    assert "id" not in serializerData
-    assert "emails" not in serializerData
-    assert "mailinglist" not in serializerData
-    assert "email_name" in serializerData
-    assert serializerData["email_name"] == fake_correspondent.email_name
-    assert "email_address" not in serializerData
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_correspondent.is_favorite
-    assert "created" not in serializerData
-    assert "updated" not in serializerData
-    assert len(serializerData) == 2
+    assert "id" not in serializer_data
+    assert "emails" not in serializer_data
+    assert "mailinglist" not in serializer_data
+    assert "email_name" in serializer_data
+    assert serializer_data["email_name"] == fake_correspondent.email_name
+    assert "email_address" not in serializer_data
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_correspondent.is_favorite
+    assert "created" not in serializer_data
+    assert "updated" not in serializer_data
+    assert len(serializer_data) == 2

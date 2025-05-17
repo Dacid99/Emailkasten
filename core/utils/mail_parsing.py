@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def decodeHeader(header: Header | str) -> str:
+def decode_header(header: Header | str) -> str:
     """Decodes an email header field.
 
     Note:
@@ -59,43 +59,43 @@ def decodeHeader(header: Header | str) -> str:
     Returns:
         The decoded mail header.
     """
-    decodedFragments = email.header.decode_header(header)
-    decodedString = ""
-    for fragment, charset in decodedFragments:
-        decodedString += (
+    decoded_fragments = email.header.decode_header(header)
+    decoded_string = ""
+    for fragment, charset in decoded_fragments:
+        decoded_string += (
             fragment.decode(charset if charset else "utf-8", errors="replace")
             if isinstance(fragment, bytes)
             else fragment
         )
 
-    return decodedString
+    return decoded_string
 
 
-def getHeader(
-    emailMessage: Message[str, str],
-    headerName: str,
-    joiningString: str = ", ",
+def get_header(
+    email_message: Message[str, str],
+    header_name: str,
+    joining_string: str = ", ",
 ) -> str | None:
     """Shorthand to safely get a header from a :class:`email.message.EmailMessage`.
 
     Todo:
-        emailMessage arg should become EmailMessage type after mypy 1.16.0
+        email_message arg should become EmailMessage type after mypy 1.16.0
     Args:
-        emailMessage: The message to get the header from.
-        headerName: The name of the header field.
-        joiningString: The string to join multiple headers with. Default to ', ' which is safe for CharFields.
+        email_message: The message to get the header from.
+        header_name: The name of the header field.
+        joining_string: The string to join multiple headers with. Default to ', ' which is safe for CharFields.
 
     Returns:
         The decoded header field as a string if found
         else "".
     """
-    encoded_header = emailMessage.get_all(headerName)
+    encoded_header = email_message.get_all(header_name)
     if not encoded_header:
         return ""
-    return joiningString.join([decodeHeader(header) for header in encoded_header])
+    return joining_string.join([decode_header(header) for header in encoded_header])
 
 
-def parseDatetimeHeader(dateHeader: str | None) -> datetime.datetime:
+def parse_datetime_header(date_header: str | None) -> datetime.datetime:
     """Parses the date header into a datetime object.
 
     If an error occurs uses the current time as fallback.
@@ -105,26 +105,26 @@ def parseDatetimeHeader(dateHeader: str | None) -> datetime.datetime:
         and :func:`django.utils.timezone.now`.
 
     Args:
-        dateHeader: The datetime header to parse.
+        date_header: The datetime header to parse.
 
     Returns:
         The datetime version of the header.
         The current time in case of an invalid date header.
     """
-    if not dateHeader:
+    if not date_header:
         logger.warning(
             "No Date header found in mail, resorting to current time!",
         )
         return timezone.now()
     try:
-        parsedDatetime = email.utils.parsedate_to_datetime(dateHeader)
+        parsed_datetime = email.utils.parsedate_to_datetime(date_header)
     except ValueError:
         logger.warning(
             "No parseable Date header found in mail, resorting to current time!",
             exc_info=True,
         )
         return timezone.now()
-    return parsedDatetime
+    return parsed_datetime
 
 
 def get_bodytexts(email_message: Message[str, str]) -> dict[str, str]:
@@ -145,30 +145,30 @@ def get_bodytexts(email_message: Message[str, str]) -> dict[str, str]:
     return bodytexts
 
 
-def parseMailboxName(mailboxBytes: bytes) -> str:
-    """Parses the mailbox name as received by the `fetchMailboxes` method in :mod:`core.utils.fetchers`.
+def parse_mailbox_name(mailbox_bytes: bytes) -> str:
+    """Parses the mailbox name as received by the `fetch_mailboxes` method in :mod:`core.utils.fetchers`.
 
     Note:
         Uses :func:`imap_tools.imap_utf7.utf7_decode` to decode IMAPs modified utf7 encoding.
         The result must not be changed afterwards, otherwise opening the mailbox via this name is not possible!
     Args:
-        mailboxBytes: The mailbox name in bytes as received from the mail server.
+        mailbox_bytes: The mailbox name in bytes as received from the mail server.
 
     Returns:
         The serverside name of the mailbox
     """
     return (
-        imap_tools.imap_utf7.utf7_decode(mailboxBytes)
+        imap_tools.imap_utf7.utf7_decode(mailbox_bytes)
         .rsplit('"/"', maxsplit=1)[-1]
         .strip()
     )
 
 
-def eml2html(emailBytes: bytes) -> str:
+def eml2html(email_bytes: bytes) -> str:
     """Creates a html presentation of an email.
 
     Args:
-        emailBytes: The data of the mail to be converted.
+        email_bytes: The data of the mail to be converted.
 
     Todo:
         ignoreplaintext mechanism may ignore too broadly
@@ -176,16 +176,16 @@ def eml2html(emailBytes: bytes) -> str:
     Returns:
         The html representation of the email.
     """
-    emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
-    ignorePlainText = False
+    email_message = email.message_from_bytes(email_bytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
+    ignore_plain_text = False
 
-    htmlWrapper = get_config("HTML_WRAPPER")
+    html_wrapper = get_config("HTML_WRAPPER")
     html = ""
-    cidContent: dict[str, Message[str, str]] = {}
-    attachmentsFooter = ""
-    for part in emailMessage.walk():
+    cid_content: dict[str, Message[str, str]] = {}
+    attachments_footer = ""
+    for part in email_message.walk():
         if part.get_content_subtype() == "alternative":
-            ignorePlainText = True
+            ignore_plain_text = True
             continue
         content_maintype = part.get_content_maintype()
         content_subtype = part.get_content_subtype()
@@ -204,12 +204,12 @@ def eml2html(emailBytes: bytes) -> str:
                         content_subtype,
                         type(payload),
                     )
-            elif not ignorePlainText:
+            elif not ignore_plain_text:
                 charset = part.get_content_charset("utf-8")
                 payload = part.get_payload(decode=True)
                 if isinstance(payload, bytes):
                     text = payload.decode(charset, errors="replace")
-                    html += htmlWrapper % text
+                    html += html_wrapper % text
                 else:
                     logger.debug(
                         "UNEXPECTED: %s/%s part payload was of type %s.",
@@ -219,28 +219,28 @@ def eml2html(emailBytes: bytes) -> str:
                     )
         elif content_maintype == "image":
             if cid := part.get("Content-ID", None):
-                cidContent[cid.strip("<>")] = part
+                cid_content[cid.strip("<>")] = part
 
         elif content_disposition == "inline":
             if cid := part.get("Content-ID", None):
-                cidContent[cid.strip("<>")] = part
+                cid_content[cid.strip("<>")] = part
             else:
-                fileName = (
+                file_name = (
                     part.get_filename() or f"{hash(part)}.{part.get_content_subtype()}"
                 )
-                attachmentsFooter += "<li>" + fileName + "</li>"
+                attachments_footer += "<li>" + file_name + "</li>"
 
         elif content_disposition == "attachment":
-            fileName = (
+            file_name = (
                 part.get_filename() or f"{hash(part)}.{part.get_content_subtype()}"
             )
-            attachmentsFooter += "<li>" + fileName + "</li>"
+            attachments_footer += "<li>" + file_name + "</li>"
 
-    for cid, part in cidContent.items():
+    for cid, part in cid_content.items():
         content_type = part.get_content_type()
-        partBytes = part.get_payload(decode=True)
-        if isinstance(partBytes, bytes):
-            base64part = b64encode(partBytes).decode("utf-8")
+        part_bytes = part.get_payload(decode=True)
+        if isinstance(part_bytes, bytes):
+            base64part = b64encode(part_bytes).decode("utf-8")
             html = html.replace(
                 f'src="cid:{cid}"', f'src="data:{content_type};base64,{base64part}"'
             )
@@ -248,17 +248,17 @@ def eml2html(emailBytes: bytes) -> str:
             logger.debug(
                 "UNEXPECTED: %s part payload was of type %s.",
                 content_type,
-                type(partBytes),
+                type(part_bytes),
             )
-    if attachmentsFooter:
+    if attachments_footer:
         html = html.replace(
             "</html>",
-            f"<p><hr><p><b>Attached Files:</b><p><ul>{attachmentsFooter}</ul></html>",
+            f"<p><hr><p><b>Attached Files:</b><p><ul>{attachments_footer}</ul></html>",
         )
     return get_sanitizer().sanitize(html)  # type: ignore[no-any-return]  # always returns a str, mypy cant read html_sanitizer
 
 
-def is_X_Spam(x_spam_header: str | None) -> bool:
+def is_x_spam(x_spam_header: str | None) -> bool:
     """Evaluates a x_spam header spam marker.
 
     Args:

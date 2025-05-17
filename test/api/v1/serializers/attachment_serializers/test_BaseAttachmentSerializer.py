@@ -31,34 +31,34 @@ from api.v1.serializers.attachment_serializers.BaseAttachmentSerializer import (
 @pytest.mark.django_db
 def test_output(fake_attachment, request_context):
     """Tests for the expected output of the serializer."""
-    serializerData = BaseAttachmentSerializer(
+    serializer_data = BaseAttachmentSerializer(
         instance=fake_attachment, context=request_context
     ).data
 
-    assert "id" in serializerData
-    assert serializerData["id"] == fake_attachment.id
-    assert "file_path" not in serializerData
-    assert "file_name" in serializerData
-    assert serializerData["file_name"] == fake_attachment.file_name
-    assert "content_disposition" in serializerData
-    assert serializerData["content_disposition"] == fake_attachment.content_disposition
-    assert "content_id" in serializerData
-    assert serializerData["content_id"] == fake_attachment.content_id
-    assert "content_maintype" in serializerData
-    assert serializerData["content_maintype"] == fake_attachment.content_maintype
-    assert "content_subtype" in serializerData
-    assert serializerData["content_subtype"] == fake_attachment.content_subtype
-    assert "datasize" in serializerData
-    assert serializerData["datasize"] == fake_attachment.datasize
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_attachment.is_favorite
-    assert "email" in serializerData
-    assert serializerData["email"] == fake_attachment.email.id
-    assert "created" in serializerData
-    assert datetime.fromisoformat(serializerData["created"]) == fake_attachment.created
-    assert "updated" in serializerData
-    assert datetime.fromisoformat(serializerData["updated"]) == fake_attachment.updated
-    assert len(serializerData) == 11
+    assert "id" in serializer_data
+    assert serializer_data["id"] == fake_attachment.id
+    assert "file_path" not in serializer_data
+    assert "file_name" in serializer_data
+    assert serializer_data["file_name"] == fake_attachment.file_name
+    assert "content_disposition" in serializer_data
+    assert serializer_data["content_disposition"] == fake_attachment.content_disposition
+    assert "content_id" in serializer_data
+    assert serializer_data["content_id"] == fake_attachment.content_id
+    assert "content_maintype" in serializer_data
+    assert serializer_data["content_maintype"] == fake_attachment.content_maintype
+    assert "content_subtype" in serializer_data
+    assert serializer_data["content_subtype"] == fake_attachment.content_subtype
+    assert "datasize" in serializer_data
+    assert serializer_data["datasize"] == fake_attachment.datasize
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_attachment.is_favorite
+    assert "email" in serializer_data
+    assert serializer_data["email"] == fake_attachment.email.id
+    assert "created" in serializer_data
+    assert datetime.fromisoformat(serializer_data["created"]) == fake_attachment.created
+    assert "updated" in serializer_data
+    assert datetime.fromisoformat(serializer_data["updated"]) == fake_attachment.updated
+    assert len(serializer_data) == 11
 
 
 @pytest.mark.django_db
@@ -68,19 +68,19 @@ def test_input(fake_attachment, request_context):
         data=model_to_dict(fake_attachment), context=request_context
     )
     assert serializer.is_valid()
-    serializerData = serializer.validated_data
+    serializer_data = serializer.validated_data
 
-    assert "id" not in serializerData
-    assert "file_path" not in serializerData
-    assert "file_name" not in serializerData
-    assert "content_disposition" not in serializerData
-    assert "content_id" not in serializerData
-    assert "content_maintype" not in serializerData
-    assert "content_subtype" not in serializerData
-    assert "datasize" not in serializerData
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_attachment.is_favorite
-    assert "email" not in serializerData
-    assert "created" not in serializerData
-    assert "updated" not in serializerData
-    assert len(serializerData) == 1
+    assert "id" not in serializer_data
+    assert "file_path" not in serializer_data
+    assert "file_name" not in serializer_data
+    assert "content_disposition" not in serializer_data
+    assert "content_id" not in serializer_data
+    assert "content_maintype" not in serializer_data
+    assert "content_subtype" not in serializer_data
+    assert "datasize" not in serializer_data
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_attachment.is_favorite
+    assert "email" not in serializer_data
+    assert "created" not in serializer_data
+    assert "updated" not in serializer_data
+    assert len(serializer_data) == 1

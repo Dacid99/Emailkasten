@@ -27,7 +27,7 @@
 
 # from core import constants
 
-# from ..exchangeMailParsing import ExchangeMailParser
+# from ..exchange_mail_parsing import ExchangeMailParser
 
 
 # if TYPE_CHECKING:
@@ -80,10 +80,10 @@
 #             default_timezone=default_timezone,
 #         )
 
-#     def fetchAllAndPrint(self) -> None:
+#     def fetch_all_and_print(self) -> None:
 #         for message in self.__mailhost.inbox.all().order_by("-datetime_received")[:10]:
-#             mailParser = ExchangeMailParser(message)
-#             print(mailParser.parseFrom())
+#             mail_parser = ExchangeMailParser(message)
+#             print(mail_parser.parse_from())
 
 #     def close(self) -> None:
 #         pass

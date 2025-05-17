@@ -36,7 +36,7 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture
-def fake_correspondentTuple(faker):
+def fake_correspondent_tuple(faker):
     return (faker.name(), faker.email())
 
 
@@ -84,55 +84,55 @@ def test_Correspondent_unique_constraints(fake_correspondent):
 
 
 @pytest.mark.django_db
-def test_Correspondent_createFromCorrespondentTuple_success(
-    fake_correspondentTuple,
+def test_Correspondent_create_from_correspondent_tuple_success(
+    fake_correspondent_tuple,
 ):
-    """Tests :func:`core.models.Correspondent.Correspondent.createFromCorrespondentTuple`
+    """Tests :func:`core.models.Correspondent.Correspondent.create_from_correspondent_tuple`
     in case of success.
     """
     assert Correspondent.objects.count() == 0
 
-    result = Correspondent.createFromCorrespondentTuple(fake_correspondentTuple)
+    result = Correspondent.create_from_correspondent_tuple(fake_correspondent_tuple)
 
     assert isinstance(result, Correspondent)
     assert result.pk is not None
     assert Correspondent.objects.count() == 1
-    assert result.email_name == fake_correspondentTuple[0]
-    assert result.email_address == fake_correspondentTuple[1]
+    assert result.email_name == fake_correspondent_tuple[0]
+    assert result.email_address == fake_correspondent_tuple[1]
 
 
 @pytest.mark.django_db
-def test_Correspondent_createFromCorrespondentTuple_duplicate(
-    fake_correspondent, fake_correspondentTuple
+def test_Correspondent_create_from_correspondent_tuple_duplicate(
+    fake_correspondent, fake_correspondent_tuple
 ):
-    """Tests :func:`core.models.Correspondent.Correspondent.createFromCorrespondentTuple`
+    """Tests :func:`core.models.Correspondent.Correspondent.create_from_correspondent_tuple`
     in case the correspondent to be prepared is already being in the database.
     """
-    fake_correspondentTuple = (
-        fake_correspondentTuple[0],
+    fake_correspondent_tuple = (
+        fake_correspondent_tuple[0],
         fake_correspondent.email_address,
     )
 
     assert Correspondent.objects.count() == 1
 
-    result = Correspondent.createFromCorrespondentTuple(fake_correspondentTuple)
+    result = Correspondent.create_from_correspondent_tuple(fake_correspondent_tuple)
 
     assert result == fake_correspondent
     assert Correspondent.objects.count() == 1
 
 
 @pytest.mark.django_db
-def test_Correspondent_createFromCorrespondentTuple_no_address(
-    mock_logger, fake_correspondentTuple
+def test_Correspondent_create_from_correspondent_tuple_no_address(
+    mock_logger, fake_correspondent_tuple
 ):
-    """Tests :func:`core.models.Correspondent.Correspondent.createFromCorrespondentTuple`
+    """Tests :func:`core.models.Correspondent.Correspondent.create_from_correspondent_tuple`
     in case of there is no address in the header.
     """
-    fake_correspondentTuple = (fake_correspondentTuple[0], "")
+    fake_correspondent_tuple = (fake_correspondent_tuple[0], "")
 
     assert Correspondent.objects.count() == 0
 
-    result = Correspondent.createFromCorrespondentTuple(fake_correspondentTuple)
+    result = Correspondent.create_from_correspondent_tuple(fake_correspondent_tuple)
 
     assert result is None
     assert Correspondent.objects.count() == 0

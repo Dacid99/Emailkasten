@@ -92,7 +92,7 @@ class EmailViewSet(
             return Email.objects.none()
         return (
             Email.objects.filter(mailbox__account__user=self.request.user)
-            .select_related("mailinglist", "inReplyTo")
+            .select_related("mailinglist", "in_reply_to")
             .prefetch_related("attachments")
             .prefetch_related(
                 Prefetch(
@@ -126,12 +126,14 @@ class EmailViewSet(
         """
         email = self.get_object()
 
-        filePath = email.eml_filepath
-        if not filePath or not os.path.exists(filePath):
+        file_path = email.eml_filepath
+        if not file_path or not os.path.exists(file_path):
             raise Http404("EMl file not found")
 
-        fileName = os.path.basename(filePath)
-        return FileResponse(open(filePath, "rb"), as_attachment=True, filename=fileName)
+        file_name = os.path.basename(file_path)
+        return FileResponse(
+            open(file_path, "rb"), as_attachment=True, filename=file_name
+        )
 
     URL_PATH_DOWNLOAD_HTML = "download-html"
     URL_NAME_DOWNLOAD_HTML = "download-html"
@@ -157,18 +159,18 @@ class EmailViewSet(
         """
         email = self.get_object()
 
-        htmlFilePath = email.html_filepath
-        if not htmlFilePath or not os.path.exists(htmlFilePath):
+        html_file_path = email.html_filepath
+        if not html_file_path or not os.path.exists(html_file_path):
             raise Http404("Html file not found")
 
-        htmlFileName = os.path.basename(htmlFilePath)
+        html_file_name = os.path.basename(html_file_path)
         response = FileResponse(
             # pylint: disable-next=consider-using-with
             open(  # noqa: SIM115  # this is the recommended usage for FileResponse, see https://docs.djangoproject.com/en/5.2/ref/request-response/
-                htmlFilePath, "rb"
+                html_file_path, "rb"
             ),
             as_attachment=False,
-            filename=htmlFileName,
+            filename=html_file_name,
             content_type="text/html",
         )
         response.headers["X-Frame-Options"] = "SAMEORIGIN"
@@ -184,7 +186,7 @@ class EmailViewSet(
         url_path=URL_PATH_FULLCONVERSATION,
         url_name=URL_NAME_FULLCONVERSATION,
     )
-    def fullConversation(self, request: Request, pk: int | None = None) -> Response:
+    def full_conversation(self, request: Request, pk: int | None = None) -> Response:
         """Action method getting the complete conversation a mail is part of.
 
         Args:
@@ -195,9 +197,9 @@ class EmailViewSet(
             A response detailing the request status.
         """
         email = self.get_object()
-        conversation = email.fullConversation()
-        conversationSerializer = EmailSerializer(conversation, many=True)
-        return Response({"emails": conversationSerializer.data})
+        conversation = email.full_conversation()
+        conversation_serializer = EmailSerializer(conversation, many=True)
+        return Response({"emails": conversation_serializer.data})
 
     URL_PATH_SUBCONVERSATION = "sub-conversation"
     URL_NAME_SUBCONVERSATION = "sub-conversation"
@@ -208,7 +210,7 @@ class EmailViewSet(
         url_path=URL_PATH_SUBCONVERSATION,
         url_name=URL_NAME_SUBCONVERSATION,
     )
-    def subConversation(self, request: Request, pk: int | None = None) -> Response:
+    def sub_conversation(self, request: Request, pk: int | None = None) -> Response:
         """Action method getting the subconversation in reply to this email.
 
         Args:
@@ -219,6 +221,6 @@ class EmailViewSet(
             A response detailing the request status.
         """
         email = self.get_object()
-        conversation = email.subConversation()
-        conversationSerializer = EmailSerializer(conversation, many=True)
-        return Response({"emails": conversationSerializer.data})
+        conversation = email.sub_conversation()
+        conversation_serializer = EmailSerializer(conversation, many=True)
+        return Response({"emails": conversation_serializer.data})

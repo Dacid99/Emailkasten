@@ -102,6 +102,6 @@ class UploadEmailView(LoginRequiredMixin, DetailView, FormView):
         """
         self.object = self.get_object()
         if file_format == SupportedEmailUploadFormats.EML:
-            Email.createFromEmailBytes(file.read(), mailbox=self.object)
+            Email.create_from_email_bytes(file.read(), mailbox=self.object)
         else:
-            self.object.addFromMailboxFile(file.read(), file_format)
+            self.object.add_from_mailbox_file(file.read(), file_format)

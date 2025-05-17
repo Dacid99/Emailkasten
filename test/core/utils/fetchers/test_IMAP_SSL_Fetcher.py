@@ -63,7 +63,7 @@ def mock_IMAP4_SSL(mocker, faker):
         (None, None),
     ],
 )
-def test_IMAPFetcher_connectToHost_success(
+def test_IMAPFetcher_connect_to_host_success(
     imap_ssl_mailbox, mock_logger, mock_IMAP4_SSL, mail_host_port, timeout
 ):
     imap_ssl_mailbox.account.mail_host_port = mail_host_port
@@ -83,7 +83,7 @@ def test_IMAPFetcher_connectToHost_success(
 
 
 @pytest.mark.django_db
-def test_IMAPFetcher_connectToHost_exception(
+def test_IMAPFetcher_connect_to_host_exception(
     imap_ssl_mailbox, mock_logger, mock_IMAP4_SSL
 ):
     mock_IMAP4_SSL.side_effect = AssertionError

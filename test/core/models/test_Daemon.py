@@ -90,7 +90,7 @@ def test_Daemon_unique_constraints(fake_daemon):
 
 
 @pytest.mark.django_db
-def test_Daemon_save_logfileCreation(faker, settings, fake_daemon):
+def test_Daemon_save_logfile_creation(faker, settings, fake_daemon):
     """Tests :func:`core.models.Correspondent.Correspondent.save`
     in case there is no log_filepath.
     """

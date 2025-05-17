@@ -44,12 +44,12 @@ def mock_Account_test_connection(mocker):
 @pytest.mark.django_db
 def test_update_mailboxes_noauth(
     fake_account,
-    noauth_apiClient,
+    noauth_api_client,
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with an unauthenticated user client."""
-    response = noauth_apiClient.post(
+    response = noauth_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
         )
@@ -64,12 +64,12 @@ def test_update_mailboxes_noauth(
 @pytest.mark.django_db
 def test_update_mailboxes_auth_other(
     fake_account,
-    other_apiClient,
+    other_api_client,
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated other user client."""
-    response = other_apiClient.post(
+    response = other_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
         )
@@ -84,12 +84,12 @@ def test_update_mailboxes_auth_other(
 @pytest.mark.django_db
 def test_update_mailboxes_success_auth_owner(
     fake_account,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated owner user client."""
-    response = owner_apiClient.post(
+    response = owner_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
         )
@@ -107,7 +107,7 @@ def test_update_mailboxes_success_auth_owner(
 def test_update_mailboxes_failure_auth_owner(
     faker,
     fake_account,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
@@ -115,7 +115,7 @@ def test_update_mailboxes_failure_auth_owner(
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated owner user client."""
     mock_Account_update_mailboxes.side_effect = MailAccountError(fake_error_message)
 
-    response = owner_apiClient.post(
+    response = owner_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
         )
@@ -133,14 +133,14 @@ def test_update_mailboxes_failure_auth_owner(
 @pytest.mark.django_db
 def test_test_noauth(
     fake_account,
-    noauth_apiClient,
+    noauth_api_client,
     custom_detail_action_url,
     mock_Account_test_connection,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with an unauthenticated user client."""
     previous_is_healthy = fake_account.is_healthy
 
-    response = noauth_apiClient.post(
+    response = noauth_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TEST, fake_account
         )
@@ -157,7 +157,7 @@ def test_test_noauth(
 @pytest.mark.django_db
 def test_test_auth_other(
     fake_account,
-    other_apiClient,
+    other_api_client,
     custom_detail_action_url,
     mock_Account_test_connection,
 ):
@@ -165,7 +165,7 @@ def test_test_auth_other(
 
     previous_is_healthy = fake_account.is_healthy
 
-    response = other_apiClient.post(
+    response = other_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TEST, fake_account
         )
@@ -182,13 +182,13 @@ def test_test_auth_other(
 @pytest.mark.django_db
 def test_test_success_auth_owner(
     fake_account,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_Account_test_connection,
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated owner user client."""
 
-    response = owner_apiClient.post(
+    response = owner_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TEST, fake_account
         )
@@ -207,7 +207,7 @@ def test_test_success_auth_owner(
 def test_test_failure_auth_owner(
     faker,
     fake_account,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_Account_test_connection,
 ):
@@ -215,7 +215,7 @@ def test_test_failure_auth_owner(
     fake_error_message = faker.sentence()
     mock_Account_test_connection.side_effect = MailAccountError(fake_error_message)
 
-    response = owner_apiClient.post(
+    response = owner_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TEST, fake_account
         )
@@ -233,10 +233,10 @@ def test_test_failure_auth_owner(
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    fake_account, noauth_apiClient, custom_detail_action_url
+    fake_account, noauth_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.toggle_favorite` action with an unauthenticated user client."""
-    response = noauth_apiClient.post(
+    response = noauth_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, fake_account
         )
@@ -249,10 +249,10 @@ def test_toggle_favorite_noauth(
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    fake_account, other_apiClient, custom_detail_action_url
+    fake_account, other_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.toggle_favorite` action with the authenticated other user client."""
-    response = other_apiClient.post(
+    response = other_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, fake_account
         )
@@ -265,10 +265,10 @@ def test_toggle_favorite_auth_other(
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    fake_account, owner_apiClient, custom_detail_action_url
+    fake_account, owner_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.toggle_favorite` action with the authenticated owner user client."""
-    response = owner_apiClient.post(
+    response = owner_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, fake_account
         )

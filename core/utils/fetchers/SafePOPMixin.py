@@ -36,7 +36,7 @@ POP3ActionResponse = TypeVar("POP3ActionResponse", bound=POP3Response)
 class POP3FetcherClass(Protocol):
     """Protocol defining the required attributes of a class implementing this mixin."""
 
-    _mailClient: poplib.POP3
+    _mail_client: poplib.POP3
     logger: logging.Logger
 
 
@@ -44,19 +44,19 @@ class SafePOPMixin:
     """Mixin with safe POP operations.
 
     The implementing class must have
-    an :attr:`_mailClient` that is an :class:`poplib.POP3` or :class:`poplib.POP3_SSL`
+    an :attr:`_mail_client` that is an :class:`poplib.POP3` or :class:`poplib.POP3_SSL`
     and an instance logger.
 
     Only errors leading up to and during the fetching process should raise outside of the class.
     Otherwise issues with logout etc would destroy the work done with fetching, which makes no sense.
     """
 
-    def checkResponse(
+    def check_response(
         self,
         response: POP3Response,
-        commandName: str,
+        command_name: str,
         exception: type[FetcherError] | None,
-        expectedStatus: bytes = b"+OK",
+        expected_status: bytes = b"+OK",
     ) -> None:
         """Checks the status response of a POP action.
 
@@ -67,20 +67,20 @@ class SafePOPMixin:
 
         Args:
             response: The complete response to the POP action.
-            commandName: The name of the action.
+            command_name: The name of the action.
             exception: The expection to raise if the status doesnt match the expectation. Defaults to :class:`core.utils.fetchers.exceptions.FetcherError`.
-            expectedStatus: The expected status response. Defaults to `"+OK"`.
+            expected_status: The expected status response. Defaults to `"+OK"`.
 
         Raises:
             exception: If the response status doesnt match the expectation.
         """
         status = response if isinstance(response, bytes) else response[0]
-        if not status.startswith(expectedStatus):
-            self.logger.error("Bad server response for %s:\n%s", commandName, response)
+        if not status.startswith(expected_status):
+            self.logger.error("Bad server response for %s:\n%s", command_name, response)
             if exception is not None:
                 raise exception(
-                    _("Bad server response for %(commandName)s:\n%(response)s")
-                    % {"commandName": commandName, "response": response}
+                    _("Bad server response for %(command_name)s:\n%(response)s")
+                    % {"command_name": command_name, "response": response}
                 )
         self.logger.debug("Server responded %s as expected.", status)
 
@@ -88,7 +88,7 @@ class SafePOPMixin:
     @staticmethod
     def safe(
         exception: type[FetcherError],
-        expectedStatus: bytes = b"+OK",
+        expected_status: bytes = b"+OK",
     ) -> Callable[
         [Callable[..., POP3ActionResponse]], Callable[..., POP3ActionResponse]
     ]: ...
@@ -97,7 +97,7 @@ class SafePOPMixin:
     @staticmethod
     def safe(
         exception: None,
-        expectedStatus: bytes = b"+OK",
+        expected_status: bytes = b"+OK",
     ) -> Callable[
         [Callable[..., POP3ActionResponse]], Callable[..., POP3ActionResponse | None]
     ]: ...
@@ -105,7 +105,7 @@ class SafePOPMixin:
     @staticmethod
     def safe(
         exception: type[FetcherError] | None,
-        expectedStatus: bytes = b"+OK",
+        expected_status: bytes = b"+OK",
     ) -> Callable[
         [Callable[..., POP3ActionResponse]], Callable[..., POP3ActionResponse | None]
     ]:
@@ -120,7 +120,7 @@ class SafePOPMixin:
             exception: The exception to raise if an error occurs or the status doesnt match the expectation.
                 Defaults to :class:`core.utils.fetchers.exceptions.FetcherError`.
                 If `None` is passed, no exception is raised, all errors are logged nonetheless.
-            expectedStatus: The expected status response. Defaults to `"+OK"`.
+            expected_status: The expected status response. Defaults to `"+OK"`.
 
         Returns:
             The return value of the wrapped action.
@@ -130,19 +130,19 @@ class SafePOPMixin:
             exception: If an error occurs or the status doesnt match the expectation.
         """
 
-        def safeWrapper(
-            popAction: Callable[..., POP3ActionResponse],
+        def safe_wrapper(
+            pop_action: Callable[..., POP3ActionResponse],
         ) -> Callable[..., POP3ActionResponse | None]:
-            def safeAction(
+            def safe_action(
                 self: Self, *args: Any, **kwargs: Any
             ) -> POP3ActionResponse | None:
                 try:
-                    response = popAction(self, *args, **kwargs)
+                    response = pop_action(self, *args, **kwargs)
                 except Exception as error:
                     self.logger.exception(
                         "An %s occured during %s!",
                         error.__class__.__name__,
-                        popAction.__name__,
+                        pop_action.__name__,
                     )
                     if exception is not None:
                         raise exception(
@@ -152,50 +152,50 @@ class SafePOPMixin:
                             % {
                                 "error_class_name": error.__class__.__name__,
                                 "error": error,
-                                "action_name": popAction.__name__,
+                                "action_name": pop_action.__name__,
                             },
                         ) from error
                     return None
                 else:
-                    self.checkResponse(
-                        response, popAction.__name__, exception, expectedStatus
+                    self.check_response(
+                        response, pop_action.__name__, exception, expected_status
                     )
                 return response
 
-            return safeAction
+            return safe_action
 
-        return safeWrapper
+        return safe_wrapper
 
     @safe(exception=MailAccountError)
     def safe_user(self: POP3FetcherClass, *args: Any, **kwargs: Any) -> bytes:
         """The :func:`safe` wrapped version of :func:`poplib.POP3.user`."""
-        return self._mailClient.user(*args, **kwargs)
+        return self._mail_client.user(*args, **kwargs)
 
     @safe(exception=MailAccountError)
     def safe_pass_(self: POP3FetcherClass, *args: Any, **kwargs: Any) -> bytes:
         """The :func:`safe` wrapped version of :func:`poplib.POP3.pass_`."""
-        return self._mailClient.pass_(*args, **kwargs)
+        return self._mail_client.pass_(*args, **kwargs)
 
     @safe(exception=MailAccountError)
     def safe_noop(self: POP3FetcherClass, *args: Any, **kwargs: Any) -> bytes:
         """The :func:`safe` wrapped version of :func:`poplib.POP3.noop`."""
-        return self._mailClient.noop(*args, **kwargs)
+        return self._mail_client.noop(*args, **kwargs)
 
     @safe(exception=MailAccountError)
     def safe_list(
         self: POP3FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[bytes, list[bytes], int]:
         """The :func:`safe` wrapped version of :func:`poplib.POP3.list`."""
-        return self._mailClient.list(*args, **kwargs)
+        return self._mail_client.list(*args, **kwargs)
 
     @safe(exception=MailAccountError)
     def safe_retr(
         self: POP3FetcherClass, *args: Any, **kwargs: Any
     ) -> tuple[bytes, list[bytes], int]:
         """The :func:`safe` wrapped version of :func:`poplib.POP3.retr`."""
-        return self._mailClient.retr(*args, **kwargs)
+        return self._mail_client.retr(*args, **kwargs)
 
     @safe(exception=None)
     def safe_quit(self: POP3FetcherClass, *args: Any, **kwargs: Any) -> bytes:
         """The :func:`safe` wrapped version of :func:`poplib.POP3.quit`."""
-        return self._mailClient.quit(*args, **kwargs)
+        return self._mail_client.quit(*args, **kwargs)

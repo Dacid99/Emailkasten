@@ -49,8 +49,8 @@ class BaseMailboxForm(RequiredMarkerModelForm):
         """The model to serialize."""
 
         fields: ClassVar[list[str]] = [
-            "save_toEML",
-            "save_toHTML",
+            "save_to_eml",
+            "save_to_html",
             "save_attachments",
             "is_favorite",
         ]

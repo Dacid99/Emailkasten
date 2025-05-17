@@ -46,7 +46,7 @@ def mock_os_path_exists(mocker):
 @pytest.mark.django_db
 def test_download_noauth(
     fake_attachment,
-    noauth_apiClient,
+    noauth_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
@@ -54,7 +54,7 @@ def test_download_noauth(
     """Tests the get method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.download` action
     with an unauthenticated user client.
     """
-    response = noauth_apiClient.get(
+    response = noauth_api_client.get(
         custom_detail_action_url(
             AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, fake_attachment
         )
@@ -68,7 +68,7 @@ def test_download_noauth(
 @pytest.mark.django_db
 def test_download_auth_other(
     fake_attachment,
-    other_apiClient,
+    other_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
@@ -76,7 +76,7 @@ def test_download_auth_other(
     """Tests the get method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.download` action
     with the authenticated other user client.
     """
-    response = other_apiClient.get(
+    response = other_api_client.get(
         custom_detail_action_url(
             AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, fake_attachment
         )
@@ -90,7 +90,7 @@ def test_download_auth_other(
 @pytest.mark.django_db
 def test_download_no_file_auth_owner(
     fake_attachment,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
@@ -101,7 +101,7 @@ def test_download_no_file_auth_owner(
     mock_open.side_effect = FileNotFoundError
     mock_os_path_exists.return_value = False
 
-    response = owner_apiClient.get(
+    response = owner_api_client.get(
         custom_detail_action_url(
             AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, fake_attachment
         )
@@ -115,7 +115,7 @@ def test_download_no_file_auth_owner(
 @pytest.mark.django_db
 def test_download_auth_owner(
     fake_attachment,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
@@ -123,7 +123,7 @@ def test_download_auth_owner(
     """Tests the get method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.download` action
     with the authenticated owner user client.
     """
-    response = owner_apiClient.get(
+    response = owner_api_client.get(
         custom_detail_action_url(
             AttachmentViewSet, AttachmentViewSet.URL_NAME_DOWNLOAD, fake_attachment
         )
@@ -139,12 +139,12 @@ def test_download_auth_owner(
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    fake_attachment, noauth_apiClient, custom_detail_action_url
+    fake_attachment, noauth_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.toggle_favorite` action
     with an unauthenticated user client.
     """
-    response = noauth_apiClient.post(
+    response = noauth_api_client.post(
         custom_detail_action_url(
             AttachmentViewSet,
             AttachmentViewSet.URL_NAME_TOGGLE_FAVORITE,
@@ -159,12 +159,12 @@ def test_toggle_favorite_noauth(
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    fake_attachment, other_apiClient, custom_detail_action_url
+    fake_attachment, other_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.toggle_favorite` action
     with the authenticated other user client.
     """
-    response = other_apiClient.post(
+    response = other_api_client.post(
         custom_detail_action_url(
             AttachmentViewSet,
             AttachmentViewSet.URL_NAME_TOGGLE_FAVORITE,
@@ -179,12 +179,12 @@ def test_toggle_favorite_auth_other(
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    fake_attachment, owner_apiClient, custom_detail_action_url
+    fake_attachment, owner_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.toggle_favorite` action
     with the authenticated owner user client.
     """
-    response = owner_apiClient.post(
+    response = owner_api_client.post(
         custom_detail_action_url(
             AttachmentViewSet,
             AttachmentViewSet.URL_NAME_TOGGLE_FAVORITE,

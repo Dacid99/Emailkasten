@@ -31,10 +31,10 @@ def test_post(fake_mailbox):
 
     assert form.is_valid()
     form_data = form.cleaned_data
-    assert "save_toEML" in form_data
-    assert form_data["save_toEML"] == fake_mailbox.save_toEML
-    assert "save_toHTML" in form_data
-    assert form_data["save_toHTML"] == fake_mailbox.save_toHTML
+    assert "save_to_eml" in form_data
+    assert form_data["save_to_eml"] == fake_mailbox.save_to_eml
+    assert "save_to_html" in form_data
+    assert form_data["save_to_html"] == fake_mailbox.save_to_html
     assert "save_attachments" in form_data
     assert form_data["save_attachments"] == fake_mailbox.save_attachments
     assert "is_favorite" in form_data
@@ -54,11 +54,11 @@ def test_get(fake_mailbox):
     form_initial_data = form.initial
     form_fields = form.fields
 
-    assert "save_toEML" in form_fields
-    assert "save_toEML" in form_initial_data
-    assert form_initial_data["save_toEML"] == fake_mailbox.save_toEML
-    assert "save_toHTML" in form_initial_data
-    assert form_initial_data["save_toHTML"] == fake_mailbox.save_toHTML
+    assert "save_to_eml" in form_fields
+    assert "save_to_eml" in form_initial_data
+    assert form_initial_data["save_to_eml"] == fake_mailbox.save_to_eml
+    assert "save_to_html" in form_initial_data
+    assert form_initial_data["save_to_html"] == fake_mailbox.save_to_html
     assert "save_attachments" in form_fields
     assert "save_attachments" in form_initial_data
     assert form_initial_data["save_attachments"] == fake_mailbox.save_attachments

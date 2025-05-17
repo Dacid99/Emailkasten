@@ -46,7 +46,7 @@ class EmailDetailWithDeleteView(LoginRequiredMixin, DetailWithDeleteView):
             return Email.objects.none()
         return (
             Email.objects.filter(mailbox__account__user=self.request.user)
-            .select_related("mailinglist", "mailbox", "mailbox__account", "inReplyTo")
+            .select_related("mailinglist", "mailbox", "mailbox__account", "in_reply_to")
             .prefetch_related("attachments")
             .prefetch_related(
                 Prefetch(

@@ -42,13 +42,13 @@ def url() -> Callable[[type[ModelViewSet]], str]:
     Returns:
         The list url.
     """
-    return lambda viewClass: reverse(f"api:v1:{viewClass.NAME}")
+    return lambda view_class: reverse(f"api:v1:{view_class.NAME}")
 
 
 @pytest.mark.django_db
-def test_list_noauth(noauth_apiClient, url):
+def test_list_noauth(noauth_api_client, url):
     """Tests the list method with an unauthenticated user client."""
-    response = noauth_apiClient.get(url(DatabaseStatsView))
+    response = noauth_api_client.get(url(DatabaseStatsView))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
@@ -56,9 +56,9 @@ def test_list_noauth(noauth_apiClient, url):
 
 
 @pytest.mark.django_db
-def test_list_auth_other(other_apiClient, url):
+def test_list_auth_other(other_api_client, url):
     """Tests the list method with the authenticated other user client."""
-    response = other_apiClient.get(url(DatabaseStatsView))
+    response = other_api_client.get(url(DatabaseStatsView))
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["email_count"] == 0
@@ -68,9 +68,9 @@ def test_list_auth_other(other_apiClient, url):
 
 
 @pytest.mark.django_db
-def test_list_auth_owner(fake_email, owner_apiClient, url):
+def test_list_auth_owner(fake_email, owner_api_client, url):
     """Tests the list method with the authenticated owner user client."""
-    response = owner_apiClient.get(url(DatabaseStatsView))
+    response = owner_api_client.get(url(DatabaseStatsView))
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["email_count"] == 1
@@ -80,9 +80,9 @@ def test_list_auth_owner(fake_email, owner_apiClient, url):
 
 
 @pytest.mark.django_db
-def test_post_noauth(noauth_apiClient, url):
+def test_post_noauth(noauth_api_client, url):
     """Tests the post method with an unauthenticated user client."""
-    response = noauth_apiClient.post(url(DatabaseStatsView), data={})
+    response = noauth_api_client.post(url(DatabaseStatsView), data={})
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
@@ -90,9 +90,9 @@ def test_post_noauth(noauth_apiClient, url):
 
 
 @pytest.mark.django_db
-def test_post_auth_other(other_apiClient, url):
+def test_post_auth_other(other_api_client, url):
     """Tests the post method with the authenticated other user client."""
-    response = other_apiClient.post(url(DatabaseStatsView), data={})
+    response = other_api_client.post(url(DatabaseStatsView), data={})
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
@@ -100,9 +100,9 @@ def test_post_auth_other(other_apiClient, url):
 
 
 @pytest.mark.django_db
-def test_post_auth_owner(owner_apiClient, url):
+def test_post_auth_owner(owner_api_client, url):
     """Tests the post method with the authenticated owner user client."""
-    response = owner_apiClient.post(url(DatabaseStatsView), data={})
+    response = owner_api_client.post(url(DatabaseStatsView), data={})
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):

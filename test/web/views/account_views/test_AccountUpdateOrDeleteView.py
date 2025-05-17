@@ -69,11 +69,11 @@ def test_get_auth_owner(fake_account, owner_client, detail_url):
 
 @pytest.mark.django_db
 def test_post_update_noauth(
-    fake_account, accountPayload, client, detail_url, login_url
+    fake_account, account_payload, client, detail_url, login_url
 ):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(AccountUpdateOrDeleteView, fake_account), accountPayload
+        detail_url(AccountUpdateOrDeleteView, fake_account), account_payload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
@@ -83,40 +83,44 @@ def test_post_update_noauth(
         f"?next={detail_url(AccountUpdateOrDeleteView, fake_account)}"
     )
     fake_account.refresh_from_db()
-    assert fake_account.mail_address != accountPayload["mail_address"]
-    assert fake_account.password != accountPayload["password"]
-    assert fake_account.mail_host != accountPayload["mail_host"]
+    assert fake_account.mail_address != account_payload["mail_address"]
+    assert fake_account.password != account_payload["password"]
+    assert fake_account.mail_host != account_payload["mail_host"]
 
 
 @pytest.mark.django_db
-def test_post_update_auth_other(fake_account, accountPayload, other_client, detail_url):
+def test_post_update_auth_other(
+    fake_account, account_payload, other_client, detail_url
+):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(AccountUpdateOrDeleteView, fake_account), accountPayload
+        detail_url(AccountUpdateOrDeleteView, fake_account), account_payload
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
     fake_account.refresh_from_db()
-    assert fake_account.mail_address != accountPayload["mail_address"]
-    assert fake_account.password != accountPayload["password"]
-    assert fake_account.mail_host != accountPayload["mail_host"]
+    assert fake_account.mail_address != account_payload["mail_address"]
+    assert fake_account.password != account_payload["password"]
+    assert fake_account.mail_host != account_payload["mail_host"]
 
 
 @pytest.mark.django_db
-def test_post_update_auth_owner(fake_account, accountPayload, owner_client, detail_url):
+def test_post_update_auth_owner(
+    fake_account, account_payload, owner_client, detail_url
+):
     """Tests :class:`web.views.account_views.AccountUpdateOrDeleteView.AccountUpdateOrDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(AccountUpdateOrDeleteView, fake_account), accountPayload
+        detail_url(AccountUpdateOrDeleteView, fake_account), account_payload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(fake_account.get_absolute_url())
     fake_account.refresh_from_db()
-    assert fake_account.mail_address == accountPayload["mail_address"]
-    assert fake_account.password == accountPayload["password"]
-    assert fake_account.mail_host == accountPayload["mail_host"]
+    assert fake_account.mail_address == account_payload["mail_address"]
+    assert fake_account.password == account_payload["password"]
+    assert fake_account.mail_host == account_payload["mail_host"]
 
 
 @pytest.mark.django_db

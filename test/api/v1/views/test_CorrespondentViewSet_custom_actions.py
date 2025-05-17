@@ -28,10 +28,10 @@ from api.v1.views.CorrespondentViewSet import CorrespondentViewSet
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    fake_correspondent, fake_email, noauth_apiClient, custom_detail_action_url
+    fake_correspondent, fake_email, noauth_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.toggle_favorite` action with an unauthenticated user client."""
-    response = noauth_apiClient.post(
+    response = noauth_api_client.post(
         custom_detail_action_url(
             CorrespondentViewSet,
             CorrespondentViewSet.URL_NAME_TOGGLE_FAVORITE,
@@ -46,10 +46,10 @@ def test_toggle_favorite_noauth(
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    fake_correspondent, fake_email, other_apiClient, custom_detail_action_url
+    fake_correspondent, fake_email, other_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.toggle_favorite` action with the authenticated other user client."""
-    response = other_apiClient.post(
+    response = other_api_client.post(
         custom_detail_action_url(
             CorrespondentViewSet,
             CorrespondentViewSet.URL_NAME_TOGGLE_FAVORITE,
@@ -64,10 +64,10 @@ def test_toggle_favorite_auth_other(
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    fake_correspondent, fake_email, owner_apiClient, custom_detail_action_url
+    fake_correspondent, fake_email, owner_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.toggle_favorite` action with the authenticated owner user client."""
-    response = owner_apiClient.post(
+    response = owner_api_client.post(
         custom_detail_action_url(
             CorrespondentViewSet,
             CorrespondentViewSet.URL_NAME_TOGGLE_FAVORITE,

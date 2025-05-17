@@ -36,7 +36,7 @@ from core.models.Email import Email
 from Emailkasten.utils.workarounds import get_config
 
 from ..utils.fetchers.exceptions import MailAccountError, MailboxError
-from ..utils.mailParsing import parseMailboxName
+from ..utils.mail_parsing import parse_mailbox_name
 
 
 if TYPE_CHECKING:
@@ -67,14 +67,14 @@ class Mailbox(DirtyFieldsMixin, URLMixin, UploadMixin, FavoriteMixin, models.Mod
     )
     """Whether to save attachments of the mails found in this mailbox. :attr:`constance.get_config('DEFAULT_SAVE_ATTACHMENTS')` by default."""
 
-    save_toEML = models.BooleanField(
+    save_to_eml = models.BooleanField(
         default=get_config("DEFAULT_SAVE_TO_EML"),
         verbose_name=_("Save as .eml"),
         help_text=_("Whether the emails in this mailbox will be stored in .eml files."),
     )
     """Whether to save the mails found in this mailbox as .eml files. :attr:`constance.get_config('DEFAULT_SAVE_TO_EML')` by default."""
 
-    save_toHTML = models.BooleanField(
+    save_to_html = models.BooleanField(
         default=get_config("DEFAULT_SAVE_TO_HTML"),
         verbose_name=_("Save as .html"),
         help_text=_(
@@ -128,7 +128,7 @@ class Mailbox(DirtyFieldsMixin, URLMixin, UploadMixin, FavoriteMixin, models.Mod
             "name": self.name,
         }
 
-    def getAvailableFetchingCriteria(self) -> list[str]:
+    def get_available_fetching_criteria(self) -> list[str]:
         """Gets the available fetching criteria based on the mail protocol of this mailbox.
 
         Used by :func:`api.v1.views.MailboxViewSet.fetching_options` to show the choices for fetching to the user.
@@ -185,7 +185,7 @@ class Mailbox(DirtyFieldsMixin, URLMixin, UploadMixin, FavoriteMixin, models.Mod
         logger.info("Fetching emails with criterion %s from %s ...", criterion, self)
         with self.account.get_fetcher() as fetcher:
             try:
-                fetchedMails = fetcher.fetchEmails(self, criterion)
+                fetched_mails = fetcher.fetch_emails(self, criterion)
             except MailboxError:
                 self.is_healthy = False
                 self.save(update_fields=["is_healthy"])
@@ -195,12 +195,12 @@ class Mailbox(DirtyFieldsMixin, URLMixin, UploadMixin, FavoriteMixin, models.Mod
         logger.info("Successfully fetched emails.")
 
         logger.info("Saving fetched emails ...")
-        for fetchedMail in fetchedMails:
-            Email.createFromEmailBytes(fetchedMail, self)
+        for fetched_mail in fetched_mails:
+            Email.create_from_email_bytes(fetched_mail, self)
 
         logger.info("Successfully saved fetched emails.")
 
-    def addFromMailboxFile(self, file_data: bytes, file_format: str) -> None:
+    def add_from_mailbox_file(self, file_data: bytes, file_format: str) -> None:
         """Adds emails from a mailbox file to the db.
 
         Supported formats are implemented via the :mod:`mailbox` package.
@@ -215,15 +215,15 @@ class Mailbox(DirtyFieldsMixin, URLMixin, UploadMixin, FavoriteMixin, models.Mod
         file_format = file_format.lower()
         logger.info("Adding emails from %s mailbox file to %s ...", file_format, self)
         if file_format == "mbox":
-            formatClass: type[mailbox.Mailbox] = mailbox.mbox
+            format_class: type[mailbox.Mailbox] = mailbox.mbox
         elif file_format == "mh":
-            formatClass = mailbox.MH
+            format_class = mailbox.MH
         elif file_format == "babyl":
-            formatClass = mailbox.Babyl
+            format_class = mailbox.Babyl
         elif file_format == "mmdf":
-            formatClass = mailbox.MMDF
+            format_class = mailbox.MMDF
         elif file_format == "maildir":
-            formatClass = mailbox.Maildir
+            format_class = mailbox.Maildir
         else:
             logger.info(
                 "Failed adding emails from mailbox file to %s, format %s is not implemented.",
@@ -236,17 +236,17 @@ class Mailbox(DirtyFieldsMixin, URLMixin, UploadMixin, FavoriteMixin, models.Mod
         )
         with open(dump_filepath, "bw") as file:
             file.write(file_data)
-        mailboxFile = formatClass(dump_filepath)  # type: ignore[abstract]  # Mailbox class is never implemented, it's just used for typing
-        for key in mailboxFile.iterkeys():
-            Email.createFromEmailBytes(mailboxFile.get_bytes(key), self)
+        mailbox_file = format_class(dump_filepath)  # type: ignore[abstract]  # Mailbox class is never implemented, it's just used for typing
+        for key in mailbox_file.iterkeys():
+            Email.create_from_email_bytes(mailbox_file.get_bytes(key), self)
         logger.info("Successfully added emails from mailbox file.")
 
     @classmethod
-    def createFromData(cls, mailboxData: bytes, account: Account) -> Mailbox:
+    def create_from_data(cls, mailbox_data: bytes, account: Account) -> Mailbox:
         """Creates a :class:`core.models.Mailbox.Mailbox` from the mailboxname in bytes.
 
         Args:
-            mailboxData: The bytes with the mailboxname.
+            mailbox_data: The bytes with the mailboxname.
             account: The account the mailbox is in.
 
         Returns:
@@ -255,7 +255,7 @@ class Mailbox(DirtyFieldsMixin, URLMixin, UploadMixin, FavoriteMixin, models.Mod
         """
         if account.pk is None:
             raise ValueError("Account is not in the db!")
-        mailbox_name = parseMailboxName(mailboxData)
+        mailbox_name = parse_mailbox_name(mailbox_data)
         try:
             new_mailbox = cls.objects.get(account=account, name=mailbox_name)
             logger.debug("%s already exists in db, it is skipped!", new_mailbox)

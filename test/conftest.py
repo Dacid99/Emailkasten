@@ -336,7 +336,7 @@ def fake_correspondent() -> Correspondent:
 
 
 @pytest.fixture
-def fake_mailingList() -> MailingList:
+def fake_mailing_list() -> MailingList:
     """Creates an :class:`core.models.MailingList.MailingList` owned by :attr:`owner_user`.
 
     Returns:
@@ -346,7 +346,7 @@ def fake_mailingList() -> MailingList:
 
 
 @pytest.fixture
-def fake_email(faker, fake_mailbox, fake_mailingList) -> Email:
+def fake_email(faker, fake_mailbox, fake_mailing_list) -> Email:
     """Creates an :class:`core.models.Email.Email` owned by :attr:`owner_user`.
 
     Args:
@@ -360,14 +360,14 @@ def fake_email(faker, fake_mailbox, fake_mailingList) -> Email:
     return baker.make(
         Email,
         mailbox=fake_mailbox,
-        mailinglist=fake_mailingList,
+        mailinglist=fake_mailing_list,
         eml_filepath=faker.file_path(extension="eml"),
         html_filepath=faker.file_path(extension="png"),
     )
 
 
 @pytest.fixture
-def fake_emailCorrespondent(
+def fake_email_correspondent(
     faker, fake_correspondent, fake_email
 ) -> EmailCorrespondent:
     """Fixture creating an :class:`core.models.EmailCorrespondent.EmailCorrespondent`.
@@ -399,7 +399,7 @@ def fake_attachment(faker, fake_email) -> Attachment:
 
 
 @pytest.fixture
-def accountPayload(owner_user) -> dict[str, Any]:
+def account_payload(owner_user) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Account.Account` payload with data deviating from the defaults.
 
     Args:
@@ -408,7 +408,7 @@ def accountPayload(owner_user) -> dict[str, Any]:
     Returns:
         The clean payload.
     """
-    accountData = baker.prepare(
+    account_data = baker.prepare(
         Account,
         user=owner_user,
         mail_host_port=random.randint(0, 65535),
@@ -416,13 +416,13 @@ def accountPayload(owner_user) -> dict[str, Any]:
         timeout=random.randint(1, 1000),
         is_favorite=not Account.is_favorite.field.default,
     )
-    payload = model_to_dict(accountData)
+    payload = model_to_dict(account_data)
     payload.pop("id")
     return {key: value for key, value in payload.items() if value is not None}
 
 
 @pytest.fixture
-def attachmentPayload(faker, fake_email) -> dict[str, Any]:
+def attachment_payload(faker, fake_email) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Attachment.Attachment` payload with data deviating from the defaults.
 
     Args:
@@ -431,7 +431,7 @@ def attachmentPayload(faker, fake_email) -> dict[str, Any]:
     Returns:
         The clean payload.
     """
-    attachmentData = baker.prepare(
+    attachment_data = baker.prepare(
         Attachment,
         email=fake_email,
         content_disposition=faker.name(),
@@ -440,13 +440,13 @@ def attachmentPayload(faker, fake_email) -> dict[str, Any]:
         content_subtype=faker.name(),
         is_favorite=not Attachment.is_favorite.field.default,
     )
-    payload = model_to_dict(attachmentData)
+    payload = model_to_dict(attachment_data)
     payload.pop("id")
     return {key: value for key, value in payload.items() if value is not None}
 
 
 @pytest.fixture
-def correspondentPayload(faker, fake_email) -> dict[str, Any]:
+def correspondent_payload(faker, fake_email) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Correspondent.Correspondent` payload with data deviating from the defaults.
 
     Args:
@@ -455,19 +455,19 @@ def correspondentPayload(faker, fake_email) -> dict[str, Any]:
     Returns:
         The clean payload.
     """
-    correspondentData = baker.prepare(
+    correspondent_data = baker.prepare(
         Correspondent,
         emails=[fake_email],
         email_name=faker.name(),
         is_favorite=not Correspondent.is_favorite.field.default,
     )
-    payload = model_to_dict(correspondentData)
+    payload = model_to_dict(correspondent_data)
     payload.pop("id")
     return {key: value for key, value in payload.items() if value is not None}
 
 
 @pytest.fixture
-def daemonPayload(faker, fake_mailbox) -> dict[str, Any]:
+def daemon_payload(faker, fake_mailbox) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Daemon.Daemon` payload with data deviating from the defaults.
 
     Args:
@@ -476,10 +476,12 @@ def daemonPayload(faker, fake_mailbox) -> dict[str, Any]:
     Returns:
         The clean payload.
     """
-    daemonData = baker.prepare(
+    daemon_data = baker.prepare(
         Daemon,
         mailbox=fake_mailbox,
-        fetching_criterion=random.choice(fake_mailbox.getAvailableFetchingCriteria()),
+        fetching_criterion=random.choice(
+            fake_mailbox.get_available_fetching_criteria()
+        ),
         cycle_interval=random.randint(
             Daemon.cycle_interval.field.default + 1,
             Daemon.cycle_interval.field.default * 100,
@@ -498,13 +500,13 @@ def daemonPayload(faker, fake_mailbox) -> dict[str, Any]:
         ),
         log_filepath=faker.file_path(),
     )
-    payload = model_to_dict(daemonData)
+    payload = model_to_dict(daemon_data)
     payload.pop("id")
     return {key: value for key, value in payload.items() if value is not None}
 
 
 @pytest.fixture
-def emailPayload(faker, fake_mailbox) -> dict[str, Any]:
+def email_payload(faker, fake_mailbox) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Email.Email` payload with data deviating from the defaults.
 
     Args:
@@ -513,7 +515,7 @@ def emailPayload(faker, fake_mailbox) -> dict[str, Any]:
     Returns:
         The clean payload.
     """
-    emailData = baker.prepare(
+    email_data = baker.prepare(
         Email,
         mailbox=fake_mailbox,
         email_subject=faker.sentence(),
@@ -522,13 +524,13 @@ def emailPayload(faker, fake_mailbox) -> dict[str, Any]:
         is_favorite=not Email.is_favorite.field.default,
         x_spam="NO",
     )
-    payload = model_to_dict(emailData)
+    payload = model_to_dict(email_data)
     payload.pop("id")
     return {key: value for key, value in payload.items() if value is not None}
 
 
 @pytest.fixture
-def mailboxPayload(fake_account) -> dict[str, Any]:
+def mailbox_payload(fake_account) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Mailbox.Mailbox` payload with data deviating from the defaults.
 
     Args:
@@ -537,20 +539,20 @@ def mailboxPayload(fake_account) -> dict[str, Any]:
     Returns:
         The clean payload.
     """
-    mailboxData = baker.prepare(
+    mailbox_data = baker.prepare(
         Mailbox,
         account=fake_account,
         save_attachments=not Mailbox.save_attachments.field.default,
-        save_toEML=not Mailbox.save_toEML.field.default,
+        save_to_eml=not Mailbox.save_to_eml.field.default,
         is_favorite=not Mailbox.is_favorite.field.default,
     )
-    payload = model_to_dict(mailboxData)
+    payload = model_to_dict(mailbox_data)
     payload.pop("id")
     return {key: value for key, value in payload.items() if value is not None}
 
 
 @pytest.fixture
-def mailingListPayload(faker, fake_email) -> dict[str, Any]:
+def mailing_list_payload(faker, fake_email) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.MailingList.MailingList` payload with data deviating from the defaults.
 
     Args:
@@ -559,7 +561,7 @@ def mailingListPayload(faker, fake_email) -> dict[str, Any]:
     Returns:
         The clean payload.
     """
-    mailinglistData = baker.prepare(
+    mailinglist_data = baker.prepare(
         MailingList,
         emails=[fake_email],
         list_owner=faker.name(),
@@ -570,6 +572,6 @@ def mailingListPayload(faker, fake_email) -> dict[str, Any]:
         list_help=faker.url(),
         is_favorite=not MailingList.is_favorite.field.default,
     )
-    payload = model_to_dict(mailinglistData)
+    payload = model_to_dict(mailinglist_data)
     payload.pop("id")
     return {key: value for key, value in payload.items() if value is not None}

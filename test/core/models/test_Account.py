@@ -63,8 +63,10 @@ def mock_fetcher(mocker, faker) -> MagicMock:
     """
     mock_fetcher = mocker.MagicMock(spec=BaseFetcher)
     mock_fetcher.__enter__.return_value = mock_fetcher
-    mock_fetcher.fetchEmails.return_value = [text.encode() for text in faker.texts()]
-    mock_fetcher.fetchMailboxes.return_value = [word.encode() for word in faker.words()]
+    mock_fetcher.fetch_emails.return_value = [text.encode() for text in faker.texts()]
+    mock_fetcher.fetch_mailboxes.return_value = [
+        word.encode() for word in faker.words()
+    ]
     return mock_fetcher
 
 
@@ -83,13 +85,13 @@ def mock_Account_get_fetcher(mocker, mock_fetcher) -> MagicMock:
 
 
 @pytest.fixture
-def spy_Mailbox_createFromData(mocker):
-    """Fixture spying on :func:`core.models.Account.Mailbox.createFromData` instance.
+def spy_Mailbox_create_from_data(mocker):
+    """Fixture spying on :func:`core.models.Account.Mailbox.create_from_data` instance.
 
     Returns:
         The spied on function.
     """
-    return mocker.spy(core.models.Account.Mailbox, "createFromData")
+    return mocker.spy(core.models.Account.Mailbox, "create_from_data")
 
 
 @pytest.mark.django_db
@@ -169,7 +171,7 @@ def test_Account_clean(fake_account):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "protocol, expectedFetcherClass",
+    "protocol, expected_fetcher_class",
     [
         (EmailProtocolChoices.IMAP, IMAPFetcher),
         (EmailProtocolChoices.IMAP_SSL, IMAP_SSL_Fetcher),
@@ -178,20 +180,20 @@ def test_Account_clean(fake_account):
     ],
 )
 def test_Account_get_fetcher_success(
-    mocker, mock_logger, fake_account, protocol, expectedFetcherClass
+    mocker, mock_logger, fake_account, protocol, expected_fetcher_class
 ):
     """Tests :func:`core.models.Account.Account.get_fetcher`
     in case of success.
     """
     mocker.patch(
-        f"core.models.Account.{expectedFetcherClass.__name__}.__init__",
+        f"core.models.Account.{expected_fetcher_class.__name__}.__init__",
         return_value=None,
     )
     fake_account.protocol = protocol
 
     fetcher = fake_account.get_fetcher()
 
-    assert isinstance(fetcher, expectedFetcherClass)
+    assert isinstance(fetcher, expected_fetcher_class)
     mock_logger.error.assert_not_called()
 
 
@@ -214,7 +216,7 @@ def test_Account_get_fetcher_bad_protocol(mock_logger, fake_account):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "protocol, expectedFetcherClass",
+    "protocol, expected_fetcher_class",
     [
         (EmailProtocolChoices.IMAP, IMAPFetcher),
         (EmailProtocolChoices.IMAP_SSL, IMAP_SSL_Fetcher),
@@ -223,7 +225,7 @@ def test_Account_get_fetcher_bad_protocol(mock_logger, fake_account):
     ],
 )
 def test_Account_get_fetcher_init_failure(
-    mocker, mock_logger, fake_account, protocol, expectedFetcherClass
+    mocker, mock_logger, fake_account, protocol, expected_fetcher_class
 ):
     """Tests :func:`core.models.Account.Account.get_fetcher`
     in case the fetcher fails to construct with a :class:`core.utils.fetcher.exceptions.MailAccountError`.
@@ -231,7 +233,7 @@ def test_Account_get_fetcher_init_failure(
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
     mocker.patch(
-        f"core.models.Account.{expectedFetcherClass.__name__}.__init__",
+        f"core.models.Account.{expected_fetcher_class.__name__}.__init__",
         side_effect=MailAccountError,
     )
     fake_account.protocol = protocol
@@ -246,7 +248,7 @@ def test_Account_get_fetcher_init_failure(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "protocol, expectedFetcherClass",
+    "protocol, expected_fetcher_class",
     [
         (EmailProtocolChoices.IMAP, IMAPFetcher),
         (EmailProtocolChoices.IMAP_SSL, IMAP_SSL_Fetcher),
@@ -255,16 +257,16 @@ def test_Account_get_fetcher_init_failure(
     ],
 )
 def test_Account_get_fetcher_class_success(
-    fake_account, mock_logger, protocol, expectedFetcherClass
+    fake_account, mock_logger, protocol, expected_fetcher_class
 ):
     """Tests :func:`core.models.Account.Account.get_fetcher_class`
     in case of success.
     """
     fake_account.protocol = protocol
 
-    fetcherClass = fake_account.get_fetcher_class()
+    fetcher_class = fake_account.get_fetcher_class()
 
-    assert fetcherClass == expectedFetcherClass
+    assert fetcher_class == expected_fetcher_class
     mock_logger.error.assert_not_called()
 
 
@@ -306,7 +308,7 @@ def test_Account_test_connection_success(
 
 
 @pytest.mark.django_db
-def test_Account_test_connection_badProtocol(
+def test_Account_test_connection_bad_protocol(
     fake_account, mock_logger, mock_fetcher, mock_Account_get_fetcher
 ):
     """Tests :func:`core.models.Account.Account.test_connection`
@@ -371,7 +373,7 @@ def test_Account_update_mailboxes_success(
     mock_logger,
     mock_fetcher,
     mock_Account_get_fetcher,
-    spy_Mailbox_createFromData,
+    spy_Mailbox_create_from_data,
 ):
     """Tests :func:`core.models.Account.Account.update_mailboxes`
     in case of success.
@@ -384,12 +386,12 @@ def test_Account_update_mailboxes_success(
     fake_account.refresh_from_db()
     assert fake_account.is_healthy is True
     assert fake_account.mailboxes.count() == len(
-        mock_fetcher.fetchMailboxes.return_value
+        mock_fetcher.fetch_mailboxes.return_value
     )
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
-    mock_fetcher.fetchMailboxes.assert_called_once_with()
-    assert spy_Mailbox_createFromData.call_count == len(
-        mock_fetcher.fetchMailboxes.return_value
+    mock_fetcher.fetch_mailboxes.assert_called_once_with()
+    assert spy_Mailbox_create_from_data.call_count == len(
+        mock_fetcher.fetch_mailboxes.return_value
     )
     mock_logger.info.assert_called()
 
@@ -400,13 +402,13 @@ def test_Account_update_mailboxes_duplicate(
     mock_logger,
     mock_fetcher,
     mock_Account_get_fetcher,
-    spy_Mailbox_createFromData,
+    spy_Mailbox_create_from_data,
 ):
     """Tests :func:`core.models.Account.Account.update_mailboxes`
     in case of a fetched mailbox already being in the db.
     """
     baker.make(Mailbox, account=fake_account, name="INBOX")
-    mock_fetcher.fetchMailboxes.return_value[0] = b"INBOX"
+    mock_fetcher.fetch_mailboxes.return_value[0] = b"INBOX"
 
     assert fake_account.mailboxes.count() == 1
 
@@ -414,12 +416,12 @@ def test_Account_update_mailboxes_duplicate(
 
     fake_account.refresh_from_db()
     assert fake_account.mailboxes.count() == len(
-        mock_fetcher.fetchMailboxes.return_value
+        mock_fetcher.fetch_mailboxes.return_value
     )
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
-    mock_fetcher.fetchMailboxes.assert_called_once_with()
-    assert spy_Mailbox_createFromData.call_count == len(
-        mock_fetcher.fetchMailboxes.return_value
+    mock_fetcher.fetch_mailboxes.assert_called_once_with()
+    assert spy_Mailbox_create_from_data.call_count == len(
+        mock_fetcher.fetch_mailboxes.return_value
     )
     mock_logger.info.assert_called()
 
@@ -430,12 +432,12 @@ def test_Account_update_mailboxes_failure(
     mock_logger,
     mock_fetcher,
     mock_Account_get_fetcher,
-    spy_Mailbox_createFromData,
+    spy_Mailbox_create_from_data,
 ):
     """Tests :func:`core.models.Account.Account.update_mailboxes`
     in case fetching mailboxes fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_fetcher.fetchMailboxes.side_effect = MailAccountError
+    mock_fetcher.fetch_mailboxes.side_effect = MailAccountError
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
 
@@ -446,8 +448,8 @@ def test_Account_update_mailboxes_failure(
     assert fake_account.is_healthy is False
     assert fake_account.mailboxes.count() == 0
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
-    mock_fetcher.fetchMailboxes.assert_called_once_with()
-    spy_Mailbox_createFromData.assert_not_called()
+    mock_fetcher.fetch_mailboxes.assert_called_once_with()
+    spy_Mailbox_create_from_data.assert_not_called()
     mock_logger.info.assert_called()
 
 
@@ -457,7 +459,7 @@ def test_Account_update_mailboxes_get_fetcher_error(
     mock_logger,
     mock_fetcher,
     mock_Account_get_fetcher,
-    spy_Mailbox_createFromData,
+    spy_Mailbox_create_from_data,
 ):
     """Tests :func:`core.models.Account.Account.update_mailboxes`
     in case :func:`core.models.Account.Account.get_fetcher`
@@ -474,8 +476,8 @@ def test_Account_update_mailboxes_get_fetcher_error(
     assert fake_account.is_healthy is True
     assert fake_account.mailboxes.count() == 0
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
-    mock_fetcher.fetchMailboxes.assert_not_called()
-    spy_Mailbox_createFromData.assert_not_called()
+    mock_fetcher.fetch_mailboxes.assert_not_called()
+    spy_Mailbox_create_from_data.assert_not_called()
     mock_logger.info.assert_called()
 
 

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :mod:`core.utils.fileManagment`."""
+"""Test module for :mod:`core.utils.file_managment`."""
 from __future__ import annotations
 
 import os
@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 import pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
-import core.utils.fileManagment
+import core.utils.file_managment
 from core.constants import HeaderFields
 
 
@@ -38,8 +38,8 @@ if TYPE_CHECKING:
 
 @pytest.fixture(autouse=True)
 def mock_logger(mocker) -> MagicMock:
-    """Mocks :attr:`core.utils.fileManagment.logger` of the module."""
-    return mocker.patch("core.utils.fileManagment.logger", autospec=True)
+    """Mocks :attr:`core.utils.file_managment.logger` of the module."""
+    return mocker.patch("core.utils.file_managment.logger", autospec=True)
 
 
 @pytest.fixture(autouse=True)
@@ -65,11 +65,11 @@ def mock_filesystem() -> Generator[FakeFilesystem, None, None]:
         patcher.fs.create_file("/dir/full_file", contents="Im not empty!")
         patcher.fs.create_file("/dir/empty_file", contents="")
 
-        def brokenFileSideEffect(file):
+        def broken_file_side_effect(file):
             raise OSError
 
         patcher.fs.create_file(
-            "/dir/broken_file", contents="", side_effect=brokenFileSideEffect
+            "/dir/broken_file", contents="", side_effect=broken_file_side_effect
         )
 
         patcher.fs.create_file("/dir/no_write_file", contents="")
@@ -92,7 +92,7 @@ def mock_filesystem() -> Generator[FakeFilesystem, None, None]:
 
 
 @pytest.mark.parametrize(
-    "fakeFile, expectedFileExists, expectedFileSize, expectedCallsToOpen, expectedErrors",
+    "fake_file, expected_file_exists, expected_file_size, expected_calls_to_open, expected_errors",
     [
         ("/dir/new_file", True, 28, 1, 0),
         ("/dir/full_file", True, 13, 0, 0),
@@ -106,57 +106,57 @@ def mock_filesystem() -> Generator[FakeFilesystem, None, None]:
         ("/no_access_dir/file", True, 0, 1, 1),
     ],
 )
-def test_saveStore(
+def test_save_store(
     mocker,
     mock_logger,
     mock_filesystem,
-    fakeFile,
-    expectedFileExists,
-    expectedFileSize,
-    expectedCallsToOpen,
-    expectedErrors,
+    fake_file,
+    expected_file_exists,
+    expected_file_size,
+    expected_calls_to_open,
+    expected_errors,
 ) -> None:
-    """Tests :func:`core.utils.fileManagment.saveStore` with the help of a fakefs.
+    """Tests :func:`core.utils.file_managment.save_store` with the help of a fakefs.
 
     Args:
         mocker: The general mocker instance.
         mock_logger: The mocked logger fixture.
         mock_filesystem: The fakefs fixture.
-        fakeFile: The fakeFilePath parameter.
-        expectedFileExists: The expectedFileExists parameter.
-        expectedFileSize: The expectedFileSize parameter.
+        fake_file: The fake_file_path parameter.
+        expected_file_exists: The expected_file_exists parameter.
+        expected_file_size: The expected_file_size parameter.
         expectedEMLFilePath: The expectedEMLFilePath parameter.
-        expectedCallsToOpen: The expectedCallsToOpen parameter.
-        expectedErrors: The expectedErrors parameter.
+        expected_calls_to_open: The expected_calls_to_open parameter.
+        expected_errors: The expected_errors parameter.
 
     Note:
         Fakefs is overly restrictive with os.path.getsize for no-read files!
         Cannot test the behaviour for non-empty no-read files.
     """
-    spy_open = mocker.spy(core.utils.fileManagment, "open")
+    spy_open = mocker.spy(core.utils.file_managment, "open")
     content = b"This is 28bytes for testing."
 
-    @core.utils.fileManagment.saveStore
+    @core.utils.file_managment.save_store
     def test_save(file):
         file.write(content)
 
-    test_save(fakeFile)
+    test_save(fake_file)
 
-    mock_filesystem.chmod(os.path.dirname(fakeFile), 0o777)
-    assert mock_filesystem.exists(fakeFile) is expectedFileExists
-    if mock_filesystem.exists(fakeFile):
-        mock_filesystem.chmod(fakeFile, 0o666)
-        assert mock_filesystem.get_object(fakeFile).size == expectedFileSize
+    mock_filesystem.chmod(os.path.dirname(fake_file), 0o777)
+    assert mock_filesystem.exists(fake_file) is expected_file_exists
+    if mock_filesystem.exists(fake_file):
+        mock_filesystem.chmod(fake_file, 0o666)
+        assert mock_filesystem.get_object(fake_file).size == expected_file_size
 
-    assert spy_open.call_count == expectedCallsToOpen
-    spy_open.assert_has_calls([mocker.call(fakeFile, "wb")] * expectedCallsToOpen)
-    assert mock_logger.exception.call_count == expectedErrors
+    assert spy_open.call_count == expected_calls_to_open
+    spy_open.assert_has_calls([mocker.call(fake_file, "wb")] * expected_calls_to_open)
+    assert mock_logger.exception.call_count == expected_errors
 
     mock_logger.debug.assert_called()
 
 
 @pytest.mark.parametrize(
-    "filename, expectedResult",
+    "filename, expected_result",
     [
         ("pof/dejfoe", "pof_dejfoe"),
         ("abc etet?t ", "abcetet?t"),
@@ -165,7 +165,7 @@ def test_saveStore(
         ("<and*~/%>", "<and*__%>"),
     ],
 )
-def test_clean_filename(filename, expectedResult):
-    result = core.utils.fileManagment.clean_filename(filename)
+def test_clean_filename(filename, expected_result):
+    result = core.utils.file_managment.clean_filename(filename)
 
-    assert result == expectedResult
+    assert result == expected_result

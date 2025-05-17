@@ -38,8 +38,8 @@ class POP3_SSL_Fetcher(POP3Fetcher):
     """Name of the used protocol, refers to :attr:`constants.MailFetchingProtocols.POP3_SSL`."""
 
     @override
-    def connectToHost(self) -> None:
-        """Overrides :func:`core.utils.fetchers.POP3Fetcher.connectToHost` to use :class:`poplib.POP3_SSL`."""
+    def connect_to_host(self) -> None:
+        """Overrides :func:`core.utils.fetchers.POP3Fetcher.connect_to_host` to use :class:`poplib.POP3_SSL`."""
         self.logger.debug("Connecting to %s ...", self.account)
 
         mail_host = self.account.mail_host
@@ -47,19 +47,19 @@ class POP3_SSL_Fetcher(POP3Fetcher):
         timeout = self.account.timeout
         try:
             if mail_host_port and timeout:
-                self._mailClient = poplib.POP3_SSL(
+                self._mail_client = poplib.POP3_SSL(
                     host=mail_host, port=mail_host_port, timeout=timeout, context=None
                 )
             elif mail_host_port:
-                self._mailClient = poplib.POP3_SSL(
+                self._mail_client = poplib.POP3_SSL(
                     host=mail_host, port=mail_host_port, context=None
                 )
             elif timeout:
-                self._mailClient = poplib.POP3_SSL(
+                self._mail_client = poplib.POP3_SSL(
                     host=mail_host, timeout=timeout, context=None
                 )
             else:
-                self._mailClient = poplib.POP3_SSL(host=mail_host, context=None)
+                self._mail_client = poplib.POP3_SSL(host=mail_host, context=None)
         except Exception as error:
             self.logger.exception(
                 "A POP error occured connecting to %s!",

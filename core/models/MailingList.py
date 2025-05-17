@@ -30,7 +30,7 @@ from core.mixins.FavoriteMixin import FavoriteMixin
 from core.mixins.URLMixin import URLMixin
 
 from ..constants import HeaderFields
-from ..utils.mailParsing import getHeader
+from ..utils.mail_parsing import get_header
 
 
 if TYPE_CHECKING:
@@ -96,20 +96,20 @@ class MailingList(URLMixin, FavoriteMixin, models.Model):
         }
 
     @classmethod
-    def createFromEmailMessage(
-        cls, emailMessage: Message[str, str]
+    def create_from_email_message(
+        cls, email_message: Message[str, str]
     ) -> MailingList | None:
         """Prepares a :class:`core.models.MailingList.MailingList` from an email message.
 
         Args:
-            emailMessage: The email message to parse the malinglistdata from.
+            email_message: The email message to parse the malinglistdata from.
 
         Returns:
             The :class:`core.models.MailingList.MailingList` instance with data from the message.
             If the correspondent already exists in the db returns that version.
-            None if there is no List-ID header in :attr:`emailMessage`.
+            None if there is no List-ID header in :attr:`email_message`.
         """
-        list_id = getHeader(emailMessage, HeaderFields.MailingList.ID)
+        list_id = get_header(email_message, HeaderFields.MailingList.ID)
         if not list_id:
             logger.debug(
                 "Skipping mailinglist with empty list id %s.",
@@ -122,26 +122,26 @@ class MailingList(URLMixin, FavoriteMixin, models.Model):
             mailinglist = cls(
                 list_id=list_id,
                 list_owner=(
-                    getHeader(emailMessage, HeaderFields.MailingList.OWNER) or ""
+                    get_header(email_message, HeaderFields.MailingList.OWNER) or ""
                 ),
                 list_subscribe=(
-                    getHeader(emailMessage, HeaderFields.MailingList.SUBSCRIBE) or ""
+                    get_header(email_message, HeaderFields.MailingList.SUBSCRIBE) or ""
                 ),
                 list_unsubscribe=(
-                    getHeader(
-                        emailMessage,
+                    get_header(
+                        email_message,
                         HeaderFields.MailingList.UNSUBSCRIBE,
                     )
                     or ""
                 ),
                 list_post=(
-                    getHeader(emailMessage, HeaderFields.MailingList.POST) or ""
+                    get_header(email_message, HeaderFields.MailingList.POST) or ""
                 ),
                 list_help=(
-                    getHeader(emailMessage, HeaderFields.MailingList.HELP) or ""
+                    get_header(email_message, HeaderFields.MailingList.HELP) or ""
                 ),
                 list_archive=(
-                    getHeader(emailMessage, HeaderFields.MailingList.ARCHIVE) or ""
+                    get_header(email_message, HeaderFields.MailingList.ARCHIVE) or ""
                 ),
             )
             mailinglist.save()

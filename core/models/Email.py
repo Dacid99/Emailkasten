@@ -39,11 +39,11 @@ from core.mixins.HasDownloadMixin import HasDownloadMixin
 from core.mixins.HasThumbnailMixin import HasThumbnailMixin
 from core.mixins.URLMixin import URLMixin
 from core.models.EmailCorrespondent import EmailCorrespondent
-from core.utils.fileManagment import clean_filename, saveStore
-from core.utils.mailParsing import eml2html, is_X_Spam
+from core.utils.file_managment import clean_filename, save_store
+from core.utils.mail_parsing import eml2html, is_x_spam
 from Emailkasten.utils.workarounds import get_config
 
-from ..utils.mailParsing import get_bodytexts, getHeader, parseDatetimeHeader
+from ..utils.mail_parsing import get_bodytexts, get_header, parse_datetime_header
 from .Attachment import Attachment
 from .MailingList import MailingList
 from .Storage import Storage
@@ -78,7 +78,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     html_bodytext = models.TextField(blank=True, default="")
     """The html bodytext of the mail. Can be blank."""
 
-    inReplyTo: models.ForeignKey[Email | None, Email | None] = models.ForeignKey(
+    in_reply_to: models.ForeignKey[Email | None, Email | None] = models.ForeignKey(
         "self", null=True, related_name="replies", on_delete=models.SET_NULL
     )
     """The mail that this mail is a response to. Can be null. Deletion of that replied-to mail sets this field to NULL."""
@@ -191,13 +191,13 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
 
         Renders and save the data to eml if configured.
         """
-        emailData = kwargs.pop("emailData", None)
+        email_data = kwargs.pop("email_data", None)
         super().save(*args, **kwargs)
-        if emailData is not None:
-            if self.mailbox.save_toEML:
-                self.save_eml_to_storage(emailData)
-            if self.mailbox.save_toHTML:
-                self.save_html_to_storage(emailData)
+        if email_data is not None:
+            if self.mailbox.save_to_eml:
+                self.save_eml_to_storage(email_data)
+            if self.mailbox.save_to_html:
+                self.save_html_to_storage(email_data)
 
     @override
     def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
@@ -232,32 +232,32 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
 
         return delete_return
 
-    def save_eml_to_storage(self, emailData: bytes) -> None:
+    def save_eml_to_storage(self, email_data: bytes) -> None:
         """Saves the email to the storage in eml format.
 
         If the file already exists, does not overwrite.
         If an error occurs, removes the incomplete file.
 
         Note:
-            Uses :func:`core.utils.fileManagment.saveStore` to wrap the storing process.
+            Uses :func:`core.utils.file_managment.save_store` to wrap the storing process.
 
         Args:
-            emailData: The data of the email to be saved.
+            email_data: The data of the email to be saved.
         """
         if self.eml_filepath:
             logger.debug("%s is already stored as eml.", self)
             return
 
-        @saveStore
-        def writeMessageToEML(emlFile: BufferedWriter, emailData: bytes) -> None:
-            emlFile.write(emailData)
+        @save_store
+        def write_message_to_eml(eml_file: BufferedWriter, email_data: bytes) -> None:
+            eml_file.write(email_data)
 
         logger.debug("Storing %s as eml ...", self)
 
-        dirPath = Storage.getSubdirectory(self.message_id)
+        dir_path = Storage.get_subdirectory(self.message_id)
         clean_message_id = clean_filename(self.message_id)
-        preliminary_file_path = os.path.join(dirPath, clean_message_id + ".eml")
-        file_path = writeMessageToEML(preliminary_file_path, emailData)
+        preliminary_file_path = os.path.join(dir_path, clean_message_id + ".eml")
+        file_path = write_message_to_eml(preliminary_file_path, email_data)
         if file_path:
             self.eml_filepath = file_path
             self.save(update_fields=["eml_filepath"])
@@ -265,35 +265,35 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         else:
             logger.error("Failed to store %s as eml!", self)
 
-    def save_html_to_storage(self, emailData: bytes) -> None:
+    def save_html_to_storage(self, email_data: bytes) -> None:
         """Converts the email to html and writes the result to the storage.
 
         If the file already exists, does not overwrite.
         If an error occurs, removes the incomplete file.
 
         Note:
-            Uses :func:`core.utils.fileManagment.saveStore` to wrap the storing process.
+            Uses :func:`core.utils.file_managment.save_store` to wrap the storing process.
 
         Args:
-            emailData: The data of the email to be converted.
+            email_data: The data of the email to be converted.
         """
         if self.html_filepath:
             logger.debug("%s is already stored as html.", self)
             return
 
-        @saveStore
-        def convertAndStoreHtmlMessage(
-            htmlFile: BufferedWriter, emailData: bytes
+        @save_store
+        def convert_and_store_html_message(
+            html_file: BufferedWriter, email_data: bytes
         ) -> None:
-            htmlMessage = eml2html(emailData)
-            htmlFile.write(htmlMessage.encode())
+            html_message = eml2html(email_data)
+            html_file.write(html_message.encode())
 
         logger.debug("Rendering and storing %s  ...", self)
 
-        dirPath = Storage.getSubdirectory(self.message_id)
+        dir_path = Storage.get_subdirectory(self.message_id)
         clean_message_id = clean_filename(self.message_id)
-        preliminary_file_path = os.path.join(dirPath, clean_message_id + ".html")
-        file_path = convertAndStoreHtmlMessage(preliminary_file_path, emailData)
+        preliminary_file_path = os.path.join(dir_path, clean_message_id + ".html")
+        file_path = convert_and_store_html_message(preliminary_file_path, email_data)
         if file_path:
             self.html_filepath = file_path
             self.save(update_fields=["html_filepath"])
@@ -301,97 +301,99 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         else:
             logger.error("Failed to convert and store %s!", self)
 
-    def subConversation(self) -> list[Email]:
+    def sub_conversation(self) -> list[Email]:
         """Gets all emails that are follow this email in the conversation.
 
         Returns:
             The list of all mails in the subconversation.
         """
-        subConversationEmails = [self]
-        for replyEmail in self.replies.all().prefetch_related("replies"):
-            subConversationEmails.extend(replyEmail.subConversation())
-        return subConversationEmails
+        sub_conversation_emails = [self]
+        for reply_email in self.replies.all().prefetch_related("replies"):
+            sub_conversation_emails.extend(reply_email.sub_conversation())
+        return sub_conversation_emails
 
-    def fullConversation(self) -> list[Email]:
-        """Gets all emails that are connected to this email via inReplyTo.
+    def full_conversation(self) -> list[Email]:
+        """Gets all emails that are connected to this email via in_reply_to.
 
-        Based on :func:`core.models.Email.Email.subConversation`
+        Based on :func:`core.models.Email.Email.sub_conversation`
         to recurse through the entire conversation.
 
         Returns:
             The list of all mails in the conversation.
         """
-        rootEmail = self
-        while rootEmail.inReplyTo is not None:
-            rootEmail = rootEmail.inReplyTo
-        return rootEmail.subConversation()
+        root_email = self
+        while root_email.in_reply_to is not None:
+            root_email = root_email.in_reply_to
+        return root_email.sub_conversation()
 
-    def isSpam(self) -> bool:
+    def is_spam(self) -> bool:
         """Checks the spam headers to decide whether the mail is spam.
 
         Returns:
             Whether the mail is considered spam.
         """
-        return is_X_Spam(self.x_spam)
+        return is_x_spam(self.x_spam)
 
     @classmethod
-    def fillFromEmailBytes(cls, email_bytes: bytes) -> Email:
+    def fill_from_email_bytes(cls, email_bytes: bytes) -> Email:
         """Constructs an :class:`core.models.Email.Email` from an email in bytes form.
 
         Args:
-            emailBytes: The email bytes to parse the emaildata from.
+            email_bytes: The email bytes to parse the emaildata from.
 
         Returns:
             The :class:`core.models.Email.Email` instance with data from the bytes.
         """
         email_message = email.message_from_bytes(email_bytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
-        headerDict = {}
-        for headerName in email_message:
-            headerDict[headerName] = getHeader(email_message, headerName)
-        inReplyTo_message_id = headerDict.get(HeaderFields.IN_REPLY_TO)
-        inReplyTo = None
-        if inReplyTo_message_id:
+        header_dict = {}
+        for header_name in email_message:
+            header_dict[header_name] = get_header(email_message, header_name)
+        in_reply_to_message_id = header_dict.get(HeaderFields.IN_REPLY_TO)
+        in_reply_to = None
+        if in_reply_to_message_id:
             with contextlib.suppress(Email.DoesNotExist):
-                inReplyTo = Email.objects.get(message_id=inReplyTo_message_id)
+                in_reply_to = Email.objects.get(message_id=in_reply_to_message_id)
         bodytexts = get_bodytexts(email_message)
         return cls(
-            headers=headerDict,
-            message_id=headerDict.get(HeaderFields.MESSAGE_ID)
+            headers=header_dict,
+            message_id=header_dict.get(HeaderFields.MESSAGE_ID)
             or md5(email_bytes).hexdigest(),
-            datetime=parseDatetimeHeader(headerDict.get(HeaderFields.DATE)),
-            email_subject=headerDict.get(HeaderFields.SUBJECT) or __("No subject"),
-            inReplyTo=inReplyTo,
-            x_spam=headerDict.get(HeaderFields.X_SPAM) or "",
+            datetime=parse_datetime_header(header_dict.get(HeaderFields.DATE)),
+            email_subject=header_dict.get(HeaderFields.SUBJECT) or __("No subject"),
+            in_reply_to=in_reply_to,
+            x_spam=header_dict.get(HeaderFields.X_SPAM) or "",
             datasize=len(email_bytes),
             plain_bodytext=bodytexts.get("plain", ""),
             html_bodytext=bodytexts.get("html", ""),
         )
 
     @classmethod
-    def createFromEmailBytes(cls, emailBytes: bytes, mailbox: Mailbox) -> Email | None:
+    def create_from_email_bytes(
+        cls, email_bytes: bytes, mailbox: Mailbox
+    ) -> Email | None:
         """Creates an :class:`core.models.Email.Email` from an email in bytes form.
 
         Args:
-            emailBytes: The email bytes to parse the emaildata from.
+            email_bytes: The email bytes to parse the emaildata from.
             mailbox: The mailbox the email is in.
 
         Returns:
             The :class:`core.models.Email.Email` instance with data from the bytes.
-            None if there is no Message-ID header in :attr:`emailMessage`,
+            None if there is no Message-ID header in :attr:`email_message`,
             if the mail already exists in the db or
             if the mail is spam and is supposed to be thrown out.
         """
-        emailMessage = email.message_from_bytes(emailBytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
+        email_message = email.message_from_bytes(email_bytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
 
         message_id = (
-            getHeader(
-                emailMessage,
+            get_header(
+                email_message,
                 HeaderFields.MESSAGE_ID,
             )
-            or md5(emailBytes).hexdigest()  # noqa: S324  # no safe hash required here
+            or md5(email_bytes).hexdigest()  # noqa: S324  # no safe hash required here
         )
-        x_spam = getHeader(emailMessage, HeaderFields.X_SPAM) or ""
-        if is_X_Spam(x_spam) and get_config("THROW_OUT_SPAM"):
+        x_spam = get_header(email_message, HeaderFields.X_SPAM) or ""
+        if is_x_spam(x_spam) and get_config("THROW_OUT_SPAM"):
             logger.debug(
                 "Skipping email with Message-ID %s in %s, it is flagged as spam.",
                 message_id,
@@ -407,22 +409,26 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             )
             return None
 
-        new_email = cls.fillFromEmailBytes(email_bytes=emailBytes)
+        new_email = cls.fill_from_email_bytes(email_bytes=email_bytes)
         new_email.mailbox = mailbox
 
         logger.debug("Successfully parsed email.")
         try:
             with transaction.atomic():
-                new_email.mailinglist = MailingList.createFromEmailMessage(emailMessage)
-                new_email.save(emailData=emailBytes)
+                new_email.mailinglist = MailingList.create_from_email_message(
+                    email_message
+                )
+                new_email.save(email_data=email_bytes)
                 if new_email.headers:
                     for mention in HeaderFields.Correspondents.values:
-                        correspondentHeader = new_email.headers.get(mention)
-                        if correspondentHeader:
-                            EmailCorrespondent.createFromHeader(
-                                correspondentHeader, mention, new_email
+                        correspondent_header = new_email.headers.get(mention)
+                        if correspondent_header:
+                            EmailCorrespondent.create_from_header(
+                                correspondent_header, mention, new_email
                             )
-                attachments = Attachment.createFromEmailMessage(emailMessage, new_email)
+                attachments = Attachment.create_from_email_message(
+                    email_message, new_email
+                )
         except Exception:
             logger.exception(
                 "Failed creating email from bytes: Error while saving email to db!"

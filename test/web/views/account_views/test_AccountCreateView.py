@@ -24,7 +24,7 @@ from django.urls import reverse
 from rest_framework import status
 
 from core.models.Account import Account
-from test.conftest import mailboxPayload
+from test.conftest import mailbox_payload
 from web.views.account_views.AccountCreateView import AccountCreateView
 
 
@@ -64,11 +64,11 @@ def test_get_auth_owner(owner_client, list_url):
 
 
 @pytest.mark.django_db
-def test_post_noauth(accountPayload, client, list_url, login_url):
+def test_post_noauth(account_payload, client, list_url, login_url):
     """Tests :class:`web.views.account_views.AccountCreateView.AccountCreateView` with an unauthenticated user client."""
     assert Account.objects.all().count() == 1
 
-    response = client.post(list_url(AccountCreateView), accountPayload)
+    response = client.post(list_url(AccountCreateView), account_payload)
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
@@ -78,52 +78,52 @@ def test_post_noauth(accountPayload, client, list_url, login_url):
 
 
 @pytest.mark.django_db
-def test_post_auth_other(accountPayload, other_user, other_client, list_url):
+def test_post_auth_other(account_payload, other_user, other_client, list_url):
     """Tests :class:`web.views.account_views.AccountCreateView.AccountCreateView` with the authenticated other user client."""
     assert Account.objects.all().count() == 1
 
-    response = other_client.post(list_url(AccountCreateView), accountPayload)
+    response = other_client.post(list_url(AccountCreateView), account_payload)
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:" + Account.get_list_web_url_name()))
     assert Account.objects.all().count() == 2
     added_account = Account.objects.filter(
-        mail_address=accountPayload["mail_address"], user=other_user
+        mail_address=account_payload["mail_address"], user=other_user
     ).get()
-    assert added_account.password == accountPayload["password"]
-    assert added_account.mail_host == accountPayload["mail_host"]
-    assert added_account.mail_host_port == accountPayload["mail_host_port"]
+    assert added_account.password == account_payload["password"]
+    assert added_account.mail_host == account_payload["mail_host"]
+    assert added_account.mail_host_port == account_payload["mail_host_port"]
 
 
 @pytest.mark.django_db
-def test_post_auth_owner(accountPayload, owner_user, owner_client, list_url):
+def test_post_auth_owner(account_payload, owner_user, owner_client, list_url):
     """Tests :class:`web.views.account_views.AccountCreateView.AccountCreateView` with the authenticated owner user client."""
     assert Account.objects.all().count() == 1
 
-    response = owner_client.post(list_url(AccountCreateView), accountPayload)
+    response = owner_client.post(list_url(AccountCreateView), account_payload)
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:" + Account.get_list_web_url_name()))
     assert Account.objects.all().count() == 2
     added_account = Account.objects.filter(
-        mail_address=accountPayload["mail_address"], user=owner_user
+        mail_address=account_payload["mail_address"], user=owner_user
     ).get()
-    assert added_account.password == accountPayload["password"]
-    assert added_account.mail_host == accountPayload["mail_host"]
-    assert added_account.mail_host_port == accountPayload["mail_host_port"]
+    assert added_account.password == account_payload["password"]
+    assert added_account.mail_host == account_payload["mail_host"]
+    assert added_account.mail_host_port == account_payload["mail_host_port"]
 
 
 @pytest.mark.django_db
 def test_post_duplicate_auth_owner(
-    fake_account, accountPayload, owner_client, list_url
+    fake_account, account_payload, owner_client, list_url
 ):
     """Tests :class:`web.views.account_views.AccountCreateView.AccountCreateView` with the authenticated owner user client."""
     assert Account.objects.all().count() == 1
 
-    accountPayload["mail_address"] = fake_account.mail_address
-    response = owner_client.post(list_url(AccountCreateView), accountPayload)
+    account_payload["mail_address"] = fake_account.mail_address
+    response = owner_client.post(list_url(AccountCreateView), account_payload)
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)

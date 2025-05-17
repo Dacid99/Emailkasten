@@ -69,28 +69,28 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
     """
 
     @staticmethod
-    def makeFetchingCriterion(criterionName: str) -> str | None:
+    def make_fetching_criterion(criterion_name: str) -> str | None:
         """Returns the formatted criterion for the IMAP request, handles dates in particular.
 
         Args:
-            criterionName: The criterion to prepare for the IMAP request.
+            criterion_name: The criterion to prepare for the IMAP request.
                 If not in :attr:`AVAILABLE_FETCHING_CRITERIA`, returns None.
 
         Returns:
             Formatted criterion to be used in IMAP request;
-            None if `criterionName` is not in :attr:`AVAILABLE_FETCHING_CRITERIA`.
+            None if `criterion_name` is not in :attr:`AVAILABLE_FETCHING_CRITERIA`.
         """
-        if criterionName == EmailFetchingCriterionChoices.DAILY:
-            startTime = timezone.now() - datetime.timedelta(days=1)
-        elif criterionName == EmailFetchingCriterionChoices.WEEKLY:
-            startTime = timezone.now() - datetime.timedelta(weeks=1)
-        elif criterionName == EmailFetchingCriterionChoices.MONTHLY:
-            startTime = timezone.now() - datetime.timedelta(weeks=4)
-        elif criterionName == EmailFetchingCriterionChoices.ANNUALLY:
-            startTime = timezone.now() - datetime.timedelta(weeks=52)
+        if criterion_name == EmailFetchingCriterionChoices.DAILY:
+            start_time = timezone.now() - datetime.timedelta(days=1)
+        elif criterion_name == EmailFetchingCriterionChoices.WEEKLY:
+            start_time = timezone.now() - datetime.timedelta(weeks=1)
+        elif criterion_name == EmailFetchingCriterionChoices.MONTHLY:
+            start_time = timezone.now() - datetime.timedelta(weeks=4)
+        elif criterion_name == EmailFetchingCriterionChoices.ANNUALLY:
+            start_time = timezone.now() - datetime.timedelta(weeks=52)
         else:
-            return criterionName
-        return f"SENTSINCE {imaplib.Time2Internaldate(startTime).split(" ")[0].strip('" ')}"
+            return criterion_name
+        return f"SENTSINCE {imaplib.Time2Internaldate(start_time).split(" ")[0].strip('" ')}"
 
     @override
     def __init__(self, account: Account) -> None:
@@ -101,11 +101,11 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
         """
         super().__init__(account)
 
-        self.connectToHost()
+        self.connect_to_host()
         self.safe_login(self.account.mail_address, self.account.password)
 
     @override
-    def connectToHost(self) -> None:
+    def connect_to_host(self) -> None:
         """Opens the connection to the IMAP server using the credentials from :attr:`account`.
 
         Raises:
@@ -118,15 +118,15 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
         timeout = self.account.timeout
         try:
             if mail_host_port and timeout:
-                self._mailClient = imaplib.IMAP4(
+                self._mail_client = imaplib.IMAP4(
                     host=mail_host, port=mail_host_port, timeout=timeout
                 )
             elif mail_host_port:
-                self._mailClient = imaplib.IMAP4(host=mail_host, port=mail_host_port)
+                self._mail_client = imaplib.IMAP4(host=mail_host, port=mail_host_port)
             elif timeout:
-                self._mailClient = imaplib.IMAP4(host=mail_host, timeout=timeout)
+                self._mail_client = imaplib.IMAP4(host=mail_host, timeout=timeout)
             else:
-                self._mailClient = imaplib.IMAP4(host=mail_host)
+                self._mail_client = imaplib.IMAP4(host=mail_host)
         except Exception as error:
             self.logger.exception(
                 "An %s occured connecting to %s!",
@@ -164,7 +164,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
             self.logger.debug("Successfully tested %s.", mailbox)
 
     @override
-    def fetchEmails(
+    def fetch_emails(
         self,
         mailbox: Mailbox,
         criterion: str = EmailFetchingCriterionChoices.ALL,
@@ -188,45 +188,45 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
                 If :attr:`criterion` is not in :attr:`IMAPFetcher.AVAILABLE_FETCHING_CRITERIA`.
             MailboxError: If an error occurs or a bad response is returned.
         """
-        super().fetchEmails(mailbox, criterion)
+        super().fetch_emails(mailbox, criterion)
 
-        searchCriterion = self.makeFetchingCriterion(criterion)
+        search_criterion = self.make_fetching_criterion(criterion)
 
         self.logger.debug(
             "Searching and fetching %s messages in %s...",
-            searchCriterion,
+            search_criterion,
             mailbox,
         )
         self.logger.debug("Opening mailbox %s ...", mailbox)
         self.safe_select(utf7_encode(mailbox.name), readonly=True)
         self.logger.debug("Successfully opened mailbox.")
 
-        self.logger.debug("Searching %s messages in %s ...", searchCriterion, mailbox)
-        _, messageUIDs = self.safe_uid("SEARCH", searchCriterion)
+        self.logger.debug("Searching %s messages in %s ...", search_criterion, mailbox)
+        _, message_uids = self.safe_uid("SEARCH", search_criterion)
         self.logger.info(
             "Found %s messages with uIDs %s in %s.",
-            searchCriterion,
-            messageUIDs,
+            search_criterion,
+            message_uids,
             mailbox,
         )
 
-        self.logger.debug("Fetching %s messages in %s ...", searchCriterion, mailbox)
-        mailDataList = []
-        for uID in messageUIDs[0].split():
+        self.logger.debug("Fetching %s messages in %s ...", search_criterion, mailbox)
+        mail_data_list = []
+        for uid in message_uids[0].split():
             try:
-                _, messageData = self.safe_uid("FETCH", uID, "(RFC822)")
+                _, message_data = self.safe_uid("FETCH", uid, "(RFC822)")
             except FetcherError:
                 self.logger.warning(
                     "Failed to fetch message %s from %s!",
-                    uID,
+                    uid,
                     mailbox,
                     exc_info=True,
                 )
                 continue
-            mailDataList.append(messageData[0][1])
+            mail_data_list.append(message_data[0][1])
         self.logger.debug(
             "Successfully fetched %s messages from %s.",
-            searchCriterion,
+            search_criterion,
             mailbox,
         )
 
@@ -236,14 +236,14 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
 
         self.logger.debug(
             "Successfully searched and fetched %s messages in %s.",
-            searchCriterion,
+            search_criterion,
             mailbox,
         )
 
-        return mailDataList
+        return mail_data_list
 
     @override
-    def fetchMailboxes(self) -> list[bytes]:
+    def fetch_mailboxes(self) -> list[bytes]:
         """Retrieves and returns the data of the mailboxes in the account.
 
         Todo:
@@ -273,7 +273,7 @@ class IMAPFetcher(BaseFetcher, SafeIMAPMixin):
     def close(self) -> None:
         """Logs out of the account and closes the connection to the IMAP server if it is open."""
         self.logger.debug("Closing connection to %s ...", self.account)
-        if self._mailClient is None:
+        if self._mail_client is None:
             self.logger.debug("Connection to %s is already closed.", self.account)
             return
         self.safe_logout()

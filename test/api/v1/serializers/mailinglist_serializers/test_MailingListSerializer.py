@@ -29,66 +29,70 @@ from api.v1.serializers.mailinglist_serializers.MailingListSerializer import (
 
 
 @pytest.mark.django_db
-def test_output(fake_mailingList, request_context):
+def test_output(fake_mailing_list, request_context):
     """Tests for the expected output of the serializer."""
-    serializerData = MailingListSerializer(
-        instance=fake_mailingList, context=request_context
+    serializer_data = MailingListSerializer(
+        instance=fake_mailing_list, context=request_context
     ).data
 
-    assert "id" in serializerData
-    assert serializerData["id"] == fake_mailingList.id
-    assert "list_id" in serializerData
-    assert serializerData["list_id"] == fake_mailingList.list_id
-    assert "list_owner" in serializerData
-    assert serializerData["list_owner"] == fake_mailingList.list_owner
-    assert "list_subscribe" in serializerData
-    assert serializerData["list_subscribe"] == fake_mailingList.list_subscribe
-    assert "list_unsubscribe" in serializerData
-    assert serializerData["list_unsubscribe"] == fake_mailingList.list_unsubscribe
-    assert "list_post" in serializerData
-    assert serializerData["list_post"] == fake_mailingList.list_post
-    assert "list_help" in serializerData
-    assert serializerData["list_help"] == fake_mailingList.list_help
-    assert "list_archive" in serializerData
-    assert serializerData["list_archive"] == fake_mailingList.list_archive
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_mailingList.is_favorite
-    assert "from_correspondents" in serializerData
-    assert isinstance(serializerData["from_correspondents"], list)
-    assert len(serializerData["from_correspondents"]) == 1
-    assert isinstance(serializerData["from_correspondents"][0], dict)
-    assert "created" in serializerData
-    assert datetime.fromisoformat(serializerData["created"]) == fake_mailingList.created
-    assert "updated" in serializerData
-    assert datetime.fromisoformat(serializerData["updated"]) == fake_mailingList.updated
-    assert "emails" in serializerData
-    assert isinstance(serializerData["emails"], list)
-    assert len(serializerData["emails"]) == 1
-    assert isinstance(serializerData["emails"][0], dict)
-    assert len(serializerData) == 13
+    assert "id" in serializer_data
+    assert serializer_data["id"] == fake_mailing_list.id
+    assert "list_id" in serializer_data
+    assert serializer_data["list_id"] == fake_mailing_list.list_id
+    assert "list_owner" in serializer_data
+    assert serializer_data["list_owner"] == fake_mailing_list.list_owner
+    assert "list_subscribe" in serializer_data
+    assert serializer_data["list_subscribe"] == fake_mailing_list.list_subscribe
+    assert "list_unsubscribe" in serializer_data
+    assert serializer_data["list_unsubscribe"] == fake_mailing_list.list_unsubscribe
+    assert "list_post" in serializer_data
+    assert serializer_data["list_post"] == fake_mailing_list.list_post
+    assert "list_help" in serializer_data
+    assert serializer_data["list_help"] == fake_mailing_list.list_help
+    assert "list_archive" in serializer_data
+    assert serializer_data["list_archive"] == fake_mailing_list.list_archive
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_mailing_list.is_favorite
+    assert "from_correspondents" in serializer_data
+    assert isinstance(serializer_data["from_correspondents"], list)
+    assert len(serializer_data["from_correspondents"]) == 1
+    assert isinstance(serializer_data["from_correspondents"][0], dict)
+    assert "created" in serializer_data
+    assert (
+        datetime.fromisoformat(serializer_data["created"]) == fake_mailing_list.created
+    )
+    assert "updated" in serializer_data
+    assert (
+        datetime.fromisoformat(serializer_data["updated"]) == fake_mailing_list.updated
+    )
+    assert "emails" in serializer_data
+    assert isinstance(serializer_data["emails"], list)
+    assert len(serializer_data["emails"]) == 1
+    assert isinstance(serializer_data["emails"][0], dict)
+    assert len(serializer_data) == 13
 
 
 @pytest.mark.django_db
-def test_input(fake_mailingList, request_context):
+def test_input(fake_mailing_list, request_context):
     """Tests for the expected input of the serializer."""
     serializer = MailingListSerializer(
-        data=model_to_dict(fake_mailingList), context=request_context
+        data=model_to_dict(fake_mailing_list), context=request_context
     )
     assert serializer.is_valid()
-    serializerData = serializer.validated_data
+    serializer_data = serializer.validated_data
 
-    assert "id" not in serializerData
-    assert "list_id" not in serializerData
-    assert "list_owner" not in serializerData
-    assert "list_subscribe" not in serializerData
-    assert "list_unsubscribe" not in serializerData
-    assert "list_post" not in serializerData
-    assert "list_help" not in serializerData
-    assert "list_archive" not in serializerData
-    assert "is_favorite" in serializerData
-    assert serializerData["is_favorite"] == fake_mailingList.is_favorite
-    assert "from_correspondents" not in serializerData
-    assert "created" not in serializerData
-    assert "updated" not in serializerData
-    assert "emails" not in serializerData
-    assert len(serializerData) == 1
+    assert "id" not in serializer_data
+    assert "list_id" not in serializer_data
+    assert "list_owner" not in serializer_data
+    assert "list_subscribe" not in serializer_data
+    assert "list_unsubscribe" not in serializer_data
+    assert "list_post" not in serializer_data
+    assert "list_help" not in serializer_data
+    assert "list_archive" not in serializer_data
+    assert "is_favorite" in serializer_data
+    assert serializer_data["is_favorite"] == fake_mailing_list.is_favorite
+    assert "from_correspondents" not in serializer_data
+    assert "created" not in serializer_data
+    assert "updated" not in serializer_data
+    assert "emails" not in serializer_data
+    assert len(serializer_data) == 1

@@ -67,7 +67,7 @@ class MailboxViewSet(
         "account__mail_host",
         "account__protocol",
         "save_attachments",
-        "save_toEML",
+        "save_to_eml",
         "is_favorite",
         "is_healthy",
         "created",
@@ -214,12 +214,12 @@ class MailboxViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
         mailbox = self.get_object()
-        Email.createFromEmailBytes(uploaded_mailbox_file.read(), mailbox)
-        mailboxSerializer = self.get_serializer(mailbox)
+        Email.create_from_email_bytes(uploaded_mailbox_file.read(), mailbox)
+        mailbox_serializer = self.get_serializer(mailbox)
         return Response(
             {
                 "detail": "Successfully uploaded EML file",
-                "mailbox": mailboxSerializer.data,
+                "mailbox": mailbox_serializer.data,
             }
         )
 
@@ -256,16 +256,16 @@ class MailboxViewSet(
             )
         mailbox = self.get_object()
         try:
-            mailbox.addFromMailboxFile(uploaded_file.read(), file_format)
+            mailbox.add_from_mailbox_file(uploaded_file.read(), file_format)
         except ValueError:
             return Response(
                 {"detail": "File format is not supported!"},
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
             )
-        mailboxSerializer = self.get_serializer(mailbox)
+        mailbox_serializer = self.get_serializer(mailbox)
         return Response(
             {
                 "detail": "Successfully uploaded mailbox file.",
-                "mailbox": mailboxSerializer.data,
+                "mailbox": mailbox_serializer.data,
             }
         )

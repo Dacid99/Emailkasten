@@ -80,20 +80,20 @@ class Correspondent(URLMixin, FavoriteMixin, models.Model):
         }
 
     @classmethod
-    def createFromCorrespondentTuple(
-        cls, correspondentTuple: tuple[str, str]
+    def create_from_correspondent_tuple(
+        cls, correspondent_tuple: tuple[str, str]
     ) -> Correspondent | None:
         """Creates a :class:`core.models.Correspondent.Correspondent` from email header data.
 
         Args:
-            correspondentTuple: The tuple of correspondent data to create a model from.
+            correspondent_tuple: The tuple of correspondent data to create a model from.
 
         Returns:
             The :class:`core.models.Correspondent.Correspondent` with the data from the header.
             If the correspondent already exists in the db returns that version.
-            `None` if there is no address in :attr:`correspondentTuple`.
+            `None` if there is no address in :attr:`correspondent_tuple`.
         """
-        name, address = correspondentTuple
+        name, address = correspondent_tuple
         if not address:
             logger.debug(
                 "Skipping correspondent %s with empty mailaddress.",

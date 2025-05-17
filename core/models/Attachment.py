@@ -37,7 +37,7 @@ from core.mixins.HasThumbnailMixin import HasThumbnailMixin
 from core.mixins.URLMixin import URLMixin
 from Emailkasten.utils.workarounds import get_config
 
-from ..utils.fileManagment import clean_filename, saveStore
+from ..utils.file_managment import clean_filename, save_store
 from .Storage import Storage
 
 
@@ -167,24 +167,24 @@ class Attachment(
         If an error occurs, removes the incomplete file.
 
         Note:
-            Uses :func:`core.utils.fileManagment.saveStore` to wrap the storing process.
+            Uses :func:`core.utils.file_managment.save_store` to wrap the storing process.
 
         Args:
-            attachmentData: The data of the attachment to be saved.
+            attachment_data: The data of the attachment to be saved.
         """
         if self.file_path:
             logger.debug("%s is already stored.", self)
             return
 
-        @saveStore
-        def writeAttachment(file: BufferedWriter, attachmentPayload: bytes) -> None:
-            file.write(attachmentPayload)
+        @save_store
+        def write_attachment(file: BufferedWriter, attachment_payload: bytes) -> None:
+            file.write(attachment_payload)
 
         logger.debug("Storing %s ...", self)
 
-        dirPath = Storage.getSubdirectory(self.email.message_id)
-        preliminary_file_path = os.path.join(dirPath, self.file_name)
-        file_path = writeAttachment(preliminary_file_path, attachment_payload)
+        dir_path = Storage.get_subdirectory(self.email.message_id)
+        preliminary_file_path = os.path.join(dir_path, self.file_name)
+        file_path = write_attachment(preliminary_file_path, attachment_payload)
         if file_path:
             self.file_path = file_path
             self.save(update_fields=["file_path"])
@@ -193,7 +193,7 @@ class Attachment(
             logger.error("Failed to store %s!", self)
 
     @classmethod
-    def createFromEmailMessage(
+    def create_from_email_message(
         cls, email_message: Message[str, str], email: Email
     ) -> list[Attachment]:
         """Creates :class:`core.models.Attachment.Attachment`s from an email message.
@@ -206,8 +206,8 @@ class Attachment(
         """
         if email.pk is None:
             raise ValueError("Email is not in db!")
-        SAVE_MAINTYPES = get_config("SAVE_CONTENT_TYPE_PREFIXES")
-        IGNORE_SUBTYPES = get_config("DONT_SAVE_CONTENT_TYPE_SUFFIXES")
+        save_maintypes = get_config("SAVE_CONTENT_TYPE_PREFIXES")
+        ignore_subtypes = get_config("DONT_SAVE_CONTENT_TYPE_SUFFIXES")
         new_attachments = []
         for part in email_message.walk():
             if part.is_multipart():
@@ -217,8 +217,8 @@ class Attachment(
             content_maintype = part.get_content_maintype()
             content_subtype = part.get_content_subtype()
             if content_disposition or (
-                content_maintype in SAVE_MAINTYPES
-                and content_subtype not in IGNORE_SUBTYPES
+                content_maintype in save_maintypes
+                and content_subtype not in ignore_subtypes
             ):
                 part_payload = part.get_payload(decode=True)
                 if isinstance(part_payload, bytes):

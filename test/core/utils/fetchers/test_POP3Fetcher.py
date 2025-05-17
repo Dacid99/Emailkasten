@@ -65,13 +65,13 @@ def mock_POP3(mocker, faker):
 
 @pytest.mark.django_db
 def test_POP3Fetcher___init___success(mocker, pop3_mailbox, mock_logger, mock_POP3):
-    spy_POP3Fetcher_connectToHost = mocker.spy(POP3Fetcher, "connectToHost")
+    spy_POP3Fetcher_connect_to_host = mocker.spy(POP3Fetcher, "connect_to_host")
 
     result = POP3Fetcher(pop3_mailbox.account)
 
     assert result.account == pop3_mailbox.account
-    assert result._mailClient == mock_POP3.return_value
-    spy_POP3Fetcher_connectToHost.assert_called_once()
+    assert result._mail_client == mock_POP3.return_value
+    spy_POP3Fetcher_connect_to_host.assert_called_once()
     mock_POP3.return_value.user.assert_called_once_with(
         pop3_mailbox.account.mail_address
     )
@@ -81,10 +81,10 @@ def test_POP3Fetcher___init___success(mocker, pop3_mailbox, mock_logger, mock_PO
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher___init___connectionError(
+def test_POP3Fetcher___init___connection_error(
     mocker, faker, pop3_mailbox, mock_logger, mock_POP3
 ):
-    spy_POP3Fetcher_connectToHost = mocker.spy(POP3Fetcher, "connectToHost")
+    spy_POP3Fetcher_connect_to_host = mocker.spy(POP3Fetcher, "connect_to_host")
     fake_error_message = faker.sentence()
     mock_POP3.side_effect = AssertionError(fake_error_message)
 
@@ -93,21 +93,23 @@ def test_POP3Fetcher___init___connectionError(
     ):
         POP3Fetcher(pop3_mailbox.account)
 
-    spy_POP3Fetcher_connectToHost.assert_called_once()
+    spy_POP3Fetcher_connect_to_host.assert_called_once()
     mock_POP3.return_value.user.assert_not_called()
     mock_POP3.return_value.pass_.assert_not_called()
     mock_logger.exception.assert_called()
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher___init___badProtocol(mocker, pop3_mailbox, mock_logger, mock_POP3):
-    spy_POP3Fetcher_connectToHost = mocker.spy(POP3Fetcher, "connectToHost")
+def test_POP3Fetcher___init___bad_protocol(
+    mocker, pop3_mailbox, mock_logger, mock_POP3
+):
+    spy_POP3Fetcher_connect_to_host = mocker.spy(POP3Fetcher, "connect_to_host")
     pop3_mailbox.account.protocol = EmailProtocolChoices.IMAP
 
     with pytest.raises(ValueError, match="not supported"):
         POP3Fetcher(pop3_mailbox.account)
 
-    spy_POP3Fetcher_connectToHost.assert_not_called()
+    spy_POP3Fetcher_connect_to_host.assert_not_called()
     mock_POP3.return_value.user.assert_not_called()
     mock_POP3.return_value.pass_.assert_not_called()
     mock_logger.error.assert_called()
@@ -115,7 +117,7 @@ def test_POP3Fetcher___init___badProtocol(mocker, pop3_mailbox, mock_logger, moc
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "raisingFunction, expectedCalls", [("user", (1, 0)), ("pass_", (1, 1))]
+    "raising_function, expected_calls", [("user", (1, 0)), ("pass_", (1, 1))]
 )
 def test_POP3Fetcher___init___exception(
     mocker,
@@ -123,12 +125,12 @@ def test_POP3Fetcher___init___exception(
     pop3_mailbox,
     mock_logger,
     mock_POP3,
-    raisingFunction,
-    expectedCalls,
+    raising_function,
+    expected_calls,
 ):
-    spy_POP3Fetcher_connectToHost = mocker.spy(POP3Fetcher, "connectToHost")
+    spy_POP3Fetcher_connect_to_host = mocker.spy(POP3Fetcher, "connect_to_host")
     fake_error_message = faker.sentence()
-    getattr(mock_POP3.return_value, raisingFunction).side_effect = AssertionError(
+    getattr(mock_POP3.return_value, raising_function).side_effect = AssertionError(
         fake_error_message
     )
 
@@ -137,39 +139,39 @@ def test_POP3Fetcher___init___exception(
     ):
         POP3Fetcher(pop3_mailbox.account)
 
-    spy_POP3Fetcher_connectToHost.assert_called_once()
-    assert mock_POP3.return_value.user.call_count == expectedCalls[0]
-    if expectedCalls[0]:
+    spy_POP3Fetcher_connect_to_host.assert_called_once()
+    assert mock_POP3.return_value.user.call_count == expected_calls[0]
+    if expected_calls[0]:
         mock_POP3.return_value.user.assert_called_with(
             pop3_mailbox.account.mail_address
         )
-    assert mock_POP3.return_value.pass_.call_count == expectedCalls[1]
-    if expectedCalls[1]:
+    assert mock_POP3.return_value.pass_.call_count == expected_calls[1]
+    if expected_calls[1]:
         mock_POP3.return_value.pass_.assert_called_with(pop3_mailbox.account.password)
     mock_logger.exception.assert_called()
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "raisingFunction, expectedCalls", [("user", (1, 0)), ("pass_", (1, 1))]
+    "raising_function, expected_calls", [("user", (1, 0)), ("pass_", (1, 1))]
 )
-def test_POP3Fetcher___init___badResponse(
-    mocker, pop3_mailbox, mock_logger, mock_POP3, raisingFunction, expectedCalls
+def test_POP3Fetcher___init___bad_response(
+    mocker, pop3_mailbox, mock_logger, mock_POP3, raising_function, expected_calls
 ):
-    spy_POP3Fetcher_connectToHost = mocker.spy(POP3Fetcher, "connectToHost")
-    getattr(mock_POP3.return_value, raisingFunction).return_value = b"+NO"
+    spy_POP3Fetcher_connect_to_host = mocker.spy(POP3Fetcher, "connect_to_host")
+    getattr(mock_POP3.return_value, raising_function).return_value = b"+NO"
 
     with pytest.raises(MailAccountError, match="Bad server response"):
         POP3Fetcher(pop3_mailbox.account)
 
-    spy_POP3Fetcher_connectToHost.assert_called_once()
-    assert mock_POP3.return_value.user.call_count == expectedCalls[0]
-    if expectedCalls[0]:
+    spy_POP3Fetcher_connect_to_host.assert_called_once()
+    assert mock_POP3.return_value.user.call_count == expected_calls[0]
+    if expected_calls[0]:
         mock_POP3.return_value.user.assert_called_with(
             pop3_mailbox.account.mail_address
         )
-    assert mock_POP3.return_value.pass_.call_count == expectedCalls[1]
-    if expectedCalls[1]:
+    assert mock_POP3.return_value.pass_.call_count == expected_calls[1]
+    if expected_calls[1]:
         mock_POP3.return_value.pass_.assert_called_with(pop3_mailbox.account.password)
     mock_logger.error.assert_called()
 
@@ -184,7 +186,7 @@ def test_POP3Fetcher___init___badResponse(
         (None, None),
     ],
 )
-def test_POP3Fetcher_connectToHost_success(
+def test_POP3Fetcher_connect_to_host_success(
     pop3_mailbox, mock_logger, mock_POP3, mail_host_port, timeout
 ):
     pop3_mailbox.account.mail_host_port = mail_host_port
@@ -204,7 +206,7 @@ def test_POP3Fetcher_connectToHost_success(
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_connectToHost_exception(
+def test_POP3Fetcher_connect_to_host_exception(
     faker, pop3_mailbox, mock_logger, mock_POP3
 ):
     fake_error_message = faker.sentence()
@@ -237,7 +239,7 @@ def test_POP3Fetcher_test_account_success(pop3_mailbox, mock_logger, mock_POP3):
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_test_account_badResponse(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_test_account_bad_response(pop3_mailbox, mock_logger, mock_POP3):
     mock_POP3.return_value.noop.return_value = b"+NO"
 
     with pytest.raises(MailAccountError, match="Bad server response"):
@@ -278,18 +280,18 @@ def test_POP3Fetcher_test_mailbox_success(pop3_mailbox, mock_logger, mock_POP3):
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_test_mailbox_wrongMailbox(pop3_mailbox, mock_logger, mock_POP3):
-    wrongMailbox = baker.make(Mailbox)
+def test_POP3Fetcher_test_mailbox_wrong_mailbox(pop3_mailbox, mock_logger, mock_POP3):
+    wrong_mailbox = baker.make(Mailbox)
 
     with pytest.raises(ValueError, match="is not in"):
-        POP3Fetcher(pop3_mailbox.account).test(wrongMailbox)
+        POP3Fetcher(pop3_mailbox.account).test(wrong_mailbox)
 
     mock_POP3.return_value.noop.assert_not_called()
     mock_logger.error.assert_called()
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_test_mailbox_badResponse(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_test_mailbox_bad_response(pop3_mailbox, mock_logger, mock_POP3):
     mock_POP3.return_value.list.return_value = b"+NO"
 
     with pytest.raises(MailAccountError, match="Bad server response"):
@@ -320,20 +322,20 @@ def test_POP3Fetcher_test_mailbox_exception(
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetchEmails_success(mocker, pop3_mailbox, mock_logger, mock_POP3):
-    expectedRetrCalls = [
+def test_POP3Fetcher_fetch_emails_success(mocker, pop3_mailbox, mock_logger, mock_POP3):
+    expected_retr_calls = [
         mocker.call(number + 1)
         for number in range(len(mock_POP3.return_value.list.return_value[1]))
     ]
 
-    result = POP3Fetcher(pop3_mailbox.account).fetchEmails(pop3_mailbox)
+    result = POP3Fetcher(pop3_mailbox.account).fetch_emails(pop3_mailbox)
 
     assert result == [b"\n".join(mock_POP3.return_value.retr.return_value[1])] * len(
-        expectedRetrCalls
+        expected_retr_calls
     )
     mock_POP3.return_value.list.assert_called_once_with()
-    assert mock_POP3.return_value.retr.call_count == len(expectedRetrCalls)
-    mock_POP3.return_value.retr.assert_has_calls(expectedRetrCalls)
+    assert mock_POP3.return_value.retr.call_count == len(expected_retr_calls)
+    mock_POP3.return_value.retr.assert_has_calls(expected_retr_calls)
     mock_logger.debug.assert_called()
     mock_logger.info.assert_called()
     mock_logger.exception.assert_not_called()
@@ -341,29 +343,29 @@ def test_POP3Fetcher_fetchEmails_success(mocker, pop3_mailbox, mock_logger, mock
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetchEmails_wrongMailbox(pop3_mailbox, mock_logger):
-    wrongMailbox = baker.make(Mailbox)
+def test_POP3Fetcher_fetch_emails_wrong_mailbox(pop3_mailbox, mock_logger):
+    wrong_mailbox = baker.make(Mailbox)
 
     with pytest.raises(ValueError, match="is not in"):
-        POP3Fetcher(pop3_mailbox.account).fetchEmails(wrongMailbox)
+        POP3Fetcher(pop3_mailbox.account).fetch_emails(wrong_mailbox)
 
     mock_logger.error.assert_called()
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetchEmails_badCriterion(pop3_mailbox, mock_logger):
+def test_POP3Fetcher_fetch_emails_bad_criterion(pop3_mailbox, mock_logger):
     with pytest.raises(ValueError, match="not available via"):
-        POP3Fetcher(pop3_mailbox.account).fetchEmails(pop3_mailbox, "NONE")
+        POP3Fetcher(pop3_mailbox.account).fetch_emails(pop3_mailbox, "NONE")
 
     mock_logger.error.assert_called()
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetchEmails_badResponse(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_fetch_emails_bad_response(pop3_mailbox, mock_logger, mock_POP3):
     mock_POP3.return_value.list.return_value = b"+NO"
 
     with pytest.raises(MailAccountError, match="Bad server response"):
-        POP3Fetcher(pop3_mailbox.account).fetchEmails(pop3_mailbox)
+        POP3Fetcher(pop3_mailbox.account).fetch_emails(pop3_mailbox)
 
     mock_POP3.return_value.list.assert_called_once_with()
     mock_POP3.return_value.retr.assert_not_called()
@@ -372,14 +374,16 @@ def test_POP3Fetcher_fetchEmails_badResponse(pop3_mailbox, mock_logger, mock_POP
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetchEmails_exception(faker, pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_fetch_emails_exception(
+    faker, pop3_mailbox, mock_logger, mock_POP3
+):
     fake_error_message = faker.sentence()
     mock_POP3.return_value.list.side_effect = AssertionError(fake_error_message)
 
     with pytest.raises(
         MailAccountError, match=f"AssertionError.*?{fake_error_message}"
     ):
-        POP3Fetcher(pop3_mailbox.account).fetchEmails(pop3_mailbox)
+        POP3Fetcher(pop3_mailbox.account).fetch_emails(pop3_mailbox)
 
     mock_POP3.return_value.list.assert_called_once_with()
     mock_POP3.return_value.retr.assert_not_called()
@@ -388,21 +392,21 @@ def test_POP3Fetcher_fetchEmails_exception(faker, pop3_mailbox, mock_logger, moc
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetchEmails_badResponse_ignored(
+def test_POP3Fetcher_fetch_emails_bad_response_ignored(
     mocker, pop3_mailbox, mock_logger, mock_POP3
 ):
-    expectedRetrCalls = [
+    expected_retr_calls = [
         mocker.call(number + 1)
         for number in range(len(mock_POP3.return_value.list.return_value[1]))
     ]
     mock_POP3.return_value.retr.return_value = b"+NO"
 
-    result = POP3Fetcher(pop3_mailbox.account).fetchEmails(pop3_mailbox)
+    result = POP3Fetcher(pop3_mailbox.account).fetch_emails(pop3_mailbox)
 
     assert result == []
     mock_POP3.return_value.list.assert_called_once_with()
-    assert mock_POP3.return_value.retr.call_count == len(expectedRetrCalls)
-    mock_POP3.return_value.retr.assert_has_calls(expectedRetrCalls)
+    assert mock_POP3.return_value.retr.call_count == len(expected_retr_calls)
+    mock_POP3.return_value.retr.assert_has_calls(expected_retr_calls)
     mock_logger.debug.assert_called()
     mock_logger.info.assert_called()
     mock_logger.warning.assert_called()
@@ -410,21 +414,21 @@ def test_POP3Fetcher_fetchEmails_badResponse_ignored(
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetchEmails_exception_ignored(
+def test_POP3Fetcher_fetch_emails_exception_ignored(
     mocker, pop3_mailbox, mock_logger, mock_POP3
 ):
-    expectedRetrCalls = [
+    expected_retr_calls = [
         mocker.call(number + 1)
         for number in range(len(mock_POP3.return_value.list.return_value[1]))
     ]
     mock_POP3.return_value.retr.side_effect = AssertionError
 
-    result = POP3Fetcher(pop3_mailbox.account).fetchEmails(pop3_mailbox)
+    result = POP3Fetcher(pop3_mailbox.account).fetch_emails(pop3_mailbox)
 
     assert result == []
     mock_POP3.return_value.list.assert_called_once_with()
-    assert mock_POP3.return_value.retr.call_count == len(expectedRetrCalls)
-    mock_POP3.return_value.retr.assert_has_calls(expectedRetrCalls)
+    assert mock_POP3.return_value.retr.call_count == len(expected_retr_calls)
+    mock_POP3.return_value.retr.assert_has_calls(expected_retr_calls)
     mock_logger.debug.assert_called()
     mock_logger.info.assert_called()
     mock_logger.warning.assert_called()
@@ -432,8 +436,8 @@ def test_POP3Fetcher_fetchEmails_exception_ignored(
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetchMailboxes(pop3_mailbox):
-    result = POP3Fetcher(pop3_mailbox.account).fetchMailboxes()
+def test_POP3Fetcher_fetch_mailboxes(pop3_mailbox):
+    result = POP3Fetcher(pop3_mailbox.account).fetch_mailboxes()
 
     assert result == [b"INBOX"]
 
@@ -449,9 +453,9 @@ def test_POP3Fetcher_close_success(pop3_mailbox, mock_logger, mock_POP3):
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_close_noClient(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_close_no_client(pop3_mailbox, mock_logger, mock_POP3):
     fetcher = POP3Fetcher(pop3_mailbox.account)
-    fetcher._mailClient = None
+    fetcher._mail_client = None
 
     fetcher.close()
 
@@ -462,7 +466,7 @@ def test_POP3Fetcher_close_noClient(pop3_mailbox, mock_logger, mock_POP3):
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_close_badResponse(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_close_bad_response(pop3_mailbox, mock_logger, mock_POP3):
     mock_POP3.return_value.quit.return_value = b"+NO"
 
     POP3Fetcher(pop3_mailbox.account).close()

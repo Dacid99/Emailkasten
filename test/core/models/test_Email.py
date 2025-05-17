@@ -53,18 +53,18 @@ def mock_os_remove(mocker):
 def mock_open(mocker, fake_file_bytes):
     """Fixture to mock the builtin :func:`open`."""
     mock_open = mocker.mock_open(read_data=fake_file_bytes)
-    mocker.patch("core.utils.fileManagment.open", mock_open)
+    mocker.patch("core.utils.file_managment.open", mock_open)
     return mock_open
 
 
 @pytest.fixture
-def mock_Storage_getSubdirectory(mocker, faker):
+def mock_Storage_get_subdirectory(mocker, faker):
     fake_directory_path = os.path.dirname(faker.file_path())
-    mock_Storage_getSubdirectory = mocker.patch(
-        "core.models.Storage.Storage.getSubdirectory", autospec=True
+    mock_Storage_get_subdirectory = mocker.patch(
+        "core.models.Storage.Storage.get_subdirectory", autospec=True
     )
-    mock_Storage_getSubdirectory.return_value = fake_directory_path
-    return mock_Storage_getSubdirectory
+    mock_Storage_get_subdirectory.return_value = fake_directory_path
+    return mock_Storage_get_subdirectory
 
 
 @pytest.fixture
@@ -102,12 +102,12 @@ def mock_Email_save_html_to_storage(mocker):
 
 
 @pytest.fixture
-def emailConversation(fake_email):
+def email_conversation(fake_email):
     """Fixture creating a conversation around `email`."""
-    replyMails = baker.make(Email, inReplyTo=fake_email, _quantity=3)
-    baker.make(Email, inReplyTo=replyMails[1], _quantity=2)
-    replyReplyMail = baker.make(Email, inReplyTo=replyMails[0])
-    baker.make(Email, inReplyTo=replyReplyMail)
+    reply_mails = baker.make(Email, in_reply_to=fake_email, _quantity=3)
+    baker.make(Email, in_reply_to=reply_mails[1], _quantity=2)
+    reply_reply_mail = baker.make(Email, in_reply_to=reply_mails[0])
+    baker.make(Email, in_reply_to=reply_reply_mail)
 
 
 @pytest.mark.django_db
@@ -124,7 +124,7 @@ def test_Email_fields(fake_email):
     assert isinstance(fake_email.plain_bodytext, str)
     assert fake_email.html_bodytext is not None
     assert isinstance(fake_email.html_bodytext, str)
-    assert fake_email.inReplyTo is None
+    assert fake_email.in_reply_to is None
     assert fake_email.datasize is not None
     assert isinstance(fake_email.datasize, int)
     assert fake_email.eml_filepath is not None
@@ -166,30 +166,30 @@ def test_Email_foreign_key_mailbox_deletion(fake_email):
 
 
 @pytest.mark.django_db
-def test_Email_foreign_key_inReplyTo_deletion(fake_email):
-    """Tests the on_delete foreign key constraint on inReplyTo in :class:`core.models.Email.Email`."""
+def test_Email_foreign_key_in_reply_to_deletion(fake_email):
+    """Tests the on_delete foreign key constraint on in_reply_to in :class:`core.models.Email.Email`."""
 
-    inReplyToEmail = baker.make(Email, x_spam="NO")
-    fake_email.inReplyTo = inReplyToEmail
+    in_reply_to_email = baker.make(Email, x_spam="NO")
+    fake_email.in_reply_to = in_reply_to_email
     fake_email.save()
 
-    fake_email.inReplyTo.delete()
+    fake_email.in_reply_to.delete()
 
     fake_email.refresh_from_db()
-    assert fake_email.inReplyTo is None
+    assert fake_email.in_reply_to is None
     with pytest.raises(Email.DoesNotExist):
-        inReplyToEmail.refresh_from_db()
+        in_reply_to_email.refresh_from_db()
 
 
 @pytest.mark.django_db
-def test_Email_foreign_key_mailingList_deletion(fake_email):
+def test_Email_foreign_key_mailing_list_deletion(fake_email):
     """Tests the on_delete foreign key constraint on mailinglist in :class:`core.models.Email.Email`."""
 
-    mailingList = baker.make(MailingList)
-    fake_email.mailinglist = mailingList
+    mailing_list = baker.make(MailingList)
+    fake_email.mailinglist = mailing_list
     fake_email.save()
 
-    mailingList.delete()
+    mailing_list.delete()
 
     with pytest.raises(Email.DoesNotExist):
         fake_email.refresh_from_db()
@@ -309,10 +309,10 @@ def test_Email_save_with_data_success(
     """Tests :func:`core.models.Email.Email.save`
     in case of success with data to be saved.
     """
-    fake_email.mailbox.save_toEML = save_to_eml
-    fake_email.mailbox.save_toHTML = save_to_html
+    fake_email.mailbox.save_to_eml = save_to_eml
+    fake_email.mailbox.save_to_html = save_to_html
 
-    fake_email.save(emailData=mock_message)
+    fake_email.save(email_data=mock_message)
 
     spy__save.assert_called_once_with(fake_email)
     if expected_save_eml_to_storage_call:
@@ -335,7 +335,7 @@ def test_Email_save_no_data(
     """Tests :func:`core.models.Email.Email.save`
     in case of success without data to be saved.
     """
-    fake_email.mailbox.save_toEML = True
+    fake_email.mailbox.save_to_eml = True
 
     fake_email.save()
 
@@ -356,10 +356,10 @@ def test_Email_save_with_data_failure(
     in case of success saving data fails with an exception.
     """
     mock_Email_save_eml_to_storage.side_effect = AssertionError
-    fake_email.mailbox.save_toEML = True
+    fake_email.mailbox.save_to_eml = True
 
     with pytest.raises(AssertionError):
-        fake_email.save(emailData=mock_message)
+        fake_email.save(email_data=mock_message)
 
     spy__save.assert_called()
     mock_Email_save_eml_to_storage.assert_called()
@@ -372,16 +372,16 @@ def test_save_eml_to_storage_success(
     fake_email,
     mock_logger,
     mock_open,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_email.eml_filepath = None
 
     fake_email.save_eml_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_called_once_with(fake_email.message_id)
+    mock_Storage_get_subdirectory.assert_called_once_with(fake_email.message_id)
     mock_open.assert_called_once_with(
         os.path.join(
-            mock_Storage_getSubdirectory.return_value,
+            mock_Storage_get_subdirectory.return_value,
             fake_email.message_id + ".eml",
         ),
         "wb",
@@ -389,7 +389,7 @@ def test_save_eml_to_storage_success(
     mock_open.return_value.write.assert_called_once_with(fake_file_bytes)
     fake_email.refresh_from_db()
     assert fake_email.eml_filepath == os.path.join(
-        mock_Storage_getSubdirectory.return_value, fake_email.message_id + ".eml"
+        mock_Storage_get_subdirectory.return_value, fake_email.message_id + ".eml"
     )
     mock_logger.debug.assert_called()
     mock_logger.error.assert_not_called()
@@ -401,13 +401,13 @@ def test_save_eml_to_storage_file_path_set(
     email_with_filepaths,
     mock_logger,
     mock_open,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     previous_file_path = email_with_filepaths.eml_filepath
 
     email_with_filepaths.save_eml_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_not_called()
+    mock_Storage_get_subdirectory.assert_not_called()
     mock_open.assert_not_called()
     email_with_filepaths.refresh_from_db()
     assert email_with_filepaths.eml_filepath == previous_file_path
@@ -416,22 +416,22 @@ def test_save_eml_to_storage_file_path_set(
 
 
 @pytest.mark.django_db
-def test_save_eml_to_storage_open_osError(
+def test_save_eml_to_storage_open_os_error(
     fake_file_bytes,
     fake_email,
     mock_logger,
     mock_open,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_email.eml_filepath = None
     mock_open.side_effect = OSError
 
     fake_email.save_eml_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_called_once_with(fake_email.message_id)
+    mock_Storage_get_subdirectory.assert_called_once_with(fake_email.message_id)
     mock_open.assert_called_once_with(
         os.path.join(
-            mock_Storage_getSubdirectory.return_value,
+            mock_Storage_get_subdirectory.return_value,
             fake_email.message_id + ".eml",
         ),
         "wb",
@@ -443,22 +443,22 @@ def test_save_eml_to_storage_open_osError(
 
 
 @pytest.mark.django_db
-def test_save_eml_to_storage_write_osError(
+def test_save_eml_to_storage_write_os_error(
     fake_file_bytes,
     fake_email,
     mock_logger,
     mock_open,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_email.eml_filepath = None
     mock_open.return_value.write.side_effect = OSError
 
     fake_email.save_eml_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_called_once_with(fake_email.message_id)
+    mock_Storage_get_subdirectory.assert_called_once_with(fake_email.message_id)
     mock_open.assert_called_once_with(
         os.path.join(
-            mock_Storage_getSubdirectory.return_value,
+            mock_Storage_get_subdirectory.return_value,
             fake_email.message_id + ".eml",
         ),
         "wb",
@@ -476,16 +476,16 @@ def test_save_html_to_storage_success(
     mock_logger,
     mock_open,
     mock_eml2html,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_email.html_filepath = None
 
     fake_email.save_html_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_called_once_with(fake_email.message_id)
+    mock_Storage_get_subdirectory.assert_called_once_with(fake_email.message_id)
     mock_open.assert_called_once_with(
         os.path.join(
-            mock_Storage_getSubdirectory.return_value,
+            mock_Storage_get_subdirectory.return_value,
             fake_email.message_id + ".html",
         ),
         "wb",
@@ -496,7 +496,7 @@ def test_save_html_to_storage_success(
     )
     fake_email.refresh_from_db()
     assert fake_email.html_filepath == os.path.join(
-        mock_Storage_getSubdirectory.return_value, fake_email.message_id + ".html"
+        mock_Storage_get_subdirectory.return_value, fake_email.message_id + ".html"
     )
     mock_logger.debug.assert_called()
     mock_logger.error.assert_not_called()
@@ -509,13 +509,13 @@ def test_save_html_to_storage_file_path_set(
     mock_logger,
     mock_open,
     mock_eml2html,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     previous_file_path = email_with_filepaths.html_filepath
 
     email_with_filepaths.save_html_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_not_called()
+    mock_Storage_get_subdirectory.assert_not_called()
     mock_eml2html.assert_not_called()
     mock_open.assert_not_called()
     email_with_filepaths.refresh_from_db()
@@ -525,23 +525,23 @@ def test_save_html_to_storage_file_path_set(
 
 
 @pytest.mark.django_db
-def test_save_html_to_storage_open_osError(
+def test_save_html_to_storage_open_os_error(
     fake_file_bytes,
     fake_email,
     mock_logger,
     mock_open,
     mock_eml2html,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_email.html_filepath = None
     mock_open.side_effect = OSError
 
     fake_email.save_html_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_called_once_with(fake_email.message_id)
+    mock_Storage_get_subdirectory.assert_called_once_with(fake_email.message_id)
     mock_open.assert_called_once_with(
         os.path.join(
-            mock_Storage_getSubdirectory.return_value,
+            mock_Storage_get_subdirectory.return_value,
             fake_email.message_id + ".html",
         ),
         "wb",
@@ -554,23 +554,23 @@ def test_save_html_to_storage_open_osError(
 
 
 @pytest.mark.django_db
-def test_save_html_to_storage_write_osError(
+def test_save_html_to_storage_write_os_error(
     fake_file_bytes,
     fake_email,
     mock_logger,
     mock_open,
     mock_eml2html,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_email.html_filepath = None
     mock_open.return_value.write.side_effect = OSError
 
     fake_email.save_html_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_called_once_with(fake_email.message_id)
+    mock_Storage_get_subdirectory.assert_called_once_with(fake_email.message_id)
     mock_open.assert_called_once_with(
         os.path.join(
-            mock_Storage_getSubdirectory.return_value,
+            mock_Storage_get_subdirectory.return_value,
             fake_email.message_id + ".html",
         ),
         "wb",
@@ -589,29 +589,29 @@ def test_save_html_to_storage_write_osError(
     "start_id, expected_len",
     [(1, 8), (2, 3), (3, 3), (4, 1), (5, 1), (6, 1), (7, 2), (8, 1)],
 )
-def test_Email_subConversation(emailConversation, start_id, expected_len):
-    """Tests :func:`core.models.Email.Email.subConversation`."""
-    startEmail = Email.objects.get(id=start_id)
+def test_Email_sub_conversation(email_conversation, start_id, expected_len):
+    """Tests :func:`core.models.Email.Email.sub_conversation`."""
+    start_email = Email.objects.get(id=start_id)
 
-    subConversationEmails = startEmail.subConversation()
+    sub_conversation_emails = start_email.sub_conversation()
 
-    assert len(subConversationEmails) == expected_len
+    assert len(sub_conversation_emails) == expected_len
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("start_id", [1, 2, 3, 4, 5, 6, 7, 8])
-def test_Email_fullConversation(emailConversation, start_id):
-    """Tests :func:`core.models.Email.Email.fullConversation`."""
-    startEmail = Email.objects.get(id=start_id)
+def test_Email_full_conversation(email_conversation, start_id):
+    """Tests :func:`core.models.Email.Email.full_conversation`."""
+    start_email = Email.objects.get(id=start_id)
 
-    subConversationEmails = startEmail.fullConversation()
+    sub_conversation_emails = start_email.full_conversation()
 
-    assert len(subConversationEmails) == 8
+    assert len(sub_conversation_emails) == 8
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "x_spam, expectedResult",
+    "x_spam, expected_result",
     [
         (None, False),
         ("", False),
@@ -623,13 +623,13 @@ def test_Email_fullConversation(emailConversation, start_id):
         ("CRAZY", False),
     ],
 )
-def test_Email_isSpam(fake_email, x_spam, expectedResult):
-    """Tests :func:`core.models.Email.Email.isSpam`."""
+def test_Email_is_spam(fake_email, x_spam, expected_result):
+    """Tests :func:`core.models.Email.Email.is_spam`."""
     fake_email.x_spam = x_spam
 
-    result = fake_email.isSpam()
+    result = fake_email.is_spam()
 
-    assert result is expectedResult
+    assert result is expected_result
 
 
 @pytest.mark.django_db
@@ -637,7 +637,7 @@ def test_Email_isSpam(fake_email, x_spam, expectedResult):
     "test_email_path, expected_email_features, expected_correspondents_features,expected_attachments_features",
     TEST_EMAIL_PARAMETERS,
 )
-def test_Email_createFromEmailBytes_success(
+def test_Email_create_from_email_bytes_success(
     override_config,
     fake_mailbox,
     mock_logger,
@@ -649,14 +649,14 @@ def test_Email_createFromEmailBytes_success(
     expected_correspondents_features,
     expected_attachments_features,
 ):
-    """Tests :func:`core.models.Email.Email.createFromEmailBytes`
+    """Tests :func:`core.models.Email.Email.create_from_email_bytes`
     in case of success.
     """
     with open(test_email_path, "br") as test_email_file:
         test_email_bytes = test_email_file.read()
 
     with override_config(THROW_OUT_SPAM=False):
-        result = Email.createFromEmailBytes(test_email_bytes, mailbox=fake_mailbox)
+        result = Email.create_from_email_bytes(test_email_bytes, mailbox=fake_mailbox)
 
     assert isinstance(result, Email)
     assert result.pk is not None
@@ -709,7 +709,7 @@ def test_Email_createFromEmailBytes_success(
 
 
 @pytest.mark.django_db
-def test_Email_createFromEmailBytes_duplicate(
+def test_Email_create_from_email_bytes_duplicate(
     override_config,
     fake_email,
     mock_logger,
@@ -717,11 +717,11 @@ def test_Email_createFromEmailBytes_duplicate(
     mock_Email_save_html_to_storage,
     mock_Attachment_save_to_storage,
 ):
-    """Tests :func:`core.models.Email.Email.createFromEmailBytes`
+    """Tests :func:`core.models.Email.Email.create_from_email_bytes`
     in case the email to be parsed is already in the database.
     """
     with override_config(THROW_OUT_SPAM=False):
-        result = Email.createFromEmailBytes(
+        result = Email.create_from_email_bytes(
             f"Message-ID: {fake_email.message_id}".encode(), fake_email.mailbox
         )
 
@@ -738,7 +738,7 @@ def test_Email_createFromEmailBytes_duplicate(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "X_Spam_Flag, THROW_OUT_SPAM, expected_isNone",
+    "X_Spam_Flag, THROW_OUT_SPAM, expected_is_none",
     [
         ("YES", True, True),
         ("NO", True, False),
@@ -754,7 +754,7 @@ def test_Email_createFromEmailBytes_duplicate(
         ("SOMETHING", False, False),
     ],
 )
-def test_Email_createFromEmailBytes_spam(
+def test_Email_create_from_email_bytes_spam(
     override_config,
     fake_mailbox,
     mock_logger,
@@ -763,17 +763,17 @@ def test_Email_createFromEmailBytes_spam(
     mock_Attachment_save_to_storage,
     X_Spam_Flag,
     THROW_OUT_SPAM,
-    expected_isNone,
+    expected_is_none,
 ):
-    """Tests :func:`core.models.Email.Email.createFromEmailBytes`
+    """Tests :func:`core.models.Email.Email.create_from_email_bytes`
     with regard to spam emails.
     """
     with override_config(THROW_OUT_SPAM=THROW_OUT_SPAM):
-        result = Email.createFromEmailBytes(
+        result = Email.create_from_email_bytes(
             f"X-Spam-Flag: {X_Spam_Flag}".encode(), fake_mailbox
         )
 
-    assert (result is None) is expected_isNone
+    assert (result is None) is expected_is_none
     mock_logger.debug.assert_called()
     mock_logger.warning.assert_not_called()
     mock_logger.error.assert_not_called()
@@ -782,10 +782,10 @@ def test_Email_createFromEmailBytes_spam(
 
 
 @pytest.mark.django_db
-def test_Email_createFromEmailBytes_dberror(
+def test_Email_create_from_email_bytes_dberror(
     mocker, override_config, fake_mailbox, mock_logger
 ):
-    """Tests :func:`core.models.Email.Email.createFromEmailBytes`
+    """Tests :func:`core.models.Email.Email.create_from_email_bytes`
     in case an database :class:`django.db.IntegrityError` occurs.
     """
     mock_Email_save = mocker.patch(
@@ -795,7 +795,7 @@ def test_Email_createFromEmailBytes_dberror(
     )
 
     with override_config(THROW_OUT_SPAM=False):
-        result = Email.createFromEmailBytes(b"Message-ID: something", fake_mailbox)
+        result = Email.create_from_email_bytes(b"Message-ID: something", fake_mailbox)
 
     assert result is None
     mock_Email_save.assert_called()

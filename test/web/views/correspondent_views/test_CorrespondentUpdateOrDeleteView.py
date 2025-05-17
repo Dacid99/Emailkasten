@@ -77,12 +77,12 @@ def test_get_auth_owner(fake_correspondent, owner_client, detail_url):
 
 @pytest.mark.django_db
 def test_post_update_noauth(
-    fake_correspondent, correspondentPayload, client, detail_url, login_url
+    fake_correspondent, correspondent_payload, client, detail_url, login_url
 ):
     """Tests :class:`web.views.correspondent_views.CorrespondentUpdateOrDeleteView.CorrespondentUpdateOrDeleteView` with an unauthenticated user client."""
     response = client.post(
         detail_url(CorrespondentUpdateOrDeleteView, fake_correspondent),
-        correspondentPayload,
+        correspondent_payload,
     )
 
     assert response.status_code == status.HTTP_302_FOUND
@@ -92,40 +92,40 @@ def test_post_update_noauth(
         f"?next={detail_url(CorrespondentUpdateOrDeleteView, fake_correspondent)}"
     )
     fake_correspondent.refresh_from_db()
-    assert fake_correspondent.email_name != correspondentPayload["email_name"]
+    assert fake_correspondent.email_name != correspondent_payload["email_name"]
 
 
 @pytest.mark.django_db
 def test_post_update_auth_other(
-    fake_correspondent, correspondentPayload, other_client, detail_url
+    fake_correspondent, correspondent_payload, other_client, detail_url
 ):
     """Tests :class:`web.views.correspondent_views.CorrespondentUpdateOrDeleteView.CorrespondentUpdateOrDeleteView` with the authenticated other user client."""
     response = other_client.post(
         detail_url(CorrespondentUpdateOrDeleteView, fake_correspondent),
-        correspondentPayload,
+        correspondent_payload,
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
     fake_correspondent.refresh_from_db()
-    assert fake_correspondent.email_name != correspondentPayload["email_name"]
+    assert fake_correspondent.email_name != correspondent_payload["email_name"]
 
 
 @pytest.mark.django_db
 def test_post_update_auth_owner(
-    fake_correspondent, correspondentPayload, owner_client, detail_url
+    fake_correspondent, correspondent_payload, owner_client, detail_url
 ):
     """Tests :class:`web.views.correspondent_views.CorrespondentUpdateOrDeleteView.CorrespondentUpdateOrDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
         detail_url(CorrespondentUpdateOrDeleteView, fake_correspondent),
-        correspondentPayload,
+        correspondent_payload,
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:correspondent-filter-list"))
     fake_correspondent.refresh_from_db()
-    assert fake_correspondent.email_name == correspondentPayload["email_name"]
+    assert fake_correspondent.email_name == correspondent_payload["email_name"]
 
 
 @pytest.mark.django_db

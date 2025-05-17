@@ -46,18 +46,18 @@ def mock_os_path_exists(mocker):
 
 
 @pytest.fixture
-def mock_Email_subConversation(mocker, fake_email):
+def mock_Email_sub_conversation(mocker, fake_email):
     return mocker.patch(
-        "api.v1.views.EmailViewSet.Email.subConversation",
+        "api.v1.views.EmailViewSet.Email.sub_conversation",
         autospec=True,
         return_value=[fake_email],
     )
 
 
 @pytest.fixture
-def mock_Email_fullConversation(mocker, fake_email):
+def mock_Email_full_conversation(mocker, fake_email):
     return mocker.patch(
-        "api.v1.views.EmailViewSet.Email.fullConversation",
+        "api.v1.views.EmailViewSet.Email.full_conversation",
         autospec=True,
         return_value=[fake_email],
     )
@@ -66,13 +66,13 @@ def mock_Email_fullConversation(mocker, fake_email):
 @pytest.mark.django_db
 def test_download_noauth(
     fake_email,
-    noauth_apiClient,
+    noauth_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
 ):
     """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.download` action with an unauthenticated user client."""
-    response = noauth_apiClient.get(
+    response = noauth_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_DOWNLOAD, fake_email
         )
@@ -86,13 +86,13 @@ def test_download_noauth(
 @pytest.mark.django_db
 def test_download_auth_other(
     fake_email,
-    other_apiClient,
+    other_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
 ):
     """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.download` action with the authenticated other user client."""
-    response = other_apiClient.get(
+    response = other_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_DOWNLOAD, fake_email
         )
@@ -106,7 +106,7 @@ def test_download_auth_other(
 @pytest.mark.django_db
 def test_download_no_file_auth_owner(
     fake_email,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
@@ -115,7 +115,7 @@ def test_download_no_file_auth_owner(
     mock_os_path_exists.return_value = False
     mock_open.side_effect = FileNotFoundError
 
-    response = owner_apiClient.get(
+    response = owner_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_DOWNLOAD, fake_email
         )
@@ -129,13 +129,13 @@ def test_download_no_file_auth_owner(
 @pytest.mark.django_db
 def test_download_auth_owner(
     fake_email,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
 ):
     """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.download` action with the authenticated owner user client."""
-    response = owner_apiClient.get(
+    response = owner_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_DOWNLOAD, fake_email
         )
@@ -158,13 +158,13 @@ def test_download_auth_owner(
 @pytest.mark.django_db
 def test_download_html_noauth(
     fake_email,
-    noauth_apiClient,
+    noauth_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
 ):
     """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.download_html` action with an unauthenticated user client."""
-    response = noauth_apiClient.get(
+    response = noauth_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_DOWNLOAD_HTML, fake_email
         )
@@ -178,13 +178,13 @@ def test_download_html_noauth(
 @pytest.mark.django_db
 def test_download_html_auth_other(
     fake_email,
-    other_apiClient,
+    other_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
 ):
     """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.download_html` action with the authenticated other user client."""
-    response = other_apiClient.get(
+    response = other_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_DOWNLOAD_HTML, fake_email
         )
@@ -198,7 +198,7 @@ def test_download_html_auth_other(
 @pytest.mark.django_db
 def test_download_html_no_file_auth_owner(
     fake_email,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
@@ -207,7 +207,7 @@ def test_download_html_no_file_auth_owner(
     mock_os_path_exists.return_value = False
     mock_open.side_effect = FileNotFoundError
 
-    response = owner_apiClient.get(
+    response = owner_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_DOWNLOAD_HTML, fake_email
         )
@@ -221,13 +221,13 @@ def test_download_html_no_file_auth_owner(
 @pytest.mark.django_db
 def test_download_html_auth_owner(
     fake_email,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
     mock_open,
     mock_os_path_exists,
 ):
     """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.download_html` action with the authenticated owner user client."""
-    response = owner_apiClient.get(
+    response = owner_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_DOWNLOAD_HTML, fake_email
         )
@@ -252,50 +252,50 @@ def test_download_html_auth_owner(
 
 
 @pytest.mark.django_db
-def test_subConversation_noauth(
+def test_sub_conversation_noauth(
     fake_email,
-    noauth_apiClient,
+    noauth_api_client,
     custom_detail_action_url,
-    mock_Email_subConversation,
+    mock_Email_sub_conversation,
 ):
-    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.subConversation` action with an unauthenticated user client."""
-    response = noauth_apiClient.get(
+    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.sub_conversation` action with an unauthenticated user client."""
+    response = noauth_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_SUBCONVERSATION, fake_email
         )
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    mock_Email_subConversation.assert_not_called()
+    mock_Email_sub_conversation.assert_not_called()
 
 
 @pytest.mark.django_db
-def test_subConversation_auth_other(
+def test_sub_conversation_auth_other(
     fake_email,
-    other_apiClient,
+    other_api_client,
     custom_detail_action_url,
-    mock_Email_subConversation,
+    mock_Email_sub_conversation,
 ):
-    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.subConversation` action with the authenticated other user client."""
-    response = other_apiClient.get(
+    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.sub_conversation` action with the authenticated other user client."""
+    response = other_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_SUBCONVERSATION, fake_email
         )
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    mock_Email_subConversation.assert_not_called()
+    mock_Email_sub_conversation.assert_not_called()
 
 
 @pytest.mark.django_db
-def test_subConversation_auth_owner(
+def test_sub_conversation_auth_owner(
     fake_email,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
-    mock_Email_subConversation,
+    mock_Email_sub_conversation,
 ):
-    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.subConversation` action with the authenticated owner user client."""
-    response = owner_apiClient.get(
+    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.sub_conversation` action with the authenticated owner user client."""
+    response = owner_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_SUBCONVERSATION, fake_email
         )
@@ -304,54 +304,54 @@ def test_subConversation_auth_owner(
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data["emails"]) == 1
     assert response.data["emails"][0]["id"] == fake_email.id
-    mock_Email_subConversation.assert_called_once_with(fake_email)
+    mock_Email_sub_conversation.assert_called_once_with(fake_email)
 
 
 @pytest.mark.django_db
-def test_fullConversation_noauth(
+def test_full_conversation_noauth(
     fake_email,
-    noauth_apiClient,
+    noauth_api_client,
     custom_detail_action_url,
-    mock_Email_fullConversation,
+    mock_Email_full_conversation,
 ):
-    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.fullConversation` action with an unauthenticated user client."""
-    response = noauth_apiClient.get(
+    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.full_conversation` action with an unauthenticated user client."""
+    response = noauth_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_FULLCONVERSATION, fake_email
         )
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    mock_Email_fullConversation.assert_not_called()
+    mock_Email_full_conversation.assert_not_called()
 
 
 @pytest.mark.django_db
-def test_fullConversation_auth_other(
+def test_full_conversation_auth_other(
     fake_email,
-    other_apiClient,
+    other_api_client,
     custom_detail_action_url,
-    mock_Email_fullConversation,
+    mock_Email_full_conversation,
 ):
-    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.fullConversation` action with the authenticated other user client."""
-    response = other_apiClient.get(
+    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.full_conversation` action with the authenticated other user client."""
+    response = other_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_FULLCONVERSATION, fake_email
         )
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    mock_Email_fullConversation.assert_not_called()
+    mock_Email_full_conversation.assert_not_called()
 
 
 @pytest.mark.django_db
-def test_fullConversation_auth_owner(
+def test_full_conversation_auth_owner(
     fake_email,
-    owner_apiClient,
+    owner_api_client,
     custom_detail_action_url,
-    mock_Email_fullConversation,
+    mock_Email_full_conversation,
 ):
-    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.fullConversation` action with the authenticated owner user client."""
-    response = owner_apiClient.get(
+    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.full_conversation` action with the authenticated owner user client."""
+    response = owner_api_client.get(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_FULLCONVERSATION, fake_email
         )
@@ -360,13 +360,15 @@ def test_fullConversation_auth_owner(
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data["emails"]) == 1
     assert response.data["emails"][0]["id"] == fake_email.id
-    mock_Email_fullConversation.assert_called_once_with(fake_email)
+    mock_Email_full_conversation.assert_called_once_with(fake_email)
 
 
 @pytest.mark.django_db
-def test_toggle_favorite_noauth(fake_email, noauth_apiClient, custom_detail_action_url):
+def test_toggle_favorite_noauth(
+    fake_email, noauth_api_client, custom_detail_action_url
+):
     """Tests the post method :func:`api.v1.views.EmailViewSet.EmailViewSet.toggle_favorite` action with an unauthenticated user client."""
-    response = noauth_apiClient.post(
+    response = noauth_api_client.post(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_TOGGLE_FAVORITE, fake_email
         )
@@ -379,10 +381,10 @@ def test_toggle_favorite_noauth(fake_email, noauth_apiClient, custom_detail_acti
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    fake_email, other_apiClient, custom_detail_action_url
+    fake_email, other_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.EmailViewSet.EmailViewSet.toggle_favorite` action with the authenticated other user client."""
-    response = other_apiClient.post(
+    response = other_api_client.post(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_TOGGLE_FAVORITE, fake_email
         )
@@ -395,10 +397,10 @@ def test_toggle_favorite_auth_other(
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    fake_email, owner_apiClient, custom_detail_action_url
+    fake_email, owner_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.EmailViewSet.EmailViewSet.toggle_favorite` action with the authenticated owner user client."""
-    response = owner_apiClient.post(
+    response = owner_api_client.post(
         custom_detail_action_url(
             EmailViewSet, EmailViewSet.URL_NAME_TOGGLE_FAVORITE, fake_email
         )

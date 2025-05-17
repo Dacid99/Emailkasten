@@ -46,15 +46,15 @@ def complete_database(
     fake_correspondent,
     fake_daemon,
     fake_email,
-    fake_emailCorrespondent,
+    fake_email_correspondent,
     fake_mailbox,
-    fake_mailingList,
+    fake_mailing_list,
 ):
     """Fixture providing a complete database setup."""
 
 
 @pytest.fixture
-def noauth_apiClient() -> APIClient:
+def noauth_api_client() -> APIClient:
     """Fixture creating an unauthenticated :class:`rest_framework.test.APIClient` instance.
 
     Returns:
@@ -64,33 +64,33 @@ def noauth_apiClient() -> APIClient:
 
 
 @pytest.fixture
-def other_apiClient(noauth_apiClient, other_user) -> APIClient:
+def other_api_client(noauth_api_client, other_user) -> APIClient:
     """Fixture creating a :class:`rest_framework.test.APIClient` instance that is authenticated as :attr:`other_user`.
 
     Args:
-        noauth_apiClient: Depends on :func:`fixture_noauth_apiClient`.
+        noauth_api_client: Depends on :func:`fixture_noauth_api_client`.
         other_user: Depends on :func:`fixture_other_user`.
 
     Returns:
         The authenticated APIClient.
     """
-    noauth_apiClient.force_authenticate(user=other_user)
-    return noauth_apiClient
+    noauth_api_client.force_authenticate(user=other_user)
+    return noauth_api_client
 
 
 @pytest.fixture
-def owner_apiClient(noauth_apiClient, owner_user) -> APIClient:
+def owner_api_client(noauth_api_client, owner_user) -> APIClient:
     """Fixture creating a :class:`rest_framework.test.APIClient` instance that is authenticated as :attr:`owner_user`.
 
     Args:
-        noauth_apiClient: Depends on :func:`fixture_noauth_apiClient`.
+        noauth_api_client: Depends on :func:`fixture_noauth_api_client`.
         owner_user: Depends on :func:`fixture_owner_user`.
 
     Returns:
         The authenticated APIClient.
     """
-    noauth_apiClient.force_authenticate(user=owner_user)
-    return noauth_apiClient
+    noauth_api_client.force_authenticate(user=owner_user)
+    return noauth_api_client
 
 
 @pytest.fixture(scope="package")
@@ -100,7 +100,7 @@ def list_url() -> Callable[[type[ModelViewSet]], str]:
     Returns:
         The list url.
     """
-    return lambda viewsetClass: reverse(f"api:v1:{viewsetClass.BASENAME}-list")
+    return lambda viewset_class: reverse(f"api:v1:{viewset_class.BASENAME}-list")
 
 
 @pytest.fixture(scope="package")
@@ -110,8 +110,8 @@ def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
     Returns:
         The detail url.
     """
-    return lambda viewsetClass, instance: reverse(
-        f"api:v1:{viewsetClass.BASENAME}-detail", args=[instance.id]
+    return lambda viewset_class, instance: reverse(
+        f"api:v1:{viewset_class.BASENAME}-detail", args=[instance.id]
     )
 
 
@@ -122,8 +122,8 @@ def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
     Returns:
         A callable that gets the list url of the viewset from the custom action name.
     """
-    return lambda viewsetClass, custom_list_action_url_name: (
-        reverse(f"api:v1:{viewsetClass.BASENAME}-{custom_list_action_url_name}")
+    return lambda viewset_class, custom_list_action_url_name: (
+        reverse(f"api:v1:{viewset_class.BASENAME}-{custom_list_action_url_name}")
     )
 
 
@@ -134,9 +134,9 @@ def custom_detail_action_url() -> Callable[[type[ModelViewSet], str, Model], str
     Returns:
         A callable that gets the detail url of the viewset from the custom action name.
     """
-    return lambda viewsetClass, custom_detail_action_url_name, instance: (
+    return lambda viewset_class, custom_detail_action_url_name, instance: (
         reverse(
-            f"api:v1:{viewsetClass.BASENAME}-{custom_detail_action_url_name}",
+            f"api:v1:{viewset_class.BASENAME}-{custom_detail_action_url_name}",
             args=[instance.id],
         )
     )

@@ -257,7 +257,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         logger.info("Updating mailboxes in %s...", self)
         with self.get_fetcher() as fetcher:
             try:
-                mailboxList = fetcher.fetchMailboxes()
+                mailbox_list = fetcher.fetch_mailboxes()
             except MailAccountError:
                 self.is_healthy = False
                 self.save(update_fields=["is_healthy"])
@@ -265,7 +265,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         self.is_healthy = True
         self.save(update_fields=["is_healthy"])
 
-        for mailboxData in mailboxList:
-            Mailbox.createFromData(mailboxData, self)
+        for mailbox_data in mailbox_list:
+            Mailbox.create_from_data(mailbox_data, self)
 
         logger.info("Successfully updated mailboxes.")

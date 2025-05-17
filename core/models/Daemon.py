@@ -172,7 +172,10 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
     @override
     def clean(self) -> None:
         """Validates that :attr:`fetching_criterion` is available for the :attr:`mailbox.account`."""
-        if self.fetching_criterion not in self.mailbox.getAvailableFetchingCriteria():
+        if (
+            self.fetching_criterion
+            not in self.mailbox.get_available_fetching_criteria()
+        ):
             raise ValidationError(
                 {
                     "fetching_criterion": "This fetching criterion is not available for this mailbox!"

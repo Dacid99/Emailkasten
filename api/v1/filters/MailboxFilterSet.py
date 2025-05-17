@@ -42,7 +42,7 @@ class MailboxFilterSet(filters.FilterSet):
 
         fields: ClassVar[dict[str, list[str]]] = {
             "name": FilterSetups.TEXT,
-            "save_toEML": FilterSetups.BOOL,
+            "save_to_eml": FilterSetups.BOOL,
             "save_attachments": FilterSetups.BOOL,
             "is_healthy": FilterSetups.BOOL,
             "is_favorite": FilterSetups.BOOL,

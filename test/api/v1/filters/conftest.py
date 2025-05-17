@@ -42,16 +42,16 @@ if TYPE_CHECKING:
     from django.db.models.query import QuerySet
 
 
-def datetime_quarter(datetimeObject: datetime.datetime) -> int:
+def datetime_quarter(datetime_object: datetime.datetime) -> int:
     """Calculate the quarter of the year for a given datetime.
 
     Args:
-        datetimeObject: The datetime to calculate the quarter of.
+        datetime_object: The datetime to calculate the quarter of.
 
     Returns:
         An `int` from 1-4 indicating the datetimes quarter of the year.
     """
-    return (datetimeObject.month - 1) // 3 + 1
+    return (datetime_object.month - 1) // 3 + 1
 
 
 INT_TEST_ITEMS = [0, 1, 2]
@@ -377,7 +377,7 @@ def mailbox_queryset(unblocked_db, account_queryset) -> QuerySet[Mailbox, Mailbo
             baker.make(
                 Mailbox,
                 name=text_test_item,
-                save_toEML=BOOL_TEST_ITEMS[number],
+                save_to_eml=BOOL_TEST_ITEMS[number],
                 save_attachments=BOOL_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 is_healthy=BOOL_TEST_ITEMS[number],

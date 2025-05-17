@@ -44,7 +44,7 @@ def mock_logger(mocker):
 def mock_open(mocker, fake_file_bytes):
     """Fixture to mock the builtin :func:`open`."""
     mock_open = mocker.mock_open(read_data=fake_file_bytes)
-    mocker.patch("core.utils.fileManagment.open", mock_open)
+    mocker.patch("core.utils.file_managment.open", mock_open)
     return mock_open
 
 
@@ -55,13 +55,13 @@ def mock_os_remove(mocker):
 
 
 @pytest.fixture
-def mock_Storage_getSubdirectory(mocker, faker):
+def mock_Storage_get_subdirectory(mocker, faker):
     fake_directory_path = os.path.dirname(faker.file_path())
-    mock_Storage_getSubdirectory = mocker.patch(
-        "core.models.Storage.Storage.getSubdirectory", autospec=True
+    mock_Storage_get_subdirectory = mocker.patch(
+        "core.models.Storage.Storage.get_subdirectory", autospec=True
     )
-    mock_Storage_getSubdirectory.return_value = fake_directory_path
-    return mock_Storage_getSubdirectory
+    mock_Storage_get_subdirectory.return_value = fake_directory_path
+    return mock_Storage_get_subdirectory
 
 
 @pytest.fixture
@@ -205,25 +205,25 @@ def test_save_to_storage_success(
     fake_attachment,
     mock_logger,
     mock_open,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_attachment.file_path = None
 
     fake_attachment.save_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_called_once_with(
+    mock_Storage_get_subdirectory.assert_called_once_with(
         fake_attachment.email.message_id
     )
     mock_open.assert_called_once_with(
         os.path.join(
-            mock_Storage_getSubdirectory.return_value, fake_attachment.file_name
+            mock_Storage_get_subdirectory.return_value, fake_attachment.file_name
         ),
         "wb",
     )
     mock_open.return_value.write.assert_called_once_with(fake_file_bytes)
     fake_attachment.refresh_from_db()
     assert fake_attachment.file_path == os.path.join(
-        mock_Storage_getSubdirectory.return_value, fake_attachment.file_name
+        mock_Storage_get_subdirectory.return_value, fake_attachment.file_name
     )
     mock_logger.debug.assert_called()
     mock_logger.error.assert_not_called()
@@ -236,7 +236,7 @@ def test_save_to_storage_file_path_set(
     fake_attachment,
     mock_logger,
     mock_open,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_message_payload = faker.text().encode()
     mock_message.get_payload.return_value = fake_message_payload
@@ -244,7 +244,7 @@ def test_save_to_storage_file_path_set(
 
     fake_attachment.save_to_storage(mock_message)
 
-    mock_Storage_getSubdirectory.assert_not_called()
+    mock_Storage_get_subdirectory.assert_not_called()
     mock_open.assert_not_called()
     fake_attachment.refresh_from_db()
     assert fake_attachment.file_path == previous_file_path
@@ -253,24 +253,24 @@ def test_save_to_storage_file_path_set(
 
 
 @pytest.mark.django_db
-def test_save_to_storage_open_osError(
+def test_save_to_storage_open_os_error(
     fake_file_bytes,
     fake_attachment,
     mock_logger,
     mock_open,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_attachment.file_path = None
     mock_open.side_effect = OSError
 
     fake_attachment.save_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_called_once_with(
+    mock_Storage_get_subdirectory.assert_called_once_with(
         fake_attachment.email.message_id
     )
     mock_open.assert_called_once_with(
         os.path.join(
-            mock_Storage_getSubdirectory.return_value, fake_attachment.file_name
+            mock_Storage_get_subdirectory.return_value, fake_attachment.file_name
         ),
         "wb",
     )
@@ -281,25 +281,25 @@ def test_save_to_storage_open_osError(
 
 
 @pytest.mark.django_db
-def test_save_to_storage_write_osError(
+def test_save_to_storage_write_os_error(
     fake_file_bytes,
     mock_message,
     fake_attachment,
     mock_logger,
     mock_open,
-    mock_Storage_getSubdirectory,
+    mock_Storage_get_subdirectory,
 ):
     fake_attachment.file_path = None
     mock_open.return_value.write.side_effect = OSError
 
     fake_attachment.save_to_storage(fake_file_bytes)
 
-    mock_Storage_getSubdirectory.assert_called_once_with(
+    mock_Storage_get_subdirectory.assert_called_once_with(
         fake_attachment.email.message_id
     )
     mock_open.assert_called_once_with(
         os.path.join(
-            mock_Storage_getSubdirectory.return_value, fake_attachment.file_name
+            mock_Storage_get_subdirectory.return_value, fake_attachment.file_name
         ),
         "wb",
     )
@@ -310,14 +310,14 @@ def test_save_to_storage_write_osError(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("save_attachments, expectedCalls", [(True, 1), (False, 0)])
+@pytest.mark.parametrize("save_attachments, expected_calls", [(True, 1), (False, 0)])
 def test_Attachment_save_with_data_success(
     fake_attachment,
     fake_file_bytes,
     mock_Attachment_save_to_storage,
     spy__save,
     save_attachments,
-    expectedCalls,
+    expected_calls,
 ):
     """Tests :func:`core.models.Attachment.Attachment.save`
     in case of success with data to be saved.
@@ -326,7 +326,7 @@ def test_Attachment_save_with_data_success(
 
     fake_attachment.save(attachment_payload=fake_file_bytes)
 
-    assert mock_Attachment_save_to_storage.call_count == expectedCalls
+    assert mock_Attachment_save_to_storage.call_count == expected_calls
     spy__save.assert_called()
 
 
@@ -337,7 +337,7 @@ def test_Attachment_save_no_data(
     """Tests :func:`core.models.Attachment.Attachment.save`
     in case of success without data to be saved.
     """
-    fake_attachment.email.mailbox.save_attachmentModels = True
+    fake_attachment.email.mailbox.save_attachment_models = True
 
     fake_attachment.save()
 
@@ -356,7 +356,7 @@ def test_Attachment_save_with_data_failure(
     in case of the data fails to be saved.
     """
     mock_Attachment_save_to_storage.side_effect = AssertionError
-    fake_attachment.email.mailbox.save_attachmentModels = True
+    fake_attachment.email.mailbox.save_attachment_models = True
 
     with pytest.raises(AssertionError):
         fake_attachment.save(attachment_payload=fake_file_bytes)
@@ -370,7 +370,7 @@ def test_Attachment_save_with_data_failure(
     "test_email_path, expected_email_features, expected_correspondents_features,expected_attachments_features",
     TEST_EMAIL_PARAMETERS,
 )
-def test_Attachment_fromData(
+def test_Attachment_from_data(
     fake_email,
     mock_Attachment_save_to_storage,
     test_email_path,
@@ -378,14 +378,14 @@ def test_Attachment_fromData(
     expected_correspondents_features,
     expected_attachments_features,
 ):
-    """Tests :func:`core.models.Attachment.Attachment.fromData`
+    """Tests :func:`core.models.Attachment.Attachment.from_data`
     in case of success.
     """
     with open(test_email_path, "br") as f:
         test_email_bytes = f.read()
-    test_emailMessage = email.message_from_bytes(test_email_bytes)
+    test_email_message = email.message_from_bytes(test_email_bytes)
 
-    result = Attachment.createFromEmailMessage(test_emailMessage, fake_email)
+    result = Attachment.create_from_email_message(test_email_message, fake_email)
 
     assert isinstance(result, list)
     assert all(isinstance(item, Attachment) for item in result)

@@ -28,9 +28,9 @@ from core.models.Daemon import Daemon
 
 
 @pytest.mark.django_db
-def test_list_noauth(fake_daemon, noauth_apiClient, list_url):
+def test_list_noauth(fake_daemon, noauth_api_client, list_url):
     """Tests the list method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.get(list_url(DaemonViewSet))
+    response = noauth_api_client.get(list_url(DaemonViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
@@ -38,9 +38,9 @@ def test_list_noauth(fake_daemon, noauth_apiClient, list_url):
 
 
 @pytest.mark.django_db
-def test_list_auth_other(fake_daemon, other_apiClient, list_url):
+def test_list_auth_other(fake_daemon, other_api_client, list_url):
     """Tests the list method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated other user client."""
-    response = other_apiClient.get(list_url(DaemonViewSet))
+    response = other_api_client.get(list_url(DaemonViewSet))
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["count"] == 0
@@ -48,9 +48,9 @@ def test_list_auth_other(fake_daemon, other_apiClient, list_url):
 
 
 @pytest.mark.django_db
-def test_list_auth_owner(fake_daemon, owner_apiClient, list_url):
+def test_list_auth_owner(fake_daemon, owner_api_client, list_url):
     """Tests the list method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.get(list_url(DaemonViewSet))
+    response = owner_api_client.get(list_url(DaemonViewSet))
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["count"] == 1
@@ -58,9 +58,9 @@ def test_list_auth_owner(fake_daemon, owner_apiClient, list_url):
 
 
 @pytest.mark.django_db
-def test_get_noauth(fake_daemon, noauth_apiClient, detail_url):
+def test_get_noauth(fake_daemon, noauth_api_client, detail_url):
     """Tests the get method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.get(detail_url(DaemonViewSet, fake_daemon))
+    response = noauth_api_client.get(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
@@ -68,151 +68,151 @@ def test_get_noauth(fake_daemon, noauth_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_get_auth_other(fake_daemon, other_apiClient, detail_url):
+def test_get_auth_other(fake_daemon, other_api_client, detail_url):
     """Tests the get method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated other user client."""
-    response = other_apiClient.get(detail_url(DaemonViewSet, fake_daemon))
+    response = other_api_client.get(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.django_db
-def test_get_auth_owner(fake_daemon, owner_apiClient, detail_url):
+def test_get_auth_owner(fake_daemon, owner_api_client, detail_url):
     """Tests the list method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.get(detail_url(DaemonViewSet, fake_daemon))
+    response = owner_api_client.get(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["cycle_interval"] == fake_daemon.cycle_interval
 
 
 @pytest.mark.django_db
-def test_patch_noauth(fake_daemon, noauth_apiClient, daemonPayload, detail_url):
+def test_patch_noauth(fake_daemon, noauth_api_client, daemon_payload, detail_url):
     """Tests the patch method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.patch(
-        detail_url(DaemonViewSet, fake_daemon), data=daemonPayload
+    response = noauth_api_client.patch(
+        detail_url(DaemonViewSet, fake_daemon), data=daemon_payload
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
         response.data["cycle_interval"]
     fake_daemon.refresh_from_db()
-    assert fake_daemon.cycle_interval != daemonPayload["cycle_interval"]
+    assert fake_daemon.cycle_interval != daemon_payload["cycle_interval"]
 
 
 @pytest.mark.django_db
-def test_patch_auth_other(fake_daemon, other_apiClient, daemonPayload, detail_url):
+def test_patch_auth_other(fake_daemon, other_api_client, daemon_payload, detail_url):
     """Tests the patch method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated other user client."""
-    response = other_apiClient.patch(
-        detail_url(DaemonViewSet, fake_daemon), data=daemonPayload
+    response = other_api_client.patch(
+        detail_url(DaemonViewSet, fake_daemon), data=daemon_payload
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     with pytest.raises(KeyError):
         response.data["cycle_interval"]
     fake_daemon.refresh_from_db()
-    assert fake_daemon.cycle_interval != daemonPayload["cycle_interval"]
+    assert fake_daemon.cycle_interval != daemon_payload["cycle_interval"]
 
 
 @pytest.mark.django_db
-def test_patch_auth_owner(fake_daemon, owner_apiClient, daemonPayload, detail_url):
+def test_patch_auth_owner(fake_daemon, owner_api_client, daemon_payload, detail_url):
     """Tests the patch method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated owner user client.
 
     Note:
         Has a tendency to fail when not executed individually.
     """
-    response = owner_apiClient.patch(
-        detail_url(DaemonViewSet, fake_daemon), data=daemonPayload
+    response = owner_api_client.patch(
+        detail_url(DaemonViewSet, fake_daemon), data=daemon_payload
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data["cycle_interval"] == daemonPayload["cycle_interval"]
+    assert response.data["cycle_interval"] == daemon_payload["cycle_interval"]
     fake_daemon.refresh_from_db()
-    assert fake_daemon.cycle_interval == daemonPayload["cycle_interval"]
+    assert fake_daemon.cycle_interval == daemon_payload["cycle_interval"]
 
 
 @pytest.mark.django_db
-def test_put_noauth(fake_daemon, noauth_apiClient, daemonPayload, detail_url):
+def test_put_noauth(fake_daemon, noauth_api_client, daemon_payload, detail_url):
     """Tests the put method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.put(
-        detail_url(DaemonViewSet, fake_daemon), data=daemonPayload
+    response = noauth_api_client.put(
+        detail_url(DaemonViewSet, fake_daemon), data=daemon_payload
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
         response.data["cycle_interval"]
     fake_daemon.refresh_from_db()
-    assert fake_daemon.cycle_interval != daemonPayload["cycle_interval"]
+    assert fake_daemon.cycle_interval != daemon_payload["cycle_interval"]
 
 
 @pytest.mark.django_db
-def test_put_auth_other(fake_daemon, other_apiClient, daemonPayload, detail_url):
+def test_put_auth_other(fake_daemon, other_api_client, daemon_payload, detail_url):
     """Tests the put method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated other user client."""
-    response = other_apiClient.put(
-        detail_url(DaemonViewSet, fake_daemon), data=daemonPayload
+    response = other_api_client.put(
+        detail_url(DaemonViewSet, fake_daemon), data=daemon_payload
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     with pytest.raises(KeyError):
         response.data["cycle_interval"]
     fake_daemon.refresh_from_db()
-    assert fake_daemon.cycle_interval != daemonPayload["cycle_interval"]
+    assert fake_daemon.cycle_interval != daemon_payload["cycle_interval"]
 
 
 @pytest.mark.django_db
-def test_put_auth_owner(fake_daemon, owner_apiClient, daemonPayload, detail_url):
+def test_put_auth_owner(fake_daemon, owner_api_client, daemon_payload, detail_url):
     """Tests the put method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated owner user client.
 
     Note:
         Has a tendency to fail when not executed individually.
     """
-    response = owner_apiClient.put(
-        detail_url(DaemonViewSet, fake_daemon), data=daemonPayload
+    response = owner_api_client.put(
+        detail_url(DaemonViewSet, fake_daemon), data=daemon_payload
     )
     assert response.status_code == status.HTTP_200_OK
-    assert response.data["cycle_interval"] == daemonPayload["cycle_interval"]
+    assert response.data["cycle_interval"] == daemon_payload["cycle_interval"]
     fake_daemon.refresh_from_db()
-    assert fake_daemon.cycle_interval == daemonPayload["cycle_interval"]
+    assert fake_daemon.cycle_interval == daemon_payload["cycle_interval"]
 
 
 @pytest.mark.django_db
-def test_post_noauth(noauth_apiClient, daemonPayload, list_url):
+def test_post_noauth(noauth_api_client, daemon_payload, list_url):
     """Tests the post method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.post(list_url(DaemonViewSet), data=daemonPayload)
+    response = noauth_api_client.post(list_url(DaemonViewSet), data=daemon_payload)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     with pytest.raises(KeyError):
         response.data["cycle_interval"]
     with pytest.raises(Daemon.DoesNotExist):
-        Daemon.objects.get(cycle_interval=daemonPayload["cycle_interval"])
+        Daemon.objects.get(cycle_interval=daemon_payload["cycle_interval"])
 
 
 @pytest.mark.django_db
-def test_post_auth_other(other_apiClient, daemonPayload, list_url):
+def test_post_auth_other(other_api_client, daemon_payload, list_url):
     """Tests the post method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated other user client."""
-    response = other_apiClient.post(list_url(DaemonViewSet), data=daemonPayload)
+    response = other_api_client.post(list_url(DaemonViewSet), data=daemon_payload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
         response.data["cycle_interval"]
     with pytest.raises(Daemon.DoesNotExist):
-        Daemon.objects.get(cycle_interval=daemonPayload["cycle_interval"])
+        Daemon.objects.get(cycle_interval=daemon_payload["cycle_interval"])
 
 
 @pytest.mark.django_db
-def test_post_auth_owner(owner_apiClient, daemonPayload, list_url):
+def test_post_auth_owner(owner_api_client, daemon_payload, list_url):
     """Tests the post method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.post(list_url(DaemonViewSet), data=daemonPayload)
+    response = owner_api_client.post(list_url(DaemonViewSet), data=daemon_payload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     with pytest.raises(KeyError):
         response.data["cycle_interval"]
     with pytest.raises(Daemon.DoesNotExist):
-        Daemon.objects.get(cycle_interval=daemonPayload["cycle_interval"])
+        Daemon.objects.get(cycle_interval=daemon_payload["cycle_interval"])
 
 
 @pytest.mark.django_db
-def test_delete_noauth(fake_daemon, noauth_apiClient, detail_url):
+def test_delete_noauth(fake_daemon, noauth_api_client, detail_url):
     """Tests the delete method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with an unauthenticated user client."""
-    response = noauth_apiClient.delete(detail_url(DaemonViewSet, fake_daemon))
+    response = noauth_api_client.delete(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_daemon.refresh_from_db()
@@ -220,9 +220,9 @@ def test_delete_noauth(fake_daemon, noauth_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_delete_auth_other(fake_daemon, other_apiClient, detail_url):
+def test_delete_auth_other(fake_daemon, other_api_client, detail_url):
     """Tests the delete method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated other user client."""
-    response = other_apiClient.delete(detail_url(DaemonViewSet, fake_daemon))
+    response = other_api_client.delete(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_daemon.refresh_from_db()
@@ -230,9 +230,9 @@ def test_delete_auth_other(fake_daemon, other_apiClient, detail_url):
 
 
 @pytest.mark.django_db
-def test_delete_auth_owner(fake_daemon, owner_apiClient, detail_url):
+def test_delete_auth_owner(fake_daemon, owner_api_client, detail_url):
     """Tests the delete method on :class:`api.v1.views.DaemonViewSet.DaemonViewSet` with the authenticated owner user client."""
-    response = owner_apiClient.delete(detail_url(DaemonViewSet, fake_daemon))
+    response = owner_api_client.delete(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     with pytest.raises(fake_daemon.DoesNotExist):

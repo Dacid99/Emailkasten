@@ -40,8 +40,8 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def saveStore(
-    storingFunc: Callable[[BufferedWriter, Any], None],
+def save_store(
+    storing_func: Callable[[BufferedWriter, Any], None],
 ) -> Callable[[str, Any], str | None]:
     """Decorator to ensure no files are overwriten and errors are handled when storing files.
 
@@ -51,44 +51,44 @@ def saveStore(
         Needs a test that doesnt require workarounds, e.g. using tempfile.
 
     Args:
-        storingFunc: The function writing a file into the storage to wrap.
+        storing_func: The function writing a file into the storage to wrap.
 
     Returns:
-        saveStoringFunc: The wrapped function.
+        save_storing_func: The wrapped function.
     """
 
-    def saveStoringFunc(filePath: str, *args: Any, **kwargs: Any) -> str | None:
-        if os.path.exists(filePath):
+    def save_storing_func(file_path: str, *args: Any, **kwargs: Any) -> str | None:
+        if os.path.exists(file_path):
             try:
-                if os.path.getsize(filePath) > 0:
+                if os.path.getsize(file_path) > 0:
                     logger.debug(
                         "Not writing to file %s, it already exists and is not empty.",
-                        filePath,
+                        file_path,
                     )
-                    return filePath
+                    return file_path
             except PermissionError:
                 pass  # this is only relevant for fakefs testing
             logger.debug(
-                "Writing to file %s, it already exists but is empty.", filePath
+                "Writing to file %s, it already exists but is empty.", file_path
             )
         else:
-            logger.debug("Creating and writing to file %s...", filePath)
+            logger.debug("Creating and writing to file %s...", file_path)
 
         try:
-            with open(filePath, "wb") as file:
-                storingFunc(file, *args, **kwargs)
+            with open(file_path, "wb") as file:
+                storing_func(file, *args, **kwargs)
         except PermissionError:
             logger.exception(
                 "Failed to write to file %s, it is not writeable!",
-                filePath,
+                file_path,
             )
             return None
         except Exception:
-            logger.exception("Failed to write to file %s!", filePath)
-            if os.path.exists(filePath):
+            logger.exception("Failed to write to file %s!", file_path)
+            if os.path.exists(file_path):
                 logger.debug("Clearing incomplete file ...")
                 try:
-                    with open(filePath, "wb") as file:
+                    with open(file_path, "wb") as file:
                         file.truncate(0)
 
                     logger.debug("Successfully cleared incomplete file.")
@@ -100,9 +100,9 @@ def saveStore(
             return None
         else:
             logger.debug("Successfully wrote to file.")
-            return filePath
+            return file_path
 
-    return saveStoringFunc
+    return save_storing_func
 
 
 DANGEROUS_CHAR_REGEX = r"[/~]"

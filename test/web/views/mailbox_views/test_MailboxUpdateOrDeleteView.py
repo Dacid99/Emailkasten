@@ -67,11 +67,11 @@ def test_get_auth_owner(fake_mailbox, owner_client, detail_url):
 
 @pytest.mark.django_db
 def test_post_update_noauth(
-    fake_mailbox, mailboxPayload, client, detail_url, login_url
+    fake_mailbox, mailbox_payload, client, detail_url, login_url
 ):
     """Tests :class:`web.views.mailbox_views.MailboxUpdateOrDeleteView.MailboxUpdateOrDeleteView` with an unauthenticated user client."""
     response = client.post(
-        detail_url(MailboxUpdateOrDeleteView, fake_mailbox), mailboxPayload
+        detail_url(MailboxUpdateOrDeleteView, fake_mailbox), mailbox_payload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
@@ -81,37 +81,41 @@ def test_post_update_noauth(
         f"?next={detail_url(MailboxUpdateOrDeleteView, fake_mailbox)}"
     )
     fake_mailbox.refresh_from_db()
-    assert fake_mailbox.save_attachments != mailboxPayload["save_attachments"]
-    assert fake_mailbox.save_toEML != mailboxPayload["save_toEML"]
+    assert fake_mailbox.save_attachments != mailbox_payload["save_attachments"]
+    assert fake_mailbox.save_to_eml != mailbox_payload["save_to_eml"]
 
 
 @pytest.mark.django_db
-def test_post_update_auth_other(fake_mailbox, mailboxPayload, other_client, detail_url):
+def test_post_update_auth_other(
+    fake_mailbox, mailbox_payload, other_client, detail_url
+):
     """Tests :class:`web.views.mailbox_views.MailboxUpdateOrDeleteView.MailboxUpdateOrDeleteView` with the authenticated other user client."""
     response = other_client.post(
-        detail_url(MailboxUpdateOrDeleteView, fake_mailbox), mailboxPayload
+        detail_url(MailboxUpdateOrDeleteView, fake_mailbox), mailbox_payload
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
     fake_mailbox.refresh_from_db()
-    assert fake_mailbox.save_attachments != mailboxPayload["save_attachments"]
-    assert fake_mailbox.save_toEML != mailboxPayload["save_toEML"]
+    assert fake_mailbox.save_attachments != mailbox_payload["save_attachments"]
+    assert fake_mailbox.save_to_eml != mailbox_payload["save_to_eml"]
 
 
 @pytest.mark.django_db
-def test_post_update_auth_owner(fake_mailbox, mailboxPayload, owner_client, detail_url):
+def test_post_update_auth_owner(
+    fake_mailbox, mailbox_payload, owner_client, detail_url
+):
     """Tests :class:`web.views.mailbox_views.MailboxUpdateOrDeleteView.MailboxUpdateOrDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
-        detail_url(MailboxUpdateOrDeleteView, fake_mailbox), mailboxPayload
+        detail_url(MailboxUpdateOrDeleteView, fake_mailbox), mailbox_payload
     )
 
     assert response.status_code == status.HTTP_302_FOUND
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:mailbox-filter-list"))
     fake_mailbox.refresh_from_db()
-    assert fake_mailbox.save_attachments == mailboxPayload["save_attachments"]
-    assert fake_mailbox.save_toEML == mailboxPayload["save_toEML"]
+    assert fake_mailbox.save_attachments == mailbox_payload["save_attachments"]
+    assert fake_mailbox.save_to_eml == mailbox_payload["save_to_eml"]
 
 
 @pytest.mark.django_db

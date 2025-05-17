@@ -119,7 +119,7 @@ unsafe-load-any-extension=no
 [BASIC]
 
 # Naming style matching correct argument names.
-argument-naming-style=camelCase
+# argument-naming-style=
 
 # Regular expression matching correct argument names. Overrides argument-
 # naming-style. If left empty, argument names will be checked with the set
@@ -127,7 +127,7 @@ argument-naming-style=camelCase
 #argument-rgx=
 
 # Naming style matching correct attribute names.
-attr-naming-style=camelCase
+# attr-naming-style=
 
 # Regular expression matching correct attribute names. Overrides attr-naming-
 # style. If left empty, attribute names will be checked with the set naming
@@ -148,7 +148,7 @@ bad-names=foo,
 bad-names-rgxs=^.{,2}$
 
 # Naming style matching correct class attribute names.
-class-attribute-naming-style=camelCase
+# class-attribute-naming-style=
 
 # Regular expression matching correct class attribute names. Overrides class-
 # attribute-naming-style. If left empty, class attribute names will be checked
@@ -156,7 +156,7 @@ class-attribute-naming-style=camelCase
 #class-attribute-rgx=
 
 # Naming style matching correct class constant names.
-class-const-naming-style=UPPER_CASE
+# class-const-naming-style=
 
 # Regular expression matching correct class constant names. Overrides class-
 # const-naming-style. If left empty, class constant names will be checked with
@@ -164,14 +164,14 @@ class-const-naming-style=UPPER_CASE
 #class-const-rgx=
 
 # Naming style matching correct class names.
-class-naming-style=PascalCase
+# class-naming-style=
 
 # Regular expression matching correct class names. Overrides class-naming-
 # style. If left empty, class names will be checked with the set naming style.
 #class-rgx=
 
 # Naming style matching correct constant names.
-const-naming-style=UPPER_CASE
+# const-naming-style=
 
 # Regular expression matching correct constant names. Overrides const-naming-
 # style. If left empty, constant names will be checked with the set naming
@@ -183,7 +183,7 @@ const-naming-style=UPPER_CASE
 docstring-min-length=-1
 
 # Naming style matching correct function names.
-function-naming-style=camelCase
+# function-naming-style=
 
 # Regular expression matching correct function names. Overrides function-
 # naming-style. If left empty, function names will be checked with the set
@@ -201,7 +201,7 @@ good-names-rgxs=v\d
 include-naming-hint=yes
 
 # Naming style matching correct inline iteration names.
-inlinevar-naming-style=any
+# inlinevar-naming-style=
 
 # Regular expression matching correct inline iteration names. Overrides
 # inlinevar-naming-style. If left empty, inline iteration names will be checked
@@ -209,14 +209,14 @@ inlinevar-naming-style=any
 #inlinevar-rgx=
 
 # Naming style matching correct method names.
-method-naming-style=camelCase
+# method-naming-style=
 
 # Regular expression matching correct method names. Overrides method-naming-
 # style. If left empty, method names will be checked with the set naming style.
 #method-rgx=
 
 # Naming style matching correct module names.
-module-naming-style=camelCase
+# module-naming-style=
 
 # Regular expression matching correct module names. Overrides module-naming-
 # style. If left empty, module names will be checked with the set naming style.
@@ -244,7 +244,7 @@ property-classes=abc.abstractproperty
 #typevar-rgx=
 
 # Naming style matching correct variable names.
-variable-naming-style=camelCase
+# variable-naming-style=
 
 # Regular expression matching correct variable names. Overrides variable-
 # naming-style. If left empty, variable names will be checked with the set
