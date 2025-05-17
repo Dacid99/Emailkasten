@@ -34,8 +34,7 @@ def test_list_noauth(fake_account, noauth_api_client, list_url):
     response = noauth_api_client.get(list_url(AccountViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["results"]
+    "results" not in response.data
 
 
 @pytest.mark.django_db
@@ -56,8 +55,7 @@ def test_list_auth_owner(fake_account, owner_api_client, list_url):
     assert response.status_code == status.HTTP_200_OK
     assert response.data["count"] == 1
     assert len(response.data["results"]) == 1
-    with pytest.raises(KeyError):
-        response.data["results"][0]["password"]
+    "results" not in response.data[0]["password"]
 
 
 @pytest.mark.django_db
@@ -66,8 +64,7 @@ def test_get_noauth(fake_account, noauth_api_client, detail_url):
     response = noauth_api_client.get(detail_url(AccountViewSet, fake_account))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["mail_address"]
+    "mail_address" not in response.data
 
 
 @pytest.mark.django_db
@@ -76,8 +73,7 @@ def test_get_auth_other(fake_account, other_api_client, detail_url):
     response = other_api_client.get(detail_url(AccountViewSet, fake_account))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "password" not in response.data
 
 
 @pytest.mark.django_db
@@ -87,8 +83,7 @@ def test_get_auth_owner(fake_account, owner_api_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["mail_address"] == fake_account.mail_address
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "password" not in response.data
 
 
 @pytest.mark.django_db
@@ -99,10 +94,8 @@ def test_patch_noauth(fake_account, noauth_api_client, account_payload, detail_u
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["mail_address"]
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "mail_address" not in response.data
+    "password" not in response.data
     fake_account.refresh_from_db()
     assert fake_account.mail_address != account_payload["mail_address"]
     assert fake_account.password != account_payload["password"]
@@ -116,10 +109,8 @@ def test_patch_auth_other(fake_account, other_api_client, account_payload, detai
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    with pytest.raises(KeyError):
-        response.data["mail_address"]
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "mail_address" not in response.data
+    "password" not in response.data
     fake_account.refresh_from_db()
     assert fake_account.mail_address != account_payload["mail_address"]
     assert fake_account.password != account_payload["password"]
@@ -134,8 +125,7 @@ def test_patch_auth_owner(fake_account, owner_api_client, account_payload, detai
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["mail_address"] == account_payload["mail_address"]
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "password" not in response.data
     fake_account.refresh_from_db()
     assert fake_account.mail_address == account_payload["mail_address"]
     assert fake_account.password == account_payload["password"]
@@ -149,10 +139,8 @@ def test_put_noauth(fake_account, noauth_api_client, account_payload, detail_url
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["mail_host"]
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "mail_host" not in response.data
+    "password" not in response.data
     fake_account.refresh_from_db()
     assert fake_account.mail_host != account_payload["mail_host"]
 
@@ -165,10 +153,8 @@ def test_put_auth_other(fake_account, other_api_client, account_payload, detail_
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    with pytest.raises(KeyError):
-        response.data["mail_host"]
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "mail_host" not in response.data
+    "password" not in response.data
     fake_account.refresh_from_db()
     assert fake_account.mail_host != account_payload["mail_host"]
 
@@ -182,8 +168,7 @@ def test_put_auth_owner(fake_account, owner_api_client, account_payload, detail_
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["mail_host"] == account_payload["mail_host"]
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "password" not in response.data
     fake_account.refresh_from_db()
     assert fake_account.mail_host == account_payload["mail_host"]
 
@@ -194,10 +179,8 @@ def test_post_noauth(noauth_api_client, account_payload, list_url):
     response = noauth_api_client.post(list_url(AccountViewSet), data=account_payload)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["mail_host"]
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "mail_host" not in response.data
+    "password" not in response.data
     with pytest.raises(Account.DoesNotExist):
         Account.objects.get(mail_host=account_payload["mail_host"])
 
@@ -209,8 +192,7 @@ def test_post_auth_other(other_user, other_api_client, account_payload, list_url
 
     assert response.status_code == status.HTTP_201_CREATED
     assert response.data["mail_host"] == account_payload["mail_host"]
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "password" not in response.data
     posted_account = Account.objects.get(mail_host=account_payload["mail_host"])
     assert posted_account is not None
     assert posted_account.user == other_user
@@ -223,8 +205,7 @@ def test_post_auth_owner(owner_user, owner_api_client, account_payload, list_url
 
     assert response.status_code == status.HTTP_201_CREATED
     assert response.data["mail_host"] == account_payload["mail_host"]
-    with pytest.raises(KeyError):
-        response.data["password"]
+    "password" not in response.data
     posted_account = Account.objects.get(mail_host=account_payload["mail_host"])
     assert posted_account is not None
     assert posted_account.user == owner_user

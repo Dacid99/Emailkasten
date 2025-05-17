@@ -33,8 +33,7 @@ def test_list_noauth(fake_email, noauth_api_client, list_url):
     response = noauth_api_client.get(list_url(EmailViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["results"]
+    "results" not in response.data
 
 
 @pytest.mark.django_db
@@ -63,8 +62,7 @@ def test_get_noauth(fake_email, noauth_api_client, detail_url):
     response = noauth_api_client.get(detail_url(EmailViewSet, fake_email))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
 
 
 @pytest.mark.django_db
@@ -73,8 +71,7 @@ def test_get_auth_other(fake_email, other_api_client, detail_url):
     response = other_api_client.get(detail_url(EmailViewSet, fake_email))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
 
 
 @pytest.mark.django_db
@@ -94,8 +91,7 @@ def test_patch_noauth(fake_email, noauth_api_client, email_payload, detail_url):
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
     fake_email.refresh_from_db()
     assert fake_email.message_id != email_payload["message_id"]
 
@@ -108,8 +104,7 @@ def test_patch_auth_other(fake_email, other_api_client, email_payload, detail_ur
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
     fake_email.refresh_from_db()
     assert fake_email.message_id != email_payload["message_id"]
 
@@ -122,8 +117,7 @@ def test_patch_auth_owner(fake_email, owner_api_client, email_payload, detail_ur
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
     fake_email.refresh_from_db()
     assert fake_email.message_id != email_payload["message_id"]
 
@@ -136,8 +130,7 @@ def test_put_noauth(fake_email, noauth_api_client, email_payload, detail_url):
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
     fake_email.refresh_from_db()
     assert fake_email.message_id != email_payload["message_id"]
 
@@ -150,8 +143,7 @@ def test_put_auth_other(fake_email, other_api_client, email_payload, detail_url)
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
     fake_email.refresh_from_db()
     assert fake_email.message_id != email_payload["message_id"]
 
@@ -164,8 +156,7 @@ def test_put_auth_owner(fake_email, owner_api_client, email_payload, detail_url)
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
     fake_email.refresh_from_db()
     assert fake_email.message_id != email_payload["message_id"]
 
@@ -176,8 +167,7 @@ def test_post_noauth(noauth_api_client, email_payload, list_url):
     response = noauth_api_client.post(list_url(EmailViewSet), data=email_payload)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
     with pytest.raises(Email.DoesNotExist):
         Email.objects.get(message_id=email_payload["message_id"])
 
@@ -188,8 +178,7 @@ def test_post_auth_other(other_api_client, email_payload, list_url):
     response = other_api_client.post(list_url(EmailViewSet), data=email_payload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
     with pytest.raises(Email.DoesNotExist):
         Email.objects.get(message_id=email_payload["message_id"])
 
@@ -200,8 +189,7 @@ def test_post_auth_owner(owner_api_client, email_payload, list_url):
     response = owner_api_client.post(list_url(EmailViewSet), data=email_payload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    with pytest.raises(KeyError):
-        response.data["message_id"]
+    "message_id" not in response.data
     with pytest.raises(Email.DoesNotExist):
         Email.objects.get(message_id=email_payload["message_id"])
 

@@ -156,8 +156,7 @@ def test_test_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    with pytest.raises(KeyError):
-        response.data["daemon"]
+    "daemon" not in response.data
     mock_EmailArchiverDaemonRegistry_test_daemon.assert_not_called()
 
 
@@ -176,8 +175,7 @@ def test_test_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    with pytest.raises(KeyError):
-        response.data["daemon"]
+    "daemon" not in response.data
     mock_EmailArchiverDaemonRegistry_test_daemon.assert_not_called()
 
 
@@ -241,8 +239,7 @@ def test_start_noauth(
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_EmailArchiverDaemonRegistry_start_daemon.assert_not_called()
-    with pytest.raises(KeyError):
-        response.data["daemon"]
+    "daemon" not in response.data
 
 
 @pytest.mark.django_db
@@ -261,8 +258,7 @@ def test_start_auth_other(
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_EmailArchiverDaemonRegistry_start_daemon.assert_not_called()
-    with pytest.raises(KeyError):
-        response.data["daemon"]
+    "daemon" not in response.data
 
 
 @pytest.mark.django_db
@@ -322,8 +318,7 @@ def test_stop_noauth(
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_EmailArchiverDaemonRegistry_stop_daemon.assert_not_called()
-    with pytest.raises(KeyError):
-        response.data["daemon"]
+    "daemon" not in response.data
 
 
 @pytest.mark.django_db
@@ -342,8 +337,7 @@ def test_stop_auth_other(
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_EmailArchiverDaemonRegistry_stop_daemon.assert_not_called()
-    with pytest.raises(KeyError):
-        response.data["daemon"]
+    "daemon" not in response.data
 
 
 @pytest.mark.django_db

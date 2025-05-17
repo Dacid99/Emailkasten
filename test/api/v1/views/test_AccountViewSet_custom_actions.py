@@ -57,8 +57,7 @@ def test_update_mailboxes_noauth(
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_Account_update_mailboxes.assert_not_called()
-    with pytest.raises(KeyError):
-        response.data["mail_address"]
+    "mail_address" not in response.data
 
 
 @pytest.mark.django_db
@@ -77,8 +76,7 @@ def test_update_mailboxes_auth_other(
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_Account_update_mailboxes.assert_not_called()
-    with pytest.raises(KeyError):
-        response.data["mail_address"]
+    "mail_address" not in response.data
 
 
 @pytest.mark.django_db
@@ -150,8 +148,7 @@ def test_test_noauth(
     mock_Account_test_connection.assert_not_called()
     fake_account.refresh_from_db()
     assert fake_account.is_healthy is previous_is_healthy
-    with pytest.raises(KeyError):
-        response.data["mail_address"]
+    "mail_address" not in response.data
 
 
 @pytest.mark.django_db
@@ -175,8 +172,7 @@ def test_test_auth_other(
     mock_Account_test_connection.assert_not_called()
     fake_account.refresh_from_db()
     assert fake_account.is_healthy is previous_is_healthy
-    with pytest.raises(KeyError):
-        response.data["mail_address"]
+    "mail_address" not in response.data
 
 
 @pytest.mark.django_db
