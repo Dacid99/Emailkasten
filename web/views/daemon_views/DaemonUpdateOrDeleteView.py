@@ -21,14 +21,14 @@
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
-from core.models.Daemon import Daemon
-from web.views.daemon_views.DaemonFilterView import DaemonFilterView
-from web.views.UpdateOrDeleteView import UpdateOrDeleteView
+from core.models import Daemon
 
-from ...forms.daemon_forms.BaseDaemonForm import BaseDaemonForm
+from ...forms import BaseDaemonForm
+from ..UpdateOrDeleteView import UpdateOrDeleteView
+from .DaemonFilterView import DaemonFilterView
 
 
 class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):

@@ -26,7 +26,7 @@ from typing import TYPE_CHECKING
 import pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
-from core.models.Storage import Storage
+from core.models import Storage
 
 
 if TYPE_CHECKING:

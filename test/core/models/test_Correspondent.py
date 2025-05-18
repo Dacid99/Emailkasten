@@ -28,7 +28,7 @@ from django.db import IntegrityError
 from django.urls import reverse
 from model_bakery import baker
 
-from core.models.Correspondent import Correspondent
+from core.models import Correspondent
 
 
 if TYPE_CHECKING:

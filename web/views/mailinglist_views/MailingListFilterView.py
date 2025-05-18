@@ -21,11 +21,11 @@
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 
-from core.models.MailingList import MailingList
+from core.models import MailingList
 
-from ...filters.MailingListFilterSet import MailingListFilterSet
+from ...filters import MailingListFilterSet
 from ..FilterPageView import FilterPageView
 
 

@@ -17,3 +17,44 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """api.v1.serializers package containing serializers for the Emailkasten API version 1."""
+
+from .account_serializers import AccountSerializer, BaseAccountSerializer
+from .attachment_serializers import BaseAttachmentSerializer
+from .correspondent_serializers import (
+    BaseCorrespondentSerializer,
+    CorrespondentSerializer,
+)
+from .daemon_serializers import BaseDaemonSerializer
+from .email_serializers import BaseEmailSerializer, EmailSerializer, FullEmailSerializer
+from .emailcorrespondent_serializers import (
+    BaseEmailCorrespondentSerializer,
+    CorrespondentEmailSerializer,
+    EmailCorrespondentSerializer,
+)
+from .mailbox_serializers import BaseMailboxSerializer, MailboxWithDaemonSerializer
+from .mailinglist_serializers import (
+    BaseMailingListSerializer,
+    MailingListSerializer,
+    SimpleMailingListSerializer,
+)
+
+
+__all__ = [
+    "AccountSerializer",
+    "BaseAccountSerializer",
+    "BaseAttachmentSerializer",
+    "BaseCorrespondentSerializer",
+    "BaseDaemonSerializer",
+    "BaseEmailCorrespondentSerializer",
+    "BaseEmailSerializer",
+    "BaseMailboxSerializer",
+    "BaseMailingListSerializer",
+    "CorrespondentEmailSerializer",
+    "CorrespondentSerializer",
+    "EmailCorrespondentSerializer",
+    "EmailSerializer",
+    "FullEmailSerializer",
+    "MailboxWithDaemonSerializer",
+    "MailingListSerializer",
+    "SimpleMailingListSerializer",
+]

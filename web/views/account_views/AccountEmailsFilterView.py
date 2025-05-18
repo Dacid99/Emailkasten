@@ -20,11 +20,10 @@
 
 from typing import Any, override
 
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.views.generic.detail import SingleObjectMixin
 
-from core.models.Account import Account
-from core.models.Email import Email
+from core.models import Account, Email
 
 from ..email_views.EmailFilterView import EmailFilterView
 

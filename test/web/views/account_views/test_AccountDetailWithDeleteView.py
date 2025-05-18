@@ -23,12 +23,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.Account import Account
+from core.models import Account
 from core.utils.fetchers.exceptions import MailAccountError
+from web.views import AccountFilterView
 from web.views.account_views.AccountDetailWithDeleteView import (
     AccountDetailWithDeleteView,
 )
-from web.views.account_views.AccountFilterView import AccountFilterView
 
 
 @pytest.mark.django_db

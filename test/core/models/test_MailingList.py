@@ -27,7 +27,7 @@ from django.db import IntegrityError
 from django.urls import reverse
 from model_bakery import baker
 
-from core.models.MailingList import MailingList
+from core.models import MailingList
 
 
 if TYPE_CHECKING:

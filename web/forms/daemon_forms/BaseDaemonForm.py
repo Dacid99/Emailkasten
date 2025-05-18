@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from core.models.Daemon import Daemon
+from core.models import Daemon
 
 from ...utils.forms import RequiredMarkerModelForm
 

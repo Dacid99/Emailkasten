@@ -29,14 +29,14 @@ from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from core.mixins.FavoriteMixin import FavoriteMixin
-from core.mixins.UploadMixin import UploadMixin
-from core.mixins.URLMixin import URLMixin
-from core.models.Email import Email
 from Emailkasten.utils.workarounds import get_config
 
+from ..mixins.FavoriteMixin import FavoriteMixin
+from ..mixins.UploadMixin import UploadMixin
+from ..mixins.URLMixin import URLMixin
 from ..utils.fetchers.exceptions import MailAccountError, MailboxError
 from ..utils.mail_parsing import parse_mailbox_name
+from .Email import Email
 
 
 if TYPE_CHECKING:

@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from rest_framework import serializers
 
-from core.models.EmailCorrespondent import EmailCorrespondent
+from core.models import EmailCorrespondent
 
 
 if TYPE_CHECKING:

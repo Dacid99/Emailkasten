@@ -23,7 +23,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.Correspondent import Correspondent
+from core.models import Correspondent
 from web.views.correspondent_views.CorrespondentUpdateOrDeleteView import (
     CorrespondentUpdateOrDeleteView,
 )

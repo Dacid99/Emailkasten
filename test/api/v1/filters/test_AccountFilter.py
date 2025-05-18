@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`api.v1.filters.AccountFilterSet.AccountFilterSet`."""
+"""Test module for :class:`api.v1.filters.AccountFilterSet`."""
 
 import pytest
 
-from api.v1.filters.AccountFilterSet import AccountFilterSet
+from api.v1.filters import AccountFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -38,7 +38,7 @@ from .conftest import (
 def test_mail_address_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.mail_address` field.
     """
     query = {"mail_address" + lookup_expr: filterquery}
@@ -56,7 +56,7 @@ def test_mail_address_filter(
     "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
 )
 def test_mail_host_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.mail_host` field.
     """
     query = {"mail_host" + lookup_expr: filterquery}
@@ -76,7 +76,7 @@ def test_mail_host_filter(account_queryset, lookup_expr, filterquery, expected_i
 def test_mail_host_port_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.mail_host_port` field.
     """
     query = {"mail_host_port" + lookup_expr: filterquery}
@@ -94,7 +94,7 @@ def test_mail_host_port_filter(
     "lookup_expr, filterquery, expected_indices", FLOAT_TEST_PARAMETERS
 )
 def test_timeout_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.timeout` field.
     """
     query = {"timeout" + lookup_expr: filterquery}
@@ -114,7 +114,7 @@ def test_timeout_filter(account_queryset, lookup_expr, filterquery, expected_ind
 def test_is_healthy_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
@@ -134,7 +134,7 @@ def test_is_healthy_filter(
 def test_is_favorite_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
@@ -152,7 +152,7 @@ def test_is_favorite_filter(
     "lookup_expr, filterquery, expected_indices", DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
@@ -170,7 +170,7 @@ def test_created_filter(account_queryset, lookup_expr, filterquery, expected_ind
     "lookup_expr, filterquery, expected_indices", DATETIME_TEST_PARAMETERS
 )
 def test_updated_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}

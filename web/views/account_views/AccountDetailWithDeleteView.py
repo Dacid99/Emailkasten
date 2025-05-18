@@ -21,20 +21,19 @@
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.edit import DeletionMixin
 
-from core.models.Account import Account
-from core.models.Email import Email
+from core.models import Account, Email
 from core.utils.fetchers.exceptions import MailAccountError
 from web.mixins.CustomActionMixin import CustomActionMixin
 from web.mixins.TestActionMixin import TestActionMixin
-from web.views.account_views.AccountFilterView import AccountFilterView
 
 from ..DetailWithDeleteView import DetailWithDeleteView
+from .AccountFilterView import AccountFilterView
 
 
 class AccountDetailWithDeleteView(

@@ -21,7 +21,7 @@
 import pytest
 from django.forms.models import model_to_dict
 
-from web.forms.daemon_forms.BaseDaemonForm import BaseDaemonForm
+from web.forms import BaseDaemonForm
 
 
 @pytest.mark.django_db

@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from rest_framework import serializers
 
-from core.models.Attachment import Attachment
+from core.models import Attachment
 
 
 if TYPE_CHECKING:

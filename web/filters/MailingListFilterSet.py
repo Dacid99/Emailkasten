@@ -32,7 +32,7 @@ from ..utils.widgets import AdaptedSelectDateWidget
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
-    from core.models.MailingList import MailingList
+    from core.models import MailingList
 
 
 class MailingListFilterSet(django_filters.FilterSet):

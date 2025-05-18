@@ -21,13 +21,13 @@
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
-from core.models.Attachment import Attachment
-from web.views.attachment_views.AttachmentFilterView import AttachmentFilterView
+from core.models import Attachment
 
 from ..DetailWithDeleteView import DetailWithDeleteView
+from .AttachmentFilterView import AttachmentFilterView
 
 
 class AttachmentDetailWithDeleteView(LoginRequiredMixin, DetailWithDeleteView):

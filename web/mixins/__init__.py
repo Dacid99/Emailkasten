@@ -17,3 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.mixins package containing forms for the Emailkasten webapp views."""
+
+from .CustomActionMixin import CustomActionMixin
+from .TestActionMixin import TestActionMixin
+
+
+__all__ = ["CustomActionMixin", "TestActionMixin"]

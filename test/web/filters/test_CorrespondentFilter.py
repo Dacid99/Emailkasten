@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`web.filters.CorrespondentFilterSet.CorrespondentFilterSet`."""
+"""Test module for :class:`web.filters.CorrespondentFilterSet`."""
 
 import pytest
 
-from web.filters.CorrespondentFilterSet import CorrespondentFilterSet
+from web.filters import CorrespondentFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -36,7 +36,7 @@ from .conftest import (
 def test_text_search_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.CorrespondentFilterSet.CorrespondentFilterSet`'s filtering
+    """Tests :class:`web.filters.CorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.text_search` field.
     """
     query = {"text_search": filterquery}
@@ -56,7 +56,7 @@ def test_text_search_filter(
 def test_is_favorite_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.CorrespondentFilterSet.CorrespondentFilterSet`'s filtering
+    """Tests :class:`web.filters.CorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
@@ -76,7 +76,7 @@ def test_is_favorite_filter(
 def test_created_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.CorrespondentFilterSet.CorrespondentFilterSet`'s filtering
+    """Tests :class:`web.filters.CorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.created` field.
     """
     query = {"created" + lookup_expr: filterquery}

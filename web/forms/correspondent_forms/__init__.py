@@ -17,3 +17,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.forms.correspondent_forms package containing forms for the :class:`core.models.Correspondent.Correspondent` data."""
+
+from .BaseCorrespondentForm import BaseCorrespondentForm
+
+
+__all__ = ["BaseCorrespondentForm"]

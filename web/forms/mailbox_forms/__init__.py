@@ -17,3 +17,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.forms.mailbox_forms package containing forms for the :class:`core.models.Mailbox.Mailbox` data."""
+
+from .BaseMailboxForm import BaseMailboxForm
+
+
+__all__ = ["BaseMailboxForm"]

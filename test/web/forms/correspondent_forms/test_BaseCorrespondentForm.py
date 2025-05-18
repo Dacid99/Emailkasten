@@ -21,7 +21,7 @@
 import pytest
 from django.forms.models import model_to_dict
 
-from web.forms.correspondent_forms.BaseCorrespondentForm import BaseCorrespondentForm
+from web.forms import BaseCorrespondentForm
 
 
 @pytest.mark.django_db

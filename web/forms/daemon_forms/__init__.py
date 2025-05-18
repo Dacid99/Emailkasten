@@ -17,3 +17,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.forms.daemon_forms package containing forms for the :class:`core.models.Daemon.Daemon` data."""
+
+from .BaseDaemonForm import BaseDaemonForm
+
+
+__all__ = ["BaseDaemonForm"]

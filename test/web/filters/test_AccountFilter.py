@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`web.filters.AccountFilterSet.AccountFilterSet`."""
+"""Test module for :class:`web.filters.AccountFilterSet`."""
 
 import pytest
 
 from core.constants import EmailProtocolChoices
-from web.filters.AccountFilterSet import AccountFilterSet
+from web.filters import AccountFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -38,7 +38,7 @@ from .conftest import (
 def test_text_search_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`web.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.text_search` field.
     """
     query = {"text_search": filterquery}
@@ -56,7 +56,7 @@ def test_text_search_filter(
     "lookup_expr, filterquery, expected_indices", CHOICES_TEST_PARAMETERS
 )
 def test_protocol_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`web.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`web.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.text_search` field.
     """
     query = {
@@ -81,7 +81,7 @@ def test_protocol_filter(account_queryset, lookup_expr, filterquery, expected_in
 def test_is_healthy_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`web.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
@@ -101,7 +101,7 @@ def test_is_healthy_filter(
 def test_is_favorite_filter(
     account_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`web.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
@@ -119,7 +119,7 @@ def test_is_favorite_filter(
     "lookup_expr, filterquery, expected_indices", DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(account_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`web.filters.AccountFilterSet.AccountFilterSet`'s filtering
+    """Tests :class:`web.filters.AccountFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.created` field.
     """
     query = {"created" + lookup_expr: filterquery}

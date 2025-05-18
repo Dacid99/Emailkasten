@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`api.v1.filters.CorrespondentFilterSet.CorrespondentFilterSet`."""
+"""Test module for :class:`api.v1.filters.CorrespondentFilterSet`."""
 
 import pytest
 
-from api.v1.filters.CorrespondentFilterSet import CorrespondentFilterSet
+from api.v1.filters import CorrespondentFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -36,7 +36,7 @@ from .conftest import (
 def test_email_name_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.CorrespondentFilterSet.CorrespondentFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.CorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.email_name` field.
     """
     query = {"email_name" + lookup_expr: filterquery}
@@ -56,7 +56,7 @@ def test_email_name_filter(
 def test_email_address_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.CorrespondentFilterSet.CorrespondentFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.CorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.email_address` field.
     """
     query = {"email_address" + lookup_expr: filterquery}
@@ -76,7 +76,7 @@ def test_email_address_filter(
 def test_is_favorite_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.CorrespondentFilterSet.CorrespondentFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.CorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
@@ -96,7 +96,7 @@ def test_is_favorite_filter(
 def test_created_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.CorrespondentFilterSet.CorrespondentFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.CorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
@@ -116,7 +116,7 @@ def test_created_filter(
 def test_updated_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.CorrespondentFilterSet.CorrespondentFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.CorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}

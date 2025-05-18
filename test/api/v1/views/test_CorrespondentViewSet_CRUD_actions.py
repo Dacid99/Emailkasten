@@ -26,8 +26,8 @@ from rest_framework import status
 from api.v1.serializers.correspondent_serializers.BaseCorrespondentSerializer import (
     BaseCorrespondentSerializer,
 )
-from api.v1.views.CorrespondentViewSet import CorrespondentViewSet
-from core.models.Correspondent import Correspondent
+from api.v1.views import CorrespondentViewSet
+from core.models import Correspondent
 
 
 @pytest.mark.django_db
@@ -36,7 +36,7 @@ def test_list_noauth(fake_correspondent, fake_email, noauth_api_client, list_url
     response = noauth_api_client.get(list_url(CorrespondentViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "results" not in response.data
+    assert "results" not in response.data
 
 
 @pytest.mark.django_db
@@ -70,7 +70,7 @@ def test_get_noauth(fake_correspondent, fake_email, noauth_api_client, detail_ur
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "email_address" not in response.data
+    assert "email_address" not in response.data
 
 
 @pytest.mark.django_db
@@ -81,7 +81,7 @@ def test_get_auth_other(fake_correspondent, fake_email, other_api_client, detail
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    "email_address" not in response.data
+    assert "email_address" not in response.data
 
 
 @pytest.mark.django_db
@@ -105,7 +105,7 @@ def test_patch_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "email_address" not in response.data
+    assert "email_address" not in response.data
     fake_correspondent.refresh_from_db()
     assert fake_correspondent.email_address != correspondent_payload["email_address"]
 
@@ -120,7 +120,7 @@ def test_patch_auth_other(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "email_address" not in response.data
+    assert "email_address" not in response.data
     fake_correspondent.refresh_from_db()
     assert fake_correspondent.email_address != correspondent_payload["email_address"]
 
@@ -135,7 +135,7 @@ def test_patch_auth_owner(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "email_address" not in response.data
+    assert "email_address" not in response.data
     fake_correspondent.refresh_from_db()
     assert fake_correspondent.email_address != correspondent_payload["email_address"]
 
@@ -150,7 +150,7 @@ def test_put_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "email_address" not in response.data
+    assert "email_address" not in response.data
     fake_correspondent.refresh_from_db()
     assert fake_correspondent.email_address != correspondent_payload["email_address"]
 
@@ -165,7 +165,7 @@ def test_put_auth_other(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "email_address" not in response.data
+    assert "email_address" not in response.data
     fake_correspondent.refresh_from_db()
     assert fake_correspondent.email_address != correspondent_payload["email_address"]
 
@@ -180,7 +180,7 @@ def test_put_auth_owner(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "email_address" not in response.data
+    assert "email_address" not in response.data
     fake_correspondent.refresh_from_db()
     assert fake_correspondent.email_address != correspondent_payload["email_address"]
 
@@ -193,7 +193,7 @@ def test_post_noauth(noauth_api_client, correspondent_payload, list_url):
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "email_address" not in response.data
+    assert "email_address" not in response.data
     with pytest.raises(Correspondent.DoesNotExist):
         Correspondent.objects.get(email_address=correspondent_payload["email_address"])
 
@@ -206,7 +206,7 @@ def test_post_auth_other(other_api_client, correspondent_payload, list_url):
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "email_address" not in response.data
+    assert "email_address" not in response.data
     with pytest.raises(Correspondent.DoesNotExist):
         Correspondent.objects.get(email_address=correspondent_payload["email_address"])
 
@@ -219,7 +219,7 @@ def test_post_auth_owner(owner_api_client, correspondent_payload, list_url):
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "email_address" not in response.data
+    assert "email_address" not in response.data
     with pytest.raises(Correspondent.DoesNotExist):
         Correspondent.objects.get(email_address=correspondent_payload["email_address"])
 

@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from django.forms import PasswordInput, Widget
 
-from core.models.Account import Account
+from core.models import Account
 
 from ...utils.forms import RequiredMarkerModelForm
 

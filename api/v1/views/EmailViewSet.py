@@ -33,12 +33,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.Email import Email
-from core.models.EmailCorrespondent import EmailCorrespondent
+from core.models import Email, EmailCorrespondent
 
-from ..filters.EmailFilterSet import EmailFilterSet
-from ..serializers.email_serializers.EmailSerializer import EmailSerializer
-from ..serializers.email_serializers.FullEmailSerializer import FullEmailSerializer
+from ..filters import EmailFilterSet
+from ..serializers import EmailSerializer, FullEmailSerializer
 
 
 if TYPE_CHECKING:

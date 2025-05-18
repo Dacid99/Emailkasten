@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`."""
+"""Test module for :class:`api.v1.filters.DaemonFilterSet`."""
 
 import pytest
 
-from api.v1.filters.DaemonFilterSet import DaemonFilterSet
+from api.v1.filters import DaemonFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -37,7 +37,7 @@ from .conftest import (
 def test_cycle_interval_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Daemon.Daemon.cycle_interval` field.
     """
     query = {"cycle_interval" + lookup_expr: filterquery}
@@ -55,7 +55,7 @@ def test_cycle_interval_filter(
     "lookup_expr, filterquery, expected_indices", BOOL_TEST_PARAMETERS
 )
 def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Daemon.Daemon.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
@@ -73,7 +73,7 @@ def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_i
     "lookup_expr, filterquery, expected_indices", BOOL_TEST_PARAMETERS
 )
 def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Daemon.Daemon.is_running` field.
     """
     query = {"is_running" + lookup_expr: filterquery}
@@ -91,7 +91,7 @@ def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_i
     "lookup_expr, filterquery, expected_indices", DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Daemon.Daemon.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
@@ -109,7 +109,7 @@ def test_created_filter(daemon_queryset, lookup_expr, filterquery, expected_indi
     "lookup_expr, filterquery, expected_indices", DATETIME_TEST_PARAMETERS
 )
 def test_updated_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Daemon.Daemon.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}
@@ -129,7 +129,7 @@ def test_updated_filter(daemon_queryset, lookup_expr, filterquery, expected_indi
 def test_mailbox__is_healthy_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.DaemonFilterSet`'s filtering
     for the related :attr:`core.models.Mailbox.Mailbox.is_healthy` field.
     """
     query = {"mailbox__is_healthy" + lookup_expr: filterquery}
@@ -149,7 +149,7 @@ def test_mailbox__is_healthy_filter(
 def test_mail_address_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.DaemonFilterSet`'s filtering
     for the related :attr:`core.models.Account.Account.mail_address` field.
     """
     query = {"mail_address" + lookup_expr: filterquery}
@@ -167,7 +167,7 @@ def test_mail_address_filter(
     "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
 )
 def test_mail_host_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.DaemonFilterSet`'s filtering
     for the related :attr:`core.models.Account.Account.mail_host` field.
     """
     query = {"mail_host" + lookup_expr: filterquery}
@@ -187,7 +187,7 @@ def test_mail_host_filter(daemon_queryset, lookup_expr, filterquery, expected_in
 def test_account__is_healthy_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.DaemonFilterSet`'s filtering
     for the related :attr:`core.models.Account.Account.is_healthy` field.
     """
     query = {"account__is_healthy" + lookup_expr: filterquery}

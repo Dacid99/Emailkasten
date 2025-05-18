@@ -24,7 +24,7 @@ import logging
 from typing import ClassVar
 
 from .EmailArchiverDaemon import EmailArchiverDaemon
-from .models.Daemon import Daemon
+from .models import Daemon
 
 
 class EmailArchiverDaemonRegistry:

@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, Final
 
 from rest_framework import serializers
 
-from core.models.Correspondent import Correspondent
+from core.models import Correspondent
 
 
 if TYPE_CHECKING:

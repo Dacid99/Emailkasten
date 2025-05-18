@@ -17,3 +17,22 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """core.utils.fetchers package containing the email fetcher classes for Emailkasten project."""
+
+from .BaseFetcher import BaseFetcher
+from .IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
+from .IMAPFetcher import IMAPFetcher
+from .POP3_SSL_Fetcher import POP3_SSL_Fetcher
+from .POP3Fetcher import POP3Fetcher
+
+
+# from .ExchangeFetcher import ExchangeFetcher
+
+
+__all__ = [
+    "BaseFetcher",
+    "IMAPFetcher",
+    "IMAP_SSL_Fetcher",
+    "POP3Fetcher",
+    "POP3_SSL_Fetcher",
+    # "ExchangeFetcher"
+]

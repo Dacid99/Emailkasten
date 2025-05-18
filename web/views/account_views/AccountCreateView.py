@@ -24,9 +24,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.views.generic import CreateView
 
-from core.models.Account import Account
+from core.models import Account
 
-from ...forms.account_forms.BaseAccountForm import BaseAccountForm
+from ...forms import BaseAccountForm
 
 
 class AccountCreateView(LoginRequiredMixin, CreateView):

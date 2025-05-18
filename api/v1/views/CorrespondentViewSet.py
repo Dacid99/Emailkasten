@@ -29,16 +29,10 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.Correspondent import Correspondent
-from core.models.EmailCorrespondent import EmailCorrespondent
+from core.models import Correspondent, EmailCorrespondent
 
-from ..filters.CorrespondentFilterSet import CorrespondentFilterSet
-from ..serializers.correspondent_serializers.BaseCorrespondentSerializer import (
-    BaseCorrespondentSerializer,
-)
-from ..serializers.correspondent_serializers.CorrespondentSerializer import (
-    CorrespondentSerializer,
-)
+from ..filters import CorrespondentFilterSet
+from ..serializers import BaseCorrespondentSerializer, CorrespondentSerializer
 
 
 if TYPE_CHECKING:

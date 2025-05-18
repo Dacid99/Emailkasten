@@ -20,9 +20,7 @@
 
 from __future__ import annotations
 
-from ..correspondent_serializers.BaseCorrespondentSerializer import (
-    BaseCorrespondentSerializer,
-)
+from ..correspondent_serializers import BaseCorrespondentSerializer
 from .BaseEmailCorrespondentSerializer import BaseEmailCorrespondentSerializer
 
 

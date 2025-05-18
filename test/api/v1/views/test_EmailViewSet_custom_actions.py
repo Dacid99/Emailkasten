@@ -25,7 +25,7 @@ import os
 import pytest
 from rest_framework import status
 
-from api.v1.views.EmailViewSet import EmailViewSet
+from api.v1.views import EmailViewSet
 
 
 @pytest.fixture

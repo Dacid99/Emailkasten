@@ -34,7 +34,7 @@ from ..utils.widgets import AdaptedSelectDateWidget
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
-    from core.models.Account import Account
+    from core.models import Account
 
 
 class AccountFilterSet(django_filters.FilterSet):

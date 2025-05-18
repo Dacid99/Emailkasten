@@ -25,10 +25,9 @@ from io import BytesIO
 import pytest
 from rest_framework import status
 
-from api.v1.views.MailboxViewSet import MailboxViewSet
+from api.v1.views import MailboxViewSet
 from core.constants import EmailFetchingCriterionChoices
-from core.models.Daemon import Daemon
-from core.models.Email import Email
+from core.models import Daemon, Email
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 
 
@@ -70,7 +69,7 @@ def test_add_daemon_noauth(fake_mailbox, noauth_api_client, custom_detail_action
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "save_attachments" not in response.data
+    assert "save_attachments" not in response.data
     assert fake_mailbox.daemons.all().count() == 1
 
 
@@ -88,7 +87,7 @@ def test_add_daemon_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    "save_attachments" not in response.data
+    assert "save_attachments" not in response.data
     assert fake_mailbox.daemons.all().count() == 1
 
 
@@ -133,7 +132,7 @@ def test_test_mailbox_noauth(
     mock_Mailbox_test_connection.assert_not_called()
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.is_healthy is previous_is_healthy
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -156,7 +155,7 @@ def test_test_mailbox_auth_other(
     mock_Mailbox_test_connection.assert_not_called()
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.is_healthy is previous_is_healthy
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -235,7 +234,7 @@ def test_fetch_all_noauth(
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_Mailbox_fetch.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -257,7 +256,7 @@ def test_fetch_all_auth_other(
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_Mailbox_fetch.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -337,7 +336,7 @@ def test_upload_eml_noauth(
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_Email_create_from_email_bytes.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -362,7 +361,7 @@ def test_upload_eml_auth_other(
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_Email_create_from_email_bytes.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -411,7 +410,7 @@ def test_upload_eml_no_file_auth_owner(
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     mock_Email_create_from_email_bytes.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -439,7 +438,7 @@ def test_upload_mailbox_noauth(
     assert response.status_code == status.HTTP_403_FORBIDDEN
     mock_Mailbox_add_from_mailbox_file.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -467,7 +466,7 @@ def test_upload_mailbox_auth_other(
     assert response.status_code == status.HTTP_404_NOT_FOUND
     mock_Mailbox_add_from_mailbox_file.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -522,7 +521,7 @@ def test_upload_mailbox_no_file_auth_owner(
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     mock_Mailbox_add_from_mailbox_file.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -547,7 +546,7 @@ def test_upload_mailbox_no_format_auth_owner(
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     mock_Mailbox_add_from_mailbox_file.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -578,7 +577,7 @@ def test_upload_mailbox_bad_format_auth_owner(
         fake_mailbox, fake_file.getvalue(), fake_format
     )
     assert fake_mailbox.emails.all().count() == 1
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db

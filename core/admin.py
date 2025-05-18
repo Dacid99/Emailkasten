@@ -35,14 +35,14 @@ from .models import (
 
 admin.site.register(
     [
-        Account.Account,
-        Attachment.Attachment,
-        Correspondent.Correspondent,
-        Daemon.Daemon,
-        Email.Email,
-        EmailCorrespondent.EmailCorrespondent,
-        Mailbox.Mailbox,
-        MailingList.MailingList,
-        Storage.Storage,
+        Account,
+        Attachment,
+        Correspondent,
+        Daemon,
+        Email,
+        EmailCorrespondent,
+        Mailbox,
+        MailingList,
+        Storage,
     ]
 )

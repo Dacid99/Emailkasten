@@ -23,9 +23,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.Email import Email
-from web.views.email_views.EmailDetailWithDeleteView import EmailDetailWithDeleteView
-from web.views.email_views.EmailFilterView import EmailFilterView
+from core.models import Email
+from web.views import EmailDetailWithDeleteView, EmailFilterView
 
 
 @pytest.mark.django_db

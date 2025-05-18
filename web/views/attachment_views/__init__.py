@@ -17,3 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.views.attachment_views package containing views for the :class:`core.models.Attachment.Attachment` data."""
+
+from .AttachmentDetailWithDeleteView import AttachmentDetailWithDeleteView
+from .AttachmentFilterView import AttachmentFilterView
+
+
+__all__ = ["AttachmentDetailWithDeleteView", "AttachmentFilterView"]

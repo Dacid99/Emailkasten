@@ -24,11 +24,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, QuerySet
 from django.urls import reverse_lazy
 
-from core.models.Email import Email
-from core.models.EmailCorrespondent import EmailCorrespondent
-from web.views.email_views.EmailFilterView import EmailFilterView
+from core.models import Email, EmailCorrespondent
 
 from ..DetailWithDeleteView import DetailWithDeleteView
+from .EmailFilterView import EmailFilterView
 
 
 class EmailDetailWithDeleteView(LoginRequiredMixin, DetailWithDeleteView):

@@ -20,7 +20,7 @@
 
 import pytest
 
-from core.models.Daemon import Daemon
+from core.models import Daemon
 
 
 @pytest.fixture(autouse=True)

@@ -17,3 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.views.email_views package containing views for the :class:`core.models.Email.Email` data."""
+
+from .EmailDetailWithDeleteView import EmailDetailWithDeleteView
+from .EmailFilterView import EmailFilterView
+
+
+__all__ = ["EmailDetailWithDeleteView", "EmailFilterView"]

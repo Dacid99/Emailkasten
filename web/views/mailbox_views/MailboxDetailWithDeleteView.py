@@ -21,22 +21,20 @@
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.edit import DeletionMixin
 
 from core.constants import EmailFetchingCriterionChoices
-from core.models.Daemon import Daemon
-from core.models.Email import Email
-from core.models.Mailbox import Mailbox
+from core.models import Daemon, Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
-from web.mixins.CustomActionMixin import CustomActionMixin
-from web.mixins.TestActionMixin import TestActionMixin
-from web.views.mailbox_views.MailboxFilterView import MailboxFilterView
 
+from ...mixins.CustomActionMixin import CustomActionMixin
+from ...mixins.TestActionMixin import TestActionMixin
 from ..DetailWithDeleteView import DetailWithDeleteView
+from .MailboxFilterView import MailboxFilterView
 
 
 class MailboxDetailWithDeleteView(

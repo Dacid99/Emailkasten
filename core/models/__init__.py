@@ -17,3 +17,26 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """Emailkasten.models package containing all models for the Emailkasten database."""
+
+from .Account import Account
+from .Attachment import Attachment
+from .Correspondent import Correspondent
+from .Daemon import Daemon
+from .Email import Email
+from .EmailCorrespondent import EmailCorrespondent
+from .Mailbox import Mailbox
+from .MailingList import MailingList
+from .Storage import Storage
+
+
+__all__ = [
+    "Account",
+    "Attachment",
+    "Correspondent",
+    "Daemon",
+    "Email",
+    "EmailCorrespondent",
+    "Mailbox",
+    "MailingList",
+    "Storage",
+]

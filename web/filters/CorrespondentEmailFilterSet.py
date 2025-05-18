@@ -34,7 +34,7 @@ from ..utils.widgets import AdaptedSelectDateWidget
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
-    from core.models.EmailCorrespondent import EmailCorrespondent
+    from core.models import EmailCorrespondent
 
 
 class CorrespondentEmailFilterSet(django_filters.FilterSet):

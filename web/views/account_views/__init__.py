@@ -17,3 +17,18 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.views.account_views package containing views for the :class:`core.models.Account.Account` data."""
+
+from .AccountCreateView import AccountCreateView
+from .AccountDetailWithDeleteView import AccountDetailWithDeleteView
+from .AccountEmailsFilterView import AccountEmailsFilterView
+from .AccountFilterView import AccountFilterView
+from .AccountUpdateOrDeleteView import AccountUpdateOrDeleteView
+
+
+__all__ = [
+    "AccountCreateView",
+    "AccountDetailWithDeleteView",
+    "AccountEmailsFilterView",
+    "AccountFilterView",
+    "AccountUpdateOrDeleteView",
+]

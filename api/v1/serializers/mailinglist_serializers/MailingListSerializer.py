@@ -29,13 +29,10 @@ from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
 from core.constants import HeaderFields
-from core.models.Correspondent import Correspondent
-from core.models.MailingList import MailingList
+from core.models import Correspondent, MailingList
 
-from ..correspondent_serializers.BaseCorrespondentSerializer import (
-    BaseCorrespondentSerializer,
-)
-from ..email_serializers.BaseEmailSerializer import BaseEmailSerializer
+from ..correspondent_serializers import BaseCorrespondentSerializer
+from ..email_serializers import BaseEmailSerializer
 from .BaseMailingListSerializer import BaseMailingListSerializer
 
 

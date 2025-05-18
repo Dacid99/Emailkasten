@@ -23,8 +23,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.Account import Account
-from web.views.account_views.AccountUpdateOrDeleteView import AccountUpdateOrDeleteView
+from core.models import Account
+from web.views import AccountUpdateOrDeleteView
 
 
 @pytest.mark.django_db

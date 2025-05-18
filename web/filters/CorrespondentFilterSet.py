@@ -32,7 +32,7 @@ from ..utils.widgets import AdaptedSelectDateWidget
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
-    from core.models.Correspondent import Correspondent
+    from core.models import Correspondent
 
 
 class CorrespondentFilterSet(django_filters.FilterSet):

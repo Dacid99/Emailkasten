@@ -23,7 +23,7 @@ from __future__ import annotations
 import pytest
 from rest_framework import status
 
-from api.v1.views.AttachmentViewSet import AttachmentViewSet
+from api.v1.views import AttachmentViewSet
 
 
 @pytest.fixture

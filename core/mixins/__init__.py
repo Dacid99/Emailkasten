@@ -17,3 +17,18 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """core.mixins for the core of Emailkasten project."""
+
+from .FavoriteMixin import FavoriteMixin
+from .HasDownloadMixin import HasDownloadMixin
+from .HasThumbnailMixin import HasThumbnailMixin
+from .UploadMixin import UploadMixin
+from .URLMixin import URLMixin
+
+
+__all__ = [
+    "FavoriteMixin",
+    "HasDownloadMixin",
+    "HasThumbnailMixin",
+    "URLMixin",
+    "UploadMixin",
+]

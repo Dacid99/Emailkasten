@@ -24,9 +24,9 @@ import pytest
 from model_bakery import baker
 
 from core.constants import EmailProtocolChoices
-from core.models.Mailbox import Mailbox
+from core.models import Mailbox
+from core.utils.fetchers import POP3Fetcher
 from core.utils.fetchers.exceptions import MailAccountError
-from core.utils.fetchers.POP3Fetcher import POP3Fetcher
 
 
 @pytest.fixture(autouse=True)

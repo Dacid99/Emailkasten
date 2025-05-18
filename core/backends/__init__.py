@@ -17,3 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """core.backends package containing additional backends for the Emailkasten application."""
+
+from .DaemonHealthCheckBackend import DaemonHealthCheckBackend
+from .StorageIntegrityCheckBackend import StorageIntegrityCheckBackend
+
+
+__all__ = ["DaemonHealthCheckBackend", "StorageIntegrityCheckBackend"]

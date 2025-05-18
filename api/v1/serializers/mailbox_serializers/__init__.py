@@ -17,3 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """api.v1.serializers.mailbox_serializers package containing serializers for the :mod:`core.models.Mailbox` data."""
+
+from .BaseMailboxSerializer import BaseMailboxSerializer
+from .MailboxWithDaemonSerializer import MailboxWithDaemonSerializer
+
+
+__all__ = ["BaseMailboxSerializer", "MailboxWithDaemonSerializer"]

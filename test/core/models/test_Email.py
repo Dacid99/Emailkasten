@@ -23,15 +23,13 @@ from __future__ import annotations
 import datetime
 import os
 
+import django.db.models
 import pytest
 from django.db import IntegrityError
 from django.urls import reverse
 from model_bakery import baker
 
-import core.models.Email
-from core.models.Email import Email
-from core.models.Mailbox import Mailbox
-from core.models.MailingList import MailingList
+from core.models import Email, Mailbox, MailingList
 
 from ...conftest import TEST_EMAIL_PARAMETERS
 from .test_Attachment import mock_Attachment_save_to_storage
@@ -86,7 +84,7 @@ def email_with_filepaths(faker, fake_email):
 @pytest.fixture
 def spy__save(mocker):
     """Fixture spying on :func:`django.db.models.Model.save`."""
-    return mocker.spy(core.models.Email.models.Model, "save")
+    return mocker.spy(django.db.models.Model, "save")
 
 
 @pytest.fixture

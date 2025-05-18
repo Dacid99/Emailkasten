@@ -31,16 +31,12 @@ from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
 from core import constants
-from core.models.Daemon import Daemon
-from core.models.Email import Email
-from core.models.Mailbox import Mailbox
+from core.models import Daemon, Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
 
-from ..filters.MailboxFilterSet import MailboxFilterSet
+from ..filters import MailboxFilterSet
 from ..mixins.NoCreateMixin import NoCreateMixin
-from ..serializers.mailbox_serializers.MailboxWithDaemonSerializer import (
-    MailboxWithDaemonSerializer,
-)
+from ..serializers import MailboxWithDaemonSerializer
 
 
 if TYPE_CHECKING:

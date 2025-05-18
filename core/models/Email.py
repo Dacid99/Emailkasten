@@ -33,18 +33,20 @@ from django.db import models, transaction
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 
-from core.constants import HeaderFields
-from core.mixins.FavoriteMixin import FavoriteMixin
-from core.mixins.HasDownloadMixin import HasDownloadMixin
-from core.mixins.HasThumbnailMixin import HasThumbnailMixin
-from core.mixins.URLMixin import URLMixin
-from core.models.EmailCorrespondent import EmailCorrespondent
-from core.utils.file_managment import clean_filename, save_store
-from core.utils.mail_parsing import eml2html, is_x_spam
 from Emailkasten.utils.workarounds import get_config
 
-from ..utils.mail_parsing import get_bodytexts, get_header, parse_datetime_header
+from ..constants import HeaderFields
+from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
+from ..utils.file_managment import clean_filename, save_store
+from ..utils.mail_parsing import (
+    eml2html,
+    get_bodytexts,
+    get_header,
+    is_x_spam,
+    parse_datetime_header,
+)
 from .Attachment import Attachment
+from .EmailCorrespondent import EmailCorrespondent
 from .MailingList import MailingList
 from .Storage import Storage
 

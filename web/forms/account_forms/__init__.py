@@ -17,3 +17,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.forms.account_forms package containing forms for the :class:`core.models.Account.Account` data."""
+
+from .BaseAccountForm import BaseAccountForm
+
+
+__all__ = ["BaseAccountForm"]

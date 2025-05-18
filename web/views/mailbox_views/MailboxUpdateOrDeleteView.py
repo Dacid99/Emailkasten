@@ -21,14 +21,14 @@
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
-from core.models.Mailbox import Mailbox
-from web.views.mailbox_views.MailboxFilterView import MailboxFilterView
-from web.views.UpdateOrDeleteView import UpdateOrDeleteView
+from core.models import Mailbox
 
-from ...forms.mailbox_forms.BaseMailboxForm import BaseMailboxForm
+from ...forms import BaseMailboxForm
+from ..UpdateOrDeleteView import UpdateOrDeleteView
+from .MailboxFilterView import MailboxFilterView
 
 
 class MailboxUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):

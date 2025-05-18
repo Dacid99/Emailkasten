@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, Final
 
 from rest_framework import serializers
 
-from core.models.MailingList import MailingList
+from core.models import MailingList
 
 
 if TYPE_CHECKING:

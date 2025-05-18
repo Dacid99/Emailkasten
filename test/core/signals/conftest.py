@@ -21,9 +21,7 @@
 import pytest
 from model_bakery import baker
 
-from core.models.Account import Account
-from core.models.Daemon import Daemon
-from core.models.Mailbox import Mailbox
+from core.models import Account, Daemon, Mailbox
 
 
 @pytest.fixture

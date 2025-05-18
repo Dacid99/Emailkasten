@@ -24,13 +24,12 @@ from django.urls import reverse
 from rest_framework import status
 
 from core.constants import EmailFetchingCriterionChoices
-from core.models.Daemon import Daemon
-from core.models.Mailbox import Mailbox
+from core.models import Daemon, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
+from web.views import MailboxFilterView
 from web.views.mailbox_views.MailboxDetailWithDeleteView import (
     MailboxDetailWithDeleteView,
 )
-from web.views.mailbox_views.MailboxFilterView import MailboxFilterView
 
 
 @pytest.mark.django_db

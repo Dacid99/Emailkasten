@@ -28,9 +28,9 @@ from typing import Any
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from core.models.MailingList import MailingList
+from core.models import MailingList
 
-from ..email_serializers.BaseEmailSerializer import BaseEmailSerializer
+from ..email_serializers import BaseEmailSerializer
 from .BaseMailingListSerializer import BaseMailingListSerializer
 
 

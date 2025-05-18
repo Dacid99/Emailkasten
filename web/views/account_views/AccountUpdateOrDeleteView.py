@@ -21,13 +21,13 @@
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
-from core.models.Account import Account
-from web.views.UpdateOrDeleteView import UpdateOrDeleteView
+from core.models import Account
 
-from ...forms.account_forms.BaseAccountForm import BaseAccountForm
+from ...forms import BaseAccountForm
+from ..UpdateOrDeleteView import UpdateOrDeleteView
 from .AccountFilterView import AccountFilterView
 
 

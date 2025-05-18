@@ -20,13 +20,12 @@
 
 from typing import Any, override
 
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.views.generic.detail import SingleObjectMixin
 
-from core.models.Email import Email
-from core.models.Mailbox import Mailbox
+from core.models import Email, Mailbox
 
-from ..email_views.EmailFilterView import EmailFilterView
+from ..email_views import EmailFilterView
 
 
 class MailboxEmailsFilterView(EmailFilterView, SingleObjectMixin):  # type: ignore[misc]  # SingleObjectMixin attributes are shadowed purposefully

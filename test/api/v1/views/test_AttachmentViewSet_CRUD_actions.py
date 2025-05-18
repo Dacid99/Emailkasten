@@ -23,8 +23,8 @@ from __future__ import annotations
 import pytest
 from rest_framework import status
 
-from api.v1.views.AttachmentViewSet import AttachmentViewSet
-from core.models.Attachment import Attachment
+from api.v1.views import AttachmentViewSet
+from core.models import Attachment
 
 
 @pytest.mark.django_db
@@ -33,7 +33,7 @@ def test_list_noauth(fake_attachment, noauth_api_client, list_url):
     response = noauth_api_client.get(list_url(AttachmentViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "results" not in response.data
+    assert "results" not in response.data
 
 
 @pytest.mark.django_db
@@ -62,7 +62,7 @@ def test_get_noauth(fake_attachment, noauth_api_client, detail_url):
     response = noauth_api_client.get(detail_url(AttachmentViewSet, fake_attachment))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "file_name" not in response.data
+    assert "file_name" not in response.data
 
 
 @pytest.mark.django_db
@@ -71,7 +71,7 @@ def test_get_auth_other(fake_attachment, other_api_client, detail_url):
     response = other_api_client.get(detail_url(AttachmentViewSet, fake_attachment))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    "file_name" not in response.data
+    assert "file_name" not in response.data
 
 
 @pytest.mark.django_db
@@ -93,7 +93,7 @@ def test_patch_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "file_name" not in response.data
+    assert "file_name" not in response.data
     fake_attachment.refresh_from_db()
     assert fake_attachment.file_name != attachment_payload["file_name"]
 
@@ -108,7 +108,7 @@ def test_patch_auth_other(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "file_name" not in response.data
+    assert "file_name" not in response.data
     fake_attachment.refresh_from_db()
     assert fake_attachment.file_name != attachment_payload["file_name"]
 
@@ -123,7 +123,7 @@ def test_patch_auth_owner(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "file_name" not in response.data
+    assert "file_name" not in response.data
     fake_attachment.refresh_from_db()
     assert fake_attachment.file_name != attachment_payload["file_name"]
 
@@ -136,7 +136,7 @@ def test_put_noauth(fake_attachment, noauth_api_client, attachment_payload, deta
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "file_name" not in response.data
+    assert "file_name" not in response.data
     fake_attachment.refresh_from_db()
     assert fake_attachment.file_name != attachment_payload["file_name"]
 
@@ -151,7 +151,7 @@ def test_put_auth_other(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "file_name" not in response.data
+    assert "file_name" not in response.data
     fake_attachment.refresh_from_db()
     assert fake_attachment.file_name != attachment_payload["file_name"]
 
@@ -166,7 +166,7 @@ def test_put_auth_owner(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "file_name" not in response.data
+    assert "file_name" not in response.data
     fake_attachment.refresh_from_db()
     assert fake_attachment.file_name != attachment_payload["file_name"]
 
@@ -179,7 +179,7 @@ def test_post_noauth(noauth_api_client, attachment_payload, list_url):
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "file_name" not in response.data
+    assert "file_name" not in response.data
     with pytest.raises(Attachment.DoesNotExist):
         Attachment.objects.get(file_name=attachment_payload["file_name"])
 
@@ -192,7 +192,7 @@ def test_post_auth_other(other_api_client, attachment_payload, list_url):
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "file_name" not in response.data
+    assert "file_name" not in response.data
     with pytest.raises(Attachment.DoesNotExist):
         Attachment.objects.get(file_name=attachment_payload["file_name"])
 
@@ -205,7 +205,7 @@ def test_post_auth_owner(owner_api_client, attachment_payload, list_url):
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "file_name" not in response.data
+    assert "file_name" not in response.data
     with pytest.raises(Attachment.DoesNotExist):
         Attachment.objects.get(file_name=attachment_payload["file_name"])
 

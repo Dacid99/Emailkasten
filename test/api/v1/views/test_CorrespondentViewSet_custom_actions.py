@@ -23,7 +23,7 @@ from __future__ import annotations
 import pytest
 from rest_framework import status
 
-from api.v1.views.CorrespondentViewSet import CorrespondentViewSet
+from api.v1.views import CorrespondentViewSet
 
 
 @pytest.mark.django_db

@@ -17,3 +17,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """api.v1.serializers.daemon_serializers package containing serializers for the :mod:`core.models.Daemon` data."""
+
+from .BaseDaemonSerializer import BaseDaemonSerializer
+
+
+__all__ = ["BaseDaemonSerializer"]

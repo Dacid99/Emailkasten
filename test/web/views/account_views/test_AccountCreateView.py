@@ -23,9 +23,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.Account import Account
+from core.models import Account
 from test.conftest import mailbox_payload
-from web.views.account_views.AccountCreateView import AccountCreateView
+from web.views import AccountCreateView
 
 
 @pytest.mark.django_db

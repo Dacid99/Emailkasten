@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.Attachment import Attachment
+from core.models import Attachment
 
 
 if TYPE_CHECKING:

@@ -23,16 +23,14 @@ from __future__ import annotations
 import poplib
 from typing import TYPE_CHECKING, ClassVar, override
 
-from core.utils.fetchers.BaseFetcher import BaseFetcher
-from core.utils.fetchers.SafePOPMixin import SafePOPMixin
-
 from ...constants import EmailFetchingCriterionChoices, EmailProtocolChoices
+from .BaseFetcher import BaseFetcher
 from .exceptions import FetcherError, MailAccountError
+from .SafePOPMixin import SafePOPMixin
 
 
 if TYPE_CHECKING:
-    from ...models.Account import Account
-    from ...models.Mailbox import Mailbox
+    from ...models import Account, Mailbox
 
 
 class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):

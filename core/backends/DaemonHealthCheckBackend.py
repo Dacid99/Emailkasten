@@ -20,7 +20,7 @@
 
 from health_check.backends import BaseHealthCheckBackend, HealthCheckException
 
-from core.EmailArchiverDaemonRegistry import EmailArchiverDaemonRegistry
+from ..EmailArchiverDaemonRegistry import EmailArchiverDaemonRegistry
 
 
 class DaemonHealthCheckBackend(BaseHealthCheckBackend):

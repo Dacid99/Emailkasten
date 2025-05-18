@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.Mailbox import Mailbox
+from core.models import Mailbox
 
 
 if TYPE_CHECKING:

@@ -23,9 +23,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.Daemon import Daemon
-from web.views.daemon_views.DaemonDetailWithDeleteView import DaemonDetailWithDeleteView
-from web.views.daemon_views.DaemonFilterView import DaemonFilterView
+from core.models import Daemon
+from web.views import DaemonDetailWithDeleteView, DaemonFilterView
 
 
 @pytest.mark.django_db

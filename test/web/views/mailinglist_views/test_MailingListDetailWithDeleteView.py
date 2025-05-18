@@ -23,11 +23,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.MailingList import MailingList
+from core.models import MailingList
+from web.views import MailingListFilterView
 from web.views.mailinglist_views.MailingListDetailWithDeleteView import (
     MailingListDetailWithDeleteView,
 )
-from web.views.mailinglist_views.MailingListFilterView import MailingListFilterView
 
 
 @pytest.mark.django_db

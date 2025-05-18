@@ -21,8 +21,8 @@
 import pytest
 
 from core.constants import EmailProtocolChoices
+from core.utils.fetchers import POP3_SSL_Fetcher
 from core.utils.fetchers.exceptions import MailAccountError
-from core.utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
 
 from .test_POP3Fetcher import mock_logger
 

@@ -21,16 +21,14 @@
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
-from core.models.Correspondent import Correspondent
-from web.views.correspondent_views.CorrespondentFilterView import (
-    CorrespondentFilterView,
-)
-from web.views.UpdateOrDeleteView import UpdateOrDeleteView
+from core.models import Correspondent
 
-from ...forms.correspondent_forms.BaseCorrespondentForm import BaseCorrespondentForm
+from ...forms import BaseCorrespondentForm
+from ..UpdateOrDeleteView import UpdateOrDeleteView
+from .CorrespondentFilterView import CorrespondentFilterView
 
 
 class CorrespondentUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):

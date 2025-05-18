@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from core.models.Correspondent import Correspondent
+from core.models import Correspondent
 
 from ...utils.forms import RequiredMarkerModelForm
 

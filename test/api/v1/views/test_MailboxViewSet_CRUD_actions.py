@@ -23,8 +23,8 @@ from __future__ import annotations
 import pytest
 from rest_framework import status
 
-from api.v1.views.MailboxViewSet import MailboxViewSet
-from core.models.Mailbox import Mailbox
+from api.v1.views import MailboxViewSet
+from core.models import Mailbox
 
 
 @pytest.mark.django_db
@@ -33,7 +33,7 @@ def test_list_noauth(fake_mailbox, noauth_api_client, list_url):
     response = noauth_api_client.get(list_url(MailboxViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "results" not in response.data
+    assert "results" not in response.data
 
 
 @pytest.mark.django_db
@@ -62,7 +62,7 @@ def test_get_noauth(fake_mailbox, noauth_api_client, detail_url):
     response = noauth_api_client.get(detail_url(MailboxViewSet, fake_mailbox))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "name" not in response.data
+    assert "name" not in response.data
 
 
 @pytest.mark.django_db
@@ -90,7 +90,7 @@ def test_patch_noauth(fake_mailbox, noauth_api_client, mailbox_payload, detail_u
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "save_attachments" not in response.data
+    assert "save_attachments" not in response.data
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.save_attachments is not mailbox_payload["save_attachments"]
 
@@ -103,7 +103,7 @@ def test_patch_auth_other(fake_mailbox, other_api_client, mailbox_payload, detai
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    "save_attachments" not in response.data
+    assert "save_attachments" not in response.data
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.save_attachments is not mailbox_payload["save_attachments"]
 
@@ -129,7 +129,7 @@ def test_put_noauth(fake_mailbox, noauth_api_client, mailbox_payload, detail_url
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "save_attachments" not in response.data
+    assert "save_attachments" not in response.data
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.save_attachments != mailbox_payload["save_attachments"]
 
@@ -142,7 +142,7 @@ def test_put_auth_other(fake_mailbox, other_api_client, mailbox_payload, detail_
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    "save_attachments" not in response.data
+    assert "save_attachments" not in response.data
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.save_attachments != mailbox_payload["save_attachments"]
 
@@ -165,7 +165,7 @@ def test_post_noauth(noauth_api_client, mailbox_payload, list_url):
     response = noauth_api_client.post(list_url(MailboxViewSet), data=mailbox_payload)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "save_attachments" not in response.data
+    assert "save_attachments" not in response.data
     with pytest.raises(Mailbox.DoesNotExist):
         Mailbox.objects.get(save_attachments=mailbox_payload["save_attachments"])
 
@@ -176,7 +176,7 @@ def test_post_auth_other(other_api_client, mailbox_payload, list_url):
     response = other_api_client.post(list_url(MailboxViewSet), data=mailbox_payload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "save_attachments" not in response.data
+    assert "save_attachments" not in response.data
     with pytest.raises(Mailbox.DoesNotExist):
         Mailbox.objects.get(save_attachments=mailbox_payload["save_attachments"])
 
@@ -187,7 +187,7 @@ def test_post_auth_owner(owner_api_client, mailbox_payload, list_url):
     response = owner_api_client.post(list_url(MailboxViewSet), data=mailbox_payload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "save_attachments" not in response.data
+    assert "save_attachments" not in response.data
     with pytest.raises(Mailbox.DoesNotExist):
         Mailbox.objects.get(save_attachments=mailbox_payload["save_attachments"])
 

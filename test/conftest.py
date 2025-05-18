@@ -55,14 +55,16 @@ from core.constants import (
     EmailProtocolChoices,
     HeaderFields,
 )
-from core.models.Account import Account
-from core.models.Attachment import Attachment
-from core.models.Correspondent import Correspondent
-from core.models.Daemon import Daemon
-from core.models.Email import Email
-from core.models.EmailCorrespondent import EmailCorrespondent
-from core.models.Mailbox import Mailbox
-from core.models.MailingList import MailingList
+from core.models import (
+    Account,
+    Attachment,
+    Correspondent,
+    Daemon,
+    Email,
+    EmailCorrespondent,
+    Mailbox,
+    MailingList,
+)
 
 
 if TYPE_CHECKING:

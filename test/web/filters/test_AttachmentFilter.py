@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`web.filters.AttachmentFilterSet.AttachmentFilterSet`."""
+"""Test module for :class:`web.filters.AttachmentFilterSet`."""
 
 import pytest
 
-from web.filters.AttachmentFilterSet import AttachmentFilterSet
+from web.filters import AttachmentFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -39,7 +39,7 @@ from .conftest import (
 def test_file_name_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AttachmentFilterSet.AttachmentFilterSet`'s filtering
+    """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
     for the :attr:`core.models.Attachment.Attachment.file_name` field.
     """
     query = {"file_name" + lookup_expr: filterquery}
@@ -59,7 +59,7 @@ def test_file_name_filter(
 def test_content_disposition_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AttachmentFilterSet.AttachmentFilterSet`'s filtering
+    """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
     for the :attr:`core.models.Attachment.Attachment.content_disposition` field.
     """
     query = {"content_disposition": [TEXT_TEST_ITEMS[index] for index in filterquery]}
@@ -79,7 +79,7 @@ def test_content_disposition_filter(
 def test_content_id_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AttachmentFilterSet.AttachmentFilterSet`'s filtering
+    """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
     for the :attr:`core.models.Attachment.Attachment.content_id` field.
     """
     query = {"content_id" + lookup_expr: filterquery}
@@ -99,7 +99,7 @@ def test_content_id_filter(
 def test_content_maintype_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AttachmentFilterSet.AttachmentFilterSet`'s filtering
+    """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
     for the :attr:`core.models.Attachment.Attachment.content_maintype` field.
     """
     query = {"content_maintype": [TEXT_TEST_ITEMS[index] for index in filterquery]}
@@ -119,7 +119,7 @@ def test_content_maintype_filter(
 def test_content_subtype_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AttachmentFilterSet.AttachmentFilterSet`'s filtering
+    """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
     for the :attr:`core.models.Attachment.Attachment.content_subtype` field.
     """
     query = {"content_subtype": [TEXT_TEST_ITEMS[index] for index in filterquery]}
@@ -139,7 +139,7 @@ def test_content_subtype_filter(
 def test_datasize_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AttachmentFilterSet.AttachmentFilterSet`'s filtering
+    """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
     for the :attr:`core.models.Attachment.Attachment.datasize` field.
     """
     query = {"datasize_min": filterquery[0], "datasize_max": filterquery[1]}
@@ -159,7 +159,7 @@ def test_datasize_filter(
 def test_is_favorite_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AttachmentFilterSet.AttachmentFilterSet`'s filtering
+    """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
     for the :attr:`core.models.Attachment.Attachment.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
@@ -179,7 +179,7 @@ def test_is_favorite_filter(
 def test_email__datetime_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.AttachmentFilterSet.AttachmentFilterSet`'s filtering
+    """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
     for the related :attr:`core.models.Email.Email.datetime` field.
     """
     query = {"email__datetime" + lookup_expr: filterquery}

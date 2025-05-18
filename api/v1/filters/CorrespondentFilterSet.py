@@ -26,7 +26,7 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.Correspondent import Correspondent
+from core.models import Correspondent
 
 
 if TYPE_CHECKING:

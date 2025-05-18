@@ -28,15 +28,13 @@ from typing import Any
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from core.models.Email import Email
+from core.models import Email
 
-from ..attachment_serializers.BaseAttachmentSerializer import BaseAttachmentSerializer
+from ..attachment_serializers import BaseAttachmentSerializer
 from ..emailcorrespondent_serializers.EmailCorrespondentSerializer import (
     EmailCorrespondentSerializer,
 )
-from ..mailinglist_serializers.SimpleMailingListSerializer import (
-    SimpleMailingListSerializer,
-)
+from ..mailinglist_serializers import SimpleMailingListSerializer
 from .BaseEmailSerializer import BaseEmailSerializer
 
 

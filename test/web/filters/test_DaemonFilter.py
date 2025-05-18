@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`web.filters.DaemonFilterSet.DaemonFilterSet`."""
+"""Test module for :class:`web.filters.DaemonFilterSet`."""
 
 import pytest
 
 from core.constants import EmailFetchingCriterionChoices
-from web.filters.DaemonFilterSet import DaemonFilterSet
+from web.filters import DaemonFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -38,7 +38,7 @@ from .conftest import (
 def test_fetching_criterion_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`web.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Account.Account.fetching_criterion` field.
     """
     query = {
@@ -63,7 +63,7 @@ def test_fetching_criterion_filter(
 def test_cycle_interval_filter(
     daemon_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`web.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Daemon.Daemon.cycle_interval` field.
     """
     query = {"cycle_interval_min": filterquery[0], "cycle_interval_max": filterquery[1]}
@@ -81,7 +81,7 @@ def test_cycle_interval_filter(
     "lookup_expr, filterquery, expected_indices", BOOL_TEST_PARAMETERS
 )
 def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`web.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`web.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Daemon.Daemon.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
@@ -99,7 +99,7 @@ def test_is_healthy_filter(daemon_queryset, lookup_expr, filterquery, expected_i
     "lookup_expr, filterquery, expected_indices", BOOL_TEST_PARAMETERS
 )
 def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`web.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`web.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Daemon.Daemon.is_running` field.
     """
     query = {"is_running" + lookup_expr: filterquery}
@@ -117,7 +117,7 @@ def test_is_running_filter(daemon_queryset, lookup_expr, filterquery, expected_i
     "lookup_expr, filterquery, expected_indices", DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(daemon_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`web.filters.DaemonFilterSet.DaemonFilterSet`'s filtering
+    """Tests :class:`web.filters.DaemonFilterSet`'s filtering
     for the :attr:`core.models.Daemon.Daemon.created` field.
     """
     query = {"created" + lookup_expr: filterquery}

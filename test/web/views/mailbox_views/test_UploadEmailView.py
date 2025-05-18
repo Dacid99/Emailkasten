@@ -26,7 +26,7 @@ from test.api.v1.views.test_MailboxViewSet_custom_actions import (
     mock_Email_create_from_email_bytes,
     mock_Mailbox_add_from_mailbox_file,
 )
-from web.views.mailbox_views.UploadEmailView import UploadEmailView
+from web.views import UploadEmailView
 
 
 @pytest.fixture

@@ -25,8 +25,8 @@ from typing import Any
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from core.EmailArchiverDaemonRegistry import EmailArchiverDaemonRegistry
-from core.models.Daemon import Daemon
+from ..EmailArchiverDaemonRegistry import EmailArchiverDaemonRegistry
+from ..models import Daemon
 
 
 logger = logging.getLogger(__name__)

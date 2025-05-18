@@ -23,11 +23,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.Attachment import Attachment
+from core.models import Attachment
+from web.views import AttachmentFilterView
 from web.views.attachment_views.AttachmentDetailWithDeleteView import (
     AttachmentDetailWithDeleteView,
 )
-from web.views.attachment_views.AttachmentFilterView import AttachmentFilterView
 
 
 @pytest.mark.django_db

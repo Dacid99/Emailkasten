@@ -22,14 +22,13 @@ from io import BufferedReader
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.http import HttpResponse
 from django.views.generic import DetailView
 from django.views.generic.edit import FormView
 
 from core.constants import SupportedEmailUploadFormats
-from core.models.Email import Email
-from core.models.Mailbox import Mailbox
+from core.models import Email, Mailbox
 
 from ...forms.UploadEmailForm import UploadEmailForm
 

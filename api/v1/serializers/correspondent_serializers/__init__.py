@@ -17,3 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """api.v1.serializers.Correspondent_serializers package containing serializers for the :mod:`core.models.Correspondent` data."""
+
+from .BaseCorrespondentSerializer import BaseCorrespondentSerializer
+from .CorrespondentSerializer import CorrespondentSerializer
+
+
+__all__ = ["BaseCorrespondentSerializer", "CorrespondentSerializer"]

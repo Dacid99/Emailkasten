@@ -35,8 +35,7 @@ from .BaseFetcher import BaseFetcher
 
 
 if TYPE_CHECKING:
-    from ...models.Account import Account
-    from ...models.Mailbox import Mailbox
+    from ...models import Account, Mailbox
 
 
 class IMAPFetcher(BaseFetcher, SafeIMAPMixin):

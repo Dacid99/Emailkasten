@@ -23,8 +23,8 @@ from __future__ import annotations
 import pytest
 from rest_framework import status
 
-from api.v1.views.MailingListViewSet import MailingListViewSet
-from core.models.MailingList import MailingList
+from api.v1.views import MailingListViewSet
+from core.models import MailingList
 
 
 @pytest.mark.django_db
@@ -33,7 +33,7 @@ def test_list_noauth(fake_mailing_list, fake_email, noauth_api_client, list_url)
     response = noauth_api_client.get(list_url(MailingListViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "results" not in response.data
+    assert "results" not in response.data
 
 
 @pytest.mark.django_db
@@ -62,7 +62,7 @@ def test_get_noauth(fake_mailing_list, fake_email, noauth_api_client, detail_url
     response = noauth_api_client.get(detail_url(MailingListViewSet, fake_mailing_list))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "list_id" not in response.data
+    assert "list_id" not in response.data
 
 
 @pytest.mark.django_db
@@ -71,7 +71,7 @@ def test_get_auth_other(fake_mailing_list, fake_email, other_api_client, detail_
     response = other_api_client.get(detail_url(MailingListViewSet, fake_mailing_list))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    "list_id" not in response.data
+    assert "list_id" not in response.data
 
 
 @pytest.mark.django_db
@@ -93,7 +93,7 @@ def test_patch_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "list_id" not in response.data
+    assert "list_id" not in response.data
     fake_mailing_list.refresh_from_db()
     assert fake_mailing_list.list_id != mailing_list_payload["list_id"]
 
@@ -108,7 +108,7 @@ def test_patch_auth_other(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "list_id" not in response.data
+    assert "list_id" not in response.data
     fake_mailing_list.refresh_from_db()
     assert fake_mailing_list.list_id != mailing_list_payload["list_id"]
 
@@ -123,7 +123,7 @@ def test_patch_auth_owner(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "list_id" not in response.data
+    assert "list_id" not in response.data
     fake_mailing_list.refresh_from_db()
     assert fake_mailing_list.list_id != mailing_list_payload["list_id"]
 
@@ -138,7 +138,7 @@ def test_put_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "list_id" not in response.data
+    assert "list_id" not in response.data
     fake_mailing_list.refresh_from_db()
     assert fake_mailing_list.list_id != mailing_list_payload["list_id"]
 
@@ -153,7 +153,7 @@ def test_put_auth_other(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "list_id" not in response.data
+    assert "list_id" not in response.data
     fake_mailing_list.refresh_from_db()
     assert fake_mailing_list.list_id != mailing_list_payload["list_id"]
 
@@ -168,7 +168,7 @@ def test_put_auth_owner(
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "list_id" not in response.data
+    assert "list_id" not in response.data
     fake_mailing_list.refresh_from_db()
     assert fake_mailing_list.list_id != mailing_list_payload["list_id"]
 
@@ -181,7 +181,7 @@ def test_post_noauth(noauth_api_client, mailing_list_payload, list_url):
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "list_id" not in response.data
+    assert "list_id" not in response.data
     with pytest.raises(MailingList.DoesNotExist):
         MailingList.objects.get(list_id=mailing_list_payload["list_id"])
 
@@ -194,7 +194,7 @@ def test_post_auth_other(other_api_client, mailing_list_payload, list_url):
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "list_id" not in response.data
+    assert "list_id" not in response.data
     with pytest.raises(MailingList.DoesNotExist):
         MailingList.objects.get(list_id=mailing_list_payload["list_id"])
 
@@ -207,7 +207,7 @@ def test_post_auth_owner(owner_api_client, mailing_list_payload, list_url):
     )
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "list_id" not in response.data
+    assert "list_id" not in response.data
     with pytest.raises(MailingList.DoesNotExist):
         MailingList.objects.get(list_id=mailing_list_payload["list_id"])
 

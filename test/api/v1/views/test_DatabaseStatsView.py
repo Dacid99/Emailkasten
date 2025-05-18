@@ -51,7 +51,7 @@ def test_list_noauth(noauth_api_client, url):
     response = noauth_api_client.get(url(DatabaseStatsView))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "email_count" not in response.data
+    assert "email_count" not in response.data
 
 
 @pytest.mark.django_db
@@ -84,7 +84,7 @@ def test_post_noauth(noauth_api_client, url):
     response = noauth_api_client.post(url(DatabaseStatsView), data={})
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "email_count" not in response.data
+    assert "email_count" not in response.data
 
 
 @pytest.mark.django_db
@@ -93,7 +93,7 @@ def test_post_auth_other(other_api_client, url):
     response = other_api_client.post(url(DatabaseStatsView), data={})
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "email_count" not in response.data
+    assert "email_count" not in response.data
 
 
 @pytest.mark.django_db
@@ -102,4 +102,4 @@ def test_post_auth_owner(owner_api_client, url):
     response = owner_api_client.post(url(DatabaseStatsView), data={})
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "email_count" not in response.data
+    assert "email_count" not in response.data

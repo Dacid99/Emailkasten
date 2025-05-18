@@ -19,8 +19,8 @@
 import pytest
 from model_bakery import baker
 
-from api.v1.views.EmailViewSet import EmailViewSet
-from core.models.Email import Email
+from api.v1.views import EmailViewSet
+from core.models import Email
 from Emailkasten.utils.workarounds import get_config
 
 

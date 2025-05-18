@@ -22,7 +22,7 @@ import pytest
 from django.http import HttpResponse, HttpResponseRedirect
 from rest_framework import status
 
-from web.views.account_views.AccountFilterView import AccountFilterView
+from web.views import AccountFilterView
 
 
 @pytest.mark.django_db

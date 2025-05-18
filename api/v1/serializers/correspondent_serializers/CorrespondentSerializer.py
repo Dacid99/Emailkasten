@@ -29,13 +29,12 @@ from django.db.models import Subquery
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from core.models.Correspondent import Correspondent
-from core.models.MailingList import MailingList
+from core.models import Correspondent, MailingList
 
-from ..emailcorrespondent_serializers.CorrespondentEmailSerializer import (
+from ..emailcorrespondent_serializers import (
     CorrespondentEmailSerializer,
 )
-from ..mailinglist_serializers.SimpleMailingListSerializer import (
+from ..mailinglist_serializers import (
     SimpleMailingListSerializer,
 )
 from .BaseCorrespondentSerializer import BaseCorrespondentSerializer

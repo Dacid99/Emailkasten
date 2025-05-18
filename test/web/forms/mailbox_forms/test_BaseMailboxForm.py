@@ -21,7 +21,7 @@
 import pytest
 from django.forms.models import model_to_dict
 
-from web.forms.mailbox_forms.BaseMailboxForm import BaseMailboxForm
+from web.forms import BaseMailboxForm
 
 
 @pytest.mark.django_db

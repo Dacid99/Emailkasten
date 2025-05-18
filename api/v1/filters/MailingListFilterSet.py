@@ -26,7 +26,7 @@ from django.db.models import Q, QuerySet
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.MailingList import MailingList
+from core.models import MailingList
 
 
 if TYPE_CHECKING:

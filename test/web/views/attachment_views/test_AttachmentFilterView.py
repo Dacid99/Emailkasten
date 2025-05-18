@@ -22,7 +22,7 @@ import pytest
 from django.http import HttpResponse, HttpResponseRedirect
 from rest_framework import status
 
-from web.views.attachment_views.AttachmentFilterView import AttachmentFilterView
+from web.views import AttachmentFilterView
 
 
 @pytest.mark.django_db

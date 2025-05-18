@@ -30,14 +30,15 @@ from model_bakery import baker
 
 import core.models.Account
 from core.constants import EmailProtocolChoices
-from core.models.Account import Account
-from core.models.Mailbox import Mailbox
-from core.utils.fetchers.BaseFetcher import BaseFetcher
+from core.models import Account, Mailbox
+from core.utils.fetchers import (
+    BaseFetcher,
+    IMAP_SSL_Fetcher,
+    IMAPFetcher,
+    POP3_SSL_Fetcher,
+    POP3Fetcher,
+)
 from core.utils.fetchers.exceptions import MailAccountError
-from core.utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
-from core.utils.fetchers.IMAPFetcher import IMAPFetcher
-from core.utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
-from core.utils.fetchers.POP3Fetcher import POP3Fetcher
 
 
 if TYPE_CHECKING:
@@ -91,7 +92,7 @@ def spy_Mailbox_create_from_data(mocker):
     Returns:
         The spied on function.
     """
-    return mocker.spy(core.models.Account.Mailbox, "create_from_data")
+    return mocker.spy(core.models.Mailbox, "create_from_data")
 
 
 @pytest.mark.django_db

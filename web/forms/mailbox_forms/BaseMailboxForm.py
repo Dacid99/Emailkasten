@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from core.models.Mailbox import Mailbox
+from core.models import Mailbox
 
 from ...utils.forms import RequiredMarkerModelForm
 

@@ -28,12 +28,7 @@ from model_bakery import baker
 from rest_framework.request import Request
 
 from core.constants import HeaderFields
-from core.models.Account import Account
-from core.models.Attachment import Attachment
-from core.models.Daemon import Daemon
-from core.models.Email import Email
-from core.models.EmailCorrespondent import EmailCorrespondent
-from core.models.Mailbox import Mailbox
+from core.models import Account, Attachment, Daemon, Email, EmailCorrespondent, Mailbox
 
 
 @pytest.fixture(autouse=True)

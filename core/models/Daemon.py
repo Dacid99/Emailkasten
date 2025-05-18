@@ -32,11 +32,10 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from core.mixins.HasDownloadMixin import HasDownloadMixin
-from core.mixins.URLMixin import URLMixin
 from Emailkasten.utils.workarounds import get_config
 
 from ..constants import EmailFetchingCriterionChoices
+from ..mixins import HasDownloadMixin, URLMixin
 
 
 if TYPE_CHECKING:

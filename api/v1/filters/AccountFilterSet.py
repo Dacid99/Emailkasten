@@ -26,7 +26,7 @@ from django.db.models import Q, QuerySet
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
-from core.models.Account import Account
+from core.models import Account
 
 
 if TYPE_CHECKING:

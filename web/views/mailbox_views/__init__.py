@@ -17,3 +17,18 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.views.mailbox_views package containing views for the :class:`core.models.Mailbox.Mailbox` data."""
+
+from .MailboxDetailWithDeleteView import MailboxDetailWithDeleteView
+from .MailboxEmailsFilterView import MailboxEmailsFilterView
+from .MailboxFilterView import MailboxFilterView
+from .MailboxUpdateOrDeleteView import MailboxUpdateOrDeleteView
+from .UploadEmailView import UploadEmailView
+
+
+__all__ = [
+    "MailboxDetailWithDeleteView",
+    "MailboxEmailsFilterView",
+    "MailboxFilterView",
+    "MailboxUpdateOrDeleteView",
+    "UploadEmailView",
+]

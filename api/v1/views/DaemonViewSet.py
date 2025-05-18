@@ -32,11 +32,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.EmailArchiverDaemonRegistry import EmailArchiverDaemonRegistry
-from core.models.Daemon import Daemon
+from core.models import Daemon
 
-from ..filters.DaemonFilterSet import DaemonFilterSet
+from ..filters import DaemonFilterSet
 from ..mixins.NoCreateMixin import NoCreateMixin
-from ..serializers.daemon_serializers.BaseDaemonSerializer import BaseDaemonSerializer
+from ..serializers import BaseDaemonSerializer
 
 
 if TYPE_CHECKING:

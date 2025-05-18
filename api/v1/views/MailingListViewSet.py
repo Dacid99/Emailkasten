@@ -28,12 +28,10 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.MailingList import MailingList
+from core.models import MailingList
 
-from ..filters.MailingListFilterSet import MailingListFilterSet
-from ..serializers.mailinglist_serializers.MailingListSerializer import (
-    MailingListSerializer,
-)
+from ..filters import MailingListFilterSet
+from ..serializers import MailingListSerializer
 
 
 if TYPE_CHECKING:

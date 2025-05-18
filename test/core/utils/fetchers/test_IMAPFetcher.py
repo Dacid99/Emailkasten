@@ -28,9 +28,9 @@ from imap_tools.imap_utf7 import utf7_encode
 from model_bakery import baker
 
 from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
-from core.models.Mailbox import Mailbox
+from core.models import Mailbox
+from core.utils.fetchers import IMAPFetcher
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
-from core.utils.fetchers.IMAPFetcher import IMAPFetcher
 
 
 class FakeIMAP4error(Exception):

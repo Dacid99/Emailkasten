@@ -28,8 +28,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from core import constants
-from core.models.Daemon import Daemon
-from core.models.Mailbox import Mailbox
+from core.models import Daemon, Mailbox
 from Emailkasten.utils.workarounds import get_config
 
 

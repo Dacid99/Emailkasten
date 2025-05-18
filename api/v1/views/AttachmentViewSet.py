@@ -31,16 +31,14 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.Attachment import Attachment
+from core.models import Attachment
 
-from ..filters.AttachmentFilterSet import AttachmentFilterSet
-from ..serializers.attachment_serializers.BaseAttachmentSerializer import (
-    BaseAttachmentSerializer,
-)
+from ..filters import AttachmentFilterSet
+from ..serializers import BaseAttachmentSerializer
 
 
 if TYPE_CHECKING:
-    from django.db.models.query import QuerySet
+    from django.db.models import QuerySet
     from rest_framework.request import Request
 
 

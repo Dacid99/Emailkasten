@@ -27,12 +27,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.models.Account import Account
-from core.models.Attachment import Attachment
-from core.models.Correspondent import Correspondent
-from core.models.Email import Email
-from core.models.Mailbox import Mailbox
-from core.models.MailingList import MailingList
+from core.models import Account, Attachment, Correspondent, Email, Mailbox, MailingList
 
 
 if TYPE_CHECKING:

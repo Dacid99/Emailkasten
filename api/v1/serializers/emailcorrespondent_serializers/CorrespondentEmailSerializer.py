@@ -20,7 +20,7 @@
 
 from __future__ import annotations
 
-from ..email_serializers.BaseEmailSerializer import BaseEmailSerializer
+from ..email_serializers import BaseEmailSerializer
 from .BaseEmailCorrespondentSerializer import BaseEmailCorrespondentSerializer
 
 

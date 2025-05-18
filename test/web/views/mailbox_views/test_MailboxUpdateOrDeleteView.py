@@ -23,8 +23,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.Mailbox import Mailbox
-from web.views.mailbox_views.MailboxUpdateOrDeleteView import MailboxUpdateOrDeleteView
+from core.models import Mailbox
+from web.views import MailboxUpdateOrDeleteView
 
 
 @pytest.mark.django_db

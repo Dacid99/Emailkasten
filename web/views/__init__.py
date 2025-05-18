@@ -17,3 +17,59 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.views package containing all views for the Emailkasten webapp."""
+
+from .account_views import (
+    AccountCreateView,
+    AccountDetailWithDeleteView,
+    AccountEmailsFilterView,
+    AccountFilterView,
+    AccountUpdateOrDeleteView,
+)
+from .attachment_views import AttachmentDetailWithDeleteView, AttachmentFilterView
+from .correspondent_views import (
+    CorrespondentDetailWithDeleteView,
+    CorrespondentFilterView,
+    CorrespondentUpdateOrDeleteView,
+)
+from .daemon_views import (
+    DaemonDetailWithDeleteView,
+    DaemonFilterView,
+    DaemonUpdateOrDeleteView,
+)
+from .DashboardView import DashboardView
+from .email_views import EmailDetailWithDeleteView, EmailFilterView
+from .mailbox_views import (
+    MailboxDetailWithDeleteView,
+    MailboxEmailsFilterView,
+    MailboxFilterView,
+    MailboxUpdateOrDeleteView,
+    UploadEmailView,
+)
+from .mailinglist_views import MailingListDetailWithDeleteView, MailingListFilterView
+
+
+__all__ = [
+    "AccountCreateView",
+    "AccountDetailWithDeleteView",
+    "AccountEmailsFilterView",
+    "AccountFilterView",
+    "AccountUpdateOrDeleteView",
+    "AttachmentDetailWithDeleteView",
+    "AttachmentFilterView",
+    "CorrespondentDetailWithDeleteView",
+    "CorrespondentFilterView",
+    "CorrespondentUpdateOrDeleteView",
+    "DaemonDetailWithDeleteView",
+    "DaemonFilterView",
+    "DaemonUpdateOrDeleteView",
+    "DashboardView",
+    "EmailDetailWithDeleteView",
+    "EmailFilterView",
+    "MailboxDetailWithDeleteView",
+    "MailboxEmailsFilterView",
+    "MailboxFilterView",
+    "MailboxUpdateOrDeleteView",
+    "MailingListDetailWithDeleteView",
+    "MailingListFilterView",
+    "UploadEmailView",
+]

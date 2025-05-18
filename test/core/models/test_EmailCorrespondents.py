@@ -24,9 +24,7 @@ from django.db import IntegrityError
 from model_bakery import baker
 
 from core.constants import HeaderFields
-from core.models.Correspondent import Correspondent
-from core.models.Email import Email
-from core.models.EmailCorrespondent import EmailCorrespondent
+from core.models import Correspondent, Email, EmailCorrespondent
 
 
 @pytest.fixture

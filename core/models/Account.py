@@ -33,17 +33,19 @@ from core.mixins.FavoriteMixin import FavoriteMixin
 
 from ..constants import EmailProtocolChoices
 from ..mixins.URLMixin import URLMixin
+from ..utils.fetchers import (
+    IMAP_SSL_Fetcher,
+    IMAPFetcher,
+    POP3_SSL_Fetcher,
+    POP3Fetcher,
+)
 from ..utils.fetchers.exceptions import MailAccountError
-from ..utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
-from ..utils.fetchers.IMAPFetcher import IMAPFetcher
-from ..utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
-from ..utils.fetchers.POP3Fetcher import POP3Fetcher
 from .Mailbox import Mailbox
 
 
-# from utils.fetchers.ExchangeFetcher import ExchangeFetcher
+# from utils.fetchers import ExchangeFetcher
 if TYPE_CHECKING:
-    from ..utils.fetchers.BaseFetcher import BaseFetcher
+    from ..utils.fetchers import BaseFetcher
 
 
 logger = logging.getLogger(__name__)

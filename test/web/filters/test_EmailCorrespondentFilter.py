@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`web.filters.EmailCorrespondentFilterSet.EmailCorrespondentFilterSet`."""
+"""Test module for :class:`web.filters.EmailCorrespondentFilterSet`."""
 
 import pytest
 
-from web.filters.EmailCorrespondentFilterSet import EmailCorrespondentFilterSet
+from web.filters import EmailCorrespondentFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -36,7 +36,7 @@ from .conftest import (
 def test_text_search_filter(
     emailcorrespondents_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.EmailCorrespondentFilterSet.EmailCorrespondentFilterSet`'s filtering
+    """Tests :class:`web.filters.EmailCorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.text_search` field.
     """
     query = {"text_search": filterquery}
@@ -58,7 +58,7 @@ def test_text_search_filter(
 def test_is_favorite_filter(
     emailcorrespondents_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.EmailCorrespondentFilterSet.EmailCorrespondentFilterSet`'s filtering
+    """Tests :class:`web.filters.EmailCorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
@@ -80,7 +80,7 @@ def test_is_favorite_filter(
 def test_created_filter(
     emailcorrespondents_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.EmailCorrespondentFilterSet.EmailCorrespondentFilterSet`'s filtering
+    """Tests :class:`web.filters.EmailCorrespondentFilterSet`'s filtering
     for the :attr:`core.models.Correspondent.Correspondent.created` field.
     """
     query = {"created" + lookup_expr: filterquery}

@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 
 from rest_framework import serializers
 
-from core.models.Account import Account
+from core.models import Account
 
 
 if TYPE_CHECKING:

@@ -22,14 +22,13 @@ import datetime
 import email
 import os
 
+import django.db.models
 import pytest
 from django.db import IntegrityError
 from django.urls import reverse
 from model_bakery import baker
 
-import core.models.Attachment
-from core.models.Attachment import Attachment
-from core.models.Email import Email
+from core.models import Attachment, Email
 
 from ...conftest import TEST_EMAIL_PARAMETERS
 
@@ -73,7 +72,7 @@ def mock_Attachment_save_to_storage(mocker):
 
 @pytest.fixture
 def spy__save(mocker):
-    return mocker.spy(core.models.Attachment.models.Model, "save")
+    return mocker.spy(django.db.models.Model, "save")
 
 
 @pytest.mark.django_db

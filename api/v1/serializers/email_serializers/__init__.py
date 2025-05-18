@@ -17,3 +17,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """api.v1.serializers.email_serializers package containing serializers for the :mod:`core.models.Email` data."""
+
+from .BaseEmailSerializer import BaseEmailSerializer
+from .EmailSerializer import EmailSerializer
+from .FullEmailSerializer import FullEmailSerializer
+
+
+__all__ = ["BaseEmailSerializer", "EmailSerializer", "FullEmailSerializer"]

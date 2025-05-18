@@ -29,18 +29,20 @@ from freezegun import freeze_time
 from model_bakery import baker
 
 from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
-from core.models.Account import Account
-from core.models.Attachment import Attachment
-from core.models.Correspondent import Correspondent
-from core.models.Daemon import Daemon
-from core.models.Email import Email
-from core.models.EmailCorrespondent import EmailCorrespondent
-from core.models.Mailbox import Mailbox
-from core.models.MailingList import MailingList
+from core.models import (
+    Account,
+    Attachment,
+    Correspondent,
+    Daemon,
+    Email,
+    EmailCorrespondent,
+    Mailbox,
+    MailingList,
+)
 
 
 if TYPE_CHECKING:
-    from django.db.models.query import QuerySet
+    from django.db.models import QuerySet
 
 
 INT_TEST_ITEMS = [0, 1, 2]

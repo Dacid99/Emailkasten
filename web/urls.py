@@ -36,36 +36,30 @@ from __future__ import annotations
 from django.urls import path
 from django.views.generic import RedirectView
 
-from .views.account_views import (
+from .views import (
     AccountCreateView,
     AccountDetailWithDeleteView,
     AccountEmailsFilterView,
     AccountFilterView,
     AccountUpdateOrDeleteView,
-)
-from .views.attachment_views import AttachmentDetailWithDeleteView, AttachmentFilterView
-from .views.correspondent_views import (
+    AttachmentDetailWithDeleteView,
+    AttachmentFilterView,
     CorrespondentDetailWithDeleteView,
     CorrespondentFilterView,
     CorrespondentUpdateOrDeleteView,
-)
-from .views.daemon_views import (
     DaemonDetailWithDeleteView,
     DaemonFilterView,
     DaemonUpdateOrDeleteView,
-)
-from .views.DashboardView import DashboardView
-from .views.email_views import EmailDetailWithDeleteView, EmailFilterView
-from .views.mailbox_views import (
+    DashboardView,
+    EmailDetailWithDeleteView,
+    EmailFilterView,
     MailboxDetailWithDeleteView,
     MailboxEmailsFilterView,
     MailboxFilterView,
     MailboxUpdateOrDeleteView,
-    UploadEmailView,
-)
-from .views.mailinglist_views import (
     MailingListDetailWithDeleteView,
     MailingListFilterView,
+    UploadEmailView,
 )
 
 
@@ -81,112 +75,112 @@ urlpatterns = [
     ),
     path(
         "accounts/",
-        AccountFilterView.AccountFilterView.as_view(),
-        name=AccountFilterView.AccountFilterView.URL_NAME,
+        AccountFilterView.as_view(),
+        name=AccountFilterView.URL_NAME,
     ),
     path(
         "accounts/<int:pk>/",
-        AccountDetailWithDeleteView.AccountDetailWithDeleteView.as_view(),
-        name=AccountDetailWithDeleteView.AccountDetailWithDeleteView.URL_NAME,
+        AccountDetailWithDeleteView.as_view(),
+        name=AccountDetailWithDeleteView.URL_NAME,
     ),
     path(
         "accounts/<int:pk>/emails/",
-        AccountEmailsFilterView.AccountEmailsFilterView.as_view(),
-        name=AccountEmailsFilterView.AccountEmailsFilterView.URL_NAME,
+        AccountEmailsFilterView.as_view(),
+        name=AccountEmailsFilterView.URL_NAME,
     ),
     path(
         "accounts/<int:pk>/edit/",
-        AccountUpdateOrDeleteView.AccountUpdateOrDeleteView.as_view(),
-        name=AccountUpdateOrDeleteView.AccountUpdateOrDeleteView.URL_NAME,
+        AccountUpdateOrDeleteView.as_view(),
+        name=AccountUpdateOrDeleteView.URL_NAME,
     ),
     path(
         "accounts/add/",
-        AccountCreateView.AccountCreateView.as_view(),
-        name=AccountCreateView.AccountCreateView.URL_NAME,
+        AccountCreateView.as_view(),
+        name=AccountCreateView.URL_NAME,
     ),
     path(
         "attachments/",
-        AttachmentFilterView.AttachmentFilterView.as_view(),
-        name=AttachmentFilterView.AttachmentFilterView.URL_NAME,
+        AttachmentFilterView.as_view(),
+        name=AttachmentFilterView.URL_NAME,
     ),
     path(
         "attachments/<int:pk>/",
-        AttachmentDetailWithDeleteView.AttachmentDetailWithDeleteView.as_view(),
-        name=AttachmentDetailWithDeleteView.AttachmentDetailWithDeleteView.URL_NAME,
+        AttachmentDetailWithDeleteView.as_view(),
+        name=AttachmentDetailWithDeleteView.URL_NAME,
     ),
     path(
         "correspondents/",
-        CorrespondentFilterView.CorrespondentFilterView.as_view(),
-        name=CorrespondentFilterView.CorrespondentFilterView.URL_NAME,
+        CorrespondentFilterView.as_view(),
+        name=CorrespondentFilterView.URL_NAME,
     ),
     path(
         "correspondents/<int:pk>/",
-        CorrespondentDetailWithDeleteView.CorrespondentDetailWithDeleteView.as_view(),
-        name=CorrespondentDetailWithDeleteView.CorrespondentDetailWithDeleteView.URL_NAME,
+        CorrespondentDetailWithDeleteView.as_view(),
+        name=CorrespondentDetailWithDeleteView.URL_NAME,
     ),
     path(
         "correspondents/<int:pk>/edit/",
-        CorrespondentUpdateOrDeleteView.CorrespondentUpdateOrDeleteView.as_view(),
-        name=CorrespondentUpdateOrDeleteView.CorrespondentUpdateOrDeleteView.URL_NAME,
+        CorrespondentUpdateOrDeleteView.as_view(),
+        name=CorrespondentUpdateOrDeleteView.URL_NAME,
     ),
     path(
         "daemons/",
-        DaemonFilterView.DaemonFilterView.as_view(),
-        name=DaemonFilterView.DaemonFilterView.URL_NAME,
+        DaemonFilterView.as_view(),
+        name=DaemonFilterView.URL_NAME,
     ),
     path(
         "daemons/<int:pk>/",
-        DaemonDetailWithDeleteView.DaemonDetailWithDeleteView.as_view(),
-        name=DaemonDetailWithDeleteView.DaemonDetailWithDeleteView.URL_NAME,
+        DaemonDetailWithDeleteView.as_view(),
+        name=DaemonDetailWithDeleteView.URL_NAME,
     ),
     path(
         "daemons/<int:pk>/edit/",
-        DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView.as_view(),
-        name=DaemonUpdateOrDeleteView.DaemonUpdateOrDeleteView.URL_NAME,
+        DaemonUpdateOrDeleteView.as_view(),
+        name=DaemonUpdateOrDeleteView.URL_NAME,
     ),
     path(
         "emails/",
-        EmailFilterView.EmailFilterView.as_view(),
-        name=EmailFilterView.EmailFilterView.URL_NAME,
+        EmailFilterView.as_view(),
+        name=EmailFilterView.URL_NAME,
     ),
     path(
         "emails/<int:pk>/",
-        EmailDetailWithDeleteView.EmailDetailWithDeleteView.as_view(),
-        name=EmailDetailWithDeleteView.EmailDetailWithDeleteView.URL_NAME,
+        EmailDetailWithDeleteView.as_view(),
+        name=EmailDetailWithDeleteView.URL_NAME,
     ),
     path(
         "mailboxes/",
-        MailboxFilterView.MailboxFilterView.as_view(),
-        name=MailboxFilterView.MailboxFilterView.URL_NAME,
+        MailboxFilterView.as_view(),
+        name=MailboxFilterView.URL_NAME,
     ),
     path(
         "mailboxes/<int:pk>/",
-        MailboxDetailWithDeleteView.MailboxDetailWithDeleteView.as_view(),
-        name=MailboxDetailWithDeleteView.MailboxDetailWithDeleteView.URL_NAME,
+        MailboxDetailWithDeleteView.as_view(),
+        name=MailboxDetailWithDeleteView.URL_NAME,
     ),
     path(
         "mailboxes/<int:pk>/emails/",
-        MailboxEmailsFilterView.MailboxEmailsFilterView.as_view(),
-        name=MailboxEmailsFilterView.MailboxEmailsFilterView.URL_NAME,
+        MailboxEmailsFilterView.as_view(),
+        name=MailboxEmailsFilterView.URL_NAME,
     ),
     path(
         "mailboxes/<int:pk>/edit/",
-        MailboxUpdateOrDeleteView.MailboxUpdateOrDeleteView.as_view(),
-        name=MailboxUpdateOrDeleteView.MailboxUpdateOrDeleteView.URL_NAME,
+        MailboxUpdateOrDeleteView.as_view(),
+        name=MailboxUpdateOrDeleteView.URL_NAME,
     ),
     path(
         "mailboxes/<int:pk>/upload/",
-        UploadEmailView.UploadEmailView.as_view(),
-        name=UploadEmailView.UploadEmailView.URL_NAME,
+        UploadEmailView.as_view(),
+        name=UploadEmailView.URL_NAME,
     ),
     path(
         "mailinglists/",
-        MailingListFilterView.MailingListFilterView.as_view(),
-        name=MailingListFilterView.MailingListFilterView.URL_NAME,
+        MailingListFilterView.as_view(),
+        name=MailingListFilterView.URL_NAME,
     ),
     path(
         "mailinglists/<int:pk>/",
-        MailingListDetailWithDeleteView.MailingListDetailWithDeleteView.as_view(),
-        name=MailingListDetailWithDeleteView.MailingListDetailWithDeleteView.URL_NAME,
+        MailingListDetailWithDeleteView.as_view(),
+        name=MailingListDetailWithDeleteView.URL_NAME,
     ),
 ]

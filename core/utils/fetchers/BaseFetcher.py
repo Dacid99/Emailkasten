@@ -32,8 +32,7 @@ if TYPE_CHECKING:
     from poplib import POP3
     from types import TracebackType
 
-    from core.models.Account import Account
-    from core.models.Mailbox import Mailbox
+    from core.models import Account, Mailbox
 
 
 class BaseFetcher(ABC):

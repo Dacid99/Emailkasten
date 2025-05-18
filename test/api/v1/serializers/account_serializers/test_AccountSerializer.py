@@ -23,7 +23,7 @@ from datetime import datetime
 import pytest
 from django.forms.models import model_to_dict
 
-from api.v1.serializers.account_serializers.AccountSerializer import AccountSerializer
+from api.v1.serializers import AccountSerializer
 
 
 @pytest.mark.django_db

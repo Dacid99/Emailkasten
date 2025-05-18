@@ -21,7 +21,7 @@
 import pytest
 from health_check.backends import HealthCheckException
 
-from core.backends.DaemonHealthCheckBackend import DaemonHealthCheckBackend
+from core.backends import DaemonHealthCheckBackend
 
 
 @pytest.fixture

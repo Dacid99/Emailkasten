@@ -25,7 +25,7 @@ import pytest
 from django.db.models.signals import post_save
 
 from core.EmailArchiverDaemon import EmailArchiverDaemon
-from core.models.Daemon import Daemon
+from core.models import Daemon
 from core.signals.save_Daemon import post_save_daemon
 
 

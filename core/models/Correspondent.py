@@ -26,8 +26,7 @@ from typing import override
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from core.mixins.FavoriteMixin import FavoriteMixin
-from core.mixins.URLMixin import URLMixin
+from ..mixins import FavoriteMixin, URLMixin
 
 
 logger = logging.getLogger(__name__)

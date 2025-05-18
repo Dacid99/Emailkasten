@@ -21,18 +21,18 @@
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.edit import DeletionMixin
 
 from core.EmailArchiverDaemonRegistry import EmailArchiverDaemonRegistry
-from core.models.Daemon import Daemon
-from web.mixins.CustomActionMixin import CustomActionMixin
-from web.views.daemon_views.DaemonFilterView import DaemonFilterView
+from core.models import Daemon
 
+from ...mixins.CustomActionMixin import CustomActionMixin
 from ..DetailWithDeleteView import DetailWithDeleteView
+from .DaemonFilterView import DaemonFilterView
 
 
 class DaemonDetailWithDeleteView(

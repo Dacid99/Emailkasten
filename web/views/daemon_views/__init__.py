@@ -17,3 +17,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.views.daemon_views package containing views for the :class:`core.models.Daemon.Daemon` data."""
+
+from .DaemonDetailWithDeleteView import DaemonDetailWithDeleteView
+from .DaemonFilterView import DaemonFilterView
+from .DaemonUpdateOrDeleteView import DaemonUpdateOrDeleteView
+
+
+__all__ = ["DaemonDetailWithDeleteView", "DaemonFilterView", "DaemonUpdateOrDeleteView"]

@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`web.filters.CorrespondentEmailFilterSet.CorrespondentEmailFilterSet`."""
+"""Test module for :class:`web.filters.CorrespondentEmailFilterSet`."""
 
 import pytest
 
-from web.filters.CorrespondentEmailFilterSet import CorrespondentEmailFilterSet
+from web.filters import CorrespondentEmailFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -39,7 +39,7 @@ from .conftest import (
 def test_text_search_filter(
     emailcorrespondents_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.CorrespondentEmailFilterSet.CorrespondentEmailFilterSet`'s filtering
+    """Tests :class:`web.filters.CorrespondentEmailFilterSet`'s filtering
     for the :attr:`core.models.Email.Email.message_id` field.
     """
     query = {"text_search": filterquery}
@@ -61,7 +61,7 @@ def test_text_search_filter(
 def test_datetime_filter(
     emailcorrespondents_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.CorrespondentEmailFilterSet.CorrespondentEmailFilterSet`'s filtering
+    """Tests :class:`web.filters.CorrespondentEmailFilterSet`'s filtering
     for the :attr:`core.models.Email.Email.datetime` field.
     """
     query = {"datetime" + lookup_expr: filterquery}
@@ -83,7 +83,7 @@ def test_datetime_filter(
 def test_datasize_filter(
     emailcorrespondents_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.CorrespondentEmailFilterSet.CorrespondentEmailFilterSet`'s filtering
+    """Tests :class:`web.filters.CorrespondentEmailFilterSet`'s filtering
     for the :attr:`core.models.Email.Email.datasize` field.
     """
     query = {"datasize_min": filterquery[0], "datasize_max": filterquery[1]}
@@ -105,7 +105,7 @@ def test_datasize_filter(
 def test_is_favorite_filter(
     emailcorrespondents_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.CorrespondentEmailFilterSet.CorrespondentEmailFilterSet`'s filtering
+    """Tests :class:`web.filters.CorrespondentEmailFilterSet`'s filtering
     for the :attr:`core.models.Email.Email.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
@@ -127,7 +127,7 @@ def test_is_favorite_filter(
 def test_x_spam_filter(
     emailcorrespondents_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`web.filters.EmailFilterSet.EmailFilterSet`'s filtering
+    """Tests :class:`web.filters.EmailFilterSet`'s filtering
     for the :attr:`core.models.Email.Email.x_spam` field.
     """
     query = {"x_spam": [TEXT_TEST_ITEMS[index] for index in filterquery]}

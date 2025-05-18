@@ -32,15 +32,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core.models.Account import Account
+from core.models import Account
 from core.utils.fetchers.exceptions import MailAccountError
 
-from ..filters.AccountFilterSet import AccountFilterSet
-from ..serializers.account_serializers.AccountSerializer import AccountSerializer
+from ..filters import AccountFilterSet
+from ..serializers import AccountSerializer
 
 
 if TYPE_CHECKING:
-    from django.db.models.query import QuerySet
+    from django.db.models import QuerySet
     from rest_framework.request import Request
     from rest_framework.serializers import BaseSerializer
 

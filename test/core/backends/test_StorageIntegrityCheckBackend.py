@@ -21,7 +21,7 @@
 import pytest
 from health_check.backends import HealthCheckException
 
-from core.backends.StorageIntegrityCheckBackend import StorageIntegrityCheckBackend
+from core.backends import StorageIntegrityCheckBackend
 
 
 @pytest.fixture

@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`."""
+"""Test module for :class:`api.v1.filters.MailboxFilterSet`."""
 
 import pytest
 
-from api.v1.filters.MailboxFilterSet import MailboxFilterSet
+from api.v1.filters import MailboxFilterSet
 
 from .conftest import (
     BOOL_TEST_PARAMETERS,
@@ -34,7 +34,7 @@ from .conftest import (
     "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
 )
 def test_name_filter(mailbox_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the :attr:`core.models.Mailbox.Mailbox.name` field.
     """
     query = {"name" + lookup_expr: filterquery}
@@ -54,7 +54,7 @@ def test_name_filter(mailbox_queryset, lookup_expr, filterquery, expected_indice
 def test_save_to_eml_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the :attr:`core.models.Mailbox.Mailbox.save_to_eml` field.
     """
     query = {"save_to_eml" + lookup_expr: filterquery}
@@ -74,7 +74,7 @@ def test_save_to_eml_filter(
 def test_save_attachments_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the :attr:`core.models.Mailbox.Mailbox.save_attachments` field.
     """
     query = {"save_attachments" + lookup_expr: filterquery}
@@ -94,7 +94,7 @@ def test_save_attachments_filter(
 def test_is_healthy_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the :attr:`core.models.Mailbox.Mailbox.is_healthy` field.
     """
     query = {"is_healthy" + lookup_expr: filterquery}
@@ -114,7 +114,7 @@ def test_is_healthy_filter(
 def test_is_favorite_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the :attr:`core.models.Mailbox.Mailbox.is_favorite` field.
     """
     query = {"is_favorite" + lookup_expr: filterquery}
@@ -132,7 +132,7 @@ def test_is_favorite_filter(
     "lookup_expr, filterquery, expected_indices", DATETIME_TEST_PARAMETERS
 )
 def test_created_filter(mailbox_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the :attr:`core.models.Mailbox.Mailbox.created` field.
     """
     query = {"created" + lookup_expr: filterquery}
@@ -150,7 +150,7 @@ def test_created_filter(mailbox_queryset, lookup_expr, filterquery, expected_ind
     "lookup_expr, filterquery, expected_indices", DATETIME_TEST_PARAMETERS
 )
 def test_updated_filter(mailbox_queryset, lookup_expr, filterquery, expected_indices):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the :attr:`core.models.Mailbox.Mailbox.updated` field.
     """
     query = {"updated" + lookup_expr: filterquery}
@@ -170,7 +170,7 @@ def test_updated_filter(mailbox_queryset, lookup_expr, filterquery, expected_ind
 def test_account__mail_address_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the related :attr:`core.models.Account.Account.mail_address` field.
     """
     query = {"account__mail_address" + lookup_expr: filterquery}
@@ -190,7 +190,7 @@ def test_account__mail_address_filter(
 def test_account__mail_host_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the related :attr:`core.models.Account.Account.mail_host` field.
     """
     query = {"account__mail_host" + lookup_expr: filterquery}
@@ -210,7 +210,7 @@ def test_account__mail_host_filter(
 def test_account__is_healthy_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
-    """Tests :class:`api.v1.filters.MailboxFilterSet.MailboxFilterSet`'s filtering
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
     for the related :attr:`core.models.Account.Account.is_healthy` field.
     """
     query = {"account__is_healthy" + lookup_expr: filterquery}

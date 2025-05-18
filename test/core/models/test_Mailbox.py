@@ -30,13 +30,14 @@ from django.db import IntegrityError
 from django.urls import reverse
 from model_bakery import baker
 
-from core.models.Account import Account
-from core.models.Mailbox import Mailbox
+from core.models import Account, Mailbox
+from core.utils.fetchers import (
+    IMAP_SSL_Fetcher,
+    IMAPFetcher,
+    POP3_SSL_Fetcher,
+    POP3Fetcher,
+)
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
-from core.utils.fetchers.IMAP_SSL_Fetcher import IMAP_SSL_Fetcher
-from core.utils.fetchers.IMAPFetcher import IMAPFetcher
-from core.utils.fetchers.POP3_SSL_Fetcher import POP3_SSL_Fetcher
-from core.utils.fetchers.POP3Fetcher import POP3Fetcher
 from Emailkasten.utils.workarounds import get_config
 
 from .test_Account import mock_Account_get_fetcher, mock_fetcher
@@ -77,7 +78,7 @@ def mock_parse_mailbox_name(mocker, faker):
 @pytest.fixture
 def mock_Email_create_from_email_bytes(mocker):
     return mocker.patch(
-        "core.models.Mailbox.Email.create_from_email_bytes", autospec=True
+        "core.models.Email.Email.create_from_email_bytes", autospec=True
     )
 
 

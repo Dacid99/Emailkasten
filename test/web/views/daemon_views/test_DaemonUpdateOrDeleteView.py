@@ -23,8 +23,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
-from core.models.Daemon import Daemon
-from web.views.daemon_views.DaemonUpdateOrDeleteView import DaemonUpdateOrDeleteView
+from core.models import Daemon
+from web.views import DaemonUpdateOrDeleteView
 
 
 @pytest.mark.django_db

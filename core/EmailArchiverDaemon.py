@@ -28,7 +28,7 @@ from typing import TYPE_CHECKING, override
 
 
 if TYPE_CHECKING:
-    from .models.Daemon import Daemon
+    from .models import Daemon
 
 
 class EmailArchiverDaemon(threading.Thread):

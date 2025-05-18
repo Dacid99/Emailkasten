@@ -25,10 +25,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.views.generic import TemplateView
 
-from core.models.Attachment import Attachment
-from core.models.Correspondent import Correspondent
-from core.models.Email import Email
-from core.models.MailingList import MailingList
+from core.models import Attachment, Correspondent, Email, MailingList
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):

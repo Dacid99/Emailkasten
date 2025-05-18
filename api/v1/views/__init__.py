@@ -17,3 +17,24 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """api.v1.views package containing the views for the Emailkasten API version 1."""
+
+from .AccountViewSet import AccountViewSet
+from .AttachmentViewSet import AttachmentViewSet
+from .CorrespondentViewSet import CorrespondentViewSet
+from .DaemonViewSet import DaemonViewSet
+from .DatabaseStatsView import DatabaseStatsView
+from .EmailViewSet import EmailViewSet
+from .MailboxViewSet import MailboxViewSet
+from .MailingListViewSet import MailingListViewSet
+
+
+__all__ = [
+    "AccountViewSet",
+    "AttachmentViewSet",
+    "CorrespondentViewSet",
+    "DaemonViewSet",
+    "DatabaseStatsView",
+    "EmailViewSet",
+    "MailboxViewSet",
+    "MailingListViewSet",
+]

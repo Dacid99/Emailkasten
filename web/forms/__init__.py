@@ -17,3 +17,16 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """web.forms package containing forms for the Emailkasten database models."""
+
+from .account_forms import BaseAccountForm
+from .correspondent_forms import BaseCorrespondentForm
+from .daemon_forms import BaseDaemonForm
+from .mailbox_forms import BaseMailboxForm
+
+
+__all__ = [
+    "BaseAccountForm",
+    "BaseCorrespondentForm",
+    "BaseDaemonForm",
+    "BaseMailboxForm",
+]

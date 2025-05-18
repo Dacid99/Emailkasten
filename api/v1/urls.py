@@ -36,14 +36,16 @@ from __future__ import annotations
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from api.v1.views.AccountViewSet import AccountViewSet
-from api.v1.views.AttachmentViewSet import AttachmentViewSet
-from api.v1.views.CorrespondentViewSet import CorrespondentViewSet
-from api.v1.views.DaemonViewSet import DaemonViewSet
-from api.v1.views.DatabaseStatsView import DatabaseStatsView
-from api.v1.views.EmailViewSet import EmailViewSet
-from api.v1.views.MailboxViewSet import MailboxViewSet
-from api.v1.views.MailingListViewSet import MailingListViewSet
+from api.v1.views import (
+    AccountViewSet,
+    AttachmentViewSet,
+    CorrespondentViewSet,
+    DaemonViewSet,
+    DatabaseStatsView,
+    EmailViewSet,
+    MailboxViewSet,
+    MailingListViewSet,
+)
 
 
 app_name = "v1"

@@ -21,11 +21,11 @@
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet
 
-from core.models.Account import Account
+from core.models import Account
 
-from ...filters.AccountFilterSet import AccountFilterSet
+from ...filters import AccountFilterSet
 from ..FilterPageView import FilterPageView
 
 

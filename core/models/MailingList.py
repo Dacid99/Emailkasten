@@ -26,10 +26,8 @@ from typing import TYPE_CHECKING, override
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from core.mixins.FavoriteMixin import FavoriteMixin
-from core.mixins.URLMixin import URLMixin
-
 from ..constants import HeaderFields
+from ..mixins import FavoriteMixin, URLMixin
 from ..utils.mail_parsing import get_header
 
 

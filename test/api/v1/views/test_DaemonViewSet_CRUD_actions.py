@@ -23,8 +23,8 @@ from __future__ import annotations
 import pytest
 from rest_framework import status
 
-from api.v1.views.DaemonViewSet import DaemonViewSet
-from core.models.Daemon import Daemon
+from api.v1.views import DaemonViewSet
+from core.models import Daemon
 
 
 @pytest.mark.django_db
@@ -33,7 +33,7 @@ def test_list_noauth(fake_daemon, noauth_api_client, list_url):
     response = noauth_api_client.get(list_url(DaemonViewSet))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "results" not in response.data
+    assert "results" not in response.data
 
 
 @pytest.mark.django_db
@@ -62,7 +62,7 @@ def test_get_noauth(fake_daemon, noauth_api_client, detail_url):
     response = noauth_api_client.get(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "cycle_interval" not in response.data
+    assert "cycle_interval" not in response.data
 
 
 @pytest.mark.django_db
@@ -90,7 +90,7 @@ def test_patch_noauth(fake_daemon, noauth_api_client, daemon_payload, detail_url
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "cycle_interval" not in response.data
+    assert "cycle_interval" not in response.data
     fake_daemon.refresh_from_db()
     assert fake_daemon.cycle_interval != daemon_payload["cycle_interval"]
 
@@ -103,7 +103,7 @@ def test_patch_auth_other(fake_daemon, other_api_client, daemon_payload, detail_
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    "cycle_interval" not in response.data
+    assert "cycle_interval" not in response.data
     fake_daemon.refresh_from_db()
     assert fake_daemon.cycle_interval != daemon_payload["cycle_interval"]
 
@@ -133,7 +133,7 @@ def test_put_noauth(fake_daemon, noauth_api_client, daemon_payload, detail_url):
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "cycle_interval" not in response.data
+    assert "cycle_interval" not in response.data
     fake_daemon.refresh_from_db()
     assert fake_daemon.cycle_interval != daemon_payload["cycle_interval"]
 
@@ -146,7 +146,7 @@ def test_put_auth_other(fake_daemon, other_api_client, daemon_payload, detail_ur
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    "cycle_interval" not in response.data
+    assert "cycle_interval" not in response.data
     fake_daemon.refresh_from_db()
     assert fake_daemon.cycle_interval != daemon_payload["cycle_interval"]
 
@@ -173,7 +173,7 @@ def test_post_noauth(noauth_api_client, daemon_payload, list_url):
     response = noauth_api_client.post(list_url(DaemonViewSet), data=daemon_payload)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    "cycle_interval" not in response.data
+    assert "cycle_interval" not in response.data
     with pytest.raises(Daemon.DoesNotExist):
         Daemon.objects.get(cycle_interval=daemon_payload["cycle_interval"])
 
@@ -184,7 +184,7 @@ def test_post_auth_other(other_api_client, daemon_payload, list_url):
     response = other_api_client.post(list_url(DaemonViewSet), data=daemon_payload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "cycle_interval" not in response.data
+    assert "cycle_interval" not in response.data
     with pytest.raises(Daemon.DoesNotExist):
         Daemon.objects.get(cycle_interval=daemon_payload["cycle_interval"])
 
@@ -195,7 +195,7 @@ def test_post_auth_owner(owner_api_client, daemon_payload, list_url):
     response = owner_api_client.post(list_url(DaemonViewSet), data=daemon_payload)
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    "cycle_interval" not in response.data
+    assert "cycle_interval" not in response.data
     with pytest.raises(Daemon.DoesNotExist):
         Daemon.objects.get(cycle_interval=daemon_payload["cycle_interval"])
 

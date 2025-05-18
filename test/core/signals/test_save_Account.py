@@ -21,7 +21,7 @@
 import pytest
 from model_bakery import baker
 
-from core.models.Mailbox import Mailbox
+from core.models import Mailbox
 
 
 @pytest.fixture(autouse=True)
