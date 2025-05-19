@@ -382,7 +382,7 @@ msgid "Delete"
 msgstr ""
 
 #: web/templates/partials/_filter-form.html:5
-msgid FilterSet"
+msgid "FilterSet"
 msgstr ""
 
 #: web/templates/partials/_filter_list.html:8
@@ -390,7 +390,7 @@ msgid "Show filter options"
 msgstr ""
 
 #: web/templates/partials/_filter_list.html:21
-msgid FilterSet options"
+msgid "FilterSet options"
 msgstr ""
 
 #: web/templates/partials/_footer.html:6
