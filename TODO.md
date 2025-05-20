@@ -11,7 +11,6 @@
 - download mailboxes and accounts
 - option to prohibit daemon for spambox
 - tooltips
-- archiveviews
 - show pdf attachments in pdfjs
 - combo queries via connectors
 - reprocess mail action
@@ -24,10 +23,10 @@
 ## To refactor
 
 - safeimap and pop classes
-- enable imports from app/module level
 - move all signals into models
 - rework test:
   - disable all signals in tests
+  - tests more implementation agnostic
 
 ## To test
 

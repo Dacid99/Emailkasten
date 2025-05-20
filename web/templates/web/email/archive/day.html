@@ -1,0 +1,31 @@
+{% extends "web/email/archive/base_archive.html" %}
+
+{% load i18n %}
+
+{% block archive_title %}
+    - {% translate "Day" %}
+{% endblock archive_title %}
+
+{% block header_archive_title %}
+    - {% translate "Day" %}
+{% endblock header_archive_title %}
+
+{% block header_subtitle %}
+    {{ day|date:"Y - m - d" }}
+{% endblock header_subtitle %}
+
+{% block previous_date_url %}
+    {% url 'web:email-archive-day' previous_day.year previous_day.month previous_day.day %}
+{% endblock previous_date_url %}
+
+{% block previous_date_name %}
+    {{ previous_day|date:"Y - m - d" }}
+{% endblock previous_date_name %}
+
+{% block next_date_url %}
+    {% url 'web:email-archive-day' next_day.year next_day.month next_day.day %}
+{% endblock next_date_url %}
+
+{% block next_date_name %}
+    {{ next_day|date:"Y - m - d" }}
+{% endblock next_date_name %}

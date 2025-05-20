@@ -10,6 +10,12 @@
     {% translate "Emails" %}
 {% endblock header_title %}
 
+{% block header_buttons %}
+    <a role="button"
+       class="btn btn-outline-primary"
+       href="{% url 'web:email-archive-index' %}">{% translate "Archive" %}</a>
+{% endblock header_buttons %}
+
 {% block list %}
 
     {% include "web/email/partials/_email_list.html" with emails=page_obj %}

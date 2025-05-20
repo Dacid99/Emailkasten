@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-20 15:04+0000\n"
+"POT-Creation-Date: 2025-05-20 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -215,11 +215,11 @@ msgstr ""
 msgid "Emailkasten"
 msgstr ""
 
-#: web/templates/web/bases/base_filter_list.html:33
+#: web/templates/web/bases/base_filter_list.html:10
 msgid "Show filter options"
 msgstr ""
 
-#: web/templates/web/bases/base_filter_list.html:53
+#: web/templates/web/bases/base_filter_list.html:27
 msgid "Filter options"
 msgstr ""
 
@@ -346,6 +346,40 @@ msgstr ""
 msgid "Mailinglists"
 msgstr ""
 
+#: web/templates/web/email/archive/base_archive.html:4
+#: web/templates/web/email/email_filter_list.html:14
+#: web/templates/web/mailinglist/mailinglist_detail.html:37
+msgid "Archive"
+msgstr ""
+
+#: web/templates/web/email/archive/base_archive.html:9
+msgid "Email Archive"
+msgstr ""
+
+#: web/templates/web/email/archive/day.html:4
+#: web/templates/web/email/archive/day.html:7
+msgid "Day"
+msgstr ""
+
+#: web/templates/web/email/archive/index.html:4
+msgid "Latest"
+msgstr ""
+
+#: web/templates/web/email/archive/month.html:4
+#: web/templates/web/email/archive/month.html:7
+msgid "Month"
+msgstr ""
+
+#: web/templates/web/email/archive/week.html:4
+#: web/templates/web/email/archive/week.html:7
+msgid "Week"
+msgstr ""
+
+#: web/templates/web/email/archive/year.html:4
+#: web/templates/web/email/archive/year.html:7
+msgid "Year"
+msgstr ""
+
 #: web/templates/web/email/email_detail.html:6
 msgid "Email Details"
 msgstr ""
@@ -469,10 +503,6 @@ msgstr ""
 
 #: web/templates/web/mailinglist/mailinglist_detail.html:34
 msgid "Post"
-msgstr ""
-
-#: web/templates/web/mailinglist/mailinglist_detail.html:37
-msgid "Archive"
 msgstr ""
 
 #: web/templates/web/mailinglist/mailinglist_detail.html:38

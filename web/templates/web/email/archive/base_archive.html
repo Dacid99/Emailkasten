@@ -1,0 +1,50 @@
+{% extends "web/bases/base_list.html" %}
+
+{% load i18n %}
+
+{% block title %}
+    {% translate "Archive" %}
+
+    {% block archive_title %}
+    {% endblock archive_title %}
+{% endblock title %}
+
+{% block header_title %}
+    {% translate "Email Archive" %}
+
+    {% block header_archive_title %}
+    {% endblock header_archive_title %}
+{% endblock header_title %}
+
+{% block header_bar %}
+    <div class="d-flex justify-content-between align-items-center">
+        <a role="button" class="btn btn-outline-primary" href=" 
+            {% block previous_date_url %}{% endblock previous_date_url %}
+            ">
+
+            {% block previous_date_name %}
+            {% endblock previous_date_name %}
+
+        </a>
+        <ul class="list-group list-group-horizontal">
+
+            {% block date_list_bar %}
+            {% endblock date_list_bar %}
+
+        </ul>
+        <a role="button" class="btn btn-outline-primary" href=" 
+            {% block next_date_url %}{% endblock next_date_url %}
+            ">
+
+            {% block next_date_name %}
+            {% endblock next_date_name %}
+
+        </a>
+    </div>
+{% endblock header_bar %}
+
+{% block list %}
+
+    {% include "web/email/partials/_email_list.html" with emails=object_list %}
+
+{% endblock list %}

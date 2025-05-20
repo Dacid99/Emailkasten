@@ -37,7 +37,15 @@ from .daemon_views import (
     DaemonUpdateOrDeleteView,
 )
 from .DashboardView import DashboardView
-from .email_views import EmailDetailWithDeleteView, EmailFilterView
+from .email_views import (
+    EmailArchiveIndexView,
+    EmailDayArchiveView,
+    EmailDetailWithDeleteView,
+    EmailFilterView,
+    EmailMonthArchiveView,
+    EmailWeekArchiveView,
+    EmailYearArchiveView,
+)
 from .mailbox_views import (
     MailboxDetailWithDeleteView,
     MailboxEmailsFilterView,
@@ -63,8 +71,13 @@ __all__ = [
     "DaemonFilterView",
     "DaemonUpdateOrDeleteView",
     "DashboardView",
+    "EmailArchiveIndexView",
+    "EmailDayArchiveView",
     "EmailDetailWithDeleteView",
     "EmailFilterView",
+    "EmailMonthArchiveView",
+    "EmailWeekArchiveView",
+    "EmailYearArchiveView",
     "MailboxDetailWithDeleteView",
     "MailboxEmailsFilterView",
     "MailboxFilterView",

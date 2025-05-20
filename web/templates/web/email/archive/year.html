@@ -1,0 +1,38 @@
+{% extends "web/email/archive/base_archive.html" %}
+
+{% load i18n %}
+
+{% block archive_title %}
+    - {% translate "Year" %}
+{% endblock archive_title %}
+
+{% block header_archive_title %}
+    - {% translate "Year" %}
+{% endblock header_archive_title %}
+
+{% block header_subtitle %}
+    {{ year|date:"Y" }}
+{% endblock header_subtitle %}
+
+{% block previous_date_url %}
+    {% url 'web:email-archive-year' previous_year.year %}
+{% endblock previous_date_url %}
+
+{% block previous_date_name %}
+    {{ previous_year|date:"Y" }}
+{% endblock previous_date_name %}
+
+{% block next_date_url %}
+    {% url 'web:email-archive-year' previous_year.year %}
+{% endblock next_date_url %}
+
+{% block next_date_name %}
+    {{ next_year|date:"Y" }}
+{% endblock next_date_name %}
+
+{% block date_list_bar %}
+    {% for date in date_list %}
+        <a class="list-group-item list-list-group-item-action"
+           href="{% url 'web:email-archive-month' date.year date.month %}">{{ date|date:"m" }}</a>
+    {% endfor %}
+{% endblock date_list_bar %}

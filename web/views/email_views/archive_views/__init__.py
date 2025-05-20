@@ -16,24 +16,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""web.views.email_views package containing views for the :class:`core.models.Email` data."""
+"""web.views.email_views.archive_views package containing archive_views for the :class:`core.models.Email` data."""
 
-from .archive_views import (
-    EmailArchiveIndexView,
-    EmailDayArchiveView,
-    EmailMonthArchiveView,
-    EmailWeekArchiveView,
-    EmailYearArchiveView,
-)
-from .EmailDetailWithDeleteView import EmailDetailWithDeleteView
-from .EmailFilterView import EmailFilterView
+from .EmailArchiveIndexView import EmailArchiveIndexView
+from .EmailDayArchiveView import EmailDayArchiveView
+from .EmailMonthArchiveView import EmailMonthArchiveView
+from .EmailWeekArchiveView import EmailWeekArchiveView
+from .EmailYearArchiveView import EmailYearArchiveView
 
 
 __all__ = [
     "EmailArchiveIndexView",
     "EmailDayArchiveView",
-    "EmailDetailWithDeleteView",
-    "EmailFilterView",
     "EmailMonthArchiveView",
     "EmailWeekArchiveView",
     "EmailYearArchiveView",

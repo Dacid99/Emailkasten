@@ -1,0 +1,14 @@
+{% extends "web/email/archive/base_archive.html" %}
+
+{% load i18n %}
+
+{% block header_archive_title %}
+    - {% translate "Latest" %}
+{% endblock header_archive_title %}
+
+{% block date_list_bar %}
+    {% for date in date_list %}
+        <a class="list-group-item list-list-group-item-action"
+           href="{% url 'email-archive-year' date.year %}">{{ date|date:"Y" }}</a>
+    {% endfor %}
+{% endblock date_list_bar %}

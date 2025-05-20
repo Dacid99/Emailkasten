@@ -16,25 +16,17 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""web.views.email_views package containing views for the :class:`core.models.Email` data."""
+""":mod:`web.views.email_views.archive_views.EmailMonthArchiveView` module with the EmailMonthArchiveView view."""
 
-from .archive_views import (
-    EmailArchiveIndexView,
-    EmailDayArchiveView,
-    EmailMonthArchiveView,
-    EmailWeekArchiveView,
-    EmailYearArchiveView,
-)
-from .EmailDetailWithDeleteView import EmailDetailWithDeleteView
-from .EmailFilterView import EmailFilterView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.dates import MonthArchiveView
+
+from .EmailArchiveMixin import EmailArchiveMixin
 
 
-__all__ = [
-    "EmailArchiveIndexView",
-    "EmailDayArchiveView",
-    "EmailDetailWithDeleteView",
-    "EmailFilterView",
-    "EmailMonthArchiveView",
-    "EmailWeekArchiveView",
-    "EmailYearArchiveView",
-]
+class EmailMonthArchiveView(LoginRequiredMixin, EmailArchiveMixin, MonthArchiveView):
+    """MonthArchiveView for emails."""
+
+    URL_NAME = EmailArchiveMixin.BASE_URL_NAME + "-month"
+    template_name = EmailArchiveMixin.BASE_TEMPLATE_NAME + "month.html"
+    month_format = "%m"
