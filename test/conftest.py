@@ -92,6 +92,7 @@ TEST_EMAIL_PARAMETERS = [
             "x_spam": "NO",
             "plain_bodytext": "this a test to see how ur doin\r\n\r\n\r\n\r\n\r\n",
             "html_bodytext": "",
+            "references": [],
             "header_count": 20,
         },
         {
@@ -133,6 +134,7 @@ TEST_EMAIL_PARAMETERS = [
             "x_spam": "NO",
             "plain_bodytext": "\r\ntry this\r\n",
             "html_bodytext": '<!DOCTYPE html>\r\n<html>\r\n  <head>\r\n\r\n    <meta http-equiv="content-type" content="text/html; charset=UTF-8">\r\n  </head>\r\n  <body>\r\n    <p><img src="cid:part1.DePPID0S.dKVK0mlg@bvncmx.com" alt=""></p>\r\n    <p><br>\r\n    </p>\r\n    <p>try this<br>\r\n    </p>\r\n  </body>\r\n</html>',
+            "references": [],
             "header_count": 21,
         },
         {
@@ -169,6 +171,7 @@ TEST_EMAIL_PARAMETERS = [
             "x_spam": "NO",
             "plain_bodytext": "Hi\r\n\r\nThis is a test!\r\n\r\näöü\r\n\r\nViele Grüße,\r\n\r\nQNfjq\r\n",
             "html_bodytext": "",
+            "references": [],
             "header_count": 22,
         },
         {
@@ -196,6 +199,7 @@ TEST_EMAIL_PARAMETERS = [
             "x_spam": "NO",
             "plain_bodytext": "\r\n\r\nSehr geehrte ,\r\n\r\n\r\n\r\nViele Grüße,\r\nDavid\r\n",
             "html_bodytext": '<html>\r\n<head>\r\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\r\n</head>\r\n<body>\r\n<div dir="auto"><br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Sehr geehrte ,<!-- tmjah_g_1299e --><br>\r\n<br>\r\n<br>\r\n<br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->Viele Grüße,<!-- tmjah_g_1299e --><br>\r\n</div>\r\n<div dir="auto"><!-- tmjah_g_1299s -->David<!-- tmjah_g_1299e --></div>\r\n</body>\r\n</html>\r\n',
+            "references": [],
             "header_count": 21,
         },
         {
@@ -227,6 +231,7 @@ TEST_EMAIL_PARAMETERS = [
             "x_spam": "NO",
             "plain_bodytext": "another test for the correspondents ..\r\n",
             "html_bodytext": '<div dir="ltr">another test for the correspondents ..<br></div>\r\n',
+            "references": [],
             "header_count": 19,
         },
         {

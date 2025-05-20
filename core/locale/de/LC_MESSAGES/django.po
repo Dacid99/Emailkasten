@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-19 21:44+0000\n"
+"POT-Creation-Date: 2025-05-20 15:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,87 +98,87 @@ msgstr ""
 msgid "POP3 over SSL"
 msgstr ""
 
-#: core/constants.py:135
+#: core/constants.py:136
 msgid "From"
 msgstr ""
 
-#: core/constants.py:136
+#: core/constants.py:137
 msgid "To"
 msgstr ""
 
-#: core/constants.py:137
+#: core/constants.py:138
 msgid "CC"
 msgstr ""
 
-#: core/constants.py:138
+#: core/constants.py:139
 msgid "BCC"
 msgstr ""
 
-#: core/constants.py:139
+#: core/constants.py:140
 msgid "Sender"
 msgstr ""
 
-#: core/constants.py:140
+#: core/constants.py:141
 msgid "Reply-To"
 msgstr ""
 
-#: core/constants.py:141
+#: core/constants.py:142
 msgid "Resent-From"
 msgstr ""
 
-#: core/constants.py:142
+#: core/constants.py:143
 msgid "Resent-To"
 msgstr ""
 
-#: core/constants.py:143
+#: core/constants.py:144
 msgid "Resent-Cc"
 msgstr ""
 
-#: core/constants.py:144
+#: core/constants.py:145
 msgid "Resent-Bcc"
 msgstr ""
 
-#: core/constants.py:145
+#: core/constants.py:146
 msgid "Resent-Sender"
 msgstr ""
 
-#: core/constants.py:146
+#: core/constants.py:147
 msgid "Resent-Reply-To"
 msgstr ""
 
-#: core/constants.py:151
+#: core/constants.py:152
 msgid "Delivered-To"
 msgstr ""
 
-#: core/constants.py:152
+#: core/constants.py:153
 msgid "Return-Path"
 msgstr ""
 
-#: core/constants.py:153
+#: core/constants.py:154
 msgid "Return-Receipt-To"
 msgstr ""
 
-#: core/constants.py:163
+#: core/constants.py:164
 msgid ".eml"
 msgstr ""
 
-#: core/constants.py:164
+#: core/constants.py:165
 msgid ".mbox"
 msgstr ""
 
-#: core/constants.py:165
+#: core/constants.py:166
 msgid ".mh"
 msgstr ""
 
-#: core/constants.py:166
+#: core/constants.py:167
 msgid ".babyl"
 msgstr ""
 
-#: core/constants.py:167
+#: core/constants.py:168
 msgid ".mmdf"
 msgstr ""
 
-#: core/constants.py:168
+#: core/constants.py:169
 msgid ".maildir"
 msgstr ""
 
@@ -316,13 +316,13 @@ msgstr ""
 msgid "Emailfetcherdaemon %(uuid)s for mailbox %(mailbox)s"
 msgstr ""
 
-#: core/models/Email.py:158
+#: core/models/Email.py:163
 msgid ""
 "This will delete this email and all its attachments but not its "
 "correspondents or mailinglists."
 msgstr ""
 
-#: core/models/Email.py:183
+#: core/models/Email.py:188
 #, python-format
 msgid "Email with ID %(message_id)s, received on %(datetime)s from %(mailbox)s"
 msgstr ""

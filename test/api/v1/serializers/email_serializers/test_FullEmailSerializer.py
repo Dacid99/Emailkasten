@@ -47,6 +47,12 @@ def test_output(fake_email, request_context):
     assert serializer_data["html_bodytext"] == fake_email.html_bodytext
     assert "in_reply_to" in serializer_data
     assert serializer_data["in_reply_to"] is None
+    assert "references" in serializer_data
+    assert isinstance(serializer_data["references"], list)
+    assert len(serializer_data["references"]) == 0
+    assert "referenced_by" in serializer_data
+    assert isinstance(serializer_data["referenced_by"], list)
+    assert len(serializer_data["referenced_by"]) == 0
     assert "datasize" in serializer_data
     assert serializer_data["datasize"] == fake_email.datasize
     assert "is_favorite" in serializer_data
@@ -76,7 +82,7 @@ def test_output(fake_email, request_context):
     assert len(serializer_data["correspondents"]) == 1
     assert isinstance(serializer_data["correspondents"][0], dict)
 
-    assert len(serializer_data) == 18
+    assert len(serializer_data) == 20
 
 
 @pytest.mark.django_db
@@ -95,6 +101,8 @@ def test_input(fake_email, request_context):
     assert "plain_bodytext" not in serializer_data
     assert "html_bodytext" not in serializer_data
     assert "in_reply_to" not in serializer_data
+    assert "references" not in serializer_data
+    assert "referenced_by" not in serializer_data
     assert "datasize" not in serializer_data
     assert "is_favorite" in serializer_data
     assert serializer_data["is_favorite"] == fake_email.is_favorite

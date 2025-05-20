@@ -29,7 +29,8 @@ from django.db import IntegrityError
 from django.urls import reverse
 from model_bakery import baker
 
-from core.models import Email, Mailbox, MailingList
+from core.constants import HeaderFields
+from core.models import Correspondent, Email, Mailbox, MailingList
 
 from ...conftest import TEST_EMAIL_PARAMETERS
 from .test_Attachment import mock_Attachment_save_to_storage
@@ -161,6 +162,21 @@ def test_Email_foreign_key_mailbox_deletion(fake_email):
 
     with pytest.raises(Email.DoesNotExist):
         fake_email.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_Email_m2m_references_deletion(fake_email):
+    """Tests the on_delete foreign key constraint on in_reply_to in :class:`core.models.Email.Email`."""
+
+    referenced_email = baker.make(Email, x_spam="NO")
+    fake_email.references.add(referenced_email)
+
+    referenced_email.delete()
+
+    fake_email.refresh_from_db()
+    assert not fake_email.references.exists()
+    with pytest.raises(Email.DoesNotExist):
+        referenced_email.refresh_from_db()
 
 
 @pytest.mark.django_db
@@ -628,6 +644,102 @@ def test_Email_is_spam(fake_email, x_spam, expected_result):
     result = fake_email.is_spam()
 
     assert result is expected_result
+
+
+@pytest.mark.django_db
+def test_Email_add_references_none(faker, fake_email):
+    fake_email.headers = {}
+
+    assert fake_email.references.count() == 0
+
+    fake_email.add_references()
+
+    assert fake_email.references.count() == 0
+
+
+@pytest.mark.django_db
+def test_Email_add_references_single(faker, fake_email):
+    fake_message_id = faker.name()
+    fake_referenced_email = baker.make(Email, message_id=fake_message_id)
+    fake_email.headers = {"References": fake_message_id}
+
+    assert fake_email.references.count() == 0
+
+    fake_email.add_references()
+
+    assert fake_email.references.count() == 1
+    assert fake_referenced_email in fake_email.references.all()
+
+
+@pytest.mark.django_db
+def test_Email_add_references_multi(faker, fake_email):
+    fake_message_id_1 = faker.name()
+    fake_message_id_2 = faker.name()
+    fake_referenced_email_1 = baker.make(Email, message_id=fake_message_id_1)
+    fake_referenced_email_2 = baker.make(Email, message_id=fake_message_id_2)
+    fake_email.headers = {"References": fake_message_id_1 + ", " + fake_message_id_2}
+
+    assert fake_email.references.count() == 0
+
+    fake_email.add_references()
+
+    assert fake_email.references.count() == 2
+    assert fake_referenced_email_1 in fake_email.references.all()
+    assert fake_referenced_email_2 in fake_email.references.all()
+
+
+@pytest.mark.django_db
+def test_Email_add_correspondents_none(faker, fake_email):
+    fake_email.headers = {}
+
+    assert fake_email.correspondents.count() == 0
+
+    fake_email.add_correspondents()
+
+    assert fake_email.correspondents.count() == 0
+
+
+@pytest.mark.django_db
+def test_Email_add_correspondents_single(faker, fake_email):
+    fake_email_address = faker.email()
+    fake_mention = faker.random_element(HeaderFields.Correspondents.values)
+    fake_mentioned_correspondent = baker.make(
+        Correspondent, email_address=fake_email_address
+    )
+    fake_email.headers = {fake_mention: fake_email_address}
+
+    assert fake_email.correspondents.count() == 0
+
+    fake_email.add_correspondents()
+
+    assert fake_email.correspondents.count() == 1
+    assert fake_mentioned_correspondent in fake_email.correspondents.all()
+
+
+@pytest.mark.django_db
+def test_Email_add_correspondents_multi(faker, fake_email):
+    fake_email_address_1 = faker.email()
+    fake_email_address_2 = faker.email()
+    fake_mention_1 = faker.random_element(HeaderFields.Correspondents.values)
+    fake_mention_2 = faker.random_element(HeaderFields.Correspondents.values)
+    fake_mentioned_correspondent_1 = baker.make(
+        Correspondent, email_address=fake_email_address_1
+    )
+    fake_mentioned_correspondent_2 = baker.make(
+        Correspondent, email_address=fake_email_address_2
+    )
+    fake_email.headers = {
+        fake_mention_1: fake_email_address_1,
+        fake_mention_2: fake_email_address_2,
+    }
+
+    assert fake_email.correspondents.count() == 0
+
+    fake_email.add_correspondents()
+
+    assert fake_email.correspondents.count() == 2
+    assert fake_mentioned_correspondent_1 in fake_email.correspondents.all()
+    assert fake_mentioned_correspondent_2 in fake_email.correspondents.all()
 
 
 @pytest.mark.django_db

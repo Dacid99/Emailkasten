@@ -53,6 +53,11 @@ class EmailSerializer(BaseEmailSerializer):
     )
     """The replies mails are included by id only to prevent recursion."""
 
+    referenced_by: serializers.PrimaryKeyRelatedField[Email] = (
+        serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    )
+    """The referencing mails are included by id only to prevent recursion."""
+
     attachments = BaseAttachmentSerializer(many=True, read_only=True)
     """The attachments are serialized
     by :class:`Emailkasten.AttachmentSerializers.BaseAttachmentSerializer.BaseAttachmentSerializer`.

@@ -7,7 +7,6 @@
 - custom fetching filters with NOT, OR and custom criteria
 - combined filter for correspondent with mention
 - streamable logs for daemons
-- references header
 - extensive database statistics
 - download mailboxes and accounts
 - option to prohibit daemon for spambox

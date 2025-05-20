@@ -158,4 +158,40 @@
 
         </div>
     </div>
+    {% if object.references.exists %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% translate "References" %}</h4>
+                <ul class="list-group list-group-flush">
+                    {% for referenced_email in object.references %}
+                        <li class="list-group-item list-group-item-action">
+                            <a href="{{ referenced_email.get_absolute_url }}"
+                               class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                {{ referenced_email.message_id }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if object.referenced_by.exists %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% translate "Referenced by" %}</h4>
+                :
+                <ul class="list-group list-group-flush">
+                    {% for referencing_email in object.referenced_by %}
+                        <li class="list-group-item list-group-item-action">
+                            <a href="{{ referencing_email.get_absolute_url }}"
+                               class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                {{ referencing_email.message_id }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
 {% endblock card_extras %}

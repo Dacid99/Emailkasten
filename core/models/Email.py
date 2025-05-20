@@ -85,6 +85,11 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     )
     """The mail that this mail is a response to. Can be null. Deletion of that replied-to mail sets this field to NULL."""
 
+    references: models.ManyToManyField[Email, Email] = models.ManyToManyField(
+        "self", symmetrical=False, related_name="referenced_by"
+    )
+    """The mails that this email references."""
+
     datasize = models.PositiveIntegerField()
     """The bytes size of the mail."""
 
@@ -347,7 +352,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             The :class:`core.models.Email` instance with data from the bytes.
         """
         email_message = email.message_from_bytes(email_bytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
-        header_dict = {}
+        header_dict: dict[str, str | None] = {}
         for header_name in email_message:
             header_dict[header_name] = get_header(email_message, header_name)
         in_reply_to_message_id = header_dict.get(HeaderFields.IN_REPLY_TO)
@@ -368,6 +373,27 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             plain_bodytext=bodytexts.get("plain", ""),
             html_bodytext=bodytexts.get("html", ""),
         )
+
+    def add_correspondents(self) -> None:
+        """Adds the correspondents from the headerfields to the model."""
+        if self.headers:
+            for mention in HeaderFields.Correspondents.values:
+                correspondent_header = self.headers.get(mention)
+                if correspondent_header:
+                    EmailCorrespondent.create_from_header(
+                        correspondent_header, mention, self
+                    )
+
+    def add_references(self) -> None:
+        """Adds the references from the headerfields to the model."""
+        if self.headers:
+            referenced_message_ids = self.headers.get(HeaderFields.REFERENCES)
+            if referenced_message_ids:
+                for referenced_message_id in referenced_message_ids.split(","):
+                    with contextlib.suppress(Email.DoesNotExist):
+                        self.references.add(
+                            Email.objects.get(message_id=referenced_message_id.strip())
+                        )
 
     @classmethod
     def create_from_email_bytes(
@@ -421,13 +447,8 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
                     email_message
                 )
                 new_email.save(email_data=email_bytes)
-                if new_email.headers:
-                    for mention in HeaderFields.Correspondents.values:
-                        correspondent_header = new_email.headers.get(mention)
-                        if correspondent_header:
-                            EmailCorrespondent.create_from_header(
-                                correspondent_header, mention, new_email
-                            )
+                new_email.add_correspondents()
+                new_email.add_references()
                 attachments = Attachment.create_from_email_message(
                     email_message, new_email
                 )

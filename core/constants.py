@@ -110,6 +110,7 @@ class HeaderFields:
 
     MESSAGE_ID: Final[str] = "Message-ID"
     IN_REPLY_TO: Final[str] = "In-Reply-To"
+    REFERENCES: Final[str] = "References"
     DATE: Final[str] = "Date"
     SUBJECT: Final[str] = "Subject"
     X_SPAM: Final[str] = "X-Spam-Flag"
