@@ -262,7 +262,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
 
         logger.debug("Storing %s as eml ...", self)
 
-        dir_path = Storage.get_subdirectory(self.message_id)
+        dir_path = Storage.get_subdirectory(self.message_id, self.mailbox.account.user)
         clean_message_id = get_valid_filename(self.message_id)
         preliminary_file_path = os.path.join(dir_path, clean_message_id + ".eml")
         file_path = write_message_to_eml(preliminary_file_path, email_data)
@@ -298,7 +298,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
 
         logger.debug("Rendering and storing %s  ...", self)
 
-        dir_path = Storage.get_subdirectory(self.message_id)
+        dir_path = Storage.get_subdirectory(self.message_id, self.mailbox.account.user)
         clean_message_id = get_valid_filename(self.message_id)
         preliminary_file_path = os.path.join(dir_path, clean_message_id + ".html")
         file_path = convert_and_store_html_message(preliminary_file_path, email_data)

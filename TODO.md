@@ -37,7 +37,6 @@
 ## To implement
 
 - autostart daemons on restart
-- user divided storage to make file_paths unique again
 - replace daemons with celery, ensure threadsafe db operations in daemons
 - important headers in html repr
 - create daemon view

@@ -22,14 +22,19 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Any, override
+from typing import TYPE_CHECKING, Any, Final, override
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 
 from Emailkasten.utils.workarounds import get_config
+
+
+if TYPE_CHECKING:
+    from django.contrib.auth.models import User
 
 
 logger = logging.getLogger(__name__)
@@ -58,6 +63,11 @@ class Storage(models.Model):
     """Flags whether this directory is the one where new data is being stored. False by default.
     There must only be one entry where this is set to True."""
 
+    user = models.ForeignKey(
+        get_user_model(), related_name="accounts", on_delete=models.CASCADE
+    )
+    """The user this account belongs to. Deletion of that `user` deletes this correspondent."""
+
     created = models.DateTimeField(auto_now_add=True)
     """The datetime this entry was created. Is set automatically."""
 
@@ -70,6 +80,16 @@ class Storage(models.Model):
         db_table = "storage"
         """The name of the database table for the storage status."""
 
+        constraints: Final[list[models.BaseConstraint]] = [
+            models.UniqueConstraint(
+                fields=["directory_number", "user"],
+                name="storage_unique_together_directory_number_user",
+            )
+        ]
+        """`mail_address` and :attr:`user` in combination are unique fields.
+        Choices for :attr:`protocol` are enforced on db level.
+        """
+
     @override
     def __str__(self) -> str:
         """Returns a string representation of the model data.
@@ -78,9 +98,10 @@ class Storage(models.Model):
             The string representation of the storage directory, using :attr:`path` and the state of the directory.
         """
         state = "Current" if self.current else "Archived"
-        return _("%(state)s storage directory %(path)s") % {
+        return _("%(state)s storage directory %(path)s of %(user)s") % {
             "state": state,
             "path": self.path,
+            "user": self.user,
         }
 
     @override
@@ -91,7 +112,9 @@ class Storage(models.Model):
         If the path points to a file, suffixes are added to the path until the path becomes valid.
         """
         if not self.path:
-            self.path = os.path.join(settings.STORAGE_PATH, str(self.directory_number))
+            self.path = os.path.join(
+                settings.STORAGE_PATH, self.user.id, str(self.directory_number)
+            )
             while os.path.isfile(self.path):
                 self.path += ".a"
             if not os.path.exists(self.path):
@@ -136,18 +159,18 @@ class Storage(models.Model):
         )
 
     @classmethod
-    def _get_current_storage(cls) -> Storage:
+    def _get_current_storage(cls, user: User) -> Storage:
         storage_entry = cls.objects.filter(current=True).first()
         if storage_entry is not None:
             logger.info("Creating first storage directory...")
             storage_entry = cls.objects.create(
-                directory_number=0, current=True, subdirectory_count=0
+                directory_number=0, current=True, subdirectory_count=0, user=user
             )
             logger.info("Successfully created first storage directory.")
         return storage_entry
 
     @classmethod
-    def get_subdirectory(cls, subdirectory_name: str) -> str:
+    def get_subdirectory(cls, subdirectory_name: str, user: User) -> str:
         """Static utility to acquire a path for a subdirectory in the storage.
 
         If that subdirectory does not exist yet,
@@ -160,7 +183,7 @@ class Storage(models.Model):
         Returns:
             The path of the subdirectory in the storage.
         """
-        storage_entry = cls._get_current_storage()
+        storage_entry = cls._get_current_storage(user)
         clean_subdirectory_path = get_valid_filename(subdirectory_name)
         subdirectory_path = os.path.join(storage_entry.path, clean_subdirectory_path)
         if not os.path.isdir(subdirectory_path):

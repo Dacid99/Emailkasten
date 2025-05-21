@@ -180,7 +180,9 @@ class Attachment(
 
         logger.debug("Storing %s ...", self)
 
-        dir_path = Storage.get_subdirectory(self.email.message_id)
+        dir_path = Storage.get_subdirectory(
+            self.email.message_id, self.email.mailbox.account.user
+        )
         preliminary_file_path = os.path.join(dir_path, self.file_name)
         file_path = write_attachment(preliminary_file_path, attachment_payload)
         if file_path:
