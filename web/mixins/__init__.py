@@ -19,7 +19,8 @@
 """web.mixins package containing forms for the Emailkasten webapp views."""
 
 from .CustomActionMixin import CustomActionMixin
+from .PageSizeMixin import PageSizeMixin
 from .TestActionMixin import TestActionMixin
 
 
-__all__ = ["CustomActionMixin", "TestActionMixin"]
+__all__ = ["CustomActionMixin", "PageSizeMixin", "TestActionMixin"]
