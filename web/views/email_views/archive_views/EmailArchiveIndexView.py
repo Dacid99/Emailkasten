@@ -18,7 +18,10 @@
 
 """:mod:`web.views.email_views.archive_views.EmailArchiveIndexView` module with the EmailArchiveIndexView view."""
 
+from typing import Any, override
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
 from django.views.generic.dates import ArchiveIndexView
 
 from .EmailArchiveMixin import EmailArchiveMixin
@@ -30,3 +33,9 @@ class EmailArchiveIndexView(LoginRequiredMixin, EmailArchiveMixin, ArchiveIndexV
     URL_NAME = EmailArchiveMixin.BASE_URL_NAME + "-index"
     template_name = EmailArchiveMixin.BASE_TEMPLATE_NAME + "index.html"
     context_object_name = "object_list"
+
+    @override
+    def get_context_data(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(*args, **kwargs)
+        context["today"] = timezone.now()
+        return context

@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block archive_title %}
-    - {% translate "Day" %}
+    - {% translate "Day" %} -
 {% endblock archive_title %}
 
 {% block header_archive_title %}
@@ -11,7 +11,11 @@
 {% endblock header_archive_title %}
 
 {% block header_subtitle %}
-    {{ day|date:"Y - m - d" }}
+    <a href="{% url 'web:email-archive-year' day.year %}"
+       class="link-primary link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ day|date:"Y" }}</a>
+    - <a href="{% url 'web:email-archive-month' day.year day.month %}"
+    class="link-primary link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ day|date:"m" }}</a>
+    - {{ day|date:"d" }}
 {% endblock header_subtitle %}
 
 {% block previous_date_url %}

@@ -2,13 +2,33 @@
 
 {% load i18n %}
 
+{% block archive_title %}
+    - {% translate "Latest" %} -
+{% endblock archive_title %}
+
 {% block header_archive_title %}
     - {% translate "Latest" %}
 {% endblock header_archive_title %}
 
+{% block previous_date_url %}
+    {% url 'web:email-archive-day' today.year today.month today.day %}
+{% endblock previous_date_url %}
+
+{% block previous_date_name %}
+    - {% translate "Today" %}
+{% endblock previous_date_name %}
+
+{% block next_date_url %}
+    {% url 'web:email-archive-week' today.year today.isocalendar.week %}
+{% endblock next_date_url %}
+
+{% block next_date_name %}
+    - {% translate "This week" %}
+{% endblock next_date_name %}
+
 {% block date_list_bar %}
     {% for date in date_list %}
-        <a class="list-group-item list-list-group-item-action"
-           href="{% url 'email-archive-year' date.year %}">{{ date|date:"Y" }}</a>
+        <a class="btn btn-outline-primary"
+           href="{% url 'web:email-archive-year' date.year %}">{{ date|date:"Y" }}</a>
     {% endfor %}
 {% endblock date_list_bar %}
