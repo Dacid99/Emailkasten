@@ -32,7 +32,7 @@
 
 - Storage for more cases of conflicting storage
 - views customactions for response with updated modeldata
-- use of cleanFilename
+- use of get_valid_filename
 
 ## To implement
 

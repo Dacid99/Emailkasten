@@ -30,6 +30,7 @@ from typing import TYPE_CHECKING, Any, Final, override
 
 from django.conf import settings
 from django.db import models, transaction
+from django.utils.text import get_valid_filename
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 
@@ -37,7 +38,7 @@ from Emailkasten.utils.workarounds import get_config
 
 from ..constants import HeaderFields
 from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
-from ..utils.file_managment import clean_filename, save_store
+from ..utils.file_managment import save_store
 from ..utils.mail_parsing import (
     eml2html,
     get_bodytexts,
@@ -262,7 +263,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         logger.debug("Storing %s as eml ...", self)
 
         dir_path = Storage.get_subdirectory(self.message_id)
-        clean_message_id = clean_filename(self.message_id)
+        clean_message_id = get_valid_filename(self.message_id)
         preliminary_file_path = os.path.join(dir_path, clean_message_id + ".eml")
         file_path = write_message_to_eml(preliminary_file_path, email_data)
         if file_path:
@@ -298,7 +299,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         logger.debug("Rendering and storing %s  ...", self)
 
         dir_path = Storage.get_subdirectory(self.message_id)
-        clean_message_id = clean_filename(self.message_id)
+        clean_message_id = get_valid_filename(self.message_id)
         preliminary_file_path = os.path.join(dir_path, clean_message_id + ".html")
         file_path = convert_and_store_html_message(preliminary_file_path, email_data)
         if file_path:

@@ -26,11 +26,10 @@ from typing import Any, override
 
 from django.conf import settings
 from django.db import models
+from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 
 from Emailkasten.utils.workarounds import get_config
-
-from ..utils.file_managment import clean_filename
 
 
 logger = logging.getLogger(__name__)
@@ -129,14 +128,26 @@ class Storage(models.Model):
         """
         self.current = False
         self.save(update_fields=["current"])
-        Storage.objects.create(
+        self.objects.create(
             directory_number=self.directory_number + 1,
             current=True,
             subdirectory_count=0,
+            user=self.user,
         )
 
-    @staticmethod
-    def get_subdirectory(subdirectory_name: str) -> str:
+    @classmethod
+    def _get_current_storage(cls) -> Storage:
+        storage_entry = cls.objects.filter(current=True).first()
+        if storage_entry is not None:
+            logger.info("Creating first storage directory...")
+            storage_entry = cls.objects.create(
+                directory_number=0, current=True, subdirectory_count=0
+            )
+            logger.info("Successfully created first storage directory.")
+        return storage_entry
+
+    @classmethod
+    def get_subdirectory(cls, subdirectory_name: str) -> str:
         """Static utility to acquire a path for a subdirectory in the storage.
 
         If that subdirectory does not exist yet,
@@ -149,15 +160,8 @@ class Storage(models.Model):
         Returns:
             The path of the subdirectory in the storage.
         """
-        storage_entry = Storage.objects.filter(current=True).first()
-        if not storage_entry:
-            logger.info("Creating first storage directory...")
-            storage_entry = Storage.objects.create(
-                directory_number=0, current=True, subdirectory_count=0
-            )
-            logger.info("Successfully created first storage directory.")
-
-        clean_subdirectory_path = clean_filename(subdirectory_name)
+        storage_entry = cls._get_current_storage()
+        clean_subdirectory_path = get_valid_filename(subdirectory_name)
         subdirectory_path = os.path.join(storage_entry.path, clean_subdirectory_path)
         if not os.path.isdir(subdirectory_path):
             while os.path.isfile(subdirectory_path):
@@ -174,8 +178,8 @@ class Storage(models.Model):
 
         return subdirectory_path
 
-    @staticmethod
-    def healthcheck() -> bool:
+    @classmethod
+    def healthcheck(cls) -> bool:
         """Provides a healthcheck for the storage.
 
         Returns:
@@ -183,12 +187,12 @@ class Storage(models.Model):
             False if there is no unique current storage directory
             or the count of subdirectories for one of the directories is wrong.
         """
-        unique_current = Storage.objects.filter(current=True).count() < 2
+        unique_current = cls.objects.filter(current=True).count() < 2
         if not unique_current:
             logger.critical("More than one currently used storage direcory!!!")
             return False
 
-        correct_dir_count = Storage.objects.count() == len(
+        correct_dir_count = cls.objects.count() == len(
             os.listdir(settings.STORAGE_PATH)
         )
         if not correct_dir_count:
@@ -199,7 +203,7 @@ class Storage(models.Model):
 
         correct_subdir_count = all(
             storage.subdirectory_count == len(os.listdir(storage.path))
-            for storage in Storage.objects.all()
+            for storage in cls.objects.all()
         )
         if not correct_subdir_count:
             logger.critical(

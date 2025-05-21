@@ -28,13 +28,14 @@ from typing import TYPE_CHECKING, Any, Final, override
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 
 from Emailkasten.utils.workarounds import get_config
 
 from ..constants import HeaderFields
 from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
-from ..utils.file_managment import clean_filename, save_store
+from ..utils.file_managment import save_store
 from .Storage import Storage
 
 
@@ -130,7 +131,7 @@ class Attachment(
         Cleans the filename.
         Saves the data to storage if configured.
         """
-        self.file_name = clean_filename(self.file_name)
+        self.file_name = get_valid_filename(self.file_name)
         attachment_payload = kwargs.pop("attachment_payload", None)
         super().save(*args, **kwargs)
         if attachment_payload is not None and self.email.mailbox.save_attachments:
