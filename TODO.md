@@ -24,6 +24,7 @@
 
 - safeimap and pop classes
 - move all signals into models
+- use tempfile for intermediate files
 - rework test:
   - disable all signals in tests
   - tests more implementation agnostic
@@ -60,6 +61,7 @@
 
 ## To fix
 
+- email lookups in creation methods dont check user!
 - mysql may need some more care for use with timezone <https://docs.djangoproject.com/en/5.2/ref/databases/#time-zone-definitions>
 - cascase doesnt trigger delete!
 - optics:

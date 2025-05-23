@@ -23,6 +23,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, Final, override
 
+from django.core.files.storage import default_storage
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
@@ -109,7 +110,7 @@ class AttachmentViewSet(
 
         attachment_file_name = attachment.file_name
         return FileResponse(
-            open(attachment_file_path, "rb"),
+            default_storage.open(attachment_file_path, "rb"),
             as_attachment=True,
             filename=attachment_file_name,
         )

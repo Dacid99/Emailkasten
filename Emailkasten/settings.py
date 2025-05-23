@@ -182,6 +182,18 @@ CONN_HEALTH_CHECKS = True
 # Storage
 STORAGE_PATH = "/mnt/archive"
 
+STORAGES = {
+    "default": {
+        "BACKEND": "core.backends.ShardedFileSystemStorage",
+        "OPTIONS": {
+            "location": STORAGE_PATH,
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -411,10 +423,10 @@ CONSTANCE_CONFIG = {
         _("The default maximum size of a daemon logfile in bytes"),
         int,
     ),
-    "STORAGE_MAX_SUBDIRS_PER_DIR": (
+    "STORAGE_MAX_FILES_PER_DIR": (
         1000,
         _(
-            "The maximum numbers of subdirectories in one storage unit. Must not exceed 64000 for ext4 filesystem!"
+            "The maximum numbers of files in one storage unit. Must not exceed 64000 for ext4 filesystem!"
         ),
         int,
     ),
@@ -512,7 +524,7 @@ CONSTANCE_FIELDSETS = (
     ),
     (
         _("Storage Settings"),
-        ("STORAGE_MAX_SUBDIRS_PER_DIR", "TEMPORARY_STORAGE_DIRECTORY"),
+        ("STORAGE_MAX_FILES_PER_DIR", "TEMPORARY_STORAGE_DIRECTORY"),
     ),
     (
         _("API Settings"),

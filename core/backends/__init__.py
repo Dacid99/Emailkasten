@@ -19,7 +19,12 @@
 """core.backends package containing additional backends for the Emailkasten application."""
 
 from .DaemonHealthCheckBackend import DaemonHealthCheckBackend
+from .ShardedFileSystemStorage import ShardedFilesystemStorage
 from .StorageIntegrityCheckBackend import StorageIntegrityCheckBackend
 
 
-__all__ = ["DaemonHealthCheckBackend", "StorageIntegrityCheckBackend"]
+__all__ = [
+    "DaemonHealthCheckBackend",
+    "ShardedFilesystemStorage",
+    "StorageIntegrityCheckBackend",
+]

@@ -23,6 +23,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, Final, override
 
+from django.core.files.storage import default_storage
 from django.db.models import Prefetch
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -130,7 +131,9 @@ class EmailViewSet(
 
         file_name = os.path.basename(file_path)
         return FileResponse(
-            open(file_path, "rb"), as_attachment=True, filename=file_name
+            default_storage.open(file_path, "rb"),
+            as_attachment=True,
+            filename=file_name,
         )
 
     URL_PATH_DOWNLOAD_HTML = "download-html"
@@ -164,9 +167,7 @@ class EmailViewSet(
         html_file_name = os.path.basename(html_file_path)
         response = FileResponse(
             # pylint: disable-next=consider-using-with
-            open(  # noqa: SIM115  # this is the recommended usage for FileResponse, see https://docs.djangoproject.com/en/5.2/ref/request-response/
-                html_file_path, "rb"
-            ),
+            default_storage.open(html_file_path, "rb"),
             as_attachment=False,
             filename=html_file_name,
             content_type="text/html",

@@ -21,11 +21,10 @@
 from __future__ import annotations
 
 import logging
-import os
 from hashlib import md5
-from typing import TYPE_CHECKING, Any, Final, override
+from typing import TYPE_CHECKING, Any, override
 
-from django.conf import settings
+from django.core.files.storage import default_storage
 from django.db import models
 from django.urls import reverse
 from django.utils.text import get_valid_filename
@@ -35,13 +34,10 @@ from Emailkasten.utils.workarounds import get_config
 
 from ..constants import HeaderFields
 from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
-from ..utils.file_managment import save_store
-from .Storage import Storage
 
 
 if TYPE_CHECKING:
     from email.message import Message
-    from io import BufferedWriter
 
     from .Email import Email
 
@@ -57,12 +53,9 @@ class Attachment(
     file_name = models.CharField(max_length=255)
     """The filename of the attachment."""
 
-    file_path = models.FilePathField(
-        path=settings.STORAGE_PATH, max_length=511, recursive=True, null=True
-    )
-    """The path where the attachment is stored. Unique together with :attr:`email`.
+    file_path = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    """The path in the storage where the attachment is stored. Unique together with :attr:`email`.
     Can be null if the attachment has not been saved (null does not collide with the unique constraint.).
-    Must contain :attr:`constance.get_config('STORAGE_PATH')`.
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_Attachment.post_delete_attachment`."""
 
     content_disposition = models.CharField(blank=True, default="", max_length=255)
@@ -104,14 +97,6 @@ class Attachment(
         db_table = "attachments"
         """The name of the database table for the attachments."""
 
-        constraints: Final[list[models.BaseConstraint]] = [
-            models.UniqueConstraint(
-                fields=["file_path", "email"],
-                name="attachment_unique_together_file_path_email",
-            )
-        ]
-        """:attr:`file_path` and :attr:`email` in combination are unique."""
-
     @override
     def __str__(self) -> str:
         """Returns a string representation of the model data.
@@ -128,7 +113,6 @@ class Attachment(
     def save(self, *args: Any, **kwargs: Any) -> None:
         """Extended :django::func:`django.models.Model.save` method.
 
-        Cleans the filename.
         Saves the data to storage if configured.
         """
         self.file_name = get_valid_filename(self.file_name)
@@ -147,14 +131,8 @@ class Attachment(
 
         if self.file_path:
             logger.debug("Removing %s from storage ...", self)
-            try:
-                os.remove(self.file_path)
-                logger.debug(
-                    "Successfully removed the attachment file from storage.",
-                    exc_info=True,
-                )
-            except Exception:
-                logger.exception("An exception occured removing %s!", self.file_path)
+            default_storage.delete(self.file_path)
+            logger.debug("Successfully removed the attachment file from storage.")
 
         return delete_return
 
@@ -174,23 +152,14 @@ class Attachment(
             logger.debug("%s is already stored.", self)
             return
 
-        @save_store
-        def write_attachment(file: BufferedWriter, attachment_payload: bytes) -> None:
-            file.write(attachment_payload)
-
         logger.debug("Storing %s ...", self)
 
-        dir_path = Storage.get_subdirectory(
-            self.email.message_id, self.email.mailbox.account.user
+        self.file_path = default_storage.save(
+            self.pk + "_" + self.file_name,
+            attachment_payload,
         )
-        preliminary_file_path = os.path.join(dir_path, self.file_name)
-        file_path = write_attachment(preliminary_file_path, attachment_payload)
-        if file_path:
-            self.file_path = file_path
-            self.save(update_fields=["file_path"])
-            logger.debug("Successfully stored attachment.")
-        else:
-            logger.error("Failed to store %s!", self)
+        self.save(update_fields=["file_path"])
+        logger.debug("Successfully stored attachment.")
 
     @classmethod
     def create_from_email_message(

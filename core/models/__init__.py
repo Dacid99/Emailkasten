@@ -26,7 +26,7 @@ from .Email import Email
 from .EmailCorrespondent import EmailCorrespondent
 from .Mailbox import Mailbox
 from .MailingList import MailingList
-from .Storage import Storage
+from .StorageShard import StorageShard
 
 
 __all__ = [
@@ -38,5 +38,5 @@ __all__ = [
     "EmailCorrespondent",
     "Mailbox",
     "MailingList",
-    "Storage",
+    "StorageShard",
 ]

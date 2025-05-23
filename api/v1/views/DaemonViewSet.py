@@ -23,6 +23,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, Final, override
 
+from django.core.files.storage import default_storage
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
@@ -236,7 +237,7 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
 
         daemon_log_filename = os.path.basename(daemon_log_filepath)
         return FileResponse(
-            open(daemon_log_filepath, "rb"),
+            default_storage.open(daemon_log_filepath, "rb"),
             as_attachment=True,
             filename=daemon_log_filename,
         )

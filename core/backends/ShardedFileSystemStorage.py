@@ -16,25 +16,26 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`core.backends.StorageIntegrityCheckBackend.StorageIntegrityCheckBackend` class."""
+"""Module with the :class:`core.backends.ShardedFilesystemStorage` storage class."""
 
-from health_check.backends import BaseHealthCheckBackend, HealthCheckException
+import os
+from typing import override
+
+from django.core.files.storage import FileSystemStorage
 
 from ..models import StorageShard
 
 
-class StorageIntegrityCheckBackend(BaseHealthCheckBackend):
-    """Health check backend for :func:`core.models.StorageShard.StorageShard.healthcheck`."""
+class ShardedFilesystemStorage(FileSystemStorage):
+    """FileSystemStorage backend for sharded storage."""
 
-    critical_service = False
-
-    def check_status(self) -> None:
-        """Implements the healthcheck.
-
-        Raises:
-            HealthCheckException: If :func:`core.models.StorageShard.StorageShard.healthcheck` fails.
-        """
-        if not StorageShard.healthcheck():
-            raise HealthCheckException(
-                "The storage integrity is compromised, check the logs for critical level errors!"
-            )
+    @override
+    def _save(self, name: str, content: bytes) -> str:
+        """Extended method for saving files in current storage directory with safe filename."""
+        storage_shard = StorageShard.get_current_storage()
+        name = self.generate_filename(
+            os.path.join(str(storage_shard.shard_directory_name), name)
+        )
+        save_return = super()._save(name, content)
+        storage_shard.increment_file_count()
+        return save_return

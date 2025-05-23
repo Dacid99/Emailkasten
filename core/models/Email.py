@@ -23,14 +23,12 @@ from __future__ import annotations
 import contextlib
 import email
 import logging
-import os
 from email import policy
 from hashlib import md5
 from typing import TYPE_CHECKING, Any, Final, override
 
-from django.conf import settings
+from django.core.files.storage import default_storage
 from django.db import models, transaction
-from django.utils.text import get_valid_filename
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 
@@ -38,7 +36,6 @@ from Emailkasten.utils.workarounds import get_config
 
 from ..constants import HeaderFields
 from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
-from ..utils.file_managment import save_store
 from ..utils.mail_parsing import (
     eml2html,
     get_bodytexts,
@@ -49,12 +46,9 @@ from ..utils.mail_parsing import (
 from .Attachment import Attachment
 from .EmailCorrespondent import EmailCorrespondent
 from .MailingList import MailingList
-from .Storage import Storage
 
 
 if TYPE_CHECKING:
-    from io import BufferedWriter
-
     from .Correspondent import Correspondent
     from .Mailbox import Mailbox
 
@@ -66,7 +60,7 @@ logger = logging.getLogger(__name__)
 class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models.Model):
     """Database model for an email."""
 
-    message_id = models.CharField(max_length=255)
+    message_id = models.CharField(max_length=255, blank=True, default="")
     """The messageID header of the mail. Unique together with :attr:`mailbox`."""
 
     datetime = models.DateTimeField()
@@ -94,29 +88,15 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     datasize = models.PositiveIntegerField()
     """The bytes size of the mail."""
 
-    eml_filepath = models.FilePathField(
-        path=settings.STORAGE_PATH,
-        max_length=255,
-        recursive=True,
-        match=r".*\.eml$",
-        null=True,
-    )
-    """The path where the mail is stored in .eml format.
+    eml_filepath = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    """The path in the storage where the mail is stored in .eml format.
     Can be null if the mail has not been saved.
-    Must contain :attr:`constance.get_config('STORAGE_PATH')` and end on .eml .
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_Email.post_delete_email_files`.
     """
 
-    html_filepath = models.FilePathField(
-        path=settings.STORAGE_PATH,
-        max_length=255,
-        recursive=True,
-        match=r".*\.html$",
-        null=True,
-    )
-    """The path where the html version of the mail is stored.
-    Can be null if the conversion process was no successful.
-    Must contain :attr:`constance.get_config('STORAGE_PATH')` and end on `.html`.
+    html_filepath = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    """The path in the storage where the html version of the mail is stored.
+    Can be null if the conversion process was not successful.
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_Email.post_delete_email_files`."""
 
     is_favorite = models.BooleanField(default=False)
@@ -197,7 +177,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     def save(self, *args: Any, **kwargs: Any) -> None:
         """Extended :django::func:`django.models.Model.save` method.
 
-        Renders and save the data to eml if configured.
+        Renders and saves the data to eml if configured.
         """
         email_data = kwargs.pop("email_data", None)
         super().save(*args, **kwargs)
@@ -217,26 +197,12 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
 
         if self.eml_filepath:
             logger.debug("Removing %s from storage ...", self)
-            try:
-                os.remove(self.eml_filepath)
-                logger.debug(
-                    "Successfully removed the eml file from storage.", exc_info=True
-                )
-            except Exception:
-                logger.exception("An exception occured removing %s!", self.eml_filepath)
-
+            default_storage.delete(self.eml_filepath)
         if self.html_filepath:
             logger.debug("Removing %s from storage ...", self)
-            try:
-                os.remove(self.html_filepath)
-                logger.debug(
-                    "Successfully removed the html file from storage.",
-                    exc_info=True,
-                )
-            except Exception:
-                logger.exception(
-                    "An exception occured removing %s!", self.html_filepath
-                )
+            default_storage.delete(self.html_filepath)
+
+            logger.debug("Successfully removed the html file from storage.")
 
         return delete_return
 
@@ -244,10 +210,6 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         """Saves the email to the storage in eml format.
 
         If the file already exists, does not overwrite.
-        If an error occurs, removes the incomplete file.
-
-        Note:
-            Uses :func:`core.utils.file_managment.save_store` to wrap the storing process.
 
         Args:
             email_data: The data of the email to be saved.
@@ -256,31 +218,19 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             logger.debug("%s is already stored as eml.", self)
             return
 
-        @save_store
-        def write_message_to_eml(eml_file: BufferedWriter, email_data: bytes) -> None:
-            eml_file.write(email_data)
-
         logger.debug("Storing %s as eml ...", self)
 
-        dir_path = Storage.get_subdirectory(self.message_id, self.mailbox.account.user)
-        clean_message_id = get_valid_filename(self.message_id)
-        preliminary_file_path = os.path.join(dir_path, clean_message_id + ".eml")
-        file_path = write_message_to_eml(preliminary_file_path, email_data)
-        if file_path:
-            self.eml_filepath = file_path
-            self.save(update_fields=["eml_filepath"])
-            logger.debug("Successfully stored email as eml.")
-        else:
-            logger.error("Failed to store %s as eml!", self)
+        self.eml_filepath = default_storage.save(
+            self.pk + "_" + self.message_id + ".eml",
+            email_data,
+        )
+        self.save(update_fields=["eml_filepath"])
+        logger.debug("Successfully stored email as eml.")
 
     def save_html_to_storage(self, email_data: bytes) -> None:
         """Converts the email to html and writes the result to the storage.
 
         If the file already exists, does not overwrite.
-        If an error occurs, removes the incomplete file.
-
-        Note:
-            Uses :func:`core.utils.file_managment.save_store` to wrap the storing process.
 
         Args:
             email_data: The data of the email to be converted.
@@ -289,25 +239,16 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             logger.debug("%s is already stored as html.", self)
             return
 
-        @save_store
-        def convert_and_store_html_message(
-            html_file: BufferedWriter, email_data: bytes
-        ) -> None:
-            html_message = eml2html(email_data)
-            html_file.write(html_message.encode())
-
         logger.debug("Rendering and storing %s  ...", self)
 
-        dir_path = Storage.get_subdirectory(self.message_id, self.mailbox.account.user)
-        clean_message_id = get_valid_filename(self.message_id)
-        preliminary_file_path = os.path.join(dir_path, clean_message_id + ".html")
-        file_path = convert_and_store_html_message(preliminary_file_path, email_data)
-        if file_path:
-            self.html_filepath = file_path
-            self.save(update_fields=["html_filepath"])
-            logger.debug("Successfully converted and stored email.")
-        else:
-            logger.error("Failed to convert and store %s!", self)
+        html_message = eml2html(email_data)
+
+        self.html_filepath = default_storage.save(
+            self.pk + "_" + self.message_id + ".html",
+            html_message.encode(),
+        )
+        self.save(update_fields=["html_filepath"])
+        logger.debug("Successfully converted and stored email.")
 
     def sub_conversation(self) -> list[Email]:
         """Gets all emails that are follow this email in the conversation.
@@ -393,7 +334,10 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
                 for referenced_message_id in referenced_message_ids.split(","):
                     with contextlib.suppress(Email.DoesNotExist):
                         self.references.add(
-                            Email.objects.get(message_id=referenced_message_id.strip())
+                            Email.objects.get(
+                                message_id=referenced_message_id.strip(),
+                                mailbox__account__user=self.mailbox.account.user,
+                            )
                         )
 
     @classmethod

@@ -29,7 +29,7 @@ from .models import (
     EmailCorrespondent,
     Mailbox,
     MailingList,
-    Storage,
+    StorageShard,
 )
 
 
@@ -43,6 +43,6 @@ admin.site.register(
         EmailCorrespondent,
         Mailbox,
         MailingList,
-        Storage,
+        StorageShard,
     ]
 )
