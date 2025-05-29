@@ -8,7 +8,6 @@
 - combined filter for correspondent with mention
 - streamable logs for daemons
 - extensive database statistics
-- download mailboxes and accounts
 - option to prohibit daemon for spambox
 - tooltips
 - show pdf attachments in pdfjs
@@ -28,6 +27,7 @@
 - rework test:
   - disable all signals in tests
   - tests more implementation agnostic
+  - use more of the unittest api
 
 ## To test
 
@@ -58,9 +58,12 @@
 
 - complete app
 - mailinglist
+- uploads
+- batch-downloads
 
 ## To fix
 
+- replace os.exists with defaultstorage.exists
 - email lookups in creation methods dont check user!
 - mysql may need some more care for use with timezone <https://docs.djangoproject.com/en/5.2/ref/databases/#time-zone-definitions>
 - cascase doesnt trigger delete!
