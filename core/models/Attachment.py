@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import logging
 from hashlib import md5
+from io import BytesIO
 from typing import TYPE_CHECKING, Any, override
 
 from django.core.files.storage import default_storage
@@ -140,10 +141,6 @@ class Attachment(
         """Saves the attachment file to the storage.
 
         If the file already exists, does not overwrite.
-        If an error occurs, removes the incomplete file.
-
-        Note:
-            Uses :func:`core.utils.file_managment.save_store` to wrap the storing process.
 
         Args:
             attachment_data: The data of the attachment to be saved.
@@ -155,8 +152,8 @@ class Attachment(
         logger.debug("Storing %s ...", self)
 
         self.file_path = default_storage.save(
-            self.pk + "_" + self.file_name,
-            attachment_payload,
+            str(self.pk) + "_" + self.file_name,
+            BytesIO(attachment_payload),
         )
         self.save(update_fields=["file_path"])
         logger.debug("Successfully stored attachment.")

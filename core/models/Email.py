@@ -25,6 +25,7 @@ import email
 import logging
 from email import policy
 from hashlib import md5
+from io import BytesIO
 from typing import TYPE_CHECKING, Any, Final, override
 
 from django.core.files.storage import default_storage
@@ -222,7 +223,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
 
         self.eml_filepath = default_storage.save(
             str(self.pk) + "_" + self.message_id + ".eml",
-            email_data,
+            BytesIO(email_data),
         )
         self.save(update_fields=["eml_filepath"])
         logger.debug("Successfully stored email as eml.")
@@ -245,7 +246,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
 
         self.html_filepath = default_storage.save(
             str(self.pk) + "_" + self.message_id + ".html",
-            html_message.encode(),
+            BytesIO(html_message.encode()),
         )
         self.save(update_fields=["html_filepath"])
         logger.debug("Successfully converted and stored email.")

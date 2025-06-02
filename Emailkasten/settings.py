@@ -184,7 +184,7 @@ STORAGE_PATH = "/mnt/archive"
 
 STORAGES = {
     "default": {
-        "BACKEND": "core.backends.ShardedFileSystemStorage",
+        "BACKEND": "core.backends.ShardedFileSystemStorage.ShardedFileSystemStorage",
         "OPTIONS": {
             "location": STORAGE_PATH,
         },

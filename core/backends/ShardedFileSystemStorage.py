@@ -26,7 +26,7 @@ from django.core.files.storage import FileSystemStorage
 from ..models import StorageShard
 
 
-class ShardedFilesystemStorage(FileSystemStorage):
+class ShardedFileSystemStorage(FileSystemStorage):
     """FileSystemStorage backend for sharded storage."""
 
     @override
@@ -34,7 +34,9 @@ class ShardedFilesystemStorage(FileSystemStorage):
         """Extended method for saving files in current storage directory with safe filename."""
         storage_shard = StorageShard.get_current_storage()
         name = self.generate_filename(
-            os.path.join(str(storage_shard.shard_directory_name), name)
+            os.path.join(
+                str(storage_shard.shard_directory_name), name.replace("/", "_")
+            )
         )
         save_return = super()._save(name, content)
         storage_shard.increment_file_count()
