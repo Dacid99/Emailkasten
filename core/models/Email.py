@@ -42,10 +42,10 @@ from Emailkasten.utils.workarounds import get_config
 from ..constants import HeaderFields, SupportedEmailDownloadFormats, file_format_parsers
 from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
 from ..utils.mail_parsing import (
-    eml2html,
     get_bodytexts,
     get_header,
     is_x_spam,
+    message2html,
     parse_datetime_header,
 )
 from .Attachment import Attachment
@@ -104,10 +104,8 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_Email.post_delete_email_files`.
     """
 
-    html_filepath = models.CharField(max_length=255, unique=True, blank=True, null=True)
-    """The path in the storage where the html version of the mail is stored.
-    Can be null if the conversion process was not successful.
-    When this entry is deleted, the file will be removed by :func:`core.signals.delete_Email.post_delete_email_files`."""
+    html_version = models.TextField(default="", null=False, blank=True)
+    """A html version of the email."""
 
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mails. False by default."""
@@ -191,28 +189,21 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         """
         email_data = kwargs.pop("email_data", None)
         super().save(*args, **kwargs)
-        if email_data is not None:
-            if self.mailbox.save_to_eml:
-                self.save_eml_to_storage(email_data)
-            if self.mailbox.save_to_html:
-                self.save_html_to_storage(email_data)
+        if email_data is not None and self.mailbox.save_to_eml:
+            self.save_eml_to_storage(email_data)
 
     @override
     def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
         """Extended :django::func:`django.models.Model.delete` method.
 
-        Deletes :attr:`eml_filepath` and :attr:`html_filepath` files on deletion.
+        Deletes :attr:`eml_filepath` files on deletion.
         """
         delete_return = super().delete(*args, **kwargs)
 
         if self.eml_filepath:
-            logger.debug("Removing %s from storage ...", self)
+            logger.debug("Removing eml file for %s from storage ...", self)
             default_storage.delete(self.eml_filepath)
-        if self.html_filepath:
-            logger.debug("Removing %s from storage ...", self)
-            default_storage.delete(self.html_filepath)
-
-            logger.debug("Successfully removed the html file from storage.")
+            logger.debug("Successfully removed the eml file from storage.")
 
         return delete_return
 
@@ -236,29 +227,6 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         )
         self.save(update_fields=["eml_filepath"])
         logger.debug("Successfully stored email as eml.")
-
-    def save_html_to_storage(self, email_data: bytes) -> None:
-        """Converts the email to html and writes the result to the storage.
-
-        If the file already exists, does not overwrite.
-
-        Args:
-            email_data: The data of the email to be converted.
-        """
-        if self.html_filepath:
-            logger.debug("%s is already stored as html.", self)
-            return
-
-        logger.debug("Rendering and storing %s  ...", self)
-
-        html_message = eml2html(email_data)
-
-        self.html_filepath = default_storage.save(
-            str(self.pk) + "_" + self.message_id + ".html",
-            BytesIO(html_message.encode()),
-        )
-        self.save(update_fields=["html_filepath"])
-        logger.debug("Successfully converted and stored email.")
 
     def sub_conversation(self) -> list[Email]:
         """Gets all emails that follow this email in the conversation.
@@ -396,6 +364,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             datasize=len(email_bytes),
             plain_bodytext=bodytexts.get("plain", ""),
             html_bodytext=bodytexts.get("html", ""),
+            html_version=message2html(email_message),
         )
 
     def add_correspondents(self) -> None:
@@ -501,7 +470,11 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     def has_download(self) -> bool:
         return self.eml_filepath is not None
 
+    def get_absolute_thumbnail_url(self) -> str:
+        """Email does not provide a url for thumbnail download."""
+        return ""
+
     @override
     @property
     def has_thumbnail(self) -> bool:
-        return self.html_filepath is not None
+        return self.html_version != ""

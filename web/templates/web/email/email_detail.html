@@ -53,12 +53,6 @@
             {% translate "Account" %}: <a href="{{ object.mailbox.account.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.mailbox.account.mail_address }}</a>
         </li>
-        {% if object.in_reply_to %}
-            <li class="list-group-item list-group-item-action">
-                {% translate "In reply to" %}: <a href="{{ object.in_reply_to.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.in_reply_to.message_id }}</a>
-            </li>
-        {% endif %}
         <div class="accordion accordion-flush" id="content-accordion">
             <li class="list-group-item accordion-item">
                 <div class="accordion-header" id="plain-text-header">
@@ -99,11 +93,11 @@
 {% endblock card_content %}
 
 {% block thumbnail %}
-    <iframe src="{{ object.get_absolute_thumbnail_url }}"
+    <iframe srcdoc="{{ object.html_version|safe }}"
             class="w-100 h-100 p-1"
             title="Email content"
             alt="Email content"
-            sandbox="allow-same-origin"></iframe>
+            sandbox></iframe>
 {% endblock thumbnail %}
 
 
@@ -158,6 +152,43 @@
 
         </div>
     </div>
+    {% if object.in_reply_to.exists %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% translate "In Reply To" %}</h4>
+                <ul class="list-group list-group-flush">
+                    {% for in_reply_to_email in object.in_reply_to %}
+                        <li class="list-group-item list-group-item-action">
+                            <a href="{{ in_reply_to_email.get_absolute_url }}"
+                               class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                {{ in_reply_to_email.message_id }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if object.replies.exists %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% translate "Replies" %}</h4>
+                :
+                <ul class="list-group list-group-flush">
+                    {% for reply_email in object.replies %}
+                        <li class="list-group-item list-group-item-action">
+                            <a href="{{ reply_email.get_absolute_url }}"
+                               class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                {{ reply_email.message_id }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
     {% if object.references.exists %}
         <div class="card">
             <div class="card-body">

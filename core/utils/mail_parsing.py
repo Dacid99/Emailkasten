@@ -29,7 +29,6 @@ import email.header
 import email.utils
 import logging
 from base64 import b64encode
-from email import policy
 from typing import TYPE_CHECKING
 
 import imap_tools.imap_utf7
@@ -164,7 +163,7 @@ def parse_mailbox_name(mailbox_bytes: bytes) -> str:
     )
 
 
-def eml2html(email_bytes: bytes) -> str:
+def message2html(email_message: Message[str, str]) -> str:
     """Creates a html presentation of an email.
 
     Args:
@@ -176,7 +175,6 @@ def eml2html(email_bytes: bytes) -> str:
     Returns:
         The html representation of the email.
     """
-    email_message = email.message_from_bytes(email_bytes, policy=policy.default)  # type: ignore[arg-type]  # email stubs are not up-to-date for EmailMessage, will be fixed by mypy 1.16.0: https://github.com/python/typeshed/issues/13593
     ignore_plain_text = False
 
     html_wrapper = get_config("HTML_WRAPPER")

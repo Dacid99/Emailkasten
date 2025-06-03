@@ -413,9 +413,6 @@ def fake_email_with_file(faker, fake_fs, fake_mailbox, fake_mailing_list) -> Ema
         eml_filepath=default_storage.save(
             faker.file_name(extension="eml"), BytesIO(test_eml_bytes)
         ),
-        html_filepath=default_storage.save(
-            faker.file_name(extension="html"), BytesIO(faker.text().encode())
-        ),
     )
 
 
@@ -564,9 +561,6 @@ def fake_other_email_with_file(
         mailinglist=fake_other_mailing_list,
         eml_filepath=default_storage.save(
             faker.file_name(extension="eml"), BytesIO(test_eml_bytes)
-        ),
-        html_filepath=default_storage.save(
-            faker.file_name(extension="html"), BytesIO(faker.text().encode())
         ),
     )
 

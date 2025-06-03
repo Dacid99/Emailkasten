@@ -66,7 +66,6 @@ def complete_database(
         mailbox=other_mailbox,
         mailinglist=fake_mailing_list,
         eml_filepath=faker.file_name(extension="eml"),
-        html_filepath=faker.file_name(extension="png"),
     )
     baker.make(
         EmailCorrespondent,

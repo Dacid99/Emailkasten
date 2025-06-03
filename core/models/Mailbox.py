@@ -85,15 +85,6 @@ class Mailbox(
     )
     """Whether to save the mails found in this mailbox as .eml files. :attr:`constance.get_config('DEFAULT_SAVE_TO_EML')` by default."""
 
-    save_to_html = models.BooleanField(
-        default=get_config("DEFAULT_SAVE_TO_HTML"),
-        verbose_name=_("Save as .html"),
-        help_text=_(
-            "Whether the emails in this mailbox will be converted and stored in .html files."
-        ),
-    )
-    """Whether to convert and save the mails found in this mailbox as .html files. :attr:`constance.get_config('DEFAULT_SAVE_TO_EML')` by default."""
-
     is_favorite = models.BooleanField(default=False)
     """Flags favorite mailboxes. False by default."""
 

@@ -474,11 +474,6 @@ CONSTANCE_CONFIG = {
         _("The default mailbox setting whether to store mails as eml."),
         bool,
     ),
-    "DEFAULT_SAVE_TO_HTML": (
-        True,
-        _("The default mailbox setting whether to convert and store mails as html."),
-        bool,
-    ),
     "DEFAULT_SAVE_ATTACHMENTS": (
         True,
         _("The default mailbox setting whether to store attachments."),
@@ -499,7 +494,6 @@ CONSTANCE_FIELDSETS = (
         _("Default Values"),
         (
             "DEFAULT_SAVE_TO_EML",
-            "DEFAULT_SAVE_TO_HTML",
             "DEFAULT_SAVE_TO_THUMBNAIL",
             "DEFAULT_SAVE_ATTACHMENTS",
             "DAEMON_CYCLE_PERIOD_DEFAULT",

@@ -91,8 +91,12 @@ class EmailViewSet(
             return Email.objects.none()
         return (
             Email.objects.filter(mailbox__account__user=self.request.user)
-            .select_related("mailinglist", "in_reply_to")
-            .prefetch_related("attachments", "references", "referenced_by")
+            .select_related(
+                "mailinglist",
+            )
+            .prefetch_related(
+                "attachments", "in_reply_to", "replies", "references", "referenced_by"
+            )
             .prefetch_related(
                 Prefetch(
                     "emailcorrespondents",
@@ -185,45 +189,6 @@ class EmailViewSet(
                 as_attachment=True,
                 filename=f"emails.{file_format.split("[", maxsplit=1)[0]}",
             )
-
-    URL_PATH_DOWNLOAD_HTML = "download-html"
-    URL_NAME_DOWNLOAD_HTML = "download-html"
-
-    @action(
-        detail=True,
-        methods=["get"],
-        url_path=URL_PATH_DOWNLOAD_HTML,
-        url_name=URL_NAME_DOWNLOAD_HTML,
-    )
-    def download_html(self, request: Request, pk: int | None = None) -> FileResponse:
-        """Action method downloading the html version of the mail.
-
-        Args:
-            request: The request triggering the action.
-            pk: The private key of the email to download. Defaults to None.
-
-        Raises:
-            Http404: If the filepath is not in the database or it doesnt exist.
-
-        Returns:
-            A fileresponse containing the requested file.
-        """
-        email = self.get_object()
-
-        html_file_path = email.html_filepath
-        if not html_file_path or not default_storage.exists(html_file_path):
-            raise Http404("Html file not found")
-
-        html_file_name = os.path.basename(html_file_path)
-        response = FileResponse(
-            default_storage.open(html_file_path, "rb"),
-            as_attachment=False,
-            filename=html_file_name,
-            content_type="text/html",
-        )
-        response.headers["X-Frame-Options"] = "SAMEORIGIN"
-        response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
-        return response
 
     URL_PATH_FULLCONVERSATION = "full-conversation"
     URL_NAME_FULLCONVERSATION = "full-conversation"

@@ -33,8 +33,6 @@ def test_post(fake_mailbox):
     form_data = form.cleaned_data
     assert "save_to_eml" in form_data
     assert form_data["save_to_eml"] == fake_mailbox.save_to_eml
-    assert "save_to_html" in form_data
-    assert form_data["save_to_html"] == fake_mailbox.save_to_html
     assert "save_attachments" in form_data
     assert form_data["save_attachments"] == fake_mailbox.save_attachments
     assert "is_favorite" in form_data
@@ -44,7 +42,7 @@ def test_post(fake_mailbox):
     assert "is_healthy" not in form_data
     assert "created" not in form_data
     assert "updated" not in form_data
-    assert len(form_data) == 4
+    assert len(form_data) == 3
 
 
 @pytest.mark.django_db
@@ -57,8 +55,6 @@ def test_get(fake_mailbox):
     assert "save_to_eml" in form_fields
     assert "save_to_eml" in form_initial_data
     assert form_initial_data["save_to_eml"] == fake_mailbox.save_to_eml
-    assert "save_to_html" in form_initial_data
-    assert form_initial_data["save_to_html"] == fake_mailbox.save_to_html
     assert "save_attachments" in form_fields
     assert "save_attachments" in form_initial_data
     assert form_initial_data["save_attachments"] == fake_mailbox.save_attachments
@@ -70,4 +66,4 @@ def test_get(fake_mailbox):
     assert "is_healthy" not in form_fields
     assert "created" not in form_fields
     assert "updated" not in form_fields
-    assert len(form_fields) == 4
+    assert len(form_fields) == 3
