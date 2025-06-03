@@ -101,10 +101,8 @@ def test_Email_fields(fake_email):
     assert fake_email.in_reply_to is None
     assert fake_email.datasize is not None
     assert isinstance(fake_email.datasize, int)
-    assert fake_email.eml_filepath is not None
-    assert isinstance(fake_email.eml_filepath, str)
-    assert fake_email.html_filepath is not None
-    assert isinstance(fake_email.html_filepath, str)
+    assert fake_email.eml_filepath is None
+    assert fake_email.html_filepath is None
     assert fake_email.is_favorite is False
 
     assert fake_email.mailinglist is not None
@@ -207,7 +205,7 @@ def test_Email_unique_constraints():
 
 @pytest.mark.django_db
 def test_Email_delete_emailfiles_success(
-    faker, mock_filesystem, fake_file_bytes, fake_email, mock_logger
+    faker, fake_fs, fake_file_bytes, fake_email, mock_logger
 ):
     """Tests :func:`core.models.Email.Email.delete`
     if the file removal is successful.
@@ -235,7 +233,7 @@ def test_Email_delete_emailfiles_success(
 
 @pytest.mark.django_db
 def test_Email_delete_email_delete_error(
-    mocker, faker, mock_filesystem, fake_file_bytes, fake_email, mock_logger
+    mocker, faker, fake_fs, fake_file_bytes, fake_email, mock_logger
 ):
     """Tests :func:`core.models.Email.Email.delete`
     if delete raises an exception.
@@ -344,7 +342,7 @@ def test_Email_save_with_data_failure(
 
 @pytest.mark.django_db
 def test_save_eml_to_storage_success(
-    mock_filesystem,
+    fake_fs,
     fake_file_bytes,
     fake_email,
     mock_logger,
@@ -367,7 +365,7 @@ def test_save_eml_to_storage_success(
 @pytest.mark.django_db
 def test_save_eml_to_storage_file_path_set(
     faker,
-    mock_filesystem,
+    fake_fs,
     fake_file_bytes,
     fake_email,
     mock_logger,
@@ -387,7 +385,7 @@ def test_save_eml_to_storage_file_path_set(
 
 @pytest.mark.django_db
 def test_save_html_to_storage_success(
-    mock_filesystem,
+    fake_fs,
     fake_file_bytes,
     fake_email,
     mock_logger,
@@ -415,7 +413,7 @@ def test_save_html_to_storage_success(
 @pytest.mark.django_db
 def test_save_html_to_storage_file_path_set(
     faker,
-    mock_filesystem,
+    fake_fs,
     fake_file_bytes,
     fake_email,
     mock_logger,

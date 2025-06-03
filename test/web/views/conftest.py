@@ -134,12 +134,6 @@ def custom_detail_action_url() -> Callable[[type[ModelViewSet], str, Model], str
     )
 
 
-@pytest.fixture(autouse=True)
-def mock_os_remove(mocker):
-    """Patches :func:`os.remove` to prevent errors."""
-    return mocker.patch("os.remove", autospec=True)
-
-
 @pytest.fixture
 def mock_Account_test_connection(mocker):
     """Patches :func:`core.models.Account.Account.test_connection` for testing of the test action."""

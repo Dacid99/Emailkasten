@@ -20,7 +20,6 @@
 
 from __future__ import annotations
 
-import os
 from typing import TYPE_CHECKING, Final, override
 
 from django.core.files.storage import default_storage
@@ -106,7 +105,7 @@ class AttachmentViewSet(
         attachment = self.get_object()
 
         attachment_file_path = attachment.file_path
-        if not attachment_file_path or not os.path.exists(attachment_file_path):
+        if not attachment_file_path or not default_storage.exists(attachment_file_path):
             raise Http404("Attachment file not found")
 
         attachment_file_name = attachment.file_name

@@ -22,6 +22,7 @@
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+from core.constants import SupportedEmailUploadFormats
 from web.forms.UploadEmailForm import UploadEmailForm
 
 
@@ -36,14 +37,7 @@ def file_payload(faker, fake_file):
 
 @pytest.mark.parametrize(
     "file_format",
-    [
-        "eml",
-        "mbox",
-        "babyl",
-        "mh",
-        "maildir",
-        "mmdf",
-    ],
+    SupportedEmailUploadFormats.values,
 )
 def test_post_success(file_payload, file_format):
     form = UploadEmailForm(data={"file_format": file_format}, files=file_payload)

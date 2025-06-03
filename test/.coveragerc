@@ -10,6 +10,7 @@ omit =
     */manage.py
     */asgi.py
     */wsgi.py
+    */test.py
 branch=True
 [report]
 format=total

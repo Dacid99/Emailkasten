@@ -28,7 +28,7 @@ from core.models import StorageShard
 
 
 @pytest.fixture(autouse=True)
-def always_mock_filesystem(mock_filesystem):
+def always_fake_fs(fake_fs):
     """The following tests all run against a mocked fs."""
 
 

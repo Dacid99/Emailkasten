@@ -60,8 +60,7 @@ def test_Attachment_fields(fake_attachment):
 
     assert fake_attachment.file_name is not None
     assert isinstance(fake_attachment.file_name, str)
-    assert fake_attachment.file_path is not None
-    assert isinstance(fake_attachment.file_path, str)
+    assert fake_attachment.file_path is None
     assert fake_attachment.datasize is not None
     assert isinstance(fake_attachment.datasize, int)
     assert fake_attachment.is_favorite is False
@@ -103,7 +102,7 @@ def test_Attachment_unique_constraints():
 @pytest.mark.django_db
 def test_Attachment_delete_attachmentfile_success(
     faker,
-    mock_filesystem,
+    fake_fs,
     fake_file_bytes,
     fake_attachment,
     mock_logger,
@@ -131,7 +130,7 @@ def test_Attachment_delete_attachmentfile_success(
 def test_Attachment_delete_attachmentfile_delete_error(
     mocker,
     faker,
-    mock_filesystem,
+    fake_fs,
     fake_file_bytes,
     fake_attachment,
     mock_logger,
@@ -158,7 +157,7 @@ def test_Attachment_delete_attachmentfile_delete_error(
 
 @pytest.mark.django_db
 def test_save_to_storage_success(
-    mock_filesystem,
+    fake_fs,
     fake_file_bytes,
     fake_attachment,
     mock_logger,
@@ -180,7 +179,7 @@ def test_save_to_storage_success(
 
 @pytest.mark.django_db
 def test_save_to_storage_file_path_set(
-    faker, mock_filesystem, fake_file_bytes, fake_attachment, mock_logger
+    faker, fake_fs, fake_file_bytes, fake_attachment, mock_logger
 ):
     fake_attachment.file_path = default_storage.save(
         faker.file_name(), BytesIO(fake_file_bytes)

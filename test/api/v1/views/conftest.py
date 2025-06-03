@@ -140,9 +140,3 @@ def custom_detail_action_url() -> Callable[[type[ModelViewSet], str, Model], str
             args=[instance.id],
         )
     )
-
-
-@pytest.fixture(autouse=True)
-def mock_os_remove(mocker):
-    """Patches os.remove to prevent errors."""
-    return mocker.patch("os.remove", autospec=True)

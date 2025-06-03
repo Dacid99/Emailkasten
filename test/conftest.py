@@ -41,10 +41,12 @@ def test_(Classname_methodname)|(functionname)_case(args in order from furthest 
 
 from __future__ import annotations
 
+import contextlib
 import os
 import random
 from datetime import UTC, datetime, timedelta, timezone
 from io import BytesIO
+from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
 import pytest
@@ -274,10 +276,11 @@ def fake_file(fake_file_bytes) -> BytesIO:
 
 
 @pytest.fixture
-def mock_filesystem(settings) -> Generator[FakeFilesystem, None, None]:
+def fake_fs(settings) -> Generator[FakeFilesystem, None, None]:
     """Mocks a Linux filesystem for realistic testing.
 
     Contains a directory at the STORAGE_PATH setting to allow for testing without patching the storage backend.
+    Contains a tempdir at the location requested by tempfile.
 
     Yields:
         FakeFilesystem: The mock filesystem.
@@ -287,6 +290,9 @@ def mock_filesystem(settings) -> Generator[FakeFilesystem, None, None]:
             raise OSError("Generator could not create a fakefs!")
 
         patcher.fs.create_dir(settings.STORAGE_PATH)
+        with contextlib.suppress(OSError):
+            patcher.fs.create_dir(gettempdir())
+
         yield patcher.fs
 
 
@@ -384,13 +390,7 @@ def fake_email(faker, fake_mailbox, fake_mailing_list) -> Email:
     Returns:
         The email instance for testing.
     """
-    return baker.make(
-        Email,
-        mailbox=fake_mailbox,
-        mailinglist=fake_mailing_list,
-        eml_filepath=faker.file_name(extension="eml"),
-        html_filepath=faker.file_name(extension="png"),
-    )
+    return baker.make(Email, mailbox=fake_mailbox, mailinglist=fake_mailing_list)
 
 
 @pytest.fixture
@@ -410,7 +410,12 @@ def fake_email_with_file(faker, fake_fs, fake_mailbox, fake_mailing_list) -> Ema
         Email,
         mailbox=fake_mailbox,
         mailinglist=fake_mailing_list,
-        eml_filepath=default_storage.save(faker.file_name(), BytesIO(test_eml_bytes)),
+        eml_filepath=default_storage.save(
+            faker.file_name(extension="eml"), BytesIO(test_eml_bytes)
+        ),
+        html_filepath=default_storage.save(
+            faker.file_name(extension="html"), BytesIO(faker.text().encode())
+        ),
     )
 
 

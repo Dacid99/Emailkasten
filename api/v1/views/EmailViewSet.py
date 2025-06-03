@@ -126,7 +126,7 @@ class EmailViewSet(
         email = self.get_object()
 
         file_path = email.eml_filepath
-        if not file_path or not os.path.exists(file_path):
+        if not file_path or not default_storage.exists(file_path):
             raise Http404("EMl file not found")
 
         file_name = os.path.basename(file_path)
@@ -211,7 +211,7 @@ class EmailViewSet(
         email = self.get_object()
 
         html_file_path = email.html_filepath
-        if not html_file_path or not os.path.exists(html_file_path):
+        if not html_file_path or not default_storage.exists(html_file_path):
             raise Http404("Html file not found")
 
         html_file_name = os.path.basename(html_file_path)

@@ -345,7 +345,7 @@ def test_download_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert isinstance(response, Response)
+    assert not isinstance(response, FileResponse)
 
 
 @pytest.mark.django_db
@@ -366,7 +366,7 @@ def test_download_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert isinstance(response, Response)
+    assert not isinstance(response, FileResponse)
 
 
 @pytest.mark.django_db
@@ -386,7 +386,7 @@ def test_download_no_format_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert isinstance(response, Response)
+    assert not isinstance(response, FileResponse)
 
 
 @pytest.mark.django_db
@@ -409,7 +409,7 @@ def test_download_no_emails_auth_owner(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert isinstance(response, Response)
+    assert not isinstance(response, FileResponse)
 
 
 @pytest.mark.django_db

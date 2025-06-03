@@ -27,7 +27,7 @@ import shutil
 from io import BytesIO
 from multiprocessing import Value
 from pickle import bytes_types
-from tempfile import NamedTemporaryFile, TemporaryDirectory, TemporaryFile
+from tempfile import NamedTemporaryFile, TemporaryDirectory, gettempdir
 from typing import TYPE_CHECKING
 from zipfile import BadZipFile, ZipFile
 
@@ -389,7 +389,7 @@ def test_Mailbox_add_emails_from_file_zip_eml_success(
             message_id=TEST_EMAIL_PARAMETERS[index][1]["message_id"]
         ).exists()
 
-    assert os.listdir("/tmp") == []
+    assert os.listdir(gettempdir()) == []
 
 
 @pytest.mark.django_db
@@ -413,7 +413,7 @@ def test_Mailbox_add_emails_from_file_zip_eml_bad_file(
         fake_mailbox.add_emails_from_file(BytesIO(faker.text().encode()), file_format)
 
     assert fake_mailbox.emails.count() == 0
-    assert os.listdir("/tmp") == []
+    assert os.listdir(gettempdir()) == []
 
 
 @pytest.mark.django_db
@@ -455,7 +455,7 @@ def test_Mailbox_add_emails_from_file_mailbox_file_success(
         assert fake_mailbox.emails.filter(
             message_id=TEST_EMAIL_PARAMETERS[index][1]["message_id"]
         ).exists()
-    assert os.listdir("/tmp") == []
+    assert os.listdir(gettempdir()) == []
 
 
 @pytest.mark.django_db
@@ -482,7 +482,7 @@ def test_Mailbox_add_emails_from_file_mailbox_file_bad_file(
     fake_mailbox.add_emails_from_file(BytesIO(faker.text().encode()), file_format)
 
     assert fake_mailbox.emails.count() == 0
-    assert os.listdir("/tmp") == []
+    assert os.listdir(gettempdir()) == []
 
 
 @pytest.mark.django_db
@@ -525,7 +525,7 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_success(
         assert fake_mailbox.emails.filter(
             message_id=TEST_EMAIL_PARAMETERS[index][1]["message_id"]
         ).exists()
-    assert os.listdir("/tmp") == []
+    assert os.listdir(gettempdir()) == []
 
 
 @pytest.mark.django_db
@@ -548,7 +548,7 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_bad_zip(
         fake_mailbox.add_emails_from_file(BytesIO(faker.text().encode()), file_format)
 
     assert fake_mailbox.emails.count() == 0
-    assert os.listdir("/tmp") == []
+    assert os.listdir(gettempdir()) == []
 
 
 @pytest.mark.django_db
@@ -578,7 +578,7 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_bad_maildir(
                 )
 
     assert fake_mailbox.emails.count() == 0
-    assert os.listdir("/tmp") == []
+    assert os.listdir(gettempdir()) == []
 
 
 @pytest.mark.django_db
@@ -603,18 +603,20 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_bad_mh(
             fake_mailbox.add_emails_from_file(tempfile, SupportedEmailUploadFormats.MH)
 
     assert fake_mailbox.emails.count() == 0
-    assert os.listdir("/tmp") == []
+    assert os.listdir(gettempdir()) == []
 
 
 @pytest.mark.django_db
-def test_Mailbox_add_emails_from_file_bad_format(fake_file, fake_mailbox, mock_logger):
+def test_Mailbox_add_emails_from_file_bad_format(
+    fake_fs, fake_file, fake_mailbox, mock_logger
+):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of the mailbox file format is an unsupported format.
     """
     with pytest.raises(ValueError):
         fake_mailbox.add_emails_from_file(fake_file, "unimplemented")
 
-    assert os.listdir("/tmp") == []
+    assert os.listdir(gettempdir()) == []
 
 
 @pytest.mark.django_db
