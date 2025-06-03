@@ -48,8 +48,10 @@ from io import BytesIO
 from typing import TYPE_CHECKING
 
 import pytest
+from django.core.files.storage import default_storage
 from django.forms import model_to_dict
 from model_bakery import baker
+from pyfakefs.fake_filesystem_unittest import Patcher, Pause
 
 from core.constants import (
     EmailProtocolChoices,
@@ -68,9 +70,11 @@ from core.models import (
 
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
     from typing import Any
 
     from django.contrib.auth.models import AbstractUser
+    from pyfakefs.fake_filesystem import FakeFilesystem
 
 
 def pytest_configure(config) -> None:
@@ -269,6 +273,28 @@ def fake_file(fake_file_bytes) -> BytesIO:
     return BytesIO(fake_file_bytes)
 
 
+@pytest.fixture(autouse=True)
+def fake_fs() -> Generator[FakeFilesystem, None, None]:
+    """Mocks a Linux filesystem for realistic testing.
+
+    Contains different files with various permission settings for the 'other' users and contents .
+
+    Note:
+        Fakefs is overly restrictive with os.path.getsize for no-read files!
+        Cannot test the behaviour for non-empty no-read files.
+
+    Yields:
+        FakeFilesystem: The mock filesystem.
+    """
+    with Patcher() as patcher:
+        if not patcher.fs:
+            raise OSError("Generator could not create a fakefs!")
+
+        patcher.fs.create_dir("/mnt/storage")
+
+        yield patcher.fs
+
+
 @pytest.fixture
 def owner_user(django_user_model) -> AbstractUser:
     """Creates a user that owns the data.
@@ -357,7 +383,6 @@ def fake_email(faker, fake_mailbox, fake_mailing_list) -> Email:
     """Creates an :class:`core.models.Email` owned by :attr:`owner_user`.
 
     Args:
-        correspondent: Depends on :func:`correspondent`.
         mailbox: Depends on :func:`mailbox`.
         mailinglist: Depends on :func:`mailinglist`.
 
@@ -368,8 +393,29 @@ def fake_email(faker, fake_mailbox, fake_mailing_list) -> Email:
         Email,
         mailbox=fake_mailbox,
         mailinglist=fake_mailing_list,
-        eml_filepath=faker.file_path(extension="eml"),
-        html_filepath=faker.file_path(extension="png"),
+        eml_filepath=faker.file_name(extension="eml"),
+        html_filepath=faker.file_name(extension="png"),
+    )
+
+
+@pytest.fixture
+def fake_email_with_file(faker, fake_fs, fake_mailbox, fake_mailing_list) -> Email:
+    """Creates an :class:`core.models.Email` owned by :attr:`owner_user`.
+
+    Args:
+        mailbox: Depends on :func:`mailbox`.
+        mailinglist: Depends on :func:`mailinglist`.
+
+    Returns:
+        The email instance for testing.
+    """
+    with Pause(fake_fs), open(TEST_EMAIL_PARAMETERS[0][0], "rb") as test_email:
+        test_eml_bytes = test_email.read()
+    return baker.make(
+        Email,
+        mailbox=fake_mailbox,
+        mailinglist=fake_mailing_list,
+        eml_filepath=default_storage.save(faker.file_name(), BytesIO(test_eml_bytes)),
     )
 
 
@@ -398,8 +444,23 @@ def fake_attachment(faker, fake_email) -> Attachment:
     Returns:
         The attachment instance for testing.
     """
+    return baker.make(Attachment, email=fake_email)
+
+
+@pytest.fixture
+def fake_attachment_with_file(faker, fake_file, fake_fs, fake_email) -> Attachment:
+    """Creates an :class:`core.models.Attachment` owned by :attr:`owner_user`.
+
+    Args:
+        email: Depends on :func:`email`.
+
+    Returns:
+        The attachment instance for testing.
+    """
     return baker.make(
-        Attachment, email=fake_email, file_path=faker.file_path(extension="pdf")
+        Attachment,
+        email=fake_email,
+        file_path=default_storage.save(faker.file_name(), fake_file),
     )
 
 

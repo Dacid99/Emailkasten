@@ -156,6 +156,7 @@ def test_post_upload_auth_owner_bad_format(
     assert response.status_code == status.HTTP_200_OK
     assert "web/mailbox/upload_email.html" in [t.name for t in response.templates]
     assert "form" in response.context
+    assert response.context["form"].errors
     assert "mailbox" in response.context
     mock_Mailbox_add_emails_from_file.assert_not_called()
 
@@ -178,5 +179,6 @@ def test_post_upload_auth_owner_bad_file(
     assert response.status_code == status.HTTP_200_OK
     assert "web/mailbox/upload_email.html" in [t.name for t in response.templates]
     assert "form" in response.context
+    assert response.context["form"].errors
     assert "mailbox" in response.context
     mock_Mailbox_add_emails_from_file.assert_called_once()
