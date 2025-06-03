@@ -465,6 +465,162 @@ def fake_attachment_with_file(faker, fake_file, fake_fs, fake_email) -> Attachme
 
 
 @pytest.fixture
+def fake_other_account(other_user) -> Account:
+    """Creates an :class:`core.models.Account` owned by :attr:`other_user`.
+
+    Args:
+        owner_user: Depends on :func:`other_user`.
+
+    Returns:
+        The account instance for testing.
+    """
+    return baker.make(Account, user=other_user)
+
+
+@pytest.fixture
+def fake_other_mailbox(fake_other_account) -> Mailbox:
+    """Creates an :class:`core.models.Mailbox` owned by :attr:`other_user`.
+
+    Args:
+        account: Depends on :func:`account`.
+
+    Returns:
+        The mailbox instance for testing.
+    """
+    return baker.make(Mailbox, account=fake_other_account)
+
+
+@pytest.fixture
+def fake_other_daemon(faker, fake_other_mailbox) -> Daemon:
+    """Creates an :class:`core.models.Daemon` owned by :attr:`other_user`.
+
+    Args:
+        mailbox: Depends on :func:`mailbox`.
+
+    Returns:
+        The daemon instance for testing.
+    """
+    return baker.make(
+        Daemon,
+        log_filepath=faker.file_path(extension="log"),
+        mailbox=fake_other_mailbox,
+    )
+
+
+@pytest.fixture
+def fake_other_correspondent() -> Correspondent:
+    """Creates an :class:`core.models.Correspondent` owned by :attr:`other_user`.
+
+    Returns:
+        The correspondent instance for testing.
+    """
+    return baker.make(Correspondent)
+
+
+@pytest.fixture
+def fake_other_mailing_list() -> MailingList:
+    """Creates an :class:`core.models.MailingList` owned by :attr:`other_user`.
+
+    Returns:
+        The mailinglist instance for testing.
+    """
+    return baker.make(MailingList)
+
+
+@pytest.fixture
+def fake_other_email(faker, fake_other_mailbox, fake_other_mailing_list) -> Email:
+    """Creates an :class:`core.models.Email` owned by :attr:`other_user`.
+
+    Args:
+        mailbox: Depends on :func:`mailbox`.
+        mailinglist: Depends on :func:`mailinglist`.
+
+    Returns:
+        The email instance for testing.
+    """
+    return baker.make(
+        Email, mailbox=fake_other_mailbox, mailinglist=fake_other_mailing_list
+    )
+
+
+@pytest.fixture
+def fake_other_email_with_file(
+    faker, fake_fs, fake_other_mailbox, fake_other_mailing_list
+) -> Email:
+    """Creates an :class:`core.models.Email` owned by :attr:`other_user`.
+
+    Args:
+        mailbox: Depends on :func:`mailbox`.
+        mailinglist: Depends on :func:`mailinglist`.
+
+    Returns:
+        The email instance for testing.
+    """
+    with Pause(fake_fs), open(TEST_EMAIL_PARAMETERS[0][0], "rb") as test_email:
+        test_eml_bytes = test_email.read()
+    return baker.make(
+        Email,
+        mailbox=fake_other_mailbox,
+        mailinglist=fake_other_mailing_list,
+        eml_filepath=default_storage.save(
+            faker.file_name(extension="eml"), BytesIO(test_eml_bytes)
+        ),
+        html_filepath=default_storage.save(
+            faker.file_name(extension="html"), BytesIO(faker.text().encode())
+        ),
+    )
+
+
+@pytest.fixture
+def fake_other_emailcorrespondent(
+    fake_other_correspondent, fake_other_email
+) -> EmailCorrespondent:
+    """Fixture creating an :class:`core.models.EmailCorrespondent`.
+
+    Returns:
+        The email instance for testing.
+    """
+    return baker.make(
+        EmailCorrespondent,
+        email=fake_other_email,
+        correspondent=fake_other_correspondent,
+        mention=HeaderFields.Correspondents.FROM,
+    )
+
+
+@pytest.fixture
+def fake_other_attachment(faker, fake_other_email) -> Attachment:
+    """Creates an :class:`core.models.Attachment` owned by :attr:`other_user`.
+
+    Args:
+        email: Depends on :func:`email`.
+
+    Returns:
+        The attachment instance for testing.
+    """
+    return baker.make(Attachment, email=fake_other_email)
+
+
+@pytest.fixture
+def fake_other_attachment_with_file(
+    faker, fake_file, fake_fs, fake_other_email
+) -> Attachment:
+    """Creates an :class:`core.models.Attachment` owned by :attr:`other_user`.
+
+    Args:
+        email: Depends on :func:`email`.
+
+    Returns:
+        The attachment instance for testing.
+    """
+    return baker.make(
+        Attachment,
+        email=fake_other_email,
+        file_path=default_storage.save(faker.file_name(), fake_file),
+    )
+
+
+@pytest.fixture
 def account_payload(owner_user) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Account` payload with data deviating from the defaults.
 
