@@ -273,7 +273,7 @@ def fake_file(fake_file_bytes) -> BytesIO:
     return BytesIO(fake_file_bytes)
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def fake_fs() -> Generator[FakeFilesystem, None, None]:
     """Mocks a Linux filesystem for realistic testing.
 

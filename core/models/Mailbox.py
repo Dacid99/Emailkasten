@@ -33,7 +33,11 @@ from django.utils.translation import gettext_lazy as _
 
 from Emailkasten.utils.workarounds import get_config
 
-from ..constants import SupportedEmailUploadFormats, file_format_parsers
+from ..constants import (
+    SupportedEmailDownloadFormats,
+    SupportedEmailUploadFormats,
+    file_format_parsers,
+)
 from ..mixins import FavoriteMixin, HasDownloadMixin, UploadMixin, URLMixin
 from ..utils.fetchers.exceptions import MailAccountError, MailboxError
 from ..utils.mail_parsing import parse_mailbox_name
@@ -310,3 +314,11 @@ class Mailbox(
     @property
     def has_download(self) -> bool:
         return True
+
+    def available_download_formats(self) -> list[tuple[str, str]]:
+        """Get all formats that emails in this mailbox can be downloaded.
+
+        Returns:
+            A list of download formats and format names.
+        """
+        return SupportedEmailDownloadFormats.choices
