@@ -316,12 +316,54 @@ LOGGING = {
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
 
 
 LANGUAGES = [
-    ("en", "English"),
+    ("ar", "العربية الفصحى"),
+    ("az", "Azərbaycan dili"),
+    ("bg", "Български"),
+    ("ca", "català"),
+    ("cs", "čeština"),
+    ("da", "dansk"),
     ("de", "Deutsch"),
+    ("el", "ελληνικά"),
+    ("en", "English"),
+    ("es", "español"),
+    ("et", "eesti keel"),
+    ("eu", "Euskara"),
+    ("fa", "فارسی"),
+    ("fi", "suomi"),
+    ("fr", "français"),
+    ("he", "עברית"),
+    ("hr", "hrvatski"),
+    ("hu", "magyar"),
+    ("id", "Bahasa Indonesia"),
+    ("it", "italiano"),
+    ("ja", "日本語"),
+    ("ka", "ქართული ენა"),
+    ("ko", "한국어 [韓國語]"),
+    ("ky", "Кыргыз тили"),
+    ("lt", "lietuvių kalba"),
+    ("lv", "latviešu valoda"),
+    ("mn", "монгол"),
+    ("nb", "norsk"),
+    ("nl", "Nederlands"),
+    ("pl", "polski"),
+    ("pt-BR", "Português (Brasil)"),
+    ("pt-PT", "Português (Portugal)"),
+    ("ro", "română"),
+    ("ru", "Русский"),
+    ("sk", "slovenčina"),
+    ("sl", "slovenščina"),
+    ("sr", "српски / srpski"),
+    ("sr-Latn", "српски / srpski (Latin)"),
+    ("sv", "svenska"),
+    ("th", "ภาษาไทย"),
+    ("tr", "Türkçe"),
+    ("uk", "українська мова"),
+    ("zh-hans", "簡體中文"),
+    ("zh-hant", "繁體中文"),
 ]
 
 
@@ -333,6 +375,7 @@ LANGUAGES = [
 TIME_ZONE = "UTC"
 
 USE_I18N = True
+USE_L10N = True
 
 USE_TZ = True
 

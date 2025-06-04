@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-20 15:03+0000\n"
+"POT-Creation-Date: 2025-06-04 11:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,169 +18,173 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: core/constants.py:37
+#: core/constants.py:38
 msgid "All RECENT emails"
 msgstr "Alle AKTUELLEN Emails"
 
-#: core/constants.py:40
+#: core/constants.py:41
 msgid "All UNSEEN emails"
 msgstr "Alle UNGESEHENEN Emails"
 
-#: core/constants.py:43
+#: core/constants.py:44
 msgid "All emails"
 msgstr "Alle Emails"
 
-#: core/constants.py:46
+#: core/constants.py:47
 msgid "All RECENT and UNSEEN emails"
 msgstr "Alle AKTUELLEN und UNGESEHENEN Emails"
 
-#: core/constants.py:49
+#: core/constants.py:50
 msgid "All emails that are not NEW"
 msgstr "Alle Emails die nicht NEU sind"
 
-#: core/constants.py:52
+#: core/constants.py:53
 msgid "FLAGGED emails"
 msgstr "MARKIERTE Emails"
 
-#: core/constants.py:55
+#: core/constants.py:56
 msgid "All email DRAFTs"
 msgstr "Alle Email ENTWÜRFE"
 
-#: core/constants.py:58
+#: core/constants.py:59
 msgid "All emails that are not DRAFTs"
 msgstr "Alle Emails die keine ENTWÜRFE sind"
 
-#: core/constants.py:61
+#: core/constants.py:62
 msgid "All ANSWERED emails"
 msgstr "Alle BEANTWORTETEN Emails"
 
-#: core/constants.py:64
+#: core/constants.py:65
 msgid "All UNANSWERED emails"
 msgstr "Alle UNBEANTORTETEN Emails"
 
-#: core/constants.py:67
+#: core/constants.py:68
 msgid "All DELETED emails"
 msgstr "Alle GELÖSCHTEN Emails"
 
-#: core/constants.py:70
+#: core/constants.py:71
 msgid "All UNDELETED emails"
 msgstr "Alle UNGELÖSCHTEN Emails"
 
-#: core/constants.py:73
+#: core/constants.py:74
 msgid "All emails received the last DAY"
 msgstr "Alle am vorherigen Tag erhaltetenen Emails"
 
-#: core/constants.py:76
+#: core/constants.py:77
 msgid "All emails received the last WEEK"
 msgstr "Alle in der letzte Woche erhaltetenen Emails"
 
-#: core/constants.py:79
+#: core/constants.py:80
 msgid "All emails receiced the last MONTH"
 msgstr "Alle im letzten Monat erhaltetenen Emails"
 
-#: core/constants.py:82
+#: core/constants.py:83
 msgid "All emails received the last YEAR"
 msgstr "Alle im letzte Jahr erhaltetenen Emails"
 
-#: core/constants.py:89
+#: core/constants.py:90
 msgid "IMAP4"
 msgstr "IMAP4"
 
-#: core/constants.py:92
+#: core/constants.py:93
 msgid "IMAP4 over SSL"
 msgstr "IMAP4 via SSL"
 
-#: core/constants.py:95
+#: core/constants.py:96
 msgid "POP3"
 msgstr "POP3"
 
-#: core/constants.py:98
+#: core/constants.py:99
 msgid "POP3 over SSL"
 msgstr "POP3 via SSL"
 
-#: core/constants.py:136
+#: core/constants.py:137
 msgid "From"
 msgstr "Von"
 
-#: core/constants.py:137
+#: core/constants.py:138
 msgid "To"
 msgstr "An"
 
-#: core/constants.py:138
+#: core/constants.py:139
 msgid "CC"
 msgstr "CC"
 
-#: core/constants.py:139
+#: core/constants.py:140
 msgid "BCC"
 msgstr "BCC"
 
-#: core/constants.py:140
+#: core/constants.py:141
 msgid "Sender"
 msgstr "Absender"
 
-#: core/constants.py:141
+#: core/constants.py:142
 msgid "Reply-To"
 msgstr "Antwort-Auf"
 
-#: core/constants.py:142
+#: core/constants.py:143
 msgid "Resent-From"
 msgstr ""
 
-#: core/constants.py:143
+#: core/constants.py:144
 msgid "Resent-To"
 msgstr ""
 
-#: core/constants.py:144
+#: core/constants.py:145
 msgid "Resent-Cc"
 msgstr ""
 
-#: core/constants.py:145
+#: core/constants.py:146
 msgid "Resent-Bcc"
 msgstr ""
 
-#: core/constants.py:146
+#: core/constants.py:147
 msgid "Resent-Sender"
 msgstr ""
 
-#: core/constants.py:147
+#: core/constants.py:148
 msgid "Resent-Reply-To"
 msgstr ""
 
-#: core/constants.py:152
+#: core/constants.py:153
 msgid "Delivered-To"
 msgstr ""
 
-#: core/constants.py:153
+#: core/constants.py:154
 msgid "Return-Path"
 msgstr ""
 
-#: core/constants.py:154
+#: core/constants.py:155
 msgid "Return-Receipt-To"
 msgstr ""
 
-#: core/constants.py:164
-msgid ".eml"
-msgstr ".eml"
+#: core/constants.py:168 core/constants.py:180
+msgid ".zip with .eml files inside"
+msgstr ""
 
-#: core/constants.py:165
+#: core/constants.py:169 core/constants.py:181
 msgid ".mbox"
 msgstr ".mbox"
 
-#: core/constants.py:166
-msgid ".mh"
-msgstr ".mh"
-
-#: core/constants.py:167
+#: core/constants.py:170 core/constants.py:182
 msgid ".babyl"
 msgstr ".babyl"
 
-#: core/constants.py:168
+#: core/constants.py:171 core/constants.py:183
 msgid ".mmdf"
 msgstr ".mmdf"
 
-#: core/constants.py:169
-msgid ".maildir"
-msgstr ".maildir"
+#: core/constants.py:172 core/constants.py:184
+msgid ".zip with mh mailbox inside"
+msgstr ""
+
+#: core/constants.py:173 core/constants.py:185
+msgid ".zip with maildir mailbox inside"
+msgstr ""
+
+#: core/constants.py:179
+msgid ".eml"
+msgstr ".eml"
 
 #: core/models/Account.py:60
 msgid "Email address"
@@ -241,11 +245,11 @@ msgstr "Dies löscht diesen Account, alle Mailboxen, Emails und Anhänge darin!"
 msgid "Account %(mail_address)s with protocol %(protocol)s"
 msgstr "Account %(mail_address)s mit Protokol %(protocol)s"
 
-#: core/models/Attachment.py:98
+#: core/models/Attachment.py:100
 msgid "This will only delete this attachment, not the email."
 msgstr "Dies löscht nur diesen Anhang, nicht seine Email."
 
-#: core/models/Attachment.py:121
+#: core/models/Attachment.py:115
 #, python-format
 msgid "Attachment %(file_name)s from %(email)s"
 msgstr "Anhang %(file_name)s in %(email)s"
@@ -289,7 +293,9 @@ msgstr "Neustart Wartezeit"
 
 #: core/models/Daemon.py:80
 msgid "The time to wait before restarting the daemon after a crash in seconds."
-msgstr "Die Wartezeit vor einem Neustart nach dem der Daemon abgestürzt ist in Sekunden."
+msgstr ""
+"Die Wartezeit vor einem Neustart nach dem der Daemon abgestürzt ist in "
+"Sekunden."
 
 #: core/models/Daemon.py:107
 msgid "Logfile Backup Count"
@@ -316,13 +322,15 @@ msgstr "Dies löscht nur den Daemon, nicht seine Mailbox."
 msgid "Emailfetcherdaemon %(uuid)s for mailbox %(mailbox)s"
 msgstr "Emailfetcherdaemon %(uuid)s für Mailbox %(mailbox)s"
 
-#: core/models/Email.py:163
+#: core/models/Email.py:152
 msgid ""
 "This will delete this email and all its attachments but not its "
 "correspondents or mailinglists."
-msgstr "Dies löscht diese Email und alle ihre Anhänge aber nicht ihre Korrespondenten und Mailingliste."
+msgstr ""
+"Dies löscht diese Email und alle ihre Anhänge aber nicht ihre "
+"Korrespondenten und Mailingliste."
 
-#: core/models/Email.py:188
+#: core/models/Email.py:177
 #, python-format
 msgid "Email with ID %(message_id)s, received on %(datetime)s from %(mailbox)s"
 msgstr "Email mit ID %(message_id)s, erhalten am %(datetime)s von %(mailbox)s"
@@ -336,39 +344,28 @@ msgstr ""
 "Email-Korrespondenten Verbindung von Email %(email)s zu Korrespondent "
 "%(correspondent)s mit Erwähnung %(mention)s"
 
-#: core/models/Mailbox.py:63
+#: core/models/Mailbox.py:74
 msgid "Save attachments"
 msgstr "Anhänge speichern"
 
-#: core/models/Mailbox.py:65
+#: core/models/Mailbox.py:76
 msgid "Whether the attachments from the emails in this mailbox will be saved."
 msgstr "Ob die Anhänge der Emails in dieser Mailbox gespeichert werden."
 
-#: core/models/Mailbox.py:72
+#: core/models/Mailbox.py:83
 msgid "Save as .eml"
 msgstr "Als .eml speichern"
 
-#: core/models/Mailbox.py:73
+#: core/models/Mailbox.py:84
 msgid "Whether the emails in this mailbox will be stored in .eml files."
 msgstr "Ob die Emails in dieser Mailbox als .eml gespeichert werden."
 
-#: core/models/Mailbox.py:79
-msgid "Save as .html"
-msgstr "Als .html speichern"
-
-#: core/models/Mailbox.py:81
-msgid ""
-"Whether the emails in this mailbox will be converted and stored in .html "
-"files."
-msgstr ""
-"Ob die Emails in dieser Mailbox konverted und als .html gespeicherten werden."
-
-#: core/models/Mailbox.py:103
+#: core/models/Mailbox.py:105
 msgid ""
 "This will delete this mailbox and all emails and attachments found in it!"
 msgstr "Dies löscht diese Mailbox und alle Emails und Anhänge in ihr!"
 
-#: core/models/Mailbox.py:126
+#: core/models/Mailbox.py:128
 #, python-format
 msgid "Mailbox %(name)s of %(account)s"
 msgstr "Mailbox %(name)s in %(account)s"
@@ -382,9 +379,10 @@ msgstr "Dies löscht diese Mailingliste und alle ihre Emails!"
 msgid "Mailinglist %(list_id)s from %(list_owner)s"
 msgstr "Mailingliste %(list_id)s von %(list_owner)s"
 
-#: core/models/Storage.py:82
-#, python-format
-msgid "%(state)s storage directory %(path)s"
+#: core/models/StorageShard.py:77
+#, fuzzy, python-format
+#| msgid "%(state)s storage directory %(path)s"
+msgid "%(state)s storage directory %(name)s"
 msgstr "%(state)s Speicherordner %(path)s"
 
 #: core/utils/fetchers/SafeIMAPMixin.py:93
