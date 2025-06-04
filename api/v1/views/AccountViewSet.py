@@ -75,7 +75,9 @@ class AccountViewSet(viewsets.ModelViewSet[Account], ToggleFavoriteMixin):
         """
         if getattr(self, "swagger_fake_view", False):
             return Account.objects.none()
-        return Account.objects.filter(user=self.request.user).prefetch_related(
+        return Account.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
+            user=self.request.user
+        ).prefetch_related(
             "mailboxes"
         )
 

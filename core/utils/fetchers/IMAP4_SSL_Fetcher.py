@@ -17,6 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """Module with the :class:`IMAP4_SSL_Fetcher` class."""
+
 from __future__ import annotations
 
 import imaplib

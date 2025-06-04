@@ -42,7 +42,7 @@ class EmailDetailWithDeleteView(LoginRequiredMixin, DetailWithDeleteView):
     def get_queryset(self) -> QuerySet[Email]:
         """Restricts the queryset to objects owned by the requesting user."""
         return (
-            Email.objects.filter(mailbox__account__user=self.request.user)
+            Email.objects.filter(mailbox__account__user=self.request.user)  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             .select_related("mailinglist", "mailbox", "mailbox__account")
             .prefetch_related(
                 "attachments", "in_reply_to", "replies", "references", "referenced_by"

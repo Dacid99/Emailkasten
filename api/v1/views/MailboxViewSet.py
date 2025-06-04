@@ -81,7 +81,9 @@ class MailboxViewSet(
         """
         if getattr(self, "swagger_fake_view", False):
             return Mailbox.objects.none()
-        return Mailbox.objects.filter(account__user=self.request.user).prefetch_related(
+        return Mailbox.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
+            account__user=self.request.user
+        ).prefetch_related(
             "daemons"
         )
 
@@ -192,7 +194,22 @@ class MailboxViewSet(
         url_path=URL_PATH_DOWNLOAD,
         url_name=URL_NAME_DOWNLOAD,
     )
-    def download(self, request: Request, pk: int | None = None) -> Response:
+    def download(
+        self, request: Request, pk: int | None = None
+    ) -> Response | FileResponse:
+        """Action method downloading the eml files of all emails in the mailbox in a single file.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the attachment to download. Defaults to None.
+
+        Raises:
+            Http404: If there are no emails in the mailbox.
+
+        Returns:
+            A fileresponse containing the emails in the requested format.
+            A 400 response if file_format or id param are missing in the request.
+        """
         file_format = request.query_params.get("file_format", None)
         if not file_format:
             return Response(

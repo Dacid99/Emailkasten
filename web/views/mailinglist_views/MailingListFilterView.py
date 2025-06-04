@@ -45,6 +45,6 @@ class MailingListFilterView(LoginRequiredMixin, FilterPageView):
         return (
             super()
             .get_queryset()
-            .filter(emails__mailbox__account__user=self.request.user)
+            .filter(emails__mailbox__account__user=self.request.user)  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             .distinct()
         )

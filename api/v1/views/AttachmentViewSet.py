@@ -74,9 +74,11 @@ class AttachmentViewSet(
         """
         if getattr(self, "swagger_fake_view", False):
             return Attachment.objects.none()
-        return Attachment.objects.filter(
+        return Attachment.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             email__mailbox__account__user=self.request.user
-        ).select_related("email")
+        ).select_related(
+            "email"
+        )
 
     URL_PATH_DOWNLOAD = "download"
     URL_NAME_DOWNLOAD = "download"
@@ -122,16 +124,18 @@ class AttachmentViewSet(
         url_path=URL_PATH_DOWNLOAD_BATCH,
         url_name=URL_NAME_DOWNLOAD_BATCH,
     )
-    def download_batch(self, request: Request) -> FileResponse:
+    def download_batch(self, request: Request) -> Response | FileResponse:
         """Action method downloading a batch of attachments.
 
         Args:
             request: The request triggering the action.
 
+        Raises:
+            Http404: If there are no emails in the mailbox.
+
         Returns:
             A fileresponse containing the requested file.
             A 400 response if the id param is missing in the request.
-            A 404 response if the queryset is empty.
         """
         requested_ids = request.query_params.getlist("id", [])
         if not requested_ids:

@@ -80,7 +80,7 @@ class StorageShard(models.Model):
         }
 
     @override
-    def save(self, *args: Any, **kwargs: Any):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """Extended :django::func:`django.models.Model.save` method.
 
         Safely creates the new directory tracked by the instance in the storage.

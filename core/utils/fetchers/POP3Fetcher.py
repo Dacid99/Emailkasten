@@ -30,7 +30,8 @@ from .SafePOPMixin import SafePOPMixin
 
 
 if TYPE_CHECKING:
-    from ...models import Account, Mailbox
+    from ...models.Account import Account
+    from ...models.Mailbox import Mailbox
 
 
 class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):

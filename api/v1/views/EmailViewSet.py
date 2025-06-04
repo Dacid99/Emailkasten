@@ -88,7 +88,7 @@ class EmailViewSet(
         if getattr(self, "swagger_fake_view", False):
             return Email.objects.none()
         return (
-            Email.objects.filter(mailbox__account__user=self.request.user)
+            Email.objects.filter(mailbox__account__user=self.request.user)  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             .select_related(
                 "mailinglist",
             )
@@ -147,16 +147,18 @@ class EmailViewSet(
         url_path=URL_PATH_DOWNLOAD_BATCH,
         url_name=URL_NAME_DOWNLOAD_BATCH,
     )
-    def download_batch(self, request: Request) -> FileResponse:
+    def download_batch(self, request: Request) -> Response | FileResponse:
         """Action method downloading a batch of emails.
 
         Args:
             request: The request triggering the action.
 
+        Raises:
+            Http404: If there are no emails in the mailbox.
+
         Returns:
             A fileresponse containing the emails in the requested format.
             A 400 response if file_format or id param are missing in the request.
-            A 404 response if the queryset is empty.
         """
         file_format = request.query_params.get("file_format", None)
         if not file_format:

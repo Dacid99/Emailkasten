@@ -290,7 +290,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         if file_format == SupportedEmailDownloadFormats.ZIP_EML:
             with ZipFile(tempfile.name, "w") as zipfile:
                 for email_item in queryset:
-                    if email_item.has_download:
+                    if email_item.eml_filepath is not None:
                         try:
                             eml_file = default_storage.open(email_item.eml_filepath)
                         except FileNotFoundError:
@@ -306,10 +306,10 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             SupportedEmailDownloadFormats.MMDF,
         ]:
             parser_class = file_format_parsers[file_format]
-            parser = parser_class(tempfile.name, create=True)
+            parser = parser_class(tempfile.name, create=True)  # type: ignore[abstract]  # mailbox.Mailbox is used for typing only
             parser.lock()
             for email_item in queryset:
-                if email_item.has_download:
+                if email_item.eml_filepath is not None:
                     with contextlib.suppress(FileNotFoundError):
                         parser.add(default_storage.open(email_item.eml_filepath))
             parser.close()
@@ -320,10 +320,10 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             with TemporaryDirectory() as tempdirpath:
                 mailbox_path = os.path.join(tempdirpath, file_format)
                 parser_class = file_format_parsers[file_format]
-                parser = parser_class(mailbox_path, create=True)
+                parser = parser_class(mailbox_path, create=True)  # type: ignore[abstract]  # mailbox.Mailbox is used for typing only
                 parser.lock()
                 for email_item in queryset:
-                    if email_item.has_download:
+                    if email_item.eml_filepath is not None:
                         # this construction is necessary as Maildir.add can also raise FileNotFound
                         # if the directory is incorrectly structured, that warning must not be blocked
                         try:
@@ -470,6 +470,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     def has_download(self) -> bool:
         return self.eml_filepath is not None
 
+    @override
     def get_absolute_thumbnail_url(self) -> str:
         """Email does not provide a url for thumbnail download."""
         return ""

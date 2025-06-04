@@ -38,23 +38,25 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
-        context["latest_emails"] = Email.objects.filter(
+        context["latest_emails"] = Email.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             mailbox__account__user=self.request.user,
             created__gte=timezone.now() - timedelta(days=1),
-        ).order_by("-created")
-        context["emails_count"] = Email.objects.filter(
+        ).order_by(
+            "-created"
+        )
+        context["emails_count"] = Email.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             mailbox__account__user=self.request.user
         ).count()
         context["mailinglists_count"] = (
-            MailingList.objects.filter(emails__mailbox__account__user=self.request.user)
+            MailingList.objects.filter(emails__mailbox__account__user=self.request.user)  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             .distinct()
             .count()
         )
-        context["attachments_count"] = Attachment.objects.filter(
+        context["attachments_count"] = Attachment.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             email__mailbox__account__user=self.request.user
         ).count()
         context["correspondents_count"] = (
-            Correspondent.objects.filter(
+            Correspondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
                 emails__mailbox__account__user=self.request.user
             )
             .distinct()

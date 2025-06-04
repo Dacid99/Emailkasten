@@ -183,7 +183,7 @@ class Attachment(
         tempfile = NamedTemporaryFile()
         with ZipFile(tempfile.name, "w") as zipfile:
             for attachment_item in queryset:
-                if attachment_item.has_download:
+                if attachment_item.file_path is not None:
                     with zipfile.open(
                         os.path.basename(attachment_item.file_path), "w"
                     ) as zipped_file, contextlib.suppress(FileNotFoundError):

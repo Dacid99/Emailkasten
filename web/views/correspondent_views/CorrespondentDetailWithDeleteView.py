@@ -45,16 +45,18 @@ class CorrespondentDetailWithDeleteView(
     def get_queryset(self) -> QuerySet[Correspondent]:
         """Restricts the queryset to objects owned by the requesting user."""
         return (
-            Correspondent.objects.filter(
+            Correspondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
                 emails__mailbox__account__user=self.request.user
             )
             .distinct()
             .prefetch_related(
                 Prefetch(
                     "correspondentemails",
-                    queryset=EmailCorrespondent.objects.filter(
+                    queryset=EmailCorrespondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
                         email__mailbox__account__user=self.request.user
-                    ).select_related("email"),
+                    ).select_related(
+                        "email"
+                    ),
                 )
             )
         )

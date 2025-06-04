@@ -55,7 +55,7 @@ class AccountDetailWithDeleteView(
         return (
             super()
             .get_queryset()
-            .filter(user=self.request.user)
+            .filter(user=self.request.user)  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             .prefetch_related("mailboxes")
         )
 

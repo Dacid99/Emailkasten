@@ -80,7 +80,7 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
         """
         if getattr(self, "swagger_fake_view", False):
             return Daemon.objects.none()
-        return Daemon.objects.filter(mailbox__account__user=self.request.user)
+        return Daemon.objects.filter(mailbox__account__user=self.request.user)  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
 
     URL_PATH_FETCHING_OPTIONS = "fetching-options"
     URL_NAME_FETCHING_OPTIONS = "fetching-options"

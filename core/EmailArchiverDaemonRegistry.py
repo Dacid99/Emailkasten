@@ -71,9 +71,9 @@ class EmailArchiverDaemonRegistry:
             Whether the test was successful.
         """
         try:
-            new_daemon = EmailArchiverDaemon(daemon)
+            new_daemon_instance = EmailArchiverDaemon(daemon)
             cls.logger.debug("Testing daemon %s ...", daemon)
-            new_daemon.cycle()
+            new_daemon_instance.cycle()
         except Exception:
             cls.logger.exception("Test for daemon %s failed!", daemon)
             daemon.is_healthy = False
@@ -95,9 +95,9 @@ class EmailArchiverDaemonRegistry:
         """
         if not cls.is_running(daemon):
             cls.logger.debug("Starting daemon %s ...", daemon)
-            new_daemon = EmailArchiverDaemon(daemon)
-            new_daemon.start()
-            cls._running_daemons[daemon.id] = new_daemon
+            new_daemon_instance = EmailArchiverDaemon(daemon)
+            new_daemon_instance.start()
+            cls._running_daemons[daemon.id] = new_daemon_instance
             cls.logger.debug("Successfully started daemon %s .", daemon)
             return True
         cls.logger.debug("Did not start daemon %s, it was already running.", daemon)
@@ -115,8 +115,8 @@ class EmailArchiverDaemonRegistry:
         """
         if cls.is_running(daemon):
             cls.logger.debug("Stopping daemon %s ...", daemon)
-            daemon = cls._running_daemons.pop(daemon.id)
-            daemon.stop()
+            daemon_instance = cls._running_daemons.pop(daemon.id)
+            daemon_instance.stop()
             cls.logger.debug("Successfully stopped daemon %s .", daemon)
             return True
 

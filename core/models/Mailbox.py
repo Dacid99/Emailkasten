@@ -233,7 +233,7 @@ class Mailbox(
             parser_class = file_format_parsers[file_format]
             with NamedTemporaryFile() as tempfile:
                 tempfile.write(file.read())
-                parser = parser_class(tempfile.name, create=False)
+                parser = parser_class(tempfile.name, create=False)  # type: ignore[abstract]  # mailbox.Mailbox is used for typing only
                 parser.lock()
                 for key in parser.iterkeys():
                     with contextlib.suppress(
@@ -259,7 +259,7 @@ class Mailbox(
                 for name in os.listdir(tempdirpath):
                     path = os.path.join(tempdirpath, name)
                     if os.path.isdir(path):
-                        parser = parser_class(path, create=False)
+                        parser = parser_class(path, create=False)  # type: ignore[abstract]  # mailbox.Mailbox is used for typing only
                         parser.lock()
                         try:
                             for key in parser.iterkeys():

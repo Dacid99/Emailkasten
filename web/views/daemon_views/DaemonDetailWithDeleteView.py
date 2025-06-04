@@ -50,9 +50,11 @@ class DaemonDetailWithDeleteView(
     @override
     def get_queryset(self) -> QuerySet[Daemon]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return Daemon.objects.filter(
+        return Daemon.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             mailbox__account__user=self.request.user
-        ).select_related("mailbox", "mailbox__account")
+        ).select_related(
+            "mailbox", "mailbox__account"
+        )
 
     @override
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:

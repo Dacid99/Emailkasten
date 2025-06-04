@@ -43,6 +43,6 @@ class CorrespondentUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     @override
     def get_queryset(self) -> QuerySet[Correspondent]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return Correspondent.objects.filter(
+        return Correspondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
             emails__mailbox__account__user=self.request.user
         ).distinct()
