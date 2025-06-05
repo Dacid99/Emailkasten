@@ -19,11 +19,13 @@
 """Settings for testing of the django project."""
 from __future__ import annotations
 
+from os import environ
+
 from environ import Env
 
 
 Env.read_env()
-
+environ["DEBUG"] = "True"
 
 from Emailkasten.settings import *  # noqa: F403,E402 ; pylint: disable=wildcard-import, unused-wildcard-import ; all settings need to be imported and environment needs to be set beforehand
 
