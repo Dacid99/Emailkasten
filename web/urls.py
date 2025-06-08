@@ -45,6 +45,7 @@ from .views import (
     AttachmentDetailWithDeleteView,
     AttachmentFilterView,
     CorrespondentDetailWithDeleteView,
+    CorrespondentEmailsFilterView,
     CorrespondentFilterView,
     CorrespondentUpdateOrDeleteView,
     DaemonDetailWithDeleteView,
@@ -122,6 +123,11 @@ urlpatterns = [
         "correspondents/<int:pk>/",
         CorrespondentDetailWithDeleteView.as_view(),
         name=CorrespondentDetailWithDeleteView.URL_NAME,
+    ),
+    path(
+        "correspondents/<int:pk>/emails/",
+        CorrespondentEmailsFilterView.as_view(),
+        name=CorrespondentEmailsFilterView.URL_NAME,
     ),
     path(
         "correspondents/<int:pk>/edit/",

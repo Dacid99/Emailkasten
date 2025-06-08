@@ -74,6 +74,7 @@ def test_get_auth_owner(fake_correspondent, owner_client, detail_url):
     ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Correspondent)
+    assert "latest_correspondentemails" in response.context
     assert fake_correspondent.email_address in response.content.decode()
 
 

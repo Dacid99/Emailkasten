@@ -24,9 +24,14 @@
 {% block card_extras %}
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">{% translate "Emails" %}</h4>
+            <div class="d-flex justify-content-between m-1">
+                <h4 class="card-title">{% translate "Latest Emails" %}</h4>
+                <a role="button"
+                   class="btn btn-outline-primary"
+                   href="{% url 'web:correspondent-emails' object.pk %}">{% translate "View all" %}</a>
+            </div>
 
-            {% include "web/emailcorrespondents/partials/_correspondentemails_list.html" with correspondentemails=object.correspondentemails.all %}
+            {% include "web/emailcorrespondents/partials/_correspondentemails_list.html" with correspondentemails=latest_correspondentemails %}
 
         </div>
     </div>

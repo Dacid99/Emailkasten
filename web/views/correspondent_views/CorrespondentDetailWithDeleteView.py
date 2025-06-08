@@ -18,10 +18,10 @@
 
 """Module with the :class:`web.views.CorrespondentDetailWithDeleteView` view."""
 
-from typing import override
+from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Prefetch, QuerySet
+from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Correspondent, EmailCorrespondent
@@ -44,19 +44,21 @@ class CorrespondentDetailWithDeleteView(
     @override
     def get_queryset(self) -> QuerySet[Correspondent]:
         """Restricts the queryset to objects owned by the requesting user."""
-        return (
-            Correspondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
-                emails__mailbox__account__user=self.request.user
+        return Correspondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
+            emails__mailbox__account__user=self.request.user
+        ).distinct()
+
+    @override
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Extended to add the accounts latest emails to the context."""
+        context = super().get_context_data(**kwargs)
+        context["latest_correspondentemails"] = (
+            EmailCorrespondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
+                email__mailbox__account__user=self.request.user,
+                correspondent=self.object,
             )
-            .distinct()
-            .prefetch_related(
-                Prefetch(
-                    "correspondentemails",
-                    queryset=EmailCorrespondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
-                        email__mailbox__account__user=self.request.user
-                    ).select_related(
-                        "email"
-                    ),
-                )
-            )
+            .select_related("email")
+            .order_by("-created")
+            .distinct()[:25],
         )
+        return context

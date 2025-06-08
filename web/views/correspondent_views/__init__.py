@@ -19,12 +19,14 @@
 """web.views.correspondent_views package containing views for the :class:`core.models.Correspondent` data."""
 
 from .CorrespondentDetailWithDeleteView import CorrespondentDetailWithDeleteView
+from .CorrespondentEmailsFilterView import CorrespondentEmailsFilterView
 from .CorrespondentFilterView import CorrespondentFilterView
 from .CorrespondentUpdateOrDeleteView import CorrespondentUpdateOrDeleteView
 
 
 __all__ = [
     "CorrespondentDetailWithDeleteView",
+    "CorrespondentEmailsFilterView",
     "CorrespondentFilterView",
     "CorrespondentUpdateOrDeleteView",
 ]

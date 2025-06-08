@@ -28,6 +28,7 @@ from .account_views import (
 from .attachment_views import AttachmentDetailWithDeleteView, AttachmentFilterView
 from .correspondent_views import (
     CorrespondentDetailWithDeleteView,
+    CorrespondentEmailsFilterView,
     CorrespondentFilterView,
     CorrespondentUpdateOrDeleteView,
 )
@@ -65,6 +66,7 @@ __all__ = [
     "AttachmentDetailWithDeleteView",
     "AttachmentFilterView",
     "CorrespondentDetailWithDeleteView",
+    "CorrespondentEmailsFilterView",
     "CorrespondentFilterView",
     "CorrespondentUpdateOrDeleteView",
     "DaemonDetailWithDeleteView",
