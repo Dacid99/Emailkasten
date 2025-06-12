@@ -54,33 +54,6 @@ def mock_Mailbox_get_available_fetching_criteria(mocker, faker):
     )
 
 
-@pytest.fixture
-def mock_EmailArchiverDaemonRegistry_test_daemon(mocker):
-    return mocker.patch(
-        "api.v1.views.DaemonViewSet.EmailArchiverDaemonRegistry.test_daemon",
-        autospec=True,
-        return_value=True,
-    )
-
-
-@pytest.fixture
-def mock_EmailArchiverDaemonRegistry_start_daemon(mocker):
-    return mocker.patch(
-        "api.v1.views.DaemonViewSet.EmailArchiverDaemonRegistry.start_daemon",
-        autospec=True,
-        return_value=True,
-    )
-
-
-@pytest.fixture
-def mock_EmailArchiverDaemonRegistry_stop_daemon(mocker):
-    return mocker.patch(
-        "api.v1.views.DaemonViewSet.EmailArchiverDaemonRegistry.stop_daemon",
-        autospec=True,
-        return_value=True,
-    )
-
-
 @pytest.mark.django_db
 def test_fetching_options_noauth(
     noauth_api_client,

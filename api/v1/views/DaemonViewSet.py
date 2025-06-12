@@ -31,7 +31,6 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from core.EmailArchiverDaemonRegistry import EmailArchiverDaemonRegistry
 from core.models import Daemon
 
 from ..filters import DaemonFilterSet
@@ -57,11 +56,9 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
     permission_classes = [IsAuthenticated]
     ordering_fields: Final[list[str]] = [
         "fetching_criterion",
-        "cycle_interval",
-        "restart_time",
-        "is_running",
+        "interval__every",
+        "interval__period",
         "is_healthy",
-        "mailbox__fetching_criterion",
         "mailbox__name",
         "mailbox__account__mail_address",
         "mailbox__account__mail_host",
@@ -106,38 +103,6 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
         available_fetching_options = daemon.mailbox.get_available_fetching_criteria()
         return Response({"options": available_fetching_options})
 
-    URL_PATH_TEST = "test"
-    URL_NAME_TEST = "test"
-
-    @action(
-        detail=True, methods=["post"], url_path=URL_PATH_TEST, url_name=URL_NAME_TEST
-    )
-    def test(self, request: Request, pk: int | None = None) -> Response:
-        """Action method testing the daemon data of the mailbox.
-
-        Args:
-            request: The request triggering the action.
-            pk: The private key of the daemon. Defaults to None.
-
-        Returns:
-            A response detailing the test result for the daemon.
-        """
-        daemon = self.get_object()
-        result = EmailArchiverDaemonRegistry.test_daemon(daemon)
-        daemon.refresh_from_db()
-        daemon_data = self.get_serializer(daemon).data
-        return Response(
-            {
-                "detail": (
-                    "Daemon testrun was successful."
-                    if result
-                    else "Daemon testrun failed!"
-                ),
-                "daemon": daemon_data,
-                "result": result,
-            }
-        )
-
     URL_PATH_START = "start"
     URL_NAME_START = "start"
 
@@ -155,7 +120,7 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
             A response detailing the start result of the daemon.
         """
         daemon = self.get_object()
-        result = EmailArchiverDaemonRegistry.start_daemon(daemon)
+        result = daemon.start()
         if result:
             response = Response({"detail": "Daemon started"})
         else:
@@ -185,7 +150,7 @@ class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
             A response detailing the stop result for the daemon.
         """
         daemon = self.get_object()
-        result = EmailArchiverDaemonRegistry.stop_daemon(daemon)
+        result = daemon.stop()
         if result:
             response = Response({"status": "Daemon stopped"})
         else:

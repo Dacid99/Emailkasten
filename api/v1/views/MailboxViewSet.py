@@ -32,7 +32,7 @@ from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
 from core import constants
-from core.models import Daemon, Email, Mailbox
+from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
 
 from ..filters import MailboxFilterSet
@@ -107,7 +107,7 @@ class MailboxViewSet(
             A response containing the updated mailbox data.
         """
         mailbox = self.get_object()
-        Daemon.objects.create(mailbox=mailbox)
+        mailbox.add_daemon()
         mailbox.refresh_from_db()
         return Response(
             {

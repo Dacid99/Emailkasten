@@ -50,13 +50,12 @@ class BaseDaemonSerializer(serializers.ModelSerializer[Daemon]):
         model: Final[type[Model]] = Daemon
         """The model to serialize."""
 
-        exclude: ClassVar[list[str]] = ["log_filepath"]
+        exclude: ClassVar[list[str]] = ["log_filepath", "celery_task"]
         """Exclude the :attr:`core.models.Daemon` field."""
 
         read_only_fields: Final[list[str]] = [
             "uuid",
             "mailbox",
-            "is_running",
             "is_healthy",
             "created",
             "updated",

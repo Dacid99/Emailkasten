@@ -125,9 +125,8 @@ class DaemonFilterSet(filters.FilterSet):
         fields: ClassVar[dict[str, list[str]]] = {
             "uuid": ["exact", "contains"],
             "fetching_criterion": FilterSetups.CHOICE,
-            "cycle_interval": FilterSetups.INT,
-            "restart_time": FilterSetups.INT,
-            "is_running": FilterSetups.BOOL,
+            "interval__every": FilterSetups.INT,
+            "interval__period": FilterSetups.TEXT,
             "is_healthy": FilterSetups.BOOL,
             "created": FilterSetups.DATETIME,
             "updated": FilterSetups.DATETIME,
