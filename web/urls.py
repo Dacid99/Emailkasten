@@ -48,6 +48,7 @@ from .views import (
     CorrespondentEmailsFilterView,
     CorrespondentFilterView,
     CorrespondentUpdateOrDeleteView,
+    DaemonCreateView,
     DaemonDetailWithDeleteView,
     DaemonFilterView,
     DaemonUpdateOrDeleteView,
@@ -148,6 +149,11 @@ urlpatterns = [
         "daemons/<int:pk>/edit/",
         DaemonUpdateOrDeleteView.as_view(),
         name=DaemonUpdateOrDeleteView.URL_NAME,
+    ),
+    path(
+        "daemon/add/",
+        DaemonCreateView.as_view(),
+        name=DaemonCreateView.URL_NAME,
     ),
     path(
         "emails/",

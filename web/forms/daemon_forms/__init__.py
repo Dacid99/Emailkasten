@@ -18,7 +18,8 @@
 
 """web.forms.daemon_forms package containing forms for the :class:`core.models.Daemon` data."""
 
-from .BaseDaemonForm import BaseDaemonForm
+from .BaseDaemonForm import BaseDaemonForm, IntervalScheduleForm
+from .CreateDaemonForm import CreateDaemonForm
 
 
-__all__ = ["BaseDaemonForm"]
+__all__ = ["BaseDaemonForm", "CreateDaemonForm", "IntervalScheduleForm"]

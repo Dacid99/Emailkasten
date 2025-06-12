@@ -33,6 +33,7 @@ from .correspondent_views import (
     CorrespondentUpdateOrDeleteView,
 )
 from .daemon_views import (
+    DaemonCreateView,
     DaemonDetailWithDeleteView,
     DaemonFilterView,
     DaemonUpdateOrDeleteView,
@@ -69,6 +70,7 @@ __all__ = [
     "CorrespondentEmailsFilterView",
     "CorrespondentFilterView",
     "CorrespondentUpdateOrDeleteView",
+    "DaemonCreateView",
     "DaemonDetailWithDeleteView",
     "DaemonFilterView",
     "DaemonUpdateOrDeleteView",

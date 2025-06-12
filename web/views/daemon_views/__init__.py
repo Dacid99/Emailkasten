@@ -18,9 +18,15 @@
 
 """web.views.daemon_views package containing views for the :class:`core.models.Daemon` data."""
 
+from .DaemonCreateView import DaemonCreateView
 from .DaemonDetailWithDeleteView import DaemonDetailWithDeleteView
 from .DaemonFilterView import DaemonFilterView
 from .DaemonUpdateOrDeleteView import DaemonUpdateOrDeleteView
 
 
-__all__ = ["DaemonDetailWithDeleteView", "DaemonFilterView", "DaemonUpdateOrDeleteView"]
+__all__ = [
+    "DaemonCreateView",
+    "DaemonDetailWithDeleteView",
+    "DaemonFilterView",
+    "DaemonUpdateOrDeleteView",
+]

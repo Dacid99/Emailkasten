@@ -22,6 +22,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
+from django.forms import modelform_factory
+from django_celery_beat.models import IntervalSchedule
+
 from core.models import Daemon
 
 from ...utils.forms import RequiredMarkerModelForm
@@ -29,6 +32,9 @@ from ...utils.forms import RequiredMarkerModelForm
 
 if TYPE_CHECKING:
     from django.db.models import Model
+
+
+IntervalScheduleForm = modelform_factory(IntervalSchedule, fields=["every", "period"])
 
 
 class BaseDaemonForm(RequiredMarkerModelForm):
@@ -50,8 +56,6 @@ class BaseDaemonForm(RequiredMarkerModelForm):
 
         fields: ClassVar[list[str]] = [
             "fetching_criterion",
-            "cycle_interval",
-            "restart_time",
             "log_backup_count",
             "logfile_size",
         ]

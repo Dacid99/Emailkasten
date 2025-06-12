@@ -1,0 +1,30 @@
+{% extends "web/bases/base_create.html" %}
+
+{% load i18n django_bootstrap5 %}
+
+{% block title %}
+    {% translate "Add Daemon" %} -
+{% endblock title %}
+
+{% block cancel_to_list_button %}
+    <a class="btn-close"
+       href="{% url 'web:daemon-filter-list' %}"
+       role="button"></a>
+{% endblock cancel_to_list_button %}
+
+{% block form %}
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">{% bootstrap_field form.mailbox %}</li>
+        <li class="list-group-item">{% bootstrap_field interval_form.every %}</li>
+        <li class="list-group-item">{% bootstrap_field interval_form.period %}</li>
+        <li class="list-group-item">{% bootstrap_field form.fetching_criterion %}</li>
+        <li class="list-group-item">{% bootstrap_field form.log_backup_count %}</li>
+        <li class="list-group-item">{% bootstrap_field form.logfile_size %}</li>
+    </ul>
+{% endblock form %}
+
+{% block cancel_form_button %}
+    <a type="button"
+       class="btn btn-secondary"
+       href="{% url 'web:daemon-filter-list' %}">{% translate "Cancel" %}</a>
+{% endblock cancel_form_button %}

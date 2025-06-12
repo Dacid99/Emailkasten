@@ -10,6 +10,12 @@
     {% translate "Daemons" %}
 {% endblock header_title %}
 
+{% block header_buttons %}
+
+    {% include "web/daemon/partials/_add_button.html" %}
+
+{% endblock header_buttons %}
+
 {% block list %}
 
     {% include "web/daemon/partials/_daemon_list.html" with daemons=page_obj %}

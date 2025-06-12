@@ -21,50 +21,49 @@
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
 from django.http import HttpResponse
-from django.urls import reverse_lazy
+from django.views.generic import CreateView
 from django_celery_beat.models import IntervalSchedule
 
 from core.models import Daemon
 from web.forms import IntervalScheduleForm
 
-from ...forms import BaseDaemonForm
-from ..UpdateOrDeleteView import UpdateOrDeleteView
-from .DaemonFilterView import DaemonFilterView
+from ...forms import CreateDaemonForm
 
 
-class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
-    """View for updating or deleting a single :class:`core.models.Daemon` instance."""
+class DaemonCreateView(LoginRequiredMixin, CreateView):
+    """View for creating a single :class:`core.models.Daemon` instance."""
 
     model = Daemon
-    form_class = BaseDaemonForm
-    template_name = "web/daemon/daemon_edit.html"
-    delete_success_url = reverse_lazy("web:" + DaemonFilterView.URL_NAME)
-    URL_NAME = Daemon.get_edit_web_url_name()
+    form_class = CreateDaemonForm
+    template_name = "web/daemon/daemon_create.html"
+    URL_NAME = Daemon.BASENAME + "-create"
 
     @override
-    def get_queryset(self) -> QuerySet[Daemon]:
-        """Restricts the queryset to objects owned by the requesting user."""
-        return Daemon.objects.filter(mailbox__account__user=self.request.user)  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
+    def get_form_kwargs(self) -> dict[str, Any]:
+        """Extended to add the user to the form kwargs."""
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs["user"] = self.request.user
+        return form_kwargs
 
     @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """Extended to add the form for interval to the context."""
         context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context["interval_form"] = IntervalScheduleForm(
-                self.request.POST, instance=self.object.interval
-            )
+            context["interval_form"] = IntervalScheduleForm(self.request.POST)
         else:
-            context["interval_form"] = IntervalScheduleForm(
-                instance=self.object.interval
-            )
+            context["interval_form"] = IntervalScheduleForm()
         return context
 
     @override
-    def form_valid(self, form: BaseDaemonForm) -> HttpResponse:
-        """Extended to save the intervaldata."""
+    def form_valid(self, form: CreateDaemonForm) -> HttpResponse:
+        """Extended to save the intervaldata.
+
+        Important:
+            There should not be duplicate IntervalSchedules.
+            https://django-celery-beat.readthedocs.io/en/latest/index.html#example-creating-interval-based-periodic-task
+        """
         context = self.get_context_data()
         interval_form = context["interval_form"]
         if interval_form.is_valid():

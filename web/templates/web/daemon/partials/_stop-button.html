@@ -5,5 +5,7 @@
     <button type="submit"
             class="btn btn-outline-primary"
             name="stop_daemon"
-            {% if not daemon.is_running %}disabled{% endif %}>{% translate "Stop" %}</button>
+            {% if not daemon.celery_task.enabled %}disabled{% endif %}>
+        {% translate "Stop" %}
+    </button>
 </form>

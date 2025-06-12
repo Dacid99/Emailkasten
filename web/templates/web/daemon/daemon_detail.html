@@ -47,8 +47,7 @@
 {% block card_content %}
     <ul class="list-group list-group-flush">
         <li class="list-group-item">{% translate "Criterion" %}: {{ object.fetching_criterion }}</li>
-        <li class="list-group-item">{% translate "Cycle period" %}: {{ object.cycle_interval }}</li>
-        <li class="list-group-item">{% translate "Restart time" %}: {{ object.restart_time }}</li>
+        <li class="list-group-item">{% translate "Interval" %}: {{ object.interval }}</li>
         <li class="list-group-item">{% translate "Logfile backups" %}: {{ object.log_backup_count }}</li>
         <li class="list-group-item">
             {% translate "Logfile max size" %}: {{ object.logfile_size }} {% translate "bytes" %}

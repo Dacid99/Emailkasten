@@ -28,7 +28,7 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import DeletionMixin
 
 from core.constants import EmailFetchingCriterionChoices
-from core.models import Daemon, Email, Mailbox
+from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
 
 from ...mixins.CustomActionMixin import CustomActionMixin
@@ -124,5 +124,5 @@ class MailboxDetailWithDeleteView(
             A template response with the updated view after the action.
         """
         self.object = self.get_object()
-        new_daemon = Daemon.objects.create(mailbox=self.object)
+        new_daemon = self.object.add_daemon()
         return HttpResponseRedirect(new_daemon.get_absolute_edit_url())

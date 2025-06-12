@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import django_filters
 from django.forms import widgets
+from django_celery_beat.models import IntervalSchedule
 
 from core.constants import EmailFetchingCriterionChoices
 
@@ -34,7 +35,8 @@ class DaemonFilterSet(django_filters.FilterSet):
     order = django_filters.OrderingFilter(
         fields=[
             "uuid",
-            "cycle_interval",
+            "interval__every",
+            "interval__period",
             "created",
             "updated",
         ]
@@ -44,9 +46,14 @@ class DaemonFilterSet(django_filters.FilterSet):
         choices=EmailFetchingCriterionChoices.choices,
         widget=widgets.CheckboxSelectMultiple,
     )
-    cycle_interval = django_filters.RangeFilter(
-        field_name="cycle_interval",
+    interval__every = django_filters.RangeFilter(
+        field_name="interval__every",
         lookup_expr="range",
+    )
+    interval__period = django_filters.MultipleChoiceFilter(
+        field_name="interval__period",
+        choices=IntervalSchedule.PERIOD_CHOICES,
+        widget=widgets.CheckboxSelectMultiple,
     )
     created__date__lte = django_filters.DateTimeFilter(
         field_name="created",
@@ -59,10 +66,6 @@ class DaemonFilterSet(django_filters.FilterSet):
         lookup_expr="date__gte",
         label="Created after",
         widget=AdaptedSelectDateWidget,
-    )
-    is_running = django_filters.BooleanFilter(
-        field_name="is_running",
-        widget=widgets.NullBooleanSelect,
     )
     is_healthy = django_filters.BooleanFilter(
         field_name="is_healthy",
