@@ -87,6 +87,10 @@ INSTALLED_APPS = [
     "fontawesomefree",
     "health_check.contrib.migrations",
     "health_check.contrib.psutil",
+    "health_check.contrib.celery",
+    "health_check.contrib.celery_ping",
+    "django_celery_results",
+    "django_celery_beat",
     "Emailkasten",
     "core",
     "api",
@@ -196,6 +200,13 @@ STORAGES = {
     },
 }
 
+# Celery
+CELERY_TIMEZONE = "UTC"
+CELERY_ENABLE_UTC = True
+CELERY_TASK_TRACK_STARTED = True
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -265,13 +276,13 @@ LOGFILE_BACKUP_NUMBER = env(
     "LOGFILE_BACKUP_NUMBER", cast=int, default=LOGFILE_BACKUP_NUMBER_DEFAULT
 )
 LOGLEVEL_DEFAULT = "INFO"
-
+LOGFORMAT = "{asctime} {levelname} - {name}.{funcName}: {message}"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
         "default": {
-            "format": "{asctime} {levelname} - {name}.{funcName}: {message}",
+            "format": LOGFORMAT,
             "style": "{",
         },
     },
@@ -378,7 +389,7 @@ LANGUAGES = [
 # although not all choices may be available on all operating systems.
 # On Unix systems, a value of None will cause Django to use the same
 # timezone as the operating system.
-TIME_ZONE = "UTC"
+TIME_ZONE = "UTC"  # changing this doesn't change the celery schedule https://django-celery-beat.readthedocs.io/en/latest/#important-warning-about-time-zones
 
 USE_I18N = True
 USE_L10N = True

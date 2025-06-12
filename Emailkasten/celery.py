@@ -16,13 +16,21 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""Celery module for Emailkasten project."""
 
-"""Emailkasten package for Emailkasten project.
+import os
 
-Contains the packages and modules for the Emailkasten application.
-"""
-
-from .celery import app as celery_app
+from celery import Celery
 
 
-__all__ = ("celery_app",)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Emailkasten.settings")
+
+app = Celery("Emailkasten")
+
+app.config_from_object("django.conf:settings", namespace="CELERY")
+app.autodiscover_tasks()
+
+
+@app.task(bind=True, ignore_result=True)
+def debug_task(self):
+    print(f"Request: {self.request!r}")

@@ -33,13 +33,12 @@
 
 - views customactions for response with updated modeldata
 - storagebackend for colliding file/dir
+- test celery daemons
 
 ## To implement
 
-- autostart daemons on restart
-- replace daemons with celery, ensure threadsafe db operations in daemons
+- ensure threadsafe db operations in daemons
 - important headers in html repr
-- create daemon view
 - favicon.ico for the icon
 - fallback for list-id if other list entries are present
 - identification of mailinglists via from
@@ -47,6 +46,7 @@
 - batch download in web
 - dependency-upgrading tool for your project dependencies? (eg. dependabot, PyUp, Renovate, pip-tools, Snyx)
 - vulnerability scanning tool for your dependencies? (eg. Safety, pip-audit, Bandit, Snyx, Trivy, GitLab Dependency Scanning, PyUp, OWASP, Jake, Mend)
+- daemonize celery worker
 
 ### For production
 
@@ -66,9 +66,11 @@
 - uploads
 - batch-downloads
 - attachment-thumbnails
+- celery daemons
 
 ## To fix
 
+- app logger only logs the Emailkasten pkg
 - error templates are missing margins
 - storage is incremented by healthcheck
 - correspondent is not user specific!
