@@ -20,9 +20,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar, Final
+import contextlib
+from typing import TYPE_CHECKING, Any, ClassVar, Final, override
 
-from django.forms import modelform_factory
+from django import forms
 from django_celery_beat.models import IntervalSchedule
 
 from core.models import Daemon
@@ -34,15 +35,17 @@ if TYPE_CHECKING:
     from django.db.models import Model
 
 
-IntervalScheduleForm = modelform_factory(IntervalSchedule, fields=["every", "period"])
-
-
 class BaseDaemonForm(RequiredMarkerModelForm):
     """The base form for :class:`core.models.Daemon`.
 
     Exposes all fields from the model that may be changed by the user.
     Other forms for :class:`core.models.Daemon` should inherit from this.
     """
+
+    interval_every = forms.IntegerField(min_value=1, required=True)
+    interval_period = forms.ChoiceField(
+        choices=IntervalSchedule.PERIOD_CHOICES, required=True
+    )
 
     class Meta:
         """Metadata class for the base form.
@@ -60,3 +63,24 @@ class BaseDaemonForm(RequiredMarkerModelForm):
             "logfile_size",
         ]
         """Exposes all fields that the user should be able to change."""
+
+    @override
+    def __init__(self, *args: Any, **kwargs: Any):
+        super().__init__(*args, **kwargs)
+        with contextlib.suppress(Daemon.interval.RelatedObjectDoesNotExist):
+            self.initial["interval_every"] = self.instance.interval.every
+            self.initial["interval_period"] = self.instance.interval.period
+
+    @override
+    def save(self, commit: bool = True) -> Daemon:
+        """Extended to add the intervaldata to the instance.
+
+        Important:
+            There should not be duplicate IntervalSchedules.
+            https://django-celery-beat.readthedocs.io/en/latest/index.html#example-creating-interval-based-periodic-task
+        """
+        self.instance.interval, _ = IntervalSchedule.objects.get_or_create(
+            every=self.cleaned_data["interval_every"],
+            period=self.cleaned_data["interval_period"],
+        )
+        return super().save(commit)

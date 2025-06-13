@@ -40,6 +40,7 @@ class CreateDaemonForm(BaseDaemonForm):
         """Extended to restrict the choices for mailbox to the users mailboxes."""
         user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
-        if user:
-            # Restrict the queryset for the document field based on the user
+        if user and user.is_authenticated:
             self.fields["mailbox"].queryset = Mailbox.objects.filter(account__user=user)
+        else:
+            self.fields["mailbox"].queryset = Mailbox.objects.none()

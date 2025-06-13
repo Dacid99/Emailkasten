@@ -18,16 +18,13 @@
 
 """Module with the :class:`web.views.DaemonUpdateView` view."""
 
-from typing import Any, override
+from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
-from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django_celery_beat.models import IntervalSchedule
 
 from core.models import Daemon
-from web.forms import IntervalScheduleForm
 
 from ...forms import BaseDaemonForm
 from ..UpdateOrDeleteView import UpdateOrDeleteView
@@ -47,33 +44,3 @@ class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     def get_queryset(self) -> QuerySet[Daemon]:
         """Restricts the queryset to objects owned by the requesting user."""
         return Daemon.objects.filter(mailbox__account__user=self.request.user)  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
-
-    @override
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        """Extended to add the form for interval to the context."""
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context["interval_form"] = IntervalScheduleForm(
-                self.request.POST, instance=self.object.interval
-            )
-        else:
-            context["interval_form"] = IntervalScheduleForm(
-                instance=self.object.interval
-            )
-        return context
-
-    @override
-    def form_valid(self, form: BaseDaemonForm) -> HttpResponse:
-        """Extended to save the intervaldata."""
-        context = self.get_context_data()
-        interval_form = context["interval_form"]
-        if interval_form.is_valid():
-            interval, _ = IntervalSchedule.objects.get_or_create(
-                every=interval_form.cleaned_data["every"],
-                period=interval_form.cleaned_data["period"],
-            )
-            self.object = form.save(commit=False)
-            self.object.interval = interval
-            self.object.save()
-            return super().form_valid(form)
-        return self.form_invalid(form)

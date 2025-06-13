@@ -21,12 +21,9 @@
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
 from django.views.generic import CreateView
-from django_celery_beat.models import IntervalSchedule
 
 from core.models import Daemon
-from web.forms import IntervalScheduleForm
 
 from ...forms import CreateDaemonForm
 
@@ -45,34 +42,3 @@ class DaemonCreateView(LoginRequiredMixin, CreateView):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["user"] = self.request.user
         return form_kwargs
-
-    @override
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        """Extended to add the form for interval to the context."""
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context["interval_form"] = IntervalScheduleForm(self.request.POST)
-        else:
-            context["interval_form"] = IntervalScheduleForm()
-        return context
-
-    @override
-    def form_valid(self, form: CreateDaemonForm) -> HttpResponse:
-        """Extended to save the intervaldata.
-
-        Important:
-            There should not be duplicate IntervalSchedules.
-            https://django-celery-beat.readthedocs.io/en/latest/index.html#example-creating-interval-based-periodic-task
-        """
-        context = self.get_context_data()
-        interval_form = context["interval_form"]
-        if interval_form.is_valid():
-            interval, _ = IntervalSchedule.objects.get_or_create(
-                every=interval_form.cleaned_data["every"],
-                period=interval_form.cleaned_data["period"],
-            )
-            self.object = form.save(commit=False)
-            self.object.interval = interval
-            self.object.save()
-            return super().form_valid(form)
-        return self.form_invalid(form)

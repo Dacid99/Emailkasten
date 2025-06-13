@@ -9,7 +9,7 @@
 - streamable logs for daemons
 - extensive database statistics
 - option to prohibit daemon for spambox
-- tooltips
+- toggleable [tooltips](https://getbootstrap.com/docs/5.3/components/tooltips/)
 - show pdf attachments in pdfjs
 - combo queries via connectors
 - reprocess mail action
@@ -18,6 +18,12 @@
 - streaming daemon logs
 - download for main logfiles
 - fetching in bunches to handle large amounts of emails, fetch as generator
+- add task stats to serializer/detailview data
+- autotest account before form submission, fetch mailboxes on submission
+- [spinner](https://getbootstrap.com/docs/5.3/components/spinners/) and [progressbar](https://getbootstrap.com/docs/5.3/components/progress/) for actions
+- notes field for models
+- more tags
+- autotagging
 
 ## To refactor
 
@@ -28,12 +34,15 @@
   - disable all signals in tests
   - tests more implementation agnostic
   - use more of the unittest api
+  - replace modeltodict in form and serializer tests with payloads
+- dockerfile dependencies
 
 ## To test
 
 - views customactions for response with updated modeldata
 - storagebackend for colliding file/dir
 - test celery daemons
+- serializer and form validation against bad values
 
 ## To implement
 
@@ -43,15 +52,18 @@
 - fallback for list-id if other list entries are present
 - identification of mailinglists via from
 - time benchmarks in debug log
-- batch download in web
+- batch download and delete in web
 - dependency-upgrading tool for your project dependencies? (eg. dependabot, PyUp, Renovate, pip-tools, Snyx)
 - vulnerability scanning tool for your dependencies? (eg. Safety, pip-audit, Bandit, Snyx, Trivy, GitLab Dependency Scanning, PyUp, OWASP, Jake, Mend)
 - daemonize celery worker
+- default interval setting
+- interval exposure via api
 
 ### For production
 
 - rtd
 - weblate
+- stable docker run for makemigrations
 
 ### Work in progress
 
@@ -71,10 +83,10 @@
 ## To fix
 
 - app logger only logs the Emailkasten pkg
-- error templates are missing margins
 - storage is incremented by healthcheck
 - correspondent is not user specific!
 - mysql may need some more care for use with timezone <https://docs.djangoproject.com/en/5.2/ref/databases/#time-zone-definitions>
 - cascase doesn't trigger delete!
 - optics:
+  - error templates are missing margins
   - stats table out of bounds for slim viewport
