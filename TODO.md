@@ -83,7 +83,6 @@
 ## To fix
 
 - running tests from test dir
-- app logger only logs the Emailkasten pkg
 - storage is incremented by healthcheck
 - correspondent is not user specific!
 - mysql may need some more care for use with timezone <https://docs.djangoproject.com/en/5.2/ref/databases/#time-zone-definitions>

@@ -17,6 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """Settings for testing of the django project."""
+
 from __future__ import annotations
 
 from os import environ

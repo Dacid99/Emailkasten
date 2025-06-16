@@ -267,7 +267,7 @@ REST_AUTH = {
 }
 
 
-# Logging
+# Logging   https://docs.djangoproject.com/en/5.2/topics/logging/
 LOG_DIRECTORY_PATH = Path("/var/log")
 LOGFILE_MAXSIZE_DEFAULT = 10485760
 LOGFILE_MAXSIZE = env("LOGFILE_MAXSIZE", cast=int, default=LOGFILE_MAXSIZE_DEFAULT)
@@ -300,27 +300,61 @@ LOGGING = {
             "backupCount": LOGFILE_BACKUP_NUMBER,
             "formatter": "default",
         },
-        "app_logfile": {
+        "emailkasten_logfile": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": LOG_DIRECTORY_PATH / "Emailkasten.log",
+            "filename": LOG_DIRECTORY_PATH / "emailkasten.log",
+            "maxBytes": LOGFILE_MAXSIZE,
+            "backupCount": LOGFILE_BACKUP_NUMBER,
+            "formatter": "default",
+        },
+        "core_logfile": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIRECTORY_PATH / "core.log",
+            "maxBytes": LOGFILE_MAXSIZE,
+            "backupCount": LOGFILE_BACKUP_NUMBER,
+            "formatter": "default",
+        },
+        "api_logfile": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIRECTORY_PATH / "api.log",
+            "maxBytes": LOGFILE_MAXSIZE,
+            "backupCount": LOGFILE_BACKUP_NUMBER,
+            "formatter": "default",
+        },
+        "web_logfile": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIRECTORY_PATH / "web.log",
             "maxBytes": LOGFILE_MAXSIZE,
             "backupCount": LOGFILE_BACKUP_NUMBER,
             "formatter": "default",
         },
     },
     "root": {
-        "handlers": ["console"],
-        "level": env("ROOT_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
+        "handlers": ["console", "emailkasten_logfile"],
+        "level": env("APP_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
     },
     "loggers": {
         "django": {
-            "handlers": ["django_logfile"],
+            "handlers": ["console", "django_logfile"],
             "level": env("DJANGO_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
+            "propagate": False,
+        },
+        "core": {
+            "handlers": ["core_logfile"],
+            "level": env("APP_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
             "propagate": True,
         },
-        "Emailkasten": {
-            "handlers": ["app_logfile"],
+        "api": {
+            "handlers": ["api_logfile"],
+            "level": env("APP_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
+            "propagate": True,
+        },
+        "web": {
+            "handlers": ["web_logfile"],
             "level": env("APP_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
             "propagate": True,
         },

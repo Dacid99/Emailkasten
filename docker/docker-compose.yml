@@ -41,7 +41,6 @@ services:
       - ALLOWED_HOSTS=*,localhost,emailkasten.mydomain.tld # all allowed host URLs separated by ,
       - APP_LOG_LEVEL=DEBUG
       - DJANGO_LOG_LEVEL=INFO
-      - ROOT_LOG_LEVEL=DEBUG
       - LOGFILE_MAXSIZE=10485760
       - LOGFILE_BACKUP_NUMBER=5
       - RECONNECT_RETRIES=10
