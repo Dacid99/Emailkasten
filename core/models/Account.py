@@ -26,6 +26,7 @@ from typing import TYPE_CHECKING, Final, override
 from dirtyfields import DirtyFieldsMixin
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -55,6 +56,8 @@ logger = logging.getLogger(__name__)
 class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
     """Database model for the account data of a mail account."""
 
+    MAX_MAIL_HOST_PORT = 65535
+
     mail_address = models.EmailField(
         max_length=255,
         verbose_name=_("Email address"),
@@ -79,6 +82,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
     mail_host_port = models.PositiveIntegerField(
         null=True,
         blank=True,
+        validators=[MaxValueValidator(MAX_MAIL_HOST_PORT)],
         verbose_name=_("Mailserver-Portnumber"),
         help_text=_("The port of the mailserver for the chosen protocol."),
     )
