@@ -89,8 +89,7 @@
 {% block thumbnail %}
     <iframe srcdoc="{{ object.html_version|safe }}"
             class="w-100 h-100 p-1"
-            title="Email content"
-            alt="Email content"
+            title="{% translate 'Email content' %}"
             sandbox></iframe>
 {% endblock thumbnail %}
 

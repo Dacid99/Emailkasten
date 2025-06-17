@@ -1,18 +1,20 @@
+{% load i18n %}
+
 {% if attachment.content_maintype == "audio" %}
     <audio controls src="{{ attachment.get_absolute_thumbnail_url }}"></audio>
 {% elif attachment.content_maintype == "video" %}
     <video controls
+           preload="metadata"
            class="mh-100 w-auto p-1"
            src="{{ attachment.get_absolute_thumbnail_url }}">
     </video>
 {% elif attachment.content_maintype == "image" %}
     <img src="{{ attachment.get_absolute_thumbnail_url }}"
          class="mh-100 w-auto p-1"
-         alt="Attachment image" />
+         alt="{% translate 'Attachment image' %}" />
 {% elif attachment.content_maintype == "text" %}
     <iframe src="{{ attachment.get_absolute_thumbnail_url }}"
             class="w-100 h-100 p-1"
-            title="Attachment text"
-            alt="Attachment text"
+            title="{% translate 'Attachment text' %}"
             sandbox></iframe>
 {% endif %}

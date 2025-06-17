@@ -33,7 +33,7 @@
 
     <iframe srcdoc="{{ card_object.html_version|safe }}"
             class="h-100 w-100 rounded"
-            alt="Email content"
+            title="{% translate 'Email content' %}"
             sandbox="allow-same-origin"></iframe>
 
 {% endblock thumbnail %}
