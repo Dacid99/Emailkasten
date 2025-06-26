@@ -37,7 +37,6 @@
   - tests more implementation agnostic
   - use more of the unittest api
   - replace modeltodict in form and serializer tests with payloads
-- dockerfile dependencies
 - emailcorrespondent creation for better integration of mailinglist
 
 ## To test
