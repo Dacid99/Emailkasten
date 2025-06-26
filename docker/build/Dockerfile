@@ -15,7 +15,6 @@ RUN poetry run django-admin collectstatic --noinput && \
     poetry run django-admin compilemessages
 ENV SECRET_KEY=
 RUN chmod +x docker/entrypoint.sh
-RUN chmod 777 /var/log
 EXPOSE 443
 ENTRYPOINT [ "./docker/entrypoint.sh" ]
 HEALTHCHECK --interval=60s --timeout=10s --start-period=5s --retries=3 CMD curl -kf https://localhost:443/health/ || exit 1

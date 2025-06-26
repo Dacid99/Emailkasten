@@ -270,7 +270,7 @@ REST_AUTH = {
 
 
 # Logging   https://docs.djangoproject.com/en/5.2/topics/logging/
-LOG_DIRECTORY_PATH = Path("/var/log")
+LOG_DIRECTORY_PATH = Path("/var/log/emailkasten")
 LOGFILE_MAXSIZE_DEFAULT = 10485760
 LOGFILE_MAXSIZE = env("LOGFILE_MAXSIZE", cast=int, default=LOGFILE_MAXSIZE_DEFAULT)
 LOGFILE_BACKUP_NUMBER_DEFAULT = 5

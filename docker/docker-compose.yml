@@ -29,7 +29,7 @@ services:
     container_name: emailkasten-web
     volumes:
       - /main/Emailkasten/test/archive:/mnt/archive
-      - /main/Emailkasten/test/log:/var/log
+      - /main/Emailkasten/test/log:/var/log/emailkasten
     ports:
       - 1122:443
     environment:

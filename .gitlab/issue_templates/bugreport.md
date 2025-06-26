@@ -40,7 +40,7 @@ If your problem doesn't fall in one of these categories, please go ahead and fil
 
 ## Logs *
 
-*Please put the relevant parts of the logfile(s) here. You can find the logfiles in the */var/log/* docker volume. This is crucial, without this information we will have to produce the bug ourselves, which may be consuming a lot of time.*
+*Please put the relevant parts of the logfile(s) here. You can find the logfiles in the */var/log/emailkasten/* docker volume. This is crucial, without this information we will have to produce the bug ourselves, which may be consuming a lot of time.*
 
 
 ## Screenshots
