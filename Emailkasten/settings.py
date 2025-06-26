@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     "fontawesomefree",
     "health_check.contrib.migrations",
     "health_check.contrib.psutil",
+    "health_check.contrib.rabbitmq",
     "health_check.contrib.celery",
     "health_check.contrib.celery_ping",
     "django_celery_results",
@@ -208,6 +209,8 @@ CELERY_ENABLE_UTC = True
 CELERY_TASK_TRACK_STARTED = True
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
+BROKER_URL = CELERY_BROKER_URL  # required for rabbitmq django-healthcheck
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -353,11 +356,11 @@ LOGGING = {
             "level": env("DJANGO_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
             "propagate": False,
         },
-        "celery": {
-            "handlers": ["console", "celery_logfile"],
-            "level": env("CELERY_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
-            "propagate": False,
-        },
+        # "celery": {
+        #     "handlers": ["console", "celery_logfile"],
+        #     "level": env("CELERY_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
+        #     "propagate": False,
+        # },
         "core": {
             "handlers": ["core_logfile"],
             "level": env("APP_LOG_LEVEL", default=LOGLEVEL_DEFAULT),
