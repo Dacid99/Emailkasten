@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <span class="badge bg-secondary text-center"
       aria-label="{% if daemon.celery_task.enabled %}{% translate 'Running' %}{% else %}{% translate 'Paused' %}{% endif %}">
     {% if daemon.celery_task.enabled %}
