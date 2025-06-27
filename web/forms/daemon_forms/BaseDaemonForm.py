@@ -42,9 +42,25 @@ class BaseDaemonForm(RequiredMarkerModelForm):
     Other forms for :class:`core.models.Daemon` should inherit from this.
     """
 
-    interval_every = forms.IntegerField(min_value=1, required=True)
+    interval_every = forms.IntegerField(
+        min_value=1,
+        required=True,
+        label=IntervalSchedule._meta.get_field(  # noqa: SLF001 ; this is required for consistent labeling
+            "every"
+        ).verbose_name,
+        help_text=IntervalSchedule._meta.get_field(  # noqa: SLF001 ; this is required for consistent labeling
+            "every"
+        ).help_text,
+    )
     interval_period = forms.ChoiceField(
-        choices=IntervalSchedule.PERIOD_CHOICES, required=True
+        choices=IntervalSchedule.PERIOD_CHOICES,
+        required=True,
+        label=IntervalSchedule._meta.get_field(  # noqa: SLF001 ; this is required for consistent labeling
+            "period"
+        ).verbose_name,
+        help_text=IntervalSchedule._meta.get_field(  # noqa: SLF001 ; this is required for consistent labeling
+            "period"
+        ).help_text,
     )
 
     class Meta:
