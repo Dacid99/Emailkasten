@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import django_filters
 from django.forms import widgets
+from django.utils.translation import gettext_lazy as _
 
 from ..utils.widgets import AdaptedSelectDateWidget
 
@@ -69,12 +70,12 @@ class AttachmentFilterSet(django_filters.FilterSet):
     email__datetime__date__lte = django_filters.DateTimeFilter(
         field_name="email__datetime",
         lookup_expr="date__lte",
-        label="Received before",
+        label=_("Received before"),
         widget=AdaptedSelectDateWidget,
     )
     email__datetime__date__gte = django_filters.DateTimeFilter(
         field_name="email__datetime",
         lookup_expr="date__gte",
-        label="Received after",
+        label=_("Received after"),
         widget=AdaptedSelectDateWidget,
     )

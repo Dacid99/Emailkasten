@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING
 import django_filters
 from django.db.models import Q
 from django.forms import widgets
+from django.utils.translation import gettext_lazy as _
 
 from ..utils.widgets import AdaptedSelectDateWidget
 
@@ -51,19 +52,19 @@ class CorrespondentFilterSet(django_filters.FilterSet):
 
     text_search = django_filters.CharFilter(
         method="filter_text_fields",
-        label="Search",
+        label=_("Search"),
         widget=widgets.SearchInput,
     )
     created__date__lte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__lte",
-        label="Created before",
+        label=_("Created before"),
         widget=AdaptedSelectDateWidget,
     )
     created__date__gte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__gte",
-        label="Created after",
+        label=_("Created after"),
         widget=AdaptedSelectDateWidget,
     )
     is_favorite = django_filters.BooleanFilter(

@@ -60,21 +60,21 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
 
     mail_address = models.EmailField(
         max_length=255,
-        verbose_name=_("Email address"),
+        verbose_name=_("email address"),
         help_text=_("The mail address to the account."),
     )
     """The mail address of the account. Unique together with :attr:`user`."""
 
     password = models.CharField(
         max_length=255,
-        verbose_name=_("Password"),
+        verbose_name=_("password"),
         help_text=_("The password to the account."),
     )
     """The password to log into the account."""
 
     mail_host = models.CharField(
         max_length=255,
-        verbose_name=_("Mailserver-URL"),
+        verbose_name=_("mailserver URL"),
         help_text=_("The URL of the mailserver for the chosen protocol."),
     )
     """The url of the mail server where the account is located."""
@@ -83,7 +83,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         null=True,
         blank=True,
         validators=[MaxValueValidator(MAX_MAIL_HOST_PORT)],
-        verbose_name=_("Mailserver-Portnumber"),
+        verbose_name=_("mailserver portnumber"),
         help_text=_("The port of the mailserver for the chosen protocol."),
     )
     """The port of the mail server. Can be null if the default port of the protocol is used."""
@@ -91,7 +91,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
     protocol = models.CharField(
         choices=EmailProtocolChoices.choices,
         max_length=10,
-        verbose_name=_("Email Protocol"),
+        verbose_name=_("email protocol"),
         help_text=_("The email protocol implemented by the server."),
     )
     """The mail protocol of the mail server."""
@@ -99,28 +99,43 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
     timeout = models.PositiveIntegerField(
         null=True,
         blank=True,
-        verbose_name=_("Connection Timeout"),
+        verbose_name=_("connection timeout"),
         help_text=_("Timeout for the connection to the mailserver."),
     )
     """The timeout parameter for the connection to the host. Can be null."""
 
-    is_healthy = models.BooleanField(null=True)
+    is_healthy = models.BooleanField(
+        null=True,
+        verbose_name=_("healthy"),
+    )
     """Flags whether the account can be accessed using the data. `None` by default.
     When this field changes to `False`, all mailboxes :attr:`core.models.Mailbox.is_healthy` field will be updated accordingly.
     When the :attr:`core.models.Mailbox.is_healthy` field of one of the mailboxes referencing this entry becomes `True`, this field will be set to `True` as well by a signal."""
 
-    is_favorite = models.BooleanField(default=False)
+    is_favorite = models.BooleanField(
+        default=False,
+        verbose_name=_("favorite"),
+    )
     """Flags favorite accounts. False by default."""
 
     user = models.ForeignKey(
-        get_user_model(), related_name="accounts", on_delete=models.CASCADE
+        get_user_model(),
+        related_name="accounts",
+        on_delete=models.CASCADE,
+        verbose_name=_("user"),
     )
     """The user this account belongs to. Deletion of that `user` deletes this correspondent."""
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
     """The datetime this entry was created. Is set automatically."""
 
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("last updated"),
+    )
     """The datetime this entry was last updated. Is set automatically."""
 
     BASENAME = "account"

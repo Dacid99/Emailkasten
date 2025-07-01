@@ -43,21 +43,38 @@ class StorageShard(models.Model):
         Use the custom methods to create new instances, never use :func:`create`!
     """
 
-    shard_directory_name = models.UUIDField(default=uuid4, editable=False, unique=True)
+    shard_directory_name = models.UUIDField(
+        default=uuid4,
+        editable=False,
+        unique=True,
+        verbose_name=_("shard directory name"),
+    )
     """The name of the directory tracked by this entry. Unique."""
 
-    file_count = models.PositiveSmallIntegerField(default=0)
+    file_count = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name=_("file count"),
+    )
     """The number of files in this directory. 0 by default.
     Managed to not exceed :attr:`constance.get_config('STORAGE_MAX_FILES_PER_DIR')`."""
 
-    current = models.BooleanField(default=False)
+    current = models.BooleanField(
+        default=False,
+        verbose_name=_("current"),
+    )
     """Flags whether this directory is the one where new data is being stored. False by default.
     There must only be one entry where this is set to True."""
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
     """The datetime this entry was created. Is set automatically."""
 
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("last updated"),
+    )
     """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:
@@ -73,7 +90,7 @@ class StorageShard(models.Model):
         Returns:
             The string representation of the storage directory, using :attr:`path` and the state of the directory.
         """
-        state = "Current" if self.current else "Archived"
+        state = _("Current") if self.current else _("Archived")
         return _("%(state)s storage directory %(name)s") % {
             "state": state,
             "name": str(self.shard_directory_name),

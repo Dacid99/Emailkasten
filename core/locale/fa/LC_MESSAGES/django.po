@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-17 19:15+0000\n"
+"POT-Creation-Date: 2025-07-01 19:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -186,8 +186,8 @@ msgstr ""
 msgid ".eml"
 msgstr ""
 
-#: core/models/Account.py:63
-msgid "Email address"
+#: core/models/Account.py:63 core/models/Correspondent.py:51
+msgid "email address"
 msgstr ""
 
 #: core/models/Account.py:64
@@ -195,7 +195,7 @@ msgid "The mail address to the account."
 msgstr ""
 
 #: core/models/Account.py:70
-msgid "Password"
+msgid "password"
 msgstr ""
 
 #: core/models/Account.py:71
@@ -203,7 +203,7 @@ msgid "The password to the account."
 msgstr ""
 
 #: core/models/Account.py:77
-msgid "Mailserver-URL"
+msgid "mailserver URL"
 msgstr ""
 
 #: core/models/Account.py:78
@@ -211,7 +211,7 @@ msgid "The URL of the mailserver for the chosen protocol."
 msgstr ""
 
 #: core/models/Account.py:86
-msgid "Mailserver-Portnumber"
+msgid "mailserver portnumber"
 msgstr ""
 
 #: core/models/Account.py:87
@@ -219,7 +219,7 @@ msgid "The port of the mailserver for the chosen protocol."
 msgstr ""
 
 #: core/models/Account.py:94
-msgid "Email Protocol"
+msgid "email protocol"
 msgstr ""
 
 #: core/models/Account.py:95
@@ -227,136 +227,325 @@ msgid "The email protocol implemented by the server."
 msgstr ""
 
 #: core/models/Account.py:102
-msgid "Connection Timeout"
+msgid "connection timeout"
 msgstr ""
 
 #: core/models/Account.py:103
 msgid "Timeout for the connection to the mailserver."
 msgstr ""
 
-#: core/models/Account.py:129
+#: core/models/Account.py:109 core/models/Daemon.py:96
+#: core/models/Mailbox.py:102
+msgid "healthy"
+msgstr ""
+
+#: core/models/Account.py:117 core/models/Attachment.py:114
+#: core/models/Correspondent.py:113 core/models/Email.py:148
+msgid "favorite"
+msgstr ""
+
+#: core/models/Account.py:125
+msgid "user"
+msgstr ""
+
+#: core/models/Account.py:131 core/models/Attachment.py:128
+#: core/models/Correspondent.py:119 core/models/Daemon.py:127
+#: core/models/Email.py:186 core/models/EmailCorrespondent.py:65
+#: core/models/Mailbox.py:96 core/models/Mailbox.py:110
+#: core/models/StorageShard.py:70
+msgid "created"
+msgstr ""
+
+#: core/models/Account.py:137 core/models/Attachment.py:134
+#: core/models/Correspondent.py:125 core/models/Daemon.py:133
+#: core/models/Email.py:192 core/models/EmailCorrespondent.py:71
+#: core/models/Mailbox.py:116 core/models/StorageShard.py:76
+msgid "last updated"
+msgstr ""
+
+#: core/models/Account.py:144
 msgid ""
 "This will delete this account and all mailboxes, emails and attachments "
 "found in it!"
 msgstr ""
 
-#: core/models/Account.py:159
+#: core/models/Account.py:174
 #, python-format
 msgid "Account %(mail_address)s with protocol %(protocol)s"
 msgstr ""
 
-#: core/models/Attachment.py:100
+#: core/models/Attachment.py:63
+msgid "filename"
+msgstr ""
+
+#: core/models/Attachment.py:72
+msgid "filepath"
+msgstr ""
+
+#: core/models/Attachment.py:82
+msgid "content disposition"
+msgstr ""
+
+#: core/models/Attachment.py:89
+msgid "content ID"
+msgstr ""
+
+#: core/models/Attachment.py:96
+msgid "content maintype"
+msgstr ""
+
+#: core/models/Attachment.py:103
+msgid "content subtype"
+msgstr ""
+
+#: core/models/Attachment.py:108 core/models/Email.py:122
+msgid "datasize"
+msgstr ""
+
+#: core/models/Attachment.py:122 core/models/EmailCorrespondent.py:44
+msgid "email"
+msgstr ""
+
+#: core/models/Attachment.py:140
 msgid "This will only delete this attachment, not the email."
 msgstr ""
 
-#: core/models/Attachment.py:115
+#: core/models/Attachment.py:155
 #, python-format
 msgid "Attachment %(file_name)s from %(email)s"
 msgstr ""
 
 #: core/models/Correspondent.py:43
-msgid "Mailer name"
+msgid "mailer name"
 msgstr ""
 
 #: core/models/Correspondent.py:44
 msgid "The mailer name of the correspondent."
 msgstr ""
 
+#: core/models/Correspondent.py:59
+msgid "list ID"
+msgstr ""
+
+#: core/models/Correspondent.py:67
+msgid "list owner"
+msgstr ""
+
+#: core/models/Correspondent.py:75
+msgid "list subscribe"
+msgstr ""
+
 #: core/models/Correspondent.py:83
+msgid "list unsubscribe"
+msgstr ""
+
+#: core/models/Correspondent.py:91
+msgid "list post"
+msgstr ""
+
+#: core/models/Correspondent.py:99
+msgid "list help"
+msgstr ""
+
+#: core/models/Correspondent.py:107
+msgid "list archive"
+msgstr ""
+
+#: core/models/Correspondent.py:131
 msgid "This will only delete this correspondent, not its emails."
 msgstr ""
 
-#: core/models/Correspondent.py:98
+#: core/models/Correspondent.py:146
 #, python-format
 msgid "Correspondent with address %(email_address)s"
 msgstr ""
 
-#: core/models/Daemon.py:67
-msgid "Fetching Criterion"
+#: core/models/Daemon.py:58
+msgid "UUID"
 msgstr ""
 
-#: core/models/Daemon.py:68
+#: core/models/Daemon.py:66 core/models/Email.py:166
+msgid "mailbox"
+msgstr ""
+
+#: core/models/Daemon.py:74
+msgid "fetching criterion"
+msgstr ""
+
+#: core/models/Daemon.py:75
 msgid "The selection criterion for emails to archive."
 msgstr ""
 
-#: core/models/Daemon.py:79
-msgid "Fetching Interval"
+#: core/models/Daemon.py:83
+msgid "celery task"
 msgstr ""
 
-#: core/models/Daemon.py:80
+#: core/models/Daemon.py:89
+msgid "interval"
+msgstr ""
+
+#: core/models/Daemon.py:90
 msgid "The time between two daemon runs in seconds."
 msgstr ""
 
-#: core/models/Daemon.py:99
-msgid "Logfile Backup Count"
+#: core/models/Daemon.py:107
+msgid "logfilepath"
 msgstr ""
 
-#: core/models/Daemon.py:100
+#: core/models/Daemon.py:113
+msgid "logfile backup count"
+msgstr ""
+
+#: core/models/Daemon.py:114
 msgid "The number of historical logfiles to keep."
 msgstr ""
 
-#: core/models/Daemon.py:106
-msgid "Logfile Maximum Size"
+#: core/models/Daemon.py:120
+msgid "logfile maximum size"
 msgstr ""
 
-#: core/models/Daemon.py:107
+#: core/models/Daemon.py:121
 msgid "The maximum size of a logfile in bytes."
 msgstr ""
 
-#: core/models/Daemon.py:119
+#: core/models/Daemon.py:139
 msgid "This will only delete this daemon, not its mailbox."
 msgstr ""
 
-#: core/models/Daemon.py:150
+#: core/models/Daemon.py:170
 #, python-format
 msgid "Emailfetcherdaemon %(uuid)s for mailbox %(mailbox)s"
 msgstr ""
 
-#: core/models/Email.py:141
+#: core/models/Email.py:73
+msgid "message-ID"
+msgstr ""
+
+#: core/models/Email.py:78
+msgid "received"
+msgstr ""
+
+#: core/models/Email.py:86
+msgid "subject"
+msgstr ""
+
+#: core/models/Email.py:93
+msgid "plain bodytext"
+msgstr ""
+
+#: core/models/Email.py:100
+msgid "HTML bodytext"
+msgstr ""
+
+#: core/models/Email.py:108
+msgid "in reply to"
+msgstr ""
+
+#: core/models/Email.py:117
+msgid "referenced by"
+msgstr ""
+
+#: core/models/Email.py:131
+msgid "EML filepath"
+msgstr ""
+
+#: core/models/Email.py:142
+msgid "HTML version"
+msgstr ""
+
+#: core/models/Email.py:157
+msgid "correspondents"
+msgstr ""
+
+#: core/models/Email.py:172
+msgid "headers"
+msgstr ""
+
+#: core/models/Email.py:180
+msgid "X-Spam"
+msgstr ""
+
+#: core/models/Email.py:199
 msgid ""
 "This will delete this email and all its attachments but not its "
 "correspondents."
 msgstr ""
 
-#: core/models/Email.py:166
+#: core/models/Email.py:224
 #, python-format
 msgid "Email with ID %(message_id)s, received on %(datetime)s from %(mailbox)s"
 msgstr ""
 
-#: core/models/EmailCorrespondent.py:91
+#: core/models/EmailCorrespondent.py:52
+msgid "correspondent"
+msgstr ""
+
+#: core/models/EmailCorrespondent.py:59
+msgid "mention"
+msgstr ""
+
+#: core/models/EmailCorrespondent.py:103
 #, python-format
 msgid ""
 "Email-Correspondent connection from email %(email)s to correspondent "
 "%(correspondent)s with mention %(mention)s"
 msgstr ""
 
-#: core/models/Mailbox.py:74
-msgid "Save attachments"
+#: core/models/Mailbox.py:66
+msgid "name"
 msgstr ""
 
-#: core/models/Mailbox.py:76
+#: core/models/Mailbox.py:74
+msgid "account"
+msgstr ""
+
+#: core/models/Mailbox.py:80
+msgid "save attachments"
+msgstr ""
+
+#: core/models/Mailbox.py:82
 msgid "Whether the attachments from the emails in this mailbox will be saved."
 msgstr ""
 
-#: core/models/Mailbox.py:83
-msgid "Save as .eml"
+#: core/models/Mailbox.py:89
+msgid "save as .eml"
 msgstr ""
 
-#: core/models/Mailbox.py:84
+#: core/models/Mailbox.py:90
 msgid "Whether the emails in this mailbox will be stored in .eml files."
 msgstr ""
 
-#: core/models/Mailbox.py:105
+#: core/models/Mailbox.py:123
 msgid ""
 "This will delete this mailbox and all emails and attachments found in it!"
 msgstr ""
 
-#: core/models/Mailbox.py:128
+#: core/models/Mailbox.py:146
 #, python-format
 msgid "Mailbox %(name)s of %(account)s"
 msgstr ""
 
-#: core/models/StorageShard.py:77
+#: core/models/StorageShard.py:50
+msgid "shard directory name"
+msgstr ""
+
+#: core/models/StorageShard.py:56
+msgid "file count"
+msgstr ""
+
+#: core/models/StorageShard.py:63
+msgid "current"
+msgstr ""
+
+#: core/models/StorageShard.py:93
+msgid "Current"
+msgstr ""
+
+#: core/models/StorageShard.py:93
+msgid "Archived"
+msgstr ""
+
+#: core/models/StorageShard.py:94
 #, python-format
 msgid "%(state)s storage directory %(name)s"
 msgstr ""

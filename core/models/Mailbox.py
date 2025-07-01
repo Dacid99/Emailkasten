@@ -61,17 +61,23 @@ class Mailbox(
 ):
     """Database model for a mailbox in a mail account."""
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_("name"),
+    )
     """The mailaccount internal name of the mailbox. Unique together with :attr:`account`."""
 
     account: models.ForeignKey[Account] = models.ForeignKey(
-        "Account", related_name="mailboxes", on_delete=models.CASCADE
+        "Account",
+        related_name="mailboxes",
+        on_delete=models.CASCADE,
+        verbose_name=_("account"),
     )
     """The mailaccount this mailbox was found in. Unique together with :attr:`name`. Deletion of that `account` deletes this mailbox."""
 
     save_attachments = models.BooleanField(
         default=get_config("DEFAULT_SAVE_ATTACHMENTS"),
-        verbose_name=_("Save attachments"),
+        verbose_name=_("save attachments"),
         help_text=_(
             "Whether the attachments from the emails in this mailbox will be saved."
         ),
@@ -80,23 +86,35 @@ class Mailbox(
 
     save_to_eml = models.BooleanField(
         default=get_config("DEFAULT_SAVE_TO_EML"),
-        verbose_name=_("Save as .eml"),
+        verbose_name=_("save as .eml"),
         help_text=_("Whether the emails in this mailbox will be stored in .eml files."),
     )
     """Whether to save the mails found in this mailbox as .eml files. :attr:`constance.get_config('DEFAULT_SAVE_TO_EML')` by default."""
 
-    is_favorite = models.BooleanField(default=False)
+    is_favorite = models.BooleanField(
+        default=False,
+        verbose_name=_("created"),
+    )
     """Flags favorite mailboxes. False by default."""
 
-    is_healthy = models.BooleanField(null=True)
+    is_healthy = models.BooleanField(
+        null=True,
+        verbose_name=_("healthy"),
+    )
     """Flags whether the mailbox can be accessed and read. `None` by default.
     When the :attr:`core.models.Account.is_healthy` field changes to `False`, this field is updated accordingly.
     When this field changes to `True`, the :attr:`core.models.Account.is_healthy` field of :attr:`account` will be set to `True` as well by a signal."""
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
     """The datetime this entry was created. Is set automatically."""
 
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("last updated"),
+    )
     """The datetime this entry was last updated. Is set automatically."""
 
     BASENAME = "mailbox"

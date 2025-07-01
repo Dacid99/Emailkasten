@@ -40,42 +40,90 @@ class Correspondent(URLMixin, FavoriteMixin, models.Model):
         max_length=255,
         default="",
         blank=True,
-        verbose_name=_("Mailer name"),
+        verbose_name=_("mailer name"),
         help_text=_("The mailer name of the correspondent."),
     )
     """The mailer name. Can be blank if none has been found."""
 
-    email_address = models.CharField(max_length=255, unique=True)
+    email_address = models.CharField(
+        max_length=255,
+        unique=True,
+        verbose_name=_("email address"),
+    )
     """The mail address of the correspondent. Unique."""
 
-    list_id = models.CharField(max_length=255, blank=True, default="")
+    list_id = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("list ID"),
+    )
     """The List-ID header of the mailinglist. Unique together with :attr:`correspondent`."""
 
-    list_owner = models.CharField(max_length=255, blank=True, default="")
+    list_owner = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("list owner"),
+    )
     """The List-Owner header of the mailinglist. Can be blank."""
 
-    list_subscribe = models.EmailField(max_length=255, blank=True, default="")
+    list_subscribe = models.EmailField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("list subscribe"),
+    )
     """The List-Subscribe header of the mailinglist. Can be blank."""
 
-    list_unsubscribe = models.EmailField(max_length=255, blank=True, default="")
+    list_unsubscribe = models.EmailField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("list unsubscribe"),
+    )
     """The List-Unsubscribe header of the mailinglist. Can be blank."""
 
-    list_post = models.CharField(max_length=255, blank=True, default="")
+    list_post = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("list post"),
+    )
     """The List-Post header of the mailinglist. Can be blank."""
 
-    list_help = models.CharField(max_length=255, blank=True, default="")
+    list_help = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("list help"),
+    )
     """The List-Help header of the mailinglist. Can be blank."""
 
-    list_archive = models.CharField(max_length=255, blank=True, default="")
+    list_archive = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("list archive"),
+    )
     """The List-Archive header of the mailinglist. Can be blank."""
 
-    is_favorite = models.BooleanField(default=False)
+    is_favorite = models.BooleanField(
+        default=False,
+        verbose_name=_("favorite"),
+    )
     """Flags favorite correspondents. False by default."""
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
     """The datetime this entry was created. Is set automatically."""
 
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("last updated"),
+    )
     """The datetime this entry was last updated. Is set automatically."""
 
     BASENAME = "correspondent"

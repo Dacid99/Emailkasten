@@ -38,7 +38,10 @@ class EmailCorrespondent(models.Model):
     """Database model for connecting emails and their correspondents."""
 
     email = models.ForeignKey(
-        "Email", related_name="emailcorrespondents", on_delete=models.CASCADE
+        "Email",
+        related_name="emailcorrespondents",
+        on_delete=models.CASCADE,
+        verbose_name=_("email"),
     )
     """The email :attr:`correspondent` was mentioned in. Unique together with :attr:`correspondent` and :attr:`mention`."""
 
@@ -46,18 +49,27 @@ class EmailCorrespondent(models.Model):
         "Correspondent",
         related_name="correspondentemails",
         on_delete=models.CASCADE,
+        verbose_name=_("correspondent"),
     )
     """The correspondent mentioned in :attr:`email`. Unique together with :attr:`email` and :attr:`mention`."""
 
     mention = models.CharField(
-        choices=HeaderFields.Correspondents.choices, max_length=30
+        choices=HeaderFields.Correspondents.choices,
+        max_length=30,
+        verbose_name=_("mention"),
     )
     """The mention of :attr:`correspondent` in :attr:`email`. Unique together with :attr:`email` and :attr:`correspondent`."""
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
     """The datetime this entry was created. Is set automatically."""
 
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("last updated"),
+    )
     """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:

@@ -52,11 +52,18 @@ logger = logging.getLogger(__name__)
 class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
     """Database model for the daemon fetching a mailbox."""
 
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_("UUID"),
+    )
     """The uuid of this daemon. Used to create a unique logfile."""
 
     mailbox: models.ForeignKey[Mailbox] = models.ForeignKey(
-        "Mailbox", related_name="daemons", on_delete=models.CASCADE
+        "Mailbox",
+        related_name="daemons",
+        on_delete=models.CASCADE,
+        verbose_name=_("mailbox"),
     )
     """The mailbox this daemon fetches. Unique. Deletion of that :attr:`mailbox` deletes this daemon."""
 
@@ -64,24 +71,30 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
         choices=EmailFetchingCriterionChoices.choices,
         default=EmailFetchingCriterionChoices.ALL,
         max_length=127,
-        verbose_name=_("Fetching Criterion"),
+        verbose_name=_("fetching criterion"),
         help_text=_("The selection criterion for emails to archive."),
     )
     """The fetching criterion for this mailbox. :attr:`Emailkasten.constants.EmailFetchingCriterionChoices.ALL` by default."""
 
     celery_task: models.OneToOneField[PeriodicTask] = models.OneToOneField(
-        PeriodicTask, on_delete=models.CASCADE, null=True
+        PeriodicTask,
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name=_("celery task"),
     )
 
     interval: models.ForeignKey[IntervalSchedule] = models.ForeignKey(
         IntervalSchedule,
         on_delete=models.PROTECT,
-        verbose_name=_("Fetching Interval"),
+        verbose_name=_("interval"),
         help_text=_("The time between two daemon runs in seconds."),
     )
     """The period with which the daemon is running. :attr:`constance.config('DAEMON_CYCLE_PERIOD_DEFAULT')` by default."""
 
-    is_healthy = models.BooleanField(null=True)
+    is_healthy = models.BooleanField(
+        null=True,
+        verbose_name=_("healthy"),
+    )
     """Flags whether the daemon is healthy. `None` by default.
     When the :attr:`core.models.Mailbox.is_healthy` field changes to `False`, this field is updated accordingly.
     When this field changes to `True`, the :attr:`core.models.Mailbox.is_healthy` field of :attr:`mailbox` will be set to `True` as well by a signal.
@@ -91,27 +104,34 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
         path=str(settings.LOG_DIRECTORY_PATH),
         recursive=True,
         unique=True,
+        verbose_name=_("logfilepath"),
     )
     """The logfile the daemon logs to. Is automatically set by :func:`save`. Unique."""
 
     log_backup_count = models.PositiveSmallIntegerField(
         default=get_config("DAEMON_LOG_BACKUP_COUNT_DEFAULT"),
-        verbose_name=_("Logfile Backup Count"),
+        verbose_name=_("logfile backup count"),
         help_text=_("The number of historical logfiles to keep."),
     )
     """The number of backup logfiles for the daemon. :attr:`constance.config('DAEMON_LOG_BACKUP_COUNT_DEFAULT')` by default."""
 
     logfile_size = models.PositiveIntegerField(
         default=get_config("DAEMON_LOGFILE_SIZE_DEFAULT"),
-        verbose_name=_("Logfile Maximum Size"),
+        verbose_name=_("logfile maximum size"),
         help_text=_("The maximum size of a logfile in bytes."),
     )
     """The maximum size of a logfile for the daemon in bytes. :attr:`constance.config('DAEMON_LOGFILE_SIZE_DEFAULT')` by default."""
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
     """The datetime this entry was created. Is set automatically."""
 
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("last updated"),
+    )
     """The datetime this entry was last updated. Is set automatically."""
 
     BASENAME = "daemon"

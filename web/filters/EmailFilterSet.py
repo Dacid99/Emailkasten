@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING
 import django_filters
 from django.db.models import Q
 from django.forms import widgets
+from django.utils.translation import gettext_lazy as _
 
 from ..utils.widgets import AdaptedSelectDateWidget
 
@@ -49,7 +50,7 @@ class EmailFilterSet(django_filters.FilterSet):
 
     text_search = django_filters.CharFilter(
         method="filter_text_fields",
-        label="Search",
+        label=_("Search"),
         widget=widgets.SearchInput,
     )
     datasize = django_filters.RangeFilter(
@@ -63,13 +64,13 @@ class EmailFilterSet(django_filters.FilterSet):
     datetime__date__lte = django_filters.DateTimeFilter(
         field_name="datetime",
         lookup_expr="date__lte",
-        label="Received before",
+        label=_("Received before"),
         widget=AdaptedSelectDateWidget,
     )
     datetime__date__gte = django_filters.DateTimeFilter(
         field_name="datetime",
         lookup_expr="date__gte",
-        label="Received after",
+        label=_("Received after"),
         widget=AdaptedSelectDateWidget,
     )
     x_spam = django_filters.AllValuesMultipleFilter(

@@ -58,41 +58,81 @@ class Attachment(
 ):
     """Database model for an attachment file in a mail."""
 
-    file_name = models.CharField(max_length=255)
+    file_name = models.CharField(
+        max_length=255,
+        verbose_name=_("filename"),
+    )
     """The filename of the attachment."""
 
-    file_path = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    file_path = models.CharField(
+        max_length=255,
+        unique=True,
+        blank=True,
+        null=True,
+        verbose_name=_("filepath"),
+    )
     """The path in the storage where the attachment is stored. Unique together with :attr:`email`.
     Can be null if the attachment has not been saved (null does not collide with the unique constraint.).
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_Attachment.post_delete_attachment`."""
 
-    content_disposition = models.CharField(blank=True, default="", max_length=255)
+    content_disposition = models.CharField(
+        blank=True,
+        default="",
+        max_length=255,
+        verbose_name=_("content disposition"),
+    )
     """The disposition of the file. Typically 'attachment', 'inline' or ''."""
 
-    content_id = models.CharField(max_length=255, default="")
+    content_id = models.CharField(
+        max_length=255,
+        default="",
+        verbose_name=_("content ID"),
+    )
     """The MIME subtype of the file."""
 
-    content_maintype = models.CharField(max_length=255, default="")
+    content_maintype = models.CharField(
+        max_length=255,
+        default="",
+        verbose_name=_("content maintype"),
+    )
     """The MIME maintype of the file."""
 
-    content_subtype = models.CharField(max_length=255, default="")
+    content_subtype = models.CharField(
+        max_length=255,
+        default="",
+        verbose_name=_("content subtype"),
+    )
     """The MIME subtype of the file."""
 
-    datasize = models.PositiveIntegerField()
+    datasize = models.PositiveIntegerField(
+        verbose_name=_("datasize"),
+    )
     """The filesize of the attachment."""
 
-    is_favorite = models.BooleanField(default=False)
+    is_favorite = models.BooleanField(
+        default=False,
+        verbose_name=_("favorite"),
+    )
     """Flags favorite attachments. False by default."""
 
     email: models.ForeignKey[Email] = models.ForeignKey(
-        "Email", related_name="attachments", on_delete=models.CASCADE
+        "Email",
+        related_name="attachments",
+        on_delete=models.CASCADE,
+        verbose_name=_("email"),
     )
     """The mail that the attachment was found in.  Deletion of that `email` deletes this attachment."""
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
     """The datetime this entry was created. Is set automatically."""
 
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("last updated"),
+    )
     """The datetime this entry was last updated. Is set automatically."""
 
     BASENAME = "attachment"

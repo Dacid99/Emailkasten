@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import django_filters
 from django.forms import widgets
+from django.utils.translation import gettext_lazy as _
 
 from ..utils.widgets import AdaptedSelectDateWidget
 
@@ -51,18 +52,18 @@ class MailboxFilterSet(django_filters.FilterSet):
         widget=widgets.NullBooleanSelect,
     )
     is_favorite = django_filters.BooleanFilter(
-        field_name="is_healthy",
+        field_name="is_favorite",
         widget=widgets.NullBooleanSelect,
     )
     created__date__lte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__lte",
-        label="Created before",
+        label=_("Created before"),
         widget=AdaptedSelectDateWidget,
     )
     created__date__gte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__gte",
-        label="Created after",
+        label=_("Created after"),
         widget=AdaptedSelectDateWidget,
     )

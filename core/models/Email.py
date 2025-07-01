@@ -68,45 +68,85 @@ logger = logging.getLogger(__name__)
 class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models.Model):
     """Database model for an email."""
 
-    message_id = models.CharField(max_length=255)
+    message_id = models.CharField(
+        max_length=255,
+        verbose_name=_("message-ID"),
+    )
     """The messageID header of the mail. Unique together with :attr:`mailbox`."""
 
-    datetime = models.DateTimeField()
+    datetime = models.DateTimeField(
+        verbose_name=_("received"),
+    )
     """The Date header of the mail."""
 
-    email_subject = models.CharField(max_length=255, blank=True, default="")
+    email_subject = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("subject"),
+    )
     """The subject header of the mail."""
 
-    plain_bodytext = models.TextField(blank=True, default="")
+    plain_bodytext = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("plain bodytext"),
+    )
     """The plain bodytext of the mail. Can be blank."""
 
-    html_bodytext = models.TextField(blank=True, default="")
+    html_bodytext = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("HTML bodytext"),
+    )
     """The html bodytext of the mail. Can be blank."""
 
     in_reply_to: models.ManyToManyField[Email, Email] = models.ManyToManyField(
-        "self", symmetrical=False, related_name="replies"
+        "self",
+        symmetrical=False,
+        related_name="replies",
+        verbose_name=_("in reply to"),
     )
     """The mails that this mail is a response to.
     Technically just a single mail, but as a mail can exist in multiple mailboxes, this needs to be able to reference multiples."""
 
     references: models.ManyToManyField[Email, Email] = models.ManyToManyField(
-        "self", symmetrical=False, related_name="referenced_by"
+        "self",
+        symmetrical=False,
+        related_name="referenced_by",
+        verbose_name=_("referenced by"),
     )
     """The mails that this email references."""
 
-    datasize = models.PositiveIntegerField()
+    datasize = models.PositiveIntegerField(
+        verbose_name=_("datasize"),
+    )
     """The bytes size of the mail."""
 
-    eml_filepath = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    eml_filepath = models.CharField(
+        max_length=255,
+        unique=True,
+        blank=True,
+        null=True,
+        verbose_name=_("EML filepath"),
+    )
     """The path in the storage where the mail is stored in .eml format.
     Can be null if the mail has not been saved.
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_Email.post_delete_email_files`.
     """
 
-    html_version = models.TextField(default="", null=False, blank=True)
+    html_version = models.TextField(
+        default="",
+        null=False,
+        blank=True,
+        verbose_name=_("HTML version"),
+    )
     """A html version of the email."""
 
-    is_favorite = models.BooleanField(default=False)
+    is_favorite = models.BooleanField(
+        default=False,
+        verbose_name=_("favorite"),
+    )
     """Flags favorite mails. False by default."""
 
     correspondents: models.ManyToManyField[Correspondent, Correspondent] = (
@@ -114,25 +154,43 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             "Correspondent",
             through="EmailCorrespondent",
             related_name="emails",
+            verbose_name=_("correspondents"),
         )
     )
     """The correspondents that are mentioned in this mail. Bridges through :class:`core.models.EmailCorrespondent`."""
 
     mailbox: models.ForeignKey[Mailbox] = models.ForeignKey(
-        "Mailbox", related_name="emails", on_delete=models.CASCADE
+        "Mailbox",
+        related_name="emails",
+        on_delete=models.CASCADE,
+        verbose_name=_("mailbox"),
     )
     """The mailbox that this mail has been found in. Unique together with :attr:`message_id`. Deletion of that `mailbox` deletes this mail."""
 
-    headers = models.JSONField(null=True)
+    headers = models.JSONField(
+        null=True,
+        verbose_name=_("headers"),
+    )
     """All other header fields of the mail. Can be null."""
 
-    x_spam = models.CharField(max_length=255, blank=True, default="")
+    x_spam = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("X-Spam"),
+    )
     """The x_spam header of this mail. Can be blank."""
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
     """The datetime this entry was created. Is set automatically."""
 
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("last updated"),
+    )
     """The datetime this entry was last updated. Is set automatically."""
 
     BASENAME = "email"

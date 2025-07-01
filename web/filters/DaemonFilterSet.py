@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import django_filters
 from django.forms import widgets
+from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule
 
 from core.constants import EmailFetchingCriterionChoices
@@ -51,26 +52,29 @@ class DaemonFilterSet(django_filters.FilterSet):
     interval__every = django_filters.RangeFilter(
         field_name="interval__every",
         lookup_expr="range",
+        label=_("Number of intervals"),
     )
     interval__period = django_filters.MultipleChoiceFilter(
         field_name="interval__period",
         choices=IntervalSchedule.PERIOD_CHOICES,
         widget=widgets.CheckboxSelectMultiple,
+        label=_("Interval period"),
     )
     celery_task__enabled = django_filters.BooleanFilter(
         field_name="celery_task__enabled",
         widget=widgets.NullBooleanSelect,
+        label=_("Enabled"),
     )
     created__date__lte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__lte",
-        label="Created before",
+        label=_("Created before"),
         widget=AdaptedSelectDateWidget,
     )
     created__date__gte = django_filters.DateTimeFilter(
         field_name="created",
         lookup_expr="date__gte",
-        label="Created after",
+        label=_("Created after"),
         widget=AdaptedSelectDateWidget,
     )
     is_healthy = django_filters.BooleanFilter(
