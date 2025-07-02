@@ -88,5 +88,4 @@
 - mysql may need some more care for use with timezone <https://docs.djangoproject.com/en/5.2/ref/databases/#time-zone-definitions>
 - cascase doesn't trigger delete!
 - optics:
-  - stats table out of bounds for slim viewport
   - iframes are poorly scaled
