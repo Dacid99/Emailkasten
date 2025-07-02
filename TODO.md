@@ -31,7 +31,6 @@
 
 - safeimap and pop classes
 - move all signals into models
-- navbar base template
 - rework test:
   - disable all signals in tests
   - tests more implementation agnostic

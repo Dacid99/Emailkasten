@@ -9,6 +9,10 @@
     {% endblock archive_title %}
 {% endblock title %}
 
+{% block nav_class_emails %}
+    link-light active
+{% endblock nav_class_emails %}
+
 {% block header_title %}
     <a href="{% url 'web:email-archive-index' %}"
        class="link-primary link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{% translate "Email Archive" %}</a>
