@@ -151,7 +151,7 @@ class Correspondent(URLMixin, FavoriteMixin, models.Model):
         """Whether the correspondent is a mailinglist.
 
         Returns:
-            Whether the correspondent has any list_ attributes.
+            Whether the correspondent has any `list_` attributes.
         """
         return bool(
             self.list_id

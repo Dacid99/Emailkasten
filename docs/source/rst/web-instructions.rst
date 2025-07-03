@@ -45,10 +45,7 @@ Setting up a new account
 Adding a new account
 ^^^^^^^^^^^^^^^^^^^^
 
-You can add a new account at
-
-.. code::
-    /accounts/create/
+You can add a new account at :code: /accounts/create/
 
 which you can also reach via the button on the dashboard or the accounts page.
 
@@ -59,7 +56,7 @@ The following protocols are supported:
 - IMAP4 over SSL
 - POP3
 - POP3 over SSL
--
+
 .. note::
     If possible, use IMAP4 via SSL. This enables you to use the most features with the most security.
 
@@ -77,6 +74,7 @@ Mailbox setup
 
 When the account is set up successfully, you can collect the names of all mailboxes in the account.
 You can use the fetch mailboxes button in the overview of the account or the equivalent API endpoint.
+
 .. note::
     For POP mailaccounts, there is only a single mailbox, the 'INBOX'.
 
@@ -93,6 +91,7 @@ An email can be saved in the following formats:
 Additionally, you can configure whether files attached to the emails are stored.
 
 When you have decided on these settings, go ahead and test the mailbox, just like you did with the account earlier.
+
 .. note::
     As the information about the mailbox is collected from the account itself, this should only fail if the mailbox has been deleted or renamed.
 

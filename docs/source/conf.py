@@ -41,6 +41,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.todo",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.autosectionlabel",
     "sphinx.ext.autodoc",
     "sphinx.ext.graphviz",
     "sphinx.ext.apidoc",  # sphinx-apidoc run automatically with sphinx-build

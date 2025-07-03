@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""File with fixtures required for all viewset tests. Automatically imported to test_ files.
+"""File with fixtures required for all viewset tests. Automatically imported to `test_` files.
 
 The viewset tests are made against a mocked consistent database with an instance of every model in every testcase.
 """

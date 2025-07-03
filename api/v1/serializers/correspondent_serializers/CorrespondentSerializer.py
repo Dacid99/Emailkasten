@@ -38,9 +38,9 @@ from .BaseCorrespondentSerializer import BaseCorrespondentSerializer
 
 class CorrespondentSerializer(BaseCorrespondentSerializer):
     """The standard serializer for a :class:`core.models.Correspondent.Correspondent`.
-    `core.models.Correspondent`
-        Includes a nested serializer for
-        the :attr:`core.models.Correspondent.Correspondent.emails` fields.
+
+    Includes a nested serializer for
+    the :attr:`core.models.Correspondent.Correspondent.emails` field.
     """
 
     emails = serializers.SerializerMethodField(read_only=True)

@@ -46,8 +46,8 @@ class CorrespondentViewSet(
     ToggleFavoriteMixin,
 ):
     """Viewset for the :class:`core.models.Correspondent.Correspondent`.
-    `core.models.Correspondent`
-        Provides every read-only and a destroy action.
+
+    Provides every read-only and a destroy action.
     """
 
     BASENAME = Correspondent.BASENAME

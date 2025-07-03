@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""File with fixtures required for all archive views tests. Automatically imported to test_ files."""
+"""File with fixtures required for all archive views tests. Automatically imported to `test_` files."""
 
 from __future__ import annotations
 

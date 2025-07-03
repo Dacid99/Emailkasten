@@ -46,7 +46,7 @@ if TYPE_CHECKING:
 class DaemonViewSet(NoCreateMixin, viewsets.ModelViewSet[Daemon]):
     """Viewset for the :class:`core.models.Daemon`.
 
-    Provides all but the create method.
+    Provides all but the create action.
 
     Note:
         To update instances the user must specify format "json" with the request.
