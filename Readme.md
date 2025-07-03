@@ -52,6 +52,8 @@ To get you started smoothly just follow [the development guide](DEVELOPMENT.md).
 
 In order to keep the code maintainable and in a consistent style please make sure to follow the rules in [the guidelines](CONTRIBUTING.md).
 
+Thank you to [everybody who helped with advancing this project](CONTRIBUTORS.md)!
+
 ## License
 
 This software is proudly released under [the AGPLv3 open-source license](LICENSE).
