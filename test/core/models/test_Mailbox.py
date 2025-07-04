@@ -678,6 +678,26 @@ def test_Mailbox_create_from_data_no_account(faker, mock_parse_mailbox_name):
 
 
 @pytest.mark.django_db
+def test_Mailbox_has_download_with_email(fake_mailbox, fake_email):
+    """Tests :func:`core.models.Mailbox.Mailbox.has_download`."""
+    assert fake_mailbox.emails.exists()
+
+    result = fake_mailbox.has_download
+
+    assert result
+
+
+@pytest.mark.django_db
+def test_Mailbox_has_download_no_email(fake_mailbox):
+    """Tests :func:`core.models.Mailbox.Mailbox.has_download`."""
+    assert not fake_mailbox.emails.exists()
+    
+    result = fake_mailbox.has_download
+
+    assert not result
+
+
+@pytest.mark.django_db
 def test_Mailbox_get_absolute_url(fake_mailbox):
     """Tests :func:`core.models.Mailbox.Mailbox.get_absolute_url`."""
     result = fake_mailbox.get_absolute_url()

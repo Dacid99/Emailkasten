@@ -322,7 +322,7 @@ class Mailbox(
     @override
     @property
     def has_download(self) -> bool:
-        return True
+        return self.emails.exists()
 
     def available_download_formats(self) -> list[tuple[str, str]]:
         """Get all formats that emails in this mailbox can be downloaded.
