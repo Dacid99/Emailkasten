@@ -12,6 +12,7 @@ function clearFormElement(formElement) {
         switch (field_type) {
 
             case "text":
+            case "search":
             case "password":
             case "textarea":
             case "hidden":
