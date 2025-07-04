@@ -1,0 +1,13 @@
+{% extends "web/bases/base_error.html" %}
+
+{% load i18n %}
+
+{% block title %}
+    {% translate "Forbidden" %} -
+{% endblock title %}
+
+{% block errormessage %}
+    <h1>{% translate "Forbidden" %}</h1>
+    <p>{% translate "CSRF Verification failed!" %}</p>
+    <p>{% translate "First aid: Check your cookie settings." %}</p>
+{% endblock content %}
