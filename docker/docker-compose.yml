@@ -47,6 +47,7 @@ services:
       - RECONNECT_RETRIES=10
       - RECONNECT_DELAY=10
       - REGISTRATION_ENABLED=False
+      - GUNICORN_WORKER_NUMBER=2
       - DEBUG=False
     restart: unless-stopped
     depends_on:

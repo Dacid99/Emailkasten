@@ -10,4 +10,4 @@ echo "Successfully started celery worker."
 echo "Starting celery beat ..."
 poetry run celery -A Emailkasten beat --loglevel=${CELERY_LOG_LEVEL} -S django --detach
 echo "Successfully started celery beat."
-poetry run gunicorn Emailkasten.wsgi --bind 0.0.0.0:443 --keyfile=key.pem --certfile=cert.pem
+poetry run gunicorn Emailkasten.wsgi --bind 0.0.0.0:443 --keyfile=key.pem --certfile=cert.pem --workers=${GUNICORN_WORKER_NUMBER:-1}
