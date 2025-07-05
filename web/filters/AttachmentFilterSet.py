@@ -20,11 +20,20 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import django_filters
+from django.db import models
 from django.forms import widgets
 from django.utils.translation import gettext_lazy as _
 
+from core.models import Attachment
+
 from ..utils.widgets import AdaptedSelectDateWidget
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class AttachmentFilterSet(django_filters.FilterSet):
@@ -41,20 +50,16 @@ class AttachmentFilterSet(django_filters.FilterSet):
             "created",
         ]
     )
-
-    file_name__icontains = django_filters.CharFilter(
-        field_name="file_name",
-        lookup_expr="icontains",
+    text_search = django_filters.CharFilter(
+        method="filter_text_fields",
+        label=_("Search"),
+        widget=widgets.SearchInput,
     )
     content_maintype = django_filters.AllValuesMultipleFilter(
         field_name="content_maintype",
     )
     content_subtype = django_filters.AllValuesMultipleFilter(
         field_name="content_subtype",
-    )
-    content_id__icontains = django_filters.CharFilter(
-        field_name="content_id",
-        lookup_expr="icontains",
     )
     content_disposition = django_filters.AllValuesMultipleFilter(
         field_name="content_disposition",
@@ -79,3 +84,23 @@ class AttachmentFilterSet(django_filters.FilterSet):
         label=_("Received after"),
         widget=AdaptedSelectDateWidget,
     )
+
+    def filter_text_fields(
+        self, queryset: QuerySet[Attachment], name: str, value: str
+    ) -> QuerySet[Attachment]:
+        """Filters textfields in the model.
+
+        Args:
+            queryset: The basic queryset to filter.
+            name: The name of the filterfield.
+            value: The value to filter by.
+
+        Returns:
+            The filtered queryset.
+        """
+        return queryset.filter(
+            models.Q(file_name__icontains=value)
+            | models.Q(content_id__icontains=value)
+            | models.Q(email__subject__icontains=value)
+            | models.Q(email__message_id__icontains=value)
+        ).distinct()

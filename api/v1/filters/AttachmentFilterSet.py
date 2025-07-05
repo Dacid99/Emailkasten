@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Final
 
+from django.db import models
 from django_filters import rest_framework as filters
 
 from api.constants import FilterSetups
@@ -29,11 +30,15 @@ from core.models import Attachment
 
 
 if TYPE_CHECKING:
-    from django.db.models import Model
+    from django.db.models import Model, QuerySet
 
 
 class AttachmentFilterSet(filters.FilterSet):
     """The filter class for :class:`core.models.Attachment`."""
+
+    search = filters.CharFilter(
+        method="filter_text_fields",
+    )
 
     class Meta:
         """Metadata class for the filter."""
@@ -52,3 +57,23 @@ class AttachmentFilterSet(filters.FilterSet):
             "updated": FilterSetups.DATETIME,
             "email__datetime": FilterSetups.DATETIME,
         }
+
+    def filter_text_fields(
+        self, queryset: QuerySet[Attachment], name: str, value: str
+    ) -> QuerySet[Attachment]:
+        """Filters textfields in the model.
+
+        Args:
+            queryset: The basic queryset to filter.
+            name: The name of the filterfield.
+            value: The value to filter by.
+
+        Returns:
+            The filtered queryset.
+        """
+        return queryset.filter(
+            models.Q(file_name__icontains=value)
+            | models.Q(content_id__icontains=value)
+            | models.Q(email__subject__icontains=value)
+            | models.Q(email__message_id__icontains=value)
+        ).distinct()
