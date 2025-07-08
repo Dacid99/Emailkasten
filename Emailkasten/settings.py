@@ -29,6 +29,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import tomli
 from django.utils.translation import gettext_lazy as _
 from environ import FileAwareEnv
 
@@ -41,8 +42,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = FileAwareEnv()
 env.read_env(BASE_DIR / ".env")
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+with open(BASE_DIR / "pyproject.toml", "rb") as f:
+    config = tomli.load(f)
+
+VERSION = config["project"]["version"]
+
+# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/ for safe settings
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
@@ -489,7 +494,7 @@ FILE_UPLOAD_HANDLERS = [
 SPECTACULAR_SETTINGS = {
     "TITLE": _("Emailkasten API"),
     "DESCRIPTION": _("The API schema for the Emailkasten server."),
-    "VERSION": "0.0.1",
+    "VERSION": VERSION,
     "SERVE_INCLUDE_SCHEMA": True,
 }
 
