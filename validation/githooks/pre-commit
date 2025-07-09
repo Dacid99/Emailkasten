@@ -54,6 +54,18 @@ else
   fi
 fi
 
+CHANGED_RST_FILES=$(git diff --cached --name-only --diff-filter=ACMRT | grep '\.rst$')
+
+if [ -z "$CHANGED_RST_FILES" ]; then
+  echo "No html files in commit."
+else
+  poetry run doc8 --config $CONFIG_PATH'doc8.ini' $CHANGED_RST_FILES >> $REPORT_PATH'doc8_precommit.ansi'
+  if [ $? -ne 0 ]; then
+    echo "Doc8 failed, please check "$REPORT_PATH"doc8_precommit.ansi ."
+    exit 1
+  fi
+fi
+
 #spellcheck
 poetry run codespell --config=$CONFIG_PATH'.codespellrc' Emailkasten/ core/ api/ web/ test/ docs/ .gitea/ .github/ .gitlab/ *.md >> $REPORT_PATH'codespell_precommit.ansi'
 

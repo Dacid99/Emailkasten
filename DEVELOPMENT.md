@@ -114,5 +114,10 @@ git config core.hooksPath validation/githooks/
 
 - python poetry
 - ANSI colors (iliazeus.vscode-ansi) (for validation reports)
-- reStructuredText (lextudio.restructuredtext) for docs
+- reStructuredText (lextudio.restructuredtext) for docs, with config
+
+```json
+ "restructuredtext.linter.doc8.extraArgs": ["--config /path/to/validation/doc8.ini"]
+```
+
 - bootstrap 5 intellisense etc.
