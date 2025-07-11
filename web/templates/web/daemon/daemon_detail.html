@@ -42,7 +42,9 @@
 
 {% block card_content %}
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">{% translate "Criterion" %}: {{ object.fetching_criterion }}</li>
+        <li class="list-group-item">
+            {% translate "Criterion" %}: {{ object.get_fetching_criterion_display }}
+        </li>
         <li class="list-group-item">{% translate "Interval" %}: {{ object.interval }}</li>
         <li class="list-group-item">
             {% translate "Last Run Datetime" %}: {{ object.celery_task.last_run_at }}

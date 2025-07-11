@@ -39,8 +39,15 @@
 {% block card_content %}
     <ul class="list-group list-group-flush">
         <li class="list-group-item">{% translate "Host" %}: {{ object.mail_host }}</li>
-        <li class="list-group-item">{% translate "Protocol" %}: {{ object.protocol }}</li>
-        <li class="list-group-item">{% translate "Port" %}: {{ object.mail_host_port }}</li>
+        <li class="list-group-item">{% translate "Protocol" %}: {{ object.get_protocol_display }}</li>
+        <li class="list-group-item">
+            {% translate "Port" %}:
+            {% if object.mail_host_port %}
+                {{ object.mail_host_port }}
+            {% else %}
+                {% translate "Default" %}
+            {% endif %}
+        </li>
         <li class="list-group-item">{% translate "Timeout" %}: {{ object.timeout }}</li>
     </ul>
 {% endblock card_content %}
