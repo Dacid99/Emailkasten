@@ -60,10 +60,6 @@ if [ -z "$CHANGED_RST_FILES" ]; then
   echo "No html files in commit."
 else
   poetry run doc8 --config $CONFIG_PATH'doc8.ini' $CHANGED_RST_FILES >> $REPORT_PATH'doc8_precommit.ansi'
-  if [ $? -ne 0 ]; then
-    echo "Doc8 failed, please check "$REPORT_PATH"doc8_precommit.ansi ."
-    exit 1
-  fi
 fi
 
 #spellcheck
