@@ -59,6 +59,6 @@ class CorrespondentDetailWithDeleteView(
             )
             .select_related("email")
             .order_by("-created")
-            .distinct()[:25],
+            .distinct()[:25]
         )
         return context
