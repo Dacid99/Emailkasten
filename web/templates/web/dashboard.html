@@ -12,7 +12,10 @@
         <div class="col-9">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4>{% translate "Latest Emails" %}</h4>
+                    <h4 class="m-1">
+                        {% translate "Latest Emails" %}<i class="fa-solid fa-envelope mx-1" aria-hidden="true"></i>
+                    </h4>
+
                     <a role="button"
                        class="btn btn-outline-primary"
                        href="{% url 'web:email-filter-list' %}">{% translate "View all" %}</a>
@@ -26,12 +29,16 @@
         </div>
         <div class="col-3">
             <div class="card">
-                <h4 class="card-header">{% translate "Database stats" %}</h4>
+                <div class="card-header">
+                    <h4 class="m-1">
+                        {% translate "Statistics" %}<i class="fa-solid fa-chart-simple mx-1" aria-hidden="true"></i>
+                    </h4>
+                </div>
                 <div class="card-body table-responsive">
                     <table class="table">
                         <thead>
-                            <th scope="col">Data</th>
-                            <th scope="col">Count</th>
+                            <th scope="col">{% translate "Data" %}</th>
+                            <th scope="col">{% translate "Count" %}</th>
                         </thead>
                         <tbody>
                             <tr>

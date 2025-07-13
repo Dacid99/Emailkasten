@@ -101,7 +101,9 @@
 {% block card_extras %}
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">{% translate "Correspondents" %}</h4>
+            <h4 class="card-title">
+                {% translate "Correspondents" %}<i class="fa-solid fa-address-book mx-1" aria-hidden="true"></i>
+            </h4>
 
             {% include "web/emailcorrespondents/partials/_emailcorrespondents_list.html" with emailcorrespondents=object.emailcorrespondents.all %}
 
@@ -110,7 +112,9 @@
     {% if object.attachments.exists %}
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">{% translate "Attachments" %}</h4>
+                <h4 class="card-title">
+                    {% translate "Attachments" %}<i class="fa-solid fa-paperclip mx-1" aria-hidden="true"></i>
+                </h4>
 
                 {% include "web/attachment/partials/_attachment_list.html" with attachments=object.attachments.all %}
 
@@ -143,7 +147,9 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">{% translate "Conversation" %}</h4>
+            <h4 class="card-title">
+                {% translate "Conversation" %}<i class="fa-solid fa-comments mx-1" aria-hidden="true"></i>
+            </h4>
 
             {% include "web/email/partials/_email_list.html" with emails=object.full_conversation %}
 
@@ -152,7 +158,9 @@
     {% if object.in_reply_to.exists %}
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">{% translate "In Reply To" %}</h4>
+                <h4 class="card-title">
+                    {% translate "In Reply To" %}<i class="fa-solid fa-share mx-1" aria-hidden="true"></i>
+                </h4>
                 <ul class="list-group list-group-flush">
                     {% for in_reply_to_email in object.in_reply_to.all %}
                         <li class="list-group-item list-group-item-action">
@@ -170,8 +178,10 @@
     {% if object.replies.exists %}
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">{% translate "Replies" %}</h4>
-                :
+                <h4 class="card-title">
+                    {% translate "Replies" %}<i class="fa-solid fa-reply mx-1" aria-hidden="true"></i>
+                </h4>
+
                 <ul class="list-group list-group-flush">
                     {% for reply_email in object.replies.all %}
                         <li class="list-group-item list-group-item-action">
@@ -189,7 +199,9 @@
     {% if object.references.exists %}
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">{% translate "References" %}</h4>
+                <h4 class="card-title">
+                    {% translate "References" %}<i class="fa-solid fa-share mx-1" aria-hidden="true"></i>
+                </h4>
                 <ul class="list-group list-group-flush">
                     {% for referenced_email in object.references.all %}
                         <li class="list-group-item list-group-item-action">
@@ -207,8 +219,9 @@
     {% if object.referenced_by.exists %}
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">{% translate "Referenced by" %}</h4>
-                :
+                <h4 class="card-title">
+                    {% translate "Referenced by" %}<i class="fa-solid fa-reply mx-1" aria-hidden="true"></i>
+                </h4>
                 <ul class="list-group list-group-flush">
                     {% for referencing_email in object.referenced_by.all %}
                         <li class="list-group-item list-group-item-action">

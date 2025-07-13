@@ -39,43 +39,52 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-end" id="navbarText">
-                        <div class="d-flex flex-column flex-sm-row gap-2 col-lg-3 text-nowrap">
+                        <div class="d-flex flex-column flex-sm-row gap-2 text-nowrap align-items-center">
+                            <p class="d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-globe" aria-hidden="true"></i>
 
-                            {% include "allauth/elements/timezone_dropdown.html" %}
+                                {% include "allauth/elements/timezone_dropdown.html" %}
 
-                            {% include "allauth/elements/language_dropdown.html" %}
+                            </p>
+                            <p class="d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-language" aria-hidden="true"></i>
 
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'account_logout' %}"
-                           class="btn btn-danger"
-                           role="button">{% translate "Sign Out" %}</a>
-                    {% else %}
-                        <a href="{% url 'account_login' %}"
-                           class="btn btn-primary"
-                           role="button">{% translate "Sign In" %}</a>
-                        {% url 'account_signup' as signup_url_ %}
-                        {% if signup_url_ %}
-                            <a href="{{ signup_url_ }}" class="btn btn-secondary" role="button">{% translate "Sign Up" %}</a>
-                        {% endif %}
-                    {% endif %}
+                                {% include "allauth/elements/language_dropdown.html" %}
+
+                            </p>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'account_logout' %}"
+                                   class="btn btn-danger"
+                                   role="button">{% translate "Sign Out" %}</a>
+                            {% else %}
+                                <a href="{% url 'account_login' %}"
+                                   class="btn btn-primary"
+                                   role="button">{% translate "Sign In" %}</a>
+                                {% url 'account_signup' as signup_url_ %}
+                                {% if signup_url_ %}
+                                    <a href="{{ signup_url_ }}" class="btn btn-secondary" role="button">{% translate "Sign Up" %}</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </nav>
-</header>
+            </nav>
+        </header>
 
-{% block body %}
+        {% block body %}
 
-    {% block content %}
-    {% endblock content %}
-{% endblock body %}
+            {% block content %}
+            {% endblock content %}
+        {% endblock body %}
 
-{% block extra_body %}
-{% endblock extra_body %}
 
-{% include "web/partials/_footer.html" %}
+        {% block extra_body %}
+        {% endblock extra_body %}
 
-{% bootstrap_javascript %}
 
-</body>
+        {% include "web/partials/_footer.html" %}
+
+        {% bootstrap_javascript %}
+
+    </body>
 </html>
