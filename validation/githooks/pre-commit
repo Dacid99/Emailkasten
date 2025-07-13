@@ -47,7 +47,7 @@ else
   poetry run djlint --reformat --configuration $CONFIG_PATH'djlintrc' $CHANGED_HTML_FILES > $REPORT_PATH'djlint_precommit.ansi'
   git add $CHANGED_HTML_FILES
 
-  poetry run djlint --lint --configuration $CONFIG_PATH'djlintrc' $CHANGED_HTML_FILES >> $REPORT_PATH'djlint_precommit.ansi'
+  poetry run djlint --lint --configuration $CONFIG_PATH'djlintrc' $CHANGED_HTML_FILES > $REPORT_PATH'djlint_precommit.ansi'
   if [ $? -ne 0 ]; then
     echo "Djlint failed, please check "$REPORT_PATH"djlint_precommit.ansi ."
     exit 1
@@ -59,11 +59,11 @@ CHANGED_RST_FILES=$(git diff --cached --name-only --diff-filter=ACMRT | grep '\.
 if [ -z "$CHANGED_RST_FILES" ]; then
   echo "No html files in commit."
 else
-  poetry run doc8 --config $CONFIG_PATH'doc8.ini' $CHANGED_RST_FILES >> $REPORT_PATH'doc8_precommit.ansi'
+  poetry run doc8 --config $CONFIG_PATH'doc8.ini' $CHANGED_RST_FILES > $REPORT_PATH'doc8_precommit.ansi'
 fi
 
 #spellcheck
-poetry run codespell --config=$CONFIG_PATH'.codespellrc' Emailkasten/ core/ api/ web/ test/ docs/ .gitea/ .github/ .gitlab/ *.md >> $REPORT_PATH'codespell_precommit.ansi'
+poetry run codespell --config=$CONFIG_PATH'.codespellrc' Emailkasten/ core/ api/ web/ test/ docs/ .gitea/ .github/ .gitlab/ *.md > $REPORT_PATH'codespell_precommit.ansi'
 
 echo "All precommit actions passed successfully."
 exit 0
