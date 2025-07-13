@@ -20,6 +20,7 @@
 
 import pytest
 from django.contrib import messages
+from django.db.models import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
@@ -68,6 +69,7 @@ def test_get_auth_owner(fake_mailbox, owner_client, detail_url):
     assert "object" in response.context
     assert isinstance(response.context["object"], Mailbox)
     assert "latest_emails" in response.context
+    assert isinstance(response.context["latest_emails"], QuerySet)
     assert fake_mailbox.name in response.content.decode()
 
 

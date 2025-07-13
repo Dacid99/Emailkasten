@@ -19,6 +19,7 @@
 """Test module for :mod:`web.views.DashboardView`."""
 
 import pytest
+from django.db.models import QuerySet
 from django.http import HttpResponseRedirect
 from rest_framework import status
 
@@ -57,6 +58,10 @@ def test_get_auth_owner(owner_client, list_url):
     assert response.status_code == status.HTTP_200_OK
     assert "web/dashboard.html" in [t.name for t in response.templates]
     assert "latest_emails" in response.context
+    assert isinstance(response.context["latest_emails"], QuerySet)
     assert "emails_count" in response.context
+    assert isinstance(response.context["emails_count"], int)
     assert "attachments_count" in response.context
+    assert isinstance(response.context["attachments_count"], int)
     assert "correspondents_count" in response.context
+    assert isinstance(response.context["correspondents_count"], int)

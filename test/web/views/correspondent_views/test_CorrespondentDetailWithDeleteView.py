@@ -19,6 +19,7 @@
 """Test module for :mod:`web.views.CorrespondentDetailWithDeleteView`."""
 
 import pytest
+from django.db.models import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
@@ -75,6 +76,7 @@ def test_get_auth_owner(fake_correspondent, owner_client, detail_url):
     assert "object" in response.context
     assert isinstance(response.context["object"], Correspondent)
     assert "latest_correspondentemails" in response.context
+    assert isinstance(response.context["latest_correspondentemails"], QuerySet)
     assert fake_correspondent.email_address in response.content.decode()
 
 
