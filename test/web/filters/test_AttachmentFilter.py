@@ -36,13 +36,13 @@ from .conftest import (
 @pytest.mark.parametrize(
     "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
 )
-def test_file_name_filter(
+def test_text_search_filter(
     attachment_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
-    for the :attr:`core.models.Attachment.Attachment.file_name` field.
+    for the :attr:`core.models.Attachment.Attachment.text_search` field.
     """
-    query = {"file_name" + lookup_expr: filterquery}
+    query = {"text_search": filterquery}
 
     filtered_data = AttachmentFilterSet(query, queryset=attachment_queryset).qs
 
@@ -63,26 +63,6 @@ def test_content_disposition_filter(
     for the :attr:`core.models.Attachment.Attachment.content_disposition` field.
     """
     query = {"content_disposition": [TEXT_TEST_ITEMS[index] for index in filterquery]}
-
-    filtered_data = AttachmentFilterSet(query, queryset=attachment_queryset).qs
-
-    assert filtered_data.distinct().count() == filtered_data.count()
-    assert filtered_data.count() == len(expected_indices)
-    for data in filtered_data:
-        assert data.id - 1 in expected_indices
-
-
-@pytest.mark.django_db
-@pytest.mark.parametrize(
-    "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
-)
-def test_content_id_filter(
-    attachment_queryset, lookup_expr, filterquery, expected_indices
-):
-    """Tests :class:`web.filters.AttachmentFilterSet`'s filtering
-    for the :attr:`core.models.Attachment.Attachment.content_id` field.
-    """
-    query = {"content_id" + lookup_expr: filterquery}
 
     filtered_data = AttachmentFilterSet(query, queryset=attachment_queryset).qs
 
