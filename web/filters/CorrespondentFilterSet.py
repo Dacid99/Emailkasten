@@ -88,6 +88,7 @@ class CorrespondentFilterSet(django_filters.FilterSet):
         return queryset.filter(
             Q(email_address__icontains=value)
             | Q(email_name__icontains=value)
+            | Q(real_name__icontains=value)
             | Q(list_id__icontains=value)
             | Q(list_owner__icontains=value)
             | Q(list_subscribe__icontains=value)

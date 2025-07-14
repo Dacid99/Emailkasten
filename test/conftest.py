@@ -710,6 +710,7 @@ def correspondent_payload(faker, fake_email) -> dict[str, Any]:
     correspondent_data = baker.prepare(
         Correspondent,
         emails=[fake_email],
+        real_name=faker.name(),
         email_name=faker.name(),
         list_id=faker.name(),
         list_owner=faker.name(),

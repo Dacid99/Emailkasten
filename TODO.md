@@ -23,8 +23,7 @@
 - notes field for models
 - more tags
 - autotagging
-- saving old correspondent info (via fk maybe)
-- email_name uneditable, add real_name field
+- saving old correspondent mailername info (via fk maybe)
 - async parsing, sync saving
 - auto transfer of pdfs to paperless
 
@@ -56,7 +55,6 @@
 - daemonize celery worker
 - api creation of daemons
 - logfile for gunicorn
-- integration with uptime checkers
 - helptexts for orientation instead of empty lists
 
 ### For production
@@ -70,14 +68,6 @@
 - tests
 - documentation
 - type annotations
-
-## To test hands-on
-
-- complete app
-- uploads
-- batch-downloads
-- attachment-thumbnails
-- celery daemons
 
 ## To fix
 

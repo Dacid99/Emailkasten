@@ -33,6 +33,26 @@ from .conftest import (
 @pytest.mark.parametrize(
     "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
 )
+def test_real_name_filter(
+    correspondent_queryset, lookup_expr, filterquery, expected_indices
+):
+    """Tests :class:`api.v1.filters.CorrespondentFilterSet`'s filtering
+    for the :attr:`core.models.Correspondent.Correspondent.email_name` field.
+    """
+    query = {"real_name" + lookup_expr: filterquery}
+
+    filtered_data = CorrespondentFilterSet(query, queryset=correspondent_queryset).qs
+
+    assert filtered_data.distinct().count() == filtered_data.count()
+    assert filtered_data.count() == len(expected_indices)
+    for data in filtered_data:
+        assert data.id - 1 in expected_indices
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
+)
 def test_email_name_filter(
     correspondent_queryset, lookup_expr, filterquery, expected_indices
 ):

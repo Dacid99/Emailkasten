@@ -428,6 +428,7 @@ def correspondent_queryset(
             baker.make(
                 Correspondent,
                 email_name=text_test_item,
+                real_name=text_test_item,
                 email_address=text_test_item,
                 list_id=text_test_item,
                 list_owner=text_test_item,

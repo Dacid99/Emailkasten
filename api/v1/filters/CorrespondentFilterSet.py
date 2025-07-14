@@ -138,6 +138,7 @@ class CorrespondentFilterSet(filters.FilterSet):
 
         fields: ClassVar[dict[str, list[str]]] = {
             "email_name": FilterSetups.TEXT,
+            "real_name": FilterSetups.TEXT,
             "email_address": FilterSetups.TEXT,
             "list_id": FilterSetups.TEXT,
             "list_owner": FilterSetups.TEXT,
@@ -167,6 +168,7 @@ class CorrespondentFilterSet(filters.FilterSet):
         return queryset.filter(
             Q(email_address__icontains=value)
             | Q(email_name__icontains=value)
+            | Q(real_name__icontains=value)
             | Q(list_id__icontains=value)
             | Q(list_owner__icontains=value)
             | Q(list_subscribe__icontains=value)

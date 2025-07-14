@@ -48,8 +48,8 @@ class BaseCorrespondentForm(RequiredMarkerModelForm):
         model: Final[type[Model]] = Correspondent
         """The model behind the form."""
 
-        fields: ClassVar[list[str]] = ["email_name", "is_favorite"]
-        """Exposes only the :attr:`core.models.Correspondent.Correspondent.email_name` field."""
+        fields: ClassVar[list[str]] = ["real_name", "is_favorite"]
+        """Exposes only the :attr:`core.models.Correspondent.Correspondent.real_name` field."""
 
         localized_fields = "__all__"
         """Localize all fields."""

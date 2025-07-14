@@ -43,6 +43,8 @@ def test_output(fake_correspondent, request_context):
     assert isinstance(serializer_data["emails"][0], dict)
     assert "email_name" in serializer_data
     assert serializer_data["email_name"] == fake_correspondent.email_name
+    assert "real_name" in serializer_data
+    assert serializer_data["real_name"] == fake_correspondent.real_name
     assert "email_address" in serializer_data
     assert serializer_data["email_address"] == fake_correspondent.email_address
     assert "list_id" in serializer_data
@@ -73,7 +75,7 @@ def test_output(fake_correspondent, request_context):
     assert (
         datetime.fromisoformat(serializer_data["updated"]) == fake_correspondent.updated
     )
-    assert len(serializer_data) == 15
+    assert len(serializer_data) == 16
 
 
 @pytest.mark.django_db
@@ -87,8 +89,9 @@ def test_input(fake_correspondent, request_context):
 
     assert "id" not in serializer_data
     assert "emails" not in serializer_data
-    assert "email_name" in serializer_data
-    assert serializer_data["email_name"] == fake_correspondent.email_name
+    assert "email_name" not in serializer_data
+    assert "real_name" in serializer_data
+    assert serializer_data["real_name"] == fake_correspondent.email_name
     assert "email_address" not in serializer_data
     assert "list_id" not in serializer_data
     assert "list_owner" not in serializer_data

@@ -19,7 +19,6 @@
 """Test module for the :class:`web.forms.BaseCorrespondentForm` form class."""
 
 import pytest
-from django.forms.models import model_to_dict
 
 from web.forms import BaseCorrespondentForm
 
@@ -31,8 +30,8 @@ def test_post(correspondent_payload):
 
     assert form.is_valid()
     form_data = form.cleaned_data
-    assert "email_name" in form_data
-    assert form_data["email_name"] == correspondent_payload["email_name"]
+    assert "real_name" in form_data
+    assert form_data["real_name"] == correspondent_payload["real_name"]
     assert "is_favorite" in form_data
     assert form_data["is_favorite"] == correspondent_payload["is_favorite"]
     assert "email_address" not in form_data
@@ -48,9 +47,9 @@ def test_get(fake_correspondent):
     form_initial_data = form.initial
     form_fields = form.fields
 
-    assert "email_name" in form_fields
-    assert "email_name" in form_initial_data
-    assert form_initial_data["email_name"] == fake_correspondent.email_name
+    assert "real_name" in form_fields
+    assert "real_name" in form_initial_data
+    assert form_initial_data["real_name"] == fake_correspondent.email_name
     assert "is_favorite" in form_fields
     assert "is_favorite" in form_initial_data
     assert form_initial_data["is_favorite"] == fake_correspondent.is_favorite

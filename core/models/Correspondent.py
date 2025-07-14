@@ -55,6 +55,15 @@ class Correspondent(URLMixin, FavoriteMixin, models.Model):
     )
     """The mailer name. Can be blank if none has been found."""
 
+    real_name = models.CharField(
+        max_length=255,
+        default="",
+        blank=True,
+        verbose_name=_("real name"),
+        help_text=_("The real name of the correspondent."),
+    )
+    """The real name. Can be blank if the user doesn't set one."""
+
     user = models.ForeignKey(
         get_user_model(),
         verbose_name=_("user"),

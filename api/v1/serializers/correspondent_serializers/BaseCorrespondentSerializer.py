@@ -55,6 +55,7 @@ class BaseCorrespondentSerializer(serializers.ModelSerializer[Correspondent]):
 
         read_only_fields: Final[list[str]] = [
             "email_address",
+            "email_name",
             "list_id",
             "list_owner",
             "list_subscribe",

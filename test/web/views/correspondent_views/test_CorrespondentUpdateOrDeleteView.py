@@ -92,7 +92,7 @@ def test_post_update_noauth(
         f"?next={detail_url(CorrespondentUpdateOrDeleteView, fake_correspondent)}"
     )
     fake_correspondent.refresh_from_db()
-    assert fake_correspondent.email_name != correspondent_payload["email_name"]
+    assert fake_correspondent.real_name != correspondent_payload["real_name"]
 
 
 @pytest.mark.django_db
@@ -108,7 +108,7 @@ def test_post_update_auth_other(
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "404.html" in [t.name for t in response.templates]
     fake_correspondent.refresh_from_db()
-    assert fake_correspondent.email_name != correspondent_payload["email_name"]
+    assert fake_correspondent.real_name != correspondent_payload["real_name"]
 
 
 @pytest.mark.django_db
@@ -125,7 +125,7 @@ def test_post_update_auth_owner(
     assert isinstance(response, HttpResponseRedirect)
     assert response.url.startswith(reverse("web:correspondent-filter-list"))
     fake_correspondent.refresh_from_db()
-    assert fake_correspondent.email_name == correspondent_payload["email_name"]
+    assert fake_correspondent.real_name == correspondent_payload["real_name"]
 
 
 @pytest.mark.django_db

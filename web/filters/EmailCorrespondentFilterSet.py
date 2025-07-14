@@ -93,4 +93,5 @@ class EmailCorrespondentFilterSet(django_filters.FilterSet):
         return queryset.filter(
             Q(correspondent__email_address__icontains=value)
             | Q(correspondent__email_name__icontains=value)
+            | Q(correspondent__real_name__icontains=value)
         ).distinct()
