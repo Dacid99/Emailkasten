@@ -131,7 +131,7 @@ class EmailCorrespondent(models.Model):
         new_email_correspondent_models = []
         for correspondent_tuple in getaddresses([header]):
             new_correspondent = Correspondent.create_from_correspondent_tuple(
-                correspondent_tuple
+                correspondent_tuple, email.mailbox.account.user
             )
             if new_correspondent is None:
                 continue

@@ -52,11 +52,7 @@ class DatabaseStatsSerializer(serializers.Serializer):
         """
         request = self.context.get("request")
         user = getattr(request, "user", None)
-        return (
-            Correspondent.objects.filter(emails__mailbox__account__user=user)
-            .distinct()
-            .count()
-        )
+        return Correspondent.objects.filter(user=user).distinct().count()
 
     def get_attachment_count(self, obj: Any) -> int:
         """Gets the count of attachments for the user.

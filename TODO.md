@@ -84,7 +84,6 @@
 - daemon logger setup doesnt persist
 - running tests from test dir
 - storage is incremented by healthcheck
-- correspondent is not user specific!
 - mysql may need some more care for use with timezone <https://docs.djangoproject.com/en/5.2/ref/databases/#time-zone-definitions>
 - cascase doesn't trigger delete!
 - optics:

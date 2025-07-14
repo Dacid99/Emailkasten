@@ -204,7 +204,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
                 name="email_unique_together_message_id_mailbox",
             )
         ]
-        """`message_id` and :attr:`mailbox` in combination are unique."""
+        """:attr:`message_id` and :attr:`mailbox` in combination are unique."""
 
     @override
     def __str__(self) -> str:

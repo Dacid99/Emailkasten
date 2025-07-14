@@ -421,16 +421,6 @@ def fake_daemon(faker, fake_mailbox) -> Daemon:
 
 
 @pytest.fixture
-def fake_correspondent() -> Correspondent:
-    """Creates an :class:`core.models.Correspondent` owned by :attr:`owner_user`.
-
-    Returns:
-        The correspondent instance for testing.
-    """
-    return baker.make(Correspondent)
-
-
-@pytest.fixture
 def fake_email(faker, fake_mailbox) -> Email:
     """Creates an :class:`core.models.Email` owned by :attr:`owner_user`.
 
@@ -441,6 +431,16 @@ def fake_email(faker, fake_mailbox) -> Email:
         The email instance for testing.
     """
     return baker.make(Email, mailbox=fake_mailbox)
+
+
+@pytest.fixture
+def fake_correspondent(fake_email) -> Correspondent:
+    """Creates an :class:`core.models.Correspondent` owned by :attr:`owner_user`.
+
+    Returns:
+        The correspondent instance for testing.
+    """
+    return baker.make(Correspondent, user=fake_email.mailbox.account.user)
 
 
 @pytest.fixture
@@ -558,16 +558,6 @@ def fake_other_daemon(faker, fake_other_mailbox) -> Daemon:
 
 
 @pytest.fixture
-def fake_other_correspondent() -> Correspondent:
-    """Creates an :class:`core.models.Correspondent` owned by :attr:`other_user`.
-
-    Returns:
-        The correspondent instance for testing.
-    """
-    return baker.make(Correspondent)
-
-
-@pytest.fixture
 def fake_other_email(faker, fake_other_mailbox) -> Email:
     """Creates an :class:`core.models.Email` owned by :attr:`other_user`.
 
@@ -578,6 +568,16 @@ def fake_other_email(faker, fake_other_mailbox) -> Email:
         The email instance for testing.
     """
     return baker.make(Email, mailbox=fake_other_mailbox)
+
+
+@pytest.fixture
+def fake_other_correspondent(fake_other_email) -> Correspondent:
+    """Creates an :class:`core.models.Correspondent` owned by :attr:`other_user`.
+
+    Returns:
+        The correspondent instance for testing.
+    """
+    return baker.make(Correspondent, user=fake_other_email.mailbox.account.user)
 
 
 @pytest.fixture

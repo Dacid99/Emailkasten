@@ -52,7 +52,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         ).count()
         context["correspondents_count"] = (
             Correspondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
-                emails__mailbox__account__user=self.request.user
+                user=self.request.user
             )
             .distinct()
             .count()

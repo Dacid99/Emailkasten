@@ -42,7 +42,7 @@ class CorrespondentEmailsFilterView(LoginRequiredMixin, FilterPageView, SingleOb
 
     @override
     def get_queryset(self) -> QuerySet[EmailCorrespondent]:
-        correspondent_queryset = Correspondent.objects.filter(emails__mailbox__account__user=self.request.user).distinct()  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
+        correspondent_queryset = Correspondent.objects.filter(user=self.request.user).distinct()  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
         self.object = self.get_object(queryset=correspondent_queryset)
         return (
             super()

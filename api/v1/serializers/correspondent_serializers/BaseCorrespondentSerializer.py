@@ -50,8 +50,8 @@ class BaseCorrespondentSerializer(serializers.ModelSerializer[Correspondent]):
         model: Final[type[Model]] = Correspondent
         """The model to serialize."""
 
-        fields = "__all__"
-        """Include all fields."""
+        exclude: Final[list[str]] = ["user"]
+        """Exclude only the :attr:`core.models.Correspondent.Correspondent.user` field."""
 
         read_only_fields: Final[list[str]] = [
             "email_address",

@@ -654,20 +654,68 @@ def test_Email_add_correspondents_none(fake_email):
 
 
 @pytest.mark.django_db
-def test_Email_add_correspondents_single(faker, fake_email):
+def test_Email_add_correspondents_other_user(faker, fake_email):
     fake_email_address = faker.email()
     fake_mention = faker.random_element(HeaderFields.Correspondents.values)
     fake_mentioned_correspondent = baker.make(
-        Correspondent, email_address=fake_email_address
+        Correspondent,
+        email_address=fake_email_address,
     )
     fake_email.headers = {fake_mention: fake_email_address}
 
+    assert Correspondent.objects.count() == 1
     assert fake_email.correspondents.count() == 0
 
     fake_email.add_correspondents()
 
+    assert Correspondent.objects.count() == 2
     assert fake_email.correspondents.count() == 1
-    assert fake_mentioned_correspondent in fake_email.correspondents.all()
+    assert fake_mentioned_correspondent not in fake_email.correspondents.all()
+
+
+@pytest.mark.django_db
+def test_Email_add_correspondents_single_in_db(faker, fake_email):
+    fake_email_address = faker.email()
+    fake_mention = faker.random_element(HeaderFields.Correspondents.values)
+    fake_mentioned_correspondent = baker.make(
+        Correspondent,
+        email_address=fake_email_address,
+        user=fake_email.mailbox.account.user,
+    )
+    fake_email.headers = {fake_mention: fake_email_address}
+
+    assert Correspondent.objects.count() == 1
+    assert fake_email.correspondents.count() == 0
+
+    fake_email.add_correspondents()
+
+    assert Correspondent.objects.count() == 1
+    assert fake_email.correspondents.count() == 1
+    assert (
+        fake_email.emailcorrespondents.filter(mention=fake_mention).get().correspondent
+        == fake_mentioned_correspondent
+    )
+
+
+@pytest.mark.django_db
+def test_Email_add_correspondents_single_not_in_db(faker, fake_email):
+    fake_email_address = faker.email()
+    fake_mention = faker.random_element(HeaderFields.Correspondents.values)
+    fake_email.headers = {fake_mention: fake_email_address}
+
+    assert Correspondent.objects.count() == 0
+    assert fake_email.correspondents.count() == 0
+
+    fake_email.add_correspondents()
+
+    assert Correspondent.objects.count() == 1
+    assert fake_email.correspondents.count() == 1
+    assert (
+        fake_email.emailcorrespondents.filter(mention=fake_mention)
+        .get()
+        .correspondent.email_address
+        == fake_email_address
+    )
 
 
 @pytest.mark.django_db
@@ -677,10 +725,14 @@ def test_Email_add_correspondents_multi(faker, fake_email):
     fake_mention_1 = faker.random_element(HeaderFields.Correspondents.values)
     fake_mention_2 = faker.random_element(HeaderFields.Correspondents.values)
     fake_mentioned_correspondent_1 = baker.make(
-        Correspondent, email_address=fake_email_address_1
+        Correspondent,
+        email_address=fake_email_address_1,
+        user=fake_email.mailbox.account.user,
     )
     fake_mentioned_correspondent_2 = baker.make(
-        Correspondent, email_address=fake_email_address_2
+        Correspondent,
+        email_address=fake_email_address_2,
+        user=fake_email.mailbox.account.user,
     )
     fake_email.headers = {
         fake_mention_1: fake_email_address_1,

@@ -21,12 +21,17 @@
 from __future__ import annotations
 
 import logging
-from typing import override
+from typing import TYPE_CHECKING, Final, override
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from ..mixins import FavoriteMixin, URLMixin
+
+
+if TYPE_CHECKING:
+    from django.contrib.auth.models import AbstractUser
 
 
 logger = logging.getLogger(__name__)
@@ -36,6 +41,12 @@ logger = logging.getLogger(__name__)
 class Correspondent(URLMixin, FavoriteMixin, models.Model):
     """Database model for the correspondent data found in a mail."""
 
+    email_address = models.CharField(
+        max_length=255,
+        verbose_name=_("email address"),
+    )
+    """The mail address of the correspondent. Unique."""
+
     email_name = models.TextField(
         default="",
         blank=True,
@@ -44,12 +55,11 @@ class Correspondent(URLMixin, FavoriteMixin, models.Model):
     )
     """The mailer name. Can be blank if none has been found."""
 
-    email_address = models.CharField(
-        max_length=255,
-        unique=True,
-        verbose_name=_("email address"),
+    user = models.ForeignKey(
+        get_user_model(),
+        verbose_name=_("user"),
+        on_delete=models.CASCADE,
     )
-    """The mail address of the correspondent. Unique."""
 
     list_id = models.TextField(
         blank=True,
@@ -136,6 +146,14 @@ class Correspondent(URLMixin, FavoriteMixin, models.Model):
         db_table = "correspondents"
         """The name of the database table for the correspondents."""
 
+        constraints: Final[list[models.BaseConstraint]] = [
+            models.UniqueConstraint(
+                fields=["email_address", "user"],
+                name="email_unique_together_email_address_user",
+            )
+        ]
+        """:attr:`email_address` and :attr:`user` in combination are unique."""
+
     @override
     def __str__(self) -> str:
         """Returns a string representation of the model data.
@@ -165,7 +183,7 @@ class Correspondent(URLMixin, FavoriteMixin, models.Model):
 
     @classmethod
     def create_from_correspondent_tuple(
-        cls, correspondent_tuple: tuple[str, str]
+        cls, correspondent_tuple: tuple[str, str], user: AbstractUser
     ) -> Correspondent | None:
         """Creates a :class:`core.models.Correspondent` from email header data.
 
@@ -186,8 +204,8 @@ class Correspondent(URLMixin, FavoriteMixin, models.Model):
             )
             return None
         try:
-            correspondent = cls.objects.get(email_address=address)
+            correspondent = cls.objects.get(email_address=address, user=user)
         except cls.DoesNotExist:
-            correspondent = cls(email_address=address, email_name=name)
+            correspondent = cls(email_address=address, email_name=name, user=user)
             correspondent.save()
         return correspondent

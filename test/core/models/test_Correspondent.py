@@ -86,30 +86,33 @@ def test_Correspondent___str__(fake_correspondent):
 
 
 @pytest.mark.django_db
-def test_Correspondent_unique_constraints(fake_correspondent):
+def test_Correspondent_unique_together_constraint(fake_correspondent):
     """Tests the unique constraint in :class:`core.models.Correspondent.Correspondent`."""
 
     with pytest.raises(IntegrityError):
         baker.make(
             Correspondent,
-            email_name=fake_correspondent.email_name,
+            user=fake_correspondent.user,
             email_address=fake_correspondent.email_address,
         )
 
 
 @pytest.mark.django_db
 def test_Correspondent_create_from_correspondent_tuple_success(
-    fake_correspondent_tuple,
+    fake_correspondent_tuple, owner_user
 ):
     """Tests :func:`core.models.Correspondent.Correspondent.create_from_correspondent_tuple`
     in case of success.
     """
     assert Correspondent.objects.count() == 0
 
-    result = Correspondent.create_from_correspondent_tuple(fake_correspondent_tuple)
+    result = Correspondent.create_from_correspondent_tuple(
+        fake_correspondent_tuple, owner_user
+    )
 
     assert isinstance(result, Correspondent)
     assert result.pk is not None
+    assert result.user == owner_user
     assert Correspondent.objects.count() == 1
     assert result.email_name == fake_correspondent_tuple[0]
     assert result.email_address == fake_correspondent_tuple[1]
@@ -129,7 +132,9 @@ def test_Correspondent_create_from_correspondent_tuple_duplicate(
 
     assert Correspondent.objects.count() == 1
 
-    result = Correspondent.create_from_correspondent_tuple(fake_correspondent_tuple)
+    result = Correspondent.create_from_correspondent_tuple(
+        fake_correspondent_tuple, user=fake_correspondent.user
+    )
 
     assert result == fake_correspondent
     assert Correspondent.objects.count() == 1
@@ -137,7 +142,7 @@ def test_Correspondent_create_from_correspondent_tuple_duplicate(
 
 @pytest.mark.django_db
 def test_Correspondent_create_from_correspondent_tuple_no_address(
-    mock_logger, fake_correspondent_tuple
+    mock_logger, fake_correspondent_tuple, owner_user
 ):
     """Tests :func:`core.models.Correspondent.Correspondent.create_from_correspondent_tuple`
     in case of there is no address in the header.
@@ -146,7 +151,9 @@ def test_Correspondent_create_from_correspondent_tuple_no_address(
 
     assert Correspondent.objects.count() == 0
 
-    result = Correspondent.create_from_correspondent_tuple(fake_correspondent_tuple)
+    result = Correspondent.create_from_correspondent_tuple(
+        fake_correspondent_tuple, user=owner_user
+    )
 
     assert result is None
     assert Correspondent.objects.count() == 0

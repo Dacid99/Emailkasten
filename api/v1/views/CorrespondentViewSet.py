@@ -75,7 +75,7 @@ class CorrespondentViewSet(
             return Correspondent.objects.none()
         return (
             Correspondent.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
-                emails__mailbox__account__user=self.request.user
+                user=self.request.user
             )
             .distinct()
             .prefetch_related(
