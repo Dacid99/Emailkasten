@@ -25,6 +25,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
@@ -49,6 +50,7 @@ class CorrespondentSerializer(BaseCorrespondentSerializer):
     via :fu`core.models.EmailCorrespondent`
     """
 
+    @extend_schema_field(CorrespondentEmailSerializer(many=True))
     def get_emails(self, instance: Correspondent) -> ReturnDict[str, Any]:
         """Serializes the emails connected to the instance to be serialized.
 

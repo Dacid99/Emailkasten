@@ -25,6 +25,9 @@ from typing import TYPE_CHECKING, Final, override
 from django.core.files.storage import default_storage
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.openapi import OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
@@ -121,6 +124,9 @@ class AttachmentViewSet(
     URL_PATH_DOWNLOAD_BATCH = "download"
     URL_NAME_DOWNLOAD_BATCH = "download-batch"
 
+    @extend_schema(
+        parameters=[OpenApiParameter("id", OpenApiTypes.INT, OpenApiParameter.QUERY)]
+    )
     @action(
         detail=False,
         methods=["get"],
@@ -134,7 +140,7 @@ class AttachmentViewSet(
             request: The request triggering the action.
 
         Raises:
-            Http404: If there are no emails in the mailbox.
+            Http404: If no downloadable attachment has been requested.
 
         Returns:
             A fileresponse containing the requested file.

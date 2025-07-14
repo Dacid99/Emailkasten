@@ -27,6 +27,9 @@ from django.core.files.storage import default_storage
 from django.db.models import Prefetch
 from django.http import FileResponse, Http404
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.openapi import OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
@@ -138,6 +141,12 @@ class EmailViewSet(
     URL_PATH_DOWNLOAD_BATCH = "download"
     URL_NAME_DOWNLOAD_BATCH = "download-batch"
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("id", OpenApiTypes.INT, OpenApiParameter.QUERY),
+            OpenApiParameter("file_format", OpenApiTypes.STR, OpenApiParameter.QUERY),
+        ]
+    )
     @action(
         detail=False,
         methods=["get"],
@@ -184,7 +193,7 @@ class EmailViewSet(
             return FileResponse(
                 file,
                 as_attachment=True,
-                filename=f"emails.{file_format.split("[", maxsplit=1)[0]}",
+                filename=f"emails.{file_format.split('[', maxsplit=1)[0]}",
             )
 
     URL_PATH_FULLCONVERSATION = "full-conversation"
