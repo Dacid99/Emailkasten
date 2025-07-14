@@ -270,7 +270,7 @@ TEST_EMAIL_PARAMETERS = [
                 2025, 7, 1, 17, 44, 50, tzinfo=timezone(timedelta(seconds=0))
             ),
             "x_spam": "NO",
-            "plain_bodytext": "Hello user!\r\n\r\n\r\nA personal access token was just created now for the Docker account user.\r\nAccess token description: test\r\n\r\nThis access token will now function as a password for the Docker CLI. If you created this personal access token, no more action is required. If you did not create this access token, please go to Personal Access Tokens Settings at <no value>. Delete the token, then change your password.\r\n\r\nThank you,\r\nThe Docker Team\r\n\r\nThis email was sent to your mail to notify you of an update that was made to your Docker Account.\r\n\r\n© 2025 Docker Inc.\r\n3790 El Camino Real #1052, Palo Alto, CA 94306\r\n",
+            "plain_bodytext": "Hello user!\n\n\nA personal access token was just created now for the Docker account user.\nAccess token description: test\n\nThis access token will now function as a password for the Docker CLI. If you created this personal access token, no more action is required. If you did not create this access token, please go to Personal Access Tokens Settings at <no value>. Delete the token, then change your password.\n\nThank you,\nThe Docker Team\n\nThis email was sent to your mail to notify you of an update that was made to your Docker Account.\n\n© 2025 Docker Inc.\n3790 El Camino Real #1052, Palo Alto, CA 94306\n",
             "html_bodytext": "",
             "references": [],
             "header_count": 17,
