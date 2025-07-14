@@ -348,15 +348,35 @@ def test_Attachment_has_download(fake_attachment, file_path, expected_has_downlo
         ("application", False),
     ],
 )
-def test_Attachment_has_thumbnail(
-    fake_attachment, content_maintype, expected_has_thumbnail
+def test_Attachment_has_thumbnail_with_file(
+    fake_attachment_with_file, content_maintype, expected_has_thumbnail
 ):
+    """Tests :func:`core.models.Attachment.Attachment.has_thumbnail` in the two relevant cases."""
+    fake_attachment_with_file.content_maintype = content_maintype
+
+    result = fake_attachment_with_file.has_thumbnail
+
+    assert result == expected_has_thumbnail
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "content_maintype",
+    [
+        "",
+        "oo4vuy0s9yn",
+        "image",
+        "video",
+        "application",
+    ],
+)
+def test_Attachment_has_thumbnail_no_file(fake_attachment, content_maintype):
     """Tests :func:`core.models.Attachment.Attachment.has_thumbnail` in the two relevant cases."""
     fake_attachment.content_maintype = content_maintype
 
     result = fake_attachment.has_thumbnail
 
-    assert result == expected_has_thumbnail
+    assert result is False
 
 
 @pytest.mark.django_db
