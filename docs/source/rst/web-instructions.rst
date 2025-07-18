@@ -57,14 +57,28 @@ The following protocols are supported:
 - IMAP4 over SSL
 - POP3
 - POP3 over SSL
+- Microsoft Exchange
 
 .. note::
     If possible, use IMAP4 via SSL.
     This enables you to use the most features with the most security.
 
-If you don't set the port, the default port of the protocol is used.
+The mailserver URL does not need to feature a protocol,
+the (sub)domain name is fine e.g. *imap.mydomain.tld*.
+If you don't set the mailserver port, the default port of the protocol is used.
 
-If you set a timeout value, the connection to the mailserver doesn't time out.
+.. note::
+    If you use Exchange you can specify a full URL path starting with http(s):// to the service endpoint as mailserver-URL.
+    In that case the port setting is not used as the port should already be part of that URL.
+
+If you don't set a timeout value, the connection to the mailserver doesn't time out.
+
+.. note::
+    For Exchange this setting behaves a bit differently.
+    Setting a value enables retry and faulttolerance logic timing out after the given value.
+    Don't set a value larger than a few secondsas this may significantly impact
+    the runtime of individual requests to the server.
+
 As the fetching operations on the mailserver are quick
 and the connection is closed afterwards anyway, this setting is mostly irrelevant.
 
@@ -216,7 +230,7 @@ Lists and filtering
 For every category of data there is a list of all items in the database.
 These can be filtered and ordered by various attributes to get only the items you are looking for.
 
-For emails there is a seperate overview in form of a timeline
+For emails there is a separate overview in form of a timeline
 that can be reached via the *archive* button in the email list.
 The url is */emails/archive*.
 
