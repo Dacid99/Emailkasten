@@ -27,6 +27,7 @@ from typing import TYPE_CHECKING, Final, override
 import exchangelib
 import exchangelib.errors
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
@@ -65,11 +66,13 @@ class ExchangeFetcher(BaseFetcher):
     Constructed analogous to the IMAP4 criteria.
     """
 
-    def make_fetching_query(self, criterion: str, base_query: QuerySet) -> QuerySet:
+    @staticmethod
+    def make_fetching_query(criterion: str, base_query: QuerySet) -> QuerySet:
         """Returns the queryset for the Exchange request.
 
         Args:
             criterion_name: The criterion for the Exchange request.
+            base_query: The query to extend based on the criterion.
 
         Returns:
             Augmented queryset to be used in Exchange request.
@@ -115,11 +118,32 @@ class ExchangeFetcher(BaseFetcher):
             MailAccountError: If an error occurs or a bad response is returned.
         """
 
+        self.logger.debug("Setting up connection to %s ...", self.account)
         credentials = exchangelib.Credentials(
             self.account.mail_address, self.account.password
         )
-        config = exchangelib.Configuration(
-            server=self.account.mail_host, credentials=credentials
+        retry_policy = (
+            exchangelib.FaultTolerance(max_wait=self.account.timeout)
+            if self.account.timeout
+            else None
+        )
+        config = (
+            exchangelib.Configuration(
+                service_endpoint=self.account.mail_host,
+                credentials=credentials,
+                retry_policy=retry_policy,
+            )
+            if self.account.mail_host.startswith("http://")
+            or self.account.mail_host.startswith("https://")
+            else exchangelib.Configuration(
+                server=(
+                    f"{self.account.mail_host}:{self.account.mail_host_port}"
+                    if self.account.mail_host_port
+                    else self.account.mail_host
+                ),
+                credentials=credentials,
+                retry_policy=retry_policy,
+            )
         )
         self._mail_client = exchangelib.Account(
             primary_smtp_address=self.account.mail_address,
@@ -130,6 +154,7 @@ class ExchangeFetcher(BaseFetcher):
                 "UTC"
             ),  # for consistency with celery and django settings
         )
+        self.logger.info("Successfully set up connection to %s.", self.account)
 
     @override
     def test(self, mailbox: Mailbox | None = None) -> None:
@@ -147,17 +172,43 @@ class ExchangeFetcher(BaseFetcher):
 
         self.logger.debug("Testing %s ...", self.account)
         try:
-            self._mail_client.root.refresh()
-        except exchangelib.errors.EWSError as exc:
-            raise MailAccountError from exc
+            self._mail_client.msg_folder_root.refresh()
+        except exchangelib.errors.EWSError as error:
+            self.logger.exception(
+                "An %s occurred during refresh of message_root!",
+                error.__class__.__name__,
+            )
+            raise MailAccountError(
+                _(
+                    "An %(error_class_name)s: %(error)s occurred during refresh of message_root!"
+                )
+                % {
+                    "error_class_name": error.__class__.__name__,
+                    "error": error,
+                },
+            ) from error
         self.logger.debug("Successfully tested %s.", self.account)
 
         if mailbox is not None:
             self.logger.debug("Testing %s ...", mailbox)
             try:
-                (self._mail_client.inbox.parent / mailbox.name).refresh()
-            except exchangelib.errors.EWSError as exc:
-                raise MailboxError from exc
+                (self._mail_client.msg_folder_root / mailbox.name).refresh()
+            except exchangelib.errors.EWSError as error:
+                self.logger.exception(
+                    "An %s occurred during refresh of %s!",
+                    error.__class__.__name__,
+                    mailbox.name,
+                )
+                raise MailboxError(
+                    _(
+                        "An %(error_class_name)s: %(error)s occurred during refresh of %(mailbox_name)s!"
+                    )
+                    % {
+                        "error_class_name": error.__class__.__name__,
+                        "error": error,
+                        "mailbox_name": mailbox.name,
+                    },
+                ) from error
             self.logger.debug("Successfully tested %s.", mailbox)
 
     @override
@@ -186,13 +237,56 @@ class ExchangeFetcher(BaseFetcher):
             MailboxError: If an error occurs or a bad response is returned.
         """
         super().fetch_emails(mailbox, criterion)
+        self.logger.debug(
+            "Searching and fetching %s messages in %s...",
+            criterion,
+            mailbox,
+        )
         try:
-            mail_root = self._mail_client.inbox.parent
+            mail_root = self._mail_client.msg_folder_root
+        except exchangelib.errors.EWSError as error:
+            self.logger.exception(
+                "An %s occurred during opening of message_root!",
+                error.__class__.__name__,
+            )
+            raise MailAccountError(
+                _(
+                    "An %(error_class_name)s: %(error)s occurred during opening of message_root!"
+                )
+                % {
+                    "error_class_name": error.__class__.__name__,
+                    "error": error,
+                },
+            ) from error
+        try:
             base_mail_query = (mail_root / mailbox.name).all()
             mail_query = self.make_fetching_query(criterion, base_mail_query)
             mail_data_list = [mail.mime_content for mail in mail_query]
         except exchangelib.errors.EWSError as error:
-            raise MailboxError from error
+            self.logger.exception(
+                "An %s occurred during refresh of mail contents!",
+                error.__class__.__name__,
+            )
+            raise MailboxError(
+                _(
+                    "An %(error_class_name)s: %(error)s occurred during refresh of fetching of mail contents!"
+                )
+                % {
+                    "error_class_name": error.__class__.__name__,
+                    "error": error,
+                },
+            ) from error
+        self.logger.info(
+            "Found %s %s messages in %s.",
+            len(mail_data_list),
+            criterion,
+            mailbox,
+        )
+        self.logger.debug(
+            "Successfully searched and fetched %s messages in %s.",
+            criterion,
+            mailbox,
+        )
         return mail_data_list
 
     @override
@@ -203,7 +297,7 @@ class ExchangeFetcher(BaseFetcher):
             Rewrite this into a generator.
 
         Note:
-            Considers only children of the parent of the inbox.
+            Considers only children of the msg_folder_root.
 
         Returns:
             List of paths of all mailboxes in the account relative to the parent folder of the inbox.
@@ -214,7 +308,7 @@ class ExchangeFetcher(BaseFetcher):
         """
         self.logger.debug("Fetching mailboxes at %s ...", self.account)
         try:
-            mail_root = self._mail_client.inbox.parent
+            mail_root = self._mail_client.msg_folder_root
             mail_root_path = mail_root.absolute
             mailbox_names = [
                 os.path.relpath(folder.absolute, mail_root_path)
@@ -223,9 +317,21 @@ class ExchangeFetcher(BaseFetcher):
                 and folder.folder_class == "IPF.Note"
             ]
         except exchangelib.errors.EWSError as error:
-            raise MailAccountError from error
+            self.logger.exception(
+                "An %s occurred during scan of message_root!",
+                error.__class__.__name__,
+            )
+            raise MailAccountError(
+                _(
+                    "An %(error_class_name)s: %(error)s occurred during scan of message_root!"
+                )
+                % {
+                    "error_class_name": error.__class__.__name__,
+                    "error": error,
+                },
+            ) from error
         return mailbox_names
 
     @override
     def close(self) -> None:
-        """Not required for Exchangelib."""
+        """No cleanup of :class:`exchangelib.Account` required."""
