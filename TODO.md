@@ -54,7 +54,6 @@
 - vulnerability scanning tool for your dependencies? (eg. Safety, pip-audit, Bandit, Snyx, Trivy, GitLab Dependency Scanning, PyUp, OWASP, Jake, Mend)
 - daemonize celery worker
 - api creation of daemons
-- logfile for gunicorn
 - helptexts for orientation instead of empty lists
 
 ### For production
@@ -74,7 +73,6 @@
 - daemon logger setup doesnt persist
 - running tests from test dir
 - storage is incremented by healthcheck
-- mysql may need some more care for use with timezone <https://docs.djangoproject.com/en/5.2/ref/databases/#time-zone-definitions>
 - optics:
   - checkboxes for boolean data instead of True and False
   - better name for daemon
