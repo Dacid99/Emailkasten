@@ -17,6 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """The apps module for :mod:`core`."""
+
 from __future__ import annotations
 
 from typing import override
@@ -33,7 +34,7 @@ class CoreConfig(AppConfig):
 
     @override
     def ready(self) -> None:
-        """Imports all model signals."""
+        """Imports all model signals and registers the healthcheck backends."""
         # ruff: noqa: F401
         # pylint: disable=import-outside-toplevel, unused-import  # this is the way it is intended by django
         from .backends import StorageIntegrityCheckBackend
@@ -41,6 +42,8 @@ class CoreConfig(AppConfig):
         plugin_dir.register(StorageIntegrityCheckBackend)
 
         from .signals import (
+            delete_Attachment,
+            delete_Email,
             save_Account,
             save_Daemon,
             save_Mailbox,

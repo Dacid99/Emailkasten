@@ -190,10 +190,6 @@ def test_Email_delete_emailfiles_success(fake_email_with_file, mock_logger):
     with pytest.raises(Email.DoesNotExist):
         fake_email_with_file.refresh_from_db()
     assert not default_storage.exists(previous_eml_filepath)
-    mock_logger.debug.assert_called()
-    mock_logger.warning.assert_not_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.critical.assert_not_called()
 
 
 @pytest.mark.django_db

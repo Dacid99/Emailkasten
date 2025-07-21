@@ -29,7 +29,6 @@
 ## To refactor
 
 - safeimap and pop classes
-- move all signals into models
 - rework test:
   - disable all signals in tests
   - tests more implementation agnostic
@@ -76,7 +75,6 @@
 - running tests from test dir
 - storage is incremented by healthcheck
 - mysql may need some more care for use with timezone <https://docs.djangoproject.com/en/5.2/ref/databases/#time-zone-definitions>
-- cascase doesn't trigger delete!
 - optics:
   - checkboxes for boolean data instead of True and False
   - better name for daemon

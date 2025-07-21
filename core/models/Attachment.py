@@ -170,21 +170,6 @@ class Attachment(
         if attachment_payload is not None and self.email.mailbox.save_attachments:
             self.save_to_storage(attachment_payload)
 
-    @override
-    def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
-        """Extended :django::func:`django.models.Model.delete` method.
-
-        Deletes :attr:`file_path` file on deletion.
-        """
-        delete_return = super().delete(*args, **kwargs)
-
-        if self.file_path:
-            logger.debug("Removing %s from storage ...", self)
-            default_storage.delete(self.file_path)
-            logger.debug("Successfully removed the attachment file from storage.")
-
-        return delete_return
-
     def save_to_storage(self, attachment_payload: bytes) -> None:
         """Saves the attachment file to the storage.
 

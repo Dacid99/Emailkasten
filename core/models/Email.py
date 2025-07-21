@@ -232,21 +232,6 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         if email_data is not None and self.mailbox.save_to_eml:
             self.save_eml_to_storage(email_data)
 
-    @override
-    def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
-        """Extended :django::func:`django.models.Model.delete` method.
-
-        Deletes :attr:`eml_filepath` files on deletion.
-        """
-        delete_return = super().delete(*args, **kwargs)
-
-        if self.eml_filepath:
-            logger.debug("Removing eml file for %s from storage ...", self)
-            default_storage.delete(self.eml_filepath)
-            logger.debug("Successfully removed the eml file from storage.")
-
-        return delete_return
-
     def save_eml_to_storage(self, email_data: bytes) -> None:
         """Saves the email to the storage in eml format.
 

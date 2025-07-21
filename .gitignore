@@ -17,3 +17,4 @@ test.py
 htmlcov/
 *.mo
 *.patch
+.coverage.*.c

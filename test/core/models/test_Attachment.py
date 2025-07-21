@@ -114,10 +114,6 @@ def test_Attachment_delete_attachmentfile_success(
     with pytest.raises(Attachment.DoesNotExist):
         fake_attachment_with_file.refresh_from_db()
     assert not default_storage.exists(previous_file_path)
-    mock_logger.debug.assert_called()
-    mock_logger.warning.assert_not_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.critical.assert_not_called()
 
 
 @pytest.mark.django_db
