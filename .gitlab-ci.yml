@@ -29,12 +29,12 @@ variables:
 
 stages:
   - check
-  - check_and_commit
+  - fix_and_format
   - test
   - build
 
 include:
   - local: .gitlab/ci/.gitlab-ci-check.yml
-  - local: .gitlab/ci/.gitlab-ci-check_and_commit.yml
+  - local: .gitlab/ci/.gitlab-ci-fix_and_format.yml
   - local: .gitlab/ci/.gitlab-ci-test.yml
   - local: .gitlab/ci/.gitlab-ci-build.yml

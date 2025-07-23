@@ -2,6 +2,8 @@ check_codebase:
   stage: check
   rules:
     - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "master"
   script:
     - echo "Checking codebase ..."
     - poetry install --with=dev
@@ -17,4 +19,5 @@ check_codebase:
   artifacts:
     paths:
       - "$CHECK_REPORT_PATH"
+    when: always
     expire_in: 30 days
