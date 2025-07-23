@@ -60,3 +60,4 @@ def test_get_auth_owner(owner_client, list_url):
     assert "page_obj" in response.context
     assert "page_size" in response.context
     assert "query" in response.context
+    assert 'srcdoc="' not in response.content.decode()

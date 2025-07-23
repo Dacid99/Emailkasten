@@ -18,6 +18,8 @@
 
 """Test module for :mod:`web.views.EmailDetailWithDeleteView`."""
 
+from pydoc import resolve
+
 import pytest
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -62,6 +64,7 @@ def test_get_auth_owner(fake_email, owner_client, detail_url):
     assert "object" in response.context
     assert isinstance(response.context["object"], Email)
     assert fake_email.message_id in response.content.decode()
+    assert 'srcdoc="' not in response.content.decode()
 
 
 @pytest.mark.django_db

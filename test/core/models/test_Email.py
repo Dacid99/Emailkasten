@@ -918,6 +918,7 @@ def test_Email_html_version(fake_email, fake_attachment, fake_correspondent):
 
     assert result
     assert get_config("EMAIL_CSS") in result
+    assert "'" not in result
 
 
 @pytest.mark.django_db

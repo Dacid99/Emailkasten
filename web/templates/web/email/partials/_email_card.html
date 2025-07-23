@@ -30,8 +30,8 @@
 
 
 {% block thumbnail %}
-
-    <iframe srcdoc="{{ card_object.html_version }}"
+    <!--the ' in srcdoc are crucial!-->
+    <iframe srcdoc='{{ object.html_version }}'
             class="h-100 w-100 rounded"
             title="{% translate 'Email content' %}"
             sandbox></iframe>
