@@ -1,7 +1,7 @@
 image: python:3.12
 
 before_script:
-  - apt update -y && apt install -y "$APT_DEPENDENCIES"
+  - apt update -y && apt install -y $APT_DEPENDENCIES
   - pip install poetry
   - set -o pipefail
   - export SECRET_KEY='HELPER_KEY'
@@ -15,7 +15,9 @@ workflow:  # when the pipeline should be triggered
 variables:
   CI: "true"
   GITLAB_API_URL: "https://gitlab.com/-/project/$CI_PROJECT_ID"
-  APT_DEPENDENCIES: "gettext build-essential default-mysql-client krb5-user krb5-multidev"
+  APT_DEPENDENCIES: "gettext \
+    build-essential \
+    default-mysql-client"
   CHECK_PATH: "validation/"
   CHECK_CONFIG_PATH: "validation/"
   CHECK_REPORT_PATH: "validation/reports/"
