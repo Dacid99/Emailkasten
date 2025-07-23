@@ -23,6 +23,6 @@ precision=2
 show_missing=True
 sort=Cover
 [html]
-directory = ../docs/build/html/pytest/cov
+directory = test/reports/cov
 show_contexts=True
 skip_empty=True
