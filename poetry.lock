@@ -1699,7 +1699,6 @@ files = [
 ]
 
 [package.dependencies]
-pyyaml = {version = ">=5.2", markers = "python_version < \"3.13\""}
 pyyaml-ft = {version = ">=8.0.0", markers = "python_version >= \"3.13\""}
 
 [[package]]
@@ -2662,7 +2661,6 @@ description = "YAML parser and emitter for Python with support for free-threadin
 optional = false
 python-versions = ">=3.13"
 groups = ["dev"]
-markers = "python_version >= \"3.13\""
 files = [
     {file = "pyyaml_ft-8.0.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:8c1306282bc958bfda31237f900eb52c9bedf9b93a11f82e1aab004c9a5657a6"},
     {file = "pyyaml_ft-8.0.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:30c5f1751625786c19de751e3130fc345ebcba6a86f6bddd6e1285342f4bbb69"},
@@ -2698,7 +2696,6 @@ files = [
 [package.dependencies]
 attrs = ">=22.2.0"
 rpds-py = ">=0.7.0"
-typing-extensions = {version = ">=4.4.0", markers = "python_version < \"3.13\""}
 
 [[package]]
 name = "regex"
@@ -3669,5 +3666,5 @@ brotli = ["brotli"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.12,<4.0"
-content-hash = "9b18e9403332bd74a9a9ac1e0f20cbc103e7b8364c3fab4e801d98a5aedb7810"
+python-versions = ">=3.13,<4.0"
+content-hash = "2345afc2918ce65120e51a4c8b3340d362f752afb268d35b94318f0879089be4"

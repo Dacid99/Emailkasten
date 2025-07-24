@@ -2,7 +2,7 @@
 
 ## Setup
 
-Your global python version should be at least *3.12*.
+Your global python version should be at least *3.13*.
 
 If necessary you can install it via [the deadsnakes ppa](https://launchpad.net/~deadsnakes/+archive/ubuntu/ppa).
 
