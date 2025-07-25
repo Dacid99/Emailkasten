@@ -1,5 +1,5 @@
 image: build/Dockerfile build/docker-compose.build.yml entrypoint.sh
-	sudo docker compose -f build/docker-compose.build.yml build
+	sudo docker build -f build/Dockerfile -t emailkasten:debug ../
 
 migrations:
 	sudo docker run --entrypoint "" --user 1000:1000 --rm -v ../:/mnt/ -w /mnt/ emailkasten poetry run python manage.py makemigrations
