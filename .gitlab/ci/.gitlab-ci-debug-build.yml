@@ -11,6 +11,6 @@ debug_build_docker:
     - echo "Successfully built debug docker image."
     - echo "Releasing debug docker image ..."
     - docker tag emailkasten dacid99/emailkasten:$CI_COMMIT_TAG
-    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_ACCESS_TOKEN
+    - echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login -u $DOCKER_HUB_USER --password-stdin
     - docker push dacid99/emailkasten:$CI_COMMIT_TAG
     - echo "Successfully released debug docker image."
