@@ -44,9 +44,15 @@ You should avoid having the venv inside the workspace as that will brick docker 
 
 Depending on your OS, the mysqlclient package may cause problems, this can usually be solved by installing a missing system package.
 
-## Workspace Recommendations
+## Testing
 
-### Validation and Linting
+The projects tests are in the test/ directory. You can run them from the project root with
+
+```bash
+pytest test
+```
+
+## Validation and Linting
 
 You can use the tools in validation/ to lint and check your changes.
 
@@ -60,6 +66,8 @@ Set them for your local repository via
 ```bash
 git config core.hooksPath validation/githooks/
 ```
+
+## Workspace Recommendations
 
 ### VSCodium / VSCode
 
