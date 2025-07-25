@@ -1,4 +1,1 @@
-# 🛑 Stop
-
-This repository is merely a mirror, the main project is located at .
-Please submit your pull request there.
+../../.gitea/PULL_REQUEST_TEMPLATE/stop.md
