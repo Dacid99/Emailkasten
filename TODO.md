@@ -54,6 +54,7 @@
 - vulnerability scanning tool for your dependencies? (eg. Safety, pip-audit, Bandit, Snyx, Trivy, GitLab Dependency Scanning, PyUp, OWASP, Jake, Mend)
 - daemonize celery worker
 - api creation of daemons
+- only show available fetching options in daemonform
 - helptexts for orientation instead of empty lists
 
 ### For production
@@ -69,16 +70,14 @@
 
 ## To fix
 
+- fetching too many emails leads to browser timeout
+- exchange has issues with subfolders
+- thumbnail needs to be served via api
 - daemon logger setup doesnt persist
 - running tests from test dir
 - storage is incremented by healthcheck
 - optics:
   - checkboxes for boolean data instead of True and False
   - better name for daemon
-  - icons on mailbox detail misplaced
-  - more space around welcome
-  - iframes misscaled
-  - remove links from thumbnail
-  - contrast header key vs val
 - ci:
   - djlint has no files to lint

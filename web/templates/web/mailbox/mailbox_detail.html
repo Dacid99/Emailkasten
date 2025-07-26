@@ -56,8 +56,9 @@
 {% block card_extras %}
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">{% translate "Daemons" %}</h4>
-            <i class="fa-solid fa-robot" aria-hidden="true"></i>
+            <h4 class="card-title">
+                {% translate "Daemons" %}<i class="fa-solid fa-robot mx-2" aria-hidden="true"></i>
+            </h4>
             <div class="m-1">
 
                 {% include "web/daemon/partials/_daemon_list.html" with daemons=object.daemons.all %}
@@ -68,8 +69,9 @@
     <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-between m-1">
-                <h4 class="card-title">{% translate "Latest Emails" %}</h4>
-                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                <h4 class="card-title">
+                    {% translate "Latest Emails" %}<i class="fa-solid fa-envelope mx-2" aria-hidden="true"></i>
+                </h4>
                 <a role="button"
                    class="btn btn-outline-primary"
                    href="{% url 'web:mailbox-emails' object.pk %}">{% translate "View all" %}</a>

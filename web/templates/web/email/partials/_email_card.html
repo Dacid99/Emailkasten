@@ -16,7 +16,7 @@
 {% block card_subtitle %}
     {% translate "Mailbox" %}: <a href="{{ card_object.mailbox.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ card_object.mailbox.name }}</a>
-    <br>
+    <br />
     {% translate "Account" %}: <a href="{{ card_object.mailbox.account.get_absolute_url }}"
     class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ card_object.mailbox.account.mail_address }}</a>
 {% endblock card_subtitle %}
@@ -31,9 +31,10 @@
 
 {% block thumbnail %}
     <!--the ' in srcdoc are crucial!-->
-    <iframe srcdoc='{{ object.html_version }}'
-            class="h-100 w-100 rounded"
+    <!--order is critical to keep style and sandbox in case of an issue with the srcdoc-->
+    <iframe sandbox
+            class="h-100 w-100"
             title="{% translate 'Email content' %}"
-            sandbox></iframe>
+            srcdoc='{{ object.html_version }}'></iframe>
 
 {% endblock thumbnail %}

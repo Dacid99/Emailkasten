@@ -604,16 +604,16 @@ CONSTANCE_CONFIG = {
             </div>
             <div class="email-meta">
                 {% for from_emailcorrespondent in from_emailcorrespondents %}
-                    {% translate "From" %}: <a href="{{ from_emailcorrespondent.correspondent.get_absolute_url }}">{{ from_emailcorrespondent.correspondent.email_address }}</a><br>
+                    {% translate "From" %}: {{ from_emailcorrespondent.correspondent.email_address }}<br>
                 {% endfor %}
                 {% for to_emailcorrespondent in to_emailcorrespondents %}
-                    {% translate "To" %}: <a href="{{ to_emailcorrespondent.correspondent.get_absolute_url }}">{{ to_emailcorrespondent.correspondent.email_address }}</a><br>
+                    {% translate "To" %}:{{ to_emailcorrespondent.correspondent.email_address }}<br>
                 {% endfor %}
                 {% for cc_emailcorrespondent in cc_emailcorrespondents %}
-                    {% translate "CC" %}: <a href="{{ cc_emailcorrespondent.correspondent.get_absolute_url }}">{{ cc_emailcorrespondent.correspondent.email_address }}</a><br>
+                    {% translate "CC" %}: {{ cc_emailcorrespondent.correspondent.email_address }}<br>
                 {% endfor %}
                 {% for bcc_emailcorrespondent in bcc_emailcorrespondents %}
-                    {% translate "BCC" %}: <a href="{{ bcc_emailcorrespondent.correspondent.get_absolute_url }}">{{ bcc_emailcorrespondent.correspondent.email_address }}</a><br>
+                    {% translate "BCC" %}: {{ bcc_emailcorrespondent.correspondent.email_address }}<br>
                 {% endfor %}
             </div>
         </div>
@@ -621,9 +621,7 @@ CONSTANCE_CONFIG = {
             {% if email.html_bodytext %}
                 {{ email.html_bodytext|safe }}
             {% else %}
-                <pre>
-                    {{ email.plain_bodytext }}
-                </pre>
+                <pre>{{ email.plain_bodytext }}</pre>
             {% endif %}
         </div>
         {% if email.attachments.exists %}
@@ -631,7 +629,7 @@ CONSTANCE_CONFIG = {
             <p><strong>{% translate "Attachments" %}:</strong></p>
             {% for attachment in email.attachments.all %}
                 <div class="attachment">
-                    <a href="{{ attachment.get_absolute_url }}">{{ attachment.file_name }}</a>
+                    {{ attachment.file_name }} {% if attachment.content_id %}(cid: {{ attachment.content_id }}){% endif %}
                 </div>
             {% endfor %}
         </div>

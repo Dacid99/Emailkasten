@@ -214,7 +214,7 @@ msgstr "Emailserver-URL"
 
 #: core/models/Account.py:78
 msgid "The URL of the mailserver for the chosen protocol."
-msgstr "Die URL des Emailservers für das gewählte Protokol."
+msgstr "Die URL des Emailservers für das gewählte Protokoll."
 
 #: core/models/Account.py:86
 #, fuzzy
@@ -224,13 +224,13 @@ msgstr "Emailserver-Portnummer"
 
 #: core/models/Account.py:87
 msgid "The port of the mailserver for the chosen protocol."
-msgstr "Die Portnummer des Emailservers für das gewählte Protokol."
+msgstr "Die Portnummer des Emailservers für das gewählte Protokoll."
 
 #: core/models/Account.py:94
 #, fuzzy
 #| msgid "Email Protocol"
 msgid "email protocol"
-msgstr "Email Protokol"
+msgstr "Email Protokoll"
 
 #: core/models/Account.py:95
 msgid "The email protocol implemented by the server."

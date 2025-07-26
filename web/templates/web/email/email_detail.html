@@ -94,10 +94,11 @@
 
 {% block thumbnail %}
     <!--the ' in srcdoc are crucial!-->
-    <iframe srcdoc='{{ object.html_version }}'
-            class="w-100 h-100 p-1"
+    <!--order is critical to keep style and sandbox in case of an issue with the srcdoc-->
+    <iframe sandbox
+            class="h-100 w-100"
             title="{% translate 'Email content' %}"
-            sandbox></iframe>
+            srcdoc='{{ object.html_version }}'></iframe>
 {% endblock thumbnail %}
 
 
@@ -105,7 +106,7 @@
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">
-                {% translate "Correspondents" %}<i class="fa-solid fa-address-book mx-1" aria-hidden="true"></i>
+                {% translate "Correspondents" %}<i class="fa-solid fa-address-book mx-2" aria-hidden="true"></i>
             </h4>
 
             {% include "web/emailcorrespondents/partials/_emailcorrespondents_list.html" with emailcorrespondents=object.emailcorrespondents.all %}
@@ -116,7 +117,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">
-                    {% translate "Attachments" %}<i class="fa-solid fa-paperclip mx-1" aria-hidden="true"></i>
+                    {% translate "Attachments" %}<i class="fa-solid fa-paperclip mx-2" aria-hidden="true"></i>
                 </h4>
 
                 {% include "web/attachment/partials/_attachment_list.html" with attachments=object.attachments.all %}
@@ -141,7 +142,9 @@
                 <div class="accordion-body">
                     <ul class="list-group list-group-flush">
                         {% for headername, headervalue in object.headers.items %}
-                            <li class="list-group-item">{{ headername|title }}: {{ headervalue }}</li>
+                            <li class="list-group-item">
+                                <b>{{ headername|title }}</b>:{{ headervalue }}
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -151,7 +154,7 @@
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">
-                {% translate "Conversation" %}<i class="fa-solid fa-comments mx-1" aria-hidden="true"></i>
+                {% translate "Conversation" %}<i class="fa-solid fa-comments mx-2" aria-hidden="true"></i>
             </h4>
 
             {% include "web/email/partials/_email_list.html" with emails=object.full_conversation %}
@@ -162,14 +165,14 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">
-                    {% translate "In Reply To" %}<i class="fa-solid fa-share mx-1" aria-hidden="true"></i>
+                    {% translate "In Reply To" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
                 </h4>
                 <ul class="list-group list-group-flush">
                     {% for in_reply_to_email in object.in_reply_to.all %}
                         <li class="list-group-item list-group-item-action">
                             <a href="{{ in_reply_to_email.get_absolute_url }}"
                                class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-                                {{ in_reply_to_email.message_id }}
+                                {{ in_reply_to_email.email_subject }}
                             </a>
                         </li>
                     {% endfor %}
@@ -182,7 +185,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">
-                    {% translate "Replies" %}<i class="fa-solid fa-reply mx-1" aria-hidden="true"></i>
+                    {% translate "Replies" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
                 </h4>
 
                 <ul class="list-group list-group-flush">
@@ -190,7 +193,7 @@
                         <li class="list-group-item list-group-item-action">
                             <a href="{{ reply_email.get_absolute_url }}"
                                class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-                                {{ reply_email.message_id }}
+                                {{ reply_email.email_subject }}
                             </a>
                         </li>
                     {% endfor %}
@@ -203,14 +206,14 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">
-                    {% translate "References" %}<i class="fa-solid fa-share mx-1" aria-hidden="true"></i>
+                    {% translate "References" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
                 </h4>
                 <ul class="list-group list-group-flush">
                     {% for referenced_email in object.references.all %}
                         <li class="list-group-item list-group-item-action">
                             <a href="{{ referenced_email.get_absolute_url }}"
                                class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-                                {{ referenced_email.message_id }}
+                                {{ referenced_email.email_subject }}
                             </a>
                         </li>
                     {% endfor %}
@@ -223,14 +226,14 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">
-                    {% translate "Referenced by" %}<i class="fa-solid fa-reply mx-1" aria-hidden="true"></i>
+                    {% translate "Referenced by" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
                 </h4>
                 <ul class="list-group list-group-flush">
                     {% for referencing_email in object.referenced_by.all %}
                         <li class="list-group-item list-group-item-action">
                             <a href="{{ referencing_email.get_absolute_url }}"
                                class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-                                {{ referencing_email.message_id }}
+                                {{ referencing_email.email_subject }}
                             </a>
                         </li>
                     {% endfor %}

@@ -166,7 +166,7 @@ msgstr "Host"
 #: web/templates/web/account/account_detail.html:45
 #: web/templates/web/account/partials/_account_card.html:24
 msgid "Protocol"
-msgstr "Protokol"
+msgstr "Protokoll"
 
 #: web/templates/web/account/account_detail.html:46
 msgid "Port"
@@ -218,7 +218,7 @@ msgstr "Account hinzufügen"
 
 #: web/templates/web/account/partials/_update_mailboxes-button.html:9
 msgid "Update Mailboxes"
-msgstr "Aktualisiere Maiboxen"
+msgstr "Aktualisiere Mailboxen"
 
 #: web/templates/web/attachment/attachment_detail.html:6
 msgid "Attachment Details"

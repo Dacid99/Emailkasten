@@ -33,7 +33,7 @@
     <ul class="list-group list-group-flush">
         <li class="list-group-item list-group-item-action ">
             {% translate "Email" %}: <a href="{{ object.email.get_absolute_url }}"
-    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.email.message_id }}</a>
+    class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{ object.email.email_subject }}</a>
         </li>
         <li class="list-group-item">
             {% translate "Content Type" %}: {{ object.content_maintype }}/{{ object.content_subtype }}
