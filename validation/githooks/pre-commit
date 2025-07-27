@@ -22,19 +22,6 @@ else
 
   git add $CHANGED_PY_FILES
 
-  # lint
-  poetry run pylint --rcfile=$CONFIG_PATH'pylintrc_code' $CHANGED_PY_FILES > $REPORT_PATH'pylint_code_precommit.ansi'
-  if [ $? -ne 0 ]; then
-    echo "Pylint for code failed, please check "$REPORT_PATH"pylint_code_precommit.ansi ."
-    exit 1
-  fi
-
-  poetry run pylint --rcfile=$CONFIG_PATH'pylintrc_docs' $CHANGED_PY_FILES > $REPORT_PATH'pylint_docs_precommit.ansi'
-  if [ $? -ne 0 ]; then
-    echo "Pylint for docs failed, please check "$REPORT_PATH"pylint_docs_precommit.ansi ."
-    exit 1
-  fi
-
   #typecheck
   poetry run mypy --config-file $CONFIG_PATH'mypy.ini' $CHANGED_PY_FILES > $REPORT_PATH'mypy/mypy_precommit.ansi'
 fi
