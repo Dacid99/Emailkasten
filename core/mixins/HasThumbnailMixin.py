@@ -32,4 +32,4 @@ class HasThumbnailMixin:
 
     def get_absolute_thumbnail_url(self) -> str:
         """Returns the url of the thumbail download api endpoint."""
-        return reverse(f"api:v1:{self.BASENAME}-download-html", kwargs={"pk": self.pk})
+        return reverse(f"api:v1:{self.BASENAME}-thumbnail", kwargs={"pk": self.pk})

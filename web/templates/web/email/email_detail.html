@@ -93,12 +93,11 @@
 {% endblock card_content %}
 
 {% block thumbnail %}
-    <!--the ' in srcdoc are crucial!-->
-    <!--order is critical to keep style and sandbox in case of an issue with the srcdoc-->
+    <!--order is critical to keep style and sandbox in case of an issue with the src-->
     <iframe sandbox
             class="h-100 w-100"
             title="{% translate 'Email content' %}"
-            srcdoc='{{ object.html_version }}'></iframe>
+            src="{{ object.get_absolute_thumbnail_url }}"></iframe>
 {% endblock thumbnail %}
 
 

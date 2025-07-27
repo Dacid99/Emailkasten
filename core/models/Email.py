@@ -558,11 +558,6 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         return self.eml_filepath is not None
 
     @override
-    def get_absolute_thumbnail_url(self) -> str:
-        """Email does not provide a url for thumbnail download."""
-        return ""
-
-    @override
     @cached_property
     def has_thumbnail(self) -> bool:
         return True

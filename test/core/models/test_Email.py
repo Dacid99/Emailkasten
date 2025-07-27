@@ -918,7 +918,6 @@ def test_Email_html_version(fake_email, fake_attachment, fake_correspondent):
 
     assert result
     assert get_config("EMAIL_CSS") in result
-    assert "'" not in result
 
 
 @pytest.mark.django_db
@@ -952,6 +951,16 @@ def test_Email_has_thumbnail_no_file(fake_email):
     result = fake_email.has_thumbnail
 
     assert result is True
+
+
+@pytest.mark.django_db
+def test_Email_get_absolute_thumbnail_url(fake_email):
+    """Tests :func:`core.models.Email.Email.get_absolute_thumbnail_url`."""
+    result = fake_email.get_absolute_thumbnail_url()
+
+    assert result == reverse(
+        f"api:v1:{fake_email.BASENAME}-thumbnail", kwargs={"pk": fake_email.pk}
+    )
 
 
 @pytest.mark.django_db

@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import os
+from io import BytesIO
 from typing import TYPE_CHECKING, Final, override
 
 from django.core.files.storage import default_storage
@@ -195,6 +196,39 @@ class EmailViewSet(
                 as_attachment=True,
                 filename=f"emails.{file_format.split('[', maxsplit=1)[0]}",
             )
+
+    URL_PATH_THUMBNAIL = "thumbnail"
+    URL_NAME_THUMBNAIL = "thumbnail"
+
+    @action(
+        detail=True,
+        methods=["get"],
+        url_path=URL_PATH_THUMBNAIL,
+        url_name=URL_NAME_THUMBNAIL,
+    )
+    def download_thumbnail(
+        self, request: Request, pk: int | None = None
+    ) -> FileResponse:
+        """Action method downloading the html version of the mail.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the email to download. Defaults to None.
+
+        Returns:
+            A fileresponse containing the requested file.
+        """
+        email = self.get_object()
+
+        response = FileResponse(
+            BytesIO(email.html_version.encode()),
+            as_attachment=False,
+            filename=email.message_id + ".html",
+            content_type="text/html",
+        )
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+        return response
 
     URL_PATH_FULLCONVERSATION = "full-conversation"
     URL_NAME_FULLCONVERSATION = "full-conversation"

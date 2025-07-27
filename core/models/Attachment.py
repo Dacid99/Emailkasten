@@ -32,7 +32,6 @@ from zipfile import ZipFile
 
 from django.core.files.storage import default_storage
 from django.db import models
-from django.urls import reverse
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 
@@ -295,5 +294,8 @@ class Attachment(
 
     @override
     def get_absolute_thumbnail_url(self) -> str:
-        """Returns the url of the thumbail download api endpoint."""
-        return reverse(f"api:v1:{self.BASENAME}-download", kwargs={"pk": self.pk})
+        """Returns the url of the thumbnail download api endpoint.
+
+        As there is no dedicated thumbnail, it is identical to the download url.
+        """
+        return self.get_absolute_download_url()

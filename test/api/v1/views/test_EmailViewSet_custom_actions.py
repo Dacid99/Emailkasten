@@ -247,6 +247,67 @@ def test_batch_download_auth_owner(
 
 
 @pytest.mark.django_db
+def test_thumbnail_noauth(
+    fake_email,
+    noauth_api_client,
+    custom_detail_action_url,
+):
+    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.thumbnail` action with an unauthenticated user client."""
+    response = noauth_api_client.get(
+        custom_detail_action_url(
+            EmailViewSet, EmailViewSet.URL_NAME_THUMBNAIL, fake_email
+        )
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert not isinstance(response, FileResponse)
+
+
+@pytest.mark.django_db
+def test_thumbnail_auth_other(
+    fake_email,
+    other_api_client,
+    custom_detail_action_url,
+):
+    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.thumbnail` action with the authenticated other user client."""
+    response = other_api_client.get(
+        custom_detail_action_url(
+            EmailViewSet, EmailViewSet.URL_NAME_THUMBNAIL, fake_email
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert not isinstance(response, FileResponse)
+
+
+@pytest.mark.django_db
+def test_thumbnail_auth_owner(
+    fake_email,
+    owner_api_client,
+    custom_detail_action_url,
+):
+    """Tests the get method :func:`api.v1.views.EmailViewSet.EmailViewSet.thumbnail` action with the authenticated owner user client."""
+    response = owner_api_client.get(
+        custom_detail_action_url(
+            EmailViewSet, EmailViewSet.URL_NAME_THUMBNAIL, fake_email
+        )
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(response, FileResponse)
+    assert "Content-Disposition" in response.headers
+    assert f'filename="{fake_email.message_id}.html"' in response["Content-Disposition"]
+    assert "inline" in response["Content-Disposition"]
+    assert "Content-Type" in response.headers
+    assert response.headers["Content-Type"] == "text/html"
+    assert "X-Frame-Options" in response.headers
+    assert response.headers["X-Frame-Options"] == "SAMEORIGIN"
+    assert "Content-Security-Policy" in response.headers
+    assert response.headers["Content-Security-Policy"] == "frame-ancestors 'self'"
+    assert b"".join(response.streaming_content) == fake_email.html_version.encode()
+
+
+@pytest.mark.django_db
 def test_sub_conversation_noauth(
     fake_email,
     noauth_api_client,
