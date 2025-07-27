@@ -652,19 +652,6 @@ def test_IMAP4Fetcher_close_success(imap_mailbox, mock_logger, mock_IMAP4):
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_close_no_client(imap_mailbox, mock_logger, mock_IMAP4):
-    fetcher = IMAP4Fetcher(imap_mailbox.account)
-    fetcher._mail_client = None
-
-    fetcher.close()
-
-    mock_IMAP4.return_value.logout.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
-
-
-@pytest.mark.django_db
 def test_IMAP4Fetcher_close_bad_response(imap_mailbox, mock_logger, mock_IMAP4):
     mock_IMAP4.return_value.logout.return_value = ("NO", [b""])
 

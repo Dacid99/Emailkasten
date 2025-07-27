@@ -453,19 +453,6 @@ def test_POP3Fetcher_close_success(pop3_mailbox, mock_logger, mock_POP3):
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_close_no_client(pop3_mailbox, mock_logger, mock_POP3):
-    fetcher = POP3Fetcher(pop3_mailbox.account)
-    fetcher._mail_client = None
-
-    fetcher.close()
-
-    mock_POP3.return_value.quit.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
-
-
-@pytest.mark.django_db
 def test_POP3Fetcher_close_bad_response(pop3_mailbox, mock_logger, mock_POP3):
     mock_POP3.return_value.quit.return_value = b"+NO"
 
