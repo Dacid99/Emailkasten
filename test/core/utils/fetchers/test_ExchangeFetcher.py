@@ -96,6 +96,7 @@ def mock_msg_folder_root(mocker, faker, mock_Folder):
         mock_Folder,
     ]
     mock_msg_folder_root.__truediv__.return_value = mock_Folder
+    mock_msg_folder_root.__truediv__.return_value.__truediv__.return_value = mock_Folder
     type(mock_Folder).absolute = mocker.PropertyMock(
         return_value=os.path.join(fake_msg_folder_root_path, faker.name())
     )
@@ -380,13 +381,37 @@ def test_ExchangeFetcher_test_account_other_exception(
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_mailbox_success(
-    exchange_mailbox, mock_logger, mock_ExchangeAccount
+    exchange_mailbox, mock_logger, mock_msg_folder_root
 ):
     result = ExchangeFetcher(exchange_mailbox.account).test(exchange_mailbox)
 
     assert result is None
-    mock_ExchangeAccount.return_value.msg_folder_root.refresh.assert_called_once_with()
-    mock_ExchangeAccount.return_value.msg_folder_root.__truediv__.return_value.refresh.assert_called_once_with()
+    mock_msg_folder_root.refresh.assert_called_once_with()
+    mock_msg_folder_root.__truediv__.return_value.__truediv__.return_value.refresh.assert_called_once_with()
+    mock_msg_folder_root.__truediv__.assert_called_once()
+    mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_not_called()
+    mock_logger.debug.assert_called()
+    mock_logger.exception.assert_not_called()
+    mock_logger.error.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_ExchangeFetcher_test_mailbox_subfolder_success(
+    faker, exchange_mailbox, mock_logger, mock_msg_folder_root
+):
+    fake_folder_name = exchange_mailbox.name
+    fake_subfolder_name = faker.name()
+    exchange_mailbox.name = fake_folder_name + "/" + fake_subfolder_name
+
+    result = ExchangeFetcher(exchange_mailbox.account).test(exchange_mailbox)
+
+    assert result is None
+    mock_msg_folder_root.refresh.assert_called_once_with()
+    mock_msg_folder_root.__truediv__.assert_called_once_with(fake_folder_name)
+    mock_msg_folder_root.__truediv__.return_value.__truediv__.return_value.refresh.assert_called_once_with()
+    mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_called_once_with(
+        fake_subfolder_name
+    )
     mock_logger.debug.assert_called()
     mock_logger.exception.assert_not_called()
     mock_logger.error.assert_not_called()
@@ -394,15 +419,15 @@ def test_ExchangeFetcher_test_mailbox_success(
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_mailbox_wrong_mailbox(
-    exchange_mailbox, mock_logger, mock_ExchangeAccount
+    exchange_mailbox, mock_logger, mock_msg_folder_root
 ):
     wrong_mailbox = baker.make(Mailbox)
 
     with pytest.raises(ValueError, match="is not in"):
         ExchangeFetcher(exchange_mailbox.account).test(wrong_mailbox)
 
-    mock_ExchangeAccount.return_value.msg_folder_root.refresh.assert_not_called()
-    mock_ExchangeAccount.return_value.msg_folder_root.__truediv__.return_value.refresh.assert_not_called()
+    mock_msg_folder_root.refresh.assert_not_called()
+    mock_msg_folder_root.__truediv__.return_value.refresh.assert_not_called()
     mock_logger.error.assert_called()
 
 
@@ -411,18 +436,18 @@ def test_ExchangeFetcher_test_mailbox_ewserror(
     faker,
     exchange_mailbox,
     mock_logger,
-    mock_ExchangeAccount,
+    mock_msg_folder_root,
 ):
     fake_error_message = faker.sentence()
-    mock_ExchangeAccount.return_value.msg_folder_root.__truediv__.return_value.refresh.side_effect = exchangelib.errors.EWSError(
-        fake_error_message
+    mock_msg_folder_root.__truediv__.return_value.refresh.side_effect = (
+        exchangelib.errors.EWSError(fake_error_message)
     )
 
     with pytest.raises(MailboxError, match=f"EWSError.*?{fake_error_message}"):
         ExchangeFetcher(exchange_mailbox.account).test(exchange_mailbox)
 
-    mock_ExchangeAccount.return_value.msg_folder_root.refresh.assert_called_once_with()
-    mock_ExchangeAccount.return_value.msg_folder_root.__truediv__.return_value.refresh.assert_called_once_with()
+    mock_msg_folder_root.refresh.assert_called_once_with()
+    mock_msg_folder_root.__truediv__.return_value.refresh.assert_called_once_with()
     mock_logger.debug.assert_called()
     mock_logger.exception.assert_called()
 
@@ -432,29 +457,52 @@ def test_ExchangeFetcher_test_mailbox_other_exception(
     faker,
     exchange_mailbox,
     mock_logger,
-    mock_ExchangeAccount,
+    mock_msg_folder_root,
 ):
     fake_error_message = faker.sentence()
-    mock_ExchangeAccount.return_value.msg_folder_root.__truediv__.return_value.refresh.side_effect = AssertionError(
+    mock_msg_folder_root.__truediv__.return_value.refresh.side_effect = AssertionError(
         fake_error_message
     )
 
     with pytest.raises(AssertionError, match=fake_error_message):
         ExchangeFetcher(exchange_mailbox.account).test(exchange_mailbox)
 
-    mock_ExchangeAccount.return_value.msg_folder_root.refresh.assert_called_once_with()
-    mock_ExchangeAccount.return_value.msg_folder_root.__truediv__.return_value.refresh.assert_called_once_with()
+    mock_msg_folder_root.refresh.assert_called_once_with()
+    mock_msg_folder_root.__truediv__.return_value.refresh.assert_called_once_with()
     mock_logger.debug.assert_called()
     mock_logger.exception.assert_not_called()
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails_all_success(
-    exchange_mailbox, mock_logger, mock_QuerySet
+    exchange_mailbox, mock_logger, mock_QuerySet, mock_msg_folder_root
 ):
     result = ExchangeFetcher(exchange_mailbox.account).fetch_emails(exchange_mailbox)
 
     assert result == [item.mime_content for item in mock_QuerySet.__iter__.return_value]
+    mock_msg_folder_root.__truediv__.assert_called_once_with(exchange_mailbox.name)
+    mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_not_called()
+    mock_logger.debug.assert_called()
+    mock_logger.info.assert_called()
+    mock_logger.exception.assert_not_called()
+    mock_logger.error.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_ExchangeFetcher_fetch_emails_subfolder_all_success(
+    faker, exchange_mailbox, mock_logger, mock_QuerySet, mock_msg_folder_root
+):
+    fake_folder_name = exchange_mailbox.name
+    fake_subfolder_name = faker.name()
+    exchange_mailbox.name = fake_folder_name + "/" + fake_subfolder_name
+
+    result = ExchangeFetcher(exchange_mailbox.account).fetch_emails(exchange_mailbox)
+
+    assert result == [item.mime_content for item in mock_QuerySet.__iter__.return_value]
+    mock_msg_folder_root.__truediv__.assert_called_once_with(fake_folder_name)
+    mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_called_once_with(
+        fake_subfolder_name
+    )
     mock_logger.debug.assert_called()
     mock_logger.info.assert_called()
     mock_logger.exception.assert_not_called()

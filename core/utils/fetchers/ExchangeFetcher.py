@@ -192,7 +192,7 @@ class ExchangeFetcher(BaseFetcher):
         if mailbox is not None:
             self.logger.debug("Testing %s ...", mailbox)
             try:
-                (self._mail_client.msg_folder_root / mailbox.name).refresh()
+                self.open_mailbox(mailbox).refresh()
             except exchangelib.errors.EWSError as error:
                 self.logger.exception(
                     "An %s occurred during refresh of %s!",
@@ -244,7 +244,7 @@ class ExchangeFetcher(BaseFetcher):
             mailbox,
         )
         try:
-            mail_root = self._mail_client.msg_folder_root
+            self._mail_client.msg_folder_root  # noqa: B018  # technically pointless but required here to catch account issues in the right place
         except exchangelib.errors.EWSError as error:
             self.logger.exception(
                 "An %s occurred during opening of message_root!",
@@ -260,8 +260,8 @@ class ExchangeFetcher(BaseFetcher):
                 },
             ) from error
         try:
-            base_mail_query = (mail_root / mailbox.name).all()
-            mail_query = self.make_fetching_query(criterion, base_mail_query)
+            mailbox_folder = self.open_mailbox(mailbox)
+            mail_query = self.make_fetching_query(criterion, mailbox_folder.all())
             mail_data_list = [mail.mime_content for mail in mail_query]
         except exchangelib.errors.EWSError as error:
             self.logger.exception(
@@ -336,3 +336,17 @@ class ExchangeFetcher(BaseFetcher):
     @override
     def close(self) -> None:
         """No cleanup of :class:`exchangelib.Account` required."""
+
+    def open_mailbox(self, mailbox: Mailbox) -> exchangelib.Folder:
+        """Helper method to correctly open a mailbox folder.
+
+        Note:
+            This may cause problems with mailboxes that have / in their name (should be very uncommon).
+
+        Returns:
+            The mailbox folder instance.
+        """
+        mailbox_folder = self._mail_client.msg_folder_root
+        for folder_name in mailbox.name.split("/"):
+            mailbox_folder = mailbox_folder / folder_name
+        return mailbox_folder

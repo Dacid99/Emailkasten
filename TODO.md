@@ -71,7 +71,6 @@
 ## To fix
 
 - fetching too many emails leads to browser timeout
-- exchange has issues with subfolders
 - thumbnail needs to be served via api
 - daemon logger setup doesnt persist
 - running tests from test dir
