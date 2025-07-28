@@ -60,8 +60,6 @@
 
 - rtd
 - weblate
-- initial migration
-- initial translation files
 
 ### Work in progress
 
