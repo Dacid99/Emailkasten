@@ -11,7 +11,6 @@ build:
     post_install:  # https://docs.readthedocs.com/platform/stable/build-customization.html#install-dependencies-with-poetry
       - pip install poetry
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with docs
-      - chmod 777 /var/log
     pre_build:
       - python3 manage.py graph_models -a -g -o docs/source/db_graph.svg
       - python3 manage.py spectacular --validate --file docs/source/api-schema.yml
