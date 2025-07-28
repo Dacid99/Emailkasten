@@ -7,6 +7,7 @@ build:
   apt_packages:
     - python3-dev
     - default-mysql-client
+    - graphviz
   jobs:
     post_install:  # https://docs.readthedocs.com/platform/stable/build-customization.html#install-dependencies-with-poetry
       - pip install poetry
