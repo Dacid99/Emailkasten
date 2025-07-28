@@ -9,7 +9,6 @@
 - extensive database statistics
 - option to prohibit daemon for spambox
 - toggleable [tooltips](https://getbootstrap.com/docs/5.3/components/tooltips/)
-- show pdf attachments in pdfjs
 - combo queries via connectors
 - reprocess mail action
 - mechanism to remove all correspondents without emails
@@ -61,6 +60,8 @@
 
 - rtd
 - weblate
+- initial migration
+- initial translation files
 
 ### Work in progress
 
@@ -77,5 +78,7 @@
 - optics:
   - checkboxes for boolean data instead of True and False
   - better name for daemon
+  - consistent margin around iframes
+  - only show certain text mime contents
 - ci:
   - djlint has no files to lint

@@ -21,8 +21,7 @@ Your emails are serious business, so this projects codebase has > 95% test-cover
 ### Roadmap
 
 - Consolidate existing features
-- Support for more containerization engines (podman, kubernetes, etc.)
-- ...
+- A LOT of other ideas (see [the TODO list](TODO.md))
 
 *Tell us what you'd like to see in a feature request issue!*
 
