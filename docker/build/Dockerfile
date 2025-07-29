@@ -13,7 +13,7 @@ ARG APK_DEPENDENCIES="gettext \
     krb5 \
     openssl \
     curl"
-ARG SRC_PATH=/mnt/
+ARG SRC_PATH=/opt/
 ARG LOG_PATH=/var/log/emailkasten/
 
 # create directories
@@ -25,7 +25,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     XDG_RUNTIME_DIR=/tmp/xdg_runtime \
     DJANGO_SETTINGS_MODULE=Emailkasten.settings \
-    PYTHONPATH=${SRC_PATH}
+    PYTHONPATH=${SRC_PATH}'src/'
 
 WORKDIR ${SRC_PATH}
 COPY . ${SRC_PATH}
@@ -36,7 +36,7 @@ RUN apk update && \
 RUN pip install -U --no-cache-dir poetry && poetry install
 
 # ssl cert
-RUN openssl req -x509 -newkey rsa:4096 -keyout /mnt/key.pem -out /mnt/cert.pem -days 365 -nodes -subj "/C=DE/ST=Bavaria/L=Munich/O=SBV/OU=Emailkasten/CN=emailkasten.org"
+RUN openssl req -x509 -newkey rsa:4096 -keyout ${SRC_PATH}'key.pem' -out ${SRC_PATH}'cert.pem' -days 365 -nodes -subj "/C=DE/ST=Bavaria/L=Munich/O=SBV/OU=Emailkasten/CN=emailkasten.org"
 
 # src setup
 ENV SECRET_KEY=IM_JUST_HERE_AS_A_WORKAROUND
