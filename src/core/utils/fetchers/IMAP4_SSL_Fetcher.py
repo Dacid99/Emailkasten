@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import imaplib
+import ssl
 from typing import override
 
 from ... import constants
@@ -41,30 +42,43 @@ class IMAP4_SSL_Fetcher(  # noqa: N801  # naming consistent with IMAP4_SSL class
 
     @override
     def connect_to_host(self) -> None:
-        """Overrides :func:`core.utils.fetchers.IMAP4Fetcher.connect_to_host` to use :class:`imaplib.IMAP4_SSL`."""
+        """Overrides :func:`core.utils.fetchers.IMAP4Fetcher.connect_to_host` to use :class:`imaplib.IMAP4_SSL`.
+
+        Important:
+            Using ssl_context is urgently required, see https://www.pentagrid.ch/en/blog/python-mail-libraries-certificate-verification/ .
+
+        """
         self.logger.debug("Connecting to %s ...", self.account)
 
         mail_host = self.account.mail_host
         mail_host_port = self.account.mail_host_port
         timeout = self.account.timeout
+        ssl_context = ssl.create_default_context()
         try:
             if mail_host_port and timeout:
                 self._mail_client = imaplib.IMAP4_SSL(
                     host=mail_host,
                     port=mail_host_port,
                     timeout=timeout,
-                    ssl_context=None,
+                    ssl_context=ssl_context,
                 )
             elif mail_host_port:
                 self._mail_client = imaplib.IMAP4_SSL(
-                    host=mail_host, port=mail_host_port, ssl_context=None
+                    host=mail_host,
+                    port=mail_host_port,
+                    ssl_context=ssl_context,
                 )
             elif timeout:
                 self._mail_client = imaplib.IMAP4_SSL(
-                    host=mail_host, timeout=timeout, ssl_context=None
+                    host=mail_host,
+                    timeout=timeout,
+                    ssl_context=ssl_context,
                 )
             else:
-                self._mail_client = imaplib.IMAP4_SSL(host=mail_host, ssl_context=None)
+                self._mail_client = imaplib.IMAP4_SSL(
+                    host=mail_host,
+                    ssl_context=ssl_context,
+                )
         except Exception as error:
             self.logger.exception(
                 "An %s occurred connecting to %s!",

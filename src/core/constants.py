@@ -90,17 +90,17 @@ class EmailFetchingCriterionChoices(TextChoices):
 class EmailProtocolChoices(TextChoices):
     """Namespace class for all implemented mail protocols constants."""
 
-    IMAP = "IMAP", _("IMAP4")
-    """The IMAP4 protocol"""
-
-    IMAP4_SSL = "IMAP4_SSL", _("IMAP4 over SSL")
+    IMAP4_SSL = "IMAP4_SSL", _("IMAP4")
     """The IMAP4 protocol over SSL"""
 
-    POP3 = "POP3", _("POP3")
-    """The POP3 protocol"""
+    IMAP = "IMAP", _("IMAP4 (unencrypted)")
+    """The IMAP4 protocol"""
 
-    POP3_SSL = "POP3_SSL", _("POP3 over SSL")
+    POP3_SSL = "POP3_SSL", _("POP3")
     """The POP3 protocol over SSL"""
+
+    POP3 = "POP3", _("POP3  (unencrypted)")
+    """The POP3 protocol"""
 
     EXCHANGE = "EXCHANGE", _("Microsoft Exchange")
     """Microsofts Exchange protocol"""

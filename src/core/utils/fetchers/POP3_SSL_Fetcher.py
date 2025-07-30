@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import poplib
+import ssl
 from typing import override
 
 from ... import constants
@@ -41,27 +42,42 @@ class POP3_SSL_Fetcher(  # noqa: N801  # naming consistent with POP3_SSL class
 
     @override
     def connect_to_host(self) -> None:
-        """Overrides :func:`core.utils.fetchers.POP3Fetcher.connect_to_host` to use :class:`poplib.POP3_SSL`."""
+        """Overrides :func:`core.utils.fetchers.POP3Fetcher.connect_to_host` to use :class:`poplib.POP3_SSL`.
+
+        Important:
+            Using ssl_context is urgently required, see https://www.pentagrid.ch/en/blog/python-mail-libraries-certificate-verification/ .
+        """
         self.logger.debug("Connecting to %s ...", self.account)
 
         mail_host = self.account.mail_host
         mail_host_port = self.account.mail_host_port
         timeout = self.account.timeout
+        ssl_context = ssl.create_default_context()
         try:
             if mail_host_port and timeout:
                 self._mail_client = poplib.POP3_SSL(
-                    host=mail_host, port=mail_host_port, timeout=timeout, context=None
+                    host=mail_host,
+                    port=mail_host_port,
+                    timeout=timeout,
+                    context=ssl_context,
                 )
             elif mail_host_port:
                 self._mail_client = poplib.POP3_SSL(
-                    host=mail_host, port=mail_host_port, context=None
+                    host=mail_host,
+                    port=mail_host_port,
+                    context=ssl_context,
                 )
             elif timeout:
                 self._mail_client = poplib.POP3_SSL(
-                    host=mail_host, timeout=timeout, context=None
+                    host=mail_host,
+                    timeout=timeout,
+                    context=ssl_context,
                 )
             else:
-                self._mail_client = poplib.POP3_SSL(host=mail_host, context=None)
+                self._mail_client = poplib.POP3_SSL(
+                    host=mail_host,
+                    context=ssl_context,
+                )
         except Exception as error:
             self.logger.exception(
                 "A POP error occurred connecting to %s!",
