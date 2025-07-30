@@ -1,4 +1,4 @@
-codelint: pylintrc_code
+codelint: pylintrc_src
 	pylint --rcfile=$< ../Emailkasten ../core/ ../api/ ../web/ | tee reports/pylint_code.ansi
 
 docslint: pylintrc_docs
