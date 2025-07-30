@@ -3,20 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-28 12:11+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-07-30 08:31+0000\n"
+"Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/emailkasten/web/"
+"de/>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: web/filters/AccountFilterSet.py:56 web/filters/AttachmentFilterSet.py:55
 #: web/filters/CorrespondentEmailFilterSet.py:57
@@ -24,51 +25,45 @@ msgstr ""
 #: web/filters/EmailCorrespondentFilterSet.py:56
 #: web/filters/EmailFilterSet.py:53
 msgid "Search"
-msgstr ""
+msgstr "Suche"
 
 #: web/filters/AccountFilterSet.py:67 web/filters/CorrespondentFilterSet.py:61
 #: web/filters/DaemonFilterSet.py:71
 #: web/filters/EmailCorrespondentFilterSet.py:66
 #: web/filters/MailboxFilterSet.py:61
 msgid "Created before"
-msgstr ""
+msgstr "Erstellt vor"
 
 #: web/filters/AccountFilterSet.py:73 web/filters/CorrespondentFilterSet.py:67
 #: web/filters/DaemonFilterSet.py:77
 #: web/filters/EmailCorrespondentFilterSet.py:72
 #: web/filters/MailboxFilterSet.py:67
 msgid "Created after"
-msgstr ""
+msgstr "Erstellt nach"
 
 #: web/filters/AttachmentFilterSet.py:78
 #: web/filters/CorrespondentEmailFilterSet.py:75
 #: web/filters/EmailFilterSet.py:67
-#, fuzzy
-#| msgid "Received"
 msgid "Received before"
-msgstr "Erhalten"
+msgstr "Erhalten vor"
 
 #: web/filters/AttachmentFilterSet.py:84
 #: web/filters/CorrespondentEmailFilterSet.py:81
 #: web/filters/EmailFilterSet.py:73
-#, fuzzy
-#| msgid "Received"
 msgid "Received after"
-msgstr "Erhalten"
+msgstr "Erhalten nach"
 
 #: web/filters/DaemonFilterSet.py:55
 msgid "Number of intervals"
-msgstr ""
+msgstr "Anzahl an Intervallen"
 
 #: web/filters/DaemonFilterSet.py:61
-#, fuzzy
-#| msgid "Internal Error"
 msgid "Interval period"
-msgstr "Interner Fehler"
+msgstr "Intervaldauer"
 
 #: web/filters/DaemonFilterSet.py:66
 msgid "Enabled"
-msgstr ""
+msgstr "Aktiv"
 
 #: web/forms/UploadEmailForm.py:35
 msgid "File format"
@@ -87,18 +82,17 @@ msgid "Pick a file for upload."
 msgstr "Wähle eine Datei zum Hochladen."
 
 #: web/mixins/TestActionMixin.py:44
-#, fuzzy, python-format
-#| msgid "Test failed"
+#, python-format
 msgid ""
 "Test failed\n"
 "%(error)s"
-msgstr "Test fehlgeschlagen"
+msgstr ""
+"Test fehlgeschlagen\n"
+"%(error)s"
 
 #: web/mixins/TestActionMixin.py:46
-#, fuzzy
-#| msgid "Test was successful!"
 msgid "Test was successful"
-msgstr "Der Test war erfolgreich!"
+msgstr "Test war erfolgreich"
 
 #: web/templates/400.html:6 web/templates/400.html:10
 msgid "Request Error"
@@ -110,7 +104,7 @@ msgstr "Etwas lief falsch mit deiner Anfrage."
 
 #: web/templates/400.html:12
 msgid "First aid: Please try again."
-msgstr "Erste Hilfe: Bitte versuch es nochmal."
+msgstr "Erste Hilfe: Bitte versuche es erneut."
 
 #: web/templates/403.html:6 web/templates/403.html:10
 #: web/templates/403_csrf.html:6 web/templates/403_csrf.html:10
@@ -127,13 +121,11 @@ msgstr "Erste Hilfe: Überprüfe ob du eingeloggt bist."
 
 #: web/templates/403_csrf.html:11
 msgid "CSRF Verification failed!"
-msgstr ""
+msgstr "CSRF Verifikation fehlgeschlagen!"
 
 #: web/templates/403_csrf.html:12
-#, fuzzy
-#| msgid "First aid: Check if you are logged in."
 msgid "First aid: Check your cookie settings."
-msgstr "Erste Hilfe: Überprüfe ob du eingeloggt bist."
+msgstr "Erste Hilfe: Überprüfe deine Cookie Einstellungen."
 
 #: web/templates/404.html:6 web/templates/404.html:10
 msgid "Page Not Found"
@@ -161,6 +153,8 @@ msgid ""
 "First aid: Try again. If the error persists please inform your admin or "
 "write an issue report."
 msgstr ""
+"Erste Hilfe: Versuche es erneut. Falls der Fehler weiter auftritt, "
+"informiere bitte den Admin oder schreibe einen Fehlerbericht."
 
 #: web/templates/web/account/account_create.html:6
 msgid "Add Account"
@@ -191,11 +185,11 @@ msgstr "Port"
 
 #: web/templates/web/account/account_detail.html:48
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 #: web/templates/web/account/account_detail.html:51
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Zeitbegrenzung"
 
 #: web/templates/web/account/account_detail.html:60
 #: web/templates/web/mailbox/mailbox_filter_list.html:6
@@ -231,7 +225,7 @@ msgstr "in"
 #: web/templates/web/account/account_filter_list.html:10
 #: web/templates/web/partials/_navbar.html:31
 msgid "Accounts"
-msgstr "Accounts"
+msgstr "Konten"
 
 #: web/templates/web/account/partials/_add_button.html:6
 msgid "Add account"
@@ -294,22 +288,16 @@ msgid "In email"
 msgstr "In Email"
 
 #: web/templates/web/attachment/partials/_thumbnail.html:17
-#, fuzzy
-#| msgid "Attachments"
 msgid "Attachment image"
-msgstr "Anhänge"
+msgstr "Bildanhang"
 
 #: web/templates/web/attachment/partials/_thumbnail.html:21
-#, fuzzy
-#| msgid "Attachment Details"
 msgid "Attachment text"
-msgstr "Anhang Details"
+msgstr "Textanhang"
 
 #: web/templates/web/attachment/partials/_thumbnail.html:25
-#, fuzzy
-#| msgid "Attachment Details"
 msgid "Attachment file content"
-msgstr "Anhang Details"
+msgstr "Anhang Dateiinhalt"
 
 #: web/templates/web/bases/base.html:14
 #: web/templates/web/partials/_navbar.html:6
@@ -321,22 +309,22 @@ msgstr "Emailkasten"
 #: web/templates/web/bases/base_detail.html:22
 #: web/templates/web/bases/base_detail_with_thumbnail.html:19
 msgid "Toolbar with button groups"
-msgstr ""
+msgstr "Leiste mit Knopfgruppen"
 
 #: web/templates/web/bases/base_create.html:16
 #: web/templates/web/bases/base_detail.html:40
 #: web/templates/web/bases/base_detail_with_thumbnail.html:40
 msgid "Close button group"
-msgstr ""
+msgstr "Knopfgruppe schließen"
 
 #: web/templates/web/bases/base_detail.html:30
 #: web/templates/web/bases/base_detail_with_thumbnail.html:30
 msgid "Edit button group"
-msgstr ""
+msgstr "Bearbeitungs-Knopfgruppe"
 
 #: web/templates/web/bases/base_detail_with_thumbnail.html:22
 msgid "Action button group"
-msgstr ""
+msgstr "Aktionen-Knopfgruppe"
 
 #: web/templates/web/bases/base_filter_list.html:10
 msgid "Show filter options"
@@ -360,7 +348,7 @@ msgstr "Korrespondent Details"
 
 #: web/templates/web/correspondent/correspondent_detail.html:30
 msgid "Mailer name"
-msgstr ""
+msgstr "Mailer Name"
 
 #: web/templates/web/correspondent/correspondent_detail.html:33
 msgid "Subscribe"
@@ -371,10 +359,8 @@ msgid "Unsubscribe"
 msgstr "Deabonnieren"
 
 #: web/templates/web/correspondent/correspondent_detail.html:42
-#, fuzzy
-#| msgid "Unsubscribe"
 msgid "Unsubscribe Method"
-msgstr "Deabonnieren"
+msgstr "Deabonnierungsmethode"
 
 #: web/templates/web/correspondent/correspondent_detail.html:46
 msgid "Post"
@@ -396,7 +382,7 @@ msgstr "Korrespondent bearbeiten"
 
 #: web/templates/web/correspondent/correspondent_email_filter_list.html:6
 msgid "with"
-msgstr ""
+msgstr "mit"
 
 #: web/templates/web/correspondent/correspondent_filter_list.html:6
 #: web/templates/web/correspondent/correspondent_filter_list.html:14
@@ -407,8 +393,6 @@ msgid "Correspondents"
 msgstr "Korrespondenten"
 
 #: web/templates/web/daemon/daemon_create.html:6
-#, fuzzy
-#| msgid "Add daemon"
 msgid "Add Daemon"
 msgstr "Daemon hinzufügen"
 
@@ -441,22 +425,18 @@ msgstr "Kriterium"
 
 #: web/templates/web/daemon/daemon_detail.html:48
 #: web/templates/web/daemon/partials/_daemon_card.html:29
-#, fuzzy
-#| msgid "Internal Error"
 msgid "Interval"
-msgstr "Interner Fehler"
+msgstr "Intervall"
 
 #: web/templates/web/daemon/daemon_detail.html:50
 msgid "Last Run Datetime"
-msgstr ""
+msgstr "Zuletzt ausgeführt"
 
 #: web/templates/web/daemon/daemon_detail.html:53
 msgid "Total Run Count"
-msgstr ""
+msgstr "Gesamtzahl Ausführungen"
 
 #: web/templates/web/daemon/daemon_detail.html:55
-#, fuzzy
-#| msgid "Logfile backups"
 msgid "Logfile Backups"
 msgstr "Logdatei Backups"
 
@@ -483,15 +463,15 @@ msgstr "Daemon hinzufügen"
 #: web/templates/web/mailbox/partials/_download_dropdown.html:9
 #: web/templates/web/partials/_download-button.html:5
 msgid "Download"
-msgstr ""
+msgstr "Download"
 
 #: web/templates/web/daemon/partials/_is_running-badge.html:4
 msgid "Running"
-msgstr ""
+msgstr "Aktiv"
 
 #: web/templates/web/daemon/partials/_is_running-badge.html:4
 msgid "Paused"
-msgstr ""
+msgstr "Pausiert"
 
 #: web/templates/web/daemon/partials/_start-button.html:8
 msgid "Start"
@@ -511,19 +491,15 @@ msgstr "Willkommen bei Emailkasten"
 
 #: web/templates/web/dashboard.html:34
 msgid "Statistics"
-msgstr ""
+msgstr "Statistiken"
 
 #: web/templates/web/dashboard.html:40
-#, fuzzy
-#| msgid "Datasize"
 msgid "Data"
-msgstr "Dateigröße"
+msgstr "Daten"
 
 #: web/templates/web/dashboard.html:41
-#, fuzzy
-#| msgid "Account"
 msgid "Count"
-msgstr "Account"
+msgstr "Anzahl"
 
 #: web/templates/web/dashboard.html:47
 #: web/templates/web/email/email_filter_list.html:6
@@ -548,11 +524,11 @@ msgstr "Neueste"
 
 #: web/templates/web/email/archive/index.html:18
 msgid "Today"
-msgstr ""
+msgstr "Heute"
 
 #: web/templates/web/email/archive/index.html:26
 msgid "This week"
-msgstr ""
+msgstr "Diese Woche"
 
 #: web/templates/web/email/archive/month.html:6
 #: web/templates/web/email/archive/month.html:10
@@ -565,10 +541,8 @@ msgid "Week"
 msgstr "Woche"
 
 #: web/templates/web/email/archive/week.html:15
-#, fuzzy
-#| msgid "Week"
 msgid "Week #"
-msgstr "Woche"
+msgstr "Woche #"
 
 #: web/templates/web/email/archive/year.html:6
 #: web/templates/web/email/archive/year.html:10
@@ -605,10 +579,8 @@ msgstr "Html Inhalt"
 
 #: web/templates/web/email/email_detail.html:99
 #: web/templates/web/email/partials/_email_card.html:36
-#, fuzzy
-#| msgid "Emailkasten"
 msgid "Email content"
-msgstr "Emailkasten"
+msgstr "Email Inhalt"
 
 #: web/templates/web/email/email_detail.html:135
 msgid "Headers"
@@ -619,14 +591,12 @@ msgid "Conversation"
 msgstr "Konversation"
 
 #: web/templates/web/email/email_detail.html:167
-#, fuzzy
-#| msgid "In reply to"
 msgid "In Reply To"
 msgstr "Antwort auf"
 
 #: web/templates/web/email/email_detail.html:187
 msgid "Replies"
-msgstr ""
+msgstr "Antworten"
 
 #: web/templates/web/email/email_detail.html:208
 msgid "References"
@@ -686,7 +656,7 @@ msgstr "Lade Emails in die Mailbox hoch"
 
 #: web/templates/web/partials/_clear_and_submit_filter-button.html:4
 msgid "& Submit"
-msgstr "& Filtern"
+msgstr "&amp; Abfragen"
 
 #: web/templates/web/partials/_clear_filter-button.html:4
 msgid "Reset"
@@ -711,21 +681,21 @@ msgid "Delete %(object)s"
 msgstr "Lösche %(object)s"
 
 #: web/templates/web/partials/_delete-modal.html:21
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to delete %(object)s?"
 msgstr "Bist du sicher dass du %(object)s löschen willst?"
 
 #: web/templates/web/partials/_edit-button.html:6
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: web/templates/web/partials/_end_edit-button.html:6
 msgid "End edit"
-msgstr ""
+msgstr "Bearbeiten beenden"
 
 #: web/templates/web/partials/_favorite_badge.html:5
 msgid "Favorite"
-msgstr ""
+msgstr "Favorit"
 
 #: web/templates/web/partials/_filter-form.html:5
 msgid "Filter"
@@ -737,48 +707,48 @@ msgstr "2025 Emailkasten. Lizensiert unter AGPLv3. Alle Rechte vorbehalten."
 
 #: web/templates/web/partials/_footer.html:11
 msgid "Github"
-msgstr ""
+msgstr "Github"
 
 #: web/templates/web/partials/_footer.html:14
 msgid "Gitlab"
-msgstr ""
+msgstr "Gitlab"
 
 #: web/templates/web/partials/_footer.html:17
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentation"
 
 #: web/templates/web/partials/_footer.html:20
 #: web/templates/web/partials/_footer.html:23
 msgid "Translating"
-msgstr ""
+msgstr "Übersetzung"
 
 #: web/templates/web/partials/_health_badge.html:5
 msgid "Healthy"
-msgstr ""
+msgstr "Gesund"
 
 #: web/templates/web/partials/_health_badge.html:10
 msgid "Unhealthy"
-msgstr ""
+msgstr "Problem"
 
 #: web/templates/web/partials/_health_badge.html:16
 msgid "Health unknown"
-msgstr ""
+msgstr "Gesundheit unbekannt"
 
 #: web/templates/web/partials/_navbar.html:13
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Navigation umschalten"
 
 #: web/templates/web/partials/_pagination.html:5
 msgid "Page navigation"
-msgstr ""
+msgstr "Seitennavigation"
 
 #: web/templates/web/partials/_pagination.html:9
 msgid "Previous"
-msgstr ""
+msgstr "Vorherige"
 
 #: web/templates/web/partials/_pagination.html:26
 msgid "Next"
-msgstr ""
+msgstr "Nächste"
 
 #: web/templates/web/partials/_pagination.html:39
 msgid "Page Size"
@@ -802,12 +772,12 @@ msgid ""
 "Updating mailboxes failed\n"
 "%(error)s"
 msgstr ""
+"Mailboxen aktualisieren fehlgeschlagen\n"
+"%(error)s"
 
 #: web/views/account_views/AccountDetailWithDeleteView.py:98
-#, fuzzy
-#| msgid "Update Mailboxes"
 msgid "Updating mailboxes successful"
-msgstr "Aktualisiere Mailboxen"
+msgstr "Mailboxen erfolgreich aktualisiert"
 
 #: web/views/daemon_views/DaemonDetailWithDeleteView.py:78
 msgid "Daemon started successfully"
@@ -831,13 +801,13 @@ msgid ""
 "Fetching failed\n"
 "%(error)s"
 msgstr ""
+"Abrufen fehlgeschlagen\n"
+"%(error)s"
 
 #: web/views/mailbox_views/MailboxDetailWithDeleteView.py:99
-#, fuzzy
-#| msgid "Test successful"
 msgid "Fetching successful"
-msgstr "Test erfolgreich"
+msgstr "Abrufen war erfolgreich"
 
 #: web/views/mailbox_views/UploadEmailView.py:74
 msgid "The file could not be processed!"
-msgstr ""
+msgstr "Die Datei konnte nicht verarbeitet werden!"
