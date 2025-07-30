@@ -76,6 +76,7 @@ $RECYCLE.BIN/
 .tox/
 .venv/
 .vscode/
+__pycache__/
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
 [._]*.un~
@@ -88,8 +89,7 @@ $RECYCLE.BIN/
 [Ll]ib
 [Ll]ib64
 [Ll]ocal
-__pycache__/
-Icon[]
+Icon\[\]
 LICENSE
 MANIFEST
 Network Trash Folder

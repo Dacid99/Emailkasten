@@ -84,7 +84,7 @@ $RECYCLE.BIN/
 [Ll]ib64
 [Ll]ocal
 __pycache__/
-Icon[]
+Icon\[\]
 MANIFEST
 Network Trash Folder
 Session.vim
