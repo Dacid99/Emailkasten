@@ -89,9 +89,6 @@ class BaseDaemonForm(RequiredMarkerModelForm):
         with contextlib.suppress(Daemon.interval.RelatedObjectDoesNotExist):
             self.initial["interval_every"] = self.instance.interval.every
             self.initial["interval_period"] = self.instance.interval.period
-        self.fields["fetching_criterion"].choices = (
-            self.instance.mailbox.available_fetching_choices()
-        )
 
     @override
     def save(self, commit: bool = True) -> Any:
