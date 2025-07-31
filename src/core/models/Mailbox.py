@@ -148,13 +148,13 @@ class Mailbox(
             "name": self.name,
         }
 
-    def get_available_fetching_criteria(self) -> list[str]:
+    def get_available_fetching_criteria(self) -> tuple[str]:
         """Gets the available fetching criteria based on the mail protocol of this mailbox.
 
         Used by :func:`api.v1.views.MailboxViewSet.fetching_options` to show the choices for fetching to the user.
 
         Returns:
-            list: A list of all available fetching criteria for this mailbox.
+            A tuple of all available fetching criteria for this mailbox.
 
         Raises:
             ValueError: If the account has an unimplemented protocol.

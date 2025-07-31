@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, ClassVar, override
+from typing import TYPE_CHECKING, override
 
 from ...constants import EmailFetchingCriterionChoices
 
@@ -43,8 +43,8 @@ class BaseFetcher(ABC):
     PROTOCOL = ""
     """Name of the used protocol, should be one of :class:`MailFetchingProtocols`."""
 
-    AVAILABLE_FETCHING_CRITERIA: ClassVar[list[str]] = []
-    """List of all criteria available for fetching. Should refer to :class:`MailFetchingCriteria`."""
+    AVAILABLE_FETCHING_CRITERIA: tuple[str] = []
+    """Tuple of all criteria available for fetching. Should refer to :class:`MailFetchingCriteria`. Must be immutable!"""
 
     @abstractmethod
     def __init__(self, account: Account):

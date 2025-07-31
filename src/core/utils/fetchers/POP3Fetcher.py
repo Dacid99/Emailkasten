@@ -21,7 +21,7 @@
 from __future__ import annotations
 
 import poplib
-from typing import TYPE_CHECKING, ClassVar, override
+from typing import TYPE_CHECKING, override
 
 from ...constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from .BaseFetcher import BaseFetcher
@@ -46,10 +46,10 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
     PROTOCOL = EmailProtocolChoices.POP3.value
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.POP3`."""
 
-    AVAILABLE_FETCHING_CRITERIA: ClassVar[list[str]] = [
-        EmailFetchingCriterionChoices.ALL.value
-    ]
-    """List of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`."""
+    AVAILABLE_FETCHING_CRITERIA: tuple[str] = (EmailFetchingCriterionChoices.ALL.value,)
+    """Tuple of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`.
+    Must be immutable!
+    """
 
     @override
     def __init__(self, account: Account) -> None:

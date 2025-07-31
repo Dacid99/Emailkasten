@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import datetime
 import os
-from typing import TYPE_CHECKING, ClassVar, override
+from typing import TYPE_CHECKING, override
 
 import exchangelib
 import exchangelib.errors
@@ -52,7 +52,7 @@ class ExchangeFetcher(BaseFetcher):
     PROTOCOL = EmailProtocolChoices.EXCHANGE.value
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.Exchange`."""
 
-    AVAILABLE_FETCHING_CRITERIA: ClassVar[list[str]] = [
+    AVAILABLE_FETCHING_CRITERIA: tuple[str] = (
         EmailFetchingCriterionChoices.ALL.value,
         EmailFetchingCriterionChoices.SEEN.value,
         EmailFetchingCriterionChoices.UNSEEN.value,
@@ -61,9 +61,10 @@ class ExchangeFetcher(BaseFetcher):
         EmailFetchingCriterionChoices.WEEKLY.value,
         EmailFetchingCriterionChoices.MONTHLY.value,
         EmailFetchingCriterionChoices.ANNUALLY.value,
-    ]
-    """List of all criteria available for fetching. Refers to :class:`EmailFetchingCriterionChoices`.
+    )
+    """Tuple of all criteria available for fetching. Refers to :class:`EmailFetchingCriterionChoices`.
     Constructed analogous to the IMAP4 criteria.
+    Must be immutable!
     """
 
     @staticmethod
