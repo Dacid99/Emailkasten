@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import datetime
 import imaplib
-from typing import TYPE_CHECKING, ClassVar, override
+from typing import TYPE_CHECKING, override
 
 from django.utils import timezone
 from imap_tools.imap_utf7 import utf7_encode
@@ -49,7 +49,7 @@ class IMAP4Fetcher(BaseFetcher, SafeIMAPMixin):
     PROTOCOL = EmailProtocolChoices.IMAP.value
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.IMAP`."""
 
-    AVAILABLE_FETCHING_CRITERIA: ClassVar[list[str]] = [
+    AVAILABLE_FETCHING_CRITERIA: tuple[str] = (
         EmailFetchingCriterionChoices.ALL.value,
         EmailFetchingCriterionChoices.UNSEEN.value,
         EmailFetchingCriterionChoices.SEEN.value,
@@ -63,8 +63,9 @@ class IMAP4Fetcher(BaseFetcher, SafeIMAPMixin):
         EmailFetchingCriterionChoices.WEEKLY.value,
         EmailFetchingCriterionChoices.MONTHLY.value,
         EmailFetchingCriterionChoices.ANNUALLY.value,
-    ]
-    """List of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`.
+    )
+    """Tuple of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`.
+    Must be immutable!
     IMAP4 does not accept time lookups, only date based.
     For a list of all existing IMAP criteria see https://datatracker.ietf.org/doc/html/rfc3501.html#section-6.4.4.
     """

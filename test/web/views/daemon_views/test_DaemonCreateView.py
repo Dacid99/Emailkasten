@@ -79,7 +79,7 @@ def test_post_noauth(daemon_with_interval_payload, client, list_url, login_url):
 
 @pytest.mark.django_db
 def test_post_auth_other(
-    fake_fs, daemon_with_interval_payload, fake_other_mailbox, other_client, list_url
+    daemon_with_interval_payload, fake_other_mailbox, other_client, list_url
 ):
     """Tests :class:`web.views.DaemonCreateView` with the authenticated other user client."""
     daemon_with_interval_payload["mailbox"] = fake_other_mailbox.id
@@ -125,10 +125,7 @@ def test_post_auth_other_strange_mailbox(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("run", range(100))
-def test_post_auth_owner(
-    fake_fs, daemon_with_interval_payload, owner_client, list_url, run
-):
+def test_post_auth_owner(daemon_with_interval_payload, owner_client, list_url):
     """Tests :class:`web.views.DaemonCreateView` with the authenticated owner user client."""
     assert Daemon.objects.all().count() == 1
 
