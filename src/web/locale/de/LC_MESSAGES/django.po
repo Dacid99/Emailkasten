@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-28 12:11+0000\n"
-"PO-Revision-Date: 2025-07-30 08:31+0000\n"
+"PO-Revision-Date: 2025-07-31 21:02+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/web/"
 "de/>\n"
@@ -63,7 +63,7 @@ msgstr "Intervaldauer"
 
 #: web/filters/DaemonFilterSet.py:66
 msgid "Enabled"
-msgstr "Aktiv"
+msgstr "Aktiviert"
 
 #: web/forms/UploadEmailForm.py:35
 msgid "File format"
@@ -555,7 +555,7 @@ msgstr "Email Details"
 
 #: web/templates/web/email/email_detail.html:39
 msgid "Time received"
-msgstr "Erhalten am"
+msgstr "Erhalten um"
 
 #: web/templates/web/email/email_detail.html:41
 msgid "Message Id"
