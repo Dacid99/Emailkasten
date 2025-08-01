@@ -190,6 +190,15 @@ class Attachment(
         self.save(update_fields=["file_path"])
         logger.debug("Successfully stored attachment.")
 
+    @cached_property
+    def content_type(self) -> str:
+        """Reconstructs the full MIME content type of the attachment.
+
+        Returns:
+            The attachments content type.
+        """
+        return self.content_maintype + "/" + self.content_subtype
+
     @staticmethod
     def queryset_as_file(queryset: QuerySet[Attachment]) -> _TemporaryFileWrapper:
         """Processes the files of the emails in the queryset into a temporary file.
@@ -315,11 +324,3 @@ class Attachment(
                 )
             )
         )
-
-    @override
-    def get_absolute_thumbnail_url(self) -> str:
-        """Returns the url of the thumbnail download api endpoint.
-
-        As there is no dedicated thumbnail, it is identical to the download url.
-        """
-        return self.get_absolute_download_url()

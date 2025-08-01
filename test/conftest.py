@@ -492,7 +492,12 @@ def fake_attachment(faker, fake_email) -> Attachment:
     Returns:
         The attachment instance for testing.
     """
-    return baker.make(Attachment, email=fake_email)
+    return baker.make(
+        Attachment,
+        email=fake_email,
+        content_maintype=faker.word(),
+        content_subtype=faker.word(),
+    )
 
 
 @pytest.fixture

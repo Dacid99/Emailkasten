@@ -236,6 +236,16 @@ def test_Attachment_save_with_data_failure(
 
 
 @pytest.mark.django_db
+def test_Attachment_content_type(fake_attachment):
+    result = fake_attachment.content_type
+
+    assert (
+        result
+        == fake_attachment.content_maintype + "/" + fake_attachment.content_subtype
+    )
+
+
+@pytest.mark.django_db
 def test_Attachment_queryset_as_file(
     fake_file, fake_attachment, fake_attachment_with_file
 ):
@@ -408,7 +418,7 @@ def test_Attachment_get_absolute_thumbnail_url(fake_attachment):
     result = fake_attachment.get_absolute_thumbnail_url()
 
     assert result == reverse(
-        f"api:v1:{fake_attachment.BASENAME}-download",
+        f"api:v1:{fake_attachment.BASENAME}-thumbnail",
         kwargs={"pk": fake_attachment.pk},
     )
 

@@ -163,3 +163,46 @@ class AttachmentViewSet(
             as_attachment=True,
             filename="attachments.zip",
         )
+
+    URL_PATH_THUMBNAIL = "thumbnail"
+    URL_NAME_THUMBNAIL = "thumbnail"
+
+    @action(
+        detail=True,
+        methods=["get"],
+        url_path=URL_PATH_THUMBNAIL,
+        url_name=URL_NAME_THUMBNAIL,
+    )
+    def download_thumbnail(
+        self, request: Request, pk: int | None = None
+    ) -> FileResponse:
+        """Action method downloading the attachment thumbnail.
+
+        Returns the same filedata as 'download', but as inline.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the attachment to download. Defaults to None.
+
+        Raises:
+            Http404: If the filepath is not in the database or it doesn't exist.
+
+        Returns:
+            A fileresponse containing the requested file.
+        """
+        attachment = self.get_object()
+
+        attachment_file_path = attachment.file_path
+        if not attachment_file_path or not default_storage.exists(attachment_file_path):
+            raise Http404("Attachment file not found")
+
+        attachment_file_name = attachment.file_name
+        response = FileResponse(
+            default_storage.open(attachment_file_path, "rb"),
+            as_attachment=False,
+            filename=attachment_file_name,
+            content_type=attachment.content_type,
+        )
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+        return response

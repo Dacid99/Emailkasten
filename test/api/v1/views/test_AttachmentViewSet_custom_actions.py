@@ -123,6 +123,7 @@ def test_download_auth_owner(
         f'filename="{fake_attachment_with_file.file_name}"'
         in response["Content-Disposition"]
     )
+    assert "attachment" in response["Content-Disposition"]
     assert (
         b"".join(response.streaming_content)
         == default_storage.open(fake_attachment_with_file.file_path).read()
@@ -207,6 +208,104 @@ def test_batch_download_auth_owner(
     mock_Attachment_queryset_as_file.assert_called_once()
     assert list(mock_Attachment_queryset_as_file.call_args.args[0]) == list(
         Attachment.objects.filter(pk__in=ids, email__mailbox__account__user=owner_user)
+    )
+
+
+@pytest.mark.django_db
+def test_download_thumbnail_noauth(
+    fake_attachment_with_file,
+    noauth_api_client,
+    custom_detail_action_url,
+):
+    """Tests the get method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.download` action
+    with an unauthenticated user client.
+    """
+    response = noauth_api_client.get(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_THUMBNAIL,
+            fake_attachment_with_file,
+        )
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert not isinstance(response, FileResponse)
+
+
+@pytest.mark.django_db
+def test_download_thumbnail_auth_other(
+    fake_attachment_with_file,
+    other_api_client,
+    custom_detail_action_url,
+):
+    """Tests the get method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.download` action
+    with the authenticated other user client.
+    """
+    response = other_api_client.get(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_THUMBNAIL,
+            fake_attachment_with_file,
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert not isinstance(response, FileResponse)
+
+
+@pytest.mark.django_db
+def test_download_thumbnail_no_file_auth_owner(
+    fake_attachment,
+    owner_api_client,
+    custom_detail_action_url,
+):
+    """Tests the get method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.download` action
+    with the authenticated owner user client.
+    """
+    response = owner_api_client.get(
+        custom_detail_action_url(
+            AttachmentViewSet, AttachmentViewSet.URL_NAME_THUMBNAIL, fake_attachment
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert not isinstance(response, FileResponse)
+
+
+@pytest.mark.django_db
+def test_download_thumbnail_auth_owner(
+    fake_attachment_with_file,
+    owner_api_client,
+    custom_detail_action_url,
+):
+    """Tests the get method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.download` action
+    with the authenticated owner user client.
+    """
+    response = owner_api_client.get(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_THUMBNAIL,
+            fake_attachment_with_file,
+        )
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(response, FileResponse)
+    assert "Content-Disposition" in response.headers
+    assert (
+        f'filename="{fake_attachment_with_file.file_name}"'
+        in response["Content-Disposition"]
+    )
+    assert "inline" in response["Content-Disposition"]
+    assert "Content-Type" in response.headers
+    assert response.headers["Content-Type"] == fake_attachment_with_file.content_type
+    assert "X-Frame-Options" in response.headers
+    assert response.headers["X-Frame-Options"] == "SAMEORIGIN"
+    assert "Content-Security-Policy" in response.headers
+    assert response.headers["Content-Security-Policy"] == "frame-ancestors 'self'"
+    assert (
+        b"".join(response.streaming_content)
+        == default_storage.open(fake_attachment_with_file.file_path).read()
     )
 
 

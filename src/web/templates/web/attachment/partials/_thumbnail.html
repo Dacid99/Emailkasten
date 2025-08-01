@@ -27,18 +27,12 @@
 {% elif attachment.content_maintype == "font" %}
     <style>
         @font-face {
-            font-family: attachment_ {
-                    {
-                    attachment.id
-                }
-            }
-
-            ;
+            font-family: attachment_{{ attachment.id }};
             src: url('{{ attachment.get_absolute_thumbnail_url }}');
         }
     </style>
-    <h1 style="font-family='attachment_{{ attachment.id }}'"
-        class="text-center">
+    <h1 class="text-center p-2"
+        style="font-family: attachment_{{ attachment.id }}">
         Aa
         <br />
         Zz
