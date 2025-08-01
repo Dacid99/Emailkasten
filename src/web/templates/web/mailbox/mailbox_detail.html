@@ -47,8 +47,22 @@
 
 {% block card_content %}
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">{% translate "Save attachments" %}: {{ object.save_attachments }}</li>
-        <li class="list-group-item">{% translate "Save mails as .eml" %}: {{ object.save_to_eml }}</li>
+        <li class="list-group-item">
+            {% translate "Save attachments" %}:
+            {% if object.save_attachments %}
+                <i class="fa-solid fa-check" aria-label={% translate "on" %}></i>
+            {% else %}
+                <i class="fa-solid fa-xmark" aria-label={% translate "off" %}></i>
+            {% endif %}
+        </li>
+        <li class="list-group-item">
+            {% translate "Save mails as .eml" %}:
+            {% if object.save_to_eml %}
+                <i class="fa-solid fa-check" aria-label={% translate "on" %}></i>
+            {% else %}
+                <i class="fa-solid fa-xmark" aria-label={% translate "off" %}></i>
+            {% endif %}
+        </li>
     </ul>
 {% endblock card_content %}
 
