@@ -556,8 +556,3 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     @property
     def has_download(self) -> bool:
         return self.eml_filepath is not None
-
-    @override
-    @property
-    def has_thumbnail(self) -> bool:
-        return True
