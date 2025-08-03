@@ -22,7 +22,9 @@ import pytest
 from django_celery_beat.models import IntervalSchedule
 from model_bakery import baker
 
+from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from web.forms import BaseDaemonForm
+from web.views.email_views.archive_views import EmailArchiveIndexView
 
 
 @pytest.mark.django_db
@@ -62,12 +64,35 @@ def test_post_update(fake_daemon, daemon_with_interval_payload):
 @pytest.mark.django_db
 @pytest.mark.parametrize("bad_fetching_criterion", ["OTHER"])
 def test_post_bad_fetching_criterion(
-    fake_daemon, daemon_payload, bad_fetching_criterion
+    fake_daemon, daemon_with_interval_payload, bad_fetching_criterion
 ):
     """Tests post direction of :class:`web.forms.BaseDaemonForm`."""
-    daemon_payload["fetching_criterion"] = bad_fetching_criterion
+    daemon_with_interval_payload["fetching_criterion"] = bad_fetching_criterion
 
-    form = BaseDaemonForm(instance=fake_daemon, data=daemon_payload)
+    form = BaseDaemonForm(instance=fake_daemon, data=daemon_with_interval_payload)
+
+    assert not form.is_valid()
+    assert form["fetching_criterion"].errors
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "unavailable_fetching_criterion",
+    [
+        EmailFetchingCriterionChoices.ANNUALLY,
+        EmailFetchingCriterionChoices.DRAFT,
+        EmailFetchingCriterionChoices.UNANSWERED,
+    ],
+)
+def test_post_unavailable_fetching_criterion(
+    fake_daemon, daemon_with_interval_payload, unavailable_fetching_criterion
+):
+    """Tests post direction of :class:`web.forms.BaseDaemonForm`."""
+    fake_daemon.mailbox.account.protocol = EmailProtocolChoices.POP3
+    fake_daemon.mailbox.account.save(update_fields=["protocol"])
+    daemon_with_interval_payload["fetching_criterion"] = unavailable_fetching_criterion
+
+    form = BaseDaemonForm(instance=fake_daemon, data=daemon_with_interval_payload)
 
     assert not form.is_valid()
     assert form["fetching_criterion"].errors
@@ -75,11 +100,13 @@ def test_post_bad_fetching_criterion(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("bad_interval_period", ["other"])
-def test_post_bad_interval_period(fake_daemon, daemon_payload, bad_interval_period):
+def test_post_bad_interval_period(
+    fake_daemon, daemon_with_interval_payload, bad_interval_period
+):
     """Tests post direction of :class:`web.forms.BaseDaemonForm`."""
-    daemon_payload["interval_period"] = bad_interval_period
+    daemon_with_interval_payload["interval_period"] = bad_interval_period
 
-    form = BaseDaemonForm(instance=fake_daemon, data=daemon_payload)
+    form = BaseDaemonForm(instance=fake_daemon, data=daemon_with_interval_payload)
 
     assert not form.is_valid()
     assert form["interval_period"].errors
@@ -87,11 +114,13 @@ def test_post_bad_interval_period(fake_daemon, daemon_payload, bad_interval_peri
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("bad_interval_every", [0, -1])
-def test_post_bad_interval_every(fake_daemon, daemon_payload, bad_interval_every):
+def test_post_bad_interval_every(
+    fake_daemon, daemon_with_interval_payload, bad_interval_every
+):
     """Tests post direction of :class:`web.forms.BaseDaemonForm`."""
-    daemon_payload["interval_every"] = bad_interval_every
+    daemon_with_interval_payload["interval_every"] = bad_interval_every
 
-    form = BaseDaemonForm(instance=fake_daemon, data=daemon_payload)
+    form = BaseDaemonForm(instance=fake_daemon, data=daemon_with_interval_payload)
 
     assert not form.is_valid()
     assert form["interval_every"].errors
@@ -99,11 +128,13 @@ def test_post_bad_interval_every(fake_daemon, daemon_payload, bad_interval_every
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("bad_log_backup_count", [-1])
-def test_post_bad_log_backup_count(fake_daemon, daemon_payload, bad_log_backup_count):
+def test_post_bad_log_backup_count(
+    fake_daemon, daemon_with_interval_payload, bad_log_backup_count
+):
     """Tests post direction of :class:`web.forms.BaseDaemonForm`."""
-    daemon_payload["log_backup_count"] = bad_log_backup_count
+    daemon_with_interval_payload["log_backup_count"] = bad_log_backup_count
 
-    form = BaseDaemonForm(instance=fake_daemon, data=daemon_payload)
+    form = BaseDaemonForm(instance=fake_daemon, data=daemon_with_interval_payload)
 
     assert not form.is_valid()
     assert form["log_backup_count"].errors
@@ -111,11 +142,13 @@ def test_post_bad_log_backup_count(fake_daemon, daemon_payload, bad_log_backup_c
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("bad_logfile_size", [-1])
-def test_post_bad_logfile_size(fake_daemon, daemon_payload, bad_logfile_size):
+def test_post_bad_logfile_size(
+    fake_daemon, daemon_with_interval_payload, bad_logfile_size
+):
     """Tests post direction of :class:`web.forms.BaseDaemonForm`."""
-    daemon_payload["logfile_size"] = bad_logfile_size
+    daemon_with_interval_payload["logfile_size"] = bad_logfile_size
 
-    form = BaseDaemonForm(instance=fake_daemon, data=daemon_payload)
+    form = BaseDaemonForm(instance=fake_daemon, data=daemon_with_interval_payload)
 
     assert not form.is_valid()
     assert form["logfile_size"].errors

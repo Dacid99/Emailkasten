@@ -104,6 +104,18 @@ def test_Daemon_unique_together_constraint_mailbox_fetching_criterion(
 
 
 @pytest.mark.django_db
+def test_Daemon_valid_fetching_criterion_constraint(faker, fake_daemon):
+    """Tests the constraint on :attr:`core.models.Daemon.Daemon.fetching_criterion` of :class:`core.models.Daemon.Daemon`."""
+    with pytest.raises(IntegrityError):
+        baker.make(
+            Daemon,
+            mailbox=fake_daemon.mailbox,
+            fetching_criterion="BAD_CRITERION",
+            log_filepath=faker.file_path(extension="log"),
+        )
+
+
+@pytest.mark.django_db
 def test_Daemon_save_logfile_creation(faker, settings, fake_fs, fake_daemon):
     """Tests :func:`core.models.Correspondent.Correspondent.save`
     in case there is no log_filepath.
@@ -127,6 +139,32 @@ def test_Daemon_save_logfile_creation(faker, settings, fake_fs, fake_daemon):
     )
     assert logger.handlers[0].backupCount == fake_daemon.log_backup_count
     assert logger.handlers[0].maxBytes == fake_daemon.logfile_size
+
+
+@pytest.mark.django_db
+def test_Daemon_delete_celery_task_deletion(fake_daemon):
+    """Tests :func:`core.models.Correspondent.Correspondent.delete`
+    in case there is a celery_task.
+    """
+    daemon_task = fake_daemon.celery_task
+
+    assert daemon_task is not None
+
+    fake_daemon.delete()
+
+    with pytest.raises(daemon_task.__class__.DoesNotExist):
+        daemon_task.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_Daemon_delete_no_celery_task(fake_daemon):
+    """Tests :func:`core.models.Correspondent.Correspondent.delete`
+    in case there is a celery_task.
+    """
+    fake_daemon.celery_task = None
+
+    fake_daemon.delete()
+    # check that there's no attempt to delete the None-task that would raise
 
 
 @pytest.mark.django_db

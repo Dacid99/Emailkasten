@@ -23,6 +23,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from rest_framework import status
 
+from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from core.models import Daemon
 from web.forms import CreateDaemonForm
 from web.views import DaemonCreateView
@@ -166,4 +167,31 @@ def test_post_duplicate_auth_owner(
     assert isinstance(response, HttpResponse)
     assert "web/daemon/daemon_create.html" in [t.name for t in response.templates]
     assert "form" in response.context
+    assert response.context["form"].errors
+    assert Daemon.objects.all().count() == 1
+
+
+@pytest.mark.django_db
+def test_post_unavailable_criterion_auth_owner(
+    fake_daemon, daemon_with_interval_payload, owner_client, list_url
+):
+    """Tests :class:`web.views.DaemonCreateView` with the authenticated owner user client."""
+    fake_daemon.mailbox.account.protocol = EmailProtocolChoices.POP3
+    fake_daemon.mailbox.account.save(update_fields=["protocol"])
+    daemon_with_interval_payload["mailbox"] = fake_daemon.mailbox.id
+    daemon_with_interval_payload["fetching_criterion"] = (
+        EmailFetchingCriterionChoices.DRAFT
+    )
+
+    assert Daemon.objects.all().count() == 1
+
+    response = owner_client.post(
+        list_url(DaemonCreateView), daemon_with_interval_payload
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(response, HttpResponse)
+    assert "web/daemon/daemon_create.html" in [t.name for t in response.templates]
+    assert "form" in response.context
+    assert response.context["form"].errors
     assert Daemon.objects.all().count() == 1

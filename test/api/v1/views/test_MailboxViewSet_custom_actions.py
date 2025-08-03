@@ -410,6 +410,30 @@ def test_download_no_emails_auth_owner(
 
 
 @pytest.mark.django_db
+def test_download_bad_format_auth_owner(
+    faker,
+    fake_mailbox,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Email_queryset_as_file,
+):
+    """Tests the get method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.download` action
+    with the authenticated owner user client.
+    """
+    mock_Email_queryset_as_file.side_effect = ValueError
+
+    response = owner_api_client.get(
+        custom_detail_action_url(
+            MailboxViewSet, MailboxViewSet.URL_NAME_DOWNLOAD, fake_mailbox
+        ),
+        {"file_format": faker.word()},
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert not isinstance(response, FileResponse)
+
+
+@pytest.mark.django_db
 def test_download_auth_owner(
     faker,
     fake_file_bytes,
@@ -437,6 +461,7 @@ def test_download_auth_owner(
         f'filename="{fake_mailbox.name}.{fake_format.split("[")[0]}"'
         in response["Content-Disposition"]
     )
+    assert "attachment" in response["Content-Disposition"]
     assert b"".join(response.streaming_content) == fake_file_bytes
     mock_Email_queryset_as_file.assert_called_once()
     assert list(mock_Email_queryset_as_file.call_args.args[0]) == list(
