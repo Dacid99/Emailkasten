@@ -25,7 +25,7 @@ from uuid import UUID
 from celery import shared_task
 
 from .models.Daemon import Daemon
-from .utils.fetchers.exceptions import MailboxError
+from .utils.fetchers.exceptions import FetcherError
 
 
 @shared_task
@@ -48,7 +48,7 @@ def fetch_emails(daemon_uuid_string: str) -> None:
         return
     try:
         daemon.mailbox.fetch(daemon.fetching_criterion)
-    except MailboxError:
+    except FetcherError:
         logger.exception(
             "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nFailed to fetch emails!\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
         )

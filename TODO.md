@@ -50,11 +50,13 @@
 - time benchmarks in debug log
 - batch download and delete in web
 - dependency-upgrading tool for your project dependencies? (eg. dependabot, PyUp, Renovate, pip-tools, Snyx)
-- vulnerability scanning tool for your dependencies? (eg. Safety, pip-audit, Bandit, Snyx, Trivy, GitLab Dependency Scanning, PyUp, OWASP, Jake, Mend)
+- coverage in test job
 - daemonize celery worker
-- api creation of daemons
-- only show available fetching options in daemonform
 - helptexts for orientation instead of empty lists
+- api creation of daemons
+- mailbox specific daemon create view
+- only show available fetching options in daemonform
+
 
 ### Work in progress
 
@@ -68,6 +70,10 @@
 - daemon logger setup doesnt persist
 - running tests from test dir
 - storage is incremented by healthcheck
+- daemon api allows unavailable criteria
+- task doesnt catch mailaccounterrors
+- fetchers can raise valueerror but that is not caught
+which can happen if the user changes the protocol of an account with existing fetchers and the criteria become unavailable (what happens if task raises?)
 - optics:
   - checkboxes for boolean data instead of True and False
   - better name for daemon
