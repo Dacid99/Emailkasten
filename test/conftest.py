@@ -43,7 +43,6 @@ from __future__ import annotations
 
 import contextlib
 import os
-import random
 from datetime import UTC, datetime, timedelta, timezone
 from io import BytesIO
 from tempfile import gettempdir
@@ -659,7 +658,7 @@ def fake_other_attachment_with_file(
 
 
 @pytest.fixture
-def account_payload(owner_user) -> dict[str, Any]:
+def account_payload(faker, owner_user) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Account` payload with data deviating from the defaults.
 
     Args:
@@ -671,9 +670,9 @@ def account_payload(owner_user) -> dict[str, Any]:
     account_data = baker.prepare(
         Account,
         user=owner_user,
-        mail_host_port=random.randint(0, 65535),
-        protocol=random.choice(EmailProtocolChoices.values),
-        timeout=random.randint(1, 1000),
+        mail_host_port=faker.random.randint(0, 65535),
+        protocol=faker.random.choice(EmailProtocolChoices.values),
+        timeout=faker.random.randint(1, 1000),
         is_favorite=not Account.is_favorite.field.default,
     )
     payload = model_to_dict(account_data)
@@ -745,19 +744,19 @@ def daemon_payload(faker, fake_mailbox, fake_daemon) -> dict[str, Any]:
     Returns:
         The clean payload.
     """
-    # ruff: noqa: S311  # no cryptography going on here
+    # no cryptography going on here
     fetching_choices = list(fake_mailbox.get_available_fetching_criteria())
     if fake_daemon.fetching_criterion in fetching_choices:
         fetching_choices.remove(fake_daemon.fetching_criterion)
     daemon_data = baker.prepare(
         Daemon,
         mailbox=fake_mailbox,
-        fetching_criterion=random.choice(fetching_choices),
-        log_backup_count=random.randint(
+        fetching_criterion=faker.random.choice(fetching_choices),
+        log_backup_count=faker.random.randint(
             Daemon.log_backup_count.field.default + 1,
             Daemon.log_backup_count.field.default * 100,
         ),
-        logfile_size=random.randint(
+        logfile_size=faker.random.randint(
             Daemon.logfile_size.field.default + 1,
             Daemon.logfile_size.field.default * 100,
         ),
