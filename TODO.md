@@ -34,7 +34,6 @@
   - replace modeltodict in form and serializer tests with payloads
 - emailcorrespondent creation for better integration of mailinglist
 - shorten redundant exception logging in fetchers, move parts of the messages to the exc classes
-- other-scripts blocks can be replaced using super_block
 
 ## To test
 

@@ -40,10 +40,9 @@
 {% endblock overlay_elements %}
 
 
-{% block other_scripts %}
+{% block scripts %}
+
+    {{ block.super }}
     <script src="{% static 'web/js/form-utils.js' %}"></script>
 
-    {% block other_scripts_2 %}
-    {% endblock other_scripts_2 %}
-
-{% endblock other_scripts %}
+{% endblock scripts %}
