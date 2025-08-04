@@ -34,10 +34,27 @@
 
     <hr />
 
-    {% block list %}
-    {% endblock list %}
+    {% if page_obj.count > 0 %}
+
+        {% block list %}
+        {% endblock list %}
+
+    {% else %}
+
+        {% block list_alternative %}
+        {% endblock list_alternative %}
+
+    {% endif %}
 
     {% block pagination %}
+        {% if page_obj.paginator.num_pages > 1 %}
+            <div class="bg-white sticky-bottom pb-3">
+                <hr />
+
+                {% include "web/partials/_pagination.html" %}
+
+            </div>
+        {% endif %}
     {% endblock pagination %}
 
 {% endblock content %}

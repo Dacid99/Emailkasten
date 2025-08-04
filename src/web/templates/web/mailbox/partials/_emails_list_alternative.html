@@ -1,0 +1,15 @@
+{% extends "web/partials/bases/_base_list_alternative.html" %}
+
+{% block statement_text %}
+
+    {% translate "Fetch emails from this mailbox by setting up a daemon or fetching the content once." %}
+{% endblock statement_text %}
+
+{% block instruction_buttons %}
+
+    {% include "web/mailbox/partials/_fetch_all-button.html" with mailbox=object %}
+
+
+    {% include "web/daemon/partials/_add_button.html" %}
+
+{% endblock instruction_buttons %}
