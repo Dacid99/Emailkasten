@@ -16,6 +16,10 @@
        role="button"></a>
 {% endblock cancel_to_list_button %}
 
+{% block card_title %}
+    {% translate "New Account" %}
+{% endblock card_title %}
+
 {% block form %}
     <ul class="list-group list-group-flush">
         <li class="list-group-item">{% bootstrap_field form.mail_address %}</li>

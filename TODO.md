@@ -53,8 +53,6 @@
 - dependency-upgrading tool for your project dependencies? (eg. dependabot, PyUp, Renovate, pip-tools, Snyx)
 - daemonize celery worker
 - coverage in test job
-- mailbox specific daemon create view
-- only show available fetching options in daemonform
 - move fetching options endpoint to mailbox
 - loosen account unique constraint in terms of protocol
 

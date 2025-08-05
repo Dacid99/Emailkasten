@@ -16,21 +16,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""web.views.mailbox_views package containing views for the :class:`core.models.Mailbox` data."""
+"""Module with the :class:`BaseDaemonForm` form class."""
 
-from .MailboxCreateDaemonView import MailboxCreateDaemonView
-from .MailboxDetailWithDeleteView import MailboxDetailWithDeleteView
-from .MailboxEmailsFilterView import MailboxEmailsFilterView
-from .MailboxFilterView import MailboxFilterView
-from .MailboxUpdateOrDeleteView import MailboxUpdateOrDeleteView
-from .UploadEmailView import UploadEmailView
+from __future__ import annotations
+
+from typing import ClassVar
+
+from django.forms import HiddenInput
+
+from web.forms.daemon_forms.CreateDaemonForm import CreateDaemonForm
 
 
-__all__ = [
-    "MailboxCreateDaemonView",
-    "MailboxDetailWithDeleteView",
-    "MailboxEmailsFilterView",
-    "MailboxFilterView",
-    "MailboxUpdateOrDeleteView",
-    "UploadEmailView",
-]
+class CreateMailboxDaemonForm(CreateDaemonForm):
+    """Form for :class:`core.models.Daemon` which also allows to select a mailbox."""
+
+    class Meta(CreateDaemonForm.Meta):
+        """Metadata class form with a hidden mailbox field."""
+
+        widgets: ClassVar[dict[str, HiddenInput]] = {"mailbox": HiddenInput()}
+        """Hide the mailbox input field."""
