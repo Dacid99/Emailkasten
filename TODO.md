@@ -54,7 +54,6 @@
 - daemonize celery worker
 - coverage in test job
 - move fetching options endpoint to mailbox
-- loosen account unique constraint in terms of protocol
 
 ### Work in progress
 

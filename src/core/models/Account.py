@@ -152,8 +152,8 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
 
         constraints: Final[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
-                fields=["mail_address", "user"],
-                name="account_unique_together_mail_address_user",
+                fields=["mail_address", "protocol", "user"],
+                name="account_unique_together_mail_address_protocol_user",
             ),
             models.CheckConstraint(
                 condition=models.Q(protocol__in=EmailProtocolChoices.values),
