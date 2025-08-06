@@ -217,6 +217,7 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
     def setup_logger(self) -> None:
         """Sets up the logger for the daemon process."""
         daemon_logger = logging.getLogger(str(self.uuid))
+        daemon_logger.setLevel(logging.DEBUG)
         self.log_filepath = os.path.join(
             settings.LOG_DIRECTORY_PATH.absolute(),
             f"{daemon_logger.name}.log",

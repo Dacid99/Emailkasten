@@ -62,7 +62,6 @@
 ## To fix
 
 - fetching too many emails leads to browser timeout
-- daemon logger setup doesnt persist
 - running tests from test dir
 - storage is incremented by healthcheck
 - updating daemon logging doesnt change the daemon logger

@@ -132,6 +132,7 @@ def test_Daemon_save_logfile_creation(faker, settings, fake_fs, fake_daemon):
         settings.LOG_DIRECTORY_PATH.absolute()
     )
     logger = logging.getLogger(str(fake_daemon.uuid))
+    assert logger.level <= logging.INFO
     assert len(logger.handlers) == 1
     assert isinstance(logger.handlers[0], logging.handlers.RotatingFileHandler)
     assert os.path.abspath(logger.handlers[0].baseFilename) == os.path.abspath(
