@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-28 12:11+0000\n"
-"PO-Revision-Date: 2025-07-31 21:02+0000\n"
-"Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
+"PO-Revision-Date: 2025-08-06 08:02+0000\n"
+"Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/"
 "emailkasten/de/>\n"
 "Language: de\n"
@@ -136,7 +136,7 @@ msgstr ""
 
 #: Emailkasten/settings.py:708
 msgid "Server Configurations"
-msgstr "Server Konfiguration"
+msgstr "Server-Konfiguration"
 
 #: Emailkasten/settings.py:710
 msgid "Default Values"
@@ -156,7 +156,7 @@ msgstr "API Einstellungen"
 
 #: Emailkasten/settings.py:738
 msgid "Web Settings"
-msgstr "Webapp Einstellungen"
+msgstr "Web-Einstellungen"
 
 #: Emailkasten/templates/429.html:6 Emailkasten/templates/429.html:11
 msgid "Too Many Requests"
@@ -198,7 +198,7 @@ msgstr "Abmelden"
 
 #: Emailkasten/templates/allauth/layouts/base.html:62
 msgid "Sign In"
-msgstr "Einloggen"
+msgstr "Anmelden"
 
 #: Emailkasten/templates/allauth/layouts/base.html:65
 msgid "Sign Up"
@@ -206,7 +206,7 @@ msgstr "Registrieren"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:14
 msgid "Change Email"
-msgstr "Email ändern"
+msgstr "E-Mail ändern"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:22
 msgid "Change Password"
@@ -218,7 +218,7 @@ msgstr "Sitzungen"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:37
 msgid "Admin panel"
-msgstr "Admin Seite"
+msgstr "Admin-Seite"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:692
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1404

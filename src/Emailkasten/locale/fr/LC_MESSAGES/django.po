@@ -3,20 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-28 12:11+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-08-06 08:02+0000\n"
+"Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/emailkasten/"
+"emailkasten/fr/>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: Emailkasten/settings.py:496
 msgid "Emailkasten API"
@@ -114,116 +115,116 @@ msgstr ""
 
 #: Emailkasten/settings.py:708
 msgid "Server Configurations"
-msgstr ""
+msgstr "Configuration du serveur"
 
 #: Emailkasten/settings.py:710
 msgid "Default Values"
-msgstr ""
+msgstr "Valeurs par défaut"
 
 #: Emailkasten/settings.py:721
 msgid "Processing Settings"
-msgstr ""
+msgstr "Paramètres de traitement"
 
 #: Emailkasten/settings.py:730
 msgid "Storage Settings"
-msgstr ""
+msgstr "Paramètres de stockage"
 
 #: Emailkasten/settings.py:734
 msgid "API Settings"
-msgstr ""
+msgstr "Paramètres API"
 
 #: Emailkasten/settings.py:738
 msgid "Web Settings"
-msgstr ""
+msgstr "Paramètres Web"
 
 #: Emailkasten/templates/429.html:6 Emailkasten/templates/429.html:11
 msgid "Too Many Requests"
-msgstr ""
+msgstr "Trop de requêtes"
 
 #: Emailkasten/templates/429.html:13
 msgid "You are sending too many requests."
-msgstr ""
+msgstr "Vous envoyez trop de requêtes."
 
 #: Emailkasten/templates/allauth/elements/language_dropdown.html:8
 #: Emailkasten/templates/allauth/elements/language_dropdown.html:12
 msgid "Select Language"
-msgstr ""
+msgstr "Sélectionnez une langue"
 
 #: Emailkasten/templates/allauth/elements/timezone_dropdown.html:8
 msgid "Select timezone"
-msgstr ""
+msgstr "Sélectionnez un fuseau horaire"
 
 #: Emailkasten/templates/allauth/elements/timezone_dropdown.html:12
 msgid "Select Timezone"
-msgstr ""
+msgstr "Sélection du fuseau horaire"
 
 #: Emailkasten/templates/allauth/layouts/base.html:23
 #: Emailkasten/templates/allauth/layouts/base.html:31
 msgid "Emailkasten"
-msgstr ""
+msgstr "Emailkasten"
 
 #: Emailkasten/templates/allauth/layouts/base.html:27
 msgid "Go to Emailkasten"
-msgstr ""
+msgstr "Aller à Emailkasten"
 
 #: Emailkasten/templates/allauth/layouts/base.html:38
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Basculer la navigation"
 
 #: Emailkasten/templates/allauth/layouts/base.html:58
 msgid "Sign Out"
-msgstr ""
+msgstr "Se déconnecter"
 
 #: Emailkasten/templates/allauth/layouts/base.html:62
 msgid "Sign In"
-msgstr ""
+msgstr "Se connecter"
 
 #: Emailkasten/templates/allauth/layouts/base.html:65
 msgid "Sign Up"
-msgstr ""
+msgstr "S'inscrire"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:14
 msgid "Change Email"
-msgstr ""
+msgstr "Changer le courriel"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:22
 msgid "Change Password"
-msgstr ""
+msgstr "Changer le mot de passe"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:30
 msgid "Sessions"
-msgstr ""
+msgstr "Sessions"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:37
 msgid "Admin panel"
-msgstr ""
+msgstr "Panneau admin"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:692
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1404
 msgid "Received"
-msgstr ""
+msgstr "Reçus"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:696
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1408
 msgid "From"
-msgstr ""
+msgstr "De"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:699
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1411
 msgid "To"
-msgstr ""
+msgstr "À"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:702
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1414
 msgid "CC"
-msgstr ""
+msgstr "CC"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:705
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1417
 msgid "BCC"
-msgstr ""
+msgstr "CCi"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:718
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1430
 msgid "Attachments"
-msgstr ""
+msgstr "Pièces jointes"

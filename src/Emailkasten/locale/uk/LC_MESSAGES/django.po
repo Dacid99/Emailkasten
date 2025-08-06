@@ -3,75 +3,84 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-28 12:11+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-08-06 08:02+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim5@gmail.com>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
+"emailkasten/uk/>\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
-"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
-"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
-"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 "
+"? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > "
+"14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % "
+"100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: Emailkasten/settings.py:496
 msgid "Emailkasten API"
-msgstr ""
+msgstr "API електронної пошти"
 
 #: Emailkasten/settings.py:497
 msgid "The API schema for the Emailkasten server."
-msgstr ""
+msgstr "Схема API для сервера Emailkasten."
 
 #: Emailkasten/settings.py:516
 msgid "The default page size for paginated API response data"
 msgstr ""
+"Розмір сторінки за замовчуванням для даних відповідей API з розбивкою на "
+"сторінки"
 
 #: Emailkasten/settings.py:521
 msgid "The maximum page size for paginated API response data"
 msgstr ""
+"Максимальний розмір сторінки для даних відповідей API з розбивкою на сторінки"
 
 #: Emailkasten/settings.py:526
 msgid "The default page size for pagination in the webapp."
-msgstr ""
+msgstr "Розмір сторінки за замовчуванням для пагінації у вебзастосунку."
 
 #: Emailkasten/settings.py:532
 msgid ""
 "The page size options for pagination in the webapp. Should contain the "
 "WEB_DEFAULT_PAGE_SIZE value."
 msgstr ""
+"Параметри розміру сторінки для пагінації у вебзастосунку. Повинні містити "
+"значення WEB_DEFAULT_PAGE_SIZE."
 
 #: Emailkasten/settings.py:538
 msgid "The default cycle period setting of a daemon in seconds"
-msgstr ""
+msgstr "Налаштування періоду циклу демона за замовчуванням у секундах"
 
 #: Emailkasten/settings.py:543
 msgid "The default restart time setting of a daemon in seconds"
-msgstr ""
+msgstr "Стандартне налаштування часу перезапуску демона в секундах"
 
 #: Emailkasten/settings.py:548
 msgid "The default number of daemon logfiles to keep"
 msgstr ""
+"Кількість файлів журналів демона, які потрібно зберігати за замовчуванням"
 
 #: Emailkasten/settings.py:553
 msgid "The default maximum size of a daemon logfile in bytes"
-msgstr ""
+msgstr "Максимальний розмір файлу журналу демона за замовчуванням у байтах"
 
 #: Emailkasten/settings.py:559
 msgid ""
 "The maximum numbers of files in one storage unit. Must not exceed 64000 for "
 "ext4 filesystem!"
 msgstr ""
+"Максимальна кількість файлів в одному блоці зберігання. Не повинна "
+"перевищувати 64000 для файлової системи ext4!"
 
 #: Emailkasten/settings.py:565
 msgid "Whether or not to ignore emails that have a spam flag"
-msgstr ""
+msgstr "Чи ігнорувати електронні листи з позначкою спаму"
 
 #: Emailkasten/settings.py:571
 msgid ""
@@ -79,12 +88,17 @@ msgid ""
 "marked as such. For an exhaustive list of all available types see https://"
 "www.iana.org/assignments/media-types/media-types.xhtml#text"
 msgstr ""
+"Список префіксів типів контенту для розбору як файлів, навіть якщо вони не "
+"позначені як такі. Вичерпний список усіх доступних типів див. за посиланням "
+"https://www.iana.org/assignments/media-types/media-types.xhtml#text"
 
 #: Emailkasten/settings.py:578
 msgid ""
 "A list of content types prefixes to not parse as files if they are not "
 "marked as such. Overrides elements in 'SAVE_CONTENT_TYPE_PREFIXES'."
 msgstr ""
+"Список префіксів типів контенту, які не слід розбирати як файли, якщо вони "
+"не позначені як такі. Перезаписує елементи в 'SAVE_CONTENT_TYPE_PREFIXES'."
 
 #: Emailkasten/settings.py:642
 msgid ""
@@ -94,139 +108,154 @@ msgid ""
 "template tag imports may result in 500 responses when requesting pages with "
 "email thumbnails, so be careful."
 msgstr ""
+"Шаблон html, який використовується для відображення електронних листів у "
+"форматі html. Використовує синтаксис шаблонів django та має доступ до всіх "
+"полів таблиці бази даних електронної пошти. Не використовуйте ' у цьому "
+"шаблоні, це призведе до того, що мініатюра не відображатиметься! Видалення "
+"імпорту тегів шаблону може призвести до 500 відповідей під час запиту "
+"сторінок із мініатюрами електронних листів, тому будьте обережні."
 
 #: Emailkasten/settings.py:684
 msgid ""
 "The css style used to render emails to html. Refer to HTML_TEMPLATE for "
 "context on the classes."
 msgstr ""
+"Стиль CSS, що використовується для відображення електронних листів у форматі "
+"html. Зверніться до HTML_TEMPLATE для ознайомлення з контекстом класів."
 
 #: Emailkasten/settings.py:690
 msgid "The default mailbox setting whether to store mails as eml."
 msgstr ""
+"Налаштування поштової скриньки за замовчуванням, яке визначає, чи зберігати "
+"листи у форматі EML."
 
 #: Emailkasten/settings.py:695
 msgid "The default mailbox setting whether to store attachments."
 msgstr ""
+"Налаштування поштової скриньки за замовчуванням, яке визначає, чи зберігати "
+"вкладення."
 
 #: Emailkasten/settings.py:701
 msgid ""
 "Set this to True to allow new users to sign up themselves. This setting only "
 "takes effect if the REGISTRATION_ENABLED environment setting is not 0."
 msgstr ""
+"Встановіть для цього значення True, щоб дозволити новим користувачам "
+"реєструватися самостійно. Цей параметр діє, лише якщо параметр середовища "
+"REGISTRATION_ENABLED не має значення 0."
 
 #: Emailkasten/settings.py:708
 msgid "Server Configurations"
-msgstr ""
+msgstr "Конфігурації сервера"
 
 #: Emailkasten/settings.py:710
 msgid "Default Values"
-msgstr ""
+msgstr "Значення за замовчуванням"
 
 #: Emailkasten/settings.py:721
 msgid "Processing Settings"
-msgstr ""
+msgstr "Налаштування обробки"
 
 #: Emailkasten/settings.py:730
 msgid "Storage Settings"
-msgstr ""
+msgstr "Налаштування пам'яті"
 
 #: Emailkasten/settings.py:734
 msgid "API Settings"
-msgstr ""
+msgstr "Налаштування API"
 
 #: Emailkasten/settings.py:738
 msgid "Web Settings"
-msgstr ""
+msgstr "Веб-налаштування"
 
 #: Emailkasten/templates/429.html:6 Emailkasten/templates/429.html:11
 msgid "Too Many Requests"
-msgstr ""
+msgstr "Забагато запитів"
 
 #: Emailkasten/templates/429.html:13
 msgid "You are sending too many requests."
-msgstr ""
+msgstr "Ви надсилаєте забагато запитів."
 
 #: Emailkasten/templates/allauth/elements/language_dropdown.html:8
 #: Emailkasten/templates/allauth/elements/language_dropdown.html:12
 msgid "Select Language"
-msgstr ""
+msgstr "Виберіть мову"
 
 #: Emailkasten/templates/allauth/elements/timezone_dropdown.html:8
 msgid "Select timezone"
-msgstr ""
+msgstr "Виберіть часовий пояс"
 
 #: Emailkasten/templates/allauth/elements/timezone_dropdown.html:12
 msgid "Select Timezone"
-msgstr ""
+msgstr "Виберіть Часовий пояс"
 
 #: Emailkasten/templates/allauth/layouts/base.html:23
 #: Emailkasten/templates/allauth/layouts/base.html:31
 msgid "Emailkasten"
-msgstr ""
+msgstr "Emailkasten"
 
 #: Emailkasten/templates/allauth/layouts/base.html:27
 msgid "Go to Emailkasten"
-msgstr ""
+msgstr "Перейти до Emailkasten"
 
 #: Emailkasten/templates/allauth/layouts/base.html:38
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Перемикання навігації"
 
 #: Emailkasten/templates/allauth/layouts/base.html:58
 msgid "Sign Out"
-msgstr ""
+msgstr "Вийти"
 
 #: Emailkasten/templates/allauth/layouts/base.html:62
 msgid "Sign In"
-msgstr ""
+msgstr "Увійти"
 
 #: Emailkasten/templates/allauth/layouts/base.html:65
 msgid "Sign Up"
-msgstr ""
+msgstr "Зареєструватися"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:14
 msgid "Change Email"
-msgstr ""
+msgstr "Змінити електронну пошту"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:22
 msgid "Change Password"
-msgstr ""
+msgstr "Змінити пароль"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:30
 msgid "Sessions"
-msgstr ""
+msgstr "Сесії"
 
 #: Emailkasten/templates/allauth/layouts/manage.html:37
 msgid "Admin panel"
-msgstr ""
+msgstr "Панель адміністратора"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:692
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1404
 msgid "Received"
-msgstr ""
+msgstr "Отримано"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:696
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1408
 msgid "From"
-msgstr ""
+msgstr "Від"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:699
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1411
 msgid "To"
-msgstr ""
+msgstr "До"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:702
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1414
 msgid "CC"
-msgstr ""
+msgstr "CC"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:705
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1417
 msgid "BCC"
-msgstr ""
+msgstr "BCC"
 
 #: test/reports/cov/z_154eed06be127a1f_settings_py.html:718
 #: validation/reports/mypy/html/Emailkasten/settings.py.html:1430
 msgid "Attachments"
-msgstr ""
+msgstr "Вкладення"
