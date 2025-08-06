@@ -216,10 +216,10 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
 
     def setup_logger(self) -> None:
         """Sets up the logger for the daemon process."""
-        self.logger = logging.getLogger(str(self.uuid))
+        daemon_logger = logging.getLogger(str(self.uuid))
         self.log_filepath = os.path.join(
             settings.LOG_DIRECTORY_PATH.absolute(),
-            f"{self.uuid}.log",
+            f"{daemon_logger.name}.log",
         )
         file_handler = logging.handlers.RotatingFileHandler(
             filename=self.log_filepath,
@@ -227,7 +227,7 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
             maxBytes=self.logfile_size,
         )
         file_handler.setFormatter(logging.Formatter(settings.LOGFORMAT, style="{"))
-        self.logger.addHandler(file_handler)
+        daemon_logger.addHandler(file_handler)
 
     def start(self) -> bool:
         """Start the daemons :attr:`celery_task`.

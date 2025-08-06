@@ -18,6 +18,7 @@
 
 """Module with the tasks for celery."""
 
+import logging
 import time
 from uuid import UUID
 
@@ -34,29 +35,31 @@ def fetch_emails(daemon_uuid_string: str) -> None:
     Args:
         daemon_uuid_string: The uuid of the daemon instance that manages this task.
     """
+    logger = logging.getLogger(daemon_uuid_string)
+
+    logger.info("-------------------------------------------\nFetching emails ...")
+    start_time = time.time()
+
     try:
-        daemon = Daemon.objects.select_related("mailbox", "mailbox__account").get(
+        daemon = Daemon.objects.select_related("mailbox").get(
             uuid=UUID(daemon_uuid_string)
         )
     except Daemon.DoesNotExist:
         return
-    daemon.logger.info(
-        "-------------------------------------------\nFetching emails ..."
-    )
-    start_time = time.time()
     try:
         daemon.mailbox.fetch(daemon.fetching_criterion)
     except FetcherError:
-        daemon.logger.exception(
+        logger.exception(
             "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nFailed to fetch emails!\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
         )
         daemon.is_healthy = False
-    else:
-        daemon.is_healthy = True
+        daemon.save(update_fields=["is_healthy"])
+
+    daemon.is_healthy = True
     daemon.save(update_fields=["is_healthy"])
 
     end_time = time.time()
-    daemon.logger.info(
+    logger.info(
         "Success fetching emails, completed in %s seconds\n!------------------------------------------",
         end_time - start_time,
     )
