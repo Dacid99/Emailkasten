@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-06 20:23+0000\n"
-"PO-Revision-Date: 2025-08-06 08:02+0000\n"
+"PO-Revision-Date: 2025-08-08 07:02+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/web/"
 "de/>\n"
@@ -165,10 +165,8 @@ msgid "Add Account"
 msgstr "Konto hinzufügen"
 
 #: src/web/templates/web/account/account_create.html:20
-#, fuzzy
-#| msgid "Account"
 msgid "New Account"
-msgstr "Konto"
+msgstr "Neues Konto"
 
 #: src/web/templates/web/account/account_create.html:37
 #: src/web/templates/web/daemon/daemon_create.html:33
@@ -244,23 +242,25 @@ msgstr "Konto hinzufügen"
 
 #: src/web/templates/web/account/partials/_email_list_alternative.html:4
 msgid "You can fetch emails from one of this accounts mailboxes."
-msgstr ""
+msgstr "Du kannst E-Mails von einem dieser Konten-Mailboxen holen."
 
 #: src/web/templates/web/account/partials/_filter_list_alternative.html:7
 msgid "No email accounts found."
-msgstr ""
+msgstr "Keine E-Mail-Konten gefunden."
 
 #: src/web/templates/web/account/partials/_filter_list_alternative.html:11
 msgid "Go ahead and add some."
-msgstr ""
+msgstr "Mach weiter und füge einige hinzu."
 
 #: src/web/templates/web/account/partials/_mailboxes_list_alternative.html:4
 msgid "You can add mailboxes for this account by fetching them from the server"
 msgstr ""
+"Du kannst Mailboxen für dieses Konto hinzufügen, indem du sie vom Server "
+"holst"
 
 #: src/web/templates/web/account/partials/_unhealthy_list_alternative.html:4
 msgid "Test this account to make sure it can be accessed."
-msgstr ""
+msgstr "Teste dieses Konto, um sicherzustellen, dass es aufgerufen werden kann."
 
 #: src/web/templates/web/account/partials/_update_mailboxes-button.html:9
 msgid "Update Mailboxes"
@@ -319,23 +319,22 @@ msgid "In email"
 msgstr "In E-Mail"
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:7
-#, fuzzy
-#| msgid "Save attachments"
 msgid "No attachments found."
-msgstr "Anhänge speichern"
+msgstr "Keine Anhänge gefunden."
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:11
+#, fuzzy
 msgid ""
 "You can fetching some along with emails from the mailboxes you have set up."
 msgstr ""
+"Du kannst einige, zusammen mit E-Mails, von den Mailboxen, die du "
+"eingerichtet hast, holen."
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:17
 #: src/web/templates/web/correspondent/partials/_filter_list_alternative.html:17
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:17
-#, fuzzy
-#| msgid "Back to mailbox"
 msgid "Go to mailboxes"
-msgstr "Zurück zur Mailbox"
+msgstr "Zu Mailboxes"
 
 #: src/web/templates/web/attachment/partials/_thumbnail.html:17
 msgid "Attachment image"
@@ -443,15 +442,15 @@ msgid "Correspondents"
 msgstr "Korrespondenten"
 
 #: src/web/templates/web/correspondent/partials/_filter_list_alternative.html:7
-#, fuzzy
-#| msgid "Correspondents"
 msgid "No correspondents found."
-msgstr "Korrespondenten"
+msgstr "Keine Korrespondenten gefunden."
 
 #: src/web/templates/web/correspondent/partials/_filter_list_alternative.html:11
 msgid ""
 "You can add some by fetching the emails from the mailboxes you have set up."
 msgstr ""
+"Du kannst einige hinzufügen, indem du die E-Mails aus den Mailboxen, die du "
+"eingerichtet hast, holen."
 
 #: src/web/templates/web/daemon/daemon_create.html:6
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:6
@@ -532,7 +531,7 @@ msgstr "Download"
 
 #: src/web/templates/web/daemon/partials/_filter_list_alternative.html:7
 msgid "No daemons found."
-msgstr ""
+msgstr "Keine Daemons gefunden."
 
 #: src/web/templates/web/daemon/partials/_filter_list_alternative.html:11
 msgid "Add one to a mailbox to fetch its contents on a regular basis."
@@ -681,7 +680,7 @@ msgstr "Referenziert von"
 
 #: src/web/templates/web/email/partials/_archive_list_alternative.html:7
 msgid "No emails found for this timeframe."
-msgstr ""
+msgstr "Keine E-Mails für diesen Zeitrahmen gefunden."
 
 #: src/web/templates/web/email/partials/_email_card.html:27
 msgid "Received"
@@ -689,23 +688,20 @@ msgstr "Erhalten"
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:7
 msgid "No emails found."
-msgstr ""
+msgstr "Keine E-Mails gefunden."
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:11
 msgid "You can fetch some from the mailboxes you have set up."
 msgstr ""
 
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:18
-#, fuzzy
-#| msgid "Daemons"
 msgid "New Daemon"
-msgstr "Daemons"
+msgstr "Neue Daemons"
 
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:22
-#, fuzzy, python-format
-#| msgid "Delete %(object)s"
+#, python-format
 msgid "for %(object.name)s"
-msgstr "%(object)s löschen"
+msgstr "für %(object.name)s"
 
 #: src/web/templates/web/mailbox/mailbox_detail.html:6
 msgid "Mailbox Details"
@@ -718,14 +714,12 @@ msgstr "Anhänge speichern"
 #: src/web/templates/web/mailbox/mailbox_detail.html:53
 #: src/web/templates/web/mailbox/mailbox_detail.html:61
 msgid "on"
-msgstr ""
+msgstr "ein"
 
 #: src/web/templates/web/mailbox/mailbox_detail.html:55
 #: src/web/templates/web/mailbox/mailbox_detail.html:63
-#, fuzzy
-#| msgid "of"
 msgid "off"
-msgstr "von"
+msgstr "aus"
 
 #: src/web/templates/web/mailbox/mailbox_detail.html:59
 msgid "Save mails as .eml"
@@ -744,22 +738,24 @@ msgid ""
 "You can set up daemons for this mailbox to fetch its contents on a regular "
 "schedule."
 msgstr ""
+"Du kannst Daemons für diese Mailbox einrichten, um ihre Inhalte auf einem "
+"regelmäßigen Zeitplan zu holen."
 
 #: src/web/templates/web/mailbox/partials/_emails_list_alternative.html:5
 msgid ""
 "Fetch emails from this mailbox by setting up a daemon or fetching the "
 "content once."
 msgstr ""
+"Rufe E-Mails aus diesem Mailbox ab, indem du einen Daemon einrichten oder "
+"den Inhalt einmal abrufen."
 
 #: src/web/templates/web/mailbox/partials/_fetch_all-button.html:9
-#, fuzzy
-#| msgid "Fetch content"
 msgid "Fetch contents"
-msgstr "Inhalt abrufen"
+msgstr "Inhalte abrufen"
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:7
 msgid "No mailboxes found."
-msgstr ""
+msgstr "Keine Mailboxes gefunden."
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:11
 msgid ""
@@ -767,10 +763,8 @@ msgid ""
 msgstr ""
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:17
-#, fuzzy
-#| msgid "Add account"
 msgid "Go to accounts"
-msgstr "Konto hinzufügen"
+msgstr "Zu Konten"
 
 #: src/web/templates/web/mailbox/partials/_submit_upload-button.html:6
 msgid "Upload"
@@ -779,6 +773,7 @@ msgstr "Hochladen"
 #: src/web/templates/web/mailbox/partials/_unhealthy_list_alternative.html:4
 msgid "Test this mailbox to make sure it can be accessed."
 msgstr ""
+"Teste diese Mailbox, um sicherzustellen, dass sie aufgerufen werden kann."
 
 #: src/web/templates/web/mailbox/partials/_upload_email-button.html:6
 msgid "Upload emails"
