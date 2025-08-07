@@ -56,3 +56,16 @@
         </li>
     </ul>
 {% endblock card_content %}
+
+{% block card_extras %}
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">
+                {% translate "Mailbox" %}<i class="fa-solid fa-inbox mx-2" aria-hidden="true"></i>
+            </h4>
+
+            {% include "web/mailbox/partials/_mailbox_card.html" with card_object=object.mailbox %}
+
+        </div>
+    </div>
+{% endblock card_extras %}

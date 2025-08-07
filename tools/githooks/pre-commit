@@ -35,7 +35,7 @@ else
   poetry run djlint --reformat --configuration $CONFIG_PATH'djlintrc' $CHANGED_HTML_FILES > $REPORT_PATH'djlint_precommit.ansi'
   git add $CHANGED_HTML_FILES
 
-  poetry run djlint --lint --configuration $CONFIG_PATH'djlintrc' $CHANGED_HTML_FILES > $REPORT_PATH'djlint_precommit.ansi'
+  poetry run djlint --lint --configuration $CONFIG_PATH'djlintrc' $CHANGED_HTML_FILES >> $REPORT_PATH'djlint_precommit.ansi'
   if [ $? -ne 0 ]; then
     echo "Djlint failed, please check "$REPORT_PATH"djlint_precommit.ansi ."
     exit 1

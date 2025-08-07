@@ -23,7 +23,10 @@
 - async parsing, sync saving
 - auto transfer of pdfs to paperless
 - fetch once by criterion instead of hardcoded ALL
-- setting for thumbnail datasize threshold
+- setting for thumbnail datasize threshold (ca 10MiB)
+- use post-unsubscribe-method to interpret post-unsubscribe as link
+- emailconversation subpage
+- bring back test action for daemon
 
 ## To refactor
 
@@ -67,10 +70,5 @@
 - updating daemon logging doesnt change the daemon logger
 - optics:
   - better name for daemon
-  - make email on attachment a card
-  - weird pagination in base-archive
-  - empyt checkbox instead of xmark
-  - translate validationerror
-  - makemessages
 - ci:
   - djlint has no files to lint
