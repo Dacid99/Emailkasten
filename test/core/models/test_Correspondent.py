@@ -119,6 +119,31 @@ def test_Correspondent_create_from_correspondent_tuple_success(
 
 
 @pytest.mark.django_db
+def test_Correspondent_create_from_correspondent_tuple_success_unstripped_address(
+    fake_correspondent_tuple, owner_user
+):
+    """Tests :func:`core.models.Correspondent.Correspondent.create_from_correspondent_tuple`
+    in case of success.
+    """
+    fake_correspondent_tuple = (
+        fake_correspondent_tuple[0],
+        " " + fake_correspondent_tuple[1] + " ",
+    )
+    assert Correspondent.objects.count() == 0
+
+    result = Correspondent.create_from_correspondent_tuple(
+        fake_correspondent_tuple, owner_user
+    )
+
+    assert isinstance(result, Correspondent)
+    assert result.pk is not None
+    assert result.user == owner_user
+    assert Correspondent.objects.count() == 1
+    assert result.email_name == fake_correspondent_tuple[0]
+    assert result.email_address == fake_correspondent_tuple[1].strip()
+
+
+@pytest.mark.django_db
 def test_Correspondent_create_from_correspondent_tuple_duplicate(
     fake_correspondent, fake_correspondent_tuple
 ):

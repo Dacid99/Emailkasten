@@ -450,12 +450,16 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     def add_references(self) -> None:
         """Adds the references from the headerfields to the model."""
         if self.headers:
-            referenced_message_ids = self.headers.get(HeaderFields.REFERENCES)
-            if referenced_message_ids:
-                for referenced_message_id in re.split(r"[ ,]", referenced_message_ids):
-                    if referenced_message_id.strip():
+            references_header = self.headers.get(HeaderFields.REFERENCES)
+            if references_header:
+                referenced_message_ids = [
+                    message_id.strip()
+                    for message_id in re.split(r"[ ,]", references_header)
+                ]
+                for referenced_message_id in referenced_message_ids:
+                    if referenced_message_id:  # re.split may produce empty strings
                         for referenced_email in Email.objects.filter(
-                            message_id=referenced_message_id.strip(),
+                            message_id=referenced_message_id,
                             mailbox__account__user=self.mailbox.account.user,
                         ):
                             self.references.add(referenced_email)

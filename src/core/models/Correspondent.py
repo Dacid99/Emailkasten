@@ -213,8 +213,10 @@ class Correspondent(URLMixin, FavoriteMixin, models.Model):
             )
             return None
         try:
-            correspondent = cls.objects.get(email_address=address, user=user)
+            correspondent = cls.objects.get(email_address=address.strip(), user=user)
         except cls.DoesNotExist:
-            correspondent = cls(email_address=address, email_name=name, user=user)
+            correspondent = cls(
+                email_address=address.strip(), email_name=name, user=user
+            )
             correspondent.save()
         return correspondent
