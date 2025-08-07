@@ -262,7 +262,9 @@ class ExchangeFetcher(BaseFetcher):
             ) from error
         try:
             mailbox_folder = self.open_mailbox(mailbox)
-            mail_query = self.make_fetching_query(criterion, mailbox_folder.all())
+            mail_query = self.make_fetching_query(
+                criterion, mailbox_folder.all().order_by("datetime_received")
+            )
             mail_data_list = [mail.mime_content for mail in mail_query]
         except exchangelib.errors.EWSError as error:
             self.logger.exception(

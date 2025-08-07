@@ -67,6 +67,7 @@ def mock_QuerySet(mocker, mock_Message):
     mock_QuerySet = mocker.MagicMock(spec=exchangelib.queryset.QuerySet)
     queryset_content = [mock_Message, mock_Message]
     mock_QuerySet.__iter__.return_value = queryset_content
+    mock_QuerySet.order_by.return_value = mock_QuerySet
     mock_QuerySet.all.return_value.__iter__.return_value = queryset_content
     mock_QuerySet.filter.return_value.__iter__.return_value = queryset_content[:1]
     return mock_QuerySet
@@ -480,6 +481,7 @@ def test_ExchangeFetcher_fetch_emails_all_success(
     result = ExchangeFetcher(exchange_mailbox.account).fetch_emails(exchange_mailbox)
 
     assert result == [item.mime_content for item in mock_QuerySet.__iter__.return_value]
+    mock_QuerySet.order_by.assert_called_once_with("datetime_received")
     mock_msg_folder_root.__truediv__.assert_called_once_with(exchange_mailbox.name)
     mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_not_called()
     mock_logger.debug.assert_called()
@@ -499,6 +501,7 @@ def test_ExchangeFetcher_fetch_emails_subfolder_all_success(
     result = ExchangeFetcher(exchange_mailbox.account).fetch_emails(exchange_mailbox)
 
     assert result == [item.mime_content for item in mock_QuerySet.__iter__.return_value]
+    mock_QuerySet.order_by.assert_called_once_with("datetime_received")
     mock_msg_folder_root.__truediv__.assert_called_once_with(fake_folder_name)
     mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_called_once_with(
         fake_subfolder_name
