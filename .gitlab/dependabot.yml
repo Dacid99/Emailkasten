@@ -6,6 +6,12 @@ updates:
       interval: monthly
     open-pull-requests-limit: 20
     rebase-strategy: auto
+    allow:
+      - dependency-type: all
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
     # auto-merge: true
 
 # options reference: https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference#package-ecosystem
