@@ -53,7 +53,6 @@
 - favicon.ico for the icon
 - time benchmarks in debug log
 - batch download and delete in web
-- dependency-upgrading tool for your project dependencies? (eg. dependabot, PyUp, Renovate, pip-tools, Snyx)
 - daemonize celery worker
 
 ### Work in progress
