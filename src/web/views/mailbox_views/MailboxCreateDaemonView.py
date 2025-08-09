@@ -26,7 +26,6 @@ from django.http import HttpRequest, HttpResponse
 from django.views.generic import DetailView
 from django.views.generic.edit import BaseFormView
 
-from core.constants import EmailFetchingCriterionChoices
 from core.models import Mailbox
 
 from ...forms import CreateMailboxDaemonForm
@@ -61,11 +60,9 @@ class MailboxCreateDaemonView(LoginRequiredMixin, DetailView, BaseFormView):
     @override
     def get_form(self, form_class: type[CreateMailboxDaemonForm] | None = None) -> Any:
         form = super().get_form(form_class)
-        form.fields["fetching_criterion"].choices = [
-            (criterion, label)
-            for criterion, label in EmailFetchingCriterionChoices.choices
-            if criterion in self.object.get_available_fetching_criteria()
-        ]
+        form.fields["fetching_criterion"].choices = (
+            self.object.get_available_fetching_criterion_choices()
+        )
         return form
 
     @override

@@ -24,7 +24,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
-from core.constants import EmailFetchingCriterionChoices
 from core.models import Daemon
 
 from ...forms import BaseDaemonForm
@@ -51,9 +50,8 @@ class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
         self, form_class: type[BaseDaemonForm] | None = None
     ) -> BaseDaemonForm:
         form = super().get_form(form_class)
-        form.fields["fetching_criterion"].choices = [
-            (criterion, label)
-            for criterion, label in EmailFetchingCriterionChoices.choices
-            if criterion in self.object.mailbox.get_available_fetching_criteria()
-        ]
+        form.fields["fetching_criterion"].choices = (
+            self.object.mailbox.get_available_fetching_criterion_choices()
+        )
+
         return form

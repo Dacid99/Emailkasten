@@ -34,6 +34,7 @@ from django.utils.translation import gettext_lazy as _
 from Emailkasten.utils.workarounds import get_config
 
 from ..constants import (
+    EmailFetchingCriterionChoices,
     SupportedEmailDownloadFormats,
     SupportedEmailUploadFormats,
     file_format_parsers,
@@ -151,8 +152,6 @@ class Mailbox(
     def get_available_fetching_criteria(self) -> tuple[str]:
         """Gets the available fetching criteria based on the mail protocol of this mailbox.
 
-        Used by :func:`api.v1.views.MailboxViewSet.fetching_options` to show the choices for fetching to the user.
-
         Returns:
             A tuple of all available fetching criteria for this mailbox.
 
@@ -160,6 +159,21 @@ class Mailbox(
             ValueError: If the account has an unimplemented protocol.
         """
         return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA  # type: ignore[no-any-return]  # for some reason mypy doesn't get this
+
+    def get_available_fetching_criterion_choices(self) -> list[tuple[str, str]]:
+        """Gets the available fetching criterion choices based on the mail protocol of this mailbox.
+
+        Returns:
+            A choices-type tuple of all available fetching criteria for this mailbox.
+
+        Raises:
+            ValueError: If the account has an unimplemented protocol.
+        """
+        return [
+            (criterion, label)
+            for criterion, label in EmailFetchingCriterionChoices.choices
+            if criterion in self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA
+        ]
 
     def test(self) -> None:
         """Tests whether the data in the model is correct.

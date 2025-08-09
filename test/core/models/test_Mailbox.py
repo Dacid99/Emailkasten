@@ -35,7 +35,11 @@ from django.urls import reverse
 from model_bakery import baker
 from pyfakefs.fake_filesystem_unittest import Pause
 
-from core.constants import SupportedEmailUploadFormats, file_format_parsers
+from core.constants import (
+    EmailFetchingCriterionChoices,
+    SupportedEmailUploadFormats,
+    file_format_parsers,
+)
 from core.models import Account, Mailbox
 from core.utils.fetchers import (
     ExchangeFetcher,
@@ -161,6 +165,36 @@ def test_Mailbox_get_available_fetching_criteria(
     fake_mailbox.account.protocol = protocol
     fake_mailbox.account.save()
     assert fake_mailbox.get_available_fetching_criteria() == expected_fetching_criteria
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "protocol, expected_fetching_criteria",
+    [
+        (ExchangeFetcher.PROTOCOL, ExchangeFetcher.AVAILABLE_FETCHING_CRITERIA),
+        (IMAP4Fetcher.PROTOCOL, IMAP4Fetcher.AVAILABLE_FETCHING_CRITERIA),
+        (POP3Fetcher.PROTOCOL, POP3Fetcher.AVAILABLE_FETCHING_CRITERIA),
+        (IMAP4_SSL_Fetcher.PROTOCOL, IMAP4_SSL_Fetcher.AVAILABLE_FETCHING_CRITERIA),
+        (POP3_SSL_Fetcher.PROTOCOL, POP3_SSL_Fetcher.AVAILABLE_FETCHING_CRITERIA),
+    ],
+)
+def test_Mailbox_get_available_fetching_criteria(
+    fake_mailbox, protocol, expected_fetching_criteria
+):
+    """Tests :func:`core.models.Mailbox.Mailbox.get_available_fetching_criteria`.
+
+    Args:
+        protocol: The protocol parameter.
+        expected_fetching_criteria: The expected fetching_criteria result parameter.
+    """
+
+    fake_mailbox.account.protocol = protocol
+    fake_mailbox.account.save()
+    assert fake_mailbox.get_available_fetching_criterion_choices() == [
+        (criterion, label)
+        for criterion, label in EmailFetchingCriterionChoices.choices
+        if criterion in expected_fetching_criteria
+    ]
 
 
 @pytest.mark.django_db
