@@ -24,13 +24,15 @@ from uuid import UUID
 
 from celery import shared_task
 
-from core.utils.fetchers.exceptions import FetcherError
+from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 
 from .models.Daemon import Daemon
 
 
 @shared_task
-def fetch_emails(daemon_uuid_string: str) -> None:
+def fetch_emails(  # this must not be renamed or moved, otherwise existing daemons will break!
+    daemon_uuid_string: str,
+) -> None:
     """Celery task to fetch and store emails.
 
     Args:
@@ -56,20 +58,28 @@ def fetch_emails(daemon_uuid_string: str) -> None:
             "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nFailed to fetch emails!\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
         )
         daemon.is_healthy = False
+        daemon.save(update_fields=["is_healthy"])
         if isinstance(exc, ValueError):
             logger.warning(
-                "The chosen fetching criterion is not available for this mailbox! Change it to a valid choice to fix this error."
+                "The chosen fetching criterion is not available for this mailbox! Change it to a valid choice to fix this error.",
+                exc_info=True,
             )
-        elif isinstance(exc, FetcherError):
-            logger.error(
-                "There was an issue with the mailbox or account. Please test them before continuing."
+        elif isinstance(exc, MailAccountError):
+            daemon.mailbox.account.is_healthy = False
+            daemon.mailbox.account.save(update_fields=["is_healthy"])
+            logger.exception(
+                "There was an issue with the account. Please test them before continuing."
             )
+        elif isinstance(exc, MailboxError):
+            daemon.mailbox.is_healthy = False
+            daemon.mailbox.save(update_fields=["is_healthy"])
         else:
-            logger.error("This is an unexpected error! Please file an issue report!")
+            logger.exception("This is an unexpected error!")
+        raise
     else:
         logger.info("Successfully fetched emails.")
         daemon.is_healthy = True
-    daemon.save(update_fields=["is_healthy"])
+        daemon.save(update_fields=["is_healthy"])
 
     end_time = time.time()
     logger.info(
