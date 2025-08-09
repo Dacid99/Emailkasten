@@ -23,7 +23,6 @@
 - async parsing, sync saving
 - auto transfer of pdfs to paperless
 - fetch once by criterion instead of hardcoded ALL
-- setting for thumbnail datasize threshold (ca 10MiB)
 - use post-unsubscribe-method to interpret post-unsubscribe as link
 - emailconversation subpage
 - bring back test action for daemon
@@ -54,6 +53,7 @@
 - time benchmarks in debug log
 - batch download and delete in web
 - daemonize celery worker
+- move timezone to local storage, theme to session
 
 ### Work in progress
 
@@ -63,10 +63,12 @@
 
 ## To fix
 
+- migrate from dependabot to renovate
 - fetching too many emails leads to browser timeout
 - running tests from test dir
 - storage is incremented by healthcheck
 - updating daemon logging doesnt change the daemon logger
+- daemon may not update task interval correctly!
 - optics:
   - better name for daemon
   - more space for thumbnails in detailview

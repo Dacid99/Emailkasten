@@ -302,25 +302,29 @@ class Attachment(
         References:
             https://stackoverflow.com/questions/51107683/which-mime-types-can-be-displayed-in-browser
         """
-        return self.file_path is not None and (
-            self.content_maintype in ["image", "font"]
-            or (
-                self.content_maintype == "text"
-                and not self.content_subtype.endswith("calendar")
-            )
-            or (
-                self.content_maintype == "audio"
-                and self.content_subtype in ["ogg", "wav", "mpeg", "aac"]
-            )
-            or (
-                self.content_maintype == "video"
-                and self.content_subtype in ["ogg", "mp4", "mpeg", "webm", "avi"]
-            )
-            or (
-                self.content_maintype == "application"
-                and (
-                    self.content_subtype in ["pdf", "json"]
-                    or self.content_subtype.endswith(("xml", "script"))
+        return (
+            self.file_path is not None
+            and (self.datasize <= get_config("WEB_THUMBNAIL_MAX_DATASIZE"))
+            and (
+                self.content_maintype in ["image", "font"]
+                or (
+                    self.content_maintype == "text"
+                    and not self.content_subtype.endswith("calendar")
+                )
+                or (
+                    self.content_maintype == "audio"
+                    and self.content_subtype in ["ogg", "wav", "mpeg", "aac"]
+                )
+                or (
+                    self.content_maintype == "video"
+                    and self.content_subtype in ["ogg", "mp4", "mpeg", "webm", "avi"]
+                )
+                or (
+                    self.content_maintype == "application"
+                    and (
+                        self.content_subtype in ["pdf", "json"]
+                        or self.content_subtype.endswith(("xml", "script"))
+                    )
                 )
             )
         )

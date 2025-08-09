@@ -538,6 +538,13 @@ CONSTANCE_CONFIG = {
         ),
         list,
     ),
+    "WEB_THUMBNAIL_MAX_DATASIZE": (
+        10000000,
+        _(
+            "Maximum datasize for a thumbnail in the webapp. Thumbnails larger than this will not be loaded."
+        ),
+        int,
+    ),
     "DAEMON_CYCLE_PERIOD_DEFAULT": (
         60,
         _("Default cycle period setting of a daemon in seconds"),
@@ -744,6 +751,7 @@ CONSTANCE_CONFIG_FIELDSETS = (
         (
             "WEB_DEFAULT_PAGE_SIZE",
             "WEB_PAGE_SIZES_OPTIONS",
+            "WEB_THUMBNAIL_MAX_DATASIZE",
         ),
     ),
 )
