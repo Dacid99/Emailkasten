@@ -27,6 +27,7 @@ import os
 import uuid
 from typing import TYPE_CHECKING, Any, Final, override
 
+from celery import current_app
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -229,6 +230,31 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
         )
         file_handler.setFormatter(logging.Formatter(settings.LOGFORMAT, style="{"))
         daemon_logger.addHandler(file_handler)
+
+    def test(self) -> None:
+        """Tests whether the data in the model is correct and the daemons task can be run.
+
+        Tests the entire task, including fetching and the celery backend.
+        The :attr:`core.models.Daemon.is_healthy` flag is set accordingly by the task itself.
+
+        Raises:
+            Exception: Any exception raised by the task.
+        """
+        logger.info("Testing daemon %s ...", self)
+
+        task_name = self.celery_task.task
+        args = json.loads(self.celery_task.args or "[]")
+        kwargs = json.loads(self.celery_task.kwargs or "{}")
+
+        task = current_app.tasks.get(task_name)
+        if not task:
+            raise ValueError(_("The daemons task was not found."))
+        try:
+            task.apply_async(args=args, kwargs=kwargs).get()
+        except Exception:
+            logger.exception("Failed testing daemon %s!", self)
+            raise
+        logger.info("Successfully tested daemon %s ...", self)
 
     def start(self) -> bool:
         """Start the daemons :attr:`celery_task`.

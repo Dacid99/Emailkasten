@@ -295,16 +295,16 @@ def test_Account_get_fetcher_class_bad_protocol(fake_account, mock_logger):
 
 
 @pytest.mark.django_db
-def test_Account_test_connection_success(
+def test_Account_test_success(
     fake_account, mock_logger, mock_fetcher, mock_Account_get_fetcher
 ):
-    """Tests :func:`core.models.Account.Account.test_connection`
+    """Tests :func:`core.models.Account.Account.test`
     in case of success.
     """
     fake_account.is_healthy = False
     fake_account.save(update_fields=["is_healthy"])
 
-    fake_account.test_connection()
+    fake_account.test()
 
     fake_account.refresh_from_db()
     assert fake_account.is_healthy is True
@@ -315,16 +315,16 @@ def test_Account_test_connection_success(
 
 
 @pytest.mark.django_db
-def test_Account_test_connection_bad_protocol(
+def test_Account_test_bad_protocol(
     fake_account, mock_logger, mock_fetcher, mock_Account_get_fetcher
 ):
-    """Tests :func:`core.models.Account.Account.test_connection`
+    """Tests :func:`core.models.Account.Account.test`
     in case of the account has a bad :attr:`core.models.Account.Account.protocol` field and raises a :class:`ValueError`.
     """
     mock_Account_get_fetcher.side_effect = ValueError
 
     with pytest.raises(ValueError):
-        fake_account.test_connection()
+        fake_account.test()
 
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
     mock_fetcher.test.assert_not_called()
@@ -332,10 +332,10 @@ def test_Account_test_connection_bad_protocol(
 
 
 @pytest.mark.django_db
-def test_Account_test_connection_failure(
+def test_Account_test_failure(
     fake_account, mock_logger, mock_fetcher, mock_Account_get_fetcher
 ):
-    """Tests :func:`core.models.Account.Account.test_connection`
+    """Tests :func:`core.models.Account.Account.test`
     in case of the test fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
     mock_fetcher.test.side_effect = MailAccountError
@@ -343,7 +343,7 @@ def test_Account_test_connection_failure(
     fake_account.save(update_fields=["is_healthy"])
 
     with pytest.raises(MailAccountError):
-        fake_account.test_connection()
+        fake_account.test()
 
     fake_account.refresh_from_db()
     assert fake_account.is_healthy is False
@@ -353,10 +353,10 @@ def test_Account_test_connection_failure(
 
 
 @pytest.mark.django_db
-def test_Account_test_connection_get_fetcher_error(
+def test_Account_test_get_fetcher_error(
     fake_account, mock_logger, mock_Account_get_fetcher
 ):
-    """Tests :func:`core.models.Account.Account.test_connection`
+    """Tests :func:`core.models.Account.Account.test`
     in case the :func:`core.models.Account.Account.get_fetcher`
     raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
@@ -365,7 +365,7 @@ def test_Account_test_connection_get_fetcher_error(
     fake_account.save(update_fields=["is_healthy"])
 
     with pytest.raises(MailAccountError):
-        fake_account.test_connection()
+        fake_account.test()
 
     fake_account.refresh_from_db()
     assert fake_account.is_healthy is False

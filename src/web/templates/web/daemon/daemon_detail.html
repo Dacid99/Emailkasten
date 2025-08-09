@@ -20,6 +20,8 @@
 
 {% block action_buttons %}
 
+    {% include "web/partials/_test-button.html" %}
+
     {% include "web/daemon/partials/_start-button.html" with daemon=object %}
 
     {% include "web/daemon/partials/_stop-button.html" with daemon=object %}

@@ -247,7 +247,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
             raise
         return fetcher
 
-    def test_connection(self) -> None:
+    def test(self) -> None:
         """Tests whether the data in the model is correct.
 
         Tests connecting and logging in to the mailhost and account.

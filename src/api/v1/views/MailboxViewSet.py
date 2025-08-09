@@ -110,7 +110,7 @@ class MailboxViewSet(
             }
         )
         try:
-            mailbox.test_connection()
+            mailbox.test()
         except FetcherError as error:
             response.data["result"] = False
             response.data["error"] = str(error)

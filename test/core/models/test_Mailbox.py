@@ -164,16 +164,16 @@ def test_Mailbox_get_available_fetching_criteria(
 
 
 @pytest.mark.django_db
-def test_Mailbox_test_connection_success(
+def test_Mailbox_test_success(
     fake_mailbox, mock_logger, mock_fetcher, mock_Account_get_fetcher
 ):
-    """Tests :func:`core.models.Mailbox.Mailbox.test_connection`
+    """Tests :func:`core.models.Mailbox.Mailbox.test`
     in case of success.
     """
     fake_mailbox.is_healthy = False
     fake_mailbox.save(update_fields=["is_healthy"])
 
-    fake_mailbox.test_connection()
+    fake_mailbox.test()
 
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.is_healthy is True
@@ -184,17 +184,17 @@ def test_Mailbox_test_connection_success(
 
 
 @pytest.mark.django_db
-def test_Mailbox_test_connection_bad_protocol(
+def test_Mailbox_test_bad_protocol(
     fake_mailbox, mock_logger, mock_Account_get_fetcher, mock_fetcher
 ):
-    """Tests :func:`core.models.Mailbox.Mailbox.test_connection`
+    """Tests :func:`core.models.Mailbox.Mailbox.test`
     in case the account of the mailbox has a bad :attr:`core.models.Account.Account.protocol` field
     and thus get_fetcher raises a :class:`ValueError`.
     """
     mock_Account_get_fetcher.side_effect = ValueError
 
     with pytest.raises(ValueError):
-        fake_mailbox.test_connection()
+        fake_mailbox.test()
 
     mock_Account_get_fetcher.assert_called_once_with(fake_mailbox.account)
     mock_fetcher.test.assert_not_called()
@@ -203,14 +203,14 @@ def test_Mailbox_test_connection_bad_protocol(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("test_side_effect", [MailboxError, MailAccountError])
-def test_Mailbox_test_connection_failure(
+def test_Mailbox_test_failure(
     fake_mailbox,
     mock_logger,
     mock_Account_get_fetcher,
     mock_fetcher,
     test_side_effect,
 ):
-    """Tests :func:`core.models.Mailbox.Mailbox.test_connection`
+    """Tests :func:`core.models.Mailbox.Mailbox.test`
     in case the test fails with a :class:`core.utils.fetchers.exceptions.FetcherError`.
     """
     mock_fetcher.test.side_effect = test_side_effect
@@ -218,7 +218,7 @@ def test_Mailbox_test_connection_failure(
     fake_mailbox.save(update_fields=["is_healthy"])
 
     with pytest.raises(test_side_effect):
-        fake_mailbox.test_connection()
+        fake_mailbox.test()
 
     if test_side_effect == MailboxError:
         assert fake_mailbox.is_healthy is False
@@ -230,10 +230,10 @@ def test_Mailbox_test_connection_failure(
 
 
 @pytest.mark.django_db
-def test_Mailbox_test_connection_get_fetcher_error(
+def test_Mailbox_test_get_fetcher_error(
     fake_mailbox, mock_logger, mock_Account_get_fetcher, mock_fetcher
 ):
-    """Tests :func:`core.models.Mailbox.Mailbox.test_connection`
+    """Tests :func:`core.models.Mailbox.Mailbox.test`
     in case :func:`core.models.Account.Account.get_fetcher`
     raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
@@ -242,7 +242,7 @@ def test_Mailbox_test_connection_get_fetcher_error(
     fake_mailbox.save(update_fields=["is_healthy"])
 
     with pytest.raises(MailAccountError):
-        fake_mailbox.test_connection()
+        fake_mailbox.test()
 
     assert fake_mailbox.account.is_healthy is False
     mock_Account_get_fetcher.assert_called_once_with(fake_mailbox.account)

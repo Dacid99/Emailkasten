@@ -86,6 +86,39 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
     URL_PATH_START = "start"
     URL_NAME_START = "start"
 
+    URL_PATH_TEST = "test"
+    URL_NAME_TEST = "test"
+
+    @action(
+        detail=True, methods=["post"], url_path=URL_PATH_TEST, url_name=URL_NAME_TEST
+    )
+    def test(self, request: Request, pk: int | None = None) -> Response:
+        """Action method testing the daemon data of the mailbox.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the daemon. Defaults to None.
+
+        Returns:
+            A response detailing the test result for the daemon.
+        """
+        daemon = self.get_object()
+        response = Response(
+            {
+                "detail": "Tested daemon",
+            }
+        )
+        try:
+            daemon.test()
+        except Exception as error:
+            response.data["result"] = False
+            response.data["error"] = str(error)
+        else:
+            response.data["result"] = True
+        daemon.refresh_from_db()
+        response.data["daemon"] = self.get_serializer(daemon).data
+        return response
+
     @action(
         detail=True, methods=["post"], url_path=URL_PATH_START, url_name=URL_NAME_START
     )

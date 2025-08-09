@@ -45,6 +45,96 @@ def mock_os_path_exists(mocker):
     )
 
 
+@pytest.fixture
+def mock_Daemon_test(mocker):
+    return mocker.patch("api.v1.views.DaemonViewSet.Daemon.test", autospec=True)
+
+
+@pytest.mark.django_db
+def test_test_noauth(
+    fake_daemon,
+    noauth_api_client,
+    custom_detail_action_url,
+    mock_Daemon_test,
+):
+    """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.test` action with an unauthenticated user client."""
+    response = noauth_api_client.post(
+        custom_detail_action_url(
+            DaemonViewSet, DaemonViewSet.URL_NAME_TEST, fake_daemon
+        )
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert "daemon" not in response.data
+    mock_Daemon_test.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_test_auth_other(
+    fake_daemon,
+    other_api_client,
+    custom_detail_action_url,
+    mock_Daemon_test,
+):
+    """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.test` action with the authenticated other user client."""
+    response = other_api_client.post(
+        custom_detail_action_url(
+            DaemonViewSet, DaemonViewSet.URL_NAME_TEST, fake_daemon
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert "daemon" not in response.data
+    mock_Daemon_test.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_test_success_auth_owner(
+    fake_daemon,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Daemon_test,
+):
+    """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.test` action with the authenticated owner user client."""
+
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            DaemonViewSet, DaemonViewSet.URL_NAME_TEST, fake_daemon
+        )
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    fake_daemon.refresh_from_db()
+    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["result"] is True
+    mock_Daemon_test.assert_called_once_with(fake_daemon)
+
+
+@pytest.mark.django_db
+def test_test_failure_auth_owner(
+    faker,
+    fake_daemon,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Daemon_test,
+):
+    """Tests the post method :func:`api.v1.views.DaemonViewSet.DaemonViewSet.test` action with the authenticated owner user client."""
+    mock_Daemon_test.side_effect = Exception(faker.sentence())
+
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            DaemonViewSet, DaemonViewSet.URL_NAME_TEST, fake_daemon
+        )
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    fake_daemon.refresh_from_db()
+    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["result"] is False
+    assert response.data["error"] == str(mock_Daemon_test.side_effect)
+    mock_Daemon_test.assert_called_once_with(fake_daemon)
+
+
 @pytest.mark.django_db
 def test_start_noauth(
     fake_daemon,

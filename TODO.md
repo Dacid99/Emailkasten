@@ -25,7 +25,6 @@
 - fetch once by criterion instead of hardcoded ALL
 - use post-unsubscribe-method to interpret post-unsubscribe as link
 - emailconversation subpage
-- bring back test action for daemon
 
 ## To refactor
 

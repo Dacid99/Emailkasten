@@ -32,10 +32,8 @@ from test.conftest import fake_mailbox
 
 
 @pytest.fixture
-def mock_Mailbox_test_connection(mocker):
-    return mocker.patch(
-        "api.v1.views.MailboxViewSet.Mailbox.test_connection", autospec=True
-    )
+def mock_Mailbox_test(mocker):
+    return mocker.patch("api.v1.views.MailboxViewSet.Mailbox.test", autospec=True)
 
 
 @pytest.fixture
@@ -76,7 +74,7 @@ def test_test_mailbox_noauth(
     fake_mailbox,
     noauth_api_client,
     custom_detail_action_url,
-    mock_Mailbox_test_connection,
+    mock_Mailbox_test,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.test_mailbox` action with an unauthenticated user client."""
     previous_is_healthy = fake_mailbox.is_healthy
@@ -88,7 +86,7 @@ def test_test_mailbox_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    mock_Mailbox_test_connection.assert_not_called()
+    mock_Mailbox_test.assert_not_called()
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.is_healthy is previous_is_healthy
     assert "name" not in response.data
@@ -99,7 +97,7 @@ def test_test_mailbox_auth_other(
     fake_mailbox,
     other_api_client,
     custom_detail_action_url,
-    mock_Mailbox_test_connection,
+    mock_Mailbox_test,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.test_mailbox` action with the authenticated other user client."""
     previous_is_healthy = fake_mailbox.is_healthy
@@ -111,7 +109,7 @@ def test_test_mailbox_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    mock_Mailbox_test_connection.assert_not_called()
+    mock_Mailbox_test.assert_not_called()
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.is_healthy is previous_is_healthy
     assert "name" not in response.data
@@ -122,7 +120,7 @@ def test_test_mailbox_success_auth_owner(
     fake_mailbox,
     owner_api_client,
     custom_detail_action_url,
-    mock_Mailbox_test_connection,
+    mock_Mailbox_test,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.test_mailbox` action with the authenticated owner user client."""
     response = owner_api_client.post(
@@ -137,26 +135,22 @@ def test_test_mailbox_success_auth_owner(
     )
     assert response.data["result"] is True
     assert "error" not in response.data
-    mock_Mailbox_test_connection.assert_called_once_with(fake_mailbox)
+    mock_Mailbox_test.assert_called_once_with(fake_mailbox)
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    "test_connection_side_effect", [MailboxError, MailAccountError]
-)
+@pytest.mark.parametrize("test_side_effect", [MailboxError, MailAccountError])
 def test_test_mailbox_failure_auth_owner(
     faker,
     fake_mailbox,
     owner_api_client,
     custom_detail_action_url,
-    mock_Mailbox_test_connection,
-    test_connection_side_effect,
+    mock_Mailbox_test,
+    test_side_effect,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.test` action with the authenticated owner user client."""
     fake_error_message = faker.sentence()
-    mock_Mailbox_test_connection.side_effect = test_connection_side_effect(
-        fake_error_message
-    )
+    mock_Mailbox_test.side_effect = test_side_effect(fake_error_message)
 
     response = owner_api_client.post(
         custom_detail_action_url(
@@ -171,7 +165,7 @@ def test_test_mailbox_failure_auth_owner(
     assert response.data["result"] is False
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
-    mock_Mailbox_test_connection.assert_called_once_with(fake_mailbox)
+    mock_Mailbox_test.assert_called_once_with(fake_mailbox)
 
 
 @pytest.mark.django_db

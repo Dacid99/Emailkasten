@@ -19,6 +19,7 @@
 """Test module for :mod:`core.models.Daemon`."""
 
 import datetime
+import json
 import logging
 import logging.handlers
 import os
@@ -32,6 +33,7 @@ from model_bakery import baker
 
 from core import constants
 from core.models import Daemon, Mailbox
+from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 from Emailkasten.utils.workarounds import get_config
 
 
@@ -43,6 +45,11 @@ def mock_logger(mocker):
         The mocked logger instance.
     """
     return mocker.patch("core.models.Daemon.logger", autospec=True)
+
+
+@pytest.fixture
+def mock_Mailbox_fetch(mocker):
+    return mocker.patch("core.models.Mailbox.Mailbox.fetch")
 
 
 @pytest.mark.django_db
@@ -166,6 +173,28 @@ def test_Daemon_delete_no_celery_task(fake_daemon):
 
     fake_daemon.delete()
     # check that there's no attempt to delete the None-task that would raise
+
+
+@pytest.mark.django_db
+def test_Daemon_test_success(celery_testsetup, fake_daemon, mock_Mailbox_fetch):
+    fake_daemon.test()
+
+    mock_Mailbox_fetch.assert_called_once_with(fake_daemon.fetching_criterion)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "error", [AssertionError, ValueError, MailAccountError, MailboxError]
+)
+def test_Daemon_test_failure(celery_testsetup, fake_daemon, mock_Mailbox_fetch, error):
+    mock_Mailbox_fetch.side_effect = error
+
+    with pytest.raises(error):
+        fake_daemon.test()
+
+    mock_Mailbox_fetch.assert_called_once_with(fake_daemon.fetching_criterion)
+    fake_daemon.refresh_from_db()
+    assert fake_daemon.is_healthy is False
 
 
 @pytest.mark.django_db

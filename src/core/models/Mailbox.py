@@ -161,7 +161,7 @@ class Mailbox(
         """
         return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA  # type: ignore[no-any-return]  # for some reason mypy doesn't get this
 
-    def test_connection(self) -> None:
+    def test(self) -> None:
         """Tests whether the data in the model is correct.
 
         Tests connecting and logging in to the mailhost and account.
