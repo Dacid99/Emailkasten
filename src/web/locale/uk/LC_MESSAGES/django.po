@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-06 20:23+0000\n"
-"PO-Revision-Date: 2025-08-06 08:02+0000\n"
+"PO-Revision-Date: 2025-08-08 07:02+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim5@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
 "web/uk/>\n"
@@ -16,10 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
-"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
-"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
-"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 "
+"? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > "
+"14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % "
+"100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 "X-Generator: Weblate 5.13-dev\n"
 
 #: src/web/filters/AccountFilterSet.py:56
@@ -167,10 +167,8 @@ msgid "Add Account"
 msgstr "Додати обліковий запис"
 
 #: src/web/templates/web/account/account_create.html:20
-#, fuzzy
-#| msgid "Account"
 msgid "New Account"
-msgstr "Обліковий запис"
+msgstr "Новий обліковий запис"
 
 #: src/web/templates/web/account/account_create.html:37
 #: src/web/templates/web/daemon/daemon_create.html:33
@@ -247,22 +245,28 @@ msgstr "Додати Обліковий запис"
 #: src/web/templates/web/account/partials/_email_list_alternative.html:4
 msgid "You can fetch emails from one of this accounts mailboxes."
 msgstr ""
+"Ви можете отримувати електронні листи з однієї з поштових скриньок цього "
+"облікового запису."
 
 #: src/web/templates/web/account/partials/_filter_list_alternative.html:7
 msgid "No email accounts found."
-msgstr ""
+msgstr "Облікових записів електронної пошти не знайдено."
 
 #: src/web/templates/web/account/partials/_filter_list_alternative.html:11
 msgid "Go ahead and add some."
-msgstr ""
+msgstr "Сміливо додавайте трохи."
 
 #: src/web/templates/web/account/partials/_mailboxes_list_alternative.html:4
 msgid "You can add mailboxes for this account by fetching them from the server"
 msgstr ""
+"Ви можете додати поштові скриньки для цього облікового запису, отримавши їх "
+"із сервера"
 
 #: src/web/templates/web/account/partials/_unhealthy_list_alternative.html:4
 msgid "Test this account to make sure it can be accessed."
 msgstr ""
+"Перевірте цей обліковий запис, щоб переконатися, що до нього можна отримати "
+"доступ."
 
 #: src/web/templates/web/account/partials/_update_mailboxes-button.html:9
 msgid "Update Mailboxes"
@@ -321,23 +325,21 @@ msgid "In email"
 msgstr "В електронному листі"
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:7
-#, fuzzy
-#| msgid "Save attachments"
 msgid "No attachments found."
-msgstr "Зберегти вкладення"
+msgstr "Вкладень не знайдено."
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:11
 msgid ""
 "You can fetching some along with emails from the mailboxes you have set up."
 msgstr ""
+"Ви можете отримувати деякі разом з електронними листами з налаштованих вами "
+"поштових скриньок."
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:17
 #: src/web/templates/web/correspondent/partials/_filter_list_alternative.html:17
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:17
-#, fuzzy
-#| msgid "Back to mailbox"
 msgid "Go to mailboxes"
-msgstr "Назад до поштової скриньки"
+msgstr "Перейти до поштових скриньок"
 
 #: src/web/templates/web/attachment/partials/_thumbnail.html:17
 msgid "Attachment image"
@@ -434,7 +436,7 @@ msgstr "Редагувати кореспондента"
 
 #: src/web/templates/web/correspondent/correspondent_email_filter_list.html:6
 msgid "with"
-msgstr "з"
+msgstr "із"
 
 #: src/web/templates/web/correspondent/correspondent_filter_list.html:6
 #: src/web/templates/web/correspondent/correspondent_filter_list.html:14
@@ -445,15 +447,15 @@ msgid "Correspondents"
 msgstr "Кореспонденти"
 
 #: src/web/templates/web/correspondent/partials/_filter_list_alternative.html:7
-#, fuzzy
-#| msgid "Correspondents"
 msgid "No correspondents found."
-msgstr "Кореспонденти"
+msgstr "Кореспондентів не знайдено."
 
 #: src/web/templates/web/correspondent/partials/_filter_list_alternative.html:11
 msgid ""
 "You can add some by fetching the emails from the mailboxes you have set up."
 msgstr ""
+"Ви можете додати деякі, отримуючи електронні листи з налаштованих вами "
+"поштових скриньок."
 
 #: src/web/templates/web/daemon/daemon_create.html:6
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:6
@@ -493,10 +495,8 @@ msgid "Interval"
 msgstr "Інтервал"
 
 #: src/web/templates/web/daemon/daemon_detail.html:49
-#, fuzzy
-#| msgid "Last Run Datetime"
 msgid "Last Run"
-msgstr "Дата й час останнього запуску"
+msgstr "Останній запуск"
 
 #: src/web/templates/web/daemon/daemon_detail.html:51
 msgid "Total Run Count"
@@ -534,11 +534,11 @@ msgstr "Завантажити"
 
 #: src/web/templates/web/daemon/partials/_filter_list_alternative.html:7
 msgid "No daemons found."
-msgstr ""
+msgstr "Демонів не знайдено."
 
 #: src/web/templates/web/daemon/partials/_filter_list_alternative.html:11
 msgid "Add one to a mailbox to fetch its contents on a regular basis."
-msgstr ""
+msgstr "Додайте його до поштової скриньки, щоб регулярно отримувати її вміст."
 
 #: src/web/templates/web/daemon/partials/_is_running-badge.html:4
 msgid "Running"
@@ -683,7 +683,7 @@ msgstr "Посилається на"
 
 #: src/web/templates/web/email/partials/_archive_list_alternative.html:7
 msgid "No emails found for this timeframe."
-msgstr ""
+msgstr "За цей період часу не знайдено електронних листів."
 
 #: src/web/templates/web/email/partials/_email_card.html:27
 msgid "Received"
@@ -691,23 +691,20 @@ msgstr "Отримано"
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:7
 msgid "No emails found."
-msgstr ""
+msgstr "Електронних листів не знайдено."
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:11
 msgid "You can fetch some from the mailboxes you have set up."
-msgstr ""
+msgstr "Ви можете отримати деякі з поштових скриньок, які ви налаштували."
 
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:18
-#, fuzzy
-#| msgid "Daemons"
 msgid "New Daemon"
-msgstr "Демони"
+msgstr "Новий демон"
 
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:22
-#, fuzzy, python-format
-#| msgid "Delete %(object)s"
+#, python-format
 msgid "for %(object.name)s"
-msgstr "Видалити %(object)s"
+msgstr "для %(object.name)s"
 
 #: src/web/templates/web/mailbox/mailbox_detail.html:6
 msgid "Mailbox Details"
@@ -720,14 +717,12 @@ msgstr "Зберегти вкладення"
 #: src/web/templates/web/mailbox/mailbox_detail.html:53
 #: src/web/templates/web/mailbox/mailbox_detail.html:61
 msgid "on"
-msgstr ""
+msgstr "умівк"
 
 #: src/web/templates/web/mailbox/mailbox_detail.html:55
 #: src/web/templates/web/mailbox/mailbox_detail.html:63
-#, fuzzy
-#| msgid "of"
 msgid "off"
-msgstr "з"
+msgstr "вимк"
 
 #: src/web/templates/web/mailbox/mailbox_detail.html:59
 msgid "Save mails as .eml"
@@ -746,33 +741,35 @@ msgid ""
 "You can set up daemons for this mailbox to fetch its contents on a regular "
 "schedule."
 msgstr ""
+"Ви можете налаштувати демони для цієї поштової скриньки, щоб вони регулярно "
+"завантажували її вміст."
 
 #: src/web/templates/web/mailbox/partials/_emails_list_alternative.html:5
 msgid ""
 "Fetch emails from this mailbox by setting up a daemon or fetching the "
 "content once."
 msgstr ""
+"Отримувати електронні листи з цієї поштової скриньки, налаштувавши демон або "
+"отримавши вміст один раз."
 
 #: src/web/templates/web/mailbox/partials/_fetch_all-button.html:9
-#, fuzzy
-#| msgid "Fetch content"
 msgid "Fetch contents"
-msgstr "Отримання вмісту"
+msgstr "Отримати вміст"
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:7
 msgid "No mailboxes found."
-msgstr ""
+msgstr "Поштових скриньок не знайдено."
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:11
 msgid ""
 "You can add some by fetching the mailboxes from an account you have set up."
 msgstr ""
+"Ви можете додати деякі, отримавши поштові скриньки з облікового запису, який "
+"ви налаштували."
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:17
-#, fuzzy
-#| msgid "Add account"
 msgid "Go to accounts"
-msgstr "Додати Обліковий запис"
+msgstr "Перейти до облікових записів"
 
 #: src/web/templates/web/mailbox/partials/_submit_upload-button.html:6
 msgid "Upload"
@@ -781,6 +778,8 @@ msgstr "Вивантаження"
 #: src/web/templates/web/mailbox/partials/_unhealthy_list_alternative.html:4
 msgid "Test this mailbox to make sure it can be accessed."
 msgstr ""
+"Перевірте цю поштову скриньку, щоб переконатися, що до неї можна отримати "
+"доступ."
 
 #: src/web/templates/web/mailbox/partials/_upload_email-button.html:6
 msgid "Upload emails"
