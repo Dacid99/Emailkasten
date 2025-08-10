@@ -511,8 +511,8 @@ CONSTANCE_IGNORE_ADMIN_VERSION_CHECK = True
 CONSTANCE_ADDITIONAL_FIELDS = {
     list: ["django.forms.fields.JSONField", {"widget": "django.forms.Textarea"}],
     dict: ["django.forms.fields.JSONField", {"widget": "django.forms.Textarea"}],
+    "text": ["django.forms.fields.CharField", {"widget": "django.forms.Textarea"}],
 }
-
 # if one of these defaults is changed, that change is not applied to existing default configurations
 # to still apply the new default to existing servers, change the name of the setting!
 CONSTANCE_CONFIG = {
@@ -576,12 +576,12 @@ CONSTANCE_CONFIG = {
         bool,
     ),
     "DONT_PARSE_CONTENT_MAINTYPES": (
-        [],
+        [""],
         _("List of content types prefixes to not parse as files."),
         list,
     ),
     "DONT_PARSE_CONTENT_SUBTYPES": (
-        [],
+        [""],
         _(
             "List of content types prefixes to not parse as files. Plain and HTML text is always ignored as its the bodytext."
         ),
@@ -649,7 +649,7 @@ CONSTANCE_CONFIG = {
         _(
             "Html template used to render emails to html. Uses the django template syntax and has access to all fields of the email database table. Removing template tag imports may result in 500 responses when requesting pages with email thumbnails, so be careful."
         ),
-        str,
+        "text",
     ),
     "EMAIL_CSS": (
         """body {
@@ -658,7 +658,7 @@ CONSTANCE_CONFIG = {
             color: #333;
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
         }
         .email-container {
             border: 1px solid #ddd;
@@ -691,7 +691,7 @@ CONSTANCE_CONFIG = {
         _(
             "Css style used to render emails to html. Refer to HTML_TEMPLATE for context on the classes."
         ),
-        str,
+        "text",
     ),
     "DEFAULT_SAVE_TO_EML": (
         True,

@@ -15,9 +15,7 @@
         <link href="{% static 'fontawesomefree/css/solid.css' %}"
               rel="stylesheet"
               type="text/css" />
-        <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
         <script src="{% static 'web/js/bs_theme-toggler.js' %}"></script>
-        <script src="{% static 'web/js/timezone.js' %}"></script>
 
         <title>
 
@@ -88,6 +86,12 @@
         {% include "web/partials/_footer.html" %}
 
         {% bootstrap_javascript %}
+
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+        <script src="{% static 'web/js/timezone.js' %}"></script>
+
+        {% block scripts %}
+        {% endblock scripts %}
 
     </body>
 </html>

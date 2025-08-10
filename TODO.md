@@ -25,6 +25,7 @@
 - fetch once by criterion instead of hardcoded ALL
 - use post-unsubscribe-method to interpret post-unsubscribe as link
 - emailconversation subpage
+- grappelli admin page
 
 ## To refactor
 
@@ -52,7 +53,6 @@
 - time benchmarks in debug log
 - batch download and delete in web
 - daemonize celery worker
-- move timezone to local storage, theme to session
 
 ### Work in progress
 
@@ -70,7 +70,10 @@
 - daemon may not update task interval correctly!
 - optics:
   - better name for daemon
-  - more space for thumbnails in detailview
-  - overflow-scroll for images
+  - translate api
+  - mobile optimizations:
+    - breakpoint for created-updated footer
+    - sticky pagination gets stuck
+    - dashboard too large
 - ci:
   - djlint has no files to lint
