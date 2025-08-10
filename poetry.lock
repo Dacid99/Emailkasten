@@ -106,29 +106,6 @@ files = [
 dev = ["backports.zoneinfo ; python_version < \"3.9\"", "freezegun (>=1.0,<2.0)", "jinja2 (>=3.0)", "pytest (>=6.0)", "pytest-cov", "pytz", "setuptools", "tzdata ; sys_platform == \"win32\""]
 
 [[package]]
-name = "beautifulsoup4"
-version = "4.13.4"
-description = "Screen-scraping library"
-optional = false
-python-versions = ">=3.7.0"
-groups = ["main"]
-files = [
-    {file = "beautifulsoup4-4.13.4-py3-none-any.whl", hash = "sha256:9bbbb14bfde9d79f38b8cd5f8c7c85f4b8f2523190ebed90e950a8dea4cb1c4b"},
-    {file = "beautifulsoup4-4.13.4.tar.gz", hash = "sha256:dbb3c4e1ceae6aefebdaf2423247260cd062430a410e38c66f2baa50a8437195"},
-]
-
-[package.dependencies]
-soupsieve = ">1.2"
-typing-extensions = ">=4.0.0"
-
-[package.extras]
-cchardet = ["cchardet"]
-chardet = ["chardet"]
-charset-normalizer = ["charset-normalizer"]
-html5lib = ["html5lib"]
-lxml = ["lxml"]
-
-[[package]]
 name = "billiard"
 version = "4.2.1"
 description = "Python multiprocessing fork with improvements and bugfixes"
@@ -776,6 +753,18 @@ jsbeautifier = "*"
 six = ">=1.13.0"
 
 [[package]]
+name = "decorator"
+version = "5.2.1"
+description = "Decorators for Humans"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "decorator-5.2.1-py3-none-any.whl", hash = "sha256:d316bb415a2d9e2d2b3abcc4084c6502fc09240e292cd76a76afc106a1c8e04a"},
+    {file = "decorator-5.2.1.tar.gz", hash = "sha256:65f266143752f734b0a7cc83c46f4618af75b8c5911b00ccb61d0ac9b6da0360"},
+]
+
+[[package]]
 name = "defusedxml"
 version = "0.7.1"
 description = "XML bomb protection for Python stdlib modules"
@@ -1397,6 +1386,44 @@ files = [
 python-dateutil = ">=2.7"
 
 [[package]]
+name = "gssapi"
+version = "1.9.0"
+description = "Python GSSAPI Wrapper"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "gssapi-1.9.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:261e00ac426d840055ddb2199f4989db7e3ce70fa18b1538f53e392b4823e8f1"},
+    {file = "gssapi-1.9.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:14a1ae12fdf1e4c8889206195ba1843de09fe82587fa113112887cd5894587c6"},
+    {file = "gssapi-1.9.0-cp310-cp310-win32.whl", hash = "sha256:2a9c745255e3a810c3e8072e267b7b302de0705f8e9a0f2c5abc92fe12b9475e"},
+    {file = "gssapi-1.9.0-cp310-cp310-win_amd64.whl", hash = "sha256:dfc1b4c0bfe9f539537601c9f187edc320daf488f694e50d02d0c1eb37416962"},
+    {file = "gssapi-1.9.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:67d9be5e34403e47fb5749d5a1ad4e5a85b568e6a9add1695edb4a5b879f7560"},
+    {file = "gssapi-1.9.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:11e9b92cef11da547fc8c210fa720528fd854038504103c1b15ae2a89dce5fcd"},
+    {file = "gssapi-1.9.0-cp311-cp311-win32.whl", hash = "sha256:6c5f8a549abd187687440ec0b72e5b679d043d620442b3637d31aa2766b27cbe"},
+    {file = "gssapi-1.9.0-cp311-cp311-win_amd64.whl", hash = "sha256:59e1a1a9a6c5dc430dc6edfcf497f5ca00cf417015f781c9fac2e85652cd738f"},
+    {file = "gssapi-1.9.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:b66a98827fbd2864bf8993677a039d7ba4a127ca0d2d9ed73e0ef4f1baa7fd7f"},
+    {file = "gssapi-1.9.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:2bddd1cc0c9859c5e0fd96d4d88eb67bd498fdbba45b14cdccfe10bfd329479f"},
+    {file = "gssapi-1.9.0-cp312-cp312-win32.whl", hash = "sha256:10134db0cf01bd7d162acb445762dbcc58b5c772a613e17c46cf8ad956c4dfec"},
+    {file = "gssapi-1.9.0-cp312-cp312-win_amd64.whl", hash = "sha256:e28c7d45da68b7e36ed3fb3326744bfe39649f16e8eecd7b003b082206039c76"},
+    {file = "gssapi-1.9.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:cea344246935b5337e6f8a69bb6cc45619ab3a8d74a29fcb0a39fd1e5843c89c"},
+    {file = "gssapi-1.9.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:1a5786bd9fcf435bd0c87dc95ae99ad68cefcc2bcc80c71fef4cb0ccdfb40f1e"},
+    {file = "gssapi-1.9.0-cp313-cp313-win32.whl", hash = "sha256:c99959a9dd62358e370482f1691e936cb09adf9a69e3e10d4f6a097240e9fd28"},
+    {file = "gssapi-1.9.0-cp313-cp313-win_amd64.whl", hash = "sha256:a2e43f50450e81fe855888c53df70cdd385ada979db79463b38031710a12acd9"},
+    {file = "gssapi-1.9.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:c0e378d62b2fc352ca0046030cda5911d808a965200f612fdd1d74501b83e98f"},
+    {file = "gssapi-1.9.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:b74031c70864d04864b7406c818f41be0c1637906fb9654b06823bcc79f151dc"},
+    {file = "gssapi-1.9.0-cp38-cp38-win32.whl", hash = "sha256:f2f3a46784d8127cc7ef10d3367dedcbe82899ea296710378ccc9b7cefe96f4c"},
+    {file = "gssapi-1.9.0-cp38-cp38-win_amd64.whl", hash = "sha256:a81f30cde21031e7b1f8194a3eea7285e39e551265e7744edafd06eadc1c95bc"},
+    {file = "gssapi-1.9.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:cbc93fdadd5aab9bae594538b2128044b8c5cdd1424fe015a465d8a8a587411a"},
+    {file = "gssapi-1.9.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:5b2a3c0a9beb895942d4b8e31f515e52c17026e55aeaa81ee0df9bbfdac76098"},
+    {file = "gssapi-1.9.0-cp39-cp39-win32.whl", hash = "sha256:060b58b455d29ab8aca74770e667dca746264bee660ac5b6a7a17476edc2c0b8"},
+    {file = "gssapi-1.9.0-cp39-cp39-win_amd64.whl", hash = "sha256:11c9fe066edb0fa0785697eb0cecf2719c7ad1d9f2bf27be57b647a617bcfaa5"},
+    {file = "gssapi-1.9.0.tar.gz", hash = "sha256:f468fac8f3f5fca8f4d1ca19e3cd4d2e10bd91074e7285464b22715d13548afe"},
+]
+
+[package.dependencies]
+decorator = "*"
+
+[[package]]
 name = "gunicorn"
 version = "23.0.0"
 description = "WSGI HTTP Server for UNIX"
@@ -1417,23 +1444,6 @@ gevent = ["gevent (>=1.4.0)"]
 setproctitle = ["setproctitle"]
 testing = ["coverage", "eventlet", "gevent", "pytest", "pytest-cov"]
 tornado = ["tornado (>=0.2)"]
-
-[[package]]
-name = "html-sanitizer"
-version = "2.6.0"
-description = "HTML sanitizer"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-files = [
-    {file = "html_sanitizer-2.6.0-py3-none-any.whl", hash = "sha256:44c8ef924358a092f13d7c63f6385b05994e5a328b0f11d1db421d88980b7c3f"},
-    {file = "html_sanitizer-2.6.0.tar.gz", hash = "sha256:e20bbc92df161d16c04aace70b2f69f482bd1e60d40aaa8b3209a2aeb94cd524"},
-]
-
-[package.dependencies]
-beautifulsoup4 = "*"
-lxml = ">=5.2"
-lxml-html-clean = ">=0.4"
 
 [[package]]
 name = "idna"
@@ -1827,21 +1837,6 @@ cssselect = ["cssselect (>=0.7)"]
 html-clean = ["lxml_html_clean"]
 html5 = ["html5lib"]
 htmlsoup = ["BeautifulSoup4"]
-
-[[package]]
-name = "lxml-html-clean"
-version = "0.4.2"
-description = "HTML cleaner from lxml project"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "lxml_html_clean-0.4.2-py3-none-any.whl", hash = "sha256:74ccfba277adcfea87a1e9294f47dd86b05d65b4da7c5b07966e3d5f3be8a505"},
-    {file = "lxml_html_clean-0.4.2.tar.gz", hash = "sha256:91291e7b5db95430abf461bc53440964d58e06cc468950f9e47db64976cebcb3"},
-]
-
-[package.dependencies]
-lxml = "*"
 
 [[package]]
 name = "markdown-it-py"
@@ -3156,18 +3151,6 @@ files = [
 ]
 
 [[package]]
-name = "soupsieve"
-version = "2.7"
-description = "A modern CSS selector implementation for Beautiful Soup."
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-files = [
-    {file = "soupsieve-2.7-py3-none-any.whl", hash = "sha256:6e60cc5c1ffaf1cebcc12e8188320b72071e922c2e897f737cadce79ad5d30c4"},
-    {file = "soupsieve-2.7.tar.gz", hash = "sha256:ad282f9b6926286d2ead4750552c8a6142bc4c783fd66b0293547c8fe6ae126a"},
-]
-
-[[package]]
 name = "sphinx"
 version = "8.2.3"
 description = "Python documentation generator"
@@ -3597,7 +3580,7 @@ version = "4.14.1"
 description = "Backported and Experimental Type Hints for Python 3.9+"
 optional = false
 python-versions = ">=3.9"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "typing_extensions-4.14.1-py3-none-any.whl", hash = "sha256:d1e1e3b58374dc93031d6eda2420a48ea44a36c2b4766a4fdeb3710755731d76"},
     {file = "typing_extensions-4.14.1.tar.gz", hash = "sha256:38b39f4aeeab64884ce9f74c94263ef78f3c22467c8724005483154c26648d36"},
@@ -3706,4 +3689,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0"
-content-hash = "f83dc96ca62fd2f2eac9b130862906d3e51f9bbcb6650dd6247ddbfcee656535"
+content-hash = "6f3f827ecb56a7c019efcae06ba32a3720154ddabf3ee4978d102e085c9991ba"
