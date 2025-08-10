@@ -180,6 +180,8 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
         """
         if not self.log_filepath:
             self.setup_logger()  # Order may be crucial here to set the logger up before its used
+        # else:
+        #     self.update_logger()
         if not self.pk:
             self.celery_task = PeriodicTask.objects.create(
                 interval=self.interval,
@@ -231,6 +233,13 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
         file_handler.setFormatter(logging.Formatter(settings.LOGFORMAT, style="{"))
         daemon_logger.addHandler(file_handler)
 
+    # def update_logger(self) -> None:
+    #     """Sets up the logger for the daemon process."""
+    #     daemon_logger = logging.getLogger(str(self.uuid))
+    #     file_handler = daemon_logger.handlers[0]
+    #     file_handler.backupCount = self.log_backup_count
+    #     file_handler.maxBytes = self.logfile_size
+
     def test(self) -> None:
         """Tests whether the data in the model is correct and the daemons task can be run.
 
@@ -242,15 +251,11 @@ class Daemon(DirtyFieldsMixin, HasDownloadMixin, URLMixin, models.Model):
         """
         logger.info("Testing daemon %s ...", self)
 
-        task_name = self.celery_task.task
+        daemon_task = self.celery_task.task
         args = json.loads(self.celery_task.args or "[]")
         kwargs = json.loads(self.celery_task.kwargs or "{}")
-
-        task = current_app.tasks.get(task_name)
-        if not task:
-            raise ValueError(_("The daemons task was not found."))
         try:
-            task.apply_async(args=args, kwargs=kwargs).get()
+            current_app.send_task(daemon_task, args=args, kwargs=kwargs).get()
         except Exception:
             logger.exception("Failed testing daemon %s!", self)
             raise

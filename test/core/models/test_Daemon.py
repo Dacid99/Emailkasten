@@ -52,6 +52,11 @@ def mock_Mailbox_fetch(mocker):
     return mocker.patch("core.models.Mailbox.Mailbox.fetch")
 
 
+@pytest.fixture
+def mock_celery_app(mocker):
+    return mocker.patch("core.models.Daemon.current_app", autospec=True)
+
+
 @pytest.mark.django_db
 def test_Daemon_fields(fake_daemon):
     """Tests the fields of :class:`core.models.Daemon.Daemon`."""
@@ -176,25 +181,33 @@ def test_Daemon_delete_no_celery_task(fake_daemon):
 
 
 @pytest.mark.django_db
-def test_Daemon_test_success(celery_testsetup, fake_daemon, mock_Mailbox_fetch):
+def test_Daemon_test_success(mock_celery_app, fake_daemon):
     fake_daemon.test()
+    args = json.loads(fake_daemon.celery_task.args or "[]")
+    kwargs = json.loads(fake_daemon.celery_task.kwargs or "{}")
 
-    mock_Mailbox_fetch.assert_called_once_with(fake_daemon.fetching_criterion)
+    mock_celery_app.send_task.assert_called_once_with(
+        "core.tasks.fetch_emails", args=args, kwargs=kwargs
+    )
+    mock_celery_app.send_task.return_value.get.assert_called_once_with()
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "error", [AssertionError, ValueError, MailAccountError, MailboxError]
 )
-def test_Daemon_test_failure(celery_testsetup, fake_daemon, mock_Mailbox_fetch, error):
-    mock_Mailbox_fetch.side_effect = error
+def test_Daemon_test_failure(mock_celery_app, fake_daemon, error):
+    mock_celery_app.send_task.return_value.get.side_effect = error
+    args = json.loads(fake_daemon.celery_task.args or "[]")
+    kwargs = json.loads(fake_daemon.celery_task.kwargs or "{}")
 
     with pytest.raises(error):
         fake_daemon.test()
 
-    mock_Mailbox_fetch.assert_called_once_with(fake_daemon.fetching_criterion)
-    fake_daemon.refresh_from_db()
-    assert fake_daemon.is_healthy is False
+    mock_celery_app.send_task.assert_called_once_with(
+        "core.tasks.fetch_emails", args=args, kwargs=kwargs
+    )
+    mock_celery_app.send_task.return_value.get.assert_called_once_with()
 
 
 @pytest.mark.django_db

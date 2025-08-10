@@ -37,6 +37,9 @@ def fetch_emails(  # this must not be renamed or moved, otherwise existing daemo
 
     Args:
         daemon_uuid_string: The uuid of the daemon instance that manages this task.
+
+    Raises:
+        Exception: Any exception that is raised during fetching.
     """
     logger = logging.getLogger(daemon_uuid_string)
 

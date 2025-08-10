@@ -49,7 +49,6 @@ from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
 import pytest
-from celery import current_app
 from django.core.files.storage import default_storage
 from django.forms import model_to_dict
 from django_celery_beat.models import IntervalSchedule
@@ -353,24 +352,6 @@ def fake_fs(settings) -> Generator[FakeFilesystem]:
             patcher.fs.create_dir(gettempdir())
 
         yield patcher.fs
-
-
-@pytest.fixture
-def celery_testsetup(mocker, monkeypatch):
-    """This is not a way to test the celery backend but suffices to test the tasks."""
-
-    old_always_eager = current_app.conf.task_always_eager
-    old_propagates = current_app.conf.task_eager_propagates
-
-    # Set test config
-    current_app.conf.task_always_eager = True
-    current_app.conf.task_eager_propagates = True
-
-    yield current_app
-
-    # Restore config
-    current_app.conf.task_always_eager = old_always_eager
-    current_app.conf.task_eager_propagates = old_propagates
 
 
 @pytest.fixture
