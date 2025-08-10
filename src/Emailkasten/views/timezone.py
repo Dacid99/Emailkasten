@@ -27,7 +27,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from Emailkasten.middleware.TimezoneMiddleware import TimezoneMiddleware
 
 
-TIMEZONE_QUERY_PARAMETER = "timezone"
+TIMEZONE_FIELD_NAME = "timezone"
 
 SET_TIMEZONE_URL_NAME = "set_timezone"
 
@@ -63,7 +63,7 @@ def set_timezone(request: HttpRequest) -> HttpResponse:
             next_url = "/"
     response = HttpResponseRedirect(next_url) if next_url else HttpResponse(status=204)
     if request.method == "POST":
-        timezone_code = request.POST.get(TIMEZONE_QUERY_PARAMETER)
+        timezone_code = request.POST.get(TIMEZONE_FIELD_NAME)
         if timezone_code:
             try:
                 zoneinfo.ZoneInfo(timezone_code)
@@ -71,7 +71,7 @@ def set_timezone(request: HttpRequest) -> HttpResponse:
                 return response
             else:
                 request.session[TimezoneMiddleware.TIMEZONE_SESSION_KEY] = request.POST[
-                    TIMEZONE_QUERY_PARAMETER
+                    TIMEZONE_FIELD_NAME
                 ]
 
     return response
