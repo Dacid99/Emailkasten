@@ -3,20 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-06 20:23+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-08-11 10:08+0000\n"
+"Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/emailkasten/web/"
+"it/>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: src/web/filters/AccountFilterSet.py:56
 #: src/web/filters/AttachmentFilterSet.py:55
@@ -26,7 +27,7 @@ msgstr ""
 #: src/web/filters/EmailCorrespondentFilterSet.py:56
 #: src/web/filters/EmailFilterSet.py:53 src/web/filters/MailboxFilterSet.py:53
 msgid "Search"
-msgstr ""
+msgstr "Ricerca"
 
 #: src/web/filters/AccountFilterSet.py:67
 #: src/web/filters/CorrespondentFilterSet.py:61
@@ -34,7 +35,7 @@ msgstr ""
 #: src/web/filters/EmailCorrespondentFilterSet.py:66
 #: src/web/filters/MailboxFilterSet.py:67
 msgid "Created before"
-msgstr ""
+msgstr "Creato prima"
 
 #: src/web/filters/AccountFilterSet.py:73
 #: src/web/filters/CorrespondentFilterSet.py:67
@@ -42,23 +43,23 @@ msgstr ""
 #: src/web/filters/EmailCorrespondentFilterSet.py:72
 #: src/web/filters/MailboxFilterSet.py:73
 msgid "Created after"
-msgstr ""
+msgstr "Creato dopo"
 
 #: src/web/filters/AttachmentFilterSet.py:78
 #: src/web/filters/CorrespondentEmailFilterSet.py:75
 #: src/web/filters/EmailFilterSet.py:67
 msgid "Received before"
-msgstr ""
+msgstr "Ricevuto prima"
 
 #: src/web/filters/AttachmentFilterSet.py:84
 #: src/web/filters/CorrespondentEmailFilterSet.py:81
 #: src/web/filters/EmailFilterSet.py:73
 msgid "Received after"
-msgstr ""
+msgstr "Ricevuto dopo"
 
 #: src/web/filters/DaemonFilterSet.py:69
 msgid "Number of intervals"
-msgstr ""
+msgstr "Numero di intervalli"
 
 #: src/web/filters/DaemonFilterSet.py:75
 msgid "Interval period"
@@ -75,14 +76,15 @@ msgstr ""
 #: src/web/forms/UploadEmailForm.py:36
 msgid "Select the format of the email file you want to upload."
 msgstr ""
+"Seleziona il formato del file di posta elettronica che si desidera caricare."
 
 #: src/web/forms/UploadEmailForm.py:41
 msgid "Email or Mailbox file"
-msgstr ""
+msgstr "File e-mail o di casella di posta"
 
 #: src/web/forms/UploadEmailForm.py:42
 msgid "Pick a file for upload."
-msgstr ""
+msgstr "Scegli un file per caricare."
 
 #: src/web/mixins/TestActionMixin.py:44
 #, python-format
@@ -90,18 +92,20 @@ msgid ""
 "Test failed\n"
 "%(error)s"
 msgstr ""
+"Test fallito\n"
+"%(error)s"
 
 #: src/web/mixins/TestActionMixin.py:46
 msgid "Test was successful"
-msgstr ""
+msgstr "Il test ha avuto successo"
 
 #: src/web/templates/400.html:6 src/web/templates/400.html:10
 msgid "Request Error"
-msgstr ""
+msgstr "Errore di richiesta"
 
 #: src/web/templates/400.html:11
 msgid "There was something wrong with your request."
-msgstr ""
+msgstr "C'era qualcosa che non andava nella tua richiesta."
 
 #: src/web/templates/400.html:12
 msgid "First aid: Please try again."
@@ -110,11 +114,11 @@ msgstr ""
 #: src/web/templates/403.html:6 src/web/templates/403.html:10
 #: src/web/templates/403_csrf.html:6 src/web/templates/403_csrf.html:10
 msgid "Forbidden"
-msgstr ""
+msgstr "Vietato"
 
 #: src/web/templates/403.html:11
 msgid "You are not allowed to access the page you requested."
-msgstr ""
+msgstr "Non è consentito accedere alla pagina richiesta."
 
 #: src/web/templates/403.html:12
 msgid "First aid: Check if you are logged in."
@@ -130,11 +134,11 @@ msgstr ""
 
 #: src/web/templates/404.html:6 src/web/templates/404.html:10
 msgid "Page Not Found"
-msgstr ""
+msgstr "Pagina non trovata"
 
 #: src/web/templates/404.html:11
 msgid "The page you requested doesn't exist."
-msgstr ""
+msgstr "La pagina richiesta non esiste."
 
 #: src/web/templates/404.html:12
 msgid "First aid: Check the URL for typos."
@@ -142,11 +146,13 @@ msgstr ""
 
 #: src/web/templates/500.html:6 src/web/templates/500.html:10
 msgid "Internal Error"
-msgstr ""
+msgstr "Errore interno"
 
 #: src/web/templates/500.html:11
 msgid "An unexpected error occurred while processing your request."
 msgstr ""
+"Un errore inaspettato si è verificato durante l'elaborazione della tua "
+"richiesta."
 
 #: src/web/templates/500.html:13
 msgid ""
@@ -156,143 +162,145 @@ msgstr ""
 
 #: src/web/templates/web/account/account_create.html:6
 msgid "Add Account"
-msgstr ""
+msgstr "Aggiungi un account"
 
 #: src/web/templates/web/account/account_create.html:20
 msgid "New Account"
-msgstr ""
+msgstr "Nuovo account"
 
 #: src/web/templates/web/account/account_create.html:37
 #: src/web/templates/web/daemon/daemon_create.html:33
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:39
 #: src/web/templates/web/partials/_cancel_edit-button.html:5
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #: src/web/templates/web/account/account_detail.html:6
 msgid "Account Details"
-msgstr ""
+msgstr "Dettagli dell'account"
 
 #: src/web/templates/web/account/account_detail.html:41
 msgid "Host"
-msgstr ""
+msgstr "Host"
 
 #: src/web/templates/web/account/account_detail.html:42
 #: src/web/templates/web/account/partials/_account_card.html:24
 msgid "Protocol"
-msgstr ""
+msgstr "Protocollo"
 
 #: src/web/templates/web/account/account_detail.html:44
 msgid "Port"
-msgstr ""
+msgstr "Porta"
 
 #: src/web/templates/web/account/account_detail.html:48
 msgid "Default"
-msgstr ""
+msgstr "Predefinito"
 
 #: src/web/templates/web/account/account_detail.html:51
 msgid "Timeout"
-msgstr ""
+msgstr "Scadenza"
 
 #: src/web/templates/web/account/account_detail.html:60
 #: src/web/templates/web/mailbox/mailbox_filter_list.html:6
 #: src/web/templates/web/mailbox/mailbox_filter_list.html:14
 #: src/web/templates/web/partials/_navbar.html:34
 msgid "Mailboxes"
-msgstr ""
+msgstr "Caselle di posta"
 
 #: src/web/templates/web/account/account_detail.html:83
 #: src/web/templates/web/correspondent/correspondent_detail.html:60
 #: src/web/templates/web/dashboard.html:16
 #: src/web/templates/web/mailbox/mailbox_detail.html:98
 msgid "Latest Emails"
-msgstr ""
+msgstr "Le ultime e-mail"
 
 #: src/web/templates/web/account/account_detail.html:88
 #: src/web/templates/web/correspondent/correspondent_detail.html:64
 #: src/web/templates/web/dashboard.html:21
 #: src/web/templates/web/mailbox/mailbox_detail.html:103
 msgid "View all"
-msgstr ""
+msgstr "Visualizza tutto"
 
 #: src/web/templates/web/account/account_edit.html:6
 msgid "Edit Account"
-msgstr ""
+msgstr "Modifica l'account"
 
 #: src/web/templates/web/account/account_email_filter_list.html:6
 #: src/web/templates/web/mailbox/mailbox_email_filter_list.html:6
 msgid "in"
-msgstr ""
+msgstr "in"
 
 #: src/web/templates/web/account/account_filter_list.html:6
 #: src/web/templates/web/account/account_filter_list.html:10
 #: src/web/templates/web/partials/_navbar.html:31
 msgid "Accounts"
-msgstr ""
+msgstr "Account"
 
 #: src/web/templates/web/account/partials/_add_button.html:6
 msgid "Add account"
-msgstr ""
+msgstr "Aggiungi un account"
 
 #: src/web/templates/web/account/partials/_email_list_alternative.html:4
 msgid "You can fetch emails from one of this accounts mailboxes."
-msgstr ""
+msgstr "È possibile prendere e-mail da una di queste caselle di posta."
 
 #: src/web/templates/web/account/partials/_filter_list_alternative.html:7
 msgid "No email accounts found."
-msgstr ""
+msgstr "Nessun account e-mail trovato."
 
 #: src/web/templates/web/account/partials/_filter_list_alternative.html:11
 msgid "Go ahead and add some."
-msgstr ""
+msgstr "Avanti, aggiungine."
 
 #: src/web/templates/web/account/partials/_mailboxes_list_alternative.html:4
 msgid "You can add mailboxes for this account by fetching them from the server"
 msgstr ""
+"È possibile aggiungere caselle di posta per questo account recuperandole dal "
+"server"
 
 #: src/web/templates/web/account/partials/_unhealthy_list_alternative.html:4
 msgid "Test this account to make sure it can be accessed."
-msgstr ""
+msgstr "Prova questo account per assicurarsi che possa essere accessibile."
 
 #: src/web/templates/web/account/partials/_update_mailboxes-button.html:9
 msgid "Update Mailboxes"
-msgstr ""
+msgstr "Aggiorna le caselle di posta"
 
 #: src/web/templates/web/attachment/attachment_detail.html:6
 msgid "Attachment Details"
-msgstr ""
+msgstr "Dettagli dell'allegato"
 
 #: src/web/templates/web/attachment/attachment_detail.html:35
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #: src/web/templates/web/attachment/attachment_detail.html:38
 msgid "Content Type"
-msgstr ""
+msgstr "Tipo di contenuto"
 
 #: src/web/templates/web/attachment/attachment_detail.html:41
 msgid "Content Disposition"
-msgstr ""
+msgstr "Disposizione del contenuto"
 
 #: src/web/templates/web/attachment/attachment_detail.html:45
 msgid "Content Id"
-msgstr ""
+msgstr "Identificatore del contenuto"
 
 #: src/web/templates/web/attachment/attachment_detail.html:48
 msgid "Size"
-msgstr ""
+msgstr "Dimensioni"
 
 #: src/web/templates/web/attachment/attachment_detail.html:48
 #: src/web/templates/web/daemon/daemon_detail.html:55
 #: src/web/templates/web/email/email_detail.html:44
 msgid "bytes"
-msgstr ""
+msgstr "byte"
 
 #: src/web/templates/web/attachment/attachment_detail.html:50
 #: src/web/templates/web/attachment/partials/_attachment_card.html:27
 #: src/web/templates/web/email/email_detail.html:36
 msgid "Date received"
-msgstr ""
+msgstr "Ricevuto il"
 
 #: src/web/templates/web/attachment/attachment_filter_list.html:6
 #: src/web/templates/web/attachment/attachment_filter_list.html:14
@@ -300,30 +308,32 @@ msgstr ""
 #: src/web/templates/web/email/email_detail.html:119
 #: src/web/templates/web/partials/_navbar.html:23
 msgid "Attachments"
-msgstr ""
+msgstr "Allegati"
 
 #: src/web/templates/web/attachment/partials/_attachment_card.html:11
 msgid "MIME-Type"
-msgstr ""
+msgstr "Tipo MIME"
 
 #: src/web/templates/web/attachment/partials/_attachment_card.html:24
 msgid "In email"
-msgstr ""
+msgstr "Nell'e-mail"
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:7
 msgid "No attachments found."
-msgstr ""
+msgstr "Nessun allegato trovato."
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:11
 msgid ""
 "You can fetching some along with emails from the mailboxes you have set up."
 msgstr ""
+"È possibile recuperarne alcuni con e-mail dalle caselle di posta che hai "
+"impostato."
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:17
 #: src/web/templates/web/correspondent/partials/_filter_list_alternative.html:17
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:17
 msgid "Go to mailboxes"
-msgstr ""
+msgstr "Vai alle caselle"
 
 #: src/web/templates/web/attachment/partials/_thumbnail.html:17
 msgid "Attachment image"
@@ -340,7 +350,7 @@ msgstr ""
 #: src/web/templates/web/bases/base.html:14
 #: src/web/templates/web/partials/_navbar.html:6
 msgid "Emailkasten"
-msgstr ""
+msgstr "Emailkasten"
 
 #: src/web/templates/web/bases/base_create.html:13
 #: src/web/templates/web/bases/base_detail.html:19
@@ -378,7 +388,7 @@ msgstr ""
 #: src/web/templates/web/partials/_delete-modal.html:17
 #: src/web/templates/web/partials/_delete-modal.html:28
 msgid "Close"
-msgstr ""
+msgstr "Chiudi"
 
 #: src/web/templates/web/correspondent/correspondent_detail.html:6
 msgid "Correspondent Details"
@@ -669,7 +679,7 @@ msgstr ""
 
 #: src/web/templates/web/email/partials/_email_card.html:27
 msgid "Received"
-msgstr ""
+msgstr "Ricevuto"
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:7
 msgid "No emails found."
@@ -854,7 +864,7 @@ msgstr ""
 
 #: src/web/templates/web/partials/_navbar.html:13
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Attiva/disattiva la navigazione"
 
 #: src/web/templates/web/partials/_pagination.html:5
 msgid "Page navigation"
