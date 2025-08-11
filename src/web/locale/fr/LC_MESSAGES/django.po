@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 09:31+0000\n"
-"PO-Revision-Date: 2025-08-08 07:02+0000\n"
+"POT-Creation-Date: 2025-08-06 20:23+0000\n"
+"PO-Revision-Date: 2025-08-11 10:08+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/emailkasten/web/"
 "fr/>\n"
@@ -715,7 +715,7 @@ msgstr "Aucun courriel trouvé pour cette période."
 
 #: src/web/templates/web/email/partials/_email_card.html:27
 msgid "Received"
-msgstr "Reçus"
+msgstr "Reçu"
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:7
 msgid "No emails found."
