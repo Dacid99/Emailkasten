@@ -99,7 +99,8 @@ msgstr "Numero predefinito di file di registro demone da mantenere"
 
 #: src/Emailkasten/settings.py:565
 msgid "Default maximum size of a daemon logfile in bytes"
-msgstr "Dimensione massima predefinita di un file di registro di demone in byte"
+msgstr ""
+"Dimensione massima predefinita di un file di registro di demone in byte"
 
 #: src/Emailkasten/settings.py:570
 msgid "Maximum numbers of files in one storage unit."

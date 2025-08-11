@@ -18,6 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
 "2);\n"
+
 #: src/api/v1/mixins/NoCreateMixin.py:34
 msgid "POST method is not allowed on this endpoint."
 msgstr ""

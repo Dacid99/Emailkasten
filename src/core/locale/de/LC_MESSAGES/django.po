@@ -639,11 +639,3 @@ msgstr ""
 #, python-format
 msgid "An %(error_class_name)s: %(error)s occurred during %(action_name)s!"
 msgstr "Ein %(error_class_name)s: %(error)s trat während %(action_name)s auf!"
-
-#, python-format
-#~ msgid ""
-#~ "An %(error_class_name)s: %(error)s occurred during opening of "
-#~ "message_root!"
-#~ msgstr ""
-#~ "Ein %(error_class_name)s: %(error)s trat während des Öffnens der "
-#~ "Nachrichtenquelle auf!"

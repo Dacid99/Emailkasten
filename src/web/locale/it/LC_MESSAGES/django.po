@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-06 20:23+0000\n"
+"POT-Creation-Date: 2025-08-11 12:29+0000\n"
 "PO-Revision-Date: 2025-08-11 10:08+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/emailkasten/web/"
@@ -285,23 +285,14 @@ msgstr "Aggiorna le caselle di posta"
 msgid "Attachment Details"
 msgstr "Dettagli dell'allegato"
 
-#: src/web/templates/web/attachment/attachment_detail.html:35
-msgid "Email"
-msgstr "E-mail"
-
-#: src/web/templates/web/attachment/attachment_detail.html:38
-msgid "Content Type"
+#: src/web/templates/web/attachment/attachment_detail.html:32
+#: src/web/templates/web/attachment/partials/_attachment_card.html:10
+#, fuzzy
+#| msgid "Content Type"
+msgid "MIME Content-Type"
 msgstr "Tipo di contenuto"
 
-#: src/web/templates/web/attachment/attachment_detail.html:41
-msgid "Content Disposition"
-msgstr "Disposizione del contenuto"
-
-#: src/web/templates/web/attachment/attachment_detail.html:45
-msgid "Content Id"
-msgstr "Identificatore del contenuto"
-
-#: src/web/templates/web/attachment/attachment_detail.html:48
+#: src/web/templates/web/attachment/attachment_detail.html:38
 msgid "Size"
 msgstr "Dimensioni"
 
@@ -314,11 +305,11 @@ msgstr "byte"
 
 #: src/web/templates/web/attachment/attachment_detail.html:42
 msgid "Content Disposition"
-msgstr ""
+msgstr "Disposizione del contenuto"
 
 #: src/web/templates/web/attachment/attachment_detail.html:46
 msgid "Content Id"
-msgstr ""
+msgstr "Identificatore del contenuto"
 
 #: src/web/templates/web/attachment/attachment_detail.html:48
 #: src/web/templates/web/attachment/partials/_attachment_card.html:28
@@ -328,7 +319,7 @@ msgstr "Ricevuto il"
 
 #: src/web/templates/web/attachment/attachment_detail.html:62
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #: src/web/templates/web/attachment/attachment_filter_list.html:6
 #: src/web/templates/web/attachment/attachment_filter_list.html:14
@@ -338,9 +329,10 @@ msgstr ""
 msgid "Attachments"
 msgstr "Allegati"
 
-#: src/web/templates/web/attachment/partials/_attachment_card.html:11
-msgid "MIME-Type"
-msgstr "Tipo MIME"
+#: src/web/templates/web/attachment/partials/_attachment_card.html:22
+#: src/web/templates/web/email/email_detail.html:44
+msgid "Datasize"
+msgstr ""
 
 #: src/web/templates/web/attachment/partials/_attachment_card.html:25
 msgid "In email"
@@ -382,7 +374,7 @@ msgstr "Emailkasten"
 
 #: src/web/templates/web/bases/base.html:43
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Attiva/disattiva la navigazione"
 
 #: src/web/templates/web/bases/base.html:50
 #: src/web/templates/web/dashboard.html:47
@@ -892,9 +884,9 @@ msgstr ""
 msgid "Health unknown"
 msgstr ""
 
-#: src/web/templates/web/partials/_navbar.html:13
-msgid "Toggle navigation"
-msgstr "Attiva/disattiva la navigazione"
+#: src/web/templates/web/partials/_pagination.html:4
+msgid "Results"
+msgstr ""
 
 #: src/web/templates/web/partials/_pagination.html:5
 msgid "Page navigation"

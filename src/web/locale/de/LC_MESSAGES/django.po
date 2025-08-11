@@ -978,10 +978,3 @@ msgstr "Abrufen war erfolgreich"
 #: src/web/views/mailbox_views/UploadEmailView.py:74
 msgid "The file could not be processed!"
 msgstr "Die Datei konnte nicht verarbeitet werden!"
-
-#~ msgid "MIME-Type"
-#~ msgstr "MIME-Typ"
-
-#, python-format
-#~ msgid "for %(object.name)s"
-#~ msgstr "für %(object.name)s"

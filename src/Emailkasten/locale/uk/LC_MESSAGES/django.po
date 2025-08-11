@@ -257,6 +257,3 @@ msgstr "Сесії"
 #: src/Emailkasten/templates/allauth/layouts/manage.html:37
 msgid "Admin panel"
 msgstr "Панель адміністратора"
-
-#~ msgid "Select timezone"
-#~ msgstr "Виберіть часовий пояс"

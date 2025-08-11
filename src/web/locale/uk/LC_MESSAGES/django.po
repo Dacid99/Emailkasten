@@ -983,10 +983,3 @@ msgstr "Отримання успішне"
 #: src/web/views/mailbox_views/UploadEmailView.py:74
 msgid "The file could not be processed!"
 msgstr "Файл не вдалося обробити!"
-
-#~ msgid "MIME-Type"
-#~ msgstr "MIME-тип"
-
-#, python-format
-#~ msgid "for %(object.name)s"
-#~ msgstr "для %(object.name)s"

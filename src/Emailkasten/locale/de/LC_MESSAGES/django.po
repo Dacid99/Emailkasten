@@ -246,6 +246,3 @@ msgstr "Sitzungen"
 #: src/Emailkasten/templates/allauth/layouts/manage.html:37
 msgid "Admin panel"
 msgstr "Admin-Seite"
-
-#~ msgid "Select timezone"
-#~ msgstr "Zeitzone wählen"

@@ -252,6 +252,3 @@ msgstr "Sessions"
 #: src/Emailkasten/templates/allauth/layouts/manage.html:37
 msgid "Admin panel"
 msgstr "Panneau admin"
-
-#~ msgid "Select timezone"
-#~ msgstr "Sélectionnez un fuseau horaire"

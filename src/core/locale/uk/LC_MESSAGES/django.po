@@ -651,11 +651,3 @@ msgstr ""
 msgid "An %(error_class_name)s: %(error)s occurred during %(action_name)s!"
 msgstr ""
 "Помилка %(error_class_name)s: %(error)s сталася під час %(action_name)s!"
-
-#, python-format
-#~ msgid ""
-#~ "An %(error_class_name)s: %(error)s occurred during opening of "
-#~ "message_root!"
-#~ msgstr ""
-#~ "Під час відкриття message_root сталася помилка %(error_class_name)s: "
-#~ "%(error)s!"
