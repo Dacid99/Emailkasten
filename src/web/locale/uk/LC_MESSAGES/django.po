@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-11 09:31+0000\n"
-"PO-Revision-Date: 2025-08-08 07:02+0000\n"
-"Last-Translator: Максим Горпиніч <gorpinicmaksim5@gmail.com>\n"
+"PO-Revision-Date: 2025-08-12 15:02+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
 "web/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
-"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
-"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
-"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 "
+"? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > "
+"14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % "
+"100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 "X-Generator: Weblate 5.13-dev\n"
 
 #: src/web/filters/AccountFilterSet.py:56
@@ -89,12 +89,13 @@ msgid "Pick a file for upload."
 msgstr "Виберіть файл для завантаження."
 
 #: src/web/mixins/TestActionMixin.py:47
-#, fuzzy, python-format
-#| msgid "There was something wrong with your request."
+#, python-format
 msgid ""
 "Test failed, there is something wrong with this objects setup\n"
 "%(error)s"
-msgstr "З вашим запитом щось було не так."
+msgstr ""
+"Тест не вдався, щось не так з налаштуванням цього об'єкта\n"
+"%(error)s"
 
 #: src/web/mixins/TestActionMixin.py:52
 #, python-format
@@ -106,15 +107,12 @@ msgstr ""
 "%(error)s"
 
 #: src/web/mixins/TestActionMixin.py:56
-#, fuzzy, python-format
-#| msgid ""
-#| "Test failed\n"
-#| "%(error)s"
+#, python-format
 msgid ""
 "Test failed due to an unexpected error\n"
 "%(error)s"
 msgstr ""
-"Тест не вдався\n"
+"Тест не пройшов через неочікувану помилку\n"
 "%(error)s"
 
 #: src/web/mixins/TestActionMixin.py:60
@@ -299,10 +297,8 @@ msgstr "Деталі вкладення"
 
 #: src/web/templates/web/attachment/attachment_detail.html:32
 #: src/web/templates/web/attachment/partials/_attachment_card.html:10
-#, fuzzy
-#| msgid "Content Type"
 msgid "MIME Content-Type"
-msgstr "Тип вмісту"
+msgstr "Тип вмісту MIME"
 
 #: src/web/templates/web/attachment/attachment_detail.html:38
 msgid "Size"
@@ -455,7 +451,7 @@ msgstr "Ім'я поштової розсилки"
 
 #: src/web/templates/web/correspondent/correspondent_detail.html:36
 msgid "Mailinglist"
-msgstr ""
+msgstr "Список розсилки"
 
 #: src/web/templates/web/correspondent/correspondent_detail.html:39
 msgid "Subscribe"
@@ -719,7 +715,7 @@ msgstr "Отримано"
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:7
 msgid "No emails found."
-msgstr "Електронних листів не знайдено."
+msgstr "Електронна пошта не знайдено."
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:11
 msgid "You can fetch some from the mailboxes you have set up."
@@ -731,7 +727,7 @@ msgstr "Новий демон"
 
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:22
 msgid "for"
-msgstr ""
+msgstr "для"
 
 #: src/web/templates/web/mailbox/mailbox_detail.html:6
 msgid "Mailbox Details"
@@ -908,7 +904,7 @@ msgstr "Стан здоров'я невідомий"
 
 #: src/web/templates/web/partials/_pagination.html:4
 msgid "Results"
-msgstr ""
+msgstr "Результати"
 
 #: src/web/templates/web/partials/_pagination.html:5
 msgid "Page navigation"
