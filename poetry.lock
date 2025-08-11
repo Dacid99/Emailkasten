@@ -28,6 +28,21 @@ files = [
 vine = ">=5.0.0,<6.0.0"
 
 [[package]]
+name = "argcomplete"
+version = "3.6.2"
+description = "Bash tab completion for argparse"
+optional = false
+python-versions = ">=3.8"
+groups = ["dev"]
+files = [
+    {file = "argcomplete-3.6.2-py3-none-any.whl", hash = "sha256:65b3133a29ad53fb42c48cf5114752c7ab66c1c38544fdf6460f450c09b42591"},
+    {file = "argcomplete-3.6.2.tar.gz", hash = "sha256:d0519b1bc867f5f4f4713c41ad0aba73a4a5f007449716b16f385f2166dc6adf"},
+]
+
+[package.extras]
+test = ["coverage", "mypy", "pexpect", "ruff", "wheel"]
+
+[[package]]
 name = "asgiref"
 version = "3.9.1"
 description = "ASGI specs, helper code, and adapters"
@@ -2622,6 +2637,18 @@ files = [
 six = ">=1.5"
 
 [[package]]
+name = "pyxdg"
+version = "0.28"
+description = "PyXDG contains implementations of freedesktop.org standards in python."
+optional = false
+python-versions = "*"
+groups = ["dev"]
+files = [
+    {file = "pyxdg-0.28-py2.py3-none-any.whl", hash = "sha256:bdaf595999a0178ecea4052b7f4195569c1ff4d344567bccdc12dfdf02d545ab"},
+    {file = "pyxdg-0.28.tar.gz", hash = "sha256:3267bb3074e934df202af2ee0868575484108581e6f3cb006af1da35395e88b4"},
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 description = "YAML parser and emitter for Python"
@@ -3686,7 +3713,30 @@ files = [
 [package.extras]
 brotli = ["brotli"]
 
+[[package]]
+name = "wlc"
+version = "1.15"
+description = "A command-line utility for Weblate, translation tool with tight version control integration"
+optional = false
+python-versions = ">=3.8"
+groups = ["dev"]
+files = [
+    {file = "wlc-1.15-py3-none-any.whl", hash = "sha256:0cd0b54efdb5b92f608666266552d5e5170be9c1daf4cc352a7106bf358f758a"},
+    {file = "wlc-1.15.tar.gz", hash = "sha256:d13f1c32ae4caeffd8828e817d8868dec8c5baef1d619c9432d25ce6069bb86e"},
+]
+
+[package.dependencies]
+argcomplete = "*"
+python-dateutil = "*"
+pyxdg = "*"
+requests = ">=2.25.0"
+urllib3 = ">=1.26"
+
+[package.extras]
+lint = ["pre-commit (==3.8.0)"]
+test = ["build (==1.2.1)", "pytest", "pytest-cov", "responses (>=0.10.1,<0.26.0)", "twine (==5.1.1)"]
+
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0"
-content-hash = "6f3f827ecb56a7c019efcae06ba32a3720154ddabf3ee4978d102e085c9991ba"
+content-hash = "17e52bb78aa76dfd530bc1e072794ab54d3f61c581fb7f4ad2f013de86c7145b"
