@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-11 09:31+0000\n"
-"PO-Revision-Date: 2025-08-08 07:02+0000\n"
-"Last-Translator: Максим Горпиніч <gorpinicmaksim5@gmail.com>\n"
+"PO-Revision-Date: 2025-08-12 15:01+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
 "emailkasten/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
-"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
-"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
-"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 "
+"? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > "
+"14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % "
+"100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 "X-Generator: Weblate 5.13-dev\n"
 
 #: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:700
@@ -88,6 +88,8 @@ msgid ""
 "Maximum datasize for a thumbnail in the webapp. Thumbnails larger than this "
 "will not be loaded."
 msgstr ""
+"Максимальний розмір даних для мініатюри у вебзастосунку. Мініатюри, більші "
+"за цей розмір, не завантажуватимуться."
 
 #: src/Emailkasten/settings.py:550
 msgid "Default cycle period setting of a daemon in seconds"
@@ -207,15 +209,15 @@ msgstr "Виберіть мову"
 
 #: src/Emailkasten/templates/allauth/elements/theme_dropdown.html:21
 msgid "Light"
-msgstr ""
+msgstr "Світло"
 
 #: src/Emailkasten/templates/allauth/elements/theme_dropdown.html:30
 msgid "Dark"
-msgstr ""
+msgstr "Темний"
 
 #: src/Emailkasten/templates/allauth/elements/theme_dropdown.html:39
 msgid "Auto"
-msgstr ""
+msgstr "Авто"
 
 #: src/Emailkasten/templates/allauth/layouts/base.html:25
 #: src/Emailkasten/templates/allauth/layouts/base.html:34
