@@ -304,6 +304,7 @@ class Attachment(
         """
         return (
             self.file_path is not None
+            and not self.email.is_spam
             and (self.datasize <= get_config("WEB_THUMBNAIL_MAX_DATASIZE"))
             and (
                 self.content_maintype in ["image", "font"]

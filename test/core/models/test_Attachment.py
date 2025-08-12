@@ -431,6 +431,41 @@ def test_Attachment_has_thumbnail_no_file(
         ("application", "854uqw"),
     ],
 )
+def test_Attachment_has_thumbnail_spam(
+    fake_attachment_with_file, content_maintype, content_subtype
+):
+    """Tests :func:`core.models.Attachment.Attachment.has_thumbnail` in the two relevant cases."""
+    fake_attachment_with_file.content_maintype = content_maintype
+    fake_attachment_with_file.content_subtype = content_subtype
+    fake_attachment_with_file.datasize = 0
+    fake_attachment_with_file.email.x_spam = "YES"
+    fake_attachment_with_file.email.save()
+
+    result = fake_attachment_with_file.has_thumbnail
+
+    assert result is False
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "content_maintype, content_subtype",
+    [
+        ("image", "734reoj"),
+        ("font", "asdfr"),
+        ("video", "mp4"),
+        ("video", "45rtyghj"),
+        ("text", "html"),
+        ("text", "8549c"),
+        ("text", "calendar"),
+        ("application", "pdf"),
+        ("application", "json"),
+        ("application", "xml"),
+        ("application", "rss+xml"),
+        ("application", "javascript"),
+        ("application", "emnoscript"),
+        ("application", "854uqw"),
+    ],
+)
 def test_Attachment_has_thumbnail_too_large(
     override_config, fake_attachment, content_maintype, content_subtype
 ):
