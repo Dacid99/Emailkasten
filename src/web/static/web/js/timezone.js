@@ -15,7 +15,7 @@
 
     const sendTimezone = () => {
         const timezone = getTimezone();
-        if (!timezone || sessionStorage.getItem(TIMEZONE_STORAGE_KEY) === timezone) return;
+        if (!timezone) return;
 
         const request = new Request(
             '/settz/',
@@ -30,9 +30,7 @@
                 body: `timezone=${encodeURIComponent(timezone)}`,
             }
         );
-        fetch(request).then(() => {
-            sessionStorage.setItem(TIMEZONE_STORAGE_KEY, timezone);
-        }).catch((err) => {
+        fetch(request).then(() => { console.info(`Timezone set to ${timezone}`); }).catch((err) => {
             console.warn('Timezone sync failed', err);
         });
     };
