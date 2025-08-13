@@ -46,7 +46,7 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
     PROTOCOL = EmailProtocolChoices.POP3.value
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.POP3`."""
 
-    AVAILABLE_FETCHING_CRITERIA: tuple[str] = (EmailFetchingCriterionChoices.ALL.value,)
+    AVAILABLE_FETCHING_CRITERIA = (EmailFetchingCriterionChoices.ALL.value,)
     """Tuple of all criteria available for fetching. Refers to :class:`MailFetchingCriteria`.
     Must be immutable!
     """

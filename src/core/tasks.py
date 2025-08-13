@@ -58,6 +58,5 @@ def fetch_emails(  # this must not be renamed or moved, otherwise existing daemo
             daemon.mailbox.is_healthy = False
             daemon.mailbox.save(update_fields=["is_healthy"])
         raise
-    else:
-        daemon.is_healthy = True
-        daemon.save(update_fields=["is_healthy"])
+    daemon.is_healthy = True
+    daemon.save(update_fields=["is_healthy"])

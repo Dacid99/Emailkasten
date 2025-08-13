@@ -52,7 +52,7 @@ class ExchangeFetcher(BaseFetcher):
     PROTOCOL = EmailProtocolChoices.EXCHANGE.value
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.Exchange`."""
 
-    AVAILABLE_FETCHING_CRITERIA: tuple[str] = (
+    AVAILABLE_FETCHING_CRITERIA = (
         EmailFetchingCriterionChoices.ALL.value,
         EmailFetchingCriterionChoices.SEEN.value,
         EmailFetchingCriterionChoices.UNSEEN.value,

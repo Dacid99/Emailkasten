@@ -49,7 +49,7 @@ class IMAP4Fetcher(BaseFetcher, SafeIMAPMixin):
     PROTOCOL = EmailProtocolChoices.IMAP.value
     """Name of the used protocol, refers to :attr:`MailFetchingProtocols.IMAP`."""
 
-    AVAILABLE_FETCHING_CRITERIA: tuple[str] = (
+    AVAILABLE_FETCHING_CRITERIA = (
         EmailFetchingCriterionChoices.ALL.value,
         EmailFetchingCriterionChoices.UNSEEN.value,
         EmailFetchingCriterionChoices.SEEN.value,

@@ -214,7 +214,8 @@ class Mailbox(
             criterion: The criterion used to fetch emails from the mailbox.
 
         Raises:
-            MailboxError: If fetching failed.
+            MailboxError: Reraised if fetching failed due to a MailboxError.
+            MailAccountError: Reraised if fetching failed due to a MailAccountError.
         """
         logger.info("Fetching emails with criterion %s from %s ...", criterion, self)
         with self.account.get_fetcher() as fetcher:
@@ -321,7 +322,9 @@ class Mailbox(
         logger.info("Successfully added emails from file.")
 
     @classmethod
-    def create_from_data(cls, mailbox_data: bytes | str, account: Account) -> Mailbox:
+    def create_from_data(
+        cls, mailbox_data: bytes | str, account: Account
+    ) -> Mailbox | None:
         """Creates a :class:`core.models.Mailbox` from the mailboxname in bytes.
 
         Args:

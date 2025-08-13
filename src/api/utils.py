@@ -47,10 +47,10 @@ def query_param_list_to_typed_list(
                 typed_list.extend(
                     csv_query_param_to_typed_list(query_param, parse_type)
                 )
-    except ValueError as e:
+    except ValueError as error:
         raise ValueError(
-            f"Invalid input: expected list of {parse_type.__name__}s or comma-separated {parse_type.__name__}s, got '{query_param}'"
-        ) from e
+            f"Invalid input: expected list of {parse_type.__name__}s or comma-separated {parse_type.__name__}s, got '{query_param_list}'"
+        ) from error
     return typed_list
 
 
@@ -71,7 +71,7 @@ def csv_query_param_to_typed_list(query_param: str, parse_type: T = str) -> list
     """
     try:
         return [parse_type(part.strip()) for part in query_param.split(",") if part]
-    except ValueError as e:
+    except ValueError as error:
         raise ValueError(
             f"Invalid input: expected comma-separated {parse_type.__name__}s, got '{query_param}'"
-        ) from e
+        ) from error

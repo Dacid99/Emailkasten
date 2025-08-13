@@ -43,7 +43,7 @@ class BaseFetcher(ABC):
     PROTOCOL = ""
     """Name of the used protocol, should be one of :class:`MailFetchingProtocols`."""
 
-    AVAILABLE_FETCHING_CRITERIA: tuple[str] = []
+    AVAILABLE_FETCHING_CRITERIA: tuple[str, ...] = ("",)
     """Tuple of all criteria available for fetching. Should refer to :class:`MailFetchingCriteria`. Must be immutable!"""
 
     @abstractmethod
