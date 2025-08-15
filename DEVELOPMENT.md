@@ -52,6 +52,10 @@ The projects tests are in the test/ directory. You can run them from the project
 pytest test
 ```
 
+If you want to test your changes manually, you can use the files in docker/debug/ to build and create a debug docker image.
+
+It uses djangos runserver instead of gunicorn, allowing you to manipulate the source and static files while the server is runnning, e.g. via docker exec.
+
 ## Validation and Linting
 
 You can use the tools in tools/ to lint and check your changes.
