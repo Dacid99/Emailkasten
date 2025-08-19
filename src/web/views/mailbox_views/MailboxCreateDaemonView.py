@@ -61,7 +61,7 @@ class MailboxCreateDaemonView(LoginRequiredMixin, DetailView, BaseFormView):
     def get_form(self, form_class: type[CreateMailboxDaemonForm] | None = None) -> Any:
         form = super().get_form(form_class)
         form.fields["fetching_criterion"].choices = (
-            self.object.get_available_fetching_criterion_choices()
+            self.object.available_fetching_criterion_choices
         )
         return form
 

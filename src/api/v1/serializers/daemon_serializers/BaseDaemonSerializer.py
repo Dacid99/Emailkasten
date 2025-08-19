@@ -96,7 +96,7 @@ class BaseDaemonSerializer(serializers.ModelSerializer[Daemon]):
         """Validate that the given fetching_criterion is available for the mailbox."""
         if (
             attrs["fetching_criterion"]
-            not in attrs["mailbox"].get_available_fetching_criteria()
+            not in attrs["mailbox"].available_fetching_criteria
         ):
             raise serializers.ValidationError(
                 {

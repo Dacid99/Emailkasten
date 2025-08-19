@@ -149,7 +149,8 @@ class Mailbox(
             "name": self.name,
         }
 
-    def get_available_fetching_criteria(self) -> tuple[str]:
+    @property
+    def available_fetching_criteria(self) -> tuple[str]:
         """Gets the available fetching criteria based on the mail protocol of this mailbox.
 
         Returns:
@@ -160,7 +161,8 @@ class Mailbox(
         """
         return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA  # type: ignore[no-any-return]  # for some reason mypy doesn't get this
 
-    def get_available_fetching_criterion_choices(self) -> list[tuple[str, str]]:
+    @property
+    def available_fetching_criterion_choices(self) -> list[tuple[str, str]]:
         """Gets the available fetching criterion choices based on the mail protocol of this mailbox.
 
         Returns:

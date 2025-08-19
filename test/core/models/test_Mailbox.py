@@ -164,7 +164,7 @@ def test_Mailbox_get_available_fetching_criteria(
 
     fake_mailbox.account.protocol = protocol
     fake_mailbox.account.save()
-    assert fake_mailbox.get_available_fetching_criteria() == expected_fetching_criteria
+    assert fake_mailbox.available_fetching_criteria == expected_fetching_criteria
 
 
 @pytest.mark.django_db
@@ -190,7 +190,7 @@ def test_Mailbox_get_available_fetching_criteria(
 
     fake_mailbox.account.protocol = protocol
     fake_mailbox.account.save()
-    assert fake_mailbox.get_available_fetching_criterion_choices() == [
+    assert fake_mailbox.available_fetching_criterion_choices == [
         (criterion, label)
         for criterion, label in EmailFetchingCriterionChoices.choices
         if criterion in expected_fetching_criteria

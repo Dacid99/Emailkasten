@@ -51,7 +51,7 @@ class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     ) -> BaseDaemonForm:
         form = super().get_form(form_class)
         form.fields["fetching_criterion"].choices = (
-            self.object.mailbox.get_available_fetching_criterion_choices()
+            self.object.mailbox.available_fetching_criterion_choices
         )
 
         return form

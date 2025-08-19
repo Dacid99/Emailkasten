@@ -178,10 +178,7 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
     def clean(self) -> None:
         """Validates that :attr:`fetching_criterion` is available for the :attr:`mailbox.account`."""
         try:
-            if (
-                self.fetching_criterion
-                not in self.mailbox.get_available_fetching_criteria()
-            ):
+            if self.fetching_criterion not in self.mailbox.available_fetching_criteria:
                 raise ValidationError(
                     {
                         "fetching_criterion": _(

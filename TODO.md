@@ -18,7 +18,6 @@
 - saving old correspondent mailername info (via fk maybe)
 - async parsing, sync saving
 - auto transfer of pdfs to paperless
-- fetch once by criterion instead of hardcoded ALL
 - use post-unsubscribe-method to interpret post-unsubscribe as link
 - emailconversation subpage
 - batch download and delete in web

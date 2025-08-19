@@ -32,7 +32,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
-from core import constants
 from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
 
@@ -142,19 +141,19 @@ class MailboxViewSet(
         """
         mailbox = self.get_object()
 
-        available_fetching_options = mailbox.get_available_fetching_criteria()
+        available_fetching_options = mailbox.available_fetching_criteria
         return Response({"options": available_fetching_options})
 
-    URL_PATH_FETCH_ALL = "fetch-all"
-    URL_NAME_FETCH_ALL = "fetch-all"
+    URL_PATH_FETCH = "fetch"
+    URL_NAME_FETCH = "fetch"
 
     @action(
         detail=True,
         methods=["post"],
-        url_path=URL_PATH_FETCH_ALL,
-        url_name=URL_NAME_FETCH_ALL,
+        url_path=URL_PATH_FETCH,
+        url_name=URL_NAME_FETCH,
     )
-    def fetch_all(self, request: Request, pk: int | None = None) -> Response:
+    def fetch(self, request: Request, pk: int | None = None) -> Response:
         """Action method fetching all mails from the mailbox.
 
         Args:
@@ -165,8 +164,23 @@ class MailboxViewSet(
             A response with the mailbox data.
         """
         mailbox = self.get_object()
+        criterion = request.data.get("criterion")
+        if not criterion:
+            return Response(
+                {"detail": _("Fetching criterion missing in request.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if criterion not in mailbox.available_fetching_criteria:
+            return Response(
+                {
+                    "detail": _(
+                        "The given fetching criterion is not available for this mailbox."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         try:
-            mailbox.fetch(constants.EmailFetchingCriterionChoices.ALL)
+            mailbox.fetch(criterion)
         except FetcherError as error:
             response = Response(
                 {
