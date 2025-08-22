@@ -6,6 +6,7 @@ build:
     python: "3.13"
   apt_packages:
     - python3-dev
+    - libkrb5-dev
     - default-mysql-client
   jobs:
     post_install:  # https://docs.readthedocs.com/platform/stable/build-customization.html#install-dependencies-with-poetry
