@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-22 09:37+0000\n"
-"PO-Revision-Date: 2025-08-12 15:02+0000\n"
+"PO-Revision-Date: 2025-08-23 13:02+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
 "web/uk/>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
-"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
-"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
-"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
-"X-Generator: Weblate 5.13-dev\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 "
+"? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > "
+"14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % "
+"100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"X-Generator: Weblate 5.13\n"
 
 #: src/web/filters/AccountFilterSet.py:56
 #: src/web/filters/AttachmentFilterSet.py:55
@@ -544,14 +544,12 @@ msgid "Total Run Count"
 msgstr "Загальна кількість пробіжок"
 
 #: src/web/templates/web/daemon/daemon_detail.html:57
-#, fuzzy
-#| msgid "Request Error"
 msgid "Latest Error"
-msgstr "Помилка запиту"
+msgstr "Остання помилка"
 
 #: src/web/templates/web/daemon/daemon_detail.html:59
 msgid "Test the daemon to see what is going wrong."
-msgstr ""
+msgstr "Перевірте демона, щоб побачити, що йде не так."
 
 #: src/web/templates/web/daemon/daemon_edit.html:6
 msgid "Edit Daemon"
@@ -778,7 +776,7 @@ msgstr ""
 
 #: src/web/templates/web/mailbox/partials/_fetch_dropdown.html:10
 msgid "Fetch"
-msgstr ""
+msgstr "Отримати"
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:7
 msgid "No mailboxes found."
@@ -884,7 +882,7 @@ msgstr "Github"
 
 #: src/web/templates/web/partials/_footer.html:17
 msgid "Dockerhub"
-msgstr ""
+msgstr "Dockerhub'"
 
 #: src/web/templates/web/partials/_footer.html:20
 msgid "Documentation"
@@ -970,7 +968,7 @@ msgstr "Демон не працював"
 #: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:97
 #, python-format
 msgid "The chosen criterion %(criterion)s is not available for this mailbox."
-msgstr ""
+msgstr "Вибраний критерій %(criterion)s недоступний для цієї поштової скриньки."
 
 #: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:106
 #, python-format
