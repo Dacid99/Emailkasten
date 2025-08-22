@@ -35,6 +35,7 @@
 - shorten redundant exception logging in fetchers, move parts of the messages to the exc classes
 - streamline serializer and form tests
 - sort settings
+- use pre-commit
 
 ## To test
 
