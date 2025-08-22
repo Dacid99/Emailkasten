@@ -48,7 +48,7 @@ def test_get_auth_other(fake_daemon, other_client, detail_url):
     response = other_client.get(detail_url(DaemonUpdateOrDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     assert str(fake_daemon.uuid) not in response.content.decode()
 
 
@@ -59,7 +59,9 @@ def test_get_auth_owner(fake_daemon, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/daemon/daemon_edit.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_edit.html" in [
+        template.name for template in response.templates
+    ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Daemon)
     assert "form" in response.context
@@ -76,7 +78,9 @@ def test_get_auth_owner_criterion_choices(fake_daemon, owner_client, detail_url)
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/daemon/daemon_edit.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_edit.html" in [
+        template.name for template in response.templates
+    ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Daemon)
     assert "form" in response.context
@@ -116,7 +120,7 @@ def test_post_update_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     fake_daemon.refresh_from_db()
     assert (
         fake_daemon.fetching_criterion
@@ -170,7 +174,7 @@ def test_post_delete_auth_other(fake_daemon, other_client, detail_url):
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     fake_daemon.refresh_from_db()
     assert fake_daemon is not None
 

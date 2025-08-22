@@ -46,7 +46,7 @@ def test_get_auth_other(other_client, list_url):
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/correspondent/correspondent_filter_list.html" in [
-        t.name for t in response.templates
+        template.name for template in response.templates
     ]
     assert "page_obj" in response.context
     assert "page_size" in response.context
@@ -61,7 +61,7 @@ def test_get_auth_owner(owner_client, list_url):
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/correspondent/correspondent_filter_list.html" in [
-        t.name for t in response.templates
+        template.name for template in response.templates
     ]
     assert "page_obj" in response.context
     assert "page_size" in response.context

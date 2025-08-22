@@ -31,8 +31,8 @@ from .models.test_Email import mock_Email_save_eml_to_storage
 
 @pytest.fixture
 def mock_test_email_fetcher(mock_fetcher):
-    with open(TEST_EMAIL_PARAMETERS[0][0], "br") as f:
-        test_email = f.read()
+    with open(TEST_EMAIL_PARAMETERS[0][0], "br") as test_email_file:
+        test_email = test_email_file.read()
     mock_fetcher.fetch_emails.return_value = [test_email]
     return mock_fetcher
 

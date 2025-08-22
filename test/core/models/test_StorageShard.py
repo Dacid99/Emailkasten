@@ -77,8 +77,8 @@ def test_Storage_healthcheck_filled_storage(settings):
                 settings.STORAGE_PATH, str(storage.shard_directory_name), str(index)
             ),
             "w",
-        ) as f:
-            f.write("Some content")
+        ) as dummy_file:
+            dummy_file.write("Some content")
         storage.increment_file_count()
 
     health = StorageShard.healthcheck()
@@ -101,8 +101,8 @@ def test_Storage_health_check_duplicate_current(mock_logger):
 @pytest.mark.django_db
 def test_Storage_health_check_file_in_storage_root(settings, mock_logger):
     """Tests the storage healthcheck in case of dirty storage."""
-    with open(os.path.join(settings.STORAGE_PATH, "file"), "w") as f:
-        f.write("Some content")
+    with open(os.path.join(settings.STORAGE_PATH, "file"), "w") as dummy_file:
+        dummy_file.write("Some content")
 
     health = StorageShard.healthcheck()
 
