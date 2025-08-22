@@ -47,7 +47,7 @@ def test_get_auth_other(fake_mailbox, other_client, detail_url):
     response = other_client.get(detail_url(MailboxUpdateOrDeleteView, fake_mailbox))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     assert fake_mailbox.name not in response.content.decode()
 
 
@@ -58,7 +58,9 @@ def test_get_auth_owner(fake_mailbox, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/mailbox/mailbox_edit.html" in [t.name for t in response.templates]
+    assert "web/mailbox/mailbox_edit.html" in [
+        template.name for template in response.templates
+    ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Mailbox)
     assert "form" in response.context
@@ -95,7 +97,7 @@ def test_post_update_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.save_attachments != mailbox_payload["save_attachments"]
     assert fake_mailbox.save_to_eml != mailbox_payload["save_to_eml"]
@@ -145,7 +147,7 @@ def test_post_delete_auth_other(fake_mailbox, other_client, detail_url):
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     fake_mailbox.refresh_from_db()
     assert fake_mailbox is not None
 

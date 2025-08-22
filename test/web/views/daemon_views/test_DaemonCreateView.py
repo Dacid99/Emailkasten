@@ -47,7 +47,9 @@ def test_get_auth_other(other_client, list_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/daemon/daemon_create.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_create.html" in [
+        template.name for template in response.templates
+    ]
     assert "form" in response.context
     assert isinstance(response.context["form"], CreateDaemonForm)
 
@@ -59,7 +61,9 @@ def test_get_auth_owner(owner_client, list_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/daemon/daemon_create.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_create.html" in [
+        template.name for template in response.templates
+    ]
     assert "form" in response.context
     assert isinstance(response.context["form"], CreateDaemonForm)
 
@@ -118,7 +122,9 @@ def test_post_auth_other_strange_mailbox(
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert Daemon.objects.all().count() == 1
-    assert "web/daemon/daemon_create.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_create.html" in [
+        template.name for template in response.templates
+    ]
     assert "form" in response.context
     assert isinstance(response.context["form"], CreateDaemonForm)
 
@@ -161,7 +167,9 @@ def test_post_duplicate_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/daemon/daemon_create.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_create.html" in [
+        template.name for template in response.templates
+    ]
     assert "form" in response.context
     assert response.context["form"].errors
     assert Daemon.objects.all().count() == 1
@@ -187,7 +195,9 @@ def test_post_unavailable_criterion_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/daemon/daemon_create.html" in [t.name for t in response.templates]
+    assert "web/daemon/daemon_create.html" in [
+        template.name for template in response.templates
+    ]
     assert "form" in response.context
     assert response.context["form"].errors
     assert Daemon.objects.all().count() == 1

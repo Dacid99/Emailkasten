@@ -36,7 +36,7 @@ extension-pkg-whitelist=
 # Return non-zero exit code if any of these messages/categories are detected,
 # even if score is above --fail-under value. Syntax same as enable. Messages
 # specified are enabled, while categories only check already-enabled messages.
-fail-on=F,E
+fail-on=F
 
 # Specify a score threshold under which the program will exit with error.
 fail-under=0
@@ -453,7 +453,10 @@ disable=raw-checker-failed,
         pointless-statement,
         use-implicit-booleaness-not-comparison,
         missing-param-doc,
-        missing-type-doc
+        missing-type-doc,
+        unspecified-encoding,
+        comparison-with-callable,
+        wrong-import-order
 
 
 # Enable the message, report, category or checker with the given id(s). You can

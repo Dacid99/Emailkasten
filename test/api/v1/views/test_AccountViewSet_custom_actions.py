@@ -107,8 +107,8 @@ def test_update_mailboxes_failure_auth_owner(
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
-    fake_error_message = faker.sentence()
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated owner user client."""
+    fake_error_message = faker.sentence()
     mock_Account_update_mailboxes.side_effect = MailAccountError(fake_error_message)
 
     response = owner_api_client.post(

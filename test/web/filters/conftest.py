@@ -153,18 +153,18 @@ def mailbox_queryset(unblocked_db, account_queryset) -> QuerySet[Mailbox, Mailbo
 @pytest.fixture(scope="package")
 def daemon_queryset(unblocked_db, mailbox_queryset) -> QuerySet[Daemon, Daemon]:
     """Fixture adding daemons with the test attributes to the database and returns them in a queryset."""
-    for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
+    for number, int_test_item in enumerate(INT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
             interval = baker.make(
                 IntervalSchedule,
-                every=INT_TEST_ITEMS[number],
+                every=int_test_item,
                 period=IntervalSchedule.PERIOD_CHOICES[number][0],
             )
             celery_task = baker.make(
                 PeriodicTask,
                 interval=interval,
                 enabled=BOOL_TEST_ITEMS[number],
-                total_run_count=INT_TEST_ITEMS[number],
+                total_run_count=int_test_item,
             )
             daemon = baker.make(
                 Daemon,

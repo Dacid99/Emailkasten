@@ -294,8 +294,8 @@ def test_Attachment_from_data(
     """Tests :func:`core.models.Attachment.Attachment.from_data`
     in case of success.
     """
-    with open(test_email_path, "br") as f:
-        test_email_bytes = f.read()
+    with open(test_email_path, "br") as test_email_file:
+        test_email_bytes = test_email_file.read()
     test_email_message = email.message_from_bytes(test_email_bytes)
 
     result = Attachment.create_from_email_message(test_email_message, fake_email)

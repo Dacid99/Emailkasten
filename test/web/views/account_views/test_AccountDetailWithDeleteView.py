@@ -53,7 +53,7 @@ def test_get_auth_other(fake_account, other_client, detail_url):
     response = other_client.get(detail_url(AccountDetailWithDeleteView, fake_account))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     assert fake_account.mail_address not in response.content.decode()
 
 
@@ -64,7 +64,9 @@ def test_get_auth_owner(fake_account, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [
+        template.name for template in response.templates
+    ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Account)
     assert "latest_emails" in response.context
@@ -99,7 +101,7 @@ def test_post_delete_auth_other(fake_account, other_client, detail_url):
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     fake_account.refresh_from_db()
     assert fake_account is not None
 
@@ -149,7 +151,7 @@ def test_post_test_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     mock_Account_test.assert_not_called()
 
 
@@ -165,7 +167,9 @@ def test_post_test_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [
+        template.name for template in response.templates
+    ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Account)
     assert "latest_emails" in response.context
@@ -191,7 +195,9 @@ def test_post_test_failure_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [
+        template.name for template in response.templates
+    ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Account)
     assert "latest_emails" in response.context
@@ -245,7 +251,7 @@ def test_post_update_mailboxes_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     mock_Account_update_mailboxes.assert_not_called()
 
 
@@ -261,7 +267,9 @@ def test_post_update_mailboxes_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [
+        template.name for template in response.templates
+    ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Account)
     assert "latest_emails" in response.context
@@ -287,7 +295,9 @@ def test_post_update_mailboxes_failure_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/account/account_detail.html" in [t.name for t in response.templates]
+    assert "web/account/account_detail.html" in [
+        template.name for template in response.templates
+    ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Account)
     assert "latest_emails" in response.context

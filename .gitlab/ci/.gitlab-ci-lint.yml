@@ -11,25 +11,11 @@ lint_codebase:
     - poetry run ruff check --config=$CHECK_CONFIG_PATH'ruff.toml' | tee $CHECK_REPORT_PATH'ruff_check.ansi' || true
     - poetry run mypy src/ --config-file $CHECK_CONFIG_PATH'mypy.ini' | tee $CHECK_REPORT_PATH'mypy/mypy_check.ansi' || true
     - poetry run doc8 --config $CHECK_CONFIG_PATH'doc8.ini' docs/ | tee $CHECK_REPORT_PATH'doc8_check.ansi' || true
-    - |
-      poetry run pylint src/ --rcfile=$CHECK_CONFIG_PATH'pylintrc_src' | tee $CHECK_REPORT_PATH'pylint_code_check.ansi'
-      PYLINT_CODE_EXIT=$?
-
-      poetry run pylint . --rcfile=$CHECK_CONFIG_PATH'pylintrc_docs' | tee $CHECK_REPORT_PATH'pylint_docs_check.ansi'
-      PYLINT_DOCS_EXIT=$?
-
-      poetry run pylint test/ --rcfile=$CHECK_CONFIG_PATH'pylintrc_test' | tee $CHECK_REPORT_PATH'pylint_test_check.ansi'
-      PYLINT_TEST_EXIT=$?
-
-      poetry run djlint src/ --lint --configuration $CHECK_CONFIG_PATH'djlintrc' | tee $CHECK_REPORT_PATH'djlint_check.ansi'
-      DJLINT_EXIT=$?
-
-      poetry run django-admin validate_templates | tee $CHECK_REPORT_PATH'validate_templates_check.ansi'
-      VALIDATE_TEMPLATES_EXIT=$?
-
-      if [[ $PYLINT_CODE_EXIT -ne 0 || $PYLINT_DOCS_EXIT -ne 0 || $PYLINT_TEST_EXIT -ne 0 || $DJLINT_EXIT -ne 0 || $VALIDATE_TEMPLATES_EXIT -ne 0 ]]; then
-         exit 1
-      fi
+    - poetry run pylint src/ --rcfile=$CHECK_CONFIG_PATH'pylintrc_src' | tee $CHECK_REPORT_PATH'pylint_code_check.ansi'
+    - poetry run pylint . --rcfile=$CHECK_CONFIG_PATH'pylintrc_docs' | tee $CHECK_REPORT_PATH'pylint_docs_check.ansi'
+    - poetry run pylint test/ --rcfile=$CHECK_CONFIG_PATH'pylintrc_test' | tee $CHECK_REPORT_PATH'pylint_test_check.ansi'
+    - poetry run djlint src/ --lint --configuration $CHECK_CONFIG_PATH'djlintrc' | tee $CHECK_REPORT_PATH'djlint_check.ansi'
+    - poetry run django-admin validate_templates | tee $CHECK_REPORT_PATH'validate_templates_check.ansi'
     - echo "Successfully checked codebase."
   artifacts:
     paths:

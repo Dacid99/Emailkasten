@@ -83,6 +83,7 @@ def pytest_configure(config) -> None:
     """Configures the path for pytest to be the directory of this file for consistent relative paths."""
     pytest_ini_dir = os.path.dirname(os.path.abspath(config.inifile))
     os.chdir(pytest_ini_dir)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test.settings")
 
 
 # test_email_path, expected_email_features, expected_correspondents_features, expected_attachments_features
@@ -406,7 +407,7 @@ def fake_mailbox(fake_account) -> Mailbox:
 
 
 @pytest.fixture
-def fake_daemon(faker, fake_mailbox) -> Daemon:
+def fake_daemon(fake_mailbox) -> Daemon:
     """Creates an :class:`core.models.Daemon` owned by :attr:`owner_user`.
 
     Args:
@@ -422,11 +423,8 @@ def fake_daemon(faker, fake_mailbox) -> Daemon:
 
 
 @pytest.fixture
-def fake_email(faker, fake_mailbox) -> Email:
+def fake_email(fake_mailbox) -> Email:
     """Creates an :class:`core.models.Email` owned by :attr:`owner_user`.
-
-    Args:
-        mailbox: Depends on :func:`mailbox`.
 
     Returns:
         The email instance for testing.
@@ -447,9 +445,6 @@ def fake_correspondent(fake_email) -> Correspondent:
 @pytest.fixture
 def fake_email_with_file(faker, fake_fs, fake_mailbox) -> Email:
     """Creates an :class:`core.models.Email` owned by :attr:`owner_user`.
-
-    Args:
-        mailbox: Depends on :func:`mailbox`.
 
     Returns:
         The email instance for testing.
@@ -484,9 +479,6 @@ def fake_emailcorrespondent(fake_correspondent, fake_email) -> EmailCorresponden
 def fake_attachment(faker, fake_email) -> Attachment:
     """Creates an :class:`core.models.Attachment` owned by :attr:`owner_user`.
 
-    Args:
-        email: Depends on :func:`email`.
-
     Returns:
         The attachment instance for testing.
     """
@@ -501,9 +493,6 @@ def fake_attachment(faker, fake_email) -> Attachment:
 @pytest.fixture
 def fake_attachment_with_file(faker, fake_file, fake_fs, fake_email) -> Attachment:
     """Creates an :class:`core.models.Attachment` owned by :attr:`owner_user`.
-
-    Args:
-        email: Depends on :func:`email`.
 
     Returns:
         The attachment instance for testing.
@@ -522,9 +511,6 @@ def fake_other_account(other_user) -> Account:
     Note:
         The protocol is always IMAP to allow for different fetchingoptions.
 
-    Args:
-        owner_user: Depends on :func:`other_user`.
-
     Returns:
         The account instance for testing.
     """
@@ -537,9 +523,6 @@ def fake_other_account(other_user) -> Account:
 def fake_other_mailbox(fake_other_account) -> Mailbox:
     """Creates an :class:`core.models.Mailbox` owned by :attr:`other_user`.
 
-    Args:
-        account: Depends on :func:`account`.
-
     Returns:
         The mailbox instance for testing.
     """
@@ -549,9 +532,6 @@ def fake_other_mailbox(fake_other_account) -> Mailbox:
 @pytest.fixture
 def fake_other_daemon(faker, fake_other_mailbox) -> Daemon:
     """Creates an :class:`core.models.Daemon` owned by :attr:`other_user`.
-
-    Args:
-        mailbox: Depends on :func:`mailbox`.
 
     Returns:
         The daemon instance for testing.
@@ -565,9 +545,6 @@ def fake_other_daemon(faker, fake_other_mailbox) -> Daemon:
 @pytest.fixture
 def fake_other_email(faker, fake_other_mailbox) -> Email:
     """Creates an :class:`core.models.Email` owned by :attr:`other_user`.
-
-    Args:
-        mailbox: Depends on :func:`mailbox`.
 
     Returns:
         The email instance for testing.
@@ -588,9 +565,6 @@ def fake_other_correspondent(fake_other_email) -> Correspondent:
 @pytest.fixture
 def fake_other_email_with_file(faker, fake_fs, fake_other_mailbox) -> Email:
     """Creates an :class:`core.models.Email` owned by :attr:`other_user`.
-
-    Args:
-        mailbox: Depends on :func:`mailbox`.
 
     Returns:
         The email instance for testing.
@@ -624,11 +598,8 @@ def fake_other_emailcorrespondent(
 
 
 @pytest.fixture
-def fake_other_attachment(faker, fake_other_email) -> Attachment:
+def fake_other_attachment(fake_other_email) -> Attachment:
     """Creates an :class:`core.models.Attachment` owned by :attr:`other_user`.
-
-    Args:
-        email: Depends on :func:`email`.
 
     Returns:
         The attachment instance for testing.
@@ -641,9 +612,6 @@ def fake_other_attachment_with_file(
     faker, fake_file, fake_fs, fake_other_email
 ) -> Attachment:
     """Creates an :class:`core.models.Attachment` owned by :attr:`other_user`.
-
-    Args:
-        email: Depends on :func:`email`.
 
     Returns:
         The attachment instance for testing.
@@ -707,9 +675,6 @@ def attachment_payload(faker, fake_email) -> dict[str, Any]:
 def correspondent_payload(faker, fake_email) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Correspondent` payload with data deviating from the defaults.
 
-    Args:
-        email: Depends on :func:`email`.
-
     Returns:
         The clean payload.
     """
@@ -735,9 +700,6 @@ def correspondent_payload(faker, fake_email) -> dict[str, Any]:
 @pytest.fixture
 def daemon_payload(faker, fake_mailbox, fake_daemon) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Daemon` payload with data deviating from the defaults.
-
-    Args:
-        mailbox: Depends on :func:`mailbox`.
 
     Returns:
         The clean payload.
@@ -769,9 +731,6 @@ def daemon_with_interval_payload(daemon_payload):
 def email_payload(faker, fake_mailbox) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Email` payload with data deviating from the defaults.
 
-    Args:
-        mailbox: Depends on :func:`mailbox`.
-
     Returns:
         The clean payload.
     """
@@ -792,9 +751,6 @@ def email_payload(faker, fake_mailbox) -> dict[str, Any]:
 @pytest.fixture
 def mailbox_payload(fake_account) -> dict[str, Any]:
     """Fixture creating clean :class:`core.models.Mailbox` payload with data deviating from the defaults.
-
-    Args:
-        account: Depends on :func:`account`.
 
     Returns:
         The clean payload.

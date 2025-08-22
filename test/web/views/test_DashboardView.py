@@ -43,7 +43,7 @@ def test_get_auth_other(other_client, list_url):
     response = other_client.get(list_url(DashboardView))
 
     assert response.status_code == status.HTTP_200_OK
-    assert "web/dashboard.html" in [t.name for t in response.templates]
+    assert "web/dashboard.html" in [template.name for template in response.templates]
     assert "latest_emails" in response.context
     assert "emails_count" in response.context
     assert "attachments_count" in response.context
@@ -56,7 +56,7 @@ def test_get_auth_owner(owner_client, list_url):
     response = owner_client.get(list_url(DashboardView))
 
     assert response.status_code == status.HTTP_200_OK
-    assert "web/dashboard.html" in [t.name for t in response.templates]
+    assert "web/dashboard.html" in [template.name for template in response.templates]
     assert "latest_emails" in response.context
     assert isinstance(response.context["latest_emails"], QuerySet)
     assert "emails_count" in response.context

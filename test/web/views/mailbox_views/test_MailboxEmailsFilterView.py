@@ -44,7 +44,7 @@ def test_get_auth_other(fake_mailbox, other_client, detail_url):
     response = other_client.get(detail_url(MailboxEmailsFilterView, fake_mailbox))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     assert fake_mailbox.name not in response.content.decode()
 
 
@@ -56,7 +56,7 @@ def test_get_auth_owner(fake_mailbox, owner_client, detail_url):
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/mailbox/mailbox_email_filter_list.html" in [
-        t.name for t in response.templates
+        template.name for template in response.templates
     ]
     assert "page_obj" in response.context
     assert "page_size" in response.context

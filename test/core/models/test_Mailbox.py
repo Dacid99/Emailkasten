@@ -178,7 +178,7 @@ def test_Mailbox_get_available_fetching_criteria(
         (POP3_SSL_Fetcher.PROTOCOL, POP3_SSL_Fetcher.AVAILABLE_FETCHING_CRITERIA),
     ],
 )
-def test_Mailbox_get_available_fetching_criteria(
+def test_Mailbox_get_available_fetching_criterion_choices(
     fake_mailbox, protocol, expected_fetching_criteria
 ):
     """Tests :func:`core.models.Mailbox.Mailbox.get_available_fetching_criteria`.

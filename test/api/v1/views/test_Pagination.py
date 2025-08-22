@@ -28,9 +28,6 @@ from Emailkasten.utils.workarounds import get_config
 def email_bunch_count(fake_mailbox):
     """Create a bunch of :class:`core.models.Email`s owned by :attr:`owner_user`.
 
-    Args:
-        mailbox: Depends on :func:`fixture_mailbox`.
-
     Returns:
         All emails in the db belonging to `owner_user`.
     """

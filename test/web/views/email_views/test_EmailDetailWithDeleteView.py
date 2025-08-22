@@ -49,7 +49,7 @@ def test_get_auth_other(fake_email, other_client, detail_url):
     response = other_client.get(detail_url(EmailDetailWithDeleteView, fake_email))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     assert fake_email.message_id not in response.content.decode()
 
 
@@ -60,7 +60,9 @@ def test_get_auth_owner(fake_email, owner_client, detail_url):
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
-    assert "web/email/email_detail.html" in [t.name for t in response.templates]
+    assert "web/email/email_detail.html" in [
+        template.name for template in response.templates
+    ]
     assert "object" in response.context
     assert isinstance(response.context["object"], Email)
     assert fake_email.message_id in response.content.decode()
@@ -88,7 +90,7 @@ def test_post_delete_auth_other(fake_email, other_client, detail_url):
     response = other_client.post(detail_url(EmailDetailWithDeleteView, fake_email))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     fake_email.refresh_from_db()
     assert fake_email is not None
 

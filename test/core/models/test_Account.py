@@ -17,18 +17,17 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """Test module for :mod:`core.models.Account`."""
+
 from __future__ import annotations
 
 import datetime
 from typing import TYPE_CHECKING
 
 import pytest
-from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.urls import reverse
 from model_bakery import baker
 
-import core.models.Account
 from core.constants import EmailProtocolChoices
 from core.models import Account, Mailbox
 from core.utils.fetchers import (
@@ -93,7 +92,7 @@ def spy_Mailbox_create_from_data(mocker):
     Returns:
         The spied on function.
     """
-    return mocker.spy(core.models.Mailbox, "create_from_data")
+    return mocker.spy(Mailbox, "create_from_data")
 
 
 @pytest.mark.django_db

@@ -47,7 +47,7 @@ def test_get_auth_other(fake_correspondent, other_client, detail_url):
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     assert fake_correspondent.email_address not in response.content.decode()
 
 
@@ -61,7 +61,7 @@ def test_get_auth_owner(fake_correspondent, owner_client, detail_url):
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/correspondent/correspondent_email_filter_list.html" in [
-        t.name for t in response.templates
+        template.name for template in response.templates
     ]
     assert "page_obj" in response.context
     assert "page_size" in response.context

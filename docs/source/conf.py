@@ -43,8 +43,8 @@ copyright = "2024-%Y, David Aderbauer"
 author = "David Aderbauer"
 year = datetime.date.today().year
 
-with open("../../pyproject.toml", "rb") as f:
-    config = tomli.load(f)
+with open("../../pyproject.toml", "rb") as pyproject_toml:
+    config = tomli.load(pyproject_toml)
 
 version = config["project"]["version"]
 release = config["project"]["version"]

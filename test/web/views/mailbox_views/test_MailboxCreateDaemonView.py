@@ -47,7 +47,7 @@ def test_get_auth_other(other_client, fake_mailbox, detail_url):
     response = other_client.get(detail_url(MailboxCreateDaemonView, fake_mailbox))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     assert fake_mailbox.name not in response.content.decode()
 
 
@@ -59,7 +59,7 @@ def test_get_auth_owner(owner_client, fake_mailbox, detail_url):
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/mailbox/mailbox_daemon_create.html" in [
-        t.name for t in response.templates
+        template.name for template in response.templates
     ]
     assert "form" in response.context
     assert isinstance(response.context["form"], CreateDaemonForm)
@@ -79,7 +79,7 @@ def test_get_auth_owner_criterion_choices(owner_client, fake_mailbox, detail_url
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/mailbox/mailbox_daemon_create.html" in [
-        t.name for t in response.templates
+        template.name for template in response.templates
     ]
     assert "form" in response.context
     assert isinstance(response.context["form"], CreateDaemonForm)
@@ -129,7 +129,7 @@ def test_post_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "404.html" in [t.name for t in response.templates]
+    assert "404.html" in [template.name for template in response.templates]
     assert fake_mailbox.name not in response.content.decode()
 
 
@@ -179,7 +179,7 @@ def test_post_auth_owner_other_mailbox(
     assert isinstance(response, HttpResponse)
     assert Daemon.objects.all().count() == 1
     assert "web/mailbox/mailbox_daemon_create.html" in [
-        t.name for t in response.templates
+        template.name for template in response.templates
     ]
     assert "form" in response.context
     assert isinstance(response.context["form"], CreateDaemonForm)
@@ -213,7 +213,7 @@ def test_post_auth_owner_unavailable_criterion(
     assert isinstance(response, HttpResponse)
     assert Daemon.objects.all().count() == 1
     assert "web/mailbox/mailbox_daemon_create.html" in [
-        t.name for t in response.templates
+        template.name for template in response.templates
     ]
     assert "form" in response.context
     assert isinstance(response.context["form"], CreateDaemonForm)
@@ -240,7 +240,7 @@ def test_post_duplicate_auth_owner(
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
     assert "web/mailbox/mailbox_daemon_create.html" in [
-        t.name for t in response.templates
+        template.name for template in response.templates
     ]
     assert "form" in response.context
     assert isinstance(response.context["form"], CreateDaemonForm)
