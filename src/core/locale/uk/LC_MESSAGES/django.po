@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 09:31+0000\n"
+"POT-Creation-Date: 2025-08-22 09:37+0000\n"
 "PO-Revision-Date: 2025-08-08 07:01+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim5@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
@@ -206,7 +206,7 @@ msgstr ".zip з поштовою скринькою maildir всередині"
 msgid ".eml"
 msgstr ".eml"
 
-#: src/core/models/Account.py:63 src/core/models/Correspondent.py:46
+#: src/core/models/Account.py:63 src/core/models/Correspondent.py:49
 msgid "email address"
 msgstr "адреса електронної пошти"
 
@@ -254,22 +254,22 @@ msgstr "час очікування з'єднання"
 msgid "Timeout for the connection to the mailserver."
 msgstr "Тайм-аут для підключення до поштового сервера."
 
-#: src/core/models/Account.py:109 src/core/models/Daemon.py:97
+#: src/core/models/Account.py:109 src/core/models/Daemon.py:92
 #: src/core/models/Mailbox.py:103
 msgid "healthy"
 msgstr "здоровий"
 
 #: src/core/models/Account.py:117 src/core/models/Attachment.py:114
-#: src/core/models/Correspondent.py:132 src/core/models/Email.py:142
+#: src/core/models/Correspondent.py:135 src/core/models/Email.py:142
 msgid "favorite"
 msgstr "улюблений"
 
-#: src/core/models/Account.py:125 src/core/models/Correspondent.py:69
+#: src/core/models/Account.py:125 src/core/models/Correspondent.py:72
 msgid "user"
 msgstr "користувач"
 
 #: src/core/models/Account.py:131 src/core/models/Attachment.py:128
-#: src/core/models/Correspondent.py:138 src/core/models/Daemon.py:127
+#: src/core/models/Correspondent.py:141 src/core/models/Daemon.py:108
 #: src/core/models/Email.py:180 src/core/models/EmailCorrespondent.py:65
 #: src/core/models/Mailbox.py:97 src/core/models/Mailbox.py:111
 #: src/core/models/StorageShard.py:70
@@ -277,7 +277,7 @@ msgid "created"
 msgstr "створений"
 
 #: src/core/models/Account.py:137 src/core/models/Attachment.py:134
-#: src/core/models/Correspondent.py:144 src/core/models/Daemon.py:133
+#: src/core/models/Correspondent.py:147 src/core/models/Daemon.py:114
 #: src/core/models/Email.py:186 src/core/models/EmailCorrespondent.py:71
 #: src/core/models/Mailbox.py:117 src/core/models/StorageShard.py:76
 msgid "last updated"
@@ -341,125 +341,109 @@ msgstr "Це видалить лише це вкладення, а не елек
 msgid "Attachment %(file_name)s from %(email)s"
 msgstr "Вкладення %(file_name)s від %(email)s"
 
-#: src/core/models/Correspondent.py:53
+#: src/core/models/Correspondent.py:56
 msgid "mailer name"
 msgstr "ім'я поштового адміністратора"
 
-#: src/core/models/Correspondent.py:54
+#: src/core/models/Correspondent.py:57
 msgid "The mailer name of the correspondent."
 msgstr "Ім'я кореспондента, що розсилає листи."
 
-#: src/core/models/Correspondent.py:62
+#: src/core/models/Correspondent.py:65
 msgid "real name"
 msgstr "справжнє ім'я"
 
-#: src/core/models/Correspondent.py:63
+#: src/core/models/Correspondent.py:66
 msgid "The real name of the correspondent."
 msgstr "Справжнє ім'я кореспондента."
 
-#: src/core/models/Correspondent.py:76
+#: src/core/models/Correspondent.py:79
 msgid "list ID"
 msgstr "ідентифікатор списку"
 
-#: src/core/models/Correspondent.py:83
+#: src/core/models/Correspondent.py:86
 msgid "list owner"
 msgstr "власник списку"
 
-#: src/core/models/Correspondent.py:90
+#: src/core/models/Correspondent.py:93
 msgid "list subscribe"
 msgstr "підписатися на список"
 
-#: src/core/models/Correspondent.py:97
+#: src/core/models/Correspondent.py:100
 msgid "list unsubscribe"
 msgstr "список відписок"
 
-#: src/core/models/Correspondent.py:105
+#: src/core/models/Correspondent.py:108
 msgid "list unsubscribe post"
 msgstr "список публікацій зі скасування підписки"
 
-#: src/core/models/Correspondent.py:112
+#: src/core/models/Correspondent.py:115
 msgid "list post"
 msgstr "список публікацій"
 
-#: src/core/models/Correspondent.py:119
+#: src/core/models/Correspondent.py:122
 msgid "list help"
 msgstr "довідка зі списку"
 
-#: src/core/models/Correspondent.py:126
+#: src/core/models/Correspondent.py:129
 msgid "list archive"
 msgstr "архів списків"
 
-#: src/core/models/Correspondent.py:150
+#: src/core/models/Correspondent.py:153
 msgid "This will only delete this correspondent, not its emails."
 msgstr "Це видалить лише цього кореспондента, а не його електронні листи."
 
-#: src/core/models/Correspondent.py:173
+#: src/core/models/Correspondent.py:176
 #, python-format
 msgid "Correspondent with address %(email_address)s"
 msgstr "Кореспондент з адресою %(email_address)s"
 
-#: src/core/models/Daemon.py:59
+#: src/core/models/Daemon.py:53
 msgid "UUID"
 msgstr "UUID"
 
-#: src/core/models/Daemon.py:67 src/core/models/Email.py:160
+#: src/core/models/Daemon.py:61 src/core/models/Email.py:160
 msgid "mailbox"
 msgstr "поштова скринька"
 
-#: src/core/models/Daemon.py:75
+#: src/core/models/Daemon.py:69
 msgid "fetching criterion"
 msgstr "критерій отримання"
 
-#: src/core/models/Daemon.py:76
+#: src/core/models/Daemon.py:70
 msgid "The selection criterion for emails to archive."
 msgstr "Критерій вибору електронних листів для архівування."
 
-#: src/core/models/Daemon.py:84
+#: src/core/models/Daemon.py:78
 msgid "celery task"
 msgstr "завдання з селери"
 
-#: src/core/models/Daemon.py:90
+#: src/core/models/Daemon.py:85
 msgid "interval"
 msgstr "інтервал"
 
-#: src/core/models/Daemon.py:91
+#: src/core/models/Daemon.py:86
 msgid "The time between two daemon runs in seconds."
 msgstr "Час між двома демонами вимірюється в секундах."
 
-#: src/core/models/Daemon.py:107
-msgid "logfilepath"
-msgstr "шлях до файлу журналу"
-
-#: src/core/models/Daemon.py:113
-msgid "logfile backup count"
-msgstr "кількість резервних копій файлів журналу"
-
-#: src/core/models/Daemon.py:114
-msgid "The number of historical logfiles to keep."
-msgstr "Кількість файлів журналів, які потрібно зберігати."
+#: src/core/models/Daemon.py:102
+msgid "last error"
+msgstr ""
 
 #: src/core/models/Daemon.py:120
-msgid "logfile maximum size"
-msgstr "максимальний розмір файлу журналу"
-
-#: src/core/models/Daemon.py:121
-msgid "The maximum size of a logfile in bytes."
-msgstr "Максимальний розмір файлу журналу в байтах."
-
-#: src/core/models/Daemon.py:139
 msgid "This will only delete this daemon, not its mailbox."
 msgstr "Це видалить лише цей демон, а не його поштову скриньку."
 
-#: src/core/models/Daemon.py:170
+#: src/core/models/Daemon.py:151
 #, python-format
 msgid "Emailfetcherdaemon %(uuid)s for mailbox %(mailbox)s"
 msgstr "Демон Emailfetcher %(uuid)s для поштової скриньки %(mailbox)s"
 
-#: src/core/models/Daemon.py:211
+#: src/core/models/Daemon.py:185
 msgid "This fetching criterion is not available for this mailbox!"
 msgstr "Цей критерій отримання недоступний для цієї поштової скриньки!"
 
-#: src/core/models/Daemon.py:217
+#: src/core/models/Daemon.py:191
 msgid "No valid mailbox selected!"
 msgstr "Не вибрано дійсну поштову скриньку!"
 
@@ -577,6 +561,19 @@ msgstr ""
 msgid "Mailbox %(name)s of %(account)s"
 msgstr "Поштова скринька %(name)s з %(account)s"
 
+#: src/core/models/Mailbox.py:269 src/core/models/Mailbox.py:300
+msgid "The given file is not a valid zipfile."
+msgstr ""
+
+#: src/core/models/Mailbox.py:317
+#, python-format
+msgid "The given file is not a valid %(file_format)s."
+msgstr ""
+
+#: src/core/models/Mailbox.py:323
+msgid "The given file format is not supported."
+msgstr ""
+
 #: src/core/models/StorageShard.py:50
 msgid "shard directory name"
 msgstr "назва каталогу шарду"
@@ -627,7 +624,7 @@ msgstr ""
 "Помилка %(error_class_name)s: під час отримання вмісту пошти сталася помилка "
 "%(error)s!"
 
-#: src/core/utils/fetchers/ExchangeFetcher.py:323
+#: src/core/utils/fetchers/ExchangeFetcher.py:318
 #, python-format
 msgid ""
 "An %(error_class_name)s: %(error)s occurred during scan of message_root!"
@@ -645,9 +642,24 @@ msgstr ""
 "Неправильна відповідь сервера для %(command_name)s:\n"
 "%(response)s"
 
-#: src/core/utils/fetchers/SafeIMAPMixin.py:161
-#: src/core/utils/fetchers/SafePOPMixin.py:150
+#: src/core/utils/fetchers/SafeIMAPMixin.py:165
+#: src/core/utils/fetchers/SafePOPMixin.py:154
 #, python-format
 msgid "An %(error_class_name)s: %(error)s occurred during %(action_name)s!"
 msgstr ""
 "Помилка %(error_class_name)s: %(error)s сталася під час %(action_name)s!"
+
+#~ msgid "logfilepath"
+#~ msgstr "шлях до файлу журналу"
+
+#~ msgid "logfile backup count"
+#~ msgstr "кількість резервних копій файлів журналу"
+
+#~ msgid "The number of historical logfiles to keep."
+#~ msgstr "Кількість файлів журналів, які потрібно зберігати."
+
+#~ msgid "logfile maximum size"
+#~ msgstr "максимальний розмір файлу журналу"
+
+#~ msgid "The maximum size of a logfile in bytes."
+#~ msgstr "Максимальний розмір файлу журналу в байтах."

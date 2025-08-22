@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 09:31+0000\n"
+"POT-Creation-Date: 2025-08-22 09:37+0000\n"
 "PO-Revision-Date: 2025-08-12 15:01+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
@@ -16,66 +16,36 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 "
-"? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > "
-"14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % "
-"100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 "X-Generator: Weblate 5.13-dev\n"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:700
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1434
-msgid "Received"
-msgstr "Отримано"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:704
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1438
-msgid "From"
-msgstr "Від"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:707
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1441
-msgid "To"
-msgstr "До"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:710
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1444
-msgid "CC"
-msgstr "CC"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:713
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1447
-msgid "BCC"
-msgstr "BCC"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:726
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1460
-msgid "Attachments"
-msgstr "Вкладення"
-
-#: src/Emailkasten/settings.py:498
+#: src/Emailkasten/settings.py:511
 msgid "Emailkasten API"
 msgstr "API електронної пошти"
 
-#: src/Emailkasten/settings.py:499
+#: src/Emailkasten/settings.py:512
 msgid "The API schema for the Emailkasten server."
 msgstr "Схема API для сервера Emailkasten."
 
-#: src/Emailkasten/settings.py:521
+#: src/Emailkasten/settings.py:534
 msgid "Default page size for paginated API response data"
 msgstr ""
 "Розмір сторінки за замовчуванням для даних відповідей API з посторінковою "
 "структурою"
 
-#: src/Emailkasten/settings.py:526
+#: src/Emailkasten/settings.py:539
 msgid "Maximum page size for paginated API response data"
 msgstr ""
 "Максимальний розмір сторінки для даних відповідей API з розбивкою на сторінки"
 
-#: src/Emailkasten/settings.py:531
+#: src/Emailkasten/settings.py:544
 msgid "Default page size for pagination in the webapp."
 msgstr "Розмір сторінки за замовчуванням для пагінації у вебзастосунку."
 
-#: src/Emailkasten/settings.py:537
+#: src/Emailkasten/settings.py:550
 msgid ""
 "Page size options for pagination in the webapp. Should contain the "
 "WEB_DEFAULT_PAGE_SIZE value."
@@ -83,7 +53,7 @@ msgstr ""
 "Параметри розміру сторінки для пагінації у вебзастосунку. Повинні містити "
 "значення WEB_DEFAULT_PAGE_SIZE."
 
-#: src/Emailkasten/settings.py:544
+#: src/Emailkasten/settings.py:557
 msgid ""
 "Maximum datasize for a thumbnail in the webapp. Thumbnails larger than this "
 "will not be loaded."
@@ -91,30 +61,18 @@ msgstr ""
 "Максимальний розмір даних для мініатюри у вебзастосунку. Мініатюри, більші "
 "за цей розмір, не завантажуватимуться."
 
-#: src/Emailkasten/settings.py:550
-msgid "Default cycle period setting of a daemon in seconds"
-msgstr "Налаштування періоду циклу демона за замовчуванням у секундах"
-
-#: src/Emailkasten/settings.py:555
-msgid "Default restart time setting of a daemon in seconds"
-msgstr "Налаштування часу перезапуску демона за замовчуванням у секундах"
-
-#: src/Emailkasten/settings.py:560
-msgid "Default number of daemon logfiles to keep"
-msgstr ""
-"Кількість файлів журналів демона, які потрібно зберігати за замовчуванням"
-
-#: src/Emailkasten/settings.py:565
-msgid "Default maximum size of a daemon logfile in bytes"
-msgstr "Максимальний розмір файлу журналу демона за замовчуванням у байтах"
-
-#: src/Emailkasten/settings.py:570
+#: src/Emailkasten/settings.py:563
 msgid "Maximum numbers of files in one storage unit."
 msgstr "Максимальна кількість файлів в одному сховищі."
 
-#: src/Emailkasten/settings.py:575
+#: src/Emailkasten/settings.py:568
 msgid "Whether or not to ignore emails that have a spam flag"
 msgstr "Чи ігнорувати електронні листи з позначкою спаму"
+
+#: src/Emailkasten/settings.py:574
+msgid ""
+"List of mailboxes that are ignored when looking up mailboxes in an account."
+msgstr ""
 
 #: src/Emailkasten/settings.py:580
 msgid "List of content types prefixes to not parse as files."
@@ -178,19 +136,19 @@ msgstr "Конфігурації сервера"
 msgid "Default Values"
 msgstr "Значення за замовчуванням"
 
-#: src/Emailkasten/settings.py:729
+#: src/Emailkasten/settings.py:725
 msgid "Processing Settings"
 msgstr "Налаштування обробки"
 
-#: src/Emailkasten/settings.py:739
+#: src/Emailkasten/settings.py:736
 msgid "Storage Settings"
 msgstr "Налаштування пам'яті"
 
-#: src/Emailkasten/settings.py:743
+#: src/Emailkasten/settings.py:740
 msgid "API Settings"
 msgstr "Налаштування API"
 
-#: src/Emailkasten/settings.py:750
+#: src/Emailkasten/settings.py:747
 msgid "Web Settings"
 msgstr "Веб-налаштування"
 
@@ -259,3 +217,34 @@ msgstr "Сесії"
 #: src/Emailkasten/templates/allauth/layouts/manage.html:37
 msgid "Admin panel"
 msgstr "Панель адміністратора"
+
+#~ msgid "Received"
+#~ msgstr "Отримано"
+
+#~ msgid "From"
+#~ msgstr "Від"
+
+#~ msgid "To"
+#~ msgstr "До"
+
+#~ msgid "CC"
+#~ msgstr "CC"
+
+#~ msgid "BCC"
+#~ msgstr "BCC"
+
+#~ msgid "Attachments"
+#~ msgstr "Вкладення"
+
+#~ msgid "Default cycle period setting of a daemon in seconds"
+#~ msgstr "Налаштування періоду циклу демона за замовчуванням у секундах"
+
+#~ msgid "Default restart time setting of a daemon in seconds"
+#~ msgstr "Налаштування часу перезапуску демона за замовчуванням у секундах"
+
+#~ msgid "Default number of daemon logfiles to keep"
+#~ msgstr ""
+#~ "Кількість файлів журналів демона, які потрібно зберігати за замовчуванням"
+
+#~ msgid "Default maximum size of a daemon logfile in bytes"
+#~ msgstr "Максимальний розмір файлу журналу демона за замовчуванням у байтах"

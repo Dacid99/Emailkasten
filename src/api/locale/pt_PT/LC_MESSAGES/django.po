@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 09:31+0000\n"
+"POT-Creation-Date: 2025-08-22 09:37+0000\n"
 "PO-Revision-Date: 2025-08-12 15:02+0000\n"
 "Last-Translator: Manuela Silva <mmsrs@sky.com>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
@@ -45,89 +45,113 @@ msgstr "Caixas de mensagens atualizadas"
 msgid "Tested mailaccount"
 msgstr "Conta de correio testada"
 
-#: src/api/v1/views/AttachmentViewSet.py:116
-#: src/api/v1/views/AttachmentViewSet.py:198
+#: src/api/v1/views/AttachmentViewSet.py:117
+#: src/api/v1/views/AttachmentViewSet.py:208
 msgid "Attachment file not found"
 msgstr "Ficheiro de anexo não encontrado"
 
-#: src/api/v1/views/AttachmentViewSet.py:153
+#: src/api/v1/views/AttachmentViewSet.py:154
 msgid "Attachment ids missing in request."
 msgstr ""
 
-#: src/api/v1/views/AttachmentViewSet.py:161
+#: src/api/v1/views/AttachmentViewSet.py:163
+msgid "Attachment ids given in invalid format."
+msgstr ""
+
+#: src/api/v1/views/AttachmentViewSet.py:171
 msgid "No attachments found"
 msgstr ""
 
-#: src/api/v1/views/DaemonViewSet.py:109
+#: src/api/v1/views/CorrespondentViewSet.py:168
+msgid "Correspondent ids missing in request."
+msgstr ""
+
+#: src/api/v1/views/CorrespondentViewSet.py:177
+msgid "Correspondent ids given in invalid format."
+msgstr ""
+
+#: src/api/v1/views/CorrespondentViewSet.py:185
+msgid "No correspondents found"
+msgstr ""
+
+#: src/api/v1/views/DaemonViewSet.py:107
 msgid "Tested daemon"
 msgstr ""
 
-#: src/api/v1/views/DaemonViewSet.py:139
+#: src/api/v1/views/DaemonViewSet.py:137
 msgid "Daemon started"
 msgstr ""
 
-#: src/api/v1/views/DaemonViewSet.py:142
+#: src/api/v1/views/DaemonViewSet.py:140
 msgid "Daemon is already running"
 msgstr ""
 
-#: src/api/v1/views/DaemonViewSet.py:169
+#: src/api/v1/views/DaemonViewSet.py:167
 msgid "Daemon stopped"
 msgstr ""
 
-#: src/api/v1/views/DaemonViewSet.py:172
+#: src/api/v1/views/DaemonViewSet.py:170
 msgid "Daemon not running"
 msgstr ""
 
-#: src/api/v1/views/DaemonViewSet.py:212
-msgid "Logfile not found"
-msgstr ""
-
-#: src/api/v1/views/EmailViewSet.py:134
+#: src/api/v1/views/EmailViewSet.py:135
 msgid "eml file not found"
 msgstr ""
 
-#: src/api/v1/views/EmailViewSet.py:174 src/api/v1/views/MailboxViewSet.py:212
+#: src/api/v1/views/EmailViewSet.py:175 src/api/v1/views/MailboxViewSet.py:226
 msgid "File format missing in request."
 msgstr ""
 
-#: src/api/v1/views/EmailViewSet.py:180
+#: src/api/v1/views/EmailViewSet.py:181
 msgid "Email ids missing in request."
 msgstr ""
 
-#: src/api/v1/views/EmailViewSet.py:190 src/api/v1/views/MailboxViewSet.py:221
-#: src/api/v1/views/MailboxViewSet.py:258
+#: src/api/v1/views/EmailViewSet.py:190
+msgid "Email ids given in invalid format."
+msgstr ""
+
+#: src/api/v1/views/EmailViewSet.py:200 src/api/v1/views/MailboxViewSet.py:235
+#: src/api/v1/views/MailboxViewSet.py:272
 #, python-format
 msgid "File format %(file_format)s is not supported."
 msgstr ""
 
-#: src/api/v1/views/EmailViewSet.py:196
+#: src/api/v1/views/EmailViewSet.py:206
 msgid "No emails found"
 msgstr ""
 
-#: src/api/v1/views/MailboxViewSet.py:110
+#: src/api/v1/views/MailboxViewSet.py:109
 msgid "Tested mailbox"
 msgstr ""
 
-#: src/api/v1/views/MailboxViewSet.py:173
+#: src/api/v1/views/MailboxViewSet.py:170
+msgid "Fetching criterion missing in request."
+msgstr ""
+
+#: src/api/v1/views/MailboxViewSet.py:177
+msgid "The given fetching criterion is not available for this mailbox."
+msgstr ""
+
+#: src/api/v1/views/MailboxViewSet.py:187
 msgid "Error with mailaccount or mailbox occurred."
 msgstr ""
 
-#: src/api/v1/views/MailboxViewSet.py:179
+#: src/api/v1/views/MailboxViewSet.py:193
 msgid "All emails fetched."
 msgstr ""
 
-#: src/api/v1/views/MailboxViewSet.py:227
+#: src/api/v1/views/MailboxViewSet.py:241
 msgid "No emails found."
 msgstr ""
 
-#: src/api/v1/views/MailboxViewSet.py:266
+#: src/api/v1/views/MailboxViewSet.py:280
 msgid "File missing in request."
 msgstr ""
 
-#: src/api/v1/views/MailboxViewSet.py:275
+#: src/api/v1/views/MailboxViewSet.py:289
 msgid "An error occurred while processing the file."
 msgstr ""
 
-#: src/api/v1/views/MailboxViewSet.py:283
+#: src/api/v1/views/MailboxViewSet.py:297
 msgid "Successfully uploaded mailbox file."
 msgstr ""

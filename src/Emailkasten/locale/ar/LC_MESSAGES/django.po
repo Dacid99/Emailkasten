@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 09:31+0000\n"
+"POT-Creation-Date: 2025-08-22 09:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,90 +19,49 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:700
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1434
-msgid "Received"
-msgstr ""
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:704
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1438
-msgid "From"
-msgstr ""
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:707
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1441
-msgid "To"
-msgstr ""
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:710
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1444
-msgid "CC"
-msgstr ""
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:713
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1447
-msgid "BCC"
-msgstr ""
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:726
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1460
-msgid "Attachments"
-msgstr ""
-
-#: src/Emailkasten/settings.py:498
+#: src/Emailkasten/settings.py:511
 msgid "Emailkasten API"
 msgstr ""
 
-#: src/Emailkasten/settings.py:499
+#: src/Emailkasten/settings.py:512
 msgid "The API schema for the Emailkasten server."
 msgstr ""
 
-#: src/Emailkasten/settings.py:521
+#: src/Emailkasten/settings.py:534
 msgid "Default page size for paginated API response data"
 msgstr ""
 
-#: src/Emailkasten/settings.py:526
+#: src/Emailkasten/settings.py:539
 msgid "Maximum page size for paginated API response data"
 msgstr ""
 
-#: src/Emailkasten/settings.py:531
+#: src/Emailkasten/settings.py:544
 msgid "Default page size for pagination in the webapp."
 msgstr ""
 
-#: src/Emailkasten/settings.py:537
+#: src/Emailkasten/settings.py:550
 msgid ""
 "Page size options for pagination in the webapp. Should contain the "
 "WEB_DEFAULT_PAGE_SIZE value."
 msgstr ""
 
-#: src/Emailkasten/settings.py:544
+#: src/Emailkasten/settings.py:557
 msgid ""
 "Maximum datasize for a thumbnail in the webapp. Thumbnails larger than this "
 "will not be loaded."
 msgstr ""
 
-#: src/Emailkasten/settings.py:550
-msgid "Default cycle period setting of a daemon in seconds"
-msgstr ""
-
-#: src/Emailkasten/settings.py:555
-msgid "Default restart time setting of a daemon in seconds"
-msgstr ""
-
-#: src/Emailkasten/settings.py:560
-msgid "Default number of daemon logfiles to keep"
-msgstr ""
-
-#: src/Emailkasten/settings.py:565
-msgid "Default maximum size of a daemon logfile in bytes"
-msgstr ""
-
-#: src/Emailkasten/settings.py:570
+#: src/Emailkasten/settings.py:563
 msgid "Maximum numbers of files in one storage unit."
 msgstr ""
 
-#: src/Emailkasten/settings.py:575
+#: src/Emailkasten/settings.py:568
 msgid "Whether or not to ignore emails that have a spam flag"
+msgstr ""
+
+#: src/Emailkasten/settings.py:574
+msgid ""
+"List of mailboxes that are ignored when looking up mailboxes in an account."
 msgstr ""
 
 #: src/Emailkasten/settings.py:580
@@ -151,19 +110,19 @@ msgstr ""
 msgid "Default Values"
 msgstr ""
 
-#: src/Emailkasten/settings.py:729
+#: src/Emailkasten/settings.py:725
 msgid "Processing Settings"
 msgstr ""
 
-#: src/Emailkasten/settings.py:739
+#: src/Emailkasten/settings.py:736
 msgid "Storage Settings"
 msgstr ""
 
-#: src/Emailkasten/settings.py:743
+#: src/Emailkasten/settings.py:740
 msgid "API Settings"
 msgstr ""
 
-#: src/Emailkasten/settings.py:750
+#: src/Emailkasten/settings.py:747
 msgid "Web Settings"
 msgstr ""
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 09:31+0000\n"
+"POT-Creation-Date: 2025-08-22 09:37+0000\n"
 "PO-Revision-Date: 2025-08-12 15:01+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/"
@@ -19,57 +19,27 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.13-dev\n"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:700
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1434
-msgid "Received"
-msgstr "Erhalten"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:704
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1438
-msgid "From"
-msgstr "Von"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:707
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1441
-msgid "To"
-msgstr "An"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:710
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1444
-msgid "CC"
-msgstr "CC"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:713
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1447
-msgid "BCC"
-msgstr "BCC"
-
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:726
-#: tools/reports/mypy/html/src/Emailkasten/settings.py.html:1460
-msgid "Attachments"
-msgstr "Anhänge"
-
-#: src/Emailkasten/settings.py:498
+#: src/Emailkasten/settings.py:511
 msgid "Emailkasten API"
 msgstr "Emailkasten-API"
 
-#: src/Emailkasten/settings.py:499
+#: src/Emailkasten/settings.py:512
 msgid "The API schema for the Emailkasten server."
 msgstr "Das API-Schema des Emailkasten-Servers."
 
-#: src/Emailkasten/settings.py:521
+#: src/Emailkasten/settings.py:534
 msgid "Default page size for paginated API response data"
 msgstr "Standard-Seitengröße für API-Anwortdaten"
 
-#: src/Emailkasten/settings.py:526
+#: src/Emailkasten/settings.py:539
 msgid "Maximum page size for paginated API response data"
 msgstr "Maximale Seitengröße für API-Antwortdaten"
 
-#: src/Emailkasten/settings.py:531
+#: src/Emailkasten/settings.py:544
 msgid "Default page size for pagination in the webapp."
 msgstr "Standard-Seitengröße für die Webapp."
 
-#: src/Emailkasten/settings.py:537
+#: src/Emailkasten/settings.py:550
 msgid ""
 "Page size options for pagination in the webapp. Should contain the "
 "WEB_DEFAULT_PAGE_SIZE value."
@@ -77,7 +47,7 @@ msgstr ""
 "Seitengrößen-Optionen in der Webapp. Sollte den Wert von "
 "WEB_DEFAULT_PAGE_SIZE enthalten."
 
-#: src/Emailkasten/settings.py:544
+#: src/Emailkasten/settings.py:557
 msgid ""
 "Maximum datasize for a thumbnail in the webapp. Thumbnails larger than this "
 "will not be loaded."
@@ -85,29 +55,18 @@ msgstr ""
 "Maximal Dateigröße einer Vorschau in der Webapp. Dateien größer als dieser "
 "Wert werden nicht geladen."
 
-#: src/Emailkasten/settings.py:550
-msgid "Default cycle period setting of a daemon in seconds"
-msgstr "Standard-Periodendauer für Daemons in Sekunden"
-
-#: src/Emailkasten/settings.py:555
-msgid "Default restart time setting of a daemon in seconds"
-msgstr "Standard-Neustart-Wartezeit für Daemons in Sekunden"
-
-#: src/Emailkasten/settings.py:560
-msgid "Default number of daemon logfiles to keep"
-msgstr "Standardanzahl an gespeicherten Daemon Protokolldateien"
-
-#: src/Emailkasten/settings.py:565
-msgid "Default maximum size of a daemon logfile in bytes"
-msgstr "Standard-Maximalgröße für eine Daemon-Protokolldatei in Bytes"
-
-#: src/Emailkasten/settings.py:570
+#: src/Emailkasten/settings.py:563
 msgid "Maximum numbers of files in one storage unit."
 msgstr "Maximale Anzahl von Dateien in einer Speichereinheit."
 
-#: src/Emailkasten/settings.py:575
+#: src/Emailkasten/settings.py:568
 msgid "Whether or not to ignore emails that have a spam flag"
 msgstr "Ob als Spam markierte E-Mails ignoriert werden"
+
+#: src/Emailkasten/settings.py:574
+msgid ""
+"List of mailboxes that are ignored when looking up mailboxes in an account."
+msgstr ""
 
 #: src/Emailkasten/settings.py:580
 msgid "List of content types prefixes to not parse as files."
@@ -167,19 +126,19 @@ msgstr "Server-Konfiguration"
 msgid "Default Values"
 msgstr "Standardwerte"
 
-#: src/Emailkasten/settings.py:729
+#: src/Emailkasten/settings.py:725
 msgid "Processing Settings"
 msgstr "Verarbeitungseinstellungen"
 
-#: src/Emailkasten/settings.py:739
+#: src/Emailkasten/settings.py:736
 msgid "Storage Settings"
 msgstr "Speichereinstellungen"
 
-#: src/Emailkasten/settings.py:743
+#: src/Emailkasten/settings.py:740
 msgid "API Settings"
 msgstr "API Einstellungen"
 
-#: src/Emailkasten/settings.py:750
+#: src/Emailkasten/settings.py:747
 msgid "Web Settings"
 msgstr "Web-Einstellungen"
 
@@ -248,3 +207,33 @@ msgstr "Sitzungen"
 #: src/Emailkasten/templates/allauth/layouts/manage.html:37
 msgid "Admin panel"
 msgstr "Admin-Seite"
+
+#~ msgid "Received"
+#~ msgstr "Erhalten"
+
+#~ msgid "From"
+#~ msgstr "Von"
+
+#~ msgid "To"
+#~ msgstr "An"
+
+#~ msgid "CC"
+#~ msgstr "CC"
+
+#~ msgid "BCC"
+#~ msgstr "BCC"
+
+#~ msgid "Attachments"
+#~ msgstr "Anhänge"
+
+#~ msgid "Default cycle period setting of a daemon in seconds"
+#~ msgstr "Standard-Periodendauer für Daemons in Sekunden"
+
+#~ msgid "Default restart time setting of a daemon in seconds"
+#~ msgstr "Standard-Neustart-Wartezeit für Daemons in Sekunden"
+
+#~ msgid "Default number of daemon logfiles to keep"
+#~ msgstr "Standardanzahl an gespeicherten Daemon Protokolldateien"
+
+#~ msgid "Default maximum size of a daemon logfile in bytes"
+#~ msgstr "Standard-Maximalgröße für eine Daemon-Protokolldatei in Bytes"

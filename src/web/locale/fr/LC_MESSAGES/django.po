@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-06 20:23+0000\n"
+"POT-Creation-Date: 2025-08-22 09:37+0000\n"
 "PO-Revision-Date: 2025-08-15 11:01+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/emailkasten/web/"
@@ -190,8 +190,8 @@ msgid "New Account"
 msgstr "Nouveau compte"
 
 #: src/web/templates/web/account/account_create.html:37
-#: src/web/templates/web/daemon/daemon_create.html:33
-#: src/web/templates/web/mailbox/mailbox_daemon_create.html:40
+#: src/web/templates/web/daemon/daemon_create.html:31
+#: src/web/templates/web/mailbox/mailbox_daemon_create.html:38
 #: src/web/templates/web/partials/_cancel_edit-button.html:5
 #: src/web/templates/web/partials/_delete-modal.html:28
 msgid "Cancel"
@@ -230,14 +230,14 @@ msgid "Mailboxes"
 msgstr "Boîtes de réception"
 
 #: src/web/templates/web/account/account_detail.html:83
-#: src/web/templates/web/correspondent/correspondent_detail.html:69
+#: src/web/templates/web/correspondent/correspondent_detail.html:75
 #: src/web/templates/web/dashboard.html:16
 #: src/web/templates/web/mailbox/mailbox_detail.html:98
 msgid "Latest Emails"
 msgstr "Courriels les plus récents"
 
 #: src/web/templates/web/account/account_detail.html:88
-#: src/web/templates/web/correspondent/correspondent_detail.html:73
+#: src/web/templates/web/correspondent/correspondent_detail.html:79
 #: src/web/templates/web/dashboard.html:21
 #: src/web/templates/web/mailbox/mailbox_detail.html:103
 msgid "View all"
@@ -303,7 +303,6 @@ msgstr "Taille"
 
 #: src/web/templates/web/attachment/attachment_detail.html:38
 #: src/web/templates/web/attachment/partials/_attachment_card.html:22
-#: src/web/templates/web/daemon/daemon_detail.html:57
 #: src/web/templates/web/email/email_detail.html:44
 msgid "bytes"
 msgstr "octets"
@@ -442,37 +441,37 @@ msgstr "Fermer"
 msgid "Correspondent Details"
 msgstr "Détails du correspondant"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:31
+#: src/web/templates/web/correspondent/correspondent_detail.html:37
 msgid "Mailer name"
 msgstr "Nom d'expéditeur"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:36
+#: src/web/templates/web/correspondent/correspondent_detail.html:42
 msgid "Mailinglist"
 msgstr "Liste de diffusion"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:39
+#: src/web/templates/web/correspondent/correspondent_detail.html:45
 msgid "Subscribe"
 msgstr "S'abonner"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:42
+#: src/web/templates/web/correspondent/correspondent_detail.html:48
 msgid "Unsubscribe"
 msgstr "Se désabonner"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:46
+#: src/web/templates/web/correspondent/correspondent_detail.html:52
 msgid "Unsubscribe Method"
 msgstr "Méthode de désabonnement"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:50
+#: src/web/templates/web/correspondent/correspondent_detail.html:56
 msgid "Post"
 msgstr "Envoyer"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:53
+#: src/web/templates/web/correspondent/correspondent_detail.html:59
 #: src/web/templates/web/email/archive/base_archive.html:6
 #: src/web/templates/web/email/email_filter_list.html:20
 msgid "Archive"
 msgstr "Archive"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:56
+#: src/web/templates/web/correspondent/correspondent_detail.html:62
 msgid "Help"
 msgstr "Aide"
 
@@ -505,7 +504,7 @@ msgid "Daemon Details"
 msgstr "Détails du démon"
 
 #: src/web/templates/web/daemon/daemon_detail.html:38
-#: src/web/templates/web/daemon/daemon_detail.html:66
+#: src/web/templates/web/daemon/daemon_detail.html:69
 #: src/web/templates/web/daemon/daemon_edit.html:18
 #: src/web/templates/web/daemon/partials/_daemon_card.html:19
 #: src/web/templates/web/email/email_detail.html:47
@@ -541,13 +540,15 @@ msgstr "Dernière exécution"
 msgid "Total Run Count"
 msgstr "Nombre total des exécutions"
 
-#: src/web/templates/web/daemon/daemon_detail.html:55
-msgid "Logfile Backups"
-msgstr "Sauvegardes des journalisations"
-
 #: src/web/templates/web/daemon/daemon_detail.html:57
-msgid "Logfile max size"
-msgstr "Taille max. des fichiers de journalisation"
+#, fuzzy
+#| msgid "Request Error"
+msgid "Latest Error"
+msgstr "Erreur sur la requête"
+
+#: src/web/templates/web/daemon/daemon_detail.html:59
+msgid "Test the daemon to see what is going wrong."
+msgstr ""
 
 #: src/web/templates/web/daemon/daemon_edit.html:6
 msgid "Edit Daemon"
@@ -768,7 +769,7 @@ msgstr ""
 "Vous pouvez configurer des démons pour cette boîte de réception pour "
 "récupérer son contenu régulièrement."
 
-#: src/web/templates/web/mailbox/partials/_emails_list_alternative.html:8
+#: src/web/templates/web/mailbox/partials/_emails_list_alternative.html:7
 msgid ""
 "Fetch emails from this mailbox by setting up a daemon or fetching the "
 "content once."
@@ -776,9 +777,9 @@ msgstr ""
 "Récupérez des courriels depuis cette boîte de réception en configurant un "
 "démon ou en récupérant le contenu une première fois."
 
-#: src/web/templates/web/mailbox/partials/_fetch_all-button.html:9
-msgid "Fetch contents"
-msgstr "Récupérer les contenus"
+#: src/web/templates/web/mailbox/partials/_fetch_dropdown.html:10
+msgid "Fetch"
+msgstr ""
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:7
 msgid "No mailboxes found."
@@ -873,18 +874,21 @@ msgid "2025 Emailkasten. Licensed under AGPLv3. All rights reserved."
 msgstr "2025 Emailkasten. Sous licence AGPLv3. Tous droits réservés."
 
 #: src/web/templates/web/partials/_footer.html:11
-msgid "Github"
-msgstr "GitHub"
-
-#: src/web/templates/web/partials/_footer.html:14
 msgid "Gitlab"
 msgstr "Gitlab"
 
+#: src/web/templates/web/partials/_footer.html:14
+msgid "Github"
+msgstr "GitHub"
+
 #: src/web/templates/web/partials/_footer.html:17
+msgid "Dockerhub"
+msgstr ""
+
+#: src/web/templates/web/partials/_footer.html:20
 msgid "Documentation"
 msgstr "Documentation"
 
-#: src/web/templates/web/partials/_footer.html:20
 #: src/web/templates/web/partials/_footer.html:23
 msgid "Translating"
 msgstr "Traductions"
@@ -962,7 +966,12 @@ msgstr "Le démon s'est arrêté avec succès"
 msgid "Daemon was not running"
 msgstr "Le démon n'était pas en fonctionnement"
 
-#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:96
+#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:97
+#, python-format
+msgid "The chosen criterion %(criterion)s is not available for this mailbox."
+msgstr ""
+
+#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:106
 #, python-format
 msgid ""
 "Fetching failed\n"
@@ -971,10 +980,18 @@ msgstr ""
 "Récupération échouée\n"
 "%(error)s"
 
-#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:99
+#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:109
 msgid "Fetching successful"
 msgstr "La récupération est un succès"
 
-#: src/web/views/mailbox_views/UploadEmailView.py:74
-msgid "The file could not be processed!"
-msgstr "Le fichier n'a pas pu être traité !"
+#~ msgid "Logfile Backups"
+#~ msgstr "Sauvegardes des journalisations"
+
+#~ msgid "Logfile max size"
+#~ msgstr "Taille max. des fichiers de journalisation"
+
+#~ msgid "Fetch contents"
+#~ msgstr "Récupérer les contenus"
+
+#~ msgid "The file could not be processed!"
+#~ msgstr "Le fichier n'a pas pu être traité !"

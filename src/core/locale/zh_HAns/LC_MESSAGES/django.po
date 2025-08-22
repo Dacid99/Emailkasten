@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 09:31+0000\n"
+"POT-Creation-Date: 2025-08-22 09:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -201,7 +201,7 @@ msgstr ""
 msgid ".eml"
 msgstr ""
 
-#: src/core/models/Account.py:63 src/core/models/Correspondent.py:46
+#: src/core/models/Account.py:63 src/core/models/Correspondent.py:49
 msgid "email address"
 msgstr ""
 
@@ -249,22 +249,22 @@ msgstr ""
 msgid "Timeout for the connection to the mailserver."
 msgstr ""
 
-#: src/core/models/Account.py:109 src/core/models/Daemon.py:97
+#: src/core/models/Account.py:109 src/core/models/Daemon.py:92
 #: src/core/models/Mailbox.py:103
 msgid "healthy"
 msgstr ""
 
 #: src/core/models/Account.py:117 src/core/models/Attachment.py:114
-#: src/core/models/Correspondent.py:132 src/core/models/Email.py:142
+#: src/core/models/Correspondent.py:135 src/core/models/Email.py:142
 msgid "favorite"
 msgstr ""
 
-#: src/core/models/Account.py:125 src/core/models/Correspondent.py:69
+#: src/core/models/Account.py:125 src/core/models/Correspondent.py:72
 msgid "user"
 msgstr ""
 
 #: src/core/models/Account.py:131 src/core/models/Attachment.py:128
-#: src/core/models/Correspondent.py:138 src/core/models/Daemon.py:127
+#: src/core/models/Correspondent.py:141 src/core/models/Daemon.py:108
 #: src/core/models/Email.py:180 src/core/models/EmailCorrespondent.py:65
 #: src/core/models/Mailbox.py:97 src/core/models/Mailbox.py:111
 #: src/core/models/StorageShard.py:70
@@ -272,7 +272,7 @@ msgid "created"
 msgstr ""
 
 #: src/core/models/Account.py:137 src/core/models/Attachment.py:134
-#: src/core/models/Correspondent.py:144 src/core/models/Daemon.py:133
+#: src/core/models/Correspondent.py:147 src/core/models/Daemon.py:114
 #: src/core/models/Email.py:186 src/core/models/EmailCorrespondent.py:71
 #: src/core/models/Mailbox.py:117 src/core/models/StorageShard.py:76
 msgid "last updated"
@@ -334,125 +334,109 @@ msgstr ""
 msgid "Attachment %(file_name)s from %(email)s"
 msgstr ""
 
-#: src/core/models/Correspondent.py:53
+#: src/core/models/Correspondent.py:56
 msgid "mailer name"
 msgstr ""
 
-#: src/core/models/Correspondent.py:54
+#: src/core/models/Correspondent.py:57
 msgid "The mailer name of the correspondent."
 msgstr ""
 
-#: src/core/models/Correspondent.py:62
+#: src/core/models/Correspondent.py:65
 msgid "real name"
 msgstr ""
 
-#: src/core/models/Correspondent.py:63
+#: src/core/models/Correspondent.py:66
 msgid "The real name of the correspondent."
 msgstr ""
 
-#: src/core/models/Correspondent.py:76
+#: src/core/models/Correspondent.py:79
 msgid "list ID"
 msgstr ""
 
-#: src/core/models/Correspondent.py:83
+#: src/core/models/Correspondent.py:86
 msgid "list owner"
 msgstr ""
 
-#: src/core/models/Correspondent.py:90
+#: src/core/models/Correspondent.py:93
 msgid "list subscribe"
 msgstr ""
 
-#: src/core/models/Correspondent.py:97
+#: src/core/models/Correspondent.py:100
 msgid "list unsubscribe"
 msgstr ""
 
-#: src/core/models/Correspondent.py:105
+#: src/core/models/Correspondent.py:108
 msgid "list unsubscribe post"
 msgstr ""
 
-#: src/core/models/Correspondent.py:112
+#: src/core/models/Correspondent.py:115
 msgid "list post"
 msgstr ""
 
-#: src/core/models/Correspondent.py:119
+#: src/core/models/Correspondent.py:122
 msgid "list help"
 msgstr ""
 
-#: src/core/models/Correspondent.py:126
+#: src/core/models/Correspondent.py:129
 msgid "list archive"
 msgstr ""
 
-#: src/core/models/Correspondent.py:150
+#: src/core/models/Correspondent.py:153
 msgid "This will only delete this correspondent, not its emails."
 msgstr ""
 
-#: src/core/models/Correspondent.py:173
+#: src/core/models/Correspondent.py:176
 #, python-format
 msgid "Correspondent with address %(email_address)s"
 msgstr ""
 
-#: src/core/models/Daemon.py:59
+#: src/core/models/Daemon.py:53
 msgid "UUID"
 msgstr ""
 
-#: src/core/models/Daemon.py:67 src/core/models/Email.py:160
+#: src/core/models/Daemon.py:61 src/core/models/Email.py:160
 msgid "mailbox"
 msgstr ""
 
-#: src/core/models/Daemon.py:75
+#: src/core/models/Daemon.py:69
 msgid "fetching criterion"
 msgstr ""
 
-#: src/core/models/Daemon.py:76
+#: src/core/models/Daemon.py:70
 msgid "The selection criterion for emails to archive."
 msgstr ""
 
-#: src/core/models/Daemon.py:84
+#: src/core/models/Daemon.py:78
 msgid "celery task"
 msgstr ""
 
-#: src/core/models/Daemon.py:90
+#: src/core/models/Daemon.py:85
 msgid "interval"
 msgstr ""
 
-#: src/core/models/Daemon.py:91
+#: src/core/models/Daemon.py:86
 msgid "The time between two daemon runs in seconds."
 msgstr ""
 
-#: src/core/models/Daemon.py:107
-msgid "logfilepath"
-msgstr ""
-
-#: src/core/models/Daemon.py:113
-msgid "logfile backup count"
-msgstr ""
-
-#: src/core/models/Daemon.py:114
-msgid "The number of historical logfiles to keep."
+#: src/core/models/Daemon.py:102
+msgid "last error"
 msgstr ""
 
 #: src/core/models/Daemon.py:120
-msgid "logfile maximum size"
-msgstr ""
-
-#: src/core/models/Daemon.py:121
-msgid "The maximum size of a logfile in bytes."
-msgstr ""
-
-#: src/core/models/Daemon.py:139
 msgid "This will only delete this daemon, not its mailbox."
 msgstr ""
 
-#: src/core/models/Daemon.py:170
+#: src/core/models/Daemon.py:151
 #, python-format
 msgid "Emailfetcherdaemon %(uuid)s for mailbox %(mailbox)s"
 msgstr ""
 
-#: src/core/models/Daemon.py:211
+#: src/core/models/Daemon.py:185
 msgid "This fetching criterion is not available for this mailbox!"
 msgstr ""
 
-#: src/core/models/Daemon.py:217
+#: src/core/models/Daemon.py:191
 msgid "No valid mailbox selected!"
 msgstr ""
 
@@ -560,6 +544,19 @@ msgstr ""
 msgid "Mailbox %(name)s of %(account)s"
 msgstr ""
 
+#: src/core/models/Mailbox.py:269 src/core/models/Mailbox.py:300
+msgid "The given file is not a valid zipfile."
+msgstr ""
+
+#: src/core/models/Mailbox.py:317
+#, python-format
+msgid "The given file is not a valid %(file_format)s."
+msgstr ""
+
+#: src/core/models/Mailbox.py:323
+msgid "The given file format is not supported."
+msgstr ""
+
 #: src/core/models/StorageShard.py:50
 msgid "shard directory name"
 msgstr ""
@@ -604,7 +601,7 @@ msgid ""
 "An %(error_class_name)s: %(error)s occurred during fetching of mail contents!"
 msgstr ""
 
-#: src/core/utils/fetchers/ExchangeFetcher.py:323
+#: src/core/utils/fetchers/ExchangeFetcher.py:318
 #, python-format
 msgid ""
 "An %(error_class_name)s: %(error)s occurred during scan of message_root!"
@@ -618,8 +615,8 @@ msgid ""
 "%(response)s"
 msgstr ""
 
-#: src/core/utils/fetchers/SafeIMAPMixin.py:161
-#: src/core/utils/fetchers/SafePOPMixin.py:150
+#: src/core/utils/fetchers/SafeIMAPMixin.py:165
+#: src/core/utils/fetchers/SafePOPMixin.py:154
 #, python-format
 msgid "An %(error_class_name)s: %(error)s occurred during %(action_name)s!"
 msgstr ""
