@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-06 20:23+0000\n"
-"PO-Revision-Date: 2025-08-11 10:08+0000\n"
+"PO-Revision-Date: 2025-08-15 11:01+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/emailkasten/web/"
 "fr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.13\n"
 
 #: src/web/filters/AccountFilterSet.py:56
 #: src/web/filters/AttachmentFilterSet.py:55
@@ -88,12 +88,14 @@ msgid "Pick a file for upload."
 msgstr "Choisissez un fichier à téléverser."
 
 #: src/web/mixins/TestActionMixin.py:47
-#, fuzzy, python-format
-#| msgid "There was something wrong with your request."
+#, python-format
 msgid ""
 "Test failed, there is something wrong with this objects setup\n"
 "%(error)s"
-msgstr "Il y avait une erreur dans votre requête."
+msgstr ""
+"Test échoué, il y a quelque chose de mal avec cette configuration des "
+"objets\n"
+"%(error)s"
 
 #: src/web/mixins/TestActionMixin.py:52
 #, python-format
@@ -105,15 +107,12 @@ msgstr ""
 "%(error)s"
 
 #: src/web/mixins/TestActionMixin.py:56
-#, fuzzy, python-format
-#| msgid ""
-#| "Test failed\n"
-#| "%(error)s"
+#, python-format
 msgid ""
 "Test failed due to an unexpected error\n"
 "%(error)s"
 msgstr ""
-"Test échoué\n"
+"Le test a échoué en raison d'une erreur inattendue\n"
 "%(error)s"
 
 #: src/web/mixins/TestActionMixin.py:60
@@ -250,7 +249,6 @@ msgstr "Modifier le compte"
 
 #: src/web/templates/web/account/account_email_filter_list.html:6
 #: src/web/templates/web/mailbox/mailbox_email_filter_list.html:6
-#, fuzzy
 msgid "in"
 msgstr "dans"
 
@@ -296,10 +294,8 @@ msgstr "Détails de la pièce jointe"
 
 #: src/web/templates/web/attachment/attachment_detail.html:32
 #: src/web/templates/web/attachment/partials/_attachment_card.html:10
-#, fuzzy
-#| msgid "Content Type"
 msgid "MIME Content-Type"
-msgstr "Type de contenu"
+msgstr "Type de contenu MIME"
 
 #: src/web/templates/web/attachment/attachment_detail.html:38
 msgid "Size"
@@ -452,7 +448,7 @@ msgstr "Nom d'expéditeur"
 
 #: src/web/templates/web/correspondent/correspondent_detail.html:36
 msgid "Mailinglist"
-msgstr ""
+msgstr "Liste de diffusion"
 
 #: src/web/templates/web/correspondent/correspondent_detail.html:39
 msgid "Subscribe"
@@ -565,9 +561,8 @@ msgstr "Ajouter un démon"
 #: src/web/templates/web/daemon/partials/_download_logs-button.html:5
 #: src/web/templates/web/mailbox/partials/_download_dropdown.html:9
 #: src/web/templates/web/partials/_download-button.html:5
-#, fuzzy
 msgid "Download"
-msgstr "Téléchargement"
+msgstr "Télécharger"
 
 #: src/web/templates/web/daemon/partials/_filter_list_alternative.html:7
 msgid "No daemons found."
@@ -733,7 +728,7 @@ msgstr "Nouveaux démons"
 
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:22
 msgid "for"
-msgstr ""
+msgstr "pour"
 
 #: src/web/templates/web/mailbox/mailbox_detail.html:6
 msgid "Mailbox Details"
@@ -904,11 +899,11 @@ msgstr "Problème"
 
 #: src/web/templates/web/partials/_health_badge.html:15
 msgid "Health unknown"
-msgstr "Santé inconnue"
+msgstr "Statut inconnu"
 
 #: src/web/templates/web/partials/_pagination.html:4
 msgid "Results"
-msgstr ""
+msgstr "Résultats"
 
 #: src/web/templates/web/partials/_pagination.html:5
 msgid "Page navigation"

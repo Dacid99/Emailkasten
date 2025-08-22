@@ -3,19 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-11 09:31+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-08-12 15:02+0000\n"
+"Last-Translator: Manuela Silva <mmsrs@sky.com>\n"
+"Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
+"emailkasten/web/pt_PT/>\n"
+"Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: src/web/filters/AccountFilterSet.py:56
 #: src/web/filters/AttachmentFilterSet.py:55
@@ -25,7 +27,7 @@ msgstr ""
 #: src/web/filters/EmailCorrespondentFilterSet.py:56
 #: src/web/filters/EmailFilterSet.py:53 src/web/filters/MailboxFilterSet.py:53
 msgid "Search"
-msgstr ""
+msgstr "Procurar"
 
 #: src/web/filters/AccountFilterSet.py:67
 #: src/web/filters/CorrespondentFilterSet.py:61
@@ -688,7 +690,7 @@ msgstr ""
 
 #: src/web/templates/web/email/partials/_email_card.html:27
 msgid "Received"
-msgstr ""
+msgstr "Recebida"
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:7
 msgid "No emails found."

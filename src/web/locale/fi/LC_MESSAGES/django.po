@@ -3,20 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-11 09:31+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-08-20 22:02+0000\n"
+"Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/emailkasten/web/"
+"fi/>\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.13\n"
 
 #: src/web/filters/AccountFilterSet.py:56
 #: src/web/filters/AttachmentFilterSet.py:55
@@ -26,7 +27,7 @@ msgstr ""
 #: src/web/filters/EmailCorrespondentFilterSet.py:56
 #: src/web/filters/EmailFilterSet.py:53 src/web/filters/MailboxFilterSet.py:53
 msgid "Search"
-msgstr ""
+msgstr "Hae"
 
 #: src/web/filters/AccountFilterSet.py:67
 #: src/web/filters/CorrespondentFilterSet.py:61
@@ -170,11 +171,11 @@ msgstr ""
 
 #: src/web/templates/web/account/account_create.html:6
 msgid "Add Account"
-msgstr ""
+msgstr "Lisää tili"
 
 #: src/web/templates/web/account/account_create.html:20
 msgid "New Account"
-msgstr ""
+msgstr "Uusi tili"
 
 #: src/web/templates/web/account/account_create.html:37
 #: src/web/templates/web/daemon/daemon_create.html:33
@@ -182,11 +183,11 @@ msgstr ""
 #: src/web/templates/web/partials/_cancel_edit-button.html:5
 #: src/web/templates/web/partials/_delete-modal.html:28
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 #: src/web/templates/web/account/account_detail.html:6
 msgid "Account Details"
-msgstr ""
+msgstr "Tilin yksityiskohdat"
 
 #: src/web/templates/web/account/account_detail.html:41
 msgid "Host"
@@ -203,7 +204,7 @@ msgstr ""
 
 #: src/web/templates/web/account/account_detail.html:48
 msgid "Default"
-msgstr ""
+msgstr "Oletus"
 
 #: src/web/templates/web/account/account_detail.html:51
 msgid "Timeout"
@@ -232,7 +233,7 @@ msgstr ""
 
 #: src/web/templates/web/account/account_edit.html:6
 msgid "Edit Account"
-msgstr ""
+msgstr "Muokkaa tili"
 
 #: src/web/templates/web/account/account_email_filter_list.html:6
 #: src/web/templates/web/mailbox/mailbox_email_filter_list.html:6
@@ -243,19 +244,19 @@ msgstr ""
 #: src/web/templates/web/account/account_filter_list.html:10
 #: src/web/templates/web/bases/base.html:61
 msgid "Accounts"
-msgstr ""
+msgstr "Tilit"
 
 #: src/web/templates/web/account/partials/_add_button.html:6
 msgid "Add account"
-msgstr ""
+msgstr "Lisää tili"
 
 #: src/web/templates/web/account/partials/_email_list_alternative.html:6
 msgid "You can fetch emails from one of this accounts mailboxes."
-msgstr ""
+msgstr "Voit hakea sähköpostia yhdestä näistä tileistä postilaatikot."
 
 #: src/web/templates/web/account/partials/_filter_list_alternative.html:7
 msgid "No email accounts found."
-msgstr ""
+msgstr "Ei löytynyt sähköpostitilejä."
 
 #: src/web/templates/web/account/partials/_filter_list_alternative.html:11
 msgid "Go ahead and add some."
@@ -317,7 +318,7 @@ msgstr ""
 #: src/web/templates/web/dashboard.html:61
 #: src/web/templates/web/email/email_detail.html:119
 msgid "Attachments"
-msgstr ""
+msgstr "Liitteet"
 
 #: src/web/templates/web/attachment/partials/_attachment_card.html:22
 #: src/web/templates/web/email/email_detail.html:44
@@ -358,11 +359,12 @@ msgstr ""
 #: src/web/templates/web/bases/base.html:14
 #: src/web/templates/web/bases/base.html:36
 msgid "Emailkasten"
-msgstr ""
+msgstr "Emailkasten"
 
 #: src/web/templates/web/bases/base.html:43
+#, fuzzy
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Vaihda navigointi"
 
 #: src/web/templates/web/bases/base.html:50
 #: src/web/templates/web/dashboard.html:47
