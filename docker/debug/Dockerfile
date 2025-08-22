@@ -1,4 +1,4 @@
-FROM python:3.13-alpine3.22
+FROM python:3.13-alpine
 
 ARG APK_DEPENDENCIES="gettext \
     python3-dev \

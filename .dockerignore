@@ -8,6 +8,7 @@ $RECYCLE.BIN/
 *.egg-info/
 *.gif
 *.iml
+*.ini
 *.iws
 *.jpeg
 *.jpg
@@ -22,6 +23,7 @@ $RECYCLE.BIN/
 *.pdf
 *.png
 *.pot
+*.rst
 *.stackdump
 *.swo
 *.swp

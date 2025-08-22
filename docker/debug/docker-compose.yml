@@ -3,7 +3,7 @@ services:
     image: mariadb:latest
     container_name: emailkasten-db
     volumes:
-      - /main/Emailkasten/test/mysql:/var/lib/mysql
+      - /path/to/emailkasten/debug/mysql:/var/lib/mysql
     environment:
       - MARIADB_DATABASE=email_archive_django # must match web:DATABASE_NAME
       - MARIADB_USER=user # must match web:DATABASE_USER
@@ -28,8 +28,8 @@ services:
     image: emailkasten-debug
     container_name: emailkasten-web
     volumes:
-      - /main/Emailkasten/test/archive:/mnt/archive
-      - /main/Emailkasten/test/log:/var/log/emailkasten
+      - /path/to/emailkasten/debug/archive:/mnt/archive
+      - /path/to/emailkasten/debug/log:/var/log/emailkasten
     ports:
       - 1122:8000
     environment:
