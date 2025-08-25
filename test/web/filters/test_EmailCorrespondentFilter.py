@@ -45,7 +45,7 @@ from .conftest import (
         "list_archive",
     ],
 )
-def test_text_search_filter(
+def test_search_filter(
     faker, emailcorrespondents_queryset, correspondent_queryset, searched_field
 ):
     """Tests :class:`web.filters.EmailCorrespondentFilterSet`'s search filtering."""
@@ -54,7 +54,7 @@ def test_text_search_filter(
     correspondent_queryset.filter(
         correspondentemails=emailcorrespondents_queryset.get(id=target_id)
     ).update(**{searched_field: target_text})
-    query = {"text_search": target_text[2:10]}
+    query = {"search": target_text[2:10]}
 
     filtered_data = EmailCorrespondentFilterSet(
         query, queryset=emailcorrespondents_queryset

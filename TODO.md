@@ -59,7 +59,7 @@
 ## To fix
 
 - fetching too many emails leads to browser timeout
-- streamline queryparams and field names across web and api
+- complete openapi schema
 - make 400 responses return field specific errors
 - optics:
   - better name for daemon

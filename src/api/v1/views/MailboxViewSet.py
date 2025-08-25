@@ -265,7 +265,7 @@ class MailboxViewSet(
         Returns:
             A response detailing the request status.
         """
-        file_format = request.data.get("format", None)
+        file_format = request.data.get("file_format", None)
         if file_format is None:
             return Response(
                 {

@@ -45,12 +45,12 @@ from .conftest import (
         "list_archive",
     ],
 )
-def test_text_search_filter(faker, correspondent_queryset, searched_field):
+def test_search_filter(faker, correspondent_queryset, searched_field):
     """Tests :class:`web.filters.CorrespondentFilterSet`'s search filtering."""
     target_text = faker.sentence()
     target_id = faker.random.randint(0, len(correspondent_queryset) - 1)
     correspondent_queryset.filter(id=target_id).update(**{searched_field: target_text})
-    query = {"text_search": target_text[2:10]}
+    query = {"search": target_text[2:10]}
 
     filtered_data = CorrespondentFilterSet(query, queryset=correspondent_queryset).qs
 

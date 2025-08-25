@@ -36,7 +36,7 @@ from .conftest import (
 @pytest.mark.parametrize(
     "searched_field", ["message_id", "email_subject", "plain_bodytext", "html_bodytext"]
 )
-def test_text_search_filter(
+def test_search_filter(
     faker, emailcorrespondents_queryset, email_queryset, searched_field
 ):
     """Tests :class:`web.filters.CorrespondentEmailFilterSet`'s search filtering."""
@@ -45,7 +45,7 @@ def test_text_search_filter(
     email_queryset.filter(
         emailcorrespondents=emailcorrespondents_queryset.get(id=target_id)
     ).update(**{searched_field: target_text})
-    query = {"text_search": target_text[2:10]}
+    query = {"search": target_text[2:10]}
 
     filtered_data = CorrespondentEmailFilterSet(
         query, queryset=emailcorrespondents_queryset

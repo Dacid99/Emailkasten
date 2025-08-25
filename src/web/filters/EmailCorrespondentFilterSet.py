@@ -51,7 +51,7 @@ class EmailCorrespondentFilterSet(django_filters.FilterSet):
         ]
     )
 
-    text_search = django_filters.CharFilter(
+    search = django_filters.CharFilter(
         method="filter_text_fields",
         label=_("Search"),
         widget=widgets.SearchInput,

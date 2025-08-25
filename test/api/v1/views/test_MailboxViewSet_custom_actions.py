@@ -525,7 +525,7 @@ def test_upload_mailbox_noauth(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "format": fake_format},
+        {"file": fake_file, "file_format": fake_format},
         format="multipart",
     )
 
@@ -553,7 +553,7 @@ def test_upload_mailbox_auth_other(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "format": fake_format},
+        {"file": fake_file, "file_format": fake_format},
         format="multipart",
     )
 
@@ -579,7 +579,7 @@ def test_upload_mailbox_auth_owner(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "format": fake_format},
+        {"file": fake_file, "file_format": fake_format},
         format="multipart",
     )
 
@@ -611,7 +611,7 @@ def test_upload_mailbox_no_file_auth_owner(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"format": fake_format},
+        {"file_format": fake_format},
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -664,7 +664,7 @@ def test_upload_mailbox_bad_file_or_format_auth_owner(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "format": fake_format},
+        {"file": fake_file, "file_format": fake_format},
         format="multipart",
     )
 
