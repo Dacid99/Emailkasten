@@ -324,7 +324,6 @@ def test_fetch_failure_auth_owner(
 
 @pytest.mark.django_db
 def test_fetch_auth_owner_no_criterion(
-    faker,
     fake_mailbox,
     owner_api_client,
     mock_Mailbox_fetch,
@@ -338,6 +337,7 @@ def test_fetch_auth_owner_no_criterion(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["criterion"]
     mock_Mailbox_fetch.assert_not_called()
 
 
@@ -358,6 +358,7 @@ def test_fetch_auth_owner_bad_criterion(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["criterion"]
     mock_Mailbox_fetch.assert_not_called()
 
 
@@ -615,6 +616,7 @@ def test_upload_mailbox_no_file_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["file"]
     mock_Mailbox_add_emails_from_file.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
     assert "name" not in response.data
@@ -640,6 +642,7 @@ def test_upload_mailbox_no_format_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["file_format"]
     mock_Mailbox_add_emails_from_file.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
     assert "name" not in response.data

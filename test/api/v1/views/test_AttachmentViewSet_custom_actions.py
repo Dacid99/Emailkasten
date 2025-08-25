@@ -176,6 +176,7 @@ def test_batch_download_no_ids_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["id"]
     assert not isinstance(response, FileResponse)
     mock_Attachment_queryset_as_file.assert_not_called()
 
@@ -204,6 +205,7 @@ def test_batch_download_bad_ids_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["id"]
     assert not isinstance(response, FileResponse)
     mock_Attachment_queryset_as_file.assert_not_called()
 

@@ -32,8 +32,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.openapi import OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
-from rest_framework import mixins, status, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -171,37 +172,33 @@ class EmailViewSet(
         """
         file_format = request.query_params.get("file_format", None)
         if not file_format:
-            return Response(
-                {"detail": _("File format missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                {"file_format": _("File format is required.")},
             )
         requested_id_query_params = request.query_params.getlist("id", [])
         if not requested_id_query_params:
-            return Response(
-                {"detail": _("Email ids missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                {"id": _("Email ids are required.")},
             )
         try:
             requested_ids = query_param_list_to_typed_list(
                 requested_id_query_params, int
             )
         except ValueError:
-            return Response(
-                {"detail": _("Email ids given in invalid format.")},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError(
+                {"id": _("Email ids given in invalid format.")},
+            ) from None
         try:
             file = Email.queryset_as_file(
                 self.get_queryset().filter(pk__in=requested_ids), file_format
             )
         except ValueError:
-            return Response(
+            raise ValidationError(
                 {
-                    "detail": _("File format %(file_format)s is not supported.")
+                    "file_format": _("File format %(file_format)s is not supported.")
                     % {"file_format": file_format}
                 },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            ) from None
         except Email.DoesNotExist:
             raise Http404(_("No emails found")) from None
         else:

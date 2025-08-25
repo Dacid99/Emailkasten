@@ -27,6 +27,7 @@ from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -166,18 +167,17 @@ class MailboxViewSet(
         mailbox = self.get_object()
         criterion = request.data.get("criterion")
         if not criterion:
-            return Response(
-                {"detail": _("Fetching criterion missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                {"criterion": _("Fetching criterion is required.")},
             )
         if criterion not in mailbox.available_fetching_criteria:
-            return Response(
+            raise ValidationError(
                 {
-                    "detail": _(
-                        "The given fetching criterion is not available for this mailbox."
+                    "criterion": _(
+                        "The given criterion %(criterion)s is not available for this mailbox."
                     )
+                    % {"criterion": criterion}
                 },
-                status=status.HTTP_400_BAD_REQUEST,
             )
         try:
             mailbox.fetch(criterion)
@@ -222,21 +222,19 @@ class MailboxViewSet(
         """
         file_format = request.query_params.get("file_format", None)
         if not file_format:
-            return Response(
-                {"detail": _("File format missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                {"file_format": _("File format is required.")},
             )
         mailbox = self.get_object()
         try:
             file = Email.queryset_as_file(mailbox.emails.all(), file_format)
         except ValueError:
-            return Response(
+            raise ValidationError(
                 {
-                    "detail": _("File format %(file_format)s is not supported.")
+                    "file_format": _("File format %(file_format)s is not supported.")
                     % {"file_format": file_format}
                 },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            ) from None
         except Email.DoesNotExist:
             raise Http404(_("No emails found.")) from None
         else:
@@ -267,18 +265,16 @@ class MailboxViewSet(
         """
         file_format = request.data.get("file_format", None)
         if file_format is None:
-            return Response(
+            raise ValidationError(
                 {
-                    "detail": _("File format %(file_format)s is not supported.")
+                    "file_format": _("File format %(file_format)s is not supported.")
                     % {"file_format": file_format}
                 },
-                status=status.HTTP_400_BAD_REQUEST,
             )
         uploaded_file = request.FILES.get("file", None)
         if uploaded_file is None:
-            return Response(
-                {"detail": _("File missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                {"file": _("File is required.")},
             )
         mailbox = self.get_object()
         try:

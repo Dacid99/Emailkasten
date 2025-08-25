@@ -29,6 +29,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from api.v1.views import EmailViewSet
+from core.constants import SupportedEmailDownloadFormats
 from core.models import Email
 
 
@@ -179,6 +180,7 @@ def test_batch_download_no_ids_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["id"]
     assert not isinstance(response, FileResponse)
 
 
@@ -193,6 +195,7 @@ def test_batch_download_no_format_auth_owner(owner_api_client, custom_list_actio
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["file_format"]
     assert not isinstance(response, FileResponse)
 
 
@@ -207,6 +210,7 @@ def test_batch_download_bad_format_auth_owner(owner_api_client, custom_list_acti
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["file_format"]
     assert not isinstance(response, FileResponse)
 
 
@@ -228,10 +232,11 @@ def test_batch_download_bad_ids_auth_owner(
     """
     response = owner_api_client.get(
         custom_list_action_url(EmailViewSet, EmailViewSet.URL_NAME_DOWNLOAD_BATCH),
-        {"id": bad_ids},
+        {"file_format": SupportedEmailDownloadFormats.MBOX, "id": bad_ids},
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["id"]
     assert not isinstance(response, FileResponse)
     mock_Email_queryset_as_file.assert_not_called()
 

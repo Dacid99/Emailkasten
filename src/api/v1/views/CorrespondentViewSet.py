@@ -29,8 +29,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.openapi import OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
-from rest_framework import mixins, status, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -164,19 +165,15 @@ class CorrespondentViewSet(
         """
         requested_id_query_params = request.query_params.getlist("id", [])
         if not requested_id_query_params:
-            return Response(
-                {"detail": _("Correspondent ids missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError({"id": _("Correspondent ids are required.")})
         try:
             requested_ids = query_param_list_to_typed_list(
                 requested_id_query_params, int
             )
         except ValueError:
-            return Response(
-                {"detail": _("Correspondent ids given in invalid format.")},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError(
+                {"id": _("Correspondent ids given in invalid format.")}
+            ) from None
         try:
             file = Correspondent.queryset_as_file(
                 self.get_queryset().filter(pk__in=requested_ids)

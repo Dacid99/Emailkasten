@@ -60,7 +60,6 @@
 
 - fetching too many emails leads to browser timeout
 - complete openapi schema
-- make 400 responses return field specific errors
 - optics:
   - better name for daemon
 - ci:
