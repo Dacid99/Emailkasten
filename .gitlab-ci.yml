@@ -41,12 +41,10 @@ services:
   - docker:dind
 
 stages:
-  - dependabot
   - check
   - build
 
 include:
-  - local: .gitlab/ci/.gitlab-ci-dependabot.yml
   - local: .gitlab/ci/.gitlab-ci-check-version.yml
   - local: .gitlab/ci/.gitlab-ci-fix_and_format.yml
   - local: .gitlab/ci/.gitlab-ci-lint.yml

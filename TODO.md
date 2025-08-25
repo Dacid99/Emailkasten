@@ -46,6 +46,7 @@
 ## To implement
 
 - fetch only specific errors in fetchers
+- last_error for mailbox and account
 - favicon.ico for the icon
 - daemonize celery worker
 
@@ -57,7 +58,6 @@
 
 ## To fix
 
-- migrate from dependabot to renovate
 - fetching too many emails leads to browser timeout
 - streamline queryparams and field names across web and api
 - make 400 responses return field specific errors
