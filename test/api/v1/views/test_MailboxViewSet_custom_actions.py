@@ -26,7 +26,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from api.v1.views import MailboxViewSet
-from core.constants import EmailFetchingCriterionChoices
+from core.constants import EmailFetchingCriterionChoices, SupportedEmailUploadFormats
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 from test.conftest import fake_mailbox
 
@@ -566,7 +566,6 @@ def test_upload_mailbox_auth_other(
 
 @pytest.mark.django_db
 def test_upload_mailbox_auth_owner(
-    faker,
     fake_mailbox,
     owner_api_client,
     custom_detail_action_url,
@@ -574,13 +573,11 @@ def test_upload_mailbox_auth_owner(
     fake_file,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
-    fake_format = faker.word()
-
     response = owner_api_client.post(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "file_format": fake_format},
+        {"file": fake_file, "file_format": SupportedEmailUploadFormats.MH.value},
         format="multipart",
     )
 
@@ -592,7 +589,10 @@ def test_upload_mailbox_auth_owner(
     assert mock_Mailbox_add_emails_from_file.call_args.args[0] == fake_mailbox
     assert len(mock_Mailbox_add_emails_from_file.captured_streams) == 1
     assert mock_Mailbox_add_emails_from_file.captured_streams[0] == fake_file.getvalue()
-    assert mock_Mailbox_add_emails_from_file.call_args.args[2] == fake_format
+    assert (
+        mock_Mailbox_add_emails_from_file.call_args.args[2]
+        == SupportedEmailUploadFormats.MH.value
+    )
 
 
 @pytest.mark.django_db
@@ -649,7 +649,33 @@ def test_upload_mailbox_no_format_auth_owner(
 
 
 @pytest.mark.django_db
-def test_upload_mailbox_bad_file_or_format_auth_owner(
+def test_upload_mailbox_bad_format_auth_owner(
+    fake_mailbox,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Mailbox_add_emails_from_file,
+    fake_file,
+):
+    """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
+    assert fake_mailbox.emails.all().count() == 1
+
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
+        ),
+        {"file": fake_file, "format": "Unsupported"},
+        format="multipart",
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["file_format"]
+    mock_Mailbox_add_emails_from_file.assert_not_called()
+    assert fake_mailbox.emails.all().count() == 1
+    assert "name" not in response.data
+
+
+@pytest.mark.django_db
+def test_upload_mailbox_bad_file_auth_owner(
     faker,
     fake_mailbox,
     owner_api_client,
@@ -659,7 +685,6 @@ def test_upload_mailbox_bad_file_or_format_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
     mock_Mailbox_add_emails_from_file.side_effect = ValueError(faker.text())
-    fake_format = faker.word()
 
     assert fake_mailbox.emails.all().count() == 1
 
@@ -667,12 +692,12 @@ def test_upload_mailbox_bad_file_or_format_auth_owner(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "file_format": fake_format},
+        {"file": fake_file, "file_format": SupportedEmailUploadFormats.MMDF.value},
         format="multipart",
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["error"] == str(mock_Mailbox_add_emails_from_file.side_effect)
+    assert response.data["file"] == str(mock_Mailbox_add_emails_from_file.side_effect)
     mock_Mailbox_add_emails_from_file.assert_called_once()
     assert fake_mailbox.emails.all().count() == 1
     assert "name" not in response.data

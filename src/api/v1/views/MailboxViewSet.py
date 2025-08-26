@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING, Final, override
 from django.http import FileResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -33,6 +34,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from api.v1.serializers.UploadEmailSerializer import UploadEmailSerializer
 from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
 
@@ -46,6 +48,12 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
+@extend_schema_view(
+    list=extend_schema(description="Lists all instances matching the filter."),
+    retrieve=extend_schema(description="Retrieves a single instance."),
+    update=extend_schema(description="Updates a single instance."),
+    destroy=extend_schema(description="Deletes a single instance."),
+)
 class MailboxViewSet(
     NoCreateMixin, viewsets.ModelViewSet[Mailbox], ToggleFavoriteMixin
 ):
@@ -263,30 +271,20 @@ class MailboxViewSet(
         Returns:
             A response detailing the request status.
         """
-        file_format = request.data.get("file_format", None)
-        if file_format is None:
-            raise ValidationError(
-                {
-                    "file_format": _("File format %(file_format)s is not supported.")
-                    % {"file_format": file_format}
-                },
-            )
-        uploaded_file = request.FILES.get("file", None)
-        if uploaded_file is None:
-            raise ValidationError(
-                {"file": _("File is required.")},
-            )
-        mailbox = self.get_object()
+        mailbox = (
+            self.get_object()
+        )  # this must be called first to return 404 for missing authentication even if the data is invalid
+        upload_serializer = UploadEmailSerializer(data=request.data)
+        upload_serializer.is_valid(raise_exception=True)
         try:
-            mailbox.add_emails_from_file(uploaded_file, file_format)
-        except ValueError as error:
-            return Response(
-                {
-                    "detail": _("An error occurred while processing the file."),
-                    "error": str(error),
-                },
-                status=status.HTTP_400_BAD_REQUEST,
+            mailbox.add_emails_from_file(
+                upload_serializer.validated_data["file"],
+                upload_serializer.validated_data["file_format"],
             )
+        except ValueError as error:
+            raise ValidationError(
+                {"file": str(error)},
+            ) from None
         mailbox_serializer = self.get_serializer(mailbox)
         return Response(
             {
