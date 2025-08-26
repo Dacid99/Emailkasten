@@ -18,8 +18,7 @@
 
 """Package :mod:`api.v1.mixins` with mixins for the api app."""
 
-from .NoCreateMixin import NoCreateMixin
 from .ToggleFavoriteMixin import ToggleFavoriteMixin
 
 
-__all__ = ["NoCreateMixin", "ToggleFavoriteMixin"]
+__all__ = ["ToggleFavoriteMixin"]

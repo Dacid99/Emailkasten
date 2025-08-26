@@ -26,20 +26,19 @@ from django.http import FileResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework import status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from api.v1.mixins import ToggleFavoriteMixin
 from api.v1.serializers.UploadEmailSerializer import UploadEmailSerializer
 from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
 
 from ..filters import MailboxFilterSet
-from ..mixins.NoCreateMixin import NoCreateMixin
 from ..serializers import MailboxWithDaemonSerializer
 
 
@@ -55,7 +54,10 @@ if TYPE_CHECKING:
     destroy=extend_schema(description="Deletes a single instance."),
 )
 class MailboxViewSet(
-    NoCreateMixin, viewsets.ModelViewSet[Mailbox], ToggleFavoriteMixin
+    viewsets.ReadOnlyModelViewSet[Mailbox],
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    ToggleFavoriteMixin,
 ):
     """Viewset for the :class:`core.models.Mailbox.Mailbox`.
 
@@ -223,10 +225,10 @@ class MailboxViewSet(
 
         Raises:
             Http404: If there are no emails in the mailbox.
+            ValidationError: If file_format is missing or unsupported.
 
         Returns:
             A fileresponse containing the emails in the requested format.
-            A 400 response if file_format or id param are missing in the request.
         """
         file_format = request.query_params.get("file_format", None)
         if not file_format:
