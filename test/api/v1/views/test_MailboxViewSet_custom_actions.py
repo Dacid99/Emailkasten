@@ -130,9 +130,7 @@ def test_test_mailbox_success_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     assert response.data["result"] is True
     assert "error" not in response.data
     mock_Mailbox_test.assert_called_once_with(fake_mailbox)
@@ -159,9 +157,7 @@ def test_test_mailbox_failure_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     assert response.data["result"] is False
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
@@ -281,9 +277,7 @@ def test_fetch_success_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     assert "error" not in response.data
     mock_Mailbox_fetch.assert_called_once_with(
         fake_mailbox, EmailFetchingCriterionChoices.ALL.value
@@ -312,9 +306,7 @@ def test_fetch_failure_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
     mock_Mailbox_fetch.assert_called_once_with(
@@ -582,9 +574,7 @@ def test_upload_mailbox_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     mock_Mailbox_add_emails_from_file.assert_called_once()
     assert mock_Mailbox_add_emails_from_file.call_args.args[0] == fake_mailbox
     assert len(mock_Mailbox_add_emails_from_file.captured_streams) == 1

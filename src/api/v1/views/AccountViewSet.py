@@ -56,7 +56,7 @@ if TYPE_CHECKING:
         responses={
             200: inline_serializer(
                 name="update_mailboxes_account_response",
-                fields={"detail": OpenApiTypes.STR, "account": AccountSerializer},
+                fields={"detail": OpenApiTypes.STR, "data": AccountSerializer},
             )
         },
         description="Updates the mailboxes of the account instance.",
@@ -69,7 +69,7 @@ if TYPE_CHECKING:
                 fields={
                     "detail": OpenApiTypes.STR,
                     "result": OpenApiTypes.BOOL,
-                    "account": AccountSerializer,
+                    "data": AccountSerializer,
                 },
             )
         },
@@ -148,7 +148,7 @@ class AccountViewSet(viewsets.ModelViewSet[Account], ToggleFavoriteMixin):
         else:
             response = Response(data={"detail": _("Updated mailboxes")})
         account.refresh_from_db()
-        response.data["account"] = self.get_serializer(account).data
+        response.data["data"] = self.get_serializer(account).data
         return response
 
     URL_PATH_TEST = "test"
@@ -181,5 +181,5 @@ class AccountViewSet(viewsets.ModelViewSet[Account], ToggleFavoriteMixin):
         else:
             response.data["result"] = True
         account.refresh_from_db()
-        response.data["account"] = self.get_serializer(account).data
+        response.data["data"] = self.get_serializer(account).data
         return response

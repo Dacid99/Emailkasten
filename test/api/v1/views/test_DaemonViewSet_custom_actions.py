@@ -65,7 +65,7 @@ def test_test_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert "daemon" not in response.data
+    assert "data" not in response.data
     mock_Daemon_test.assert_not_called()
 
 
@@ -84,7 +84,7 @@ def test_test_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "daemon" not in response.data
+    assert "data" not in response.data
     mock_Daemon_test.assert_not_called()
 
 
@@ -105,7 +105,7 @@ def test_test_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert response.data["result"] is True
     mock_Daemon_test.assert_called_once_with(fake_daemon)
 
@@ -129,7 +129,7 @@ def test_test_failure_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert response.data["result"] is False
     assert response.data["error"] == str(mock_Daemon_test.side_effect)
     mock_Daemon_test.assert_called_once_with(fake_daemon)
@@ -156,7 +156,7 @@ def test_start_noauth(
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_daemon.refresh_from_db()
     assert fake_daemon.celery_task.enabled is False
-    assert "daemon" not in response.data
+    assert "data" not in response.data
 
 
 @pytest.mark.django_db
@@ -180,7 +180,7 @@ def test_start_auth_other(
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_daemon.refresh_from_db()
     assert fake_daemon.celery_task.enabled is False
-    assert "daemon" not in response.data
+    assert "data" not in response.data
 
 
 @pytest.mark.django_db
@@ -203,7 +203,7 @@ def test_start_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert fake_daemon.celery_task.enabled is True
 
 
@@ -224,7 +224,7 @@ def test_start_failure_auth_owner(
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert fake_daemon.celery_task.enabled is True
 
 
@@ -246,7 +246,7 @@ def test_stop_noauth(
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_daemon.refresh_from_db()
     assert fake_daemon.celery_task.enabled is True
-    assert "daemon" not in response.data
+    assert "data" not in response.data
 
 
 @pytest.mark.django_db
@@ -267,7 +267,7 @@ def test_stop_auth_other(
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_daemon.refresh_from_db()
     assert fake_daemon.celery_task.enabled is True
-    assert "daemon" not in response.data
+    assert "data" not in response.data
 
 
 @pytest.mark.django_db
@@ -287,7 +287,7 @@ def test_stop_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert fake_daemon.celery_task.enabled is False
 
 
@@ -311,5 +311,5 @@ def test_stop_failure_auth_owner(
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert fake_daemon.celery_task.enabled is False

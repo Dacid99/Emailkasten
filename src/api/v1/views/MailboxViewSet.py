@@ -63,7 +63,7 @@ if TYPE_CHECKING:
                 fields={
                     "detail": OpenApiTypes.STR,
                     "result": OpenApiTypes.BOOL,
-                    "daemon": MailboxWithDaemonSerializer,
+                    "data": MailboxWithDaemonSerializer,
                 },
             )
         },
@@ -86,7 +86,7 @@ if TYPE_CHECKING:
                 fields={
                     "detail": OpenApiTypes.STR,
                     "result": OpenApiTypes.BOOL,
-                    "mailbox": MailboxWithDaemonSerializer,
+                    "data": MailboxWithDaemonSerializer,
                 },
             )
         },
@@ -117,7 +117,7 @@ if TYPE_CHECKING:
                 name="upload_emails_mailbox_response",
                 fields={
                     "detail": OpenApiTypes.STR,
-                    "mailbox": MailboxWithDaemonSerializer,
+                    "data": MailboxWithDaemonSerializer,
                 },
             )
         },
@@ -199,7 +199,7 @@ class MailboxViewSet(
         else:
             response.data["result"] = True
         mailbox.refresh_from_db()
-        response.data["mailbox"] = self.get_serializer(mailbox).data
+        response.data["data"] = self.get_serializer(mailbox).data
         return response
 
     URL_PATH_FETCHING_OPTIONS = "fetching-options"
@@ -273,7 +273,7 @@ class MailboxViewSet(
         else:
             response = Response({"detail": _("All emails fetched.")})
         mailbox.refresh_from_db()
-        response.data["mailbox"] = self.get_serializer(mailbox).data
+        response.data["data"] = self.get_serializer(mailbox).data
         return response
 
     URL_PATH_DOWNLOAD = "download"
@@ -362,6 +362,6 @@ class MailboxViewSet(
         return Response(
             {
                 "detail": _("Successfully uploaded mailbox file."),
-                "mailbox": mailbox_serializer.data,
+                "data": mailbox_serializer.data,
             }
         )

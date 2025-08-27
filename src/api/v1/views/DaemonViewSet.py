@@ -61,7 +61,7 @@ if TYPE_CHECKING:
                 fields={
                     "detail": OpenApiTypes.STR,
                     "result": OpenApiTypes.BOOL,
-                    "daemon": BaseDaemonSerializer,
+                    "data": BaseDaemonSerializer,
                 },
             )
         },
@@ -147,7 +147,7 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
         else:
             response.data["result"] = True
         daemon.refresh_from_db()
-        response.data["daemon"] = self.get_serializer(daemon).data
+        response.data["data"] = self.get_serializer(daemon).data
         return response
 
     URL_PATH_START = "start"
@@ -177,7 +177,7 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
             )
         daemon.refresh_from_db()
         daemon_data = self.get_serializer(daemon).data
-        response.data["daemon"] = daemon_data
+        response.data["data"] = daemon_data
         return response
 
     URL_PATH_STOP = "stop"
@@ -207,5 +207,5 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
             )
         daemon.refresh_from_db()
         daemon_data = self.get_serializer(daemon).data
-        response.data["daemon"] = daemon_data
+        response.data["data"] = daemon_data
         return response
