@@ -50,6 +50,7 @@ from ..serializers import BaseEmailSerializer, FullEmailSerializer
 if TYPE_CHECKING:
     from django.db.models import QuerySet
     from rest_framework.request import Request
+    from rest_framework.serializers import BaseSerializer
 
 
 @extend_schema_view(
@@ -164,6 +165,13 @@ class EmailViewSet(
                 )
             )
         )
+
+    @override
+    def get_serializer_class(self) -> type[BaseSerializer[Email]]:
+        """Sets the serializer for `list` requests to the simplified version."""
+        if self.action == "list":
+            return BaseEmailSerializer
+        return super().get_serializer_class()
 
     URL_PATH_DOWNLOAD = "download"
     URL_NAME_DOWNLOAD = "download"
