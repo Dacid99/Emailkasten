@@ -238,6 +238,17 @@ class Correspondent(HasDownloadMixin, URLMixin, FavoriteMixin, models.Model):
 
     @staticmethod
     def queryset_as_file(queryset: QuerySet) -> BytesIO:
+        """Parse the correspondents in the queryset into a vcard object bytestream.
+
+        Args:
+            queryset: The correspondent queryset to compile into a file.
+
+        Returns:
+            The vcard object bytestream.
+
+        Raises:
+            Correspondent.DoesNotExist: If the :attr:`queryset` is empty.
+        """
         if not queryset.exists():
             raise Correspondent.DoesNotExist("The queryset is empty!")
         vcard_buffer = BytesIO()

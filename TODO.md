@@ -36,6 +36,8 @@
 - streamline serializer and form tests
 - sort settings
 - use pre-commit
+- conversation lookup as single SQL request to get queryset
+- paginate conversation api response data
 
 ## To test
 
@@ -59,8 +61,10 @@
 ## To fix
 
 - fetching too many emails leads to browser timeout
-- complete openapi schema
 - optics:
   - better name for daemon
+  - theme toggler dropdown on right (wrong) side in folded mode
+  - footer breaks in bad place in folded mode
+  - footer should be in emailkasten templates
 - ci:
   - djlint has no files to lint

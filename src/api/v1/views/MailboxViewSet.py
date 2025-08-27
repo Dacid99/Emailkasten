@@ -318,12 +318,11 @@ class MailboxViewSet(
             ) from None
         except Email.DoesNotExist:
             raise Http404(_("No emails found.")) from None
-        else:
-            return FileResponse(
-                file,
-                as_attachment=True,
-                filename=mailbox.name + "." + file_format.split("[", maxsplit=1)[0],
-            )
+        return FileResponse(
+            file,
+            as_attachment=True,
+            filename=mailbox.name + "." + file_format.split("[", maxsplit=1)[0],
+        )
 
     URL_PATH_UPLOAD_MAILBOX = "upload"
     URL_NAME_UPLOAD_MAILBOX = "upload"

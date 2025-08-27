@@ -3612,6 +3612,18 @@ files = [
 urllib3 = ">=2"
 
 [[package]]
+name = "types-vobject"
+version = "0.9.9.20250708"
+description = "Typing stubs for vobject"
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+files = [
+    {file = "types_vobject-0.9.9.20250708-py3-none-any.whl", hash = "sha256:f3e4783fafb116bac02cc963e8f715c461417e50f85ea6b0bde2c86865da6a4e"},
+    {file = "types_vobject-0.9.9.20250708.tar.gz", hash = "sha256:29a2e8f34732286012b776084c85f4c1a2117a0320b0d3894fb6c9b841ccc592"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.14.1"
 description = "Backported and Experimental Type Hints for Python 3.9+"
@@ -3766,4 +3778,4 @@ test = ["build (==1.2.1)", "pytest", "pytest-cov", "responses (>=0.10.1,<0.26.0)
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0"
-content-hash = "002765be699f97733ef90440bd9cf8c49e6345b2c559d9aeaf4742d9deb974e9"
+content-hash = "94077aebc2adce11a524d460e3cb103bed14ed0e45606b985c5121ef9c423d65"

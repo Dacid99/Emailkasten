@@ -265,12 +265,11 @@ class EmailViewSet(
             ) from None
         except Email.DoesNotExist:
             raise Http404(_("No emails found")) from None
-        else:
-            return FileResponse(
-                file,
-                as_attachment=True,
-                filename=f"emails.{file_format.split('[', maxsplit=1)[0]}",
-            )
+        return FileResponse(
+            file,
+            as_attachment=True,
+            filename=f"emails.{file_format.split('[', maxsplit=1)[0]}",
+        )
 
     URL_PATH_THUMBNAIL = "thumbnail"
     URL_NAME_THUMBNAIL = "thumbnail"
