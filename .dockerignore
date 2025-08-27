@@ -126,6 +126,7 @@ parts/
 pip-selfcheck.json
 pytest-cov/
 pyvenv.cfg
+renovate.json
 reports/
 sdist/
 share/python-wheels/

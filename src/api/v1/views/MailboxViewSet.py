@@ -25,16 +25,19 @@ from typing import TYPE_CHECKING, Final, override
 from django.http import FileResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.openapi import OpenApiParameter, OpenApiResponse, OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import ChoiceField
 
 from api.v1.mixins import ToggleFavoriteMixin
 from api.v1.serializers.UploadEmailSerializer import UploadEmailSerializer
+from core.constants import EmailFetchingCriterionChoices, SupportedEmailDownloadFormats
 from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
 
@@ -52,6 +55,74 @@ if TYPE_CHECKING:
     retrieve=extend_schema(description="Retrieves a single instance."),
     update=extend_schema(description="Updates a single instance."),
     destroy=extend_schema(description="Deletes a single instance."),
+    test=extend_schema(
+        request=None,
+        responses={
+            200: inline_serializer(
+                name="test_mailbox_response",
+                fields={
+                    "detail": OpenApiTypes.STR,
+                    "result": OpenApiTypes.BOOL,
+                    "daemon": MailboxWithDaemonSerializer,
+                },
+            )
+        },
+        description="Tests the mailbox instance.",
+    ),
+    fetching_options=extend_schema(
+        responses={200: OpenApiTypes.JSON_PTR},
+        description="Lists all available fetching criteria for the mailbox instance.",
+    ),
+    fetch=extend_schema(
+        request=inline_serializer(
+            name="fetch_criterion_data",
+            fields={
+                "criterion": ChoiceField(choices=EmailFetchingCriterionChoices.choices)
+            },
+        ),
+        responses={
+            200: inline_serializer(
+                name="test_mailbox_response",
+                fields={
+                    "detail": OpenApiTypes.STR,
+                    "result": OpenApiTypes.BOOL,
+                    "mailbox": MailboxWithDaemonSerializer,
+                },
+            )
+        },
+        description="Fetches the emails from the maiilbox instance based on the given criterion. Only criteria available for the instance are accepted.",
+    ),
+    download=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "file_format",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                required=True,
+                enum=SupportedEmailDownloadFormats,
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description="Headers: Content-Disposition=attachment",
+            )
+        },
+        description="Downloads all emails of a mailbox instance.",
+    ),
+    upload_emails=extend_schema(
+        request=UploadEmailSerializer,
+        responses={
+            200: inline_serializer(
+                name="upload_emails_mailbox_response",
+                fields={
+                    "detail": OpenApiTypes.STR,
+                    "mailbox": MailboxWithDaemonSerializer,
+                },
+            )
+        },
+        description="Upload emails for a file to a mailbox instance.",
+    ),
 )
 class MailboxViewSet(
     viewsets.ReadOnlyModelViewSet[Mailbox],
@@ -104,7 +175,7 @@ class MailboxViewSet(
     @action(
         detail=True, methods=["post"], url_path=URL_PATH_TEST, url_name=URL_NAME_TEST
     )
-    def test_mailbox(self, request: Request, pk: int | None = None) -> Response:
+    def test(self, request: Request, pk: int | None = None) -> Response:
         """Action method testing the mailbox data.
 
         Args:

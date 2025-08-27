@@ -24,6 +24,8 @@ from typing import TYPE_CHECKING, Final, override
 
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.openapi import OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
@@ -41,6 +43,39 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
+@extend_schema_view(
+    list=extend_schema(description="Lists all instances matching the filter."),
+    retrieve=extend_schema(description="Retrieves a single instance."),
+    update=extend_schema(
+        description="Updates a single instance. You must specify format 'json'."
+    ),
+    create=extend_schema(
+        description="Creates a new instance. You must specify format 'json'."
+    ),
+    destroy=extend_schema(description="Deletes a single instance."),
+    test=extend_schema(
+        request=None,
+        responses={
+            200: inline_serializer(
+                name="test_daemon_response",
+                fields={
+                    "detail": OpenApiTypes.STR,
+                    "result": OpenApiTypes.BOOL,
+                    "daemon": BaseDaemonSerializer,
+                },
+            )
+        },
+        description="Tests the daemon instance.",
+    ),
+    start=extend_schema(
+        request=None,
+        description="Starts the daemon instances periodic task.",
+    ),
+    stop=extend_schema(
+        request=None,
+        description="Stops the daemon instances periodic task.",
+    ),
+)
 class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
     """Viewset for the :class:`core.models.Daemon`.
 
@@ -82,9 +117,6 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
             return Daemon.objects.none()
         return Daemon.objects.filter(mailbox__account__user=self.request.user).select_related("interval", "celery_task")  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
 
-    URL_PATH_START = "start"
-    URL_NAME_START = "start"
-
     URL_PATH_TEST = "test"
     URL_NAME_TEST = "test"
 
@@ -117,6 +149,9 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
         daemon.refresh_from_db()
         response.data["daemon"] = self.get_serializer(daemon).data
         return response
+
+    URL_PATH_START = "start"
+    URL_NAME_START = "start"
 
     @action(
         detail=True, methods=["post"], url_path=URL_PATH_START, url_name=URL_NAME_START

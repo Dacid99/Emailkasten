@@ -24,6 +24,8 @@ from typing import TYPE_CHECKING, Final, override
 
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.openapi import OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
@@ -43,6 +45,37 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
+@extend_schema_view(
+    list=extend_schema(description="Lists all instances matching the filter."),
+    retrieve=extend_schema(description="Retrieves a single instance."),
+    update=extend_schema(description="Updates a single instance."),
+    create=extend_schema(description="Creates a new instance."),
+    destroy=extend_schema(description="Deletes a single instance."),
+    update_mailboxes=extend_schema(
+        request=None,
+        responses={
+            200: inline_serializer(
+                name="update_mailboxes_account_response",
+                fields={"detail": OpenApiTypes.STR, "account": AccountSerializer},
+            )
+        },
+        description="Updates the mailboxes of the account instance.",
+    ),
+    test=extend_schema(
+        request=None,
+        responses={
+            200: inline_serializer(
+                name="test_account_response",
+                fields={
+                    "detail": OpenApiTypes.STR,
+                    "result": OpenApiTypes.BOOL,
+                    "account": AccountSerializer,
+                },
+            )
+        },
+        description="Tests the account instance.",
+    ),
+)
 class AccountViewSet(viewsets.ModelViewSet[Account], ToggleFavoriteMixin):
     """Viewset for the :class:`core.models.Account`.
 

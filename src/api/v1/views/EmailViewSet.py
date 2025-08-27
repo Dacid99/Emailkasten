@@ -29,9 +29,8 @@ from django.db.models import Prefetch
 from django.http import FileResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.openapi import OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.openapi import OpenApiParameter, OpenApiResponse, OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -41,6 +40,7 @@ from rest_framework.response import Response
 
 from api.utils import query_param_list_to_typed_list
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from core.constants import SupportedEmailDownloadFormats
 from core.models import Email, EmailCorrespondent
 
 from ..filters import EmailFilterSet
@@ -52,6 +52,64 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
+@extend_schema_view(
+    list=extend_schema(description="Lists all instances matching the filter."),
+    retrieve=extend_schema(description="Retrieves a single instance."),
+    destroy=extend_schema(description="Deletes a single instance."),
+    download=extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description="headers: Content-Disposition=attachment",
+            )
+        },
+        description="Downloads the email instances eml file.",
+    ),
+    download_batch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "id",
+                OpenApiTypes.INT,
+                OpenApiParameter.QUERY,
+                required=True,
+                explode=True,
+                many=True,
+                description="Accepts both id=1,2,3 and id=1&id=2&id=3 notation",
+            ),
+            OpenApiParameter(
+                "file_format",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                required=True,
+                enum=SupportedEmailDownloadFormats,
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description="Headers: Content-Disposition=attachment",
+            )
+        },
+        description="Downloads multiple emails.",
+    ),
+    download_thumbnail=extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description="Headers: Content-Disposition=inline, X-Frame-Options = 'SAMEORIGIN', Content-Security-Policy = 'frame-ancestors 'self''",
+            )
+        },
+        description="Downloads a single emails thumbnail.",
+    ),
+    full_conversation=extend_schema(
+        responses=BaseEmailSerializer(many=True),
+        description="Lists the full conversation involving the email instance.",
+    ),
+    sub_conversation=extend_schema(
+        responses=BaseEmailSerializer(many=True),
+        description="Lists the subconversation following the email instance.",
+    ),
+)
 class EmailViewSet(
     viewsets.ReadOnlyModelViewSet[Email],
     mixins.DestroyModelMixin,
@@ -145,12 +203,6 @@ class EmailViewSet(
     URL_PATH_DOWNLOAD_BATCH = "download"
     URL_NAME_DOWNLOAD_BATCH = "download-batch"
 
-    @extend_schema(
-        parameters=[
-            OpenApiParameter("id", OpenApiTypes.INT, OpenApiParameter.QUERY),
-            OpenApiParameter("file_format", OpenApiTypes.STR, OpenApiParameter.QUERY),
-        ]
-    )
     @action(
         detail=False,
         methods=["get"],
@@ -160,15 +212,18 @@ class EmailViewSet(
     def download_batch(self, request: Request) -> Response | FileResponse:
         """Action method downloading a batch of emails.
 
+        Todo:
+            Validation and parsing of queryparams can probably be done more concisely with a serializer.
+
         Args:
             request: The request triggering the action.
 
         Raises:
             Http404: If there are no emails in the mailbox.
+            ValidationError: If id or file_format param is missing or in invalid format or file_format is unsupported.
 
         Returns:
             A fileresponse containing the emails in the requested format.
-            A 400 response if file_format or id param are missing in the request.
         """
         file_format = request.query_params.get("file_format", None)
         if not file_format:
@@ -263,7 +318,7 @@ class EmailViewSet(
         email = self.get_object()
         conversation = email.full_conversation()
         conversation_serializer = BaseEmailSerializer(conversation, many=True)
-        return Response({"emails": conversation_serializer.data})
+        return Response(conversation_serializer.data)
 
     URL_PATH_SUBCONVERSATION = "sub-conversation"
     URL_NAME_SUBCONVERSATION = "sub-conversation"
@@ -287,4 +342,4 @@ class EmailViewSet(
         email = self.get_object()
         conversation = email.sub_conversation()
         conversation_serializer = BaseEmailSerializer(conversation, many=True)
-        return Response({"emails": conversation_serializer.data})
+        return Response(conversation_serializer.data)

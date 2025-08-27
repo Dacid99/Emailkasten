@@ -398,8 +398,8 @@ def test_sub_conversation_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data["emails"]) == 1
-    assert response.data["emails"][0]["id"] == fake_email.id
+    assert len(response.data) == 1
+    assert response.data[0]["id"] == fake_email.id
     mock_Email_sub_conversation.assert_called_once_with(fake_email)
 
 
@@ -454,8 +454,8 @@ def test_full_conversation_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data["emails"]) == 1
-    assert response.data["emails"][0]["id"] == fake_email.id
+    assert len(response.data) == 1
+    assert response.data[0]["id"] == fake_email.id
     mock_Email_full_conversation.assert_called_once_with(fake_email)
 
 

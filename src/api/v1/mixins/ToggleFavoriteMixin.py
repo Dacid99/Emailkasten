@@ -23,6 +23,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.openapi import OpenApiResponse
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -37,6 +39,16 @@ class ToggleFavoriteMixin:
     URL_PATH_TOGGLE_FAVORITE = "toggle-favorite"
     URL_NAME_TOGGLE_FAVORITE = "toggle-favorite"
 
+    @extend_schema(
+        request=None,
+        responses={
+            200: OpenApiResponse(
+                response=str,
+                description="Success message indicating status change.",
+            ),
+        },
+        description="Toggles the favorite status of an instance.",
+    )
     @action(
         detail=True,
         methods=["post"],
