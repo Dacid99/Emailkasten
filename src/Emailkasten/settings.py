@@ -45,29 +45,22 @@ sys.path.append(str(BASE_DIR / "src"))
 env = FileAwareEnv()
 env.read_env(BASE_DIR / ".env")
 
+# Version synced from pyproject config file
 with open(BASE_DIR / "pyproject.toml", "rb") as f:
     config = tomli.load(f)
-
 VERSION = config["project"]["version"]
+
 
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/ for safe settings
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG", cast=bool, default=False)
-
-ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=list, default=["localhost"])
-if "localhost" not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append("localhost")
+##### django core #####
+# https://docs.djangoproject.com/en/5.2/ref/settings/#core-settings
 
 
-# Application definition
+### Models
 
 INSTALLED_APPS = [
-    "rest_framework",
-    "rest_framework.authtoken",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -78,6 +71,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "django_filters",
+    "rest_framework",
+    "rest_framework.authtoken",
     "drf_spectacular",
     "allauth",
     "allauth.account",
@@ -108,70 +103,8 @@ INSTALLED_APPS = [
     "web",
 ]
 
-REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "api.v1.pagination.Pagination",
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-    "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ],
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend",
-    ],
-}
 
-MIDDLEWARE = [
-    "Emailkasten.middleware.DBReconnectMiddleware.DBReconnectMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
-    "Emailkasten.middleware.TimezoneMiddleware.TimezoneMiddleware",
-]
-
-ROOT_URLCONF = "Emailkasten.urls"
-
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "src" / "Emailkasten" / "templates"],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "constance.context_processors.config",
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
-CRISPY_FAIL_SILENTLY = not DEBUG
-
-WSGI_APPLICATION = "Emailkasten.wsgi.application"
-
-SITE_ID = 1
-
-
-# Database
+### Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
@@ -198,7 +131,13 @@ DATABASE_RECONNECT_DELAY = env(
 CONN_MAX_AGE = 3600
 CONN_HEALTH_CHECKS = True
 
-# Storage
+# Default primary key field type
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+### Storage
+# https://docs.djangoproject.com/en/5.2/ref/settings/#storages
+
 STORAGE_PATH = "/mnt/archive"
 
 STORAGES = {
@@ -213,94 +152,24 @@ STORAGES = {
     },
 }
 
-# Celery
-CELERY_TIMEZONE = "UTC"
-CELERY_ENABLE_UTC = True
-CELERY_TASK_TRACK_STARTED = True
-CELERY_RESULT_BACKEND = "django-db"
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
-BROKER_URL = CELERY_BROKER_URL  # required for rabbitmq django-healthcheck
 
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+### Logging
+# https://docs.djangoproject.com/en/5.2/topics/logging/
 
-STRICT_PASSWORDS_DEFAULT = True
-AUTH_PASSWORD_VALIDATORS = (
-    [
-        {
-            "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-        },
-        {
-            "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-        },
-        {
-            "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-        },
-        {
-            "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-        },
-    ]
-    if env("STRICT_PASSWORDS", cast=bool, default=STRICT_PASSWORDS_DEFAULT)
-    else []
-)
-
-# Authentication
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-]
-
-LOGIN_REDIRECT_URL = "web:dashboard"
-LOGOUT_REDIRECT_URL = "account_login"
-
-LOGIN_URL = "account_login"
-SESSION_COOKIE_AGE = 2419200
-LANGUAGE_COOKIE_AGE = SESSION_COOKIE_AGE
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_SAVE_EVERY_REQUEST = False
-SESSION_COOKIE_SECURE = not DEBUG
-LANGUAGE_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
-SECURE_HSTS_SECONDS = 0 if DEBUG else 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
-SECURE_HSTS_PRELOAD = not DEBUG
-SECURE_SSL_REDIRECT = not DEBUG
-
-# Registration
-REGISTRATION_ENABLED_DEFAULT = False
-REGISTRATION_ENABLED = env(
-    "REGISTRATION_ENABLED", cast=bool, default=REGISTRATION_ENABLED_DEFAULT
-)
-
-# django-allauth
-ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]
-ACCOUNT_LOGIN_METHODS = {"username"}
-ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_ADAPTER = "Emailkasten.utils.toggle_signup.ToggleSignupAccountAdapter"
-
-# dj-rest-auth
-REST_AUTH = {
-    "USE_JWT": False,
-    "REGISTER_PERMISSION_CLASSES": (
-        ("Emailkasten.utils.toggle_signup.ToggleSignUpPermissionClass",)
-    ),
-}
-
-# django-robots  https://django-robots.readthedocs.io/en/latest/
-ROBOTS_USE_SITEMAP = False
-ROBOTS_USE_HOST = False
-
-# Logging   https://docs.djangoproject.com/en/5.2/topics/logging/
 LOG_DIRECTORY_PATH = Path(env("LOG_DIRECTORY_PATH", default="/var/log/emailkasten"))
+
 LOGFILE_MAXSIZE_DEFAULT = 10485760
 LOGFILE_MAXSIZE = env("LOGFILE_MAXSIZE", cast=int, default=LOGFILE_MAXSIZE_DEFAULT)
+
 LOGFILE_BACKUP_NUMBER_DEFAULT = 5
 LOGFILE_BACKUP_NUMBER = env(
     "LOGFILE_BACKUP_NUMBER", cast=int, default=LOGFILE_BACKUP_NUMBER_DEFAULT
 )
+
 LOGLEVEL_DEFAULT = "INFO"
+
 LOGFORMAT = "{asctime} {levelname} - {name}.{funcName}: {message}"
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -412,13 +281,18 @@ LOGGING = {
 }
 
 
-# Internationalization
+### Debug
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env("DEBUG", cast=bool, default=False)
+
+
+### Globalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = "en"
-
+# Internationalization
+# https://docs.djangoproject.com/en/5.2/ref/settings/#globalization-i18n-l10n
+USE_I18N = True
 
 LANGUAGES = [
     ("ar", "العربية الفصحى"),
@@ -467,19 +341,6 @@ LANGUAGES = [
     ("zh-hant", "繁體中文"),
 ]
 
-
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-
-USE_TZ = True
-TIME_ZONE = "UTC"  # changing this doesn't change the celery schedule https://django-celery-beat.readthedocs.io/en/latest/#important-warning-about-time-zones
-
-USE_I18N = True
-USE_L10N = True
-
 LOCALE_PATHS = [
     BASE_DIR / "src" / "Emailkasten" / "locale",
     BASE_DIR / "src" / "core" / "locale",
@@ -487,24 +348,227 @@ LOCALE_PATHS = [
     BASE_DIR / "src" / "web" / "locale",
 ]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+LANGUAGE_COOKIE_AGE = 2419200
+LANGUAGE_COOKIE_SECURE = not DEBUG
 
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# Timezones
+# https://docs.djangoproject.com/en/5.2/topics/i18n/timezones/
+USE_TZ = True
+
+TIME_ZONE = "UTC"  # changing this doesn't change the celery schedule https://django-celery-beat.readthedocs.io/en/latest/#important-warning-about-time-zones
+
+# Localization
+# https://docs.djangoproject.com/en/5.2/ref/settings/#localization-l10n
+USE_L10N = True
+
+LANGUAGE_CODE = "en"
 
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+### HTTP
+# https://docs.djangoproject.com/en/5.2/ref/settings/#http
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+WSGI_APPLICATION = "Emailkasten.wsgi.application"
+
+MIDDLEWARE = [
+    "Emailkasten.middleware.DBReconnectMiddleware.DBReconnectMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
+    "Emailkasten.middleware.TimezoneMiddleware.TimezoneMiddleware",
+]
+
+# Security
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=list, default=["localhost"])
+if "localhost" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("localhost")
+
+SECURE_HSTS_SECONDS = 0 if DEBUG else 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+
+SECURE_SSL_REDIRECT = not DEBUG
+
+
+### URLs
+# https://docs.djangoproject.com/en/5.2/ref/settings/#urls
+
+ROOT_URLCONF = "Emailkasten.urls"
+
+
+### Templates
+# https://docs.djangoproject.com/en/5.2/ref/settings/#id11
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "src" / "Emailkasten" / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "constance.context_processors.config",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+
+### Security
+# https://docs.djangoproject.com/en/5.2/ref/settings/#security
+
+# CSRF
+CSRF_COOKIE_SECURE = not DEBUG
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env("SECRET_KEY")
+
+
+### File uploads
+# https://docs.djangoproject.com/en/5.2/ref/settings/#file-uploads
 
 FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 ]
 
-# DRF Spectacular
+
+##### django.contrib.auth #####
+# https://docs.djangoproject.com/en/5.2/ref/settings/#auth
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+STRICT_PASSWORDS_DEFAULT = True
+AUTH_PASSWORD_VALIDATORS = (
+    [
+        {
+            "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        },
+        {
+            "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        },
+        {
+            "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        },
+        {
+            "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        },
+    ]
+    if env("STRICT_PASSWORDS", cast=bool, default=STRICT_PASSWORDS_DEFAULT)
+    else []
+)
+
+LOGIN_URL = "account_login"
+LOGIN_REDIRECT_URL = "web:dashboard"
+LOGOUT_REDIRECT_URL = "account_login"
+
+# Custom Registration
+REGISTRATION_ENABLED_DEFAULT = False
+REGISTRATION_ENABLED = env(
+    "REGISTRATION_ENABLED", cast=bool, default=REGISTRATION_ENABLED_DEFAULT
+)
+
+
+##### django.contrib.sessions #####
+# https://docs.djangoproject.com/en/5.2/ref/settings/#sessions
+
+SESSION_COOKIE_AGE = LANGUAGE_COOKIE_AGE
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_COOKIE_SECURE = not DEBUG
+
+
+##### django.contrib.sites #####
+# https://docs.djangoproject.com/en/5.2/ref/settings/#sites
+
+SITE_ID = 1
+
+
+##### django.contrib.staticfiles #####
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
+# https://docs.djangoproject.com/en/5.2/ref/settings/#static-files
+
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
+##### restframework #####
+# https://www.django-rest-framework.org/
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "api.v1.pagination.Pagination",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+}
+
+##### celery #####
+# https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html#using-celery-with-django
+
+CELERY_TIMEZONE = "UTC"
+CELERY_ENABLE_UTC = True
+CELERY_TASK_TRACK_STARTED = True
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
+BROKER_URL = CELERY_BROKER_URL  # required for rabbitmq django-healthcheck
+
+
+##### allauth #####
+# https://django-allauth.readthedocs.io/en/latest/index.html
+
+ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]
+ACCOUNT_LOGIN_METHODS = {"username"}
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_ADAPTER = "Emailkasten.utils.toggle_signup.ToggleSignupAccountAdapter"
+
+
+##### dj-rest-auth #####
+# https://dj-rest-auth.readthedocs.io/en/latest/configuration.html
+
+REST_AUTH = {
+    "USE_JWT": False,
+    "REGISTER_PERMISSION_CLASSES": (
+        ("Emailkasten.utils.toggle_signup.ToggleSignUpPermissionClass",)
+    ),
+}
+
+
+##### crispy_forms #####
+# https://django-crispy-forms.readthedocs.io/en/latest/index.html
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+CRISPY_FAIL_SILENTLY = not DEBUG
+
+
+##### drf_spectacular #####
+# https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
 
 SPECTACULAR_SETTINGS = {
     "TITLE": _("Emailkasten API"),
@@ -513,7 +577,16 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": True,
 }
 
-# Constance settings
+
+##### robots #####
+# https://django-robots.readthedocs.io/en/latest/
+
+ROBOTS_USE_SITEMAP = False
+ROBOTS_USE_HOST = False
+
+
+##### constance #####
+# https://django-constance.readthedocs.io/en/latest/#configuration
 
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 
@@ -525,8 +598,106 @@ CONSTANCE_ADDITIONAL_FIELDS = {
     dict: ["django.forms.fields.JSONField", {"widget": "django.forms.Textarea"}],
     "text": ["django.forms.fields.CharField", {"widget": "django.forms.Textarea"}],
 }
-# if one of these defaults is changed, that change is not applied to existing default configurations
-# to still apply the new default to existing servers, change the name of the setting!
+
+# Defaults
+EMAIL_HTML_TEMPLATE_DEFAULT = """{% load i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ email.email_subject }}</title>
+    <style>
+        {{ email_css }}
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <div class="email-subject">
+                {{ email.email_subject }}
+            </div>
+                <div class="email-datetime">
+                {% translate "Received" %}: {{ email.datetime|date:"DATETIME_FORMAT" }}
+            </div>
+            <div class="email-meta">
+                {% for from_emailcorrespondent in from_emailcorrespondents %}
+                    {% translate "From" %}: {{ from_emailcorrespondent.correspondent.email_address }}<br>
+                {% endfor %}
+                {% for to_emailcorrespondent in to_emailcorrespondents %}
+                    {% translate "To" %}:{{ to_emailcorrespondent.correspondent.email_address }}<br>
+                {% endfor %}
+                {% for cc_emailcorrespondent in cc_emailcorrespondents %}
+                    {% translate "CC" %}: {{ cc_emailcorrespondent.correspondent.email_address }}<br>
+                {% endfor %}
+                {% for bcc_emailcorrespondent in bcc_emailcorrespondents %}
+                    {% translate "BCC" %}: {{ bcc_emailcorrespondent.correspondent.email_address }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="email-body">
+            {% if email.html_bodytext %}
+                {{ email.html_bodytext|safe }}
+            {% else %}
+                <pre>{{ email.plain_bodytext }}</pre>
+            {% endif %}
+        </div>
+        {% if email.attachments.exists %}
+        <div class="email-attachments">
+            <p><strong>{% translate "Attachments" %}:</strong></p>
+            {% for attachment in email.attachments.all %}
+                <div class="attachment">
+                    {{ attachment.file_name }} {% if attachment.content_id %}(cid: {{ attachment.content_id }}){% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+"""
+
+EMAIL_CSS_DEFAULT = """body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .email-container {
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 16px;
+        }
+        .email-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .email-subject {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .email-meta,.email-datetime {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .email-body {
+            margin: 20px 0;
+        }
+        .email-attachments {
+            margin-top: 20px;
+        }
+        .attachment {
+            margin: 5px 0;
+        }"""
+
+# If one of these defaults is changed, that change is not applied to existing default configurations
+# To still apply the new default to existing servers, change the name of the setting!
 CONSTANCE_CONFIG = {
     "API_DEFAULT_PAGE_SIZE": (
         20,
@@ -587,106 +758,14 @@ CONSTANCE_CONFIG = {
         list,
     ),
     "EMAIL_HTML_TEMPLATE": (
-        """{% load i18n %}
-
-{% get_current_language as LANGUAGE_CODE %}
-<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ email.email_subject }}</title>
-    <style>
-        {{ email_css }}
-    </style>
-</head>
-<body>
-    <div class="email-container">
-        <div class="email-header">
-            <div class="email-subject">
-                {{ email.email_subject }}
-            </div>
-                <div class="email-datetime">
-                {% translate "Received" %}: {{ email.datetime|date:"DATETIME_FORMAT" }}
-            </div>
-            <div class="email-meta">
-                {% for from_emailcorrespondent in from_emailcorrespondents %}
-                    {% translate "From" %}: {{ from_emailcorrespondent.correspondent.email_address }}<br>
-                {% endfor %}
-                {% for to_emailcorrespondent in to_emailcorrespondents %}
-                    {% translate "To" %}:{{ to_emailcorrespondent.correspondent.email_address }}<br>
-                {% endfor %}
-                {% for cc_emailcorrespondent in cc_emailcorrespondents %}
-                    {% translate "CC" %}: {{ cc_emailcorrespondent.correspondent.email_address }}<br>
-                {% endfor %}
-                {% for bcc_emailcorrespondent in bcc_emailcorrespondents %}
-                    {% translate "BCC" %}: {{ bcc_emailcorrespondent.correspondent.email_address }}<br>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="email-body">
-            {% if email.html_bodytext %}
-                {{ email.html_bodytext|safe }}
-            {% else %}
-                <pre>{{ email.plain_bodytext }}</pre>
-            {% endif %}
-        </div>
-        {% if email.attachments.exists %}
-        <div class="email-attachments">
-            <p><strong>{% translate "Attachments" %}:</strong></p>
-            {% for attachment in email.attachments.all %}
-                <div class="attachment">
-                    {{ attachment.file_name }} {% if attachment.content_id %}(cid: {{ attachment.content_id }}){% endif %}
-                </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>
-</body>
-</html>
-""",
+        EMAIL_HTML_TEMPLATE_DEFAULT,
         _(
             "Html template used to render emails to html. Uses the django template syntax and has access to all fields of the email database table. Removing template tag imports may result in 500 responses when requesting pages with email thumbnails, so be careful."
         ),
         "text",
     ),
     "EMAIL_CSS": (
-        """body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 10px;
-        }
-        .email-container {
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            padding: 16px;
-        }
-        .email-header {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .email-subject {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .email-meta,.email-datetime {
-            color: #666;
-            font-size: 0.9em;
-        }
-        .email-body {
-            margin: 20px 0;
-        }
-        .email-attachments {
-            margin-top: 20px;
-        }
-        .attachment {
-            margin: 5px 0;
-        }""",
+        EMAIL_CSS_DEFAULT,
         _(
             "Css style used to render emails to html. Refer to HTML_TEMPLATE for context on the classes."
         ),
