@@ -22,6 +22,7 @@
 - emailconversation subpage
 - batch download and delete in web
 - download for account
+- mechanism to add missing connections between emails
 
 ## To refactor
 
@@ -34,9 +35,7 @@
 - emailcorrespondent creation for better integration of mailinglist
 - shorten redundant exception logging in fetchers, move parts of the messages to the exc classes
 - streamline serializer and form tests
-- sort settings
 - use pre-commit
-- conversation lookup as single SQL request to get queryset
 - paginate conversation api response data
 
 ## To test

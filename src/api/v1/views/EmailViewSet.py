@@ -102,13 +102,9 @@ if TYPE_CHECKING:
         },
         description="Downloads a single emails thumbnail.",
     ),
-    full_conversation=extend_schema(
+    conversation=extend_schema(
         responses=BaseEmailSerializer(many=True),
-        description="Lists the full conversation involving the email instance.",
-    ),
-    sub_conversation=extend_schema(
-        responses=BaseEmailSerializer(many=True),
-        description="Lists the subconversation following the email instance.",
+        description="Lists the conversation involving the email instance.",
     ),
 )
 class EmailViewSet(
@@ -313,7 +309,7 @@ class EmailViewSet(
         url_path=URL_PATH_FULLCONVERSATION,
         url_name=URL_NAME_FULLCONVERSATION,
     )
-    def full_conversation(self, request: Request, pk: int | None = None) -> Response:
+    def conversation(self, request: Request, pk: int | None = None) -> Response:
         """Action method getting the complete conversation a mail is part of.
 
         Args:
@@ -324,30 +320,6 @@ class EmailViewSet(
             A response detailing the request status.
         """
         email = self.get_object()
-        conversation = email.full_conversation()
-        conversation_serializer = BaseEmailSerializer(conversation, many=True)
-        return Response(conversation_serializer.data)
-
-    URL_PATH_SUBCONVERSATION = "sub-conversation"
-    URL_NAME_SUBCONVERSATION = "sub-conversation"
-
-    @action(
-        detail=True,
-        methods=["get"],
-        url_path=URL_PATH_SUBCONVERSATION,
-        url_name=URL_NAME_SUBCONVERSATION,
-    )
-    def sub_conversation(self, request: Request, pk: int | None = None) -> Response:
-        """Action method getting the subconversation in reply to this email.
-
-        Args:
-            request: The request triggering the action.
-            pk: The private key of the email to get the subconversation in its wake. Defaults to None.
-
-        Returns:
-            A response detailing the request status.
-        """
-        email = self.get_object()
-        conversation = email.sub_conversation()
+        conversation = email.conversation
         conversation_serializer = BaseEmailSerializer(conversation, many=True)
         return Response(conversation_serializer.data)

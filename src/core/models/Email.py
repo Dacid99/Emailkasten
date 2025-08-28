@@ -35,7 +35,7 @@ from typing import TYPE_CHECKING, Any, Final, override
 from zipfile import ZipFile
 
 from django.core.files.storage import default_storage
-from django.db import models, transaction
+from django.db import connection, models, transaction
 from django.template import engines
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
@@ -324,33 +324,62 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
                         ):
                             self.references.add(referenced_email)
 
-    def sub_conversation(self) -> list[Email]:
-        """Gets all emails that follow this email in the conversation.
+    @property
+    def conversation(self) -> QuerySet[Email]:
+        """Gets all emails that are connected to this email either via references or in_reply_to.
 
         Returns:
-            The list of all mails in the subconversation.
+            Queryset of all mails in the conversation.
         """
-        sub_conversation_emails = [self]
-        for reply_email in self.replies.all().prefetch_related("replies"):
-            sub_conversation_emails.extend(reply_email.sub_conversation())
-        return sub_conversation_emails
+        CONVERSATION_SQL = """
+        WITH RECURSIVE
+        emails_links AS (
+            SELECT from_email_id, to_email_id FROM emails_in_reply_to
+            UNION ALL
+            SELECT from_email_id, to_email_id FROM emails_references
+        ),
 
-    def full_conversation(self) -> list[Email]:
-        """Gets all emails that are connected to this email via in_reply_to.
+        conversation_root AS (
+            SELECT e.id
+            FROM emails e
+            WHERE e.id = %s
 
-        Based on :func:`core.models.Email.Email.sub_conversation`
-        to recurse through the entire conversation.
+            UNION ALL
 
-        Todo:
-            This needs to be properly adapted to in_reply_to being many-to-many.
+            SELECT parent.id
+            FROM emails parent
+            JOIN emails_links l ON l.to_email_id = parent.id
+            JOIN conversation_root cr ON cr.id = l.from_email_id
+        ),
 
-        Returns:
-            The list of all mails in the conversation.
+        conversation_thread AS (
+            SELECT e.id
+            FROM emails e
+            JOIN conversation_root cr ON e.id = cr.id
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM emails_links l
+                WHERE l.from_email_id = e.id
+            )
+
+            UNION ALL
+
+            SELECT child.id
+            FROM emails child
+            JOIN emails_links l ON l.from_email_id = child.id
+            JOIN conversation_thread ct ON l.to_email_id = ct.id
+        )
+
+        SELECT DISTINCT id
+        FROM conversation_thread;
         """
-        root_email = self
-        while root_email.in_reply_to.first() is not None:
-            root_email = root_email.in_reply_to.first()
-        return root_email.sub_conversation()
+        with connection.cursor() as cursor:
+            cursor.execute(CONVERSATION_SQL, [self.id])
+            conversation_rows = cursor.fetchall()
+        conversation_ids = [
+            conversation_row[0] for conversation_row in conversation_rows
+        ]
+        return Email.objects.filter(id__in=conversation_ids).order_by("datetime")
 
     @override
     @property

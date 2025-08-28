@@ -322,28 +322,14 @@ def test_save_eml_to_storage_file_path_set(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    "start_id, expected_len",
-    [(1, 8), (2, 3), (3, 3), (4, 1), (5, 1), (6, 1), (7, 2), (8, 1)],
-)
-def test_Email_sub_conversation(email_conversation, start_id, expected_len):
-    """Tests :func:`core.models.Email.Email.sub_conversation`."""
-    start_email = Email.objects.get(id=start_id)
-
-    sub_conversation_emails = start_email.sub_conversation()
-
-    assert len(sub_conversation_emails) == expected_len
-
-
-@pytest.mark.django_db
 @pytest.mark.parametrize("start_id", [1, 2, 3, 4, 5, 6, 7, 8])
-def test_Email_full_conversation(email_conversation, start_id):
-    """Tests :func:`core.models.Email.Email.full_conversation`."""
+def test_Email_conversation(email_conversation, start_id):
+    """Tests :func:`core.models.Email.Email.conversation`."""
     start_email = Email.objects.get(id=start_id)
 
-    sub_conversation_emails = start_email.full_conversation()
+    conversation_emails = start_email.conversation
 
-    assert len(sub_conversation_emails) == 8
+    assert len(conversation_emails) == 8
 
 
 @pytest.mark.django_db
