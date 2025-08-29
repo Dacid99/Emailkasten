@@ -320,6 +320,40 @@ def test_Email_conversation(fake_email_conversation, start_id):
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("start_id", [1, 2, 3, 4, 5, 6, 7, 8])
+def test_Email_conversation_missing_connection_leaf(fake_email_conversation, start_id):
+    """Tests :func:`core.models.Email.Email.conversation` in case one email is missing its connection to its reply_to mail."""
+    disconnected_email = Email.objects.get(id=5)
+    disconnected_email.references.remove(disconnected_email.in_reply_to.first())
+    disconnected_email.in_reply_to.clear()
+
+    assert Email.objects.count() == 8
+
+    start_email = Email.objects.get(id=start_id)
+
+    conversation_emails = start_email.conversation
+
+    assert len(conversation_emails) == 8
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("start_id", [1, 2, 3, 4, 5, 6, 7, 8])
+def test_Email_conversation_missing_connection_node(fake_email_conversation, start_id):
+    """Tests :func:`core.models.Email.Email.conversation` in case one email is missing its connection to its reply_to mail."""
+    disconnected_email = Email.objects.get(id=7)
+    disconnected_email.references.remove(disconnected_email.in_reply_to.first())
+    disconnected_email.in_reply_to.clear()
+
+    assert Email.objects.count() == 8
+
+    start_email = Email.objects.get(id=start_id)
+
+    conversation_emails = start_email.conversation
+
+    assert len(conversation_emails) == 8
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize(
     "x_spam, expected_result",
     [

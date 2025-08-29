@@ -326,7 +326,8 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
 
     @cached_property
     def conversation(self) -> QuerySet[Email]:
-        """Gets all emails that are connected to this email either via references or in_reply_to.
+        """Recursively gets all emails that are part of this emails conversation,
+        connected through references or in_reply_to.
 
         Returns:
             Queryset of all mails in the conversation.
@@ -379,7 +380,9 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         conversation_ids = [
             conversation_row[0] for conversation_row in conversation_rows
         ]
-        return Email.objects.filter(id__in=conversation_ids).order_by("datetime")
+        return Email.objects.filter(
+            id__in=conversation_ids, mailbox__account__user=self.mailbox.account.user
+        ).order_by("datetime")
 
     @override
     @property
