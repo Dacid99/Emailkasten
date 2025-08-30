@@ -272,6 +272,9 @@ def test_save_eml_to_storage_success(
     fake_email,
     mock_logger,
 ):
+    """Tests :func:`core.models.Email.Email.save_eml_to_storage`
+    in case of success.
+    """
     fake_email.eml_filepath = None
 
     fake_email.save_eml_to_storage(fake_file_bytes)
@@ -295,6 +298,9 @@ def test_save_eml_to_storage_file_path_set(
     fake_email,
     mock_logger,
 ):
+    """Tests :func:`core.models.Email.Email.save_eml_to_storage`
+    in case :attr:`core.models.Email.eml_filepath` is already set.
+    """
     fake_email.eml_filepath = default_storage.save(
         faker.file_name(), BytesIO(fake_file_bytes)
     )
@@ -378,6 +384,9 @@ def test_Email_is_spam(fake_email, x_spam, expected_result):
 
 @pytest.mark.django_db
 def test_Email_queryset_as_file_zip_eml(fake_file, fake_email, fake_email_with_file):
+    """Tests :func:`core.models.Email.Email.queryset_as_file`
+    in case the requested format is zip of eml.
+    """
     assert Email.objects.count() == 2
 
     result = Email.queryset_as_file(
@@ -420,6 +429,9 @@ def test_Email_queryset_as_file_zip_eml(fake_file, fake_email, fake_email_with_f
 def test_Email_queryset_as_file_mailbox_file(
     fake_file, fake_email, fake_email_with_file, file_format
 ):
+    """Tests :func:`core.models.Email.Email.queryset_as_file`
+    in case the given format is a mailbox single fileformat.
+    """
     assert Email.objects.count() == 2
 
     result = Email.queryset_as_file(Email.objects.all(), file_format)
@@ -456,6 +468,9 @@ def test_Email_queryset_as_file_mailbox_file(
 def test_Email_queryset_as_file_mailbox_zip(
     fake_file, fake_email, fake_email_with_file, file_format
 ):
+    """Tests :func:`core.models.Email.Email.queryset_as_file`
+    in case the given format is a zip of a mailbox directory.
+    """
     assert Email.objects.count() == 2
 
     result = Email.queryset_as_file(Email.objects.all(), file_format)
@@ -482,7 +497,10 @@ def test_Email_queryset_as_file_mailbox_zip(
 
 
 @pytest.mark.django_db
-def test_Email_queryset_as_file_mailbox_bad_format(fake_email):
+def test_Email_queryset_as_file_bad_format(fake_email):
+    """Tests :func:`core.models.Email.Email.queryset_as_file`
+    in case the given format is unsupported .
+    """
     assert Email.objects.count() == 1
 
     with pytest.raises(ValueError):
@@ -492,7 +510,10 @@ def test_Email_queryset_as_file_mailbox_bad_format(fake_email):
 
 
 @pytest.mark.django_db
-def test_Email_queryset_as_file_mailbox_empty_queryset():
+def test_Email_queryset_as_file_empty_queryset():
+    """Tests :func:`core.models.Email.Email.queryset_as_file`
+    in case the queryset is empty.
+    """
     assert Email.objects.count() == 0
 
     with pytest.raises(Email.DoesNotExist):
@@ -505,6 +526,9 @@ def test_Email_queryset_as_file_mailbox_empty_queryset():
 
 @pytest.mark.django_db
 def test_Email_add_in_reply_to_no_header(fake_email):
+    """Tests :func:`core.models.Email.Email.add_in_reply_to`
+    in case there is no such `In-Reply-To` header.
+    """
     fake_email.headers = {}
 
     assert fake_email.in_reply_to.count() == 0
@@ -516,6 +540,9 @@ def test_Email_add_in_reply_to_no_header(fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_in_reply_to_no_match(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.add_in_reply_to`
+    in case there is no matching entry for the header.
+    """
     fake_message_id = faker.name()
     fake_email.headers = {"in-reply-to": fake_message_id}
 
@@ -528,6 +555,9 @@ def test_Email_add_in_reply_to_no_match(faker, fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_in_reply_to_single(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.add_in_reply_to`
+    in case of a single match for the header.
+    """
     fake_message_id = faker.name()
     fake_in_reply_to_email = baker.make(
         Email, message_id=fake_message_id, mailbox=fake_email.mailbox
@@ -544,6 +574,9 @@ def test_Email_add_in_reply_to_single(faker, fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_in_reply_to_other_email(fake_email, fake_other_email):
+    """Tests :func:`core.models.Email.Email.add_in_reply_to`
+    in case the entry matching the header belongs to an other user.
+    """
     fake_email.headers = {"in-reply-to": fake_other_email.message_id}
 
     assert fake_email.in_reply_to.count() == 0
@@ -555,6 +588,9 @@ def test_Email_add_in_reply_to_other_email(fake_email, fake_other_email):
 
 @pytest.mark.django_db
 def test_Email_add_in_reply_to_multi(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.add_in_reply_to`
+    in case of multiple matches for the header.
+    """
     fake_message_id = faker.name()
     fake_mailbox_2 = baker.make(Mailbox, account=fake_email.mailbox.account)
     fake_referenced_email_1 = baker.make(
@@ -576,6 +612,9 @@ def test_Email_add_in_reply_to_multi(faker, fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_references_no_header(fake_email):
+    """Tests :func:`core.models.Email.Email.references`
+    in case there is no `References` header.
+    """
     fake_email.headers = {}
 
     assert fake_email.references.count() == 0
@@ -587,6 +626,9 @@ def test_Email_add_references_no_header(fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_references_no_match(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.references`
+    in case there is no entry matching the header.
+    """
     fake_message_id = faker.word()
     fake_email.headers = {"references": fake_message_id}
 
@@ -599,6 +641,9 @@ def test_Email_add_references_no_match(faker, fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_references_single(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.references`
+    in case there is a single entry matching the header.
+    """
     fake_message_id = faker.word()
     fake_referenced_email = baker.make(
         Email, message_id=fake_message_id, mailbox=fake_email.mailbox
@@ -615,6 +660,9 @@ def test_Email_add_references_single(faker, fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_references_other_email(fake_email, fake_other_email):
+    """Tests :func:`core.models.Email.Email.references`
+    in case the entry matching the header belongs to an other user.
+    """
     fake_email.headers = {"references": fake_other_email.message_id}
 
     assert fake_email.references.count() == 0
@@ -626,6 +674,9 @@ def test_Email_add_references_other_email(fake_email, fake_other_email):
 
 @pytest.mark.django_db
 def test_Email_add_references_multi(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.references`
+    in case there are multiple entries matching the header.
+    """
     fake_message_id_1 = faker.word()
     fake_message_id_2 = faker.word()
     fake_referenced_email_1 = baker.make(
@@ -648,7 +699,10 @@ def test_Email_add_references_multi(faker, fake_email):
 
 
 @pytest.mark.django_db
-def test_Email_add_correspondents_none(fake_email):
+def test_Email_add_correspondents_no_headers(fake_email):
+    """Tests :func:`core.models.Email.Email.add_correspondents`
+    in case there is no correspondent headers.
+    """
     fake_email.headers = {}
 
     assert fake_email.correspondents.count() == 0
@@ -660,6 +714,9 @@ def test_Email_add_correspondents_none(fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_correspondents_other_user(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.add_correspondents`
+    in case the entries matching the correspondent headers belong to an other user.
+    """
     fake_email_address = faker.email()
     fake_mention = faker.random_element(HeaderFields.Correspondents.values)
     fake_mentioned_correspondent = baker.make(
@@ -680,6 +737,9 @@ def test_Email_add_correspondents_other_user(faker, fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_correspondents_single_in_db(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.add_correspondents`
+    in case there is a correspondent header with a matching db entry.
+    """
     fake_email_address = faker.email()
     fake_mention = faker.random_element(HeaderFields.Correspondents.values)
     fake_mentioned_correspondent = baker.make(
@@ -704,6 +764,9 @@ def test_Email_add_correspondents_single_in_db(faker, fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_correspondents_single_not_in_db(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.add_correspondents`
+    in case there is a correspondent header without a matching db entry.
+    """
     fake_email_address = faker.email()
     fake_mention = faker.random_element(HeaderFields.Correspondents.values)
     fake_email.headers = {fake_mention: fake_email_address}
@@ -725,6 +788,9 @@ def test_Email_add_correspondents_single_not_in_db(faker, fake_email):
 
 @pytest.mark.django_db
 def test_Email_add_correspondents_multi(faker, fake_email):
+    """Tests :func:`core.models.Email.Email.add_correspondents`
+    in case there are multiple correspondent headers.
+    """
     fake_email_address_1 = faker.email()
     fake_email_address_2 = faker.email()
     fake_mention_1 = faker.random_element(HeaderFields.Correspondents.values)
@@ -923,6 +989,7 @@ def test_Email_create_from_email_bytes_dberror(
 
 @pytest.mark.django_db
 def test_Email_html_version(fake_email, fake_attachment, fake_correspondent):
+    """Tests :func:`core.models.Email.Email.html_version`."""
     result = fake_email.html_version
 
     assert result

@@ -247,7 +247,7 @@ def test_Mailbox_test_failure(
     """Tests :func:`core.models.Mailbox.Mailbox.test`
     in case the test fails with a :class:`core.utils.fetchers.exceptions.FetcherError`.
     """
-    mock_fetcher.test.side_effect = test_side_effect
+    mock_fetcher.test.side_effect = test_side_effect(Exception())
     fake_mailbox.is_healthy = True
     fake_mailbox.save(update_fields=["is_healthy"])
 
@@ -272,7 +272,7 @@ def test_Mailbox_test_get_fetcher_error(
     raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     In that case the account should not be flagged, as that is already done in get_fetcher itself.
     """
-    mock_Account_get_fetcher.side_effect = MailAccountError
+    mock_Account_get_fetcher.side_effect = MailAccountError(Exception())
     fake_mailbox.is_healthy = True
     fake_mailbox.save(update_fields=["is_healthy"])
 
@@ -327,7 +327,7 @@ def test_Mailbox_fetch_failure(
     in case fetching fails with a :class:`core.utils.fetchers.exceptions.MailboxError`.
     """
     fake_criterion = faker.word()
-    mock_fetcher.fetch_emails.side_effect = MailboxError
+    mock_fetcher.fetch_emails.side_effect = MailboxError(Exception())
     fake_mailbox.is_healthy = True
     fake_mailbox.save(update_fields=["is_healthy"])
 
@@ -355,7 +355,7 @@ def test_Mailbox_fetch_get_fetcher_error(
     in case :func:`core.models.Account.Account.get_fetcher`
     raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_Account_get_fetcher.side_effect = MailAccountError
+    mock_Account_get_fetcher.side_effect = MailAccountError(Exception())
     fake_mailbox.is_healthy = True
     fake_mailbox.save(update_fields=["is_healthy"])
 
@@ -407,9 +407,10 @@ def test_Mailbox_add_emails_from_file_zip_eml_success(
         with ZipFile(tempfile, "w") as zipfile:
             for index in (0, 1, 2):
                 with zipfile.open(f"{index}.eml", "w") as zipped_file:
-                    with Pause(fake_fs), open(
-                        TEST_EMAIL_PARAMETERS[index][0], "rb"
-                    ) as test_email:
+                    with (
+                        Pause(fake_fs),
+                        open(TEST_EMAIL_PARAMETERS[index][0], "rb") as test_email,
+                    ):
                         test_email_bytes = test_email.read()
                     zipped_file.write(test_email_bytes)
             assert len(zipfile.namelist()) == 3
@@ -473,9 +474,10 @@ def test_Mailbox_add_emails_from_file_mailbox_file_success(
         parser = parser_class(tempfile.name, create=True)
         parser.lock()
         for index in (0, 1, 2):
-            with Pause(fake_fs), open(
-                TEST_EMAIL_PARAMETERS[index][0], "rb"
-            ) as test_email:
+            with (
+                Pause(fake_fs),
+                open(TEST_EMAIL_PARAMETERS[index][0], "rb") as test_email,
+            ):
                 parser.add(test_email.read())
         assert len(list(parser.iterkeys())) == 3
         parser.close()
@@ -540,9 +542,10 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_success(
         parser = parser_class(os.path.join(tempdirpath, "test"), create=True)
         parser.lock()
         for index in (0, 1, 2):
-            with Pause(fake_fs), open(
-                TEST_EMAIL_PARAMETERS[index][0], "rb"
-            ) as test_email:
+            with (
+                Pause(fake_fs),
+                open(TEST_EMAIL_PARAMETERS[index][0], "rb") as test_email,
+            ):
                 test_email_bytes = test_email.read()
             parser.add(test_email_bytes)
         assert len(list(parser.iterkeys())) == 3

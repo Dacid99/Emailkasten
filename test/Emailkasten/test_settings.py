@@ -27,15 +27,18 @@ from Emailkasten.settings import LOG_DIRECTORY_PATH, LOGGING
 
 @pytest.fixture
 def fake_message(faker):
+    """A fake logging message."""
     return faker.sentence()
 
 
 @pytest.fixture
 def production_logging(fake_fs):
+    """Enables the production logging over the test logging configuration."""
     logging.config.dictConfig(LOGGING)
 
 
 def test_emailkasten_logging(capsys, fake_message, production_logging):
+    """Tests the emailkasten logger setup."""
     core_logger = logging.getLogger("Emailkasten")
 
     core_logger.info(fake_message)
@@ -48,6 +51,7 @@ def test_emailkasten_logging(capsys, fake_message, production_logging):
 
 
 def test_core_logging(capsys, fake_message, production_logging):
+    """Tests the core logger setup."""
     core_logger = logging.getLogger("core")
 
     core_logger.info(fake_message)
@@ -62,6 +66,7 @@ def test_core_logging(capsys, fake_message, production_logging):
 
 
 def test_api_logging(capsys, fake_message, production_logging):
+    """Tests the api logger setup."""
     api_logger = logging.getLogger("api")
 
     api_logger.info(fake_message)
@@ -76,6 +81,7 @@ def test_api_logging(capsys, fake_message, production_logging):
 
 
 def test_web_logging(capsys, fake_message, production_logging):
+    """Tests the web logger setup."""
     web_logger = logging.getLogger("web")
 
     web_logger.info(fake_message)
@@ -90,6 +96,7 @@ def test_web_logging(capsys, fake_message, production_logging):
 
 
 def test_django_logging(capsys, fake_message, production_logging):
+    """Tests the django logger setup."""
     django_logger = logging.getLogger("django")
 
     django_logger.info(fake_message)
@@ -102,6 +109,7 @@ def test_django_logging(capsys, fake_message, production_logging):
 
 
 def test_other_logging(capsys, fake_message, production_logging):
+    """Tests the setup for other loggers."""
     django_logger = logging.getLogger("other")
 
     django_logger.info(fake_message)

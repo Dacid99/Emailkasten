@@ -36,6 +36,7 @@ from api.utils import csv_query_param_to_typed_list, query_param_list_to_typed_l
     ],
 )
 def test_query_param_list_to_typed_list(query_param_list, expected_list):
+    """Tests :func:`api.v1.utils.query_param_list_to_typed_list` in case of success."""
     result = query_param_list_to_typed_list(query_param_list, int)
 
     assert result == expected_list
@@ -52,6 +53,7 @@ def test_query_param_list_to_typed_list(query_param_list, expected_list):
     ],
 )
 def test_query_param_list_to_typed_list_invalid(invalid_query_param_list):
+    """Tests :func:`api.v1.utils.query_param_list_to_typed_list` in case of an invalid query_param."""
     with pytest.raises(ValueError):
         query_param_list_to_typed_list(invalid_query_param_list, int)
 
@@ -68,6 +70,7 @@ def test_query_param_list_to_typed_list_invalid(invalid_query_param_list):
     ],
 )
 def test_csv_query_param_to_typed_list(query_param, expected_list):
+    """Tests :func:`api.v1.utils.csv_query_param_to_typed_list` in case of success."""
     result = csv_query_param_to_typed_list(query_param, int)
 
     assert result == expected_list
@@ -78,5 +81,6 @@ def test_csv_query_param_to_typed_list(query_param, expected_list):
     ["xyz", "7dy4", "9.5", "4e5", "tyu,5"],
 )
 def test_csv_query_param_to_typed_list_invalid(invalid_query_param):
+    """Tests :func:`api.v1.utils.csv_query_param_to_typed_list` in case of an invalid query_param."""
     with pytest.raises(ValueError):
         csv_query_param_to_typed_list(invalid_query_param, int)

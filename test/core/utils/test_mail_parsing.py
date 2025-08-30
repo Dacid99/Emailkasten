@@ -105,30 +105,43 @@ def bad_email_message():
     ],
 )
 def test_decode_header_success(header, expected_result):
+    """Tests :func:`core.utils.mail_parsing.decode_header`."""
     result = mail_parsing.decode_header(header)
 
     assert result == expected_result
 
 
 def test_get_header_single_success(email_message, fake_single_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header exists once.
+    """
     result = mail_parsing.get_header(email_message, fake_single_header[0])
 
     assert result == fake_single_header[1].strip()
 
 
 def test_get_header_unstripped_success(email_message, fake_unstripped_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header is unstripped.
+    """
     result = mail_parsing.get_header(email_message, fake_unstripped_header[0])
 
     assert result == fake_unstripped_header[1].strip()
 
 
 def test_get_header_multi_success(email_message, fake_multi_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header exists multiple times.
+    """
     result = mail_parsing.get_header(email_message, fake_multi_header[0])
 
     assert result == ",".join([header.strip() for header in fake_multi_header[1]])
 
 
 def test_get_header_multi_joinparam_success(email_message, fake_multi_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header exists multiple times and a joining_string is given.
+    """
     result = mail_parsing.get_header(
         email_message, fake_multi_header[0], joining_string="test"
     )
@@ -137,17 +150,26 @@ def test_get_header_multi_joinparam_success(email_message, fake_multi_header):
 
 
 def test_get_header_fallback(fake_single_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header doesn't exists.
+    """
     result = mail_parsing.get_header(EmailMessage(), fake_single_header[0])
 
     assert result == ""
 
 
 def test_get_header_failure(fake_single_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case there is no emailmessage.
+    """
     with pytest.raises(AttributeError):
         mail_parsing.get_header(None, fake_single_header[0])
 
 
 def test_parse_datetime_header_success(faker, mock_logger):
+    """Tests :func:`core.utils.mail_parsing.parse_datetime_header`
+    in case of success.
+    """
     fake_date_headervalue = format_datetime(faker.date_time(tzinfo=faker.pytimezone()))
 
     result = mail_parsing.parse_datetime_header(fake_date_headervalue)
@@ -158,6 +180,9 @@ def test_parse_datetime_header_success(faker, mock_logger):
 
 
 def test_parse_datetime_header_fallback(mocker, faker, mock_logger):
+    """Tests :func:`core.utils.mail_parsing.parse_datetime_header`
+    in case the datetime header can't be parsed.
+    """
     mock_timezone_now = mocker.patch(
         "django.utils.timezone.now", autospec=True, return_value=faker.date_time()
     )
@@ -171,6 +196,9 @@ def test_parse_datetime_header_fallback(mocker, faker, mock_logger):
 
 
 def test_parse_datetime_header_no_header(mocker, faker, mock_logger):
+    """Tests :func:`core.utils.mail_parsing.parse_datetime_header`
+    in case there is no header.
+    """
     mock_timezone_now = mocker.patch(
         "django.utils.timezone.now", autospec=True, return_value=faker.date_time()
     )
@@ -209,7 +237,8 @@ def test_parse_datetime_header_no_header(mocker, faker, mock_logger):
         ),
     ],
 )
-def test_parse_mailbox_name_success(name_bytes, expected_name):
+def test_parse_mailbox_name(name_bytes, expected_name):
+    """Tests :func:`core.utils.mail_parsing.parse_mailbox_name`."""
     result = mail_parsing.parse_mailbox_name(name_bytes)
 
     assert result == expected_name
@@ -226,6 +255,7 @@ def test_get_bodytexts(
     expected_correspondents_features,
     expected_attachments_features,
 ):
+    """Tests :func:`core.utils.mail_parsing.get_bodytexts` on test-email data."""
     with open(test_email_path, "br") as test_email_file:
         test_email_message = email.message_from_bytes(
             test_email_file.read(), policy=policy.default

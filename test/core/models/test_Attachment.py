@@ -147,6 +147,9 @@ def test_save_to_storage_success(
     fake_attachment,
     mock_logger,
 ):
+    """Tests :func:`core.models.Attachment.Attachment.save_to_storage`
+    in case of success.
+    """
     fake_attachment.file_path = None
 
     fake_attachment.save_to_storage(fake_file_bytes)
@@ -166,6 +169,9 @@ def test_save_to_storage_success(
 def test_save_to_storage_file_path_set(
     faker, fake_fs, fake_file_bytes, fake_attachment, mock_logger
 ):
+    """Tests :func:`core.models.Attachment.Attachment.delete`
+    in case the :attr:`core.models.Attachment.file_path` is already set.
+    """
     fake_attachment.file_path = default_storage.save(
         faker.file_name(), BytesIO(fake_file_bytes)
     )
@@ -246,6 +252,9 @@ def test_Attachment_save_with_data_failure(
     ],
 )
 def test_Attachment_content_type(fake_attachment, maintype, subtype, expected_mimetype):
+    """Tests :func:`core.models.Attachment.Attachment.content_type`
+    for different cases of main- subtype combinations.
+    """
     fake_attachment.content_maintype = maintype
     fake_attachment.content_subtype = subtype
 
@@ -258,6 +267,9 @@ def test_Attachment_content_type(fake_attachment, maintype, subtype, expected_mi
 def test_Attachment_queryset_as_file(
     fake_file, fake_attachment, fake_attachment_with_file
 ):
+    """Tests :func:`core.models.Attachment.Attachment.queryset_as_file`
+    in case of success.
+    """
     assert Attachment.objects.count() == 2
 
     result = Attachment.queryset_as_file(Attachment.objects.all())
@@ -278,7 +290,10 @@ def test_Attachment_queryset_as_file(
 
 
 @pytest.mark.django_db
-def test_Attachment_queryset_as_file_mailbox_empty_queryset():
+def test_Attachment_queryset_as_file_empty_queryset():
+    """Tests :func:`core.models.Attachment.Attachment.queryset_as_file`
+    in case the queryset is empty.
+    """
     assert Attachment.objects.count() == 0
 
     with pytest.raises(Attachment.DoesNotExist):

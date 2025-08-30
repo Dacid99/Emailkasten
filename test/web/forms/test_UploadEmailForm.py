@@ -18,7 +18,6 @@
 
 """Test module for the :class:`web.forms.BaseMailboxForm` form class."""
 
-
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -40,18 +39,27 @@ def file_payload(faker, fake_file):
     SupportedEmailUploadFormats.values,
 )
 def test_post_success(file_payload, file_format):
+    """Tests post direction of :class:`web.forms.UploadEmailForm`
+    in case of success.
+    """
     form = UploadEmailForm(data={"file_format": file_format}, files=file_payload)
 
     assert form.is_valid()
 
 
 def test_post_bad_format(file_payload):
+    """Tests post direction of :class:`web.forms.UploadEmailForm`
+    in case of the file_format is unsupported.
+    """
     form = UploadEmailForm(data={"file_format": "something"}, files=file_payload)
 
     assert not form.is_valid()
 
 
 def test_post_bad_file():
+    """Tests post direction of :class:`web.forms.UploadEmailForm`
+    in case of no file.
+    """
     form = UploadEmailForm(data={"file_format": "something"}, files={})
 
     assert not form.is_valid()

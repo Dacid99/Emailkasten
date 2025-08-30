@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+"""Test module for :mod:`api.v1.pagination`."""
+
 import pytest
 from model_bakery import baker
 
@@ -42,6 +44,7 @@ def email_bunch_count(fake_mailbox):
 def test_Pagination(
     list_url, owner_api_client, email_bunch_count, page_query, page_size_query
 ):
+    """Tests the :class:`api.v1.pagination.Pagination` with different page and page_size queries."""
     query = {"page": page_query, "page_size": page_size_query}
 
     response = owner_api_client.get(list_url(EmailViewSet), query)
@@ -61,6 +64,7 @@ def test_Pagination(
 
 @pytest.mark.django_db
 def test_Pagination_max(monkeypatch, list_url, owner_api_client, email_bunch_count):
+    """Tests the :class:`api.v1.pagination.Pagination`'s maximum page_size."""
     monkeypatch.setattr(
         "api.v1.pagination.Pagination.max_page_size", email_bunch_count // 2
     )
@@ -78,7 +82,7 @@ def test_Pagination_max(monkeypatch, list_url, owner_api_client, email_bunch_cou
 
 @pytest.mark.django_db
 def test_Pagination_default(list_url, owner_api_client, email_bunch_count):
-
+    """Tests the :class:`api.v1.pagination.Pagination`'s default page_size."""
     response = owner_api_client.get(list_url(EmailViewSet))
 
     assert response.data["count"] == email_bunch_count

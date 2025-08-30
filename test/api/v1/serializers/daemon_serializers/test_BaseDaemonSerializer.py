@@ -233,6 +233,7 @@ def test_post_bad_interval_every(
 def test_update_new_interval(
     fake_daemon, daemon_with_interval_payload, request_context
 ):
+    """Tests post direction of :class:`api.v1.serializers.BaseDaemonSerializer` with new interval data."""
     assert IntervalSchedule.objects.count() == 1
 
     serializer = BaseDaemonSerializer(
@@ -255,6 +256,7 @@ def test_update_new_interval(
 def test_update_existing_interval(
     fake_daemon, daemon_with_interval_payload, request_context
 ):
+    """Tests post direction of :class:`api.v1.serializers.BaseDaemonSerializer` with interval data matching an existing db entry."""
     baker.make(
         IntervalSchedule,
         every=daemon_with_interval_payload["interval"]["every"],

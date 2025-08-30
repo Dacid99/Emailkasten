@@ -22,7 +22,7 @@ import pytest
 from django.conf import settings
 from django.db import OperationalError, connection
 
-from ...web.views.conftest import owner_client
+from ...web.conftest import owner_client
 
 
 @pytest.fixture
@@ -32,11 +32,13 @@ def mock_time_sleep(mocker):
 
 @pytest.mark.django_db
 def test_reconnect(monkeypatch, owner_client, mock_time_sleep):
+    """Tests reconnection to the db by :class:`Emailkasten.middleware.DBReconnectMiddleware`."""
     monkeypatch.setattr(
         connection,
         "cursor",
         lambda: (_ for _ in ()).throw(OperationalError()),
     )
+
     with pytest.raises(OperationalError):
         owner_client.get("/")
 

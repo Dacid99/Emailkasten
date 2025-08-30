@@ -150,7 +150,9 @@ def test_post_test_auth_other(fake_daemon, other_client, detail_url, mock_Daemon
 def test_post_test_success_auth_owner(
     fake_daemon, owner_client, detail_url, mock_Daemon_test
 ):
-    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client
+    in case of success.
+    """
     response = owner_client.post(
         detail_url(DaemonDetailWithDeleteView, fake_daemon),
         {"test": "Test"},
@@ -174,7 +176,9 @@ def test_post_test_success_auth_owner(
 def test_post_test_failure_auth_owner(
     faker, fake_daemon, owner_client, detail_url, mock_Daemon_test
 ):
-    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client
+    in case of failure.
+    """
     fake_error_message = faker.sentence()
     mock_Daemon_test.side_effect = Exception(fake_error_message)
 
@@ -202,7 +206,9 @@ def test_post_test_failure_auth_owner(
 def test_post_test_missing_action_auth_owner(
     fake_daemon, owner_client, detail_url, mock_Daemon_test
 ):
-    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client
+    in case the action is missing in the request.
+    """
     response = owner_client.post(detail_url(DaemonDetailWithDeleteView, fake_daemon))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -255,7 +261,9 @@ def test_post_start_auth_other(fake_daemon, other_client, detail_url):
 
 @pytest.mark.django_db
 def test_post_start_success_auth_owner(fake_daemon, owner_client, detail_url):
-    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client
+    in case of success.
+    """
     fake_daemon.celery_task.enabled = False
     fake_daemon.celery_task.save(update_fields=["enabled"])
 
@@ -308,7 +316,9 @@ def test_post_start_failure_auth_owner(fake_daemon, owner_client, detail_url):
 
 @pytest.mark.django_db
 def test_post_start_missing_action_auth_owner(fake_daemon, owner_client, detail_url):
-    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client
+    in case of failure.
+    """
     fake_daemon.celery_task.enabled = False
     fake_daemon.celery_task.save(update_fields=["enabled"])
 
@@ -361,7 +371,9 @@ def test_post_stop_auth_other(fake_daemon, other_client, detail_url):
 
 @pytest.mark.django_db
 def test_post_stop_success_auth_owner(fake_daemon, owner_client, detail_url):
-    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client
+    in case of success.
+    """
     assert fake_daemon.celery_task.enabled is True
 
     response = owner_client.post(
@@ -386,7 +398,9 @@ def test_post_stop_success_auth_owner(fake_daemon, owner_client, detail_url):
 
 @pytest.mark.django_db
 def test_post_stop_failure_auth_owner(fake_daemon, owner_client, detail_url):
-    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client
+    in case of failure.
+    """
     fake_daemon.celery_task.enabled = False
     fake_daemon.celery_task.save(update_fields=["enabled"])
 
@@ -414,7 +428,9 @@ def test_post_stop_failure_auth_owner(fake_daemon, owner_client, detail_url):
 
 @pytest.mark.django_db
 def test_post_stop_missing_action_auth_owner(fake_daemon, owner_client, detail_url):
-    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client
+    in case the action is missing in the request.
+    """
     assert fake_daemon.celery_task.enabled is True
 
     response = owner_client.post(detail_url(DaemonDetailWithDeleteView, fake_daemon))

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test module for the various redirect within the web urls."""
+"""Test module for the web urls in :mod:`web.urls`."""
 
 import pytest
 from django.http import HttpResponsePermanentRedirect
@@ -25,6 +25,7 @@ from rest_framework import status
 
 @pytest.mark.django_db
 def test_dashboard_redirect(owner_client):
+    """Tests the permanent redirect from url root to dashboard."""
     response = owner_client.get("")
     assert response.status_code == status.HTTP_301_MOVED_PERMANENTLY
     assert isinstance(response, HttpResponsePermanentRedirect)

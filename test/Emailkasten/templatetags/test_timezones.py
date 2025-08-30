@@ -25,6 +25,7 @@ from django.template import Context, Template, TemplateSyntaxError
 
 
 def test_get_available_timezones_tag():
+    """Tests the :func:`Emailkasten.templatetags.get_available_timezones`."""
     template_str = "{% load timezones %}{% get_available_timezones as TIMEZONES %}"
     template = Template(template_str)
     context = Context({})
@@ -36,6 +37,9 @@ def test_get_available_timezones_tag():
 
 
 def test_get_available_timezones_tag_syntax_error():
+    """Tests the :func:`Emailkasten.templatetags.get_available_timezones`
+    in case of a syntax error in the template.
+    """
     bad_template_str = "{% load timezones %}{% get_available_timezones TIMEZONES %}"
 
     with pytest.raises(TemplateSyntaxError):

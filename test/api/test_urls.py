@@ -16,26 +16,17 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""File with fixtures required for all viewset tests. Automatically imported to `test_` files.
-
-The viewset tests are made against a mocked consistent database with an instance of every model in every testcase.
-"""
-
-from __future__ import annotations
+"""Test module for the api root urls in :mod:`api.urls`."""
 
 import pytest
+from django.http import HttpResponsePermanentRedirect
+from rest_framework import status
 
 
-@pytest.fixture(autouse=True)
-def complete_database(
-    owner_user,
-    other_user,
-    fake_account,
-    fake_attachment,
-    fake_correspondent,
-    fake_daemon,
-    fake_email,
-    fake_emailcorrespondent,
-    fake_mailbox,
-):
-    """Fixture providing a complete database setup."""
+@pytest.mark.django_db
+def test_dashboard_redirect(owner_api_client):
+    """Tests the permanent redirect from api root to v1."""
+    response = owner_api_client.get("/api/")
+    assert response.status_code == status.HTTP_301_MOVED_PERMANENTLY
+    assert isinstance(response, HttpResponsePermanentRedirect)
+    assert response.url == "v1/"

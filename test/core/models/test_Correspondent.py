@@ -111,6 +111,9 @@ def test_Correspondent_unique_together_constraint(fake_correspondent):
 def test_Correspondent_name(
     fake_correspondent, email_name, real_name, email_address, expected_name
 ):
+    """Tests :func:`core.models.Correspondent.Correspondent.name`
+    for different cases of email- real_name, email_address combinations.
+    """
     fake_correspondent.email_name = email_name
     fake_correspondent.real_name = real_name
     fake_correspondent.email_address = email_address
@@ -122,6 +125,9 @@ def test_Correspondent_name(
 
 @pytest.mark.django_db
 def test_Correspondent_queryset_as_file(fake_correspondent):
+    """Tests :func:`core.models.Correspondent.Correspondent.queryset_as_file`
+    in case of success.
+    """
     result = Correspondent.queryset_as_file(Correspondent.objects.all())
 
     assert hasattr(result, "read")

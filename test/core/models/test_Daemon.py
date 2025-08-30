@@ -174,6 +174,9 @@ def test_Daemon_delete_no_celery_task(fake_daemon):
 
 @pytest.mark.django_db
 def test_Daemon_test_success(mock_celery_app, fake_daemon):
+    """Tests :func:`core.models.Daemon.Daemon.test`
+    in case of success.
+    """
     fake_daemon.test()
     args = json.loads(fake_daemon.celery_task.args or "[]")
     kwargs = json.loads(fake_daemon.celery_task.kwargs or "{}")
@@ -189,7 +192,10 @@ def test_Daemon_test_success(mock_celery_app, fake_daemon):
     "error", [AssertionError, ValueError, MailAccountError, MailboxError]
 )
 def test_Daemon_test_failure(mock_celery_app, fake_daemon, error):
-    mock_celery_app.send_task.return_value.get.side_effect = error
+    """Tests :func:`core.models.Daemon.Daemon.test`
+    in case of failure.
+    """
+    mock_celery_app.send_task.return_value.get.side_effect = error(Exception())
     args = json.loads(fake_daemon.celery_task.args or "[]")
     kwargs = json.loads(fake_daemon.celery_task.kwargs or "{}")
 

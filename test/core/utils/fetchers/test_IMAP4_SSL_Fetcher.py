@@ -18,7 +18,6 @@
 
 """Test file for the :class:`core.utils.fetchers.IMAP4_SSL_Fetcher`."""
 
-
 import pytest
 
 from core.constants import EmailProtocolChoices
@@ -79,6 +78,9 @@ def test_IMAP4Fetcher_connect_to_host_success(
     mail_host_port,
     timeout,
 ):
+    """Tests :func:`core.utils.fetchers.IMAP4_SSL_Fetcher.connect_to_host`
+    in case of success.
+    """
     imap_ssl_mailbox.account.mail_host_port = mail_host_port
     imap_ssl_mailbox.account.timeout = timeout
 
@@ -106,6 +108,9 @@ def test_IMAP4Fetcher_connect_to_host_exception(
     mock_logger,
     mock_IMAP4_SSL,
 ):
+    """Tests :func:`core.utils.fetchers.IMAP4_SSL_Fetcher.connect_to_host`
+    in case of an error.
+    """
     fake_error_message = faker.sentence()
     mock_IMAP4_SSL.side_effect = AssertionError(fake_error_message)
 

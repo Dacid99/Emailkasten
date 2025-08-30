@@ -145,6 +145,8 @@ def test_get(fake_daemon):
 
 @pytest.mark.django_db
 def test_save_new_interval(fake_daemon, daemon_with_interval_payload):
+    """Tests saving :class:`web.forms.BaseDaemonForm` with new interval data."""
+
     assert IntervalSchedule.objects.count() == 1
 
     form = BaseDaemonForm(instance=fake_daemon, data=daemon_with_interval_payload)
@@ -160,6 +162,7 @@ def test_save_new_interval(fake_daemon, daemon_with_interval_payload):
 
 @pytest.mark.django_db
 def test_save_existing_interval(fake_daemon, daemon_with_interval_payload):
+    """Tests saving :class:`web.forms.BaseDaemonForm` with new interval data matching an existing db entry."""
     baker.make(
         IntervalSchedule,
         every=daemon_with_interval_payload["interval_every"],

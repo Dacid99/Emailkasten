@@ -30,11 +30,16 @@ class Pagination(PageNumberPagination):
 
     page_size = get_config("API_DEFAULT_PAGE_SIZE")
     """The number of results per page.
-        Set from :attr:`constance.get_config('API_DEFAULT_PAGE_SIZE')`."""
+    Set from :attr:`constance.get_config('API_DEFAULT_PAGE_SIZE')`.
+
+    Note:
+        Has to be set here and not in the apisettings to be apply changes directly.
+    """
 
     page_size_query_param = "page_size"
     """The query parameter for the page size."""
 
     max_page_size = get_config("API_MAX_PAGE_SIZE")
     """The maximal number of results per page.
-        Set from :attr:`constance.get_config('API_MAX_PAGE_SIZE')`."""
+    Set from :attr:`constance.get_config('API_MAX_PAGE_SIZE')`.
+    """

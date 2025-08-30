@@ -16,18 +16,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Test for the :module:`allauth` views and templates."""
+"""Test module for the Emailkasten urls in :mod:`Emailkasten.urls`."""
 
 import pytest
 from django.http import HttpResponse
 from django.urls import reverse
 from rest_framework import status
 
-from ...web.views.conftest import owner_client
+from ..web.conftest import owner_client
 
 
 @pytest.mark.django_db
 def test_login(client):
+    """Tests allauths login."""
     response = client.get(reverse("account_login"))
 
     assert isinstance(response, HttpResponse)
@@ -36,6 +37,7 @@ def test_login(client):
 
 @pytest.mark.django_db
 def test_logout(owner_client):
+    """Tests allauths logout."""
     response = owner_client.get(reverse("account_logout"))
 
     assert isinstance(response, HttpResponse)
@@ -44,6 +46,7 @@ def test_logout(owner_client):
 
 @pytest.mark.django_db
 def test_signup(client):
+    """Tests allauths signup."""
     response = client.get(reverse("account_signup"))
 
     assert isinstance(response, HttpResponse)
@@ -52,6 +55,7 @@ def test_signup(client):
 
 @pytest.mark.django_db
 def test_change_password(owner_client):
+    """Tests allauths change password."""
     response = owner_client.get(reverse("account_change_password"))
 
     assert isinstance(response, HttpResponse)
@@ -60,6 +64,7 @@ def test_change_password(owner_client):
 
 @pytest.mark.django_db
 def test_email(owner_client):
+    """Tests allauths email view."""
     response = owner_client.get(reverse("account_email"))
 
     assert isinstance(response, HttpResponse)
@@ -68,6 +73,7 @@ def test_email(owner_client):
 
 @pytest.mark.django_db
 def test_sessions(owner_client):
+    """Tests allauths sessions view."""
     response = owner_client.get(reverse("usersessions_list"))
 
     assert isinstance(response, HttpResponse)

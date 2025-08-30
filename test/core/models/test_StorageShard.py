@@ -49,6 +49,9 @@ def mock_logger(mocker) -> MagicMock:
     "is_current, expected_status_str", [(True, "Current"), (False, "Archived")]
 )
 def test___str__(faker, is_current, expected_status_str):
+    """Tests :class:`core.models.StorageShard.__str__`
+    in cases of different `is_current` stati.
+    """
     fake_filename = faker.file_name()
 
     result = str(StorageShard(current=is_current, shard_directory_name=fake_filename))
@@ -124,6 +127,9 @@ def test_Storage_health_check_missing_dir(settings, mock_logger):
 
 @pytest.mark.django_db
 def test_DefaultStorageStorageHealthCheck():
+    """Tests django-healthchecks DefaultFileStorageHealthCheck
+    impact on the StorageShard table.
+    """
     assert StorageShard.get_current_storage().file_count == 0
 
     result = DefaultFileStorageHealthCheck().check_status()

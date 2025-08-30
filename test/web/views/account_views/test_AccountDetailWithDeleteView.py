@@ -186,7 +186,7 @@ def test_post_test_failure_auth_owner(
 ):
     """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client."""
     fake_error_message = faker.sentence()
-    mock_Account_test.side_effect = MailAccountError(fake_error_message)
+    mock_Account_test.side_effect = MailAccountError(Exception(fake_error_message))
 
     response = owner_client.post(
         detail_url(AccountDetailWithDeleteView, fake_account),
@@ -213,7 +213,9 @@ def test_post_test_failure_auth_owner(
 def test_post_test_missing_action_auth_owner(
     fake_account, owner_client, detail_url, mock_Account_test
 ):
-    """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client
+    in case of the action missing in the request.
+    """
     response = owner_client.post(detail_url(AccountDetailWithDeleteView, fake_account))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -259,7 +261,9 @@ def test_post_update_mailboxes_auth_other(
 def test_post_update_mailboxes_success_auth_owner(
     fake_account, owner_client, detail_url, mock_Account_update_mailboxes
 ):
-    """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client
+    in case of success.
+    """
     response = owner_client.post(
         detail_url(AccountDetailWithDeleteView, fake_account),
         {"update_mailboxes": "Update Mailboxes"},
@@ -284,9 +288,13 @@ def test_post_update_mailboxes_success_auth_owner(
 def test_post_update_mailboxes_failure_auth_owner(
     faker, fake_account, owner_client, detail_url, mock_Account_update_mailboxes
 ):
-    """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client
+    in case of failure.
+    """
     fake_error_message = faker.sentence()
-    mock_Account_update_mailboxes.side_effect = MailAccountError(fake_error_message)
+    mock_Account_update_mailboxes.side_effect = MailAccountError(
+        Exception(fake_error_message)
+    )
 
     response = owner_client.post(
         detail_url(AccountDetailWithDeleteView, fake_account),
@@ -313,7 +321,9 @@ def test_post_update_mailboxes_failure_auth_owner(
 def test_post_update_mailboxes_missing_action_auth_owner(
     faker, fake_account, owner_client, detail_url, mock_Account_update_mailboxes
 ):
-    """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client
+    in case the action is missing in the request.
+    """
     response = owner_client.post(
         detail_url(AccountDetailWithDeleteView, fake_account),
     )

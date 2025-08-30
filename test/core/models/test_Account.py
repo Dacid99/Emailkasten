@@ -239,7 +239,7 @@ def test_Account_get_fetcher_init_failure(
     fake_account.save(update_fields=["is_healthy"])
     mocker.patch(
         f"core.models.Account.{expected_fetcher_class.__name__}.__init__",
-        side_effect=MailAccountError,
+        side_effect=MailAccountError(Exception()),
     )
     fake_account.protocol = protocol
 
@@ -337,7 +337,7 @@ def test_Account_test_failure(
     """Tests :func:`core.models.Account.Account.test`
     in case of the test fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_fetcher.test.side_effect = MailAccountError
+    mock_fetcher.test.side_effect = MailAccountError(Exception())
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
 
@@ -359,7 +359,7 @@ def test_Account_test_get_fetcher_error(
     in case the :func:`core.models.Account.Account.get_fetcher`
     raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_Account_get_fetcher.side_effect = MailAccountError
+    mock_Account_get_fetcher.side_effect = MailAccountError(Exception())
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
 
@@ -443,7 +443,7 @@ def test_Account_update_mailboxes_failure(
     """Tests :func:`core.models.Account.Account.update_mailboxes`
     in case fetching mailboxes fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_fetcher.fetch_mailboxes.side_effect = MailAccountError
+    mock_fetcher.fetch_mailboxes.side_effect = MailAccountError(Exception())
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
 
@@ -471,7 +471,7 @@ def test_Account_update_mailboxes_get_fetcher_error(
     in case :func:`core.models.Account.Account.get_fetcher`
     fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_Account_get_fetcher.side_effect = MailAccountError
+    mock_Account_get_fetcher.side_effect = MailAccountError(Exception())
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
 

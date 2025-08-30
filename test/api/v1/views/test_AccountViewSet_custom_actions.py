@@ -46,7 +46,9 @@ def test_update_mailboxes_noauth(
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with an unauthenticated user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes`
+    action with an unauthenticated user client.
+    """
     response = noauth_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
@@ -65,7 +67,9 @@ def test_update_mailboxes_auth_other(
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated other user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes`
+    action with the authenticated other user client.
+    """
     response = other_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
@@ -84,7 +88,10 @@ def test_update_mailboxes_success_auth_owner(
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated owner user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes`
+    action with the authenticated owner user client
+    in case of success.
+    """
     response = owner_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
@@ -105,9 +112,14 @@ def test_update_mailboxes_failure_auth_owner(
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated owner user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes`
+    action with the authenticated owner user client
+    in case of failure.
+    """
     fake_error_message = faker.sentence()
-    mock_Account_update_mailboxes.side_effect = MailAccountError(fake_error_message)
+    mock_Account_update_mailboxes.side_effect = MailAccountError(
+        Exception(fake_error_message)
+    )
 
     response = owner_api_client.post(
         custom_detail_action_url(
@@ -129,7 +141,9 @@ def test_test_noauth(
     custom_detail_action_url,
     mock_Account_test,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with an unauthenticated user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test`
+    action with an unauthenticated user client.
+    """
     previous_is_healthy = fake_account.is_healthy
 
     response = noauth_api_client.post(
@@ -152,7 +166,9 @@ def test_test_auth_other(
     custom_detail_action_url,
     mock_Account_test,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated other user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test`
+    action with the authenticated other user client.
+    """
 
     previous_is_healthy = fake_account.is_healthy
 
@@ -176,7 +192,10 @@ def test_test_success_auth_owner(
     custom_detail_action_url,
     mock_Account_test,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated owner user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test`
+    action with the authenticated owner user client
+    in case of success.
+    """
 
     response = owner_api_client.post(
         custom_detail_action_url(
@@ -199,9 +218,12 @@ def test_test_failure_auth_owner(
     custom_detail_action_url,
     mock_Account_test,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated owner user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test`
+    action with the authenticated owner user client
+    in case of failure.
+    """
     fake_error_message = faker.sentence()
-    mock_Account_test.side_effect = MailAccountError(fake_error_message)
+    mock_Account_test.side_effect = MailAccountError(Exception(fake_error_message))
 
     response = owner_api_client.post(
         custom_detail_action_url(

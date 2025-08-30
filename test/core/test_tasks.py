@@ -51,6 +51,9 @@ def test_fetch_emails_task_success(
     mock_Attachment_save_to_storage,
     mock_Email_save_eml_to_storage,
 ):
+    """Tests :func:`core.tasks.fetch_emails`
+    in case of success.
+    """
     assert fake_daemon.mailbox.emails.count() == 0
     assert fake_daemon.is_healthy is not True
 
@@ -63,6 +66,9 @@ def test_fetch_emails_task_success(
 
 @pytest.mark.django_db
 def test_fetch_emails_task_bad_daemon_uuid(faker, fake_daemon):
+    """Tests :func:`core.tasks.fetch_emails`
+    in case the given uuid doesn't match any daemon entry.
+    """
     assert fake_daemon.mailbox.emails.count() == 0
 
     fetch_emails(faker.uuid4())
@@ -72,8 +78,13 @@ def test_fetch_emails_task_bad_daemon_uuid(faker, fake_daemon):
 
 @pytest.mark.django_db
 def test_fetch_emails_task_MailboxError(faker, fake_daemon, mock_test_email_fetcher):
+    """Tests :func:`core.tasks.fetch_emails`
+    in case of an MailboxError.
+    """
     fake_error_message = faker.sentence()
-    mock_test_email_fetcher.fetch_emails.side_effect = MailboxError(fake_error_message)
+    mock_test_email_fetcher.fetch_emails.side_effect = MailboxError(
+        Exception(fake_error_message)
+    )
 
     assert fake_daemon.is_healthy is not True
 
@@ -83,16 +94,19 @@ def test_fetch_emails_task_MailboxError(faker, fake_daemon, mock_test_email_fetc
     fake_daemon.refresh_from_db()
     assert fake_daemon.mailbox.emails.count() == 0
     assert fake_daemon.mailbox.is_healthy is False
-    assert fake_daemon.last_error == fake_error_message
+    assert fake_error_message in fake_daemon.last_error
 
 
 @pytest.mark.django_db
 def test_fetch_emails_task_MailAccountError(
     faker, fake_daemon, mock_test_email_fetcher
 ):
+    """Tests :func:`core.tasks.fetch_emails`
+    in case of an MailAccountError.
+    """
     fake_error_message = faker.sentence()
     mock_test_email_fetcher.fetch_emails.side_effect = MailAccountError(
-        fake_error_message
+        Exception(fake_error_message)
     )
 
     assert fake_daemon.mailbox.emails.count() == 0
@@ -104,13 +118,16 @@ def test_fetch_emails_task_MailAccountError(
     fake_daemon.refresh_from_db()
     assert fake_daemon.mailbox.emails.count() == 0
     assert fake_daemon.mailbox.account.is_healthy is False
-    assert fake_daemon.last_error == fake_error_message
+    assert fake_error_message in fake_daemon.last_error
 
 
 @pytest.mark.django_db
 def test_fetch_emails_task_unexpected_error(
     faker, fake_daemon, mock_test_email_fetcher
 ):
+    """Tests :func:`core.tasks.fetch_emails`
+    in case of an unexpected error.
+    """
     fake_error_message = faker.sentence()
     mock_test_email_fetcher.fetch_emails.side_effect = AssertionError(
         fake_error_message
@@ -125,11 +142,14 @@ def test_fetch_emails_task_unexpected_error(
     fake_daemon.refresh_from_db()
     assert fake_daemon.mailbox.emails.count() == 0
     assert fake_daemon.is_healthy is False
-    assert fake_daemon.last_error == fake_error_message
+    assert fake_error_message in fake_daemon.last_error
 
 
 @pytest.mark.django_db
 def test_fetch_emails_task_ValueError(faker, fake_daemon, mock_test_email_fetcher):
+    """Tests :func:`core.tasks.fetch_emails`
+    in case of a ValueError.
+    """
     fake_error_message = faker.sentence()
     mock_test_email_fetcher.fetch_emails.side_effect = ValueError(fake_error_message)
 
@@ -142,4 +162,4 @@ def test_fetch_emails_task_ValueError(faker, fake_daemon, mock_test_email_fetche
     fake_daemon.refresh_from_db()
     assert fake_daemon.mailbox.emails.count() == 0
     assert fake_daemon.is_healthy is False
-    assert fake_daemon.last_error == fake_error_message
+    assert fake_error_message in fake_daemon.last_error

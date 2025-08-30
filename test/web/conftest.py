@@ -18,7 +18,7 @@
 
 """File with fixtures required for all viewset tests. Automatically imported to `test_` files.
 
-The serializer tests are made against a mocked consistent database with an instance of every model in every testcase.
+The viewset tests are made against a mocked consistent database with an instance of every model in every testcase.
 """
 
 from __future__ import annotations
@@ -26,26 +26,47 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from django.forms.models import model_to_dict
 from django.urls import reverse
-from django_celery_beat.models import IntervalSchedule
-from model_bakery import baker
 
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from django.db.models import Model
+    from django.test.client import Client
     from rest_framework.viewsets import ModelViewSet
 
 
 @pytest.fixture
-def daemon_with_interval_payload(daemon_payload):
-    """Payload for a daemon form."""
-    interval = baker.prepare(IntervalSchedule)
-    daemon_payload["interval"] = model_to_dict(interval)
-    daemon_payload["interval"]["every"] = abs(daemon_payload["interval"]["every"])
-    return daemon_payload
+def other_client(client, other_user) -> Client:
+    """Fixture creating a :class:`django.test.client.Client` instance that is authenticated as :attr:`other_user`.
+
+    Returns:
+        The authenticated Client.
+    """
+    client.force_login(user=other_user)
+    return client
+
+
+@pytest.fixture
+def owner_client(client, owner_user) -> Client:
+    """Fixture creating a :class:`django.test.client.Client` instance that is authenticated as :attr:`owner_user`.
+
+    Returns:
+        The authenticated Client.
+    """
+    client.force_login(user=owner_user)
+    return client
+
+
+@pytest.fixture(scope="package")
+def login_url() -> str:
+    """Fixture with the login url.
+
+    Returns:
+        The login url.
+    """
+    return reverse("account_login")
 
 
 @pytest.fixture(scope="package")
@@ -55,7 +76,7 @@ def list_url() -> Callable[[type[ModelViewSet]], str]:
     Returns:
         The list url.
     """
-    return lambda viewset_class: reverse(f"api:v1:{viewset_class.BASENAME}-list")
+    return lambda view_class: reverse(f"web:{view_class.URL_NAME}")
 
 
 @pytest.fixture(scope="package")
@@ -65,8 +86,8 @@ def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
     Returns:
         The detail url.
     """
-    return lambda viewset_class, instance: reverse(
-        f"api:v1:{viewset_class.BASENAME}-detail", args=[instance.id]
+    return lambda view_class, instance: reverse(
+        f"web:{view_class.URL_NAME}", args=[instance.id]
     )
 
 
@@ -77,8 +98,8 @@ def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
     Returns:
         A callable that gets the list url of the viewset from the custom action name.
     """
-    return lambda viewset_class, custom_list_action_url_name: (
-        reverse(f"api:v1:{viewset_class.BASENAME}-{custom_list_action_url_name}")
+    return lambda view_class, custom_list_action_url_name: (
+        reverse(f"web:{view_class.URL_NAME}-{custom_list_action_url_name}")
     )
 
 
@@ -89,9 +110,9 @@ def custom_detail_action_url() -> Callable[[type[ModelViewSet], str, Model], str
     Returns:
         A callable that gets the detail url of the viewset from the custom action name.
     """
-    return lambda viewset_class, custom_detail_action_url_name, instance: (
+    return lambda view_class, custom_detail_action_url_name, instance: (
         reverse(
-            f"api:v1:{viewset_class.BASENAME}-{custom_detail_action_url_name}",
+            f"web:{view_class.URL_NAME}-{custom_detail_action_url_name}",
             args=[instance.id],
         )
     )

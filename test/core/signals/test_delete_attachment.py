@@ -32,6 +32,9 @@ def mock_logger(mocker):
 
 @pytest.mark.django_db
 def test_delete_attachment_no_file(fake_attachment, mock_logger):
+    """Test individual deletion of an :class:`core.models.Attachment` instance
+    in case its `file_path` is not set.
+    """
     assert not fake_attachment.file_path
 
     fake_attachment.delete()
@@ -44,6 +47,9 @@ def test_delete_attachment_no_file(fake_attachment, mock_logger):
 
 @pytest.mark.django_db
 def test_delete_attachment_with_file(fake_attachment_with_file, mock_logger):
+    """Test individual deletion of an :class:`core.models.Attachment` instance
+    in case its `file_path` is set.
+    """
     assert default_storage.exists(fake_attachment_with_file.file_path)
 
     fake_attachment_with_file.delete()
@@ -59,6 +65,9 @@ def test_delete_attachment_with_file(fake_attachment_with_file, mock_logger):
 def test_cascade_delete_attachment_with_file(
     fake_attachment_with_file, fake_mailbox, mock_logger
 ):
+    """Test cascade deletion of an :class:`core.models.Attachment` instance
+    in case its `file_path` is set.
+    """
     assert default_storage.exists(fake_attachment_with_file.file_path)
 
     fake_mailbox.delete()
@@ -72,6 +81,9 @@ def test_cascade_delete_attachment_with_file(
 
 @pytest.mark.django_db
 def test_bulk_delete_attachment_with_file(fake_attachment_with_file, mock_logger):
+    """Test bulk deletion of an :class:`core.models.Attachment` instance
+    in case its `file_path` is not set.
+    """
     assert default_storage.exists(fake_attachment_with_file.file_path)
 
     Attachment.objects.all().delete()

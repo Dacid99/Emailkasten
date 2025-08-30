@@ -160,7 +160,9 @@ def test_post_test_auth_other(
 def test_post_test_success_auth_owner(
     fake_mailbox, owner_client, detail_url, mock_Mailbox_test
 ):
-    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
+    in case of success.
+    """
     response = owner_client.post(
         detail_url(MailboxDetailWithDeleteView, fake_mailbox),
         {"test": "Test"},
@@ -185,7 +187,9 @@ def test_post_test_success_auth_owner(
 def test_post_test_failure_auth_owner(
     faker, fake_mailbox, owner_client, detail_url, mock_Mailbox_test
 ):
-    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
+    in case of failure.
+    """
     fake_error_message = faker.sentence()
     mock_Mailbox_test.side_effect = FetcherError(fake_error_message)
 
@@ -214,7 +218,9 @@ def test_post_test_failure_auth_owner(
 def test_post_test_missing_action_auth_owner(
     fake_mailbox, owner_client, detail_url, mock_Mailbox_test
 ):
-    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
+    in case the action is missing in the request.
+    """
     response = owner_client.post(detail_url(MailboxDetailWithDeleteView, fake_mailbox))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -260,7 +266,9 @@ def test_post_fetch_auth_other(
 def test_post_fetch_success_auth_owner(
     fake_mailbox, owner_client, detail_url, mock_Mailbox_fetch
 ):
-    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
+    in case of success.
+    """
     response = owner_client.post(
         detail_url(MailboxDetailWithDeleteView, fake_mailbox),
         {"fetch": EmailFetchingCriterionChoices.ALL.value},
@@ -287,7 +295,9 @@ def test_post_fetch_success_auth_owner(
 def test_post_fetch_no_criterion_auth_owner(
     fake_mailbox, owner_client, detail_url, mock_Mailbox_fetch
 ):
-    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
+    in case no criterion is given.
+    """
     response = owner_client.post(
         detail_url(MailboxDetailWithDeleteView, fake_mailbox),
         {"fetch": ""},
@@ -314,7 +324,9 @@ def test_post_fetch_no_criterion_auth_owner(
 def test_post_fetch_bad_criterion_auth_owner(
     fake_mailbox, owner_client, detail_url, mock_Mailbox_fetch
 ):
-    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
+    in case an unavailable criterion is given.
+    """
     response = owner_client.post(
         detail_url(MailboxDetailWithDeleteView, fake_mailbox),
         {"fetch": EmailFetchingCriterionChoices.DELETED.value},
@@ -339,7 +351,9 @@ def test_post_fetch_bad_criterion_auth_owner(
 def test_post_fetch_failure_auth_owner(
     faker, fake_mailbox, owner_client, detail_url, mock_Mailbox_fetch
 ):
-    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
+    in case of failure.
+    """
     fake_error_message = faker.sentence()
     mock_Mailbox_fetch.side_effect = FetcherError(fake_error_message)
 
@@ -370,7 +384,9 @@ def test_post_fetch_failure_auth_owner(
 def test_post_fetch_missing_action_auth_owner(
     fake_mailbox, owner_client, detail_url, mock_Mailbox_fetch
 ):
-    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client."""
+    """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
+    in case the action is missing in the request.
+    """
     response = owner_client.post(detail_url(MailboxDetailWithDeleteView, fake_mailbox))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
