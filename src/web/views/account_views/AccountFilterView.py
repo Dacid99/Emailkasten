@@ -24,9 +24,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 
 from core.models import Account
-
-from ...filters import AccountFilterSet
-from ..base import FilterPageView
+from web.filters import AccountFilterSet
+from web.views.base import FilterPageView
 
 
 class AccountFilterView(LoginRequiredMixin, FilterPageView):

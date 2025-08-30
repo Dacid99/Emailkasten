@@ -25,9 +25,9 @@ from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Mailbox
+from web.forms import BaseMailboxForm
+from web.views.base import UpdateOrDeleteView
 
-from ...forms import BaseMailboxForm
-from ..base import UpdateOrDeleteView
 from .MailboxFilterView import MailboxFilterView
 
 

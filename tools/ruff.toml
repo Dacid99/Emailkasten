@@ -12,7 +12,9 @@ select = [
   "A",    # flake8-builtins
   "ANN",  # flake8-type-annotations
   "ARG",  # flake8-unused-arguments
+  "ASYNC",# flake8-async
   "B",    # flake8-bugbear
+  "BLE",  # flake8-blind-except
   "C4",   # flake8-comprehensions
   "C90",  # mccabe
   "COM",  # flake8-commas
@@ -35,6 +37,7 @@ select = [
   "I",    # isort
   "ICN",  # flake8-import-conventions
   "INP",  # flake8-no-pep420
+  "INT",  # flake8-gettext
   "ISC",  # flake8-implicit-str-concat
   "LOG",  # flake8-logging
   "N",    # pep8-naming
@@ -43,6 +46,8 @@ select = [
   "PIE",  # flake8-pie
   "PL",   # pylint
   "PT",   # flake8-pytest-style
+  "PYI",  # flake8-pyi
+  "Q",    # flake8-quotes
   "RET",  # flake8-return
   "RSE",  # flake8-raise
   "RUF",  # ruff
@@ -50,8 +55,9 @@ select = [
   "SIM",  # flake8-simpify
   "SLF",  # flake8-self
   "SLOT", # flake8-slots
-  "T20",  # flake8-print
   "T10",  # flake8-debugger
+  "T20",  # flake8-print
+  "TID",  # flake8-tidy-imports
   "TC",   # flake8-type-checking
   "TRY",  # tryceratops
   "UP",   # pyupgrade
@@ -67,11 +73,11 @@ ignore = [
   "D205",    # docstring summary can span more than one line
   "D401",    # docstring does not need to be imperative
   "D417",    # must be disabled for google style docs
-  "ISC003",  # prefer explicit string concat over implicit concat
+  "ISC003", # prefer explicit string concat over implicit concat
   "N999",    # module names can be PascalCase too
   "PLR09",   # we have our own complexity rules
   "RUF012",  # django typically uses instance variables
-  "TRY003",  # long exception messages from `tryceratops`
+  "TRY003",  # error messages can be set up outside of the exception class
 ]
 external = [ "WPS" ]
 
@@ -107,6 +113,7 @@ parametrize-values-type = "list"
   "N802",  # class names must be allowed as part of test function names
   "N803",  # class names must be allowed as part of fixture names
   "N806",  # class names must be allowed as part of mock names
+  "TRY003",# error messages can be put directly
 ]
 
 [lint.extend-per-file-ignores]

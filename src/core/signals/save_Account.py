@@ -26,7 +26,7 @@ from typing import Any
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from ..models import Account
+from core.models import Account
 
 
 logger = logging.getLogger(__name__)

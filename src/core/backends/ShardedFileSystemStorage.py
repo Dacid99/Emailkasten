@@ -23,7 +23,7 @@ from typing import override
 
 from django.core.files.storage import FileSystemStorage
 
-from ..models import StorageShard
+from core.models import StorageShard
 
 
 class ShardedFileSystemStorage(FileSystemStorage):

@@ -26,7 +26,8 @@ from typing import override
 
 from django.utils.translation import gettext_lazy as _
 
-from ... import constants
+from core import constants
+
 from .exceptions import MailAccountError
 from .POP3Fetcher import POP3Fetcher
 

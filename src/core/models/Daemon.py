@@ -32,8 +32,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
 
-from ..constants import EmailFetchingCriterionChoices
-from ..mixins import URLMixin
+from core.constants import EmailFetchingCriterionChoices
+from core.mixins import URLMixin
 
 
 if TYPE_CHECKING:

@@ -31,17 +31,17 @@ from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from Emailkasten.utils.workarounds import get_config
-
-from ..constants import (
+from core.constants import (
     EmailFetchingCriterionChoices,
     SupportedEmailDownloadFormats,
     SupportedEmailUploadFormats,
     file_format_parsers,
 )
-from ..mixins import FavoriteMixin, HasDownloadMixin, UploadMixin, URLMixin
-from ..utils.fetchers.exceptions import MailAccountError, MailboxError
-from ..utils.mail_parsing import parse_mailbox_name
+from core.mixins import FavoriteMixin, HasDownloadMixin, UploadMixin, URLMixin
+from core.utils.fetchers.exceptions import MailAccountError, MailboxError
+from core.utils.mail_parsing import parse_mailbox_name
+from Emailkasten.utils.workarounds import get_config
+
 from .Email import Email
 
 

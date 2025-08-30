@@ -26,7 +26,8 @@ from typing import TYPE_CHECKING, Final, override
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from ..constants import HeaderFields
+from core.constants import HeaderFields
+
 from .Correspondent import Correspondent
 
 

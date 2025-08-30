@@ -24,8 +24,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 
 from core.models import Account
-
-from ...forms import BaseAccountForm
+from web.forms import BaseAccountForm
 
 
 class AccountCreateView(LoginRequiredMixin, CreateView):

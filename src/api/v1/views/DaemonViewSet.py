@@ -32,10 +32,9 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from api.v1.filters import DaemonFilterSet
+from api.v1.serializers import BaseDaemonSerializer
 from core.models import Daemon
-
-from ..filters import DaemonFilterSet
-from ..serializers import BaseDaemonSerializer
 
 
 if TYPE_CHECKING:

@@ -35,11 +35,10 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from api.utils import query_param_list_to_typed_list
+from api.v1.filters import AttachmentFilterSet
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from api.v1.serializers import BaseAttachmentSerializer
 from core.models import Attachment
-
-from ..filters import AttachmentFilterSet
-from ..serializers import BaseAttachmentSerializer
 
 
 if TYPE_CHECKING:

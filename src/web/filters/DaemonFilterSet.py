@@ -29,8 +29,7 @@ from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule
 
 from core.constants import EmailFetchingCriterionChoices
-
-from ..utils.widgets import AdaptedSelectDateWidget
+from web.utils.widgets import AdaptedSelectDateWidget
 
 
 if TYPE_CHECKING:

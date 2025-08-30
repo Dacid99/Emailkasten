@@ -29,7 +29,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from vobject import vCard
 
-from ..mixins import FavoriteMixin, HasDownloadMixin, URLMixin
+from core.mixins import FavoriteMixin, HasDownloadMixin, URLMixin
 
 
 if TYPE_CHECKING:

@@ -28,16 +28,16 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from imap_tools.imap_utf7 import utf7_encode
 
+from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from core.utils.fetchers.exceptions import FetcherError, MailAccountError
 from core.utils.fetchers.SafeIMAPMixin import SafeIMAPMixin
 
-from ...constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from .BaseFetcher import BaseFetcher
 
 
 if TYPE_CHECKING:
-    from ...models.Account import Account
-    from ...models.Mailbox import Mailbox
+    from core.models.Account import Account
+    from core.models.Mailbox import Mailbox
 
 
 class IMAP4Fetcher(BaseFetcher, SafeIMAPMixin):

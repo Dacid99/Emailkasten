@@ -25,8 +25,8 @@ from django.db.models import Prefetch, QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Email, EmailCorrespondent
+from web.views.base import DetailWithDeleteView
 
-from ..base import DetailWithDeleteView
 from .EmailFilterView import EmailFilterView
 
 

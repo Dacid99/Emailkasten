@@ -24,8 +24,7 @@ from django.db.models import QuerySet
 from django.views.generic.detail import SingleObjectMixin
 
 from core.models import Email, Mailbox
-
-from ..email_views import EmailFilterView
+from web.views.email_views import EmailFilterView
 
 
 class MailboxEmailsFilterView(EmailFilterView, SingleObjectMixin):  # type: ignore[misc]  # SingleObjectMixin attributes are shadowed purposefully

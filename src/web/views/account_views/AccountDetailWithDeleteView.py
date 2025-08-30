@@ -32,8 +32,8 @@ from core.models import Account, Email
 from core.utils.fetchers.exceptions import MailAccountError
 from web.mixins.CustomActionMixin import CustomActionMixin
 from web.mixins.TestActionMixin import TestActionMixin
+from web.views.base import DetailWithDeleteView
 
-from ..base import DetailWithDeleteView
 from .AccountFilterView import AccountFilterView
 
 

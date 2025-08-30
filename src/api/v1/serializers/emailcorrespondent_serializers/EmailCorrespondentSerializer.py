@@ -22,9 +22,10 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from ..correspondent_serializers.BaseCorrespondentSerializer import (
+from api.v1.serializers.correspondent_serializers.BaseCorrespondentSerializer import (
     BaseCorrespondentSerializer,
 )
+
 from .BaseEmailCorrespondentSerializer import BaseEmailCorrespondentSerializer
 
 

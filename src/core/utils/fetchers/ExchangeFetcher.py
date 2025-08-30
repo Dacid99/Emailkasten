@@ -38,8 +38,8 @@ from .BaseFetcher import BaseFetcher
 if TYPE_CHECKING:
     from exchangelib.queryset import QuerySet
 
-    from ...models.Account import Account
-    from ...models.Mailbox import Mailbox
+    from core.models.Account import Account
+    from core.models.Mailbox import Mailbox
 
 
 class ExchangeFetcher(BaseFetcher):

@@ -25,12 +25,11 @@ from typing import TYPE_CHECKING, Any, ClassVar, Final, override
 from django_celery_beat.models import IntervalSchedule
 from rest_framework import serializers
 
-from core.models import Daemon, Mailbox
-
-from ..django_celery_beat_serializers import (
+from api.v1.serializers.django_celery_beat_serializers import (
     IntervalScheduleSerializer,
     PeriodicTaskSerializer,
 )
+from core.models import Daemon, Mailbox
 
 
 if TYPE_CHECKING:

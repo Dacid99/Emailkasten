@@ -29,10 +29,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import DeletionMixin
 
 from core.models import Daemon
+from web.mixins.CustomActionMixin import CustomActionMixin
 from web.mixins.TestActionMixin import TestActionMixin
+from web.views.base import DetailWithDeleteView
 
-from ...mixins.CustomActionMixin import CustomActionMixin
-from ..base import DetailWithDeleteView
 from .DaemonFilterView import DaemonFilterView
 
 

@@ -25,9 +25,9 @@ from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Account
+from web.forms import BaseAccountForm
+from web.views.base import UpdateOrDeleteView
 
-from ...forms import BaseAccountForm
-from ..base import UpdateOrDeleteView
 from .AccountFilterView import AccountFilterView
 
 

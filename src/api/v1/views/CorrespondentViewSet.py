@@ -35,11 +35,10 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from api.utils import query_param_list_to_typed_list
+from api.v1.filters import CorrespondentFilterSet
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from api.v1.serializers import BaseCorrespondentSerializer, CorrespondentSerializer
 from core.models import Correspondent, EmailCorrespondent
-
-from ..filters import CorrespondentFilterSet
-from ..serializers import BaseCorrespondentSerializer, CorrespondentSerializer
 
 
 if TYPE_CHECKING:

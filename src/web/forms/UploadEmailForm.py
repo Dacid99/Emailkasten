@@ -22,8 +22,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import SupportedEmailUploadFormats
-
-from ..utils.forms import RequiredMarkerForm
+from web.utils.forms import RequiredMarkerForm
 
 
 class UploadEmailForm(RequiredMarkerForm):

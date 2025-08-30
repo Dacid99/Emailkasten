@@ -24,9 +24,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 
 from core.models import Correspondent
-
-from ...filters import CorrespondentFilterSet
-from ..base import FilterPageView
+from web.filters import CorrespondentFilterSet
+from web.views.base import FilterPageView
 
 
 class CorrespondentFilterView(LoginRequiredMixin, FilterPageView):

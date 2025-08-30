@@ -28,8 +28,7 @@ from django.forms import widgets
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import EmailProtocolChoices
-
-from ..utils.widgets import AdaptedSelectDateWidget
+from web.utils.widgets import AdaptedSelectDateWidget
 
 
 if TYPE_CHECKING:

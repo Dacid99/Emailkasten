@@ -35,10 +35,9 @@ from django.db import models
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 
+from core.constants import HeaderFields
+from core.mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
 from Emailkasten.utils.workarounds import get_config
-
-from ..constants import HeaderFields
-from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
 
 
 if TYPE_CHECKING:

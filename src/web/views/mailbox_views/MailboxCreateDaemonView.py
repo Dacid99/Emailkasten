@@ -27,8 +27,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import BaseFormView
 
 from core.models import Mailbox
-
-from ...forms import CreateMailboxDaemonForm
+from web.forms import CreateMailboxDaemonForm
 
 
 class MailboxCreateDaemonView(LoginRequiredMixin, DetailView, BaseFormView):

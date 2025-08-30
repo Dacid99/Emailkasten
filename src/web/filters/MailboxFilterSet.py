@@ -27,7 +27,7 @@ from django.db import models
 from django.forms import widgets
 from django.utils.translation import gettext_lazy as _
 
-from ..utils.widgets import AdaptedSelectDateWidget
+from web.utils.widgets import AdaptedSelectDateWidget
 
 
 if TYPE_CHECKING:

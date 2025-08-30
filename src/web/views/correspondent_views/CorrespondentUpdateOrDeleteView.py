@@ -25,9 +25,9 @@ from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Correspondent
+from web.forms import BaseCorrespondentForm
+from web.views.base import UpdateOrDeleteView
 
-from ...forms import BaseCorrespondentForm
-from ..base import UpdateOrDeleteView
 from .CorrespondentFilterView import CorrespondentFilterView
 
 

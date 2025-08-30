@@ -31,10 +31,10 @@ from django.views.generic.edit import DeletionMixin
 from core.constants import EmailFetchingCriterionChoices
 from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
+from web.mixins.CustomActionMixin import CustomActionMixin
+from web.mixins.TestActionMixin import TestActionMixin
+from web.views.base import DetailWithDeleteView
 
-from ...mixins.CustomActionMixin import CustomActionMixin
-from ...mixins.TestActionMixin import TestActionMixin
-from ..base import DetailWithDeleteView
 from .MailboxFilterView import MailboxFilterView
 
 

@@ -32,12 +32,11 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from api.v1.filters import AccountFilterSet
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from api.v1.serializers import AccountSerializer
 from core.models import Account
 from core.utils.fetchers.exceptions import MailAccountError
-
-from ..filters import AccountFilterSet
-from ..serializers import AccountSerializer
 
 
 if TYPE_CHECKING:

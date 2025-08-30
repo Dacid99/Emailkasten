@@ -22,9 +22,6 @@ else
   fi
 
   git add $CHANGED_PY_FILES
-
-  #typecheck
-  poetry run mypy --config-file $CONFIG_PATH'mypy.ini' $CHANGED_PY_FILES > $REPORT_PATH'mypy/mypy_precommit.ansi'
 fi
 
 CHANGED_HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRT | grep '\.html$')

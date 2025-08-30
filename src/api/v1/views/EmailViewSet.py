@@ -39,12 +39,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.utils import query_param_list_to_typed_list
+from api.v1.filters import EmailFilterSet
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from api.v1.serializers import BaseEmailSerializer, FullEmailSerializer
 from core.constants import SupportedEmailDownloadFormats
 from core.models import Email, EmailCorrespondent
-
-from ..filters import EmailFilterSet
-from ..serializers import BaseEmailSerializer, FullEmailSerializer
 
 
 if TYPE_CHECKING:

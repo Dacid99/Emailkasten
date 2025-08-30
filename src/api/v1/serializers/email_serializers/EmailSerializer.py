@@ -29,12 +29,12 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from core.models import Email
-
-from ..attachment_serializers import BaseAttachmentSerializer
-from ..emailcorrespondent_serializers.EmailCorrespondentSerializer import (
+from api.v1.serializers.attachment_serializers import BaseAttachmentSerializer
+from api.v1.serializers.emailcorrespondent_serializers.EmailCorrespondentSerializer import (
     EmailCorrespondentSerializer,
 )
+from core.models import Email
+
 from .BaseEmailSerializer import BaseEmailSerializer
 
 

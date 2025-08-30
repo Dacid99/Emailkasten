@@ -22,7 +22,8 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from ..email_serializers.BaseEmailSerializer import BaseEmailSerializer
+from api.v1.serializers.email_serializers.BaseEmailSerializer import BaseEmailSerializer
+
 from .BaseEmailCorrespondentSerializer import BaseEmailCorrespondentSerializer
 
 

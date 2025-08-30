@@ -27,7 +27,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..serializers import DatabaseStatsSerializer
+from api.v1.serializers import DatabaseStatsSerializer
 
 
 if TYPE_CHECKING:

@@ -23,8 +23,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, ClassVar, Final
 
 from core.models import Mailbox
-
-from ...utils.forms import RequiredMarkerModelForm
+from web.utils.forms import RequiredMarkerModelForm
 
 
 if TYPE_CHECKING:

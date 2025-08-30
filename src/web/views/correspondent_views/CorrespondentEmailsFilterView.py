@@ -25,9 +25,8 @@ from django.db.models import QuerySet
 from django.views.generic.detail import SingleObjectMixin
 
 from core.models import Correspondent, EmailCorrespondent
-
-from ...filters import CorrespondentEmailFilterSet
-from ..base import FilterPageView
+from web.filters import CorrespondentEmailFilterSet
+from web.views.base import FilterPageView
 
 
 class CorrespondentEmailsFilterView(

@@ -24,8 +24,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 
 from core.models import Daemon
-
-from ...forms import CreateDaemonForm
+from web.forms import CreateDaemonForm
 
 
 class DaemonCreateView(LoginRequiredMixin, CreateView):

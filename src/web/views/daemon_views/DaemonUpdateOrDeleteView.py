@@ -25,9 +25,9 @@ from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Daemon
+from web.forms import BaseDaemonForm
+from web.views.base import UpdateOrDeleteView
 
-from ...forms import BaseDaemonForm
-from ..base import UpdateOrDeleteView
 from .DaemonFilterView import DaemonFilterView
 
 

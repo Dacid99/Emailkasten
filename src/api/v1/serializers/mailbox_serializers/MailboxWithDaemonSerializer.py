@@ -20,7 +20,8 @@
 
 from __future__ import annotations
 
-from ..daemon_serializers import BaseDaemonSerializer
+from api.v1.serializers.daemon_serializers import BaseDaemonSerializer
+
 from .BaseMailboxSerializer import BaseMailboxSerializer
 
 

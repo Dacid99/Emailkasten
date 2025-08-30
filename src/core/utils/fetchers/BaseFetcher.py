@@ -22,16 +22,16 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Self, override
 
-from ...constants import EmailFetchingCriterionChoices
+from core.constants import EmailFetchingCriterionChoices
 
 
 if TYPE_CHECKING:
     from types import TracebackType
 
-    from ...models.Account import Account
-    from ...models.Mailbox import Mailbox
+    from core.models.Account import Account
+    from core.models.Mailbox import Mailbox
 
 
 class BaseFetcher(ABC):
@@ -137,7 +137,7 @@ class BaseFetcher(ABC):
         """
         return f"{self.__class__.__name__} for {self.account}"
 
-    def __enter__(self) -> BaseFetcher:
+    def __enter__(self) -> Self:
         """Framework method for use of class in 'with' statement, creates an instance.
 
         Returns:

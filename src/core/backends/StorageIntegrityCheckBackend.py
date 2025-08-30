@@ -20,7 +20,7 @@
 
 from health_check.backends import BaseHealthCheckBackend, HealthCheckException
 
-from ..models import StorageShard
+from core.models import StorageShard
 
 
 class StorageIntegrityCheckBackend(BaseHealthCheckBackend):

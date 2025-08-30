@@ -35,14 +35,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ChoiceField
 
+from api.v1.filters import MailboxFilterSet
 from api.v1.mixins import ToggleFavoriteMixin
+from api.v1.serializers import MailboxWithDaemonSerializer
 from api.v1.serializers.UploadEmailSerializer import UploadEmailSerializer
 from core.constants import EmailFetchingCriterionChoices, SupportedEmailDownloadFormats
 from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
-
-from ..filters import MailboxFilterSet
-from ..serializers import MailboxWithDaemonSerializer
 
 
 if TYPE_CHECKING:

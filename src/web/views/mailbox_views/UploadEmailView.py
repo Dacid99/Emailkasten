@@ -27,8 +27,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import FormView
 
 from core.models import Mailbox
-
-from ...forms.UploadEmailForm import UploadEmailForm
+from web.forms.UploadEmailForm import UploadEmailForm
 
 
 class UploadEmailView(LoginRequiredMixin, DetailView, FormView):

@@ -27,7 +27,7 @@ from django.core.files.storage import default_storage
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
-from ..models import Email
+from core.models import Email
 
 
 logger = logging.getLogger(__name__)

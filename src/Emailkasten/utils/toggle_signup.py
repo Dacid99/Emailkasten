@@ -26,7 +26,7 @@ from allauth.account.adapter import DefaultAccountAdapter
 from django.conf import settings
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 
-from ..utils.workarounds import get_config
+from Emailkasten.utils.workarounds import get_config
 
 
 if TYPE_CHECKING:

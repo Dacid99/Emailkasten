@@ -30,23 +30,23 @@ from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from core.constants import EmailProtocolChoices
 from core.mixins.FavoriteMixin import FavoriteMixin
-
-from ..constants import EmailProtocolChoices
-from ..mixins.URLMixin import URLMixin
-from ..utils.fetchers import (
+from core.mixins.URLMixin import URLMixin
+from core.utils.fetchers import (
     ExchangeFetcher,
     IMAP4_SSL_Fetcher,
     IMAP4Fetcher,
     POP3_SSL_Fetcher,
     POP3Fetcher,
 )
-from ..utils.fetchers.exceptions import MailAccountError
+from core.utils.fetchers.exceptions import MailAccountError
+
 from .Mailbox import Mailbox
 
 
 if TYPE_CHECKING:
-    from ..utils.fetchers import BaseFetcher
+    from core.utils.fetchers import BaseFetcher
 
 
 logger = logging.getLogger(__name__)

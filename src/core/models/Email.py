@@ -40,16 +40,20 @@ from django.template import engines
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 
-from Emailkasten.utils.workarounds import get_config
-
-from ..constants import HeaderFields, SupportedEmailDownloadFormats, file_format_parsers
-from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
-from ..utils.mail_parsing import (
+from core.constants import (
+    HeaderFields,
+    SupportedEmailDownloadFormats,
+    file_format_parsers,
+)
+from core.mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
+from core.utils.mail_parsing import (
     get_bodytexts,
     get_header,
     is_x_spam,
     parse_datetime_header,
 )
+from Emailkasten.utils.workarounds import get_config
+
 from .Attachment import Attachment
 from .EmailCorrespondent import EmailCorrespondent
 
