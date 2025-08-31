@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
 
 import pytest
 from django.db import IntegrityError
@@ -41,18 +40,14 @@ from core.utils.fetchers import (
 from core.utils.fetchers.exceptions import MailAccountError
 
 
-if TYPE_CHECKING:
-    from unittest.mock import MagicMock
-
-
 @pytest.fixture(autouse=True)
-def mock_logger(mocker) -> MagicMock:
+def mock_logger(mocker):
     """The mocked :attr:`core.models.Account.logger`."""
     return mocker.patch("core.models.Account.logger", autospec=True)
 
 
 @pytest.fixture
-def mock_fetcher(mocker, faker) -> MagicMock:
+def mock_fetcher(mocker, faker):
     """A mock :class:`core.utils.fetchers.BaseFetcher.BaseFetcher` instance."""
     mock_fetcher = mocker.MagicMock(spec=BaseFetcher)
     mock_fetcher.__enter__.return_value = mock_fetcher
@@ -64,7 +59,7 @@ def mock_fetcher(mocker, faker) -> MagicMock:
 
 
 @pytest.fixture
-def mock_Account_get_fetcher(mocker, mock_fetcher) -> MagicMock:
+def mock_Account_get_fetcher(mocker, mock_fetcher):
     """Mocked :func:`core.models.Account.Account.get_fetcher` method."""
     return mocker.patch(
         "core.models.Account.Account.get_fetcher",

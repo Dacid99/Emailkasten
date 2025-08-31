@@ -20,8 +20,6 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 from django.urls import reverse
 from rest_framework import status
@@ -29,14 +27,8 @@ from rest_framework import status
 from api.v1.views.DatabaseStatsView import DatabaseStatsView
 
 
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from rest_framework.viewsets import ModelViewSet
-
-
 @pytest.fixture
-def url() -> Callable[[type[ModelViewSet]], str]:
+def url():
     """Callable getting the viewsets url for list actions."""
     return lambda view_class: reverse(f"api:v1:{view_class.NAME}")
 

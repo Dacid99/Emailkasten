@@ -28,20 +28,20 @@ from rest_framework.test import APIClient
 
 
 @pytest.fixture
-def noauth_api_client() -> APIClient:
+def noauth_api_client():
     """An unauthenticated :class:`rest_framework.test.APIClient` instance."""
     return APIClient()
 
 
 @pytest.fixture
-def other_api_client(noauth_api_client, other_user) -> APIClient:
+def other_api_client(noauth_api_client, other_user):
     """A :class:`rest_framework.test.APIClient` instance that is authenticated as :attr:`other_user`."""
     noauth_api_client.force_authenticate(user=other_user)
     return noauth_api_client
 
 
 @pytest.fixture
-def owner_api_client(noauth_api_client, owner_user) -> APIClient:
+def owner_api_client(noauth_api_client, owner_user):
     """A :class:`rest_framework.test.APIClient` instance that is authenticated as :attr:`owner_user`."""
     noauth_api_client.force_authenticate(user=owner_user)
     return noauth_api_client

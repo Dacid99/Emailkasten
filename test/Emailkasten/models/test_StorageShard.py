@@ -21,16 +21,11 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING
 
 import pytest
 from health_check.storage.backends import DefaultFileStorageHealthCheck
 
 from Emailkasten.models import StorageShard
-
-
-if TYPE_CHECKING:
-    from unittest.mock import MagicMock
 
 
 @pytest.fixture(autouse=True)
@@ -39,7 +34,7 @@ def always_fake_fs(fake_fs):
 
 
 @pytest.fixture(autouse=True)
-def mock_logger(mocker) -> MagicMock:
+def mock_logger(mocker):
     """The mocked :attr:`core.models.Storage.logger`."""
     return mocker.patch("Emailkasten.models.StorageShard.logger", autospec=True)
 

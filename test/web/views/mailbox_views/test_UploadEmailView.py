@@ -30,7 +30,7 @@ from web.views import UploadEmailView
 
 
 @pytest.fixture
-def email_upload_payload(fake_file) -> dict:
+def email_upload_payload(fake_file):
     """Random email file upload payload."""
     return {"file_format": "eml", "file": fake_file}
 

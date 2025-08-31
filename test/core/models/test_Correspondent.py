@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
 
 import pytest
 import vobject
@@ -32,10 +31,6 @@ from model_bakery import baker
 from core.models import Correspondent
 
 
-if TYPE_CHECKING:
-    from unittest.mock import MagicMock
-
-
 @pytest.fixture
 def fake_correspondent_tuple(faker):
     """Returns a fake correspondent tuple."""
@@ -43,7 +38,7 @@ def fake_correspondent_tuple(faker):
 
 
 @pytest.fixture(autouse=True)
-def mock_logger(mocker) -> MagicMock:
+def mock_logger(mocker):
     """The mocked :attr:`core.models.Correspondent.logger`."""
     return mocker.patch("core.models.Correspondent.logger", autospec=True)
 

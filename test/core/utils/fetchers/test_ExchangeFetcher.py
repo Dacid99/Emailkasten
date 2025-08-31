@@ -37,7 +37,7 @@ from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 
 
 @pytest.fixture
-def exchange_mailbox(fake_mailbox) -> Mailbox:
+def exchange_mailbox(fake_mailbox):
     """Extends :func:`test.conftest.fake_mailbox` to have Exchange as protocol."""
     fake_mailbox.account.protocol = EmailProtocolChoices.EXCHANGE
     fake_mailbox.account.save(update_fields=["protocol"])

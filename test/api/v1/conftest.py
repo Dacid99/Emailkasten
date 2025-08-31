@@ -23,20 +23,11 @@ The serializer tests are made against a mocked consistent database with an insta
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from django_celery_beat.models import IntervalSchedule
 from model_bakery import baker
-
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from django.db.models import Model
-    from rest_framework.viewsets import ModelViewSet
 
 
 @pytest.fixture
@@ -49,13 +40,13 @@ def daemon_with_interval_payload(daemon_payload):
 
 
 @pytest.fixture(scope="package")
-def list_url() -> Callable[[type[ModelViewSet]], str]:
+def list_url():
     """Callable getting the viewsets url for list actions."""
     return lambda viewset_class: reverse(f"api:v1:{viewset_class.BASENAME}-list")
 
 
 @pytest.fixture(scope="package")
-def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
+def detail_url():
     """Callable getting the viewsets url for detail actions."""
     return lambda viewset_class, instance: reverse(
         f"api:v1:{viewset_class.BASENAME}-detail", args=[instance.id]
@@ -63,7 +54,7 @@ def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
 
 
 @pytest.fixture(scope="package")
-def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
+def custom_list_action_url():
     """Callable getting the viewsets url for custom list actions."""
     return lambda viewset_class, custom_list_action_url_name: (
         reverse(f"api:v1:{viewset_class.BASENAME}-{custom_list_action_url_name}")
@@ -71,7 +62,7 @@ def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
 
 
 @pytest.fixture(scope="package")
-def custom_detail_action_url() -> Callable[[type[ModelViewSet], str, Model], str]:
+def custom_detail_action_url():
     """Callable getting the viewsets url for custom detail actions."""
     return lambda viewset_class, custom_detail_action_url_name, instance: (
         reverse(

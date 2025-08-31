@@ -23,48 +23,38 @@ The viewset tests are made against a mocked consistent database with an instance
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 from django.urls import reverse
 
 
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from django.db.models import Model
-    from django.test.client import Client
-    from rest_framework.viewsets import ModelViewSet
-
-
 @pytest.fixture
-def other_client(client, other_user) -> Client:
+def other_client(client, other_user):
     """A :class:`django.test.client.Client` instance that is authenticated as :attr:`other_user`."""
     client.force_login(user=other_user)
     return client
 
 
 @pytest.fixture
-def owner_client(client, owner_user) -> Client:
+def owner_client(client, owner_user):
     """A :class:`django.test.client.Client` instance that is authenticated as :attr:`owner_user`."""
     client.force_login(user=owner_user)
     return client
 
 
 @pytest.fixture(scope="package")
-def login_url() -> str:
+def login_url():
     """The login url."""
     return reverse("account_login")
 
 
 @pytest.fixture(scope="package")
-def list_url() -> Callable[[type[ModelViewSet]], str]:
+def list_url():
     """Callable getting the viewsets url for list actions."""
     return lambda view_class: reverse(f"web:{view_class.URL_NAME}")
 
 
 @pytest.fixture(scope="package")
-def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
+def detail_url():
     """Callable getting the viewsets url for detail actions."""
     return lambda view_class, instance: reverse(
         f"web:{view_class.URL_NAME}", args=[instance.id]
@@ -72,7 +62,7 @@ def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
 
 
 @pytest.fixture(scope="package")
-def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
+def custom_list_action_url():
     """Callable getting the viewsets url for custom list actions."""
     return lambda view_class, custom_list_action_url_name: (
         reverse(f"web:{view_class.URL_NAME}-{custom_list_action_url_name}")
@@ -80,7 +70,7 @@ def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
 
 
 @pytest.fixture(scope="package")
-def custom_detail_action_url() -> Callable[[type[ModelViewSet], str, Model], str]:
+def custom_detail_action_url():
     """Callable getting the viewsets url for custom detail actions."""
     return lambda view_class, custom_detail_action_url_name, instance: (
         reverse(

@@ -20,20 +20,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 from django.urls import reverse
 
 
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from rest_framework.viewsets import ModelViewSet
-
-
 @pytest.fixture(scope="package")
-def date_url() -> Callable[[type[ModelViewSet]], str]:
+def date_url():
     """Callable getting the view url for date based views."""
     return lambda view_class, date_args=[]: reverse(
         f"web:{view_class.URL_NAME}", args=date_args

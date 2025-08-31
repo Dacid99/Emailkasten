@@ -22,18 +22,18 @@ import pytest
 from model_bakery import baker
 
 from core.constants import EmailFetchingCriterionChoices
-from core.models import Account, Daemon, Mailbox
+from core.models import Daemon, Mailbox
 
 
 @pytest.fixture
-def account_with_mailboxes(fake_account, fake_mailbox) -> Account:
+def account_with_mailboxes(fake_account, fake_mailbox):
     """Fixture adding a mailbox to `account`."""
     baker.make(Mailbox, account=fake_account)
     return fake_account
 
 
 @pytest.fixture
-def mailbox_with_daemons(faker, fake_mailbox, fake_daemon) -> Mailbox:
+def mailbox_with_daemons(faker, fake_mailbox, fake_daemon):
     """Fixture adding a daemon to `mailbox`."""
     baker.make(
         Daemon,

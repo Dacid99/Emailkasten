@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
 
 import pytest
 from django.core.management import call_command
@@ -40,11 +39,7 @@ from core.models import (
 )
 
 
-if TYPE_CHECKING:
-    from django.db.models import QuerySet
-
-
-def datetime_quarter(datetime_object: datetime.datetime) -> int:
+def datetime_quarter(datetime_object: datetime.datetime):
     """Calculate the quarter of the year for a given datetime.
 
     Args:
@@ -354,7 +349,7 @@ def unblocked_db(django_db_setup, django_db_blocker):
 
 
 @pytest.fixture(scope="package")
-def account_queryset(unblocked_db) -> QuerySet[Account, Account]:
+def account_queryset(unblocked_db):
     """Fixture adding accounts with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -372,7 +367,7 @@ def account_queryset(unblocked_db) -> QuerySet[Account, Account]:
 
 
 @pytest.fixture(scope="package")
-def mailbox_queryset(unblocked_db, account_queryset) -> QuerySet[Mailbox, Mailbox]:
+def mailbox_queryset(unblocked_db, account_queryset):
     """Fixture adding mailboxes with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -390,7 +385,7 @@ def mailbox_queryset(unblocked_db, account_queryset) -> QuerySet[Mailbox, Mailbo
 
 
 @pytest.fixture(scope="package")
-def daemon_queryset(unblocked_db, mailbox_queryset) -> QuerySet[Daemon, Daemon]:
+def daemon_queryset(unblocked_db, mailbox_queryset):
     """Fixture adding daemons with the test attributes to the database and returns them in a queryset."""
     for number, bool_test_item in enumerate(BOOL_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -420,7 +415,7 @@ def daemon_queryset(unblocked_db, mailbox_queryset) -> QuerySet[Daemon, Daemon]:
 @pytest.fixture(scope="package")
 def correspondent_queryset(
     unblocked_db,
-) -> QuerySet[Correspondent, Correspondent]:
+):
     """Fixture adding correspondents with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -448,7 +443,7 @@ def email_queryset(
     unblocked_db,
     mailbox_queryset,
     correspondent_queryset,
-) -> QuerySet[Email, Email]:
+):
     """Fixture adding emails with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -474,9 +469,7 @@ def email_queryset(
 
 
 @pytest.fixture(scope="package")
-def attachment_queryset(
-    unblocked_db, email_queryset
-) -> QuerySet[Attachment, Attachment]:
+def attachment_queryset(unblocked_db, email_queryset):
     """Fixture adding attachments with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):

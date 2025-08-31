@@ -46,7 +46,6 @@ import os
 from datetime import UTC, datetime, timedelta, timezone
 from io import BytesIO
 from tempfile import gettempdir
-from typing import TYPE_CHECKING
 
 import pytest
 from django.core.files.storage import default_storage
@@ -71,15 +70,7 @@ from core.models import (
 from Emailkasten.middleware.TimezoneMiddleware import TimezoneMiddleware
 
 
-if TYPE_CHECKING:
-    from collections.abc import Generator
-    from typing import Any
-
-    from django.contrib.auth.models import AbstractUser
-    from pyfakefs.fake_filesystem import FakeFilesystem
-
-
-def pytest_configure(config) -> None:
+def pytest_configure(config):
     """Configures the path for pytest to be the directory of this file for consistent relative paths."""
     pytest_ini_dir = os.path.dirname(os.path.abspath(config.inifile))
     os.chdir(pytest_ini_dir)
@@ -298,13 +289,13 @@ TEST_EMAIL_PARAMETERS = [
 
 
 @pytest.fixture
-def fake_file_bytes(faker) -> bytes:
+def fake_file_bytes(faker):
     """Random bytes to act as file content."""
     return faker.text().encode()
 
 
 @pytest.fixture
-def fake_file(fake_file_bytes) -> BytesIO:
+def fake_file(fake_file_bytes):
     """A filestream with random content."""
     return BytesIO(fake_file_bytes)
 
@@ -333,7 +324,7 @@ def fake_bad_timezone_client(client):
 
 
 @pytest.fixture
-def fake_fs(settings) -> Generator[FakeFilesystem]:
+def fake_fs(settings):
     """A mock Linux filesystem for realistic testing.
 
     Contains a directory at the STORAGE_PATH setting to allow for testing without patching the storage backend.
@@ -353,19 +344,19 @@ def fake_fs(settings) -> Generator[FakeFilesystem]:
 
 
 @pytest.fixture
-def owner_user(django_user_model) -> AbstractUser:
+def owner_user(django_user_model):
     """A user that owns the data."""
     return baker.make(django_user_model)
 
 
 @pytest.fixture
-def other_user(django_user_model) -> AbstractUser:
+def other_user(django_user_model):
     """A user that is not the owner of the data."""
     return baker.make(django_user_model)
 
 
 @pytest.fixture
-def fake_account(owner_user) -> Account:
+def fake_account(owner_user):
     """An :class:`core.models.Account` owned by :attr:`owner_user`.
 
     Note:
@@ -377,13 +368,13 @@ def fake_account(owner_user) -> Account:
 
 
 @pytest.fixture
-def fake_mailbox(fake_account) -> Mailbox:
+def fake_mailbox(fake_account):
     """An :class:`core.models.Mailbox` owned by :attr:`owner_user`."""
     return baker.make(Mailbox, account=fake_account)
 
 
 @pytest.fixture
-def fake_daemon(fake_mailbox) -> Daemon:
+def fake_daemon(fake_mailbox):
     """An :class:`core.models.Daemon` owned by :attr:`owner_user`."""
     return baker.make(
         Daemon,
@@ -392,19 +383,19 @@ def fake_daemon(fake_mailbox) -> Daemon:
 
 
 @pytest.fixture
-def fake_email(fake_mailbox) -> Email:
+def fake_email(fake_mailbox):
     """An :class:`core.models.Email` owned by :attr:`owner_user`."""
     return baker.make(Email, mailbox=fake_mailbox)
 
 
 @pytest.fixture
-def fake_correspondent(fake_email) -> Correspondent:
+def fake_correspondent(fake_email):
     """An :class:`core.models.Correspondent` owned by :attr:`owner_user`."""
     return baker.make(Correspondent, user=fake_email.mailbox.account.user)
 
 
 @pytest.fixture
-def fake_email_with_file(faker, fake_fs, fake_mailbox) -> Email:
+def fake_email_with_file(faker, fake_fs, fake_mailbox):
     """An :class:`core.models.Email` owned by :attr:`owner_user`."""
     with Pause(fake_fs), open(TEST_EMAIL_PARAMETERS[0][0], "rb") as test_email:
         test_eml_bytes = test_email.read()
@@ -440,7 +431,7 @@ def fake_email_conversation(fake_email):
 
 
 @pytest.fixture
-def fake_emailcorrespondent(fake_correspondent, fake_email) -> EmailCorrespondent:
+def fake_emailcorrespondent(fake_correspondent, fake_email):
     """Fixture creating an :class:`core.models.EmailCorrespondent`."""
     return baker.make(
         EmailCorrespondent,
@@ -451,7 +442,7 @@ def fake_emailcorrespondent(fake_correspondent, fake_email) -> EmailCorresponden
 
 
 @pytest.fixture
-def fake_attachment(faker, fake_email) -> Attachment:
+def fake_attachment(faker, fake_email):
     """An :class:`core.models.Attachment` owned by :attr:`owner_user`."""
     return baker.make(
         Attachment,
@@ -462,7 +453,7 @@ def fake_attachment(faker, fake_email) -> Attachment:
 
 
 @pytest.fixture
-def fake_attachment_with_file(faker, fake_file, fake_fs, fake_email) -> Attachment:
+def fake_attachment_with_file(faker, fake_file, fake_fs, fake_email):
     """An :class:`core.models.Attachment` owned by :attr:`owner_user`."""
     return baker.make(
         Attachment,
@@ -472,7 +463,7 @@ def fake_attachment_with_file(faker, fake_file, fake_fs, fake_email) -> Attachme
 
 
 @pytest.fixture
-def fake_other_account(other_user) -> Account:
+def fake_other_account(other_user):
     """An :class:`core.models.Account` owned by :attr:`other_user`.
 
     Note:
@@ -485,13 +476,13 @@ def fake_other_account(other_user) -> Account:
 
 
 @pytest.fixture
-def fake_other_mailbox(fake_other_account) -> Mailbox:
+def fake_other_mailbox(fake_other_account):
     """An :class:`core.models.Mailbox` owned by :attr:`other_user`."""
     return baker.make(Mailbox, account=fake_other_account)
 
 
 @pytest.fixture
-def fake_other_daemon(faker, fake_other_mailbox) -> Daemon:
+def fake_other_daemon(faker, fake_other_mailbox):
     """An :class:`core.models.Daemon` owned by :attr:`other_user`."""
     return baker.make(
         Daemon,
@@ -500,19 +491,19 @@ def fake_other_daemon(faker, fake_other_mailbox) -> Daemon:
 
 
 @pytest.fixture
-def fake_other_email(faker, fake_other_mailbox) -> Email:
+def fake_other_email(faker, fake_other_mailbox):
     """An :class:`core.models.Email` owned by :attr:`other_user`."""
     return baker.make(Email, mailbox=fake_other_mailbox)
 
 
 @pytest.fixture
-def fake_other_correspondent(fake_other_email) -> Correspondent:
+def fake_other_correspondent(fake_other_email):
     """An :class:`core.models.Correspondent` owned by :attr:`other_user`."""
     return baker.make(Correspondent, user=fake_other_email.mailbox.account.user)
 
 
 @pytest.fixture
-def fake_other_email_with_file(faker, fake_fs, fake_other_mailbox) -> Email:
+def fake_other_email_with_file(faker, fake_fs, fake_other_mailbox):
     """An :class:`core.models.Email` owned by :attr:`other_user`."""
     with Pause(fake_fs), open(TEST_EMAIL_PARAMETERS[0][0], "rb") as test_email:
         test_eml_bytes = test_email.read()
@@ -526,9 +517,7 @@ def fake_other_email_with_file(faker, fake_fs, fake_other_mailbox) -> Email:
 
 
 @pytest.fixture
-def fake_other_emailcorrespondent(
-    fake_other_correspondent, fake_other_email
-) -> EmailCorrespondent:
+def fake_other_emailcorrespondent(fake_other_correspondent, fake_other_email):
     """Fixture creating an :class:`core.models.EmailCorrespondent`."""
     return baker.make(
         EmailCorrespondent,
@@ -539,15 +528,13 @@ def fake_other_emailcorrespondent(
 
 
 @pytest.fixture
-def fake_other_attachment(fake_other_email) -> Attachment:
+def fake_other_attachment(fake_other_email):
     """An :class:`core.models.Attachment` owned by :attr:`other_user`."""
     return baker.make(Attachment, email=fake_other_email)
 
 
 @pytest.fixture
-def fake_other_attachment_with_file(
-    faker, fake_file, fake_fs, fake_other_email
-) -> Attachment:
+def fake_other_attachment_with_file(faker, fake_file, fake_fs, fake_other_email):
     """An :class:`core.models.Attachment` owned by :attr:`other_user`."""
     return baker.make(
         Attachment,
@@ -557,7 +544,7 @@ def fake_other_attachment_with_file(
 
 
 @pytest.fixture
-def account_payload(faker, owner_user) -> dict[str, Any]:
+def account_payload(faker, owner_user):
     """Fixture creating clean :class:`core.models.Account` payload with data deviating from the defaults."""
     account_data = baker.prepare(
         Account,
@@ -574,7 +561,7 @@ def account_payload(faker, owner_user) -> dict[str, Any]:
 
 
 @pytest.fixture
-def attachment_payload(faker, fake_email) -> dict[str, Any]:
+def attachment_payload(faker, fake_email):
     """Fixture creating clean :class:`core.models.Attachment` payload with data deviating from the defaults."""
     attachment_data = baker.prepare(
         Attachment,
@@ -591,7 +578,7 @@ def attachment_payload(faker, fake_email) -> dict[str, Any]:
 
 
 @pytest.fixture
-def correspondent_payload(faker, fake_email) -> dict[str, Any]:
+def correspondent_payload(faker, fake_email):
     """Fixture creating clean :class:`core.models.Correspondent` payload with data deviating from the defaults."""
     correspondent_data = baker.prepare(
         Correspondent,
@@ -613,7 +600,7 @@ def correspondent_payload(faker, fake_email) -> dict[str, Any]:
 
 
 @pytest.fixture
-def daemon_payload(faker, fake_mailbox, fake_daemon) -> dict[str, Any]:
+def daemon_payload(faker, fake_mailbox, fake_daemon):
     """Fixture creating clean :class:`core.models.Daemon` payload with data deviating from the defaults."""
     # no cryptography going on here
     fetching_choices = list(fake_mailbox.available_fetching_criteria)
@@ -639,7 +626,7 @@ def daemon_with_interval_payload(daemon_payload):
 
 
 @pytest.fixture
-def email_payload(faker, fake_mailbox) -> dict[str, Any]:
+def email_payload(faker, fake_mailbox):
     """Fixture creating clean :class:`core.models.Email` payload with data deviating from the defaults."""
     email_data = baker.prepare(
         Email,
@@ -656,7 +643,7 @@ def email_payload(faker, fake_mailbox) -> dict[str, Any]:
 
 
 @pytest.fixture
-def mailbox_payload(fake_account) -> dict[str, Any]:
+def mailbox_payload(fake_account):
     """Fixture creating clean :class:`core.models.Mailbox` payload with data deviating from the defaults."""
     mailbox_data = baker.prepare(
         Mailbox,

@@ -27,7 +27,6 @@ import re
 import shutil
 from io import BytesIO
 from tempfile import NamedTemporaryFile, TemporaryDirectory, gettempdir
-from typing import TYPE_CHECKING
 from zipfile import ZipFile
 
 import pytest
@@ -56,12 +55,8 @@ from test.conftest import TEST_EMAIL_PARAMETERS
 from .test_Account import mock_Account_get_fetcher, mock_fetcher
 
 
-if TYPE_CHECKING:
-    from unittest.mock import MagicMock
-
-
 @pytest.fixture(autouse=True)
-def mock_logger(mocker) -> MagicMock:
+def mock_logger(mocker):
     """The mocked :attr:`core.models.Mailbox.logger`."""
     return mocker.patch("core.models.Mailbox.logger", autospec=True)
 
