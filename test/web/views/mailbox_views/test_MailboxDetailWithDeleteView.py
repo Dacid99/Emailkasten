@@ -185,12 +185,11 @@ def test_post_test_success_auth_owner(
 
 @pytest.mark.django_db
 def test_post_test_failure_auth_owner(
-    faker, fake_mailbox, owner_client, detail_url, mock_Mailbox_test
+    fake_error_message, fake_mailbox, owner_client, detail_url, mock_Mailbox_test
 ):
     """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
     in case of failure.
     """
-    fake_error_message = faker.sentence()
     mock_Mailbox_test.side_effect = FetcherError(fake_error_message)
 
     response = owner_client.post(
@@ -349,12 +348,11 @@ def test_post_fetch_bad_criterion_auth_owner(
 
 @pytest.mark.django_db
 def test_post_fetch_failure_auth_owner(
-    faker, fake_mailbox, owner_client, detail_url, mock_Mailbox_fetch
+    fake_error_message, fake_mailbox, owner_client, detail_url, mock_Mailbox_fetch
 ):
     """Tests :class:`web.views.MailboxDetailWithDeleteView` with the authenticated owner user client
     in case of failure.
     """
-    fake_error_message = faker.sentence()
     mock_Mailbox_fetch.side_effect = FetcherError(fake_error_message)
 
     response = owner_client.post(

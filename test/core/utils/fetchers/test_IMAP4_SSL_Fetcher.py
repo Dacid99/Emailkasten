@@ -96,7 +96,7 @@ def test_IMAP4Fetcher_connect_to_host_success(
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_connect_to_host_exception(
-    faker,
+    fake_error_message,
     imap_ssl_mailbox,
     mock_ssl_create_default_context,
     mock_logger,
@@ -105,7 +105,6 @@ def test_IMAP4Fetcher_connect_to_host_exception(
     """Tests :func:`core.utils.fetchers.IMAP4_SSL_Fetcher.connect_to_host`
     in case of an error.
     """
-    fake_error_message = faker.sentence()
     mock_IMAP4_SSL.side_effect = AssertionError(fake_error_message)
 
     with pytest.raises(

@@ -187,12 +187,11 @@ def test_ExchangeFetcher___init___success(
 
 @pytest.mark.django_db
 def test_ExchangeFetcher___init___failure(
-    mocker, faker, exchange_mailbox, mock_logger, mock_ExchangeAccount
+    mocker, fake_error_message, exchange_mailbox, mock_logger, mock_ExchangeAccount
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.__init__`
     in case of failure.
     """
-    fake_error_message = faker.sentence()
     type(mock_ExchangeAccount.return_value).msg_folder_root = mocker.PropertyMock(
         side_effect=exchangelib.errors.EWSError(fake_error_message)
     )
@@ -384,12 +383,11 @@ def test_ExchangeFetcher_test_account_success(
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_account_ewserror(
-    faker, exchange_mailbox, mock_logger, mock_ExchangeAccount
+    fake_error_message, exchange_mailbox, mock_logger, mock_ExchangeAccount
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
     in case of an EWSError with no mailbox given.
     """
-    fake_error_message = faker.sentence()
     mock_ExchangeAccount.return_value.msg_folder_root.refresh.side_effect = (
         exchangelib.errors.EWSError(fake_error_message)
     )
@@ -484,7 +482,7 @@ def test_ExchangeFetcher_test_mailbox_wrong_mailbox(
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_mailbox_ewserror(
-    faker,
+    fake_error_message,
     exchange_mailbox,
     mock_logger,
     mock_msg_folder_root,
@@ -492,7 +490,6 @@ def test_ExchangeFetcher_test_mailbox_ewserror(
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
     in case of an EWSError with a given mailbox.
     """
-    fake_error_message = faker.sentence()
     mock_msg_folder_root.__truediv__.return_value.refresh.side_effect = (
         exchangelib.errors.EWSError(fake_error_message)
     )
@@ -508,7 +505,7 @@ def test_ExchangeFetcher_test_mailbox_ewserror(
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_mailbox_other_exception(
-    faker,
+    fake_error_message,
     exchange_mailbox,
     mock_logger,
     mock_msg_folder_root,
@@ -516,7 +513,6 @@ def test_ExchangeFetcher_test_mailbox_other_exception(
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
     in case of an unexpected error with a given mailbox.
     """
-    fake_error_message = faker.sentence()
     mock_msg_folder_root.__truediv__.return_value.refresh.side_effect = AssertionError(
         fake_error_message
     )
@@ -611,12 +607,11 @@ def test_ExchangeFetcher_fetch_emails_wrong_mailbox(exchange_mailbox, mock_logge
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails_ewserror_query(
-    faker, exchange_mailbox, mock_logger, mock_Folder
+    fake_error_message, exchange_mailbox, mock_logger, mock_Folder
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_emails`
     in case of an EWSError.
     """
-    fake_error_message = faker.sentence()
     mock_Folder.all.side_effect = exchangelib.errors.EWSError(fake_error_message)
 
     with pytest.raises(MailboxError, match=f"EWSError.*?{fake_error_message}"):
@@ -628,12 +623,11 @@ def test_ExchangeFetcher_fetch_emails_ewserror_query(
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails_other_exception_query(
-    faker, exchange_mailbox, mock_logger, mock_Folder
+    fake_error_message, exchange_mailbox, mock_logger, mock_Folder
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_emails`
     in case of an unexpected error.
     """
-    fake_error_message = faker.sentence()
     mock_Folder.all.side_effect = AssertionError(fake_error_message)
 
     with pytest.raises(AssertionError, match=fake_error_message):
@@ -667,12 +661,11 @@ def test_ExchangeFetcher_fetch_mailboxes_success(
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_mailboxes_ewserror_walk(
-    faker, exchange_mailbox, mock_logger, mock_msg_folder_root
+    fake_error_message, exchange_mailbox, mock_logger, mock_msg_folder_root
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_mailboxes`
     in case of an EWSError during walking of the folder structure.
     """
-    fake_error_message = faker.sentence()
     mock_msg_folder_root.walk.side_effect = exchangelib.errors.EWSError(
         fake_error_message
     )
@@ -687,12 +680,11 @@ def test_ExchangeFetcher_fetch_mailboxes_ewserror_walk(
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_mailboxes_other_exception_walk(
-    faker, exchange_mailbox, mock_logger, mock_msg_folder_root
+    fake_error_message, exchange_mailbox, mock_logger, mock_msg_folder_root
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_mailboxes`
     in case of an unexpected error during walking of the folder structure.
     """
-    fake_error_message = faker.sentence()
     mock_msg_folder_root.walk.side_effect = AssertionError(fake_error_message)
 
     with pytest.raises(AssertionError, match=fake_error_message):

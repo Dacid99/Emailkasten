@@ -174,12 +174,11 @@ def test_post_test_success_auth_owner(
 
 @pytest.mark.django_db
 def test_post_test_failure_auth_owner(
-    faker, fake_daemon, owner_client, detail_url, mock_Daemon_test
+    fake_error_message, fake_daemon, owner_client, detail_url, mock_Daemon_test
 ):
     """Tests :class:`web.views.DaemonDetailWithDeleteView` with the authenticated owner user client
     in case of failure.
     """
-    fake_error_message = faker.sentence()
     mock_Daemon_test.side_effect = Exception(fake_error_message)
 
     response = owner_client.post(

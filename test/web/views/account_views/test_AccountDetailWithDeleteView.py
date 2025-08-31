@@ -182,10 +182,9 @@ def test_post_test_success_auth_owner(
 
 @pytest.mark.django_db
 def test_post_test_failure_auth_owner(
-    faker, fake_account, owner_client, detail_url, mock_Account_test
+    fake_error_message, fake_account, owner_client, detail_url, mock_Account_test
 ):
     """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client."""
-    fake_error_message = faker.sentence()
     mock_Account_test.side_effect = MailAccountError(Exception(fake_error_message))
 
     response = owner_client.post(
@@ -286,12 +285,15 @@ def test_post_update_mailboxes_success_auth_owner(
 
 @pytest.mark.django_db
 def test_post_update_mailboxes_failure_auth_owner(
-    faker, fake_account, owner_client, detail_url, mock_Account_update_mailboxes
+    fake_error_message,
+    fake_account,
+    owner_client,
+    detail_url,
+    mock_Account_update_mailboxes,
 ):
     """Tests :class:`web.views.AccountDetailWithDeleteView` with the authenticated owner user client
     in case of failure.
     """
-    fake_error_message = faker.sentence()
     mock_Account_update_mailboxes.side_effect = MailAccountError(
         Exception(fake_error_message)
     )

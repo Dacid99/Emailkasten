@@ -301,6 +301,12 @@ def fake_file(fake_file_bytes):
 
 
 @pytest.fixture
+def fake_error_message(faker):
+    """A random error message."""
+    return faker.sentence()
+
+
+@pytest.fixture
 def fake_timezone(faker):
     """A random timezone."""
     return faker.timezone()

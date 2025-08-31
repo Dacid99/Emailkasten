@@ -79,11 +79,12 @@ def test_fetch_emails_task_bad_daemon_uuid(faker, fake_daemon):
 
 
 @pytest.mark.django_db
-def test_fetch_emails_task_MailboxError(faker, fake_daemon, mock_test_email_fetcher):
+def test_fetch_emails_task_MailboxError(
+    fake_error_message, fake_daemon, mock_test_email_fetcher
+):
     """Tests :func:`core.tasks.fetch_emails`
     in case of an MailboxError.
     """
-    fake_error_message = faker.sentence()
     mock_test_email_fetcher.fetch_emails.side_effect = MailboxError(
         Exception(fake_error_message)
     )
@@ -101,12 +102,11 @@ def test_fetch_emails_task_MailboxError(faker, fake_daemon, mock_test_email_fetc
 
 @pytest.mark.django_db
 def test_fetch_emails_task_MailAccountError(
-    faker, fake_daemon, mock_test_email_fetcher
+    fake_error_message, fake_daemon, mock_test_email_fetcher
 ):
     """Tests :func:`core.tasks.fetch_emails`
     in case of an MailAccountError.
     """
-    fake_error_message = faker.sentence()
     mock_test_email_fetcher.fetch_emails.side_effect = MailAccountError(
         Exception(fake_error_message)
     )
@@ -125,12 +125,11 @@ def test_fetch_emails_task_MailAccountError(
 
 @pytest.mark.django_db
 def test_fetch_emails_task_unexpected_error(
-    faker, fake_daemon, mock_test_email_fetcher
+    fake_error_message, fake_daemon, mock_test_email_fetcher
 ):
     """Tests :func:`core.tasks.fetch_emails`
     in case of an unexpected error.
     """
-    fake_error_message = faker.sentence()
     mock_test_email_fetcher.fetch_emails.side_effect = AssertionError(
         fake_error_message
     )
@@ -148,11 +147,12 @@ def test_fetch_emails_task_unexpected_error(
 
 
 @pytest.mark.django_db
-def test_fetch_emails_task_ValueError(faker, fake_daemon, mock_test_email_fetcher):
+def test_fetch_emails_task_ValueError(
+    fake_error_message, fake_daemon, mock_test_email_fetcher
+):
     """Tests :func:`core.tasks.fetch_emails`
     in case of a ValueError.
     """
-    fake_error_message = faker.sentence()
     mock_test_email_fetcher.fetch_emails.side_effect = ValueError(fake_error_message)
 
     assert fake_daemon.mailbox.emails.count() == 0

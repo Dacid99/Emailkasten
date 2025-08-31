@@ -139,13 +139,12 @@ def test_IMAP4Fetcher___init___success(mocker, imap_mailbox, mock_logger, mock_I
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher___init___connection_error(
-    mocker, faker, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.__init__`
     in case of failure establishing a connection.
     """
     spy_IMAP4Fetcher_connect_to_host = mocker.spy(IMAP4Fetcher, "connect_to_host")
-    fake_error_message = faker.sentence()
     mock_IMAP4.side_effect = AssertionError(fake_error_message)
 
     with pytest.raises(
@@ -178,13 +177,12 @@ def test_IMAP4Fetcher___init___bad_protocol(
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher___init___login_error(
-    mocker, faker, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.__init__`
     in case of an error logging in.
     """
     spy_IMAP4Fetcher_connect_to_host = mocker.spy(IMAP4Fetcher, "connect_to_host")
-    fake_error_message = faker.sentence()
     mock_IMAP4.return_value.login.side_effect = AssertionError(fake_error_message)
 
     with pytest.raises(
@@ -201,12 +199,11 @@ def test_IMAP4Fetcher___init___login_error(
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher___init___login_bad_response(
-    mocker, faker, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.__init__`
     in case of a bad response logging in.
     """
-    fake_error_message = faker.sentence()
     spy_IMAP4Fetcher_connect_to_host = mocker.spy(IMAP4Fetcher, "connect_to_host")
     mock_IMAP4.return_value.login.return_value = ("NO", [fake_error_message.encode()])
 
@@ -285,12 +282,11 @@ def test_IMAP4Fetcher_connect_to_host_success(
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_connect_to_host_exception(
-    faker, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.connect_to_host`
     in case of an error.
     """
-    fake_error_message = faker.sentence()
     mock_IMAP4.side_effect = AssertionError(fake_error_message)
 
     with pytest.raises(
@@ -324,12 +320,11 @@ def test_IMAP4Fetcher_test_account_success(imap_mailbox, mock_logger, mock_IMAP4
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_test_account_bad_response(
-    faker, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of a bad response with no mailbox given.
     """
-    fake_error_message = faker.sentence()
     mock_IMAP4.return_value.noop.return_value = ("NO", [fake_error_message.encode()])
 
     with pytest.raises(MailAccountError, match=fake_error_message):
@@ -342,12 +337,11 @@ def test_IMAP4Fetcher_test_account_bad_response(
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_test_account_exception(
-    faker, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of an error with no mailbox given.
     """
-    fake_error_message = faker.sentence()
     mock_IMAP4.return_value.noop.side_effect = AssertionError(fake_error_message)
 
     with pytest.raises(
@@ -398,12 +392,16 @@ def test_IMAP4Fetcher_test_mailbox_wrong_mailbox(imap_mailbox, mock_logger, mock
     "raising_function, expected_calls", [("select", (1, 0)), ("check", (1, 1))]
 )
 def test_IMAP4Fetcher_test_mailbox_bad_response(
-    faker, imap_mailbox, mock_logger, mock_IMAP4, raising_function, expected_calls
+    fake_error_message,
+    imap_mailbox,
+    mock_logger,
+    mock_IMAP4,
+    raising_function,
+    expected_calls,
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of a bad response with a given mailbox.
     """
-    fake_error_message = faker.sentence()
     getattr(mock_IMAP4.return_value, raising_function).return_value = (
         "NO",
         [fake_error_message.encode()],
@@ -431,12 +429,16 @@ def test_IMAP4Fetcher_test_mailbox_bad_response(
     "raising_function, expected_calls", [("select", (1, 0)), ("check", (1, 1))]
 )
 def test_IMAP4Fetcher_test_mailbox_exception(
-    faker, imap_mailbox, mock_logger, mock_IMAP4, raising_function, expected_calls
+    fake_error_message,
+    imap_mailbox,
+    mock_logger,
+    mock_IMAP4,
+    raising_function,
+    expected_calls,
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of an error with a given mailbox.
     """
-    fake_error_message = faker.sentence()
     getattr(mock_IMAP4.return_value, raising_function).side_effect = AssertionError(
         fake_error_message
     )
@@ -590,12 +592,16 @@ def test_IMAP4Fetcher_fetch_emails_bad_criterion(imap_mailbox, mock_logger):
     "raising_function, expected_calls", [("select", (1, 0)), ("uid", (1, 1))]
 )
 def test_IMAP4Fetcher_fetch_emails_bad_response(
-    faker, imap_mailbox, mock_logger, mock_IMAP4, raising_function, expected_calls
+    fake_error_message,
+    imap_mailbox,
+    mock_logger,
+    mock_IMAP4,
+    raising_function,
+    expected_calls,
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of a bad response.
     """
-    fake_error_message = faker.sentence()
     getattr(mock_IMAP4.return_value, raising_function).return_value = (
         "NO",
         [fake_error_message.encode()],
@@ -623,12 +629,16 @@ def test_IMAP4Fetcher_fetch_emails_bad_response(
     "raising_function, expected_calls", [("select", (1, 0)), ("uid", (1, 1))]
 )
 def test_IMAP4Fetcher_fetch_emails_exception(
-    faker, imap_mailbox, mock_logger, mock_IMAP4, raising_function, expected_calls
+    fake_error_message,
+    imap_mailbox,
+    mock_logger,
+    mock_IMAP4,
+    raising_function,
+    expected_calls,
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of an error.
     """
-    fake_error_message = faker.sentence()
     getattr(mock_IMAP4.return_value, raising_function).side_effect = AssertionError(
         fake_error_message
     )
@@ -728,12 +738,11 @@ def test_IMAP4Fetcher_fetch_mailboxes_success(imap_mailbox, mock_logger, mock_IM
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_mailboxes_bad_response(
-    faker, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_mailboxes`
     in case of a bad response.
     """
-    fake_error_message = faker.sentence()
     mock_IMAP4.return_value.list.return_value = ("NO", [fake_error_message.encode()])
 
     with pytest.raises(MailAccountError, match=fake_error_message):
@@ -746,12 +755,11 @@ def test_IMAP4Fetcher_fetch_mailboxes_bad_response(
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_mailboxes_exception(
-    faker, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_mailboxes`
     in case of an error.
     """
-    fake_error_message = faker.sentence()
     mock_IMAP4.return_value.list.side_effect = AssertionError(fake_error_message)
 
     with pytest.raises(

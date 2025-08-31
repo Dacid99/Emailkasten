@@ -143,7 +143,7 @@ def test_test_mailbox_success_auth_owner(
 @pytest.mark.django_db
 @pytest.mark.parametrize("test_side_effect", [MailboxError, MailAccountError])
 def test_test_mailbox_failure_auth_owner(
-    faker,
+    fake_error_message,
     fake_mailbox,
     owner_api_client,
     custom_detail_action_url,
@@ -151,7 +151,6 @@ def test_test_mailbox_failure_auth_owner(
     test_side_effect,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.test` action with the authenticated owner user client."""
-    fake_error_message = faker.sentence()
     mock_Mailbox_test.side_effect = test_side_effect(fake_error_message)
 
     response = owner_api_client.post(
@@ -291,7 +290,7 @@ def test_fetch_success_auth_owner(
 @pytest.mark.django_db
 @pytest.mark.parametrize("fetch_side_effect", [MailboxError, MailAccountError])
 def test_fetch_failure_auth_owner(
-    faker,
+    fake_error_message,
     fake_mailbox,
     owner_api_client,
     mock_Mailbox_fetch,
@@ -299,7 +298,6 @@ def test_fetch_failure_auth_owner(
     fetch_side_effect,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch` action with the authenticated owner user client."""
-    fake_error_message = faker.sentence()
     mock_Mailbox_fetch.side_effect = fetch_side_effect(fake_error_message)
 
     response = owner_api_client.post(

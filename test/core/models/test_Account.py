@@ -294,12 +294,15 @@ def test_Account_test_success(
 
 @pytest.mark.django_db
 def test_Account_test_bad_protocol(
-    faker, fake_account, mock_logger, mock_fetcher, mock_Account_get_fetcher
+    fake_error_message,
+    fake_account,
+    mock_logger,
+    mock_fetcher,
+    mock_Account_get_fetcher,
 ):
     """Tests :func:`core.models.Account.Account.test`
     in case of the account has a bad :attr:`core.models.Account.Account.protocol` field and raises a :class:`ValueError`.
     """
-    fake_error_message = faker.sentence()
     mock_Account_get_fetcher.side_effect = ValueError(fake_error_message)
 
     with pytest.raises(ValueError, match=fake_error_message):

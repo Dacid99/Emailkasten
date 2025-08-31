@@ -108,7 +108,7 @@ def test_update_mailboxes_success_auth_owner(
 
 @pytest.mark.django_db
 def test_update_mailboxes_failure_auth_owner(
-    faker,
+    fake_error_message,
     fake_account,
     owner_api_client,
     custom_detail_action_url,
@@ -118,7 +118,6 @@ def test_update_mailboxes_failure_auth_owner(
     action with the authenticated owner user client
     in case of failure.
     """
-    fake_error_message = faker.sentence()
     mock_Account_update_mailboxes.side_effect = MailAccountError(
         Exception(fake_error_message)
     )
@@ -214,7 +213,7 @@ def test_test_success_auth_owner(
 
 @pytest.mark.django_db
 def test_test_failure_auth_owner(
-    faker,
+    fake_error_message,
     fake_account,
     owner_api_client,
     custom_detail_action_url,
@@ -224,7 +223,6 @@ def test_test_failure_auth_owner(
     action with the authenticated owner user client
     in case of failure.
     """
-    fake_error_message = faker.sentence()
     mock_Account_test.side_effect = MailAccountError(Exception(fake_error_message))
 
     response = owner_api_client.post(
