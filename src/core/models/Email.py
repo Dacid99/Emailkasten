@@ -45,7 +45,13 @@ from core.constants import (
     SupportedEmailDownloadFormats,
     file_format_parsers,
 )
-from core.mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
+from core.mixins import (
+    DownloadMixin,
+    FavoriteModelMixin,
+    ThumbnailMixin,
+    TimestampModelMixin,
+    URLMixin,
+)
 from core.utils.mail_parsing import (
     get_bodytexts,
     get_header,
@@ -71,7 +77,14 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models.Model):
+class Email(
+    DownloadMixin,
+    ThumbnailMixin,
+    URLMixin,
+    FavoriteModelMixin,
+    TimestampModelMixin,
+    models.Model,
+):
     """Database model for an email."""
 
     BASENAME = "email"
@@ -147,12 +160,6 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     When this entry is deleted, the file will be removed by :func:`core.signals.delete_Email.post_delete_email_files`.
     """
 
-    is_favorite = models.BooleanField(
-        default=False,
-        verbose_name=_("favorite"),
-    )
-    """Flags favorite mails. False by default."""
-
     correspondents: models.ManyToManyField[Correspondent, Correspondent] = (
         models.ManyToManyField(
             "Correspondent",
@@ -184,18 +191,6 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         verbose_name=_("X-Spam"),
     )
     """The x_spam header of this mail. Can be blank."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:
         """Metadata class for the model."""

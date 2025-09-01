@@ -16,23 +16,28 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""core.mixins for the core of Emailkasten project."""
+"""Module with the :class:`TimestampModelMixin`."""
 
-from .DownloadMixin import DownloadMixin
-from .FavoriteModelMixin import FavoriteModelMixin
-from .HealthModelMixin import HealthModelMixin
-from .ThumbnailMixin import ThumbnailMixin
-from .TimestampModelMixin import TimestampModelMixin
-from .UploadMixin import UploadMixin
-from .URLMixin import URLMixin
+from django.db.models import DateTimeField, Model
+from django.utils.translation import gettext_lazy as _
 
 
-__all__ = [
-    "DownloadMixin",
-    "FavoriteModelMixin",
-    "HealthModelMixin",
-    "ThumbnailMixin",
-    "TimestampModelMixin",
-    "URLMixin",
-    "UploadMixin",
-]
+class TimestampModelMixin(Model):
+    """Mixin adding `created` and `updated` timestamps to a model class."""
+
+    created = DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
+    """The datetime the model instance was created. Is set automatically."""
+
+    updated = DateTimeField(
+        auto_now=True,
+        verbose_name=_("last updated"),
+    )
+    """The datetime the model instance entry was last updated. Is set automatically."""
+
+    class Meta:
+        """Metadata class for the mixin, abstract to avoid makemigrations picking it up."""
+
+        abstract = True

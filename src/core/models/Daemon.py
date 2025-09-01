@@ -33,7 +33,7 @@ from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
 
 from core.constants import EmailFetchingCriterionChoices
-from core.mixins import URLMixin
+from core.mixins import HealthModelMixin, TimestampModelMixin, URLMixin
 
 
 if TYPE_CHECKING:
@@ -44,7 +44,9 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
+class Daemon(
+    DirtyFieldsMixin, URLMixin, HealthModelMixin, TimestampModelMixin, models.Model
+):
     """Database model for the daemon fetching a mailbox."""
 
     BASENAME = "daemon"
@@ -91,33 +93,12 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
     )
     """The period with which the daemon is running."""
 
-    is_healthy = models.BooleanField(
-        null=True,
-        verbose_name=_("healthy"),
-    )
-    """Flags whether the daemon is healthy. `None` by default.
-    When the :attr:`core.models.Mailbox.is_healthy` field changes to `False`, this field is updated accordingly.
-    When this field changes to `True`, the :attr:`core.models.Mailbox.is_healthy` field of :attr:`mailbox` will be set to `True` as well by a signal.
-    """
-
     last_error = models.TextField(
         blank=True,
         default="",
         verbose_name=_("last error"),
     )
-    """The error from the most recent failed task execution."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
+    """The most error in connection with the model instance."""
 
     class Meta:
         """Metadata class for the model."""

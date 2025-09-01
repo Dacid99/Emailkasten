@@ -29,7 +29,12 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from vobject import vCard
 
-from core.mixins import FavoriteMixin, HasDownloadMixin, URLMixin
+from core.mixins import (
+    DownloadMixin,
+    FavoriteModelMixin,
+    TimestampModelMixin,
+    URLMixin,
+)
 
 
 if TYPE_CHECKING:
@@ -41,7 +46,9 @@ logger = logging.getLogger(__name__)
 """The logger instance for the module."""
 
 
-class Correspondent(HasDownloadMixin, URLMixin, FavoriteMixin, models.Model):
+class Correspondent(
+    DownloadMixin, URLMixin, FavoriteModelMixin, TimestampModelMixin, models.Model
+):
     """Database model for the correspondent data found in a mail."""
 
     BASENAME = "correspondent"
@@ -133,24 +140,6 @@ class Correspondent(HasDownloadMixin, URLMixin, FavoriteMixin, models.Model):
         verbose_name=_("list archive"),
     )
     """The List-Archive header of the mailinglist. Can be blank."""
-
-    is_favorite = models.BooleanField(
-        default=False,
-        verbose_name=_("favorite"),
-    )
-    """Flags favorite correspondents. False by default."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:
         """Metadata class for the model."""

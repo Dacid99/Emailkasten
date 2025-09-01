@@ -16,23 +16,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""core.mixins for the core of Emailkasten project."""
+"""Module with the :class:`core.mixins.DownloadMixin` mixin."""
 
-from .DownloadMixin import DownloadMixin
-from .FavoriteModelMixin import FavoriteModelMixin
-from .HealthModelMixin import HealthModelMixin
-from .ThumbnailMixin import ThumbnailMixin
-from .TimestampModelMixin import TimestampModelMixin
-from .UploadMixin import UploadMixin
-from .URLMixin import URLMixin
+from django.urls import reverse
 
 
-__all__ = [
-    "DownloadMixin",
-    "FavoriteModelMixin",
-    "HealthModelMixin",
-    "ThumbnailMixin",
-    "TimestampModelMixin",
-    "URLMixin",
-    "UploadMixin",
-]
+class DownloadMixin:
+    """Mixin providing a property to check whether a model instance provides a download."""
+
+    @property
+    def has_download(self) -> bool:
+        """Checks whether a download is possible for the instance."""
+        return True
+
+    def get_absolute_download_url(self) -> str:
+        """Returns the url of the download api endpoint."""
+        return reverse(f"api:v1:{self.BASENAME}-download", kwargs={"pk": self.pk})

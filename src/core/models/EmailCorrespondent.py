@@ -27,6 +27,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import HeaderFields
+from core.mixins import TimestampModelMixin
 
 from .Correspondent import Correspondent
 
@@ -35,7 +36,7 @@ if TYPE_CHECKING:
     from .Email import Email
 
 
-class EmailCorrespondent(models.Model):
+class EmailCorrespondent(TimestampModelMixin, models.Model):
     """Database model for connecting emails and their correspondents."""
 
     email = models.ForeignKey(
@@ -60,18 +61,6 @@ class EmailCorrespondent(models.Model):
         verbose_name=_("mention"),
     )
     """The mention of :attr:`correspondent` in :attr:`email`. Unique together with :attr:`email` and :attr:`correspondent`."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:
         """Metadata class for the model."""

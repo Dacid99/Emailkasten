@@ -36,7 +36,13 @@ from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import HeaderFields
-from core.mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
+from core.mixins import (
+    DownloadMixin,
+    FavoriteModelMixin,
+    ThumbnailMixin,
+    TimestampModelMixin,
+    URLMixin,
+)
 from Emailkasten.utils.workarounds import get_config
 
 
@@ -53,7 +59,12 @@ logger = logging.getLogger(__name__)
 
 
 class Attachment(
-    HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models.Model
+    DownloadMixin,
+    ThumbnailMixin,
+    URLMixin,
+    FavoriteModelMixin,
+    TimestampModelMixin,
+    models.Model,
 ):
     """Database model for an attachment file in a mail."""
 
@@ -112,12 +123,6 @@ class Attachment(
     )
     """The filesize of the attachment."""
 
-    is_favorite = models.BooleanField(
-        default=False,
-        verbose_name=_("favorite"),
-    )
-    """Flags favorite attachments. False by default."""
-
     email: models.ForeignKey[Email] = models.ForeignKey(
         "Email",
         related_name="attachments",
@@ -125,18 +130,6 @@ class Attachment(
         verbose_name=_("email"),
     )
     """The mail that the attachment was found in.  Deletion of that `email` deletes this attachment."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:
         """Metadata class for the model."""

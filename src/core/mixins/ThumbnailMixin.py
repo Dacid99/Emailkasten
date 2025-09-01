@@ -16,20 +16,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`core.mixins.FavoriteMixin` mixin."""
+"""Module with the :class:`core.mixins.ThumbnailMixin` mixin."""
 
 from django.urls import reverse
 
 
-class FavoriteMixin:
-    """Mixin providing url methods for favorite attribute of the model."""
+class ThumbnailMixin:
+    """Mixin providing a property to check whether a model instance provides a thumbail image."""
 
-    def get_absolute_toggle_favorite_url(self) -> str:
-        """Gets the upload webview url for the model instance.
+    @property
+    def has_thumbnail(self) -> bool:
+        """Checks whether a thumbnail download is possible for the instance."""
+        return True
 
-        Returns:
-            The upload webview url for the model instance.
-        """
-        return reverse(
-            f"api:v1:{self.BASENAME}-toggle-favorite", kwargs={"pk": self.pk}
-        )
+    def get_absolute_thumbnail_url(self) -> str:
+        """Returns the url of the thumbail download api endpoint."""
+        return reverse(f"api:v1:{self.BASENAME}-thumbnail", kwargs={"pk": self.pk})

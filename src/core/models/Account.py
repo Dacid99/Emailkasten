@@ -31,8 +31,12 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import EmailProtocolChoices
-from core.mixins.FavoriteMixin import FavoriteMixin
-from core.mixins.URLMixin import URLMixin
+from core.mixins import (
+    FavoriteModelMixin,
+    HealthModelMixin,
+    TimestampModelMixin,
+    URLMixin,
+)
 from core.utils.fetchers import (
     ExchangeFetcher,
     IMAP4_SSL_Fetcher,
@@ -53,7 +57,14 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
+class Account(
+    DirtyFieldsMixin,
+    URLMixin,
+    FavoriteModelMixin,
+    TimestampModelMixin,
+    HealthModelMixin,
+    models.Model,
+):
     """Database model for the account data of a mail account."""
 
     BASENAME = "account"
@@ -110,20 +121,6 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
     )
     """The timeout parameter for the connection to the host. Can be null."""
 
-    is_healthy = models.BooleanField(
-        null=True,
-        verbose_name=_("healthy"),
-    )
-    """Flags whether the account can be accessed using the data. `None` by default.
-    When this field changes to `False`, all mailboxes :attr:`core.models.Mailbox.is_healthy` field will be updated accordingly.
-    When the :attr:`core.models.Mailbox.is_healthy` field of one of the mailboxes referencing this entry becomes `True`, this field will be set to `True` as well by a signal."""
-
-    is_favorite = models.BooleanField(
-        default=False,
-        verbose_name=_("favorite"),
-    )
-    """Flags favorite accounts. False by default."""
-
     user = models.ForeignKey(
         get_user_model(),
         related_name="accounts",
@@ -131,18 +128,6 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         verbose_name=_("user"),
     )
     """The user this account belongs to. Deletion of that `user` deletes this correspondent."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:
         """Metadata class for the model."""

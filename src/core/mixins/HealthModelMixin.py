@@ -16,19 +16,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`core.mixins.HasDownloadMixin` mixin."""
+"""Module with the :class:`HealthMixin`."""
 
-from django.urls import reverse
+from django.db.models import BooleanField, Model
+from django.utils.translation import gettext_lazy as _
 
 
-class HasDownloadMixin:
-    """Mixin providing a property to check whether a model instance provides a download."""
+class HealthModelMixin(Model):
+    """Mixin adding a `health` functionality to a model class."""
 
-    @property
-    def has_download(self) -> bool:
-        """Checks whether a download is possible for the instance."""
-        return True
+    is_healthy = BooleanField(
+        null=True,
+        verbose_name=_("healthy"),
+    )
+    """Flags whether the model instance is subject to errors. `None` by default."""
 
-    def get_absolute_download_url(self) -> str:
-        """Returns the url of the download api endpoint."""
-        return reverse(f"api:v1:{self.BASENAME}-download", kwargs={"pk": self.pk})
+    class Meta:
+        """Metadata class for the mixin, abstract to avoid makemigrations picking it up."""
+
+        abstract = True

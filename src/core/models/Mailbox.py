@@ -37,7 +37,14 @@ from core.constants import (
     SupportedEmailUploadFormats,
     file_format_parsers,
 )
-from core.mixins import FavoriteMixin, HasDownloadMixin, UploadMixin, URLMixin
+from core.mixins import (
+    DownloadMixin,
+    FavoriteModelMixin,
+    HealthModelMixin,
+    TimestampModelMixin,
+    UploadMixin,
+    URLMixin,
+)
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 from core.utils.mail_parsing import parse_mailbox_name
 from Emailkasten.utils.workarounds import get_config
@@ -57,8 +64,10 @@ class Mailbox(
     DirtyFieldsMixin,
     URLMixin,
     UploadMixin,
-    HasDownloadMixin,
-    FavoriteMixin,
+    DownloadMixin,
+    FavoriteModelMixin,
+    HealthModelMixin,
+    TimestampModelMixin,
     models.Model,
 ):
     """Database model for a mailbox in a mail account."""
@@ -98,32 +107,6 @@ class Mailbox(
         help_text=_("Whether the emails in this mailbox will be stored in .eml files."),
     )
     """Whether to save the mails found in this mailbox as .eml files. :attr:`constance.get_config('DEFAULT_SAVE_TO_EML')` by default."""
-
-    is_favorite = models.BooleanField(
-        default=False,
-        verbose_name=_("created"),
-    )
-    """Flags favorite mailboxes. False by default."""
-
-    is_healthy = models.BooleanField(
-        null=True,
-        verbose_name=_("healthy"),
-    )
-    """Flags whether the mailbox can be accessed and read. `None` by default.
-    When the :attr:`core.models.Account.is_healthy` field changes to `False`, this field is updated accordingly.
-    When this field changes to `True`, the :attr:`core.models.Account.is_healthy` field of :attr:`account` will be set to `True` as well by a signal."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:
         """Metadata class for the model."""

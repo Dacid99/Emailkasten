@@ -48,6 +48,8 @@
 - last_error for mailbox and account
 - favicon.ico for the icon
 - daemonize celery worker
+- favorites ordered on top by default
+- verbose_names back to title format?
 
 ### Work in progress
 
