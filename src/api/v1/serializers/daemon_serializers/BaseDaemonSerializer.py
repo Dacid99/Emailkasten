@@ -70,8 +70,9 @@ class BaseDaemonSerializer(serializers.ModelSerializer[Daemon]):
 
         read_only_fields: Final[list[str]] = [
             "uuid",
-            "last_error",
             "is_healthy",
+            "last_error",
+            "last_error_occurred_at",
             "created",
             "updated",
         ]

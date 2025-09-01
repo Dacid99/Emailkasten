@@ -93,13 +93,6 @@ class Daemon(
     )
     """The period with which the daemon is running."""
 
-    last_error = models.TextField(
-        blank=True,
-        default="",
-        verbose_name=_("last error"),
-    )
-    """The most error in connection with the model instance."""
-
     class Meta:
         """Metadata class for the model."""
 

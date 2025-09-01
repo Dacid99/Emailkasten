@@ -50,6 +50,8 @@ class MailboxFilterSet(filters.FilterSet):
             "save_to_eml": FilterSetups.BOOL,
             "save_attachments": FilterSetups.BOOL,
             "is_healthy": FilterSetups.BOOL,
+            "last_error": FilterSetups.TEXT,
+            "last_error_occurred_at": FilterSetups.DATETIME,
             "is_favorite": FilterSetups.BOOL,
             "created": FilterSetups.DATETIME,
             "updated": FilterSetups.DATETIME,

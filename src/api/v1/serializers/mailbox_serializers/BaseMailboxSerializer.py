@@ -57,6 +57,8 @@ class BaseMailboxSerializer(serializers.ModelSerializer[Mailbox]):
             "name",
             "account",
             "is_healthy",
+            "last_error",
+            "last_error_occurred_at",
             "created",
             "updated",
         ]

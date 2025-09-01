@@ -71,11 +71,17 @@ def test_output(fake_daemon, request_context):
     assert serializer_data["last_error"] == fake_daemon.last_error
     assert "is_healthy" in serializer_data
     assert serializer_data["is_healthy"] == fake_daemon.is_healthy
+    assert "last_error" in serializer_data
+    assert serializer_data["last_error"] == fake_daemon.last_error
+    assert "last_error_occurred_at" in serializer_data
+    assert (
+        serializer_data["last_error_occurred_at"] == fake_daemon.last_error_occurred_at
+    )
     assert "created" in serializer_data
     assert datetime.fromisoformat(serializer_data["created"]) == fake_daemon.created
     assert "updated" in serializer_data
     assert datetime.fromisoformat(serializer_data["updated"]) == fake_daemon.updated
-    assert len(serializer_data) == 10
+    assert len(serializer_data) == 11
 
 
 @pytest.mark.django_db
@@ -112,6 +118,8 @@ def test_input(daemon_with_interval_payload, request_context):
     assert "celery_task" not in serializer_data
     assert "last_error" not in serializer_data
     assert "is_healthy" not in serializer_data
+    assert "last_error" not in serializer_data
+    assert "last_error_occurred_at" not in serializer_data
     assert "created" not in serializer_data
     assert "updated" not in serializer_data
     assert len(serializer_data) == 3

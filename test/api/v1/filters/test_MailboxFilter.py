@@ -124,6 +124,46 @@ def test_is_healthy_filter(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
+    "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
+)
+def test_last_error_filter(
+    mailbox_queryset, lookup_expr, filterquery, expected_indices
+):
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
+    for the :attr:`core.models.Mailbox.Mailbox.last_error` field.
+    """
+    query = {"last_error" + lookup_expr: filterquery}
+
+    filtered_data = MailboxFilterSet(query, queryset=mailbox_queryset).qs
+
+    assert filtered_data.distinct().count() == filtered_data.count()
+    assert filtered_data.count() == len(expected_indices)
+    for data in filtered_data:
+        assert data.id - 1 in expected_indices
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "lookup_expr, filterquery, expected_indices", DATETIME_TEST_PARAMETERS
+)
+def test_last_error_occurred_at_filter(
+    mailbox_queryset, lookup_expr, filterquery, expected_indices
+):
+    """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
+    for the :attr:`core.models.Mailbox.Mailbox.last_error_occurred_at` field.
+    """
+    query = {"last_error_occurred_at" + lookup_expr: filterquery}
+
+    filtered_data = MailboxFilterSet(query, queryset=mailbox_queryset).qs
+
+    assert filtered_data.distinct().count() == filtered_data.count()
+    assert filtered_data.count() == len(expected_indices)
+    for data in filtered_data:
+        assert data.id - 1 in expected_indices
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
     "lookup_expr, filterquery, expected_indices", BOOL_TEST_PARAMETERS
 )
 def test_is_favorite_filter(
@@ -186,7 +226,7 @@ def test_account__mail_address_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
-    for the related :attr:`core.models.Account.Account.mail_address` field.
+    for the related :attr:`core.models.Mailbox.Mailbox.mail_address` field.
     """
     query = {"account__mail_address" + lookup_expr: filterquery}
 
@@ -206,7 +246,7 @@ def test_account__mail_host_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
-    for the related :attr:`core.models.Account.Account.mail_host` field.
+    for the related :attr:`core.models.Mailbox.Mailbox.mail_host` field.
     """
     query = {"account__mail_host" + lookup_expr: filterquery}
 
@@ -226,7 +266,7 @@ def test_account__is_healthy_filter(
     mailbox_queryset, lookup_expr, filterquery, expected_indices
 ):
     """Tests :class:`api.v1.filters.MailboxFilterSet`'s filtering
-    for the related :attr:`core.models.Account.Account.is_healthy` field.
+    for the related :attr:`core.models.Mailbox.Mailbox.is_healthy` field.
     """
     query = {"account__is_healthy" + lookup_expr: filterquery}
 

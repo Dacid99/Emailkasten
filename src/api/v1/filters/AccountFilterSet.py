@@ -52,6 +52,8 @@ class AccountFilterSet(filters.FilterSet):
             "protocol": FilterSetups.CHOICE,
             "timeout": FilterSetups.FLOAT,
             "is_healthy": FilterSetups.BOOL,
+            "last_error": FilterSetups.TEXT,
+            "last_error_occurred_at": FilterSetups.DATETIME,
             "is_favorite": FilterSetups.BOOL,
             "created": FilterSetups.DATETIME,
             "updated": FilterSetups.DATETIME,

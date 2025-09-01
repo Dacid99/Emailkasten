@@ -53,11 +53,17 @@ def test_output(fake_mailbox, request_context):
     assert serializer_data["is_favorite"] == fake_mailbox.is_favorite
     assert "is_healthy" in serializer_data
     assert serializer_data["is_healthy"] == fake_mailbox.is_healthy
+    assert "last_error" in serializer_data
+    assert serializer_data["last_error"] == fake_mailbox.last_error
+    assert "last_error_occurred_at" in serializer_data
+    assert (
+        serializer_data["last_error_occurred_at"] == fake_mailbox.last_error_occurred_at
+    )
     assert "created" in serializer_data
     assert datetime.fromisoformat(serializer_data["created"]) == fake_mailbox.created
     assert "updated" in serializer_data
     assert datetime.fromisoformat(serializer_data["updated"]) == fake_mailbox.updated
-    assert len(serializer_data) == 10
+    assert len(serializer_data) == 12
 
 
 @pytest.mark.django_db
@@ -80,6 +86,8 @@ def test_input(fake_mailbox, request_context):
     assert "is_favorite" in serializer_data
     assert serializer_data["is_favorite"] == fake_mailbox.is_favorite
     assert "is_healthy" not in serializer_data
+    assert "last_error" not in serializer_data
+    assert "last_error_occurred_at" not in serializer_data
     assert "created" not in serializer_data
     assert "updated" not in serializer_data
     assert len(serializer_data) == 3

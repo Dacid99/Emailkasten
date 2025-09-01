@@ -138,6 +138,8 @@ class DaemonFilterSet(filters.FilterSet):
             "celery_task__last_run_at": FilterSetups.DATETIME,
             "celery_task__total_run_count": FilterSetups.INT,
             "is_healthy": FilterSetups.BOOL,
+            "last_error": FilterSetups.TEXT,
+            "last_error_occurred_at": FilterSetups.DATETIME,
             "created": FilterSetups.DATETIME,
             "updated": FilterSetups.DATETIME,
             "mailbox__name": FilterSetups.TEXT,

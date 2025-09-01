@@ -18,7 +18,7 @@
 
 """Module with the :class:`HealthMixin`."""
 
-from django.db.models import BooleanField, Model
+from django.db.models import BooleanField, DateTimeField, Model, TextField
 from django.utils.translation import gettext_lazy as _
 
 
@@ -30,6 +30,19 @@ class HealthModelMixin(Model):
         verbose_name=_("healthy"),
     )
     """Flags whether the model instance is subject to errors. `None` by default."""
+
+    last_error = TextField(
+        blank=True,
+        default="",
+        verbose_name=_("last error"),
+    )
+    """The latest error in connection with the model instance."""
+
+    last_error_occurred_at = DateTimeField(
+        null=True,
+        verbose_name=_("time of last error occurrence"),
+    )
+    """The time of occurrence of the latest error."""
 
     class Meta:
         """Metadata class for the mixin, abstract to avoid makemigrations picking it up."""

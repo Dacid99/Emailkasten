@@ -361,6 +361,8 @@ def account_queryset(unblocked_db):
                 timeout=FLOAT_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 is_healthy=BOOL_TEST_ITEMS[number],
+                last_error=text_test_item,
+                last_error_occurred_at=DATETIME_TEST_ITEMS[number],
             )
 
     return Account.objects.all()
@@ -378,6 +380,8 @@ def mailbox_queryset(unblocked_db, account_queryset):
                 save_attachments=BOOL_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 is_healthy=BOOL_TEST_ITEMS[number],
+                last_error=text_test_item,
+                last_error_occurred_at=DATETIME_TEST_ITEMS[number],
                 account=account_queryset.get(id=number + 1),
             )
 
@@ -404,6 +408,8 @@ def daemon_queryset(unblocked_db, mailbox_queryset):
                 Daemon,
                 interval=interval,
                 is_healthy=bool_test_item,
+                last_error=TEXT_TEST_ITEMS[number],
+                last_error_occurred_at=DATETIME_TEST_ITEMS[number],
                 mailbox=mailbox_queryset.get(id=number + 1),
             )
             daemon.celery_task = celery_task

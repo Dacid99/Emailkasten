@@ -61,7 +61,13 @@ class BaseAccountSerializer(serializers.ModelSerializer[Account]):
         fields = "__all__"
         """Include all fields."""
 
-        read_only_fields: Final[list[str]] = ["is_healthy", "created", "updated"]
+        read_only_fields: Final[list[str]] = [
+            "is_healthy",
+            "last_error",
+            "last_error_occurred_at",
+            "created",
+            "updated",
+        ]
         """The :attr:`core.models.Account.Account.is_healthy`,
         :attr:`core.models.Account.Account.created` and
         :attr:`core.models.Account.Account.updated` fields are read-only.
