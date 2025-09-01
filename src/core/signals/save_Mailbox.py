@@ -63,13 +63,13 @@ def post_save_mailbox_is_healthy(
                 "%s has become healthy, flagging its account as healthy ...",
                 instance,
             )
-            instance.account.is_healthy = True
-            instance.account.save(update_fields=["is_healthy"])
+            instance.account.set_healthy()
             logger.debug("Successfully flagged account as healthy.")
     elif "is_healthy" in instance.get_dirty_fields():
         logger.debug(
             "%s has become unhealthy, flagging its daemons as unhealthy ...",
             instance,
         )
-        instance.daemons.update(is_healthy=False)
+        for daemon in instance.daemons.all():
+            daemon.set_unhealthy(instance.last_error)
         logger.debug("Successfully flagged account as healthy.")

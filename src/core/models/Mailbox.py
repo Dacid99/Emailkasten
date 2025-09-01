@@ -151,16 +151,13 @@ class Mailbox(
                 fetcher.test(self)
             except MailboxError as error:
                 logger.info("Failed testing %s with error: %s.", self, error)
-                self.is_healthy = False
-                self.save(update_fields=["is_healthy"])
+                self.set_unhealthy(str(error))
                 raise
             except MailAccountError as error:
                 logger.info("Failed testing %s with error %s.", self.account, error)
-                self.account.is_healthy = False
-                self.account.save(update_fields=["is_healthy"])
+                self.account.set_unhealthy(str(error))
                 raise
-        self.is_healthy = True
-        self.save(update_fields=["is_healthy"])
+        self.set_healthy()
         logger.info("Successfully tested mailbox")
 
     def fetch(self, criterion: str) -> None:
@@ -181,16 +178,13 @@ class Mailbox(
                 fetched_mails = fetcher.fetch_emails(self, criterion)
             except MailboxError as error:
                 logger.info("Failed fetching %s with error: %s.", self, error)
-                self.is_healthy = False
-                self.save(update_fields=["is_healthy"])
+                self.set_unhealthy(str(error))
                 raise
             except MailAccountError as error:
                 logger.info("Failed fetching %s with error: %s.", self, error)
-                self.account.is_healthy = False
-                self.account.save(update_fields=["is_healthy"])
+                self.account.set_unhealthy(str(error))
                 raise
-        self.is_healthy = True
-        self.save(update_fields=["is_healthy"])
+        self.set_healthy()
         logger.info("Successfully fetched emails.")
 
         logger.info("Saving fetched emails ...")

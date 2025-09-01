@@ -57,6 +57,5 @@ def post_save_account_is_healthy(
         )
         mailbox_entries = instance.mailboxes.all()
         for mailbox_entry in mailbox_entries:
-            mailbox_entry.is_healthy = False
-            mailbox_entry.save(update_fields=["is_healthy"])
+            mailbox_entry.set_unhealthy(instance.last_error)
         logger.debug("Successfully flagged mailboxes as unhealthy.")

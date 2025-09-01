@@ -203,10 +203,11 @@ class Account(
         logger.error(
             "The protocol %s is not implemented in a fetcher class!", self.protocol
         )
-        self.is_healthy = False
-        self.save(update_fields=["is_healthy"])
+        self.set_unhealthy(
+            _("The protocol %s is not implemented in a fetcher class!") % self.protocol
+        )
         raise ValueError(
-            f"The protocol {self.protocol} is not implemented in a fetcher class!"
+            _("The protocol %s is not implemented in a fetcher class!") % self.protocol
         )
 
     def get_fetcher(self) -> BaseFetcher:
@@ -225,10 +226,9 @@ class Account(
         """
         try:
             fetcher = self.get_fetcher_class()(self)
-        except MailAccountError:
+        except MailAccountError as error:
             logger.exception("Failed to instantiate fetcher for %s!", self)
-            self.is_healthy = False
-            self.save(update_fields=["is_healthy"])
+            self.set_unhealthy(str(error))
             raise
         return fetcher
 
@@ -248,11 +248,9 @@ class Account(
                 fetcher.test()
         except MailAccountError as error:
             logger.info("Testing %s failed with error: %s.", self, error)
-            self.is_healthy = False
-            self.save(update_fields=["is_healthy"])
+            self.set_unhealthy(str(error))
             raise
-        self.is_healthy = True
-        self.save(update_fields=["is_healthy"])
+        self.set_healthy()
         logger.info("Successfully tested account.")
 
     def update_mailboxes(self) -> None:
@@ -268,12 +266,10 @@ class Account(
         with self.get_fetcher() as fetcher:
             try:
                 mailbox_list = fetcher.fetch_mailboxes()
-            except MailAccountError:
-                self.is_healthy = False
-                self.save(update_fields=["is_healthy"])
+            except MailAccountError as error:
+                self.set_unhealthy(str(error))
                 raise
-        self.is_healthy = True
-        self.save(update_fields=["is_healthy"])
+        self.set_healthy()
 
         logger.info("Parsing mailbox data ...")
 

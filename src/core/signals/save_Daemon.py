@@ -54,6 +54,5 @@ def post_save_daemon_is_healthy(
         logger.debug(
             "%s has become healthy, flagging its mailbox as healthy ...", instance
         )
-        instance.mailbox.is_healthy = True
-        instance.mailbox.save(update_fields=["is_healthy"])
+        instance.mailbox.set_healthy()
         logger.debug("Successfully flagged mailbox as healthy.")

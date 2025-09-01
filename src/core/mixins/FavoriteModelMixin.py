@@ -37,6 +37,11 @@ class FavoriteModelMixin(Model):
 
         abstract = True
 
+    def toggle_favorite(self) -> None:
+        """Toggles the `is_favorite` flag on the model instance."""
+        self.is_favorite = not self.is_favorite
+        self.save(update_fields=["is_favorite"])
+
     def get_absolute_toggle_favorite_url(self) -> str:
         """Gets the upload webview url for the model instance.
 

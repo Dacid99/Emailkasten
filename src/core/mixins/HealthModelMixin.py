@@ -19,6 +19,7 @@
 """Module with the :class:`HealthMixin`."""
 
 from django.db.models import BooleanField, DateTimeField, Model, TextField
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -48,3 +49,19 @@ class HealthModelMixin(Model):
         """Metadata class for the mixin, abstract to avoid makemigrations picking it up."""
 
         abstract = True
+
+    def set_unhealthy(self, errormessage: str) -> None:
+        """Sets the `is_healthy` flag to `False` and adds the `last_error` and its time.
+
+        Args:
+            error: The error causing the health change.
+        """
+        self.last_error = errormessage
+        self.last_error_occurred_at = timezone.now()
+        self.is_healthy = False
+        self.save(update_fields=["is_healthy", "last_error", "last_error_occurred_at"])
+
+    def set_healthy(self) -> None:
+        """Sets the `is_healthy` flag to `True`."""
+        self.is_healthy = True
+        self.save(update_fields=["is_healthy"])
