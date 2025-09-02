@@ -48,6 +48,7 @@ urlpatterns = [
     re_path(r"^robots\.txt", include("robots.urls")),
     # api
     path("api/", include("api.urls")),
+    path("api/auth/", include("allauth.headless.urls")),
     path("api/auth/", include("dj_rest_auth.urls")),
     path("api/registration/", include("dj_rest_auth.registration.urls")),
     path("api/browse/", include("rest_framework.urls", namespace="rest_framework")),

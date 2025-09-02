@@ -57,7 +57,6 @@ VERSION = config["project"]["version"]
 ##### django core #####
 # https://docs.djangoproject.com/en/5.2/ref/settings/#core-settings
 
-
 ### Models
 
 INSTALLED_APPS = [
@@ -76,6 +75,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "allauth",
     "allauth.account",
+    "allauth.headless",
     "allauth.socialaccount",
     "allauth.usersessions",
     "dj_rest_auth",
@@ -511,6 +511,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "api.v1.pagination.Pagination",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "allauth.headless.contrib.rest_framework.authentication.XSessionTokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.TokenAuthentication",
@@ -542,10 +543,14 @@ BROKER_URL = CELERY_BROKER_URL  # required for rabbitmq django-healthcheck
 ##### allauth #####
 # https://django-allauth.readthedocs.io/en/latest/index.html
 
+# account
 ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = {"username"}
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_ADAPTER = "Emailkasten.utils.toggle_signup.ToggleSignupAccountAdapter"
+
+# headless
+HEADLESS_ONLY = False
 
 
 ##### dj-rest-auth #####

@@ -15,7 +15,7 @@ These can be found under */api/schema/redoc* and */api/schema/swagger*.
 Alternatively you can also download a raw OpenAPI schema from */api/schema*.
 You can render it to any API overview using one of the existing webtools.
 
-If you have no capability to run the server, you can use the `API schema`_ linked below.
+If you have no capability to run the server, you can use the `API schema`_linked below.
 
 In general the URLs of the API endpoints are designed in parallel to
 the webapps URLs with a prefix */api/v1/*.
@@ -39,11 +39,14 @@ API Schema
 
     api-schema
 
+The API version of the django-allauth user management is not documented in this schema.
+Please refer to `its own OpenAPI schema <https://django-allauth.readthedocs.io/en/latest/headless/openapi-specification/>`_ for full information.
+Replace ``_allauth`` in their URLs with ``api/auth`` to map it to the Emailkasten endpoints.
 
 Authentication
 --------------
 
-To authenticate via the API you have 3 options:
+To authenticate via the API you have 4 options:
 
 - Basic auth: Authenticate directly at every endpoint with your credentials
 
@@ -56,13 +59,13 @@ To authenticate via the API you have 3 options:
 
     .. code-block:: bash
 
-        curl -kX 'POST' -d '{"username": "myname", "password": "mypwd"}' https://emailkasten.mydomain.tld/api/login/
+        curl -kX 'POST' -d '{"username": "myname", "password": "mypwd"}' https://emailkasten.mydomain.tld/api/auth/login/
 
     This will return a key that you can then use in further requests.
 
     .. code-block:: bash
 
-        curl -kX 'GET' -H 'Authorization: Token your_keys' https://emailkasten.mydomain.tld/api/v1/emails/1/
+        curl -kX 'GET' -H 'Authorization: Token your_key' https://emailkasten.mydomain.tld/api/v1/emails/1/
 
 - Session authentication: Authenticate using a session cookie.
     This always requires that you add a CSRF token to the request.
@@ -70,5 +73,21 @@ To authenticate via the API you have 3 options:
     .. code-block:: bash
 
         curl -kX 'GET' -b 'sessionid=your_session_cookie; csrftoken=your_csrf_token' -H 'X-CSRFTOKEN: your_csrf_token' https://emailkasten.mydomain.tld/api/v1/emails/1/
+
+- Session Token Authentication: Authenticate using a session token.
+    This option is implemented by the API of headless django-allauth and is mostly intended for use by alternative frontends.
+    It works similar to the Token authentication, just with a different URL and header.
+
+    .. code-block:: bash
+
+        curl -kX 'POST' -d '{"username": "myname", "password": "mypwd"}' https://emailkasten.mydomain.tld/api/auth/app/v1/auth/login
+
+    This will return a session token in the meta section of the json response.
+    Note that the missing / at the end of the login URL is not a typo.
+
+    .. code-block:: bash
+
+        curl -kX 'GET' -H 'X-Session-Token: your_token' https://emailkasten.mydomain.tld/api/v1/emails/1/
+
 
 For more details see `the django restframework documentation on the matter <https://www.django-rest-framework.org/api-guide/authentication/#sessionauthentication>`_.
