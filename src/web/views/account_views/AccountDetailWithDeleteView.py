@@ -92,7 +92,7 @@ class AccountDetailWithDeleteView(
         except MailAccountError as error:
             messages.error(
                 request,
-                _("Updating mailboxes failed\n%(error)s") % {"error": str(error)},
+                _("Updating mailboxes failed: %(error)s") % {"error": str(error)},
             )
         else:
             messages.success(request, _("Updating mailboxes successful"))

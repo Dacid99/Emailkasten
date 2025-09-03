@@ -49,6 +49,15 @@
             {% endif %}
         </li>
         <li class="list-group-item">{% translate "Timeout" %}: {{ object.timeout }}</li>
+        {% if object.is_healthy == False %}
+            <li class="list-group-item list-group-item-danger">
+                {% translate "Latest Error" %}: <pre><code>{{ object.last_error }}</code></pre>
+                <br />
+                {% translate "Occurred At" %}: {{ object.last_error_occurred_at }}
+                <br />
+                <strong>{% translate "Test the account to see what is going wrong." %}</strong>
+            </li>
+        {% endif %}
     </ul>
 {% endblock card_content %}
 

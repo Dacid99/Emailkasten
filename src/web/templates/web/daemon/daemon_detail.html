@@ -52,9 +52,11 @@
         <li class="list-group-item">
             {% translate "Total Run Count" %}: {{ object.celery_task.total_run_count }}
         </li>
-        {% if not object.is_healthy %}
-            <li class="list-group-item">
+        {% if object.is_healthy == False %}
+            <li class="list-group-item list-group-item-danger">
                 {% translate "Latest Error" %}: <pre><code>{{ object.last_error }}</code></pre>
+                <br />
+                {% translate "Occurred At" %}: {{ object.last_error_occurred_at }}
                 <br />
                 <strong>{% translate "Test the daemon to see what is going wrong." %}</strong>
             </li>

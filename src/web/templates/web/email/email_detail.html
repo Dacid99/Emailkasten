@@ -150,7 +150,7 @@
             </div>
         </div>
     </div>
-    {% if object.conversation.exists %}
+    {% if object.conversation.count > 1 %}
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between m-1">
@@ -161,59 +161,49 @@
                        class="btn btn-outline-primary"
                        href="{% url 'web:email-conversation' object.pk %}">{% translate "View all" %}</a>
                 </div>
+                <ul class="list-group list-group-flush">
+                    {% if object.in_reply_to.exists %}
+                        <li class="list-group-item">
+                            <h4 class="card-title">
+                                {% translate "In Reply To" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
+                            </h4>
 
+                            {% include "web/email/partials/_email_list.html" with emails=object.in_reply_to.all %}
+
+                        </li>
+                    {% endif %}
+                    {% if object.replies.exists %}
+                        <li class="list-group-item">
+                            <h4 class="card-title">
+                                {% translate "Replies" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
+                            </h4>
+
+                            {% include "web/email/partials/_email_list.html" with emails=object.replies.all %}
+
+                        </li>
+                    {% endif %}
+                    {% if object.references.exists %}
+                        <li class="list-group-item">
+                            <h4 class="card-title">
+                                {% translate "References" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
+                            </h4>
+
+                            {% include "web/email/partials/_email_list.html" with emails=object.references.all %}
+
+                        </li>
+                    {% endif %}
+                    {% if object.referenced_by.exists %}
+                        <li class="list-group-item">
+                            <h4 class="card-title">
+                                {% translate "Referenced by" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
+                            </h4>
+
+                            {% include "web/email/partials/_email_list.html" with emails=object.referenced_by.all %}
+
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
-            {% if object.in_reply_to.exists %}
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            {% translate "In Reply To" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
-                        </h4>
-
-                        {% include "web/email/partials/_email_list.html" with emails=object.in_reply_to.all %}
-
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if object.replies.exists %}
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            {% translate "Replies" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
-                        </h4>
-
-                        {% include "web/email/partials/_email_list.html" with emails=object.replies.all %}
-
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if object.references.exists %}
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            {% translate "References" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
-                        </h4>
-
-                        {% include "web/email/partials/_email_list.html" with emails=object.references.all %}
-
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if object.referenced_by.exists %}
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            {% translate "Referenced by" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
-                        </h4>
-
-                        {% include "web/email/partials/_email_list.html" with emails=object.referenced_by.all %}
-
-                    </div>
-                </div>
-            {% endif %}
         </div>
     {% endif %}
 {% endblock card_extras %}

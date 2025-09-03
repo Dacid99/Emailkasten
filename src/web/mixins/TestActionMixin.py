@@ -44,16 +44,16 @@ class TestActionMixin:
             messages.error(
                 request,
                 _(
-                    "Test failed, there is something wrong with this objects setup\n%(error)s"
+                    "Test failed, there is something wrong with this objects setup: %(error)s"
                 )
                 % {"error": str(error)},
             )
         except FetcherError as error:
-            messages.error(request, _("Test failed\n%(error)s") % {"error": str(error)})
+            messages.error(request, _("Test failed: %(error)s") % {"error": str(error)})
         except Exception as error:
             messages.error(
                 request,
-                _("Test failed due to an unexpected error\n%(error)s")
+                _("Test failed due to an unexpected error: %(error)s")
                 % {"error": str(error)},
             )
         else:

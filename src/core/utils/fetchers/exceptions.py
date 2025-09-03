@@ -32,7 +32,7 @@ class MailAccountError(FetcherError):
         """Extended for consistent message formatting."""
         super().__init__(
             _(
-                "An %(error_class_name)s: %(error)s occurred during %(command_name)s on account!"
+                "A %(error_class_name)s: %(error)s occurred during %(command_name)s on account!"
             )
             % {
                 "error_class_name": error.__class__.__name__,
@@ -49,7 +49,7 @@ class MailboxError(FetcherError):
         """Extended for consistent message formatting."""
         super().__init__(
             _(
-                "An %(error_class_name)s: %(error)s occurred during %(command_name)s on mailbox!"
+                "A %(error_class_name)s: %(error)s occurred during %(command_name)s on mailbox!"
             )
             % {
                 "error_class_name": error.__class__.__name__,
