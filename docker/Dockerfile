@@ -13,7 +13,6 @@ ARG APK_DEPENDENCIES="gettext \
     mariadb-dev \
     mariadb-client \
     rabbitmq-server \
-    krb5-dev \
     openssl \
     curl"
 ARG SRC_PATH=/opt/
