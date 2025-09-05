@@ -23,6 +23,7 @@ from __future__ import annotations
 import contextlib
 import logging
 import os
+import re
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from typing import TYPE_CHECKING, BinaryIO, Final, override
 from zipfile import BadZipFile, ZipFile
@@ -352,7 +353,9 @@ class Mailbox(
             if isinstance(mailbox_data, bytes)
             else mailbox_data
         )
-        if mailbox_name in get_config("IGNORED_MAILBOXES"):
+        if re.compile(
+            get_config("IGNORED_MAILBOXES_REGEX"), flags=re.IGNORECASE
+        ).search(mailbox_name):
             logger.debug("%s is in the ignorelist, it is skipped.", mailbox_name)
             return None
         try:
