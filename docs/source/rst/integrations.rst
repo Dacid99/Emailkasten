@@ -13,6 +13,20 @@ aware of.
 If there's something here,
 feel free to contribute an extension of this page or please give us a heads-up about it.
 
+
+Paperless-ngx
+-------------
+
+Emailkasten can send selected attachment files to Paperless for further archival.
+
+You can set the URL and API key for your Paperless server in your profile settings.
+The persistent API key can be found in the Paperless webinterface under *My Profile - API Authentication Token*
+
+Optionally, you can set whether that instance has Tika enabled and is thus able to process additional document filetypes.
+
+You can then trigger the action via the button in the webpage showing a single attachment or the related API endpoint.
+
+
 Searxng
 -------
 

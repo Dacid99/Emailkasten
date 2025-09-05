@@ -159,9 +159,22 @@ For a secure setup:
 User Settings
 -------------
 
-The settings for individual users concern only the configuration
-of the daemons they run and the mailboxes they fetch from.
-They can be configured in the webapp or API directly.
-Their defaults can be managed in the *Defaults* section of the admin user settings.
+The users have seperate settings that they can configure via their profile page.
+These settings mostly concern third-party integrations.
 
-More details can be found in the :doc:`user manual <web-instructions>`
+All defaults are empty.
+
++------------------------+------------------------------------------------------------------------------------+
+| Setting                | Description                                                                        |
++------------------------+------------------------------------------------------------------------------------+
+| Paperless-URL          | The URL of the Paperless-ngx server that the user wants to share attachments with. |
++------------------------+------------------------------------------------------------------------------------+
+| Paperless-API-Key      | The users API key to the upper Paperless-ngx server.                               |
++------------------------+------------------------------------------------------------------------------------+
+| Paperless-Tika-enabled | Whether the Paperless-ngx server has Tika enabled for additional filetype support. |
++------------------------+------------------------------------------------------------------------------------+
+
+More details can be found in the :doc:`integrations page<integrations>`.
+
+There are some more user-defined settings to configure the behaviour of individual objects like mailboxes and daemons.
+You can read about them in the :doc:`user manual<web-instructions>`.

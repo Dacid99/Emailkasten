@@ -13,6 +13,7 @@ A open-source self-hostable email archive using the [django framework](https://w
 - Mobile-friendly Bootstrap5 webapp
 - Full-fledged API
 - Multi-language and timezone support
+- Cross integrations with other self-hosted projects like Paperless-ngx and Searxng
 - Easy docker setup and configuration
 - SSL certificate out of the box
 
