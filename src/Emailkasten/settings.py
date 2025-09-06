@@ -75,10 +75,10 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "allauth",
     "allauth.account",
+    "allauth.mfa",
     "allauth.headless",
     "allauth.socialaccount",
     "allauth.usersessions",
-    "dj_rest_auth",
     "robots",
     "constance",
     "constance.backends.database",
@@ -348,7 +348,7 @@ LOCALE_PATHS = [
     BASE_DIR / "src" / "web" / "locale",
 ]
 
-LANGUAGE_COOKIE_AGE = 2419200
+LANGUAGE_COOKIE_AGE = 2419200  # 4 weeks
 LANGUAGE_COOKIE_SECURE = not DEBUG
 
 # Timezones
@@ -428,6 +428,7 @@ TEMPLATES = [
 
 # CSRF
 CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_HTTPONLY = False  # to allow Cookie.js to access the cookie
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
@@ -513,7 +514,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "allauth.headless.contrib.rest_framework.authentication.XSessionTokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
+        "Emailkasten.auth.BasicNoMFAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
@@ -548,10 +549,18 @@ ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = {"username"}
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_ADAPTER = "Emailkasten.utils.toggle_signup.ToggleSignupAccountAdapter"
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https" if not DEBUG else "http"
 
 # headless
 HEADLESS_ONLY = False
 
+# mfa
+MFA_TOTP_ISSUER = "Emailkasten"
+MFA_ALLOW_UNVERIFIED_EMAIL = True
+MFA_TOTP_TOLERANCE = 1
+
+MFA_TRUST_ENABLED = True
+MFA_TRUST_COOKIE_SECURE = not DEBUG
 
 ##### dj-rest-auth #####
 # https://dj-rest-auth.readthedocs.io/en/latest/configuration.html

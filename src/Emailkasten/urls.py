@@ -49,9 +49,6 @@ urlpatterns = [
     # api
     path("api/", include("api.urls")),
     path("api/auth/", include("allauth.headless.urls")),
-    path("api/auth/", include("dj_rest_auth.urls")),
-    path("api/registration/", include("dj_rest_auth.registration.urls")),
-    path("api/browse/", include("rest_framework.urls", namespace="rest_framework")),
     path("api/schema/", SpectacularAPIView.as_view(), name=SCHEMA_NAME),
     path(
         "api/schema/swagger/",
