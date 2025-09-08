@@ -532,7 +532,8 @@ def test_share_to_paperless_auth_owner_failure(
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "detail" in response.data
-    assert fake_error_message in response.data["detail"]
+    assert "error" in response.data
+    assert fake_error_message in response.data["error"]
     mock_Attachment_share_to_paperless.assert_called_once_with(fake_attachment)
 
 

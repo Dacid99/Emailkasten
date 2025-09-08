@@ -292,9 +292,15 @@ class AttachmentViewSet(
             raise Http404(_("Attachment file not found")) from None
         except (RuntimeError, ConnectionError, PermissionError, ValueError) as error:
             return Response(
-                status=status.HTTP_400_BAD_REQUEST, data={"detail": str(error)}
+                status=status.HTTP_400_BAD_REQUEST,
+                # Translators: Paperless is a brand name.
+                data={"detail": _("Upload to Paperless failed."), "error": str(error)},
             )
         return Response(
             status=status.HTTP_200_OK,
-            data={"detail": _("Upload to Paperless succeeded."), "task_id": task_id},
+            data={
+                # Translators: Paperless is a brand name.
+                "detail": _("Uploaded attachment document to Paperless."),
+                "task_id": task_id,
+            },
         )

@@ -33,7 +33,6 @@
   - streamline serializer and form tests
 - emailcorrespondent creation for better integration of mailinglist
 - use pre-commit
-- error in api for share should be in seperate error field
 - log error in set_unhealthy
 
 ## To test
