@@ -58,8 +58,5 @@
 
 - filteroptions for existing db entries leak other user data
 - fetching too many emails leads to browser timeout
-- optics:
-  - forms in btn-toolbar break optics
-  - better name for daemon
 - ci:
   - djlint has no files to lint

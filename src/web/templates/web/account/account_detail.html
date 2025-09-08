@@ -48,14 +48,22 @@
                 {% translate "Default" %}
             {% endif %}
         </li>
-        <li class="list-group-item">{% translate "Timeout" %}: {{ object.timeout }}</li>
+        <li class="list-group-item">
+            {% translate "Timeout" %}:
+            {% if object.timeout %}
+                {{ object.timeout }}
+            {% else %}
+                {% translate "None" %}
+            {% endif %}
+        </li>
         {% if object.is_healthy == False %}
             <li class="list-group-item list-group-item-danger">
-                {% translate "Latest Error" %}: <pre><code>{{ object.last_error }}</code></pre>
-                <br />
-                {% translate "Occurred At" %}: {{ object.last_error_occurred_at }}
-                <br />
-                <strong>{% translate "Test the account to see what is going wrong." %}</strong>
+                {% translate "Latest Error" %}:
+                <p>
+                    <code>{{ object.last_error }}</code>
+                </p>
+                <p>{% translate "Occurred At" %}: {{ object.last_error_occurred_at }}</p>
+                <strong>{% translate "Test the account to see if this error persists." %}</strong>
             </li>
         {% endif %}
     </ul>

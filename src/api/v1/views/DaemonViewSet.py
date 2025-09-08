@@ -135,7 +135,7 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
         daemon = self.get_object()
         response = Response(
             {
-                "detail": _("Tested daemon"),
+                "detail": _("Tested routine"),
             }
         )
         try:
@@ -168,10 +168,10 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
         daemon = self.get_object()
         result = daemon.start()
         if result:
-            response = Response({"detail": _("Daemon started")})
+            response = Response({"detail": _("Routine started")})
         else:
             response = Response(
-                {"detail": _("Daemon is already running")},
+                {"detail": _("Routine is already running")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         daemon.refresh_from_db()
@@ -198,10 +198,10 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
         daemon = self.get_object()
         result = daemon.stop()
         if result:
-            response = Response({"status": _("Daemon stopped")})
+            response = Response({"status": _("Routine stopped")})
         else:
             response = Response(
-                {"status": _("Daemon not running")},
+                {"status": _("Routine not running")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         daemon.refresh_from_db()

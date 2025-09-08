@@ -64,7 +64,7 @@
                              " href="{% url 'web:mailbox-filter-list' %}">{% translate "Mailboxes" %}<i class="fa-solid fa-inbox mx-1" aria-hidden="true"></i></a>
                             <a class="nav-link 
                                 {% block nav_class_daemons %}link-body-emphasis{% endblock nav_class_daemons %}
-                             " href="{% url 'web:daemon-filter-list' %}">{% translate "Daemons" %}<i class="fa-solid fa-robot mx-1" aria-hidden="true"></i></a>
+                             " href="{% url 'web:daemon-filter-list' %}">{% translate "Routines" %}<i class="fa-solid fa-calendar-days mx-1" aria-hidden="true"></i></a>
                         </div>
                         <div class="navbar-nav align-items-end">
                             {% if user.is_authenticated %}

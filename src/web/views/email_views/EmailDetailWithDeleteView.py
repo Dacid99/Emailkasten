@@ -85,20 +85,22 @@ class EmailDetailWithDeleteView(
             self.object.restore_to_mailbox()
         except NotImplementedError:
             messages.error(
-                request, _("POP accounts do not support restoring of emails.")
+                request,
+                _("POP accounts do not support restoring of emails to mailbox."),
             )
         except FileNotFoundError:
             messages.error(
                 request,
                 _("Restoring of email failed: %(error)s")
-                % {"error": _("eml file not found")},
+                % {"error": _("eml file not found.")},
             )
         except FetcherError as error:
             messages.error(
                 request,
-                _("Restoring of email failed: %(error)s") % {"error": str(error)},
+                _("Restoring of email to mailbox failed: %(error)s")
+                % {"error": str(error)},
             )
         else:
-            messages.success(request, _("Email restored successfully"))
+            messages.success(request, _("Email successfully restored to mailbox."))
 
         return self.get(request)

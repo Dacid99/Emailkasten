@@ -213,7 +213,7 @@ class EmailViewSet(
                 content_type="message/rfc822",
             )
         except FileNotFoundError:
-            raise Http404(_("eml file not found")) from None
+            raise Http404(_("eml file not found.")) from None
         return response
 
     URL_PATH_DOWNLOAD_BATCH = "download"
@@ -371,10 +371,13 @@ class EmailViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except FileNotFoundError:
-            raise Http404(_("eml file not found")) from None
+            raise Http404(_("eml file not found.")) from None
         except FetcherError as error:
             return Response(
-                {"detail": _("Restoring of email failed"), "error": str(error)},
+                {
+                    "detail": _("Restoring of email to mailbox failed."),
+                    "error": str(error),
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        return Response({"detail": _("Email restored successfully")})
+        return Response({"detail": _("Email successfully restored to mailbox.")})
