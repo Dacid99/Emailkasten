@@ -21,7 +21,6 @@
 - batch download and delete in web
 - download for account
 - mechanism to add missing connections between emails
-- restore email to mailbox on mailserver
 
 ## To refactor
 
@@ -60,7 +59,6 @@
 ## To fix
 
 - logging test fails
-- constance default values should not have been deleted
 - filteroptions for existing db entries leak other user data
 - fetching too many emails leads to browser timeout
 - optics:

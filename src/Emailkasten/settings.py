@@ -785,6 +785,16 @@ CONSTANCE_CONFIG = {
         ),
         "text",
     ),
+    "DEFAULT_SAVE_TO_EML": (
+        True,
+        _("Default mailbox setting whether to store mails as eml."),
+        bool,
+    ),
+    "DEFAULT_SAVE_ATTACHMENTS": (
+        True,
+        _("Default mailbox setting whether to store attachments."),
+        bool,
+    ),
     "REGISTRATION_ENABLED": (
         True,
         _(
@@ -796,6 +806,13 @@ CONSTANCE_CONFIG = {
 
 CONSTANCE_CONFIG_FIELDSETS = (
     (_("Server Configurations"), ("REGISTRATION_ENABLED",)),
+    (
+        _("Default Values"),
+        (
+            "DEFAULT_SAVE_TO_EML",
+            "DEFAULT_SAVE_ATTACHMENTS",
+        ),
+    ),
     (
         _("Processing Settings"),
         (
