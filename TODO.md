@@ -58,7 +58,6 @@
 
 ## To fix
 
-- logging test fails
 - filteroptions for existing db entries leak other user data
 - fetching too many emails leads to browser timeout
 - optics:

@@ -69,10 +69,5 @@ LOGGING = {
             "level": "ERROR",
             "propagate": True,
         },
-        "Emailkasten": {
-            "handlers": ["null"],
-            "level": "ERROR",
-            "propagate": True,
-        },
     },
 }

@@ -39,9 +39,9 @@ def production_logging(fake_fs):
 
 def test_emailkasten_logging(capsys, fake_message, production_logging):
     """Tests the emailkasten logger setup."""
-    core_logger = logging.getLogger("Emailkasten")
+    emailkasten_logger = logging.getLogger("Emailkasten")
 
-    core_logger.info(fake_message)
+    emailkasten_logger.info(fake_message)
 
     assert fake_message in capsys.readouterr().err
     with open(LOG_DIRECTORY_PATH / "emailkasten.log") as logfile:
