@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-10 17:12+0000\n"
-"PO-Revision-Date: 2025-09-05 12:01+0000\n"
-"Last-Translator: \"Mirko P.\" <michoo@outlook.de>\n"
+"PO-Revision-Date: 2025-09-11 18:01+0000\n"
+"Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/api/"
 "de/>\n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.1-rc\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: src/api/v1/mixins/ToggleFavoriteMixin.py:71
 #, python-format
@@ -35,7 +35,7 @@ msgstr "Ein Fehler mit dem Konto ist aufgetreten."
 
 #: src/api/v1/views/AccountViewSet.py:148
 msgid "Updated mailboxes"
-msgstr "Mailboxen aktualisiert"
+msgstr "Postfächer aktualisiert"
 
 #: src/api/v1/views/AccountViewSet.py:172
 msgid "Tested mailaccount"
@@ -48,10 +48,8 @@ msgid "Attachment file not found"
 msgstr "Anhang-Datei nicht gefunden"
 
 #: src/api/v1/views/AttachmentViewSet.py:203
-#, fuzzy
-#| msgid "Attachment ids missing in request."
 msgid "Attachment ids are required."
-msgstr "Anhangs-IDs fehlen in der Anfrage."
+msgstr "Anhangs-IDs werden benötigt."
 
 #: src/api/v1/views/AttachmentViewSet.py:211
 msgid "Attachment ids given in invalid format."
@@ -64,74 +62,56 @@ msgstr "Keine Anhänge gefunden"
 #. Translators: Paperless is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:297
 msgid "Upload to Paperless failed."
-msgstr ""
+msgstr "Hochladen zu Paperless fehlgeschlagen."
 
 #. Translators: Paperless is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:303
 msgid "Uploaded attachment document to Paperless."
-msgstr ""
+msgstr "Anhangsdokument zu Paperless hochgeladen."
 
 #: src/api/v1/views/CorrespondentViewSet.py:198
-#, fuzzy
-#| msgid "Correspondent ids missing in request."
 msgid "Correspondent ids are required."
-msgstr "Korrespondenz-IDs fehlen in der Anfrage."
+msgstr "Korrespondenten-IDs werden benötigt."
 
 #: src/api/v1/views/CorrespondentViewSet.py:205
 msgid "Correspondent ids given in invalid format."
-msgstr "Die angegebenen Korrespondenz-IDs haben ein ungültiges Format."
+msgstr "Die angegebenen Korrespondenten-IDs haben ein ungültiges Format."
 
 #: src/api/v1/views/CorrespondentViewSet.py:212
 msgid "No correspondents found"
 msgstr "Keine Korrespondenten gefunden"
 
 #: src/api/v1/views/DaemonViewSet.py:138
-#, fuzzy
-#| msgid "Tested daemon"
 msgid "Tested routine"
-msgstr "Daemon getestet"
+msgstr "Routine getestet"
 
 #: src/api/v1/views/DaemonViewSet.py:171
-#, fuzzy
-#| msgid "Daemon started"
 msgid "Routine started"
-msgstr "Daemon gestartet"
+msgstr "Routine gestartet"
 
 #: src/api/v1/views/DaemonViewSet.py:174
-#, fuzzy
-#| msgid "Daemon is already running"
 msgid "Routine is already running"
-msgstr "Daemon war bereits aktiviert"
+msgstr "Routine war bereits aktiviert"
 
 #: src/api/v1/views/DaemonViewSet.py:201
-#, fuzzy
-#| msgid "Daemon stopped"
 msgid "Routine stopped"
-msgstr "Daemon gestoppt"
+msgstr "Routine gestoppt"
 
 #: src/api/v1/views/DaemonViewSet.py:204
-#, fuzzy
-#| msgid "Daemon not running"
 msgid "Routine not running"
-msgstr "Daemon nicht aktiv"
+msgstr "Routine nicht aktiv"
 
 #: src/api/v1/views/EmailViewSet.py:216 src/api/v1/views/EmailViewSet.py:374
-#, fuzzy
-#| msgid "eml file not found"
 msgid "eml file not found."
-msgstr "eml-Datei nicht gefunden"
+msgstr "eml-Datei nicht gefunden."
 
 #: src/api/v1/views/EmailViewSet.py:247 src/api/v1/views/MailboxViewSet.py:306
-#, fuzzy
-#| msgid "File format missing in request."
 msgid "File format is required."
-msgstr "Dateiformat fehlt in der Anfrage."
+msgstr "Dateiformat wird benötigt."
 
 #: src/api/v1/views/EmailViewSet.py:252
-#, fuzzy
-#| msgid "Email ids missing in request."
 msgid "Email ids are required."
-msgstr "E-Mail-IDs fehlen in der Anfrage."
+msgstr "E-Mail-IDs werden benötigt."
 
 #: src/api/v1/views/EmailViewSet.py:260
 msgid "Email ids given in invalid format."
@@ -148,37 +128,34 @@ msgstr "Keine E-Mails gefunden"
 
 #: src/api/v1/views/EmailViewSet.py:370
 msgid "POP accounts do not support restoring of emails."
-msgstr ""
+msgstr "POP Konten unterstützen das Wiederherstellen von E-Mails nicht."
 
 #: src/api/v1/views/EmailViewSet.py:378
 msgid "Restoring of email to mailbox failed."
-msgstr ""
+msgstr "Wiederherstellen der E-Mail im Postfach fehlgeschlagen."
 
 #: src/api/v1/views/EmailViewSet.py:383
-#, fuzzy
-#| msgid "Successfully uploaded mailbox file."
 msgid "Email successfully restored to mailbox."
-msgstr "Mailbox-Datei erfolgreich hochgeladen."
+msgstr "E-Mail wurde erfolgreich im Postfach wiederhergestellt."
 
 #: src/api/v1/views/MailboxViewSet.py:190
 msgid "Tested mailbox"
-msgstr "Mailbox getestet"
+msgstr "Postfach getestet"
 
 #: src/api/v1/views/MailboxViewSet.py:251
-#, fuzzy
-#| msgid "Fetching criterion missing in request."
 msgid "Fetching criterion is required."
-msgstr "Abrufkriterium fehlt in der Anfrage."
+msgstr "Abrufkriterium wird benötigt."
 
 #: src/api/v1/views/MailboxViewSet.py:257
-#, fuzzy, python-format
-#| msgid "The given fetching criterion is not available for this mailbox."
+#, python-format
 msgid "The given criterion %(criterion)s is not available for this mailbox."
-msgstr "Das angegebene Abrufkriterium ist für dieses Postfach nicht verfügbar."
+msgstr ""
+"Das angegebene Abrufkriterium %(criterion)s ist für dieses Postfach nicht "
+"verfügbar."
 
 #: src/api/v1/views/MailboxViewSet.py:267
 msgid "Error with mailaccount or mailbox occurred."
-msgstr "Fehler mit Konto oder Mailbox ist aufgetreten."
+msgstr "Fehler mit Konto oder Postfach aufgetreten."
 
 #: src/api/v1/views/MailboxViewSet.py:273
 msgid "All emails fetched."
