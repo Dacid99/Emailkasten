@@ -191,6 +191,60 @@ class SupportedEmailUploadFormats(TextChoices):
     MAILDIR = "zip[maildir]", _(".zip with maildir mailbox inside")
 
 
+PROTOCOLS_SUPPORTING_RESTORE: tuple[str] = (
+    EmailProtocolChoices.IMAP,
+    EmailProtocolChoices.IMAP4_SSL,
+    EmailProtocolChoices.EXCHANGE,
+)
+"""All protocols supporting restoring of emails."""
+
+HTML_SUPPORTED_AUDIO_TYPE: tuple[str] = (
+    "ogg",
+    "wav",
+    "mpeg",
+    "aac",
+)
+"""All audio types supported by html elements."""
+
+HTML_SUPPORTED_VIDEO_TYPES: tuple[str] = (
+    "ogg",
+    "mp4",
+    "mpeg",
+    "webm",
+    "avi",
+)
+"""All video types supported by html elements."""
+
+PAPERLESS_SUPPORTED_IMAGE_TYPES: tuple[str] = (
+    "png",
+    "jpeg",
+    "pjpeg",
+    "tiff",
+    "x-tiff",
+    "gif",
+    "webp",
+)
+"""All image types supported by Paperless."""
+
+PAPERLESS_TIKA_SUPPORTED_MIMETYPES: tuple[str] = (
+    "msword",
+    "vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "vnd.oasis.opendocument.text",
+    "powerpoint",
+    "mspowerpoint",
+    "vnd.ms-powerpoint",
+    "vnd.openxmlformats-officedocument.presentationml.presentation",
+    "vnd.oasis.opendocument.presentation",
+    "excel",
+    "msexcel",
+    "x-excel",
+    "x-msexcel",
+    "vnd.ms-excel",
+    "vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "vnd.oasis.opendocument.spreadsheet",
+)
+"""All application types supported by Paperless Tika."""
+
 file_format_parsers: Final[
     dict[
         str,

@@ -38,7 +38,7 @@ from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import (
-    EmailProtocolChoices,
+    PROTOCOLS_SUPPORTING_RESTORE,
     HeaderFields,
     SupportedEmailDownloadFormats,
     file_format_parsers,
@@ -405,12 +405,7 @@ class Email(
         """
         return (
             self.file_path is not None
-            and self.mailbox.account.protocol
-            in [
-                EmailProtocolChoices.IMAP,
-                EmailProtocolChoices.IMAP4_SSL,
-                EmailProtocolChoices.EXCHANGE,
-            ]
+            and self.mailbox.account.protocol in PROTOCOLS_SUPPORTING_RESTORE
             and self.mailbox.is_healthy
         )
 

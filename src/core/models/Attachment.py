@@ -35,7 +35,13 @@ from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 
-from core.constants import HeaderFields
+from core.constants import (
+    HTML_SUPPORTED_AUDIO_TYPE,
+    HTML_SUPPORTED_VIDEO_TYPES,
+    PAPERLESS_SUPPORTED_IMAGE_TYPES,
+    PAPERLESS_TIKA_SUPPORTED_MIMETYPES,
+    HeaderFields,
+)
 from core.mixins import (
     DownloadMixin,
     FavoriteModelMixin,
@@ -260,11 +266,11 @@ class Attachment(
                 )
                 or (
                     self.content_maintype == "audio"
-                    and self.content_subtype in ["ogg", "wav", "mpeg", "aac"]
+                    and self.content_subtype in HTML_SUPPORTED_AUDIO_TYPE
                 )
                 or (
                     self.content_maintype == "video"
-                    and self.content_subtype in ["ogg", "mp4", "mpeg", "webm", "avi"]
+                    and self.content_subtype in HTML_SUPPORTED_VIDEO_TYPES
                 )
                 or (
                     self.content_maintype == "application"
@@ -298,8 +304,7 @@ class Attachment(
             (self.content_maintype == "text" and self.content_subtype == "plain")
             or (
                 self.content_maintype == "image"
-                and self.content_subtype
-                in ["png", "jpeg", "pjpeg", "tiff", "x-tiff", "gif", "webp"]
+                and self.content_subtype in PAPERLESS_SUPPORTED_IMAGE_TYPES
             )
             or (
                 self.content_maintype == "application"
@@ -307,24 +312,7 @@ class Attachment(
                     self.content_subtype == "pdf"
                     or (
                         self.email.mailbox.account.user.profile.paperless_tika_enabled
-                        and self.content_subtype
-                        in [
-                            "msword",
-                            "vnd.openxmlformats-officedocument.wordprocessingml.document",
-                            "vnd.oasis.opendocument.text",
-                            "powerpoint",
-                            "mspowerpoint",
-                            "vnd.ms-powerpoint",
-                            "vnd.openxmlformats-officedocument.presentationml.presentation",
-                            "vnd.oasis.opendocument.presentation",
-                            "excel",
-                            "msexcel",
-                            "x-excel",
-                            "x-msexcel",
-                            "vnd.ms-excel",
-                            "vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "vnd.oasis.opendocument.spreadsheet",
-                        ]
+                        and self.content_subtype in PAPERLESS_TIKA_SUPPORTED_MIMETYPES
                     )
                 )
             )
