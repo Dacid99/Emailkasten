@@ -60,9 +60,3 @@
 - fetching too many emails leads to browser timeout
 - ci:
   - djlint has no files to lint
-
-
-- squash migrations 1-42
-- docs
-- translations
-- dependencies (licenses too)
