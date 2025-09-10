@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-10 17:12+0000\n"
-"PO-Revision-Date: 2025-09-05 12:01+0000\n"
-"Last-Translator: \"Mirko P.\" <michoo@outlook.de>\n"
+"PO-Revision-Date: 2025-09-11 18:01+0000\n"
+"Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/web/"
 "de/>\n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.1-rc\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: src/web/filters/AccountFilterSet.py:55
 #: src/web/filters/AttachmentFilterSet.py:55
@@ -86,36 +86,22 @@ msgid "Pick a file for upload."
 msgstr "Wähle eine Datei zum Hochladen."
 
 #: src/web/mixins/TestActionMixin.py:47
-#, fuzzy, python-format
-#| msgid ""
-#| "Test failed, there is something wrong with this objects setup\n"
-#| "%(error)s"
+#, python-format
 msgid ""
 "Test failed, there is something wrong with this objects setup: %(error)s"
 msgstr ""
-"Test fehlgeschlagen, etwas stimmt nicht mit der Konfiguration dieses "
-"Objekts.\n"
-"%(error)s"
+"Test fehlgeschlagen, etwas stimmt nicht mit der Konfiguration dieses Objekts:"
+" %(error)s"
 
 #: src/web/mixins/TestActionMixin.py:52
-#, fuzzy, python-format
-#| msgid ""
-#| "Test failed\n"
-#| "%(error)s"
+#, python-format
 msgid "Test failed: %(error)s"
-msgstr ""
-"Test fehlgeschlagen\n"
-"%(error)s"
+msgstr "Test fehlgeschlagen: %(error)s"
 
 #: src/web/mixins/TestActionMixin.py:56
-#, fuzzy, python-format
-#| msgid ""
-#| "Test failed due to an unexpected error\n"
-#| "%(error)s"
+#, python-format
 msgid "Test failed due to an unexpected error: %(error)s"
-msgstr ""
-"Test fehlgeschlagen aufgrund eines unerwarteten Fehlers\n"
-"%(error)s"
+msgstr "Test fehlgeschlagen aufgrund eines unerwarteten Fehlers: %(error)s"
 
 #: src/web/mixins/TestActionMixin.py:60
 msgid "Test was successful"
@@ -226,7 +212,7 @@ msgstr "Zeitbegrenzung"
 
 #: src/web/templates/web/account/account_detail.html:56
 msgid "None"
-msgstr ""
+msgstr "Keins"
 
 #: src/web/templates/web/account/account_detail.html:61
 #: src/web/templates/web/daemon/daemon_detail.html:57
@@ -238,13 +224,11 @@ msgstr "Letzter Fehler"
 #: src/web/templates/web/daemon/daemon_detail.html:61
 #: src/web/templates/web/mailbox/mailbox_detail.html:72
 msgid "Occurred At"
-msgstr ""
+msgstr "Aufgetreten um"
 
 #: src/web/templates/web/account/account_detail.html:66
-#, fuzzy
-#| msgid "Test this account to make sure it can be accessed."
 msgid "Test the account to see if this error persists."
-msgstr "Teste dieses Konto um zu überprüfen dass der Zugriff funktioniert."
+msgstr "Teste dieses Konto um zu überprüfen ob der Fehler weiter auftritt."
 
 #: src/web/templates/web/account/account_detail.html:77
 #: src/web/templates/web/bases/base.html:64
@@ -424,7 +408,7 @@ msgstr "Korrespondenten"
 #: src/web/templates/web/daemon/daemon_filter_list.html:14
 #: src/web/templates/web/mailbox/mailbox_detail.html:84
 msgid "Routines"
-msgstr ""
+msgstr "Routinen"
 
 #: src/web/templates/web/bases/base_create.html:13
 #: src/web/templates/web/bases/base_detail.html:21
@@ -435,29 +419,21 @@ msgstr "Leiste mit Knopfgruppen"
 #: src/web/templates/web/bases/base_create.html:16
 #: src/web/templates/web/bases/base_detail.html:42
 #: src/web/templates/web/bases/base_detail_with_thumbnail.html:40
-#, fuzzy
-#| msgid "Close button group"
 msgid "Close-buttons group"
-msgstr "Knopfgruppe schließen"
+msgstr "Schließen-Knöpfe-Gruppe"
 
 #: src/web/templates/web/bases/base_detail.html:24
-#, fuzzy
-#| msgid "Action button group"
 msgid "Action-buttons groups"
-msgstr "Aktionen-Knopfgruppe"
+msgstr "Aktionen-Knöpfe-Gruppe"
 
 #: src/web/templates/web/bases/base_detail.html:32
 #: src/web/templates/web/bases/base_detail_with_thumbnail.html:30
-#, fuzzy
-#| msgid "Edit button group"
 msgid "Edit-buttons group"
-msgstr "Bearbeitungs-Knopfgruppe"
+msgstr "Bearbeitungs-Knöpfe-Gruppe"
 
 #: src/web/templates/web/bases/base_detail_with_thumbnail.html:22
-#, fuzzy
-#| msgid "Action button group"
 msgid "Action-buttons group"
-msgstr "Aktionen-Knopfgruppe"
+msgstr "Aktionen-Knöpfe-Gruppe"
 
 #: src/web/templates/web/bases/base_filter_list.html:11
 msgid "Show filter options"
@@ -528,16 +504,12 @@ msgstr ""
 "Du kannst einige hinzufügen, indem du E-Mails aus deinen Mailboxen abrufst."
 
 #: src/web/templates/web/daemon/daemon_create.html:6
-#, fuzzy
-#| msgid "Add Account"
 msgid "Add Routine"
-msgstr "Konto hinzufügen"
+msgstr "Routine hinzufügen"
 
 #: src/web/templates/web/daemon/daemon_detail.html:6
-#, fuzzy
-#| msgid "Account Details"
 msgid "Routine Details"
-msgstr "Konto Details"
+msgstr "Routinen Details"
 
 #: src/web/templates/web/daemon/daemon_detail.html:38
 #: src/web/templates/web/daemon/daemon_detail.html:72
@@ -577,16 +549,12 @@ msgid "Total Run Count"
 msgstr "Gesamtzahl Ausführungen"
 
 #: src/web/templates/web/daemon/daemon_detail.html:62
-#, fuzzy
-#| msgid "Test the daemon to see what is going wrong."
 msgid "Test the routine to see if this error persists."
-msgstr "Testen Sie den Daemon, um festzustellen, was schief läuft."
+msgstr "Teste die Routine, um festzustellen, ob der Fehler weiter auftritt."
 
 #: src/web/templates/web/daemon/daemon_edit.html:6
-#, fuzzy
-#| msgid "Edit Account"
 msgid "Edit Routine"
-msgstr "Konto bearbeiten"
+msgstr "Routine bearbeiten"
 
 #: src/web/templates/web/daemon/partials/_add_button.html:6
 msgid "Add daemon"
@@ -599,10 +567,8 @@ msgid "Download"
 msgstr "Herunterladen"
 
 #: src/web/templates/web/daemon/partials/_filter_list_alternative.html:7
-#, fuzzy
-#| msgid "No daemons found."
 msgid "No routines found."
-msgstr "Keine Daemons gefunden."
+msgstr "Keine Routinen gefunden."
 
 #: src/web/templates/web/daemon/partials/_filter_list_alternative.html:11
 msgid "Add one to a mailbox to fetch its contents on a regular basis."
@@ -648,11 +614,11 @@ msgstr "Anzahl"
 #: src/web/templates/web/email/archive/base_archive.html:6
 #: src/web/templates/web/email/email_filter_list.html:20
 msgid "Timeline"
-msgstr ""
+msgstr "Chronik"
 
 #: src/web/templates/web/email/archive/base_archive.html:18
 msgid "Email Timeline"
-msgstr ""
+msgstr "E-Mail Chronik"
 
 #: src/web/templates/web/email/archive/day.html:6
 #: src/web/templates/web/email/archive/day.html:10
@@ -763,7 +729,7 @@ msgstr "Du kannst einige aus Mailboxen, die du eingerichtet hast, abrufen."
 
 #: src/web/templates/web/email/partials/_restore_email-button.html:7
 msgid "Restore"
-msgstr ""
+msgstr "Wiederherstellen"
 
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:6
 msgid "Add Daemon"
@@ -800,12 +766,8 @@ msgid "Save mails as .eml"
 msgstr "E-Mails als .eml speichern"
 
 #: src/web/templates/web/mailbox/mailbox_detail.html:73
-#, fuzzy
-#| msgid "Test this mailbox to make sure it can be accessed."
 msgid "Test the mailbox to see if this error persists."
-msgstr ""
-"Teste diese Mailbox, um sicherzustellen, dass auf sie zugegriffen werden "
-"kann."
+msgstr "Teste dieses Postfach, um zu überprüfen ob der Fehler weiter auftritt."
 
 #: src/web/templates/web/mailbox/mailbox_edit.html:6
 msgid "Edit Mailbox"
@@ -816,10 +778,8 @@ msgid "of"
 msgstr "von"
 
 #: src/web/templates/web/mailbox/partials/_add_daemon_button.html:7
-#, fuzzy
-#| msgid "Add Account"
 msgid "Add routine"
-msgstr "Konto hinzufügen"
+msgstr "Routine hinzufügen"
 
 #: src/web/templates/web/mailbox/partials/_daemons_list_alternative.html:8
 msgid ""
@@ -933,15 +893,15 @@ msgstr "Filtern"
 
 #: src/web/templates/web/partials/_footer.html:7
 msgid "2025 David Aderbauer"
-msgstr ""
+msgstr "2025 David Aderbauer"
 
 #: src/web/templates/web/partials/_footer.html:9
 msgid "&amp; The Emailkasten Contributors."
-msgstr ""
+msgstr "&amp; die Beitragenden zu Emailkasten."
 
 #: src/web/templates/web/partials/_footer.html:10
 msgid "Licensed under the AGPLv3."
-msgstr ""
+msgstr "Lizensiert unter AGPLv3."
 
 #: src/web/templates/web/partials/_footer.html:15
 msgid "Gitlab"
@@ -1008,24 +968,17 @@ msgid " *"
 msgstr " *"
 
 #: src/web/views/account_views/AccountDetailWithDeleteView.py:95
-#, fuzzy, python-format
-#| msgid ""
-#| "Updating mailboxes failed\n"
-#| "%(error)s"
+#, python-format
 msgid "Updating mailboxes failed: %(error)s"
-msgstr ""
-"Aktualisierung der Mailboxen fehlgeschlagen\n"
-"%(error)s"
+msgstr "Aktualisierung der Postfächer fehlgeschlagen: %(error)s"
 
 #: src/web/views/account_views/AccountDetailWithDeleteView.py:98
 msgid "Updating mailboxes successful"
 msgstr "Mailboxen erfolgreich aktualisiert"
 
 #: src/web/views/attachment_views/AttachmentDetailWithDeleteView.py:85
-#, fuzzy
-#| msgid "Updating mailboxes successful"
 msgid "Sharing to Paperless successful"
-msgstr "Mailboxen erfolgreich aktualisiert"
+msgstr "Teilen mit Paperless erfolgreich"
 
 #: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:80
 msgid "Daemon started successfully"
@@ -1045,37 +998,25 @@ msgstr "Daemon war nicht aktiv"
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:89
 msgid "POP accounts do not support restoring of emails to mailbox."
-msgstr ""
+msgstr "POP Konten unterstützen das Wiederherstellen von E-Mails nicht."
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:94
-#, fuzzy, python-format
-#| msgid ""
-#| "Updating mailboxes failed\n"
-#| "%(error)s"
+#, python-format
 msgid "Restoring of email failed: %(error)s"
-msgstr ""
-"Aktualisierung der Mailboxen fehlgeschlagen\n"
-"%(error)s"
+msgstr "Wiederherstellen der E-Mail fehlgeschlagen: %(error)s"
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:95
-#, fuzzy
-#| msgid "No email accounts found."
 msgid "eml file not found."
-msgstr "Keine E-Mail-Konten gefunden."
+msgstr "eml-Datei nicht gefunden."
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:100
-#, fuzzy, python-format
-#| msgid ""
-#| "Updating mailboxes failed\n"
-#| "%(error)s"
+#, python-format
 msgid "Restoring of email to mailbox failed: %(error)s"
-msgstr ""
-"Aktualisierung der Mailboxen fehlgeschlagen\n"
-"%(error)s"
+msgstr "Wiederherstellen der E-Mail fehlgeschlagen: %(error)s"
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:104
 msgid "Email successfully restored to mailbox."
-msgstr ""
+msgstr "E-Mail wurde erfolgreich im Postfach wiederhergestellt."
 
 #: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:97
 #, python-format
@@ -1085,14 +1026,9 @@ msgstr ""
 "verfügbar."
 
 #: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:106
-#, fuzzy, python-format
-#| msgid ""
-#| "Fetching failed\n"
-#| "%(error)s"
+#, python-format
 msgid "Fetching failed: %(error)s"
-msgstr ""
-"Abrufen fehlgeschlagen\n"
-"%(error)s"
+msgstr "Abrufen fehlgeschlagen: %(error)s"
 
 #: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:109
 msgid "Fetching successful"
