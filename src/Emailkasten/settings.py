@@ -109,7 +109,7 @@ INSTALLED_APPS = [
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends." + env("DATABASE_TYPE", default="mysql"),
         "NAME": env("DATABASE", default="email_archive_django"),
         "USER": env("DATABASE_USER", default="user"),
         "PASSWORD": env("DATABASE_PASSWORD", default="passwd"),

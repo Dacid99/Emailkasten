@@ -41,6 +41,7 @@
 - test failing single message fetch (imap,pop)
 - page_obj of list views for correct email content
 - remove values in action test-requests
+- postgres instead of mariadb
 
 ## To implement
 
