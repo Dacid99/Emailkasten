@@ -63,6 +63,25 @@ class UserProfile(models.Model):
         # Translators: Paperless and Tika are brand names.
         help_text=_("Whether Tika support is enabled on your Paperless server."),
     )
+    immich_url = models.URLField(
+        default="",
+        blank=True,
+        max_length=255,
+        validators=[URLValidator(schemes=["http", "https"])],
+        # Translators: Do not capitalize the very first letter unless your language requires it. Immich is a brand name.
+        verbose_name=_("Immich server URL"),
+        # Translators: Immich is a brand name.
+        help_text=_("URL of your Immich server."),
+    )
+    immich_api_key = models.CharField(
+        default="",
+        blank=True,
+        max_length=255,
+        # Translators: Do not capitalize the very first letter unless your language requires it. Immich is a brand name.
+        verbose_name=_("Immich server API key"),
+        # Translators: Immich is a brand name.
+        help_text=_("API key for your Immich server."),
+    )
 
     class Meta:
         """Metadata class for the model."""

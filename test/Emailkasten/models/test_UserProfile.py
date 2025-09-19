@@ -32,6 +32,10 @@ def test_UserProfile_fields(owner_user):
     assert owner_user.profile.paperless_api_key is not None
     assert isinstance(owner_user.profile.paperless_api_key, str)
     assert owner_user.profile.paperless_tika_enabled is False
+    assert owner_user.profile.immich_url is not None
+    assert isinstance(owner_user.profile.immich_url, str)
+    assert owner_user.profile.immich_api_key is not None
+    assert isinstance(owner_user.profile.immich_api_key, str)
 
 
 @pytest.mark.django_db

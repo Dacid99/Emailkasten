@@ -38,6 +38,9 @@ from rest_framework import status
 from core.constants import (
     HTML_SUPPORTED_AUDIO_TYPE,
     HTML_SUPPORTED_VIDEO_TYPES,
+    IMMICH_SUPPORTED_APPLICATION_TYPES,
+    IMMICH_SUPPORTED_IMAGE_TYPES,
+    IMMICH_SUPPORTED_VIDEO_TYPES,
     PAPERLESS_SUPPORTED_IMAGE_TYPES,
     PAPERLESS_TIKA_SUPPORTED_MIMETYPES,
     HeaderFields,
@@ -175,17 +178,17 @@ class Attachment(
         return str(self.pk) + "_" + self.file_name
 
     def share_to_paperless(self) -> str:
-        """Sends this attachment to the paperless server of its user.
+        """Sends this attachment to the Paperless server of its user.
 
         Returns:
-            The uuid string of the paperless consumer task for the document.
+            The uuid string of the Paperless consumer task for the document.
 
         Raises:
             FileNotFoundError: If the attachment file was not found in the storage.
-            RuntimeError: If the users paperless URL is not or improperly set.
-            ConnectionError: If connecting to paperless failed.
-            PermissionError: If authentication to paperless failed.
-            ValueError: If uploading the file to paperless resulted in a bad response.
+            RuntimeError: If the users Paperless URL is not or improperly set.
+            ConnectionError: If connecting to Paperless failed.
+            PermissionError: If authentication to Paperless failed.
+            ValueError: If uploading the file to Paperless resulted in a bad response.
         """
         paperless_baseurl = (
             self.email.mailbox.account.user.profile.paperless_url.rstrip("/")
@@ -195,56 +198,137 @@ class Attachment(
         )
         post_document_url = paperless_baseurl + "/api/documents/post_document/"
         headers = {
-            "Authorization": f"Token {self.email.mailbox.account.user.profile.paperless_api_key}".strip()
+            "Accept": "application/json",
+            "Authorization": f"Token {self.email.mailbox.account.user.profile.paperless_api_key}".strip(),
         }  # stripping the entire string to create a valid header even if the token is empty
-        with self.open_file() as document:
-            try:
+        try:
+            with self.open_file() as document:
                 response = httpx.post(
                     post_document_url,
                     headers=headers,
                     data={"title": self.file_name, "created": str(self.created)},
                     files={"document": (self.file_name, document, self.content_type)},
                 )
-            except (
-                httpcore.UnsupportedProtocol,
-                httpx.UnsupportedProtocol,
-                httpx.InvalidURL,
-            ) as error:
-                logger.info(
-                    "Failed to send attachment to Paperless.",
-                    exc_info=True,
-                )
+        except (
+            httpcore.UnsupportedProtocol,
+            httpx.UnsupportedProtocol,
+            httpx.InvalidURL,
+        ) as error:
+            logger.info(
+                "Failed to send attachment to Paperless.",
+                exc_info=True,
+            )
+            raise RuntimeError(
                 # Translators: Paperless is a brand name.
-                raise RuntimeError(
-                    _("Paperless URL is malformed: %(error)s") % {"error": error}
-                ) from error
-            except httpx.RequestError as error:
-                logger.info("Failed to send attachment to Paperless.", exc_info=True)
-                raise ConnectionError(
+                _("Paperless URL is malformed: %(error)s")
+                % {"error": error}
+            ) from error
+        except httpx.RequestError as error:
+            logger.info("Failed to send attachment to Paperless.", exc_info=True)
+            raise ConnectionError(
+                # Translators: Paperless is a brand name.
+                _("Error connecting to the Paperless server: %(error)s")
+                % {"error": error}
+            ) from error
+        try:
+            response.raise_for_status()
+        except httpx.HTTPStatusError as error:
+            logger.info("Failed to send attachment to Paperless.", exc_info=True)
+            if error.response.status_code in [
+                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_403_FORBIDDEN,
+            ]:
+                raise PermissionError(
                     # Translators: Paperless is a brand name.
-                    _("Error connecting to the Paperless server: %(error)s")
-                    % {"error": error}
-                ) from error
-            try:
-                response.raise_for_status()
-            except httpx.HTTPStatusError as error:
-                logger.info("Failed to send attachment to Paperless.", exc_info=True)
-                if error.response.status_code in [
-                    status.HTTP_401_UNAUTHORIZED,
-                    status.HTTP_403_FORBIDDEN,
-                ]:
-                    raise PermissionError(
-                        # Translators: Paperless is a brand name.
-                        _("Authentication to Paperless failed: %(response)s")
-                        % {"response": error.response.json()}
-                    ) from error
-                # Translators: Paperless is a brand name.
-                raise ValueError(
-                    _("Uploading to Paperless failed: %(response)s")
+                    _("Authentication to Paperless failed: %(response)s")
                     % {"response": error.response.json()}
                 ) from error
-            logger.debug("Successfully sent attachment to Paperless.")
-            return response.json()
+            raise ValueError(
+                # Translators: Paperless is a brand name.
+                _("Uploading to Paperless failed: %(response)s")
+                % {"response": error.response.json()}
+            ) from error
+        logger.debug("Successfully sent attachment to Paperless.")
+        return response.json()
+
+    def share_to_immich(self) -> str:
+        """Sends this attachment to the Immich server of its user.
+
+        Returns:
+            The response by Immich with the id string of the stored immich image.
+
+        Raises:
+            FileNotFoundError: If the attachment file was not found in the storage.
+            RuntimeError: If the users Immich URL is not or improperly set.
+            ConnectionError: If connecting to Immich failed.
+            PermissionError: If authentication to Immich failed.
+            ValueError: If uploading the file to Immich resulted in a bad response.
+        """
+        immich_baseurl = self.email.mailbox.account.user.profile.immich_url.rstrip("/")
+        logger.debug("Sending %s to Immich server at %s ...", str(self), immich_baseurl)
+        post_document_url = immich_baseurl + "/api/assets"
+        headers = {
+            "Accept": "application/json",
+            "x-api-key": self.email.mailbox.account.user.profile.immich_api_key.strip(),
+        }
+        try:
+            with self.open_file() as image_file:
+                response = httpx.post(
+                    post_document_url,
+                    headers=headers,
+                    data={
+                        "assetId": self.file_name,
+                        "deviceAssetId": "emailkasten",
+                        "deviceId": "emailkasten",
+                        "fileCreatedAt": str(self.created.date()),
+                        "fileModifiedAt": str(self.created.date()),
+                        "metadata": [],
+                    },
+                    files={
+                        "assetData": (self.file_name, image_file, self.content_type)
+                    },
+                )
+        except (
+            httpcore.UnsupportedProtocol,
+            httpx.UnsupportedProtocol,
+            httpx.InvalidURL,
+        ) as error:
+            logger.info(
+                "Failed to send attachment to Immich.",
+                exc_info=True,
+            )
+            raise RuntimeError(
+                # Translators: Immich is a brand name.
+                _("Immich URL is malformed: %(error)s")
+                % {"error": error}
+            ) from error
+        except httpx.RequestError as error:
+            logger.info("Failed to send attachment to Immich.", exc_info=True)
+            raise ConnectionError(
+                # Translators: Immich is a brand name.
+                _("Error connecting to the Immich server: %(error)s")
+                % {"error": error}
+            ) from error
+        try:
+            response.raise_for_status()
+        except httpx.HTTPStatusError as error:
+            logger.info("Failed to send attachment to Immich.", exc_info=True)
+            if error.response.status_code in [
+                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_403_FORBIDDEN,
+            ]:
+                raise PermissionError(
+                    # Translators: Immich is a brand name.
+                    _("Authentication to Immich failed: %(response)s")
+                    % {"response": error.response.json()}
+                ) from error
+            raise ValueError(
+                # Translators: Immich is a brand name.
+                _("Uploading to Immich failed: %(response)s")
+                % {"response": error.response.json()}
+            ) from error
+        logger.debug("Successfully sent attachment to Immich.")
+        return response.json()
 
     @override
     @cached_property
@@ -315,6 +399,28 @@ class Attachment(
                         and self.content_subtype in PAPERLESS_TIKA_SUPPORTED_MIMETYPES
                     )
                 )
+            )
+        )
+
+    @property
+    def is_shareable_to_immich(self) -> bool:
+        """Whether the attachment has a mimetype that can be processed by a Immich server.
+
+        References:
+            https://immich.app/docs/features/supported-formats/
+        """
+        return self.file_path is not None and (
+            (
+                self.content_maintype == "image"
+                and self.content_subtype in IMMICH_SUPPORTED_IMAGE_TYPES
+            )
+            or (
+                self.content_maintype == "video"
+                and self.content_subtype in IMMICH_SUPPORTED_VIDEO_TYPES
+            )
+            or (
+                self.content_maintype == "application"
+                and self.content_subtype in IMMICH_SUPPORTED_APPLICATION_TYPES
             )
         )
 

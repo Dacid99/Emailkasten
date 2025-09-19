@@ -92,6 +92,14 @@ def mock_Attachment_share_to_paperless(mocker):
 
 
 @pytest.fixture
+def mock_Attachment_share_to_immich(mocker):
+    """Patches `core.models.Attachment.share_to_immich`."""
+    return mocker.patch(
+        "core.models.Attachment.Attachment.share_to_immich", autospec=True
+    )
+
+
+@pytest.fixture
 def mock_Email_restore_to_mailbox(mocker):
     """Patches `core.models.Email.restore_to_mailbox`."""
     return mocker.patch("core.models.Email.Email.restore_to_mailbox")

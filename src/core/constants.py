@@ -245,6 +245,54 @@ PAPERLESS_TIKA_SUPPORTED_MIMETYPES: tuple[str] = (
 )
 """All application types supported by Paperless Tika."""
 
+IMMICH_SUPPORTED_APPLICATION_TYPES = ("photoshop", "x-matroska", "mp4")
+"""All application types supported by Immich."""
+
+IMMICH_SUPPORTED_IMAGE_TYPES = (
+    "avif",
+    "bmp",
+    "x-bmp",
+    "x-ms-bmp",
+    "gif",
+    "heic",
+    "heif",
+    "jp2",
+    "jpeg",
+    "pjpeg",
+    "jxl",
+    "png",
+    "vnd.adobe.photoshop",
+    "x-psd",
+    "raw",
+    "x-raw-panasonic",
+    "x-panasonic-raw",
+    "x-panasonic-raw2",
+    "x-panasonic-rw",
+    "x-panasonic-rw2",
+    "svg+xml",
+    "tiff",
+    "x-tiff",
+    "webp",
+)
+"""All image types supported by Immich."""
+
+IMMICH_SUPPORTED_VIDEO_TYPES = (
+    "3gpp",
+    "x-msvideo",
+    "x-flv",
+    "x-m4v",
+    "matroska",
+    "x-matroska",
+    "matroska-3d",
+    "mp2t",
+    "mp4",
+    "mpeg",
+    "quicktime",
+    "webm",
+    "x-ms-wmv",
+)
+"""All video types supported by Immich."""
+
 file_format_parsers: Final[
     dict[
         str,

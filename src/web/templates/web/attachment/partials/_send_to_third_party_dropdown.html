@@ -10,8 +10,18 @@
            aria-hidden="Share"></i>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownSendMenuButton">
-        <li>
-            <button class="btn dropdown-item" type="submit" name="share_to_paperless">Paperless</button>
-        </li>
+        {% if attachment.is_shareable_to_paperless %}
+            <li>
+                <button class="btn dropdown-item"
+                        type="submit"
+                        name="share"
+                        value="paperless">Paperless</button>
+            </li>
+        {% endif %}
+        {% if attachment.is_shareable_to_immich %}
+            <li>
+                <button class="btn dropdown-item" type="submit" name="share" value="immich">Immich</button>
+            </li>
+        {% endif %}
     </ul>
 </div>

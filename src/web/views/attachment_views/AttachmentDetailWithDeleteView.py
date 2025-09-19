@@ -27,6 +27,7 @@ from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import DeletionMixin
+from rest_framework import status
 
 from core.models import Attachment
 from web.mixins import CustomActionMixin
@@ -61,8 +62,8 @@ class AttachmentDetailWithDeleteView(
             return DeletionMixin.post(self, request)
         return CustomActionMixin.post(self, request)
 
-    def handle_share_to_paperless(self, request: HttpRequest) -> HttpResponse:
-        """Handler function for the `share-to-paperless` action.
+    def handle_share(self, request: HttpRequest) -> HttpResponse:
+        """Handler function for the `share` action.
 
         Args:
             request: The action request to handle.
@@ -71,8 +72,14 @@ class AttachmentDetailWithDeleteView(
             A template response with the updated view after the action.
         """
         self.object = self.get_object()
+        service = request.POST.get("share")
         try:
-            self.object.share_to_paperless()
+            if service == "paperless":
+                self.object.share_to_paperless()
+            elif service == "immich":
+                self.object.share_to_immich()
+            else:
+                return HttpResponse(status=status.HTTP_204_NO_CONTENT)
         except (
             FileNotFoundError,
             ConnectionError,
@@ -82,6 +89,6 @@ class AttachmentDetailWithDeleteView(
         ) as error:
             messages.error(request, str(error))
         else:
-            messages.success(request, _("Sharing to Paperless successful"))
+            messages.success(request, _("Sharing successful"))
 
         return self.get(request)

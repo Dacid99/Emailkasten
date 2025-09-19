@@ -347,7 +347,8 @@ def test_Attachment_share_to_paperless_success(
         "created": str(fake_attachment_with_file.created),
     }
     assert mock_httpx_post.call_args.kwargs["headers"] == {
-        "Authorization": f"Token {profile.paperless_api_key}"
+        "Accept": "application/json",
+        "Authorization": f"Token {profile.paperless_api_key}",
     }
     assert (
         mock_httpx_post.call_args.kwargs["files"]["document"][0]
@@ -479,6 +480,172 @@ def test_Attachment_share_to_paperless_error_status(
 
     with pytest.raises(ValueError, match=fake_error_message):
         fake_attachment_with_file.share_to_paperless()
+
+    mock_httpx_post.assert_called_once()
+    mock_logger.debug.assert_called()
+    mock_logger.info.assert_called()
+
+
+@pytest.mark.django_db
+def test_Attachment_share_to_immich_success(
+    faker, fake_attachment_with_file, mock_logger, mock_httpx_post
+):
+    """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
+    in case of success.
+    """
+    profile = fake_attachment_with_file.email.mailbox.account.user.profile
+    profile.immich_url = faker.url()
+    profile.immich_api_key = faker.word()
+    profile.save()
+
+    result = fake_attachment_with_file.share_to_immich()
+
+    assert result == mock_httpx_post.return_value.json()
+    mock_httpx_post.assert_called_once()
+    assert (
+        mock_httpx_post.call_args.args[0]
+        == profile.immich_url.strip("/") + "/api/assets"
+    )
+    assert mock_httpx_post.call_args.kwargs["data"] == {
+        "assetId": fake_attachment_with_file.file_name,
+        "deviceAssetId": "emailkasten",
+        "deviceId": "emailkasten",
+        "fileCreatedAt": str(fake_attachment_with_file.created.date()),
+        "fileModifiedAt": str(fake_attachment_with_file.created.date()),
+        "metadata": [],
+    }
+    assert mock_httpx_post.call_args.kwargs["headers"] == {
+        "Accept": "application/json",
+        "x-api-key": profile.immich_api_key,
+    }
+    assert (
+        mock_httpx_post.call_args.kwargs["files"]["assetData"][0]
+        == fake_attachment_with_file.file_name
+    )
+    assert mock_httpx_post.call_args.kwargs["files"]["assetData"][
+        1
+    ].name == default_storage.path(fake_attachment_with_file.file_path)
+    assert (
+        mock_httpx_post.call_args.kwargs["files"]["assetData"][2]
+        == fake_attachment_with_file.content_type
+    )
+    mock_logger.debug.assert_called()
+
+
+@pytest.mark.django_db
+def test_Attachment_share_to_immich_no_file(fake_attachment):
+    """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
+    in case the attachment has no file.
+    """
+    with pytest.raises(FileNotFoundError):
+        fake_attachment.share_to_immich()
+
+
+@pytest.mark.django_db
+def test_Attachment_share_to_immich_no_api_key(
+    faker, fake_attachment_with_file, mock_logger, mock_httpx_post
+):
+    """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
+    in case there is no apikey.
+    This test makes sure there is no error constructing the header.
+    """
+    fake_attachment_with_file.email.mailbox.account.user.profile.immich_url = (
+        faker.url()
+    )
+    fake_attachment_with_file.email.mailbox.account.user.profile.save()
+    mock_httpx_post.return_value.status_code = 401
+
+    with pytest.raises(PermissionError):
+        fake_attachment_with_file.share_to_immich()
+
+    mock_logger.debug.assert_called()
+    mock_logger.info.assert_called()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("immich_url", ["test.org", "smb://100.200.051.421", ""])
+def test_Attachment_share_to_immich_error_request_setup(
+    fake_attachment_with_file, mock_logger, immich_url
+):
+    """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
+    in case of an error with the request.
+    """
+    fake_attachment_with_file.email.mailbox.account.user.profile.immich_url = immich_url
+    fake_attachment_with_file.email.mailbox.account.user.profile.save()
+
+    with pytest.raises(RuntimeError):
+        fake_attachment_with_file.share_to_immich()
+
+    mock_logger.debug.assert_called()
+    mock_logger.info.assert_called()
+
+
+@pytest.mark.django_db
+def test_Attachment_share_to_immich_error_request(
+    fake_error_message,
+    fake_attachment_with_file,
+    mock_logger,
+    mock_httpx_post,
+):
+    """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
+    in case of an error with the request.
+    """
+    mock_httpx_post.side_effect = httpx.RequestError(fake_error_message)
+
+    with pytest.raises(ConnectionError, match=fake_error_message):
+        fake_attachment_with_file.share_to_immich()
+
+    mock_httpx_post.assert_called_once()
+    mock_logger.debug.assert_called()
+    mock_logger.info.assert_called()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("status_code", [401, 403])
+def test_Attachment_share_to_immich_unauthorized(
+    fake_error_message,
+    fake_attachment_with_file,
+    mock_httpx_post,
+    mock_logger,
+    status_code,
+):
+    """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
+    in case of an error authenticating.
+    """
+    mock_httpx_post.return_value = httpx.Response(
+        status_code,
+        content=f'{{"detail": "{fake_error_message}"}}',
+        request=mock_httpx_post.return_value.request,
+    )
+
+    with pytest.raises(PermissionError, match=fake_error_message):
+        fake_attachment_with_file.share_to_immich()
+
+    mock_httpx_post.assert_called_once()
+    mock_logger.debug.assert_called()
+    mock_logger.info.assert_called()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("status_code", [400, 500, 300])
+def test_Attachment_share_to_immich_error_status(
+    fake_error_message,
+    fake_attachment_with_file,
+    mock_httpx_post,
+    mock_logger,
+    status_code,
+):
+    """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
+    in case of a bad status response.
+    """
+    mock_httpx_post.return_value = httpx.Response(
+        status_code,
+        content=f'{{"detail": "{fake_error_message}"}}',
+        request=mock_httpx_post.return_value.request,
+    )
+
+    with pytest.raises(ValueError, match=fake_error_message):
+        fake_attachment_with_file.share_to_immich()
 
     mock_httpx_post.assert_called_once()
     mock_logger.debug.assert_called()
@@ -852,11 +1019,103 @@ def test_Attachment_is_shareable_to_paperless_with_file_with_tika(
 def test_Attachment_is_shareable_to_paperless_no_file(
     fake_attachment, content_maintype, content_subtype
 ):
-    """Tests :func:`core.models.Attachment.Attachment.is_shareable_to_paperless` in the two relevant cases."""
+    """Tests :func:`core.models.Attachment.Attachment.is_shareable_to_paperless` if there is no file."""
     fake_attachment.content_maintype = content_maintype
     fake_attachment.content_subtype = content_subtype
 
     result = fake_attachment.is_shareable_to_paperless
+
+    assert result is False
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "content_maintype, content_subtype, expected_is_shareable_to_immich",
+    [
+        ("", "", False),
+        ("oo4vuy0s9yn", "a4ueiofdsj", False),
+        ("image", "bmp", True),
+        ("image", "heic", True),
+        ("image", "heif", True),
+        ("image", "jpeg", True),
+        ("image", "pjpeg", True),
+        ("image", "png", True),
+        ("image", "tiff", True),
+        ("image", "x-tiff", True),
+        ("image", "gif", True),
+        ("image", "raw", True),
+        ("image", "svg+xml", True),
+        ("image", "x-raw-panasonic", True),
+        ("video", "3gpp", True),
+        ("video", "x-msvideo", True),
+        ("video", "matroska", True),
+        ("video", "mp4", True),
+        ("video", "mpeg", True),
+        ("video", "quicktime", True),
+        ("video", "webm", True),
+        ("video", "x-ms-wmv", True),
+        ("video", "h263", False),
+        ("font", "woff", False),
+        ("application", "pdf", False),
+        ("application", "mp4", True),
+    ],
+)
+def test_Attachment_is_shareable_to_paperless_with_file(
+    fake_attachment_with_file,
+    content_maintype,
+    content_subtype,
+    expected_is_shareable_to_immich,
+):
+    """Tests :func:`core.models.Attachment.Attachment.is_shareable_to_immich`."""
+    fake_attachment_with_file.content_maintype = content_maintype
+    fake_attachment_with_file.content_subtype = content_subtype
+    fake_attachment_with_file.email.mailbox.account.user.profile.save()
+
+    result = fake_attachment_with_file.is_shareable_to_immich
+
+    assert result == expected_is_shareable_to_immich
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "content_maintype, content_subtype",
+    [
+        ("", ""),
+        ("oo4vuy0s9yn", "a4ueiofdsj"),
+        ("image", "bmp"),
+        ("image", "heic"),
+        ("image", "heif"),
+        ("image", "jpeg"),
+        ("image", "pjpeg"),
+        ("image", "png"),
+        ("image", "tiff"),
+        ("image", "x-tiff"),
+        ("image", "gif"),
+        ("image", "raw"),
+        ("image", "svg+xml"),
+        ("image", "x-raw-panasonic"),
+        ("video", "3gpp"),
+        ("video", "x-msvideo"),
+        ("video", "matroska"),
+        ("video", "mp4"),
+        ("video", "mpeg"),
+        ("video", "quicktime"),
+        ("video", "webm"),
+        ("video", "x-ms-wmv"),
+        ("video", "h263"),
+        ("font", "woff"),
+        ("application", "pdf"),
+        ("application", "mp4"),
+    ],
+)
+def test_Attachment_is_shareable_to_immich_no_file(
+    fake_attachment, content_maintype, content_subtype
+):
+    """Tests :func:`core.models.Attachment.Attachment.is_shareable_to_immich` if there is no file."""
+    fake_attachment.content_maintype = content_maintype
+    fake_attachment.content_subtype = content_subtype
+
+    result = fake_attachment.is_shareable_to_immich
 
     assert result is False
 

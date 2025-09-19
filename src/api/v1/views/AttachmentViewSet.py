@@ -100,6 +100,18 @@ if TYPE_CHECKING:
         },
         description="Sends the attachment file to Paperless.",
     ),
+    share_to_immich=extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.JSON_PTR,
+            ),
+            400: OpenApiResponse(
+                response=OpenApiTypes.STR,
+                description="If the request to the Paperless server fails. The reason is given as the response data.",
+            ),
+        },
+        description="Sends the attachment file to Immich.",
+    ),
 )
 class AttachmentViewSet(
     viewsets.ReadOnlyModelViewSet[Attachment],
@@ -263,8 +275,8 @@ class AttachmentViewSet(
         response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
         return response
 
-    URL_PATH_SHARE_TO_PAPERLESS = "share/Paperless"
-    URL_NAME_SHARE_TO_PAPERLESS = "share-to-Paperless"
+    URL_PATH_SHARE_TO_PAPERLESS = "share/paperless"
+    URL_NAME_SHARE_TO_PAPERLESS = "share-to-paperless"
 
     @action(
         detail=True,
@@ -277,7 +289,7 @@ class AttachmentViewSet(
 
         Args:
             request: The request triggering the action.
-            pk: The private key of the attachment to download. Defaults to None.
+            pk: The private key of the attachment to upload. Defaults to None.
 
         Raises:
             Http404: If the filepath is not in the database or it doesn't exist.
@@ -287,7 +299,7 @@ class AttachmentViewSet(
         """
         attachment = self.get_object()
         try:
-            task_id = attachment.share_to_paperless()
+            paperless_response = attachment.share_to_paperless()
         except FileNotFoundError:
             raise Http404(_("Attachment file not found")) from None
         except (RuntimeError, ConnectionError, PermissionError, ValueError) as error:
@@ -301,6 +313,48 @@ class AttachmentViewSet(
             data={
                 # Translators: Paperless is a brand name.
                 "detail": _("Uploaded attachment document to Paperless."),
-                "task_id": task_id,
+                "data": paperless_response,
+            },
+        )
+
+    URL_PATH_SHARE_TO_IMMICH = "share/immich"
+    URL_NAME_SHARE_TO_IMMICH = "share-to-immich"
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path=URL_PATH_SHARE_TO_IMMICH,
+        url_name=URL_NAME_SHARE_TO_IMMICH,
+    )
+    def share_to_immich(self, request: Request, pk: int | None = None) -> Response:
+        """Action method sending the attachment to the users Immich server.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the attachment to upload. Defaults to None.
+
+        Raises:
+            Http404: If the filepath is not in the database or it doesn't exist.
+
+        Returns:
+            A fileresponse containing the requested file.
+        """
+        attachment = self.get_object()
+        try:
+            immich_response = attachment.share_to_immich()
+        except FileNotFoundError:
+            raise Http404(_("Attachment file not found")) from None
+        except (RuntimeError, ConnectionError, PermissionError, ValueError) as error:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                # Translators: Immich is a brand name.
+                data={"detail": _("Upload to Immich failed."), "error": str(error)},
+            )
+        return Response(
+            status=status.HTTP_200_OK,
+            data={
+                # Translators: Immich is a brand name.
+                "detail": _("Uploaded attachment document to Immich."),
+                "data": immich_response,
             },
         )

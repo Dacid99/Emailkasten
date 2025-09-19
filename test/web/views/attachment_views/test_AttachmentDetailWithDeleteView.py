@@ -128,7 +128,7 @@ def test_post_share_to_paperless_noauth(
     """Tests :class:`web.views.AttachmentDetailWithDeleteView` with an unauthenticated user client."""
     response = client.post(
         detail_url(AttachmentDetailWithDeleteView, fake_attachment),
-        {"share_to_paperless": "Update Mailboxes"},
+        {"share": "paperless"},
     )
 
     assert response.status_code == status.HTTP_302_FOUND
@@ -147,7 +147,7 @@ def test_post_share_to_paperless_auth_other(
     """Tests :class:`web.views.AttachmentDetailWithDeleteView` with the authenticated other user client."""
     response = other_client.post(
         detail_url(AttachmentDetailWithDeleteView, fake_attachment),
-        {"share_to_paperless": "Update Mailboxes"},
+        {"share": "paperless"},
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -164,7 +164,7 @@ def test_post_share_to_paperless_success_auth_owner(
     """
     response = owner_client.post(
         detail_url(AttachmentDetailWithDeleteView, fake_attachment),
-        {"share_to_paperless": "Update Mailboxes"},
+        {"share": "paperless"},
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -207,7 +207,7 @@ def test_post_share_to_paperless_failure_auth_owner(
 
     response = owner_client.post(
         detail_url(AttachmentDetailWithDeleteView, fake_attachment),
-        {"share_to_paperless": "Update Mailboxes"},
+        {"share": "paperless"},
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -227,7 +227,7 @@ def test_post_share_to_paperless_failure_auth_owner(
 
 @pytest.mark.django_db
 def test_post_share_to_paperless_missing_action_auth_owner(
-    faker, fake_attachment, owner_client, detail_url, mock_Attachment_share_to_paperless
+    fake_attachment, owner_client, detail_url, mock_Attachment_share_to_paperless
 ):
     """Tests :class:`web.views.AttachmentDetailWithDeleteView` with the authenticated owner user client
     in case the action is missing in the request.
@@ -238,4 +238,145 @@ def test_post_share_to_paperless_missing_action_auth_owner(
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert isinstance(response, HttpResponse)
+    mock_Attachment_share_to_paperless.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_post_share_to_immich_noauth(
+    fake_attachment, client, detail_url, login_url, mock_Attachment_share_to_immich
+):
+    """Tests :class:`web.views.AttachmentDetailWithDeleteView` with an unauthenticated user client."""
+    response = client.post(
+        detail_url(AttachmentDetailWithDeleteView, fake_attachment),
+        {"share": "immich"},
+    )
+
+    assert response.status_code == status.HTTP_302_FOUND
+    assert isinstance(response, HttpResponseRedirect)
+    assert response.url.startswith(login_url)
+    assert response.url.endswith(
+        f"?next={detail_url(AttachmentDetailWithDeleteView, fake_attachment)}"
+    )
+    mock_Attachment_share_to_immich.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_post_share_to_immich_auth_other(
+    fake_attachment, other_client, detail_url, mock_Attachment_share_to_immich
+):
+    """Tests :class:`web.views.AttachmentDetailWithDeleteView` with the authenticated other user client."""
+    response = other_client.post(
+        detail_url(AttachmentDetailWithDeleteView, fake_attachment),
+        {"share": "immich"},
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert "404.html" in [template.name for template in response.templates]
+    mock_Attachment_share_to_immich.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_post_share_to_immich_success_auth_owner(
+    fake_attachment, owner_client, detail_url, mock_Attachment_share_to_immich
+):
+    """Tests :class:`web.views.AttachmentDetailWithDeleteView` with the authenticated owner user client
+    in case of success.
+    """
+    response = owner_client.post(
+        detail_url(AttachmentDetailWithDeleteView, fake_attachment),
+        {"share": "immich"},
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(response, HttpResponse)
+    assert "web/attachment/attachment_detail.html" in [
+        template.name for template in response.templates
+    ]
+    assert "object" in response.context
+    assert isinstance(response.context["object"], Attachment)
+    assert "messages" in response.context
+    assert len(response.context["messages"]) == 1
+    for mess in response.context["messages"]:
+        assert mess.level == messages.SUCCESS
+    mock_Attachment_share_to_immich.assert_called_once()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "error",
+    [
+        FileNotFoundError,
+        ConnectionError,
+        PermissionError,
+        ValueError,
+        RuntimeError,
+    ],
+)
+def test_post_share_to_immich_failure_auth_owner(
+    fake_error_message,
+    fake_attachment,
+    owner_client,
+    detail_url,
+    mock_Attachment_share_to_immich,
+    error,
+):
+    """Tests :class:`web.views.AttachmentDetailWithDeleteView` with the authenticated owner user client
+    in case of failure.
+    """
+    mock_Attachment_share_to_immich.side_effect = error(fake_error_message)
+
+    response = owner_client.post(
+        detail_url(AttachmentDetailWithDeleteView, fake_attachment),
+        {"share": "immich"},
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(response, HttpResponse)
+    assert "web/attachment/attachment_detail.html" in [
+        template.name for template in response.templates
+    ]
+    assert "object" in response.context
+    assert isinstance(response.context["object"], Attachment)
+    assert "messages" in response.context
+    assert len(response.context["messages"]) == 1
+    for mess in response.context["messages"]:
+        assert mess.level == messages.ERROR
+    mock_Attachment_share_to_immich.assert_called_once()
+    assert fake_error_message in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_post_share_to_immich_missing_action_auth_owner(
+    fake_attachment, owner_client, detail_url, mock_Attachment_share_to_immich
+):
+    """Tests :class:`web.views.AttachmentDetailWithDeleteView` with the authenticated owner user client
+    in case the action is missing in the request.
+    """
+    response = owner_client.post(
+        detail_url(AttachmentDetailWithDeleteView, fake_attachment),
+    )
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert isinstance(response, HttpResponse)
+    mock_Attachment_share_to_immich.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_post_share_missing_value_auth_owner(
+    fake_attachment,
+    owner_client,
+    detail_url,
+    mock_Attachment_share_to_paperless,
+    mock_Attachment_share_to_immich,
+):
+    """Tests :class:`web.views.AttachmentDetailWithDeleteView` with the authenticated owner user client
+    in case the action is missing in the request.
+    """
+    response = owner_client.post(
+        detail_url(AttachmentDetailWithDeleteView, fake_attachment), {"share": ""}
+    )
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert isinstance(response, HttpResponse)
+    mock_Attachment_share_to_immich.assert_not_called()
     mock_Attachment_share_to_paperless.assert_not_called()

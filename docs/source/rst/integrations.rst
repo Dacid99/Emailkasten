@@ -27,6 +27,17 @@ Optionally, you can set whether that instance has Tika enabled and is thus able 
 You can then trigger the action via the button in the webpage showing a single attachment or the related API endpoint.
 
 
+Immich
+------
+
+Emailkasten can send selected attachment files like images and videos to Immich.
+
+You can set the URL and API key for your Immich server in your profile settings.
+The persistent API key can be created in the Immich admin webinterface.
+
+You can then trigger the action via the button in the webpage showing a single attachment or the related API endpoint.
+
+
 Searxng
 -------
 

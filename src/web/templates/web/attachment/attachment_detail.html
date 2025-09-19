@@ -21,11 +21,7 @@
 
     {% include "web/partials/_download-button.html" %}
 
-    {% if object.is_shareable_to_paperless %}
-
-        {% include "web/attachment/partials/_send_to_third_party_dropdown.html" %}
-
-    {% endif %}
+    {% include "web/attachment/partials/_send_to_third_party_dropdown.html" with attachment=object %}
 
 {% endblock action_buttons %}
 
