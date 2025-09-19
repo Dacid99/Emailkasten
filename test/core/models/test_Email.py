@@ -319,6 +319,48 @@ def test_Email_conversation(fake_email_conversation, start_id):
 
 
 @pytest.mark.django_db
+def test_Email_reprocess_success(fake_email_with_file):
+    """Tests the :func:`core.models.Email.Email.reprocess` function in case of success."""
+    previous_pk = fake_email_with_file.pk
+
+    assert fake_email_with_file.pk
+
+    fake_email_with_file.reprocess()
+
+    assert fake_email_with_file.pk == previous_pk
+    assert fake_email_with_file.message_id == TEST_EMAIL_PARAMETERS[0][1]["message_id"]
+    assert fake_email_with_file.subject == TEST_EMAIL_PARAMETERS[0][1]["subject"]
+    assert fake_email_with_file.x_spam == TEST_EMAIL_PARAMETERS[0][1]["x_spam"]
+    assert (
+        fake_email_with_file.plain_bodytext
+        == TEST_EMAIL_PARAMETERS[0][1]["plain_bodytext"]
+    )
+    assert (
+        fake_email_with_file.html_bodytext
+        == TEST_EMAIL_PARAMETERS[0][1]["html_bodytext"]
+    )
+    assert (
+        len(fake_email_with_file.headers) == TEST_EMAIL_PARAMETERS[0][1]["header_count"]
+    )
+
+
+@pytest.mark.django_db
+def test_Email_reprocess_no_file(fake_email):
+    """Tests the :func:`core.models.Email.Email.reprocess` function in case of no eml file."""
+    fake_email.file_path = None
+
+    previous_pk = fake_email.pk
+    previous_message_id = fake_email.message_id
+
+    assert fake_email.pk
+
+    fake_email.reprocess()
+
+    assert fake_email.pk == previous_pk
+    assert fake_email.message_id == previous_message_id
+
+
+@pytest.mark.django_db
 def test_Email_restore_to_mailbox_success(
     fake_email, mock_logger, mock_fetcher, mock_Account_get_fetcher
 ):

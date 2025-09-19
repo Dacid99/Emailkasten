@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import email
 import logging
 import os
@@ -242,6 +243,35 @@ class Email(
         """Create the filename for the stored eml."""
         return str(self.pk) + "_" + self.message_id + ".eml"
 
+    def fill_from_email_bytes(self, email_bytes: bytes) -> Email:
+        """Fills the :class:`core.models.Email` with data from an email in bytes form.
+
+        Args:
+            email_bytes: The email bytes data.
+
+        Returns:
+            The :class:`core.models.Email` instance with data from the bytes.
+        """
+        email_message = email.message_from_bytes(email_bytes, policy=policy.default)
+        header_dict: dict[str, str | None] = {}
+        for header_name in email_message:
+            header_dict[header_name.lower()] = get_header(email_message, header_name)
+        bodytexts = get_bodytexts(email_message)
+
+        self.headers = header_dict
+        self.message_id = (
+            header_dict.get(HeaderFields.MESSAGE_ID)
+            or md5(email_bytes).hexdigest()  # noqa: S324  # no safe hash required here
+        )
+        self.datetime = parse_datetime_header(header_dict.get(HeaderFields.DATE))
+        self.subject = header_dict.get(HeaderFields.SUBJECT) or __("No subject")
+        self.x_spam = header_dict.get(HeaderFields.X_SPAM) or ""
+        self.datasize = len(email_bytes)
+        self.plain_bodytext = bodytexts.get("plain", "")
+        self.html_bodytext = bodytexts.get("html", "")
+
+        return self
+
     def add_correspondents(self) -> None:
         """Adds the correspondents from the headerfields to the model."""
         if self.headers:
@@ -311,6 +341,19 @@ class Email(
                             mailbox__account__user=self.mailbox.account.user,
                         ):
                             self.references.add(referenced_email)
+
+    def reprocess(self) -> None:
+        """Reprocesses the mails connections to other emails in the database."""
+        with contextlib.suppress(FileNotFoundError):
+            with self.open_file() as email_file:
+                email_bytes = email_file.read()
+            self.fill_from_email_bytes(email_bytes)
+        with transaction.atomic():
+            self.save()
+            self.in_reply_to.clear()
+            self.add_in_reply_to()
+            self.references.clear()
+            self.add_references()
 
     def restore_to_mailbox(self) -> None:
         """Restores the email to its mailbox.
@@ -453,33 +496,6 @@ class Email(
         return is_x_spam(self.x_spam)
 
     @classmethod
-    def fill_from_email_bytes(cls, email_bytes: bytes) -> Email:
-        """Constructs an :class:`core.models.Email` from an email in bytes form.
-
-        Args:
-            email_bytes: The email bytes to parse the emaildata from.
-
-        Returns:
-            The :class:`core.models.Email` instance with data from the bytes.
-        """
-        email_message = email.message_from_bytes(email_bytes, policy=policy.default)
-        header_dict: dict[str, str | None] = {}
-        for header_name in email_message:
-            header_dict[header_name.lower()] = get_header(email_message, header_name)
-        bodytexts = get_bodytexts(email_message)
-        return cls(
-            headers=header_dict,
-            message_id=header_dict.get(HeaderFields.MESSAGE_ID)
-            or md5(email_bytes).hexdigest(),  # noqa: S324  # no safe hash required here
-            datetime=parse_datetime_header(header_dict.get(HeaderFields.DATE)),
-            subject=header_dict.get(HeaderFields.SUBJECT) or __("No subject"),
-            x_spam=header_dict.get(HeaderFields.X_SPAM) or "",
-            datasize=len(email_bytes),
-            plain_bodytext=bodytexts.get("plain", ""),
-            html_bodytext=bodytexts.get("html", ""),
-        )
-
-    @classmethod
     def create_from_email_bytes(
         cls, email_bytes: bytes, mailbox: Mailbox
     ) -> Email | None:
@@ -522,8 +538,7 @@ class Email(
             )
             return None
 
-        new_email = cls.fill_from_email_bytes(email_bytes=email_bytes)
-        new_email.mailbox = mailbox
+        new_email = cls(mailbox=mailbox).fill_from_email_bytes(email_bytes=email_bytes)
 
         logger.debug("Successfully parsed email.")
         logger.debug("Saving email %s to db...", message_id)

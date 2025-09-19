@@ -49,6 +49,12 @@ def mock_Email_restore_to_mailbox(mocker):
     return mocker.patch("api.v1.views.EmailViewSet.Email.restore_to_mailbox")
 
 
+@pytest.fixture
+def mock_Email_reprocess(mocker):
+    """Patches `core.models.Email.reprocess`."""
+    return mocker.patch("api.v1.views.EmailViewSet.Email.reprocess")
+
+
 @pytest.mark.django_db
 def test_download_noauth(
     fake_email_with_file,
@@ -512,6 +518,61 @@ def test_restore_auth_owner_failure(
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
     mock_Email_restore_to_mailbox.assert_called_once_with()
+
+
+@pytest.mark.django_db
+def test_reprocess_noauth(
+    fake_email,
+    noauth_api_client,
+    custom_detail_action_url,
+    mock_Email_reprocess,
+):
+    """Tests the post method :func:`api.v1.views.EmailViewSet.EmailViewSet.reprocess` action with an unauthenticated user client."""
+    response = noauth_api_client.post(
+        custom_detail_action_url(
+            EmailViewSet, EmailViewSet.URL_NAME_REPROCESS, fake_email
+        )
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    mock_Email_reprocess.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_reprocess_auth_other(
+    fake_email,
+    other_api_client,
+    custom_detail_action_url,
+    mock_Email_reprocess,
+):
+    """Tests the post method :func:`api.v1.views.EmailViewSet.EmailViewSet.reprocess` action with the authenticated other user client."""
+    response = other_api_client.post(
+        custom_detail_action_url(
+            EmailViewSet, EmailViewSet.URL_NAME_REPROCESS, fake_email
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    mock_Email_reprocess.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_reprocess_auth_owner(
+    fake_email,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Email_reprocess,
+):
+    """Tests the post method :func:`api.v1.views.EmailViewSet.EmailViewSet.reprocess` action with the authenticated owner user client."""
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            EmailViewSet, EmailViewSet.URL_NAME_REPROCESS, fake_email
+        )
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert "detail" in response.data
+    mock_Email_reprocess.assert_called_once_with()
 
 
 @pytest.mark.django_db

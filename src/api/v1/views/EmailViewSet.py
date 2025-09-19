@@ -381,3 +381,26 @@ class EmailViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
         return Response({"detail": _("Email successfully restored to mailbox.")})
+
+    URL_PATH_REPROCESS = "reprocess"
+    URL_NAME_REPROCESS = "reprocess"
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path=URL_PATH_REPROCESS,
+        url_name=URL_NAME_REPROCESS,
+    )
+    def reprocess(self, request: Request, pk: int | None = None) -> Response:
+        """Action method reprocessing the emails connections to other emails.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the email to reprocess. Defaults to None.
+
+        Returns:
+            A response detailing the request status.
+        """
+        email = self.get_object()
+        email.reprocess()
+        return Response({"detail": _("Email successfully reprocessed.")})

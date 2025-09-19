@@ -95,3 +95,9 @@ def mock_Attachment_share_to_paperless(mocker):
 def mock_Email_restore_to_mailbox(mocker):
     """Patches `core.models.Email.restore_to_mailbox`."""
     return mocker.patch("core.models.Email.Email.restore_to_mailbox")
+
+
+@pytest.fixture
+def mock_Email_reprocess(mocker):
+    """Patches `core.models.Email.reprocess`."""
+    return mocker.patch("core.models.Email.Email.reprocess")

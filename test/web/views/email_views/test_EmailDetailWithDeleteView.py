@@ -18,8 +18,6 @@
 
 """Test module for :mod:`web.views.EmailDetailWithDeleteView`."""
 
-from pydoc import resolve
-
 import pytest
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
@@ -286,3 +284,63 @@ def test_post_restore_missing_action_auth_owner(
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert isinstance(response, HttpResponse)
     mock_Email_restore_to_mailbox.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_post_reprocess_noauth(
+    fake_email, client, detail_url, login_url, mock_Email_reprocess
+):
+    """Tests :class:`web.views.EmailDetailWithDeleteView` with an unauthenticated user client."""
+    response = client.post(
+        detail_url(EmailDetailWithDeleteView, fake_email),
+        {"reprocess": ""},
+    )
+
+    assert response.status_code == status.HTTP_302_FOUND
+    assert isinstance(response, HttpResponseRedirect)
+    assert response.url.startswith(login_url)
+    assert response.url.endswith(
+        f"?next={detail_url(EmailDetailWithDeleteView, fake_email)}"
+    )
+    mock_Email_reprocess.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_post_reprocess_auth_other(
+    fake_email, other_client, detail_url, mock_Email_reprocess
+):
+    """Tests :class:`web.views.EmailDetailWithDeleteView` with the authenticated other user client."""
+    response = other_client.post(
+        detail_url(EmailDetailWithDeleteView, fake_email),
+        {"reprocess": ""},
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert "404.html" in [template.name for template in response.templates]
+    mock_Email_reprocess.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_post_reprocess_auth_owner_success(
+    fake_email, owner_client, detail_url, mock_Email_reprocess
+):
+    """Tests :class:`web.views.EmailDetailWithDeleteView` with the authenticated owner user client
+    in case of success.
+    """
+    response = owner_client.post(
+        detail_url(EmailDetailWithDeleteView, fake_email),
+        {"reprocess": ""},
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(response, HttpResponse)
+    assert "web/email/email_detail.html" in [
+        template.name for template in response.templates
+    ]
+    assert "object" in response.context
+    assert isinstance(response.context["object"], Email)
+    assert "messages" in response.context
+    assert len(response.context["messages"]) == 1
+    for mess in response.context["messages"]:
+        assert mess.level == messages.SUCCESS
+    mock_Email_reprocess.assert_called_once()

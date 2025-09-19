@@ -20,6 +20,14 @@
 
 {% endblock badges %}
 
+{% block edit_buttons %}
+
+    {{ block.super }}
+
+    {% include "web/email/partials/_reprocess_email-button.html" with email=object %}
+
+{% endblock edit_buttons %}
+
 {% block action_buttons %}
 
     {% include "web/partials/_download-button.html" %}

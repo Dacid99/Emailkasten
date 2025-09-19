@@ -20,7 +20,6 @@
 - use post-unsubscribe-method to interpret post-unsubscribe as link
 - batch download and delete in web
 - download for account
-- mechanism to add missing connections between emails
 
 ## To refactor
 
@@ -41,6 +40,7 @@
 - test failing single message fetch (imap,pop)
 - page_obj of list views for correct email content
 - remove values in action test-requests
+- add test email with references
 - postgres instead of mariadb
 
 ## To implement

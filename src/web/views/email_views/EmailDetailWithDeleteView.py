@@ -71,6 +71,20 @@ class EmailDetailWithDeleteView(
             return DeletionMixin.post(self, request)
         return CustomActionMixin.post(self, request)
 
+    def handle_reprocess(self, request: HttpRequest) -> HttpResponse:
+        """Handler function for the `reprocess` action.
+
+        Args:
+            request: The action request to handle.
+
+        Returns:
+            A template response with the updated view after the action.
+        """
+        self.object = self.get_object()
+        self.object.reprocess()
+        messages.success(request, _("Email successfully reprocessed."))
+        return self.get(request)
+
     def handle_restore(self, request: HttpRequest) -> HttpResponse:
         """Handler function for the `restore` action.
 
