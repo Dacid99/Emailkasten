@@ -83,6 +83,10 @@ class Attachment(
 
     DELETE_NOTICE = _("This will only delete this attachment, not the email.")
 
+    DELETE_NOTICE_PLURAL = _(
+        "This will only delete these attachments, not their emails."
+    )
+
     file_name = models.CharField(
         max_length=255,
         # Translators: Do not capitalize the very first letter unless your language requires it.

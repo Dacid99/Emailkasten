@@ -20,11 +20,19 @@
        href="{% url 'web:email-archive-index' %}"><i class="fa-solid fa-timeline" aria-hidden="true"></i> {% translate "Timeline" %}</a>
 {% endblock header_buttons %}
 
+{% block action_buttons %}
+
+    {% include "web/email/partials/_multi_download_dropdown.html" %}
+
+{% endblock action_buttons %}
+
+
 {% block list %}
 
     {% include "web/email/partials/_email_list.html" with emails=page_obj %}
 
 {% endblock list %}
+
 
 {% block list_alternative %}
 

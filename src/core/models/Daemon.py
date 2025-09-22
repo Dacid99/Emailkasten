@@ -53,6 +53,8 @@ class Daemon(
 
     DELETE_NOTICE = _("This will only delete this daemon, not its mailbox.")
 
+    DELETE_NOTICE_PLURAL = _("This will only delete these daemon, not their mailboxes.")
+
     uuid = models.UUIDField(
         default=uuid.uuid4,
         editable=False,

@@ -14,11 +14,19 @@
     {% translate "Attachments" %}
 {% endblock header_title %}
 
+{% block action_buttons %}
+
+    {% include "web/attachment/partials/_multi_download-button.html" %}
+
+{% endblock action_buttons %}
+
+
 {% block list %}
 
     {% include "web/attachment/partials/_attachment_list.html" with attachments=page_obj %}
 
 {% endblock list %}
+
 
 {% block list_alternative %}
 

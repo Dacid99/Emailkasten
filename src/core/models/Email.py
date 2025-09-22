@@ -95,6 +95,10 @@ class Email(
         "This will delete this email and all its attachments but not its correspondents."
     )
 
+    DELETE_NOTICE_PLURAL = _(
+        "This will delete these emails and all their attachments but not their correspondents."
+    )
+
     message_id = models.CharField(
         max_length=255,
         # Translators: Do not capitalize the very first letter unless your language requires it.

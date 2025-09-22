@@ -72,6 +72,9 @@ class Account(
     DELETE_NOTICE = _(
         "This will delete this account and all mailboxes, emails and attachments found in it!"
     )
+    DELETE_NOTICE_PLURAL = _(
+        "This will delete these accounts and all mailboxes, emails and attachments found in them!"
+    )
 
     MAX_MAIL_HOST_PORT = 65535
 

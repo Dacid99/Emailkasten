@@ -79,6 +79,10 @@ class Mailbox(
         "This will delete this mailbox and all emails and attachments found in it!"
     )
 
+    DELETE_NOTICE_PLURAL = _(
+        "This will delete these mailboxes and all emails and attachments found in them!"
+    )
+
     name = models.CharField(
         max_length=255,
         # Translators: Do not capitalize the very first letter unless your language requires it.

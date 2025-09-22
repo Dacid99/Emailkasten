@@ -1,0 +1,34 @@
+{% load i18n %}
+
+<div class="modal fade"
+     id="delete-modal"
+     tabindex="-1"
+     aria-labelledby="delete-modal-label"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="delete-modal-label">{% translate "Delete" %}</h2>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="{% translate 'Close' %}"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <strong>{% translate "Are you sure you want to delete the selected items?" %}</strong>
+                </p>
+                <p>{{ page_obj.0.DELETE_NOTICE_PLURAL }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% translate "Cancel" %}
+                </button>
+                <button class="btn btn-danger"
+                        data-url="{{ page_obj.0.get_absolute_api_list_url }}"
+                        onclick="multiDelete(this)">{% translate "Delete" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- _delete_button must be in the same template -->

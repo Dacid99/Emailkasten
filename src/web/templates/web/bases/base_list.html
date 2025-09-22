@@ -3,64 +3,108 @@
 {% load static i18n %}
 
 {% block content %}
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <h2>
+    {% with selectable=True %}
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <h2>
 
-                {% block header_title %}
-                {% endblock header_title %}
+                    {% block header_title %}
+                    {% endblock header_title %}
 
-            </h2>
-            <h4 class="text-center">
+                </h2>
+                <h4 class="text-center">
 
-                {% block header_subtitle %}
-                {% endblock header_subtitle %}
+                    {% block header_subtitle %}
+                    {% endblock header_subtitle %}
 
-            </h4>
-        </div>
-        <div>
+                </h4>
+            </div>
+            <div>
 
-            {% block header_buttons %}
-            {% endblock header_buttons %}
-
-        </div>
-    </div>
-    <div class="d-grid m-1">
-
-        {% block header_bar %}
-        {% endblock header_bar %}
-
-    </div>
-
-    <hr />
-
-    {% if page_obj.paginator.count > 0 %}
-
-        {% block list %}
-        {% endblock list %}
-
-    {% else %}
-
-        {% block list_alternative %}
-        {% endblock list_alternative %}
-
-    {% endif %}
-
-    {% block pagination %}
-        {% if page_obj.paginator.num_pages > 1 %}
-            <div class="bg-body sticky-bottom pb-3">
-                <hr />
-
-                {% include "web/partials/_pagination.html" %}
+                {% block header_buttons %}
+                {% endblock header_buttons %}
 
             </div>
-        {% endif %}
-    {% endblock pagination %}
+        </div>
 
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            {% if page_obj.paginator.count > 0 %}
+
+                {% include "web/partials/_select_all-checkbox.html" %}
+
+            {% endif %}
+
+
+            {% block header_bar %}
+            {% endblock header_bar %}
+
+            {% if page_obj.paginator.count > 0 %}
+                <div class="btn-toolbar align-items-center"
+                     role="toolbar"
+                     aria-label="{% translate 'Toolbar with button groups' %}">
+                    <div class="btn-group"
+                         role="group"
+                         aria-label="{% translate 'Multi-actions-buttons groups' %}">
+
+                        {% block action_buttons %}
+                        {% endblock action_buttons %}
+
+
+                        {% include "web/partials/_delete-button.html" %}
+
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <hr />
+
+        {% if page_obj.paginator.count > 0 %}
+
+            {% block list %}
+            {% endblock list %}
+
+
+        {% else %}
+
+            {% block list_alternative %}
+            {% endblock list_alternative %}
+
+
+        {% endif %}
+
+        {% block pagination %}
+            {% if page_obj.paginator.num_pages > 1 %}
+                <div class="bg-body sticky-bottom pb-3">
+                    <hr />
+
+                    {% include "web/partials/_pagination.html" %}
+
+                </div>
+            {% endif %}
+        {% endblock pagination %}
+
+
+    {% endwith %}
 {% endblock content %}
+
+
 
 {% block scripts %}
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="{% static 'web/js/urlTools.js' %}"></script>
     <script src="{% static 'web/js/toggle-favorite.js' %}"></script>
+    <script src="{% static 'web/js/multiSelect.js' %}"></script>
+
 
 {% endblock scripts %}
+
+
+{% block overlay_elements %}
+
+    {% include "web/partials/_multi_delete-modal.html" %}
+
+{% endblock overlay_elements %}

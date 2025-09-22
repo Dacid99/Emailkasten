@@ -15,8 +15,8 @@
 - more tags
 - autotagging
 - async parsing, sync saving
-- batch download and delete in web
-- download for account
+- use post-unsubscribe-method to interpret post-unsubscribe as link
+- download for account and batchdownload for mailbox
 
 ## To refactor
 
@@ -41,6 +41,7 @@
 
 - favicon.ico for the icon
 - daemonize celery worker
+- ditch trailing slashes in api urls
 
 ### Work in progress
 

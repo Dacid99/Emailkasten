@@ -59,6 +59,10 @@ class Correspondent(
 
     DELETE_NOTICE = _("This will only delete this correspondent, not its emails.")
 
+    DELETE_NOTICE_PLURAL = _(
+        "This will only delete these correspondents, not their emails."
+    )
+
     email_address = models.CharField(
         max_length=255,
         # Translators: Do not capitalize the very first letter unless your language requires it.
