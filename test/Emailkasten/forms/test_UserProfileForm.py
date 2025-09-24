@@ -38,8 +38,22 @@ def test_post(owner_user, profile_payload):
     assert (
         form_data["paperless_tika_enabled"] == profile_payload["paperless_tika_enabled"]
     )
+    assert "immich_url" in form_data
+    assert form_data["immich_url"] == profile_payload["immich_url"]
+    assert "immich_api_key" in form_data
+    assert form_data["immich_api_key"] == profile_payload["immich_api_key"]
+    assert "nextcloud_url" in form_data
+    assert form_data["nextcloud_url"] == profile_payload["nextcloud_url"]
+    assert "nextcloud_username" in form_data
+    assert form_data["nextcloud_username"] == profile_payload["nextcloud_username"]
+    assert "nextcloud_password" in form_data
+    assert form_data["nextcloud_password"] == profile_payload["nextcloud_password"]
+    assert "nextcloud_addressbook" in form_data
+    assert (
+        form_data["nextcloud_addressbook"] == profile_payload["nextcloud_addressbook"]
+    )
     assert "user" not in form_data
-    assert len(form_data) == 3
+    assert len(form_data) == 9
 
 
 @pytest.mark.django_db
@@ -77,5 +91,30 @@ def test_get(owner_user):
         form_initial_data["paperless_tika_enabled"]
         == owner_user.profile.paperless_tika_enabled
     )
+    assert "immich_url" in form_fields
+    assert "immich_url" in form_initial_data
+    assert form_initial_data["immich_url"] == owner_user.profile.immich_url
+    assert "immich_api_key" in form_fields
+    assert "immich_api_key" in form_initial_data
+    assert form_initial_data["immich_api_key"] == owner_user.profile.immich_api_key
+    assert "nextcloud_url" in form_fields
+    assert "nextcloud_url" in form_initial_data
+    assert form_initial_data["nextcloud_url"] == owner_user.profile.nextcloud_url
+    assert "nextcloud_username" in form_fields
+    assert "nextcloud_username" in form_initial_data
+    assert (
+        form_initial_data["nextcloud_username"] == owner_user.profile.nextcloud_username
+    )
+    assert "nextcloud_password" in form_fields
+    assert "nextcloud_password" in form_initial_data
+    assert (
+        form_initial_data["nextcloud_password"] == owner_user.profile.nextcloud_password
+    )
+    assert "nextcloud_addressbook" in form_fields
+    assert "nextcloud_addressbook" in form_initial_data
+    assert (
+        form_initial_data["nextcloud_addressbook"]
+        == owner_user.profile.nextcloud_addressbook
+    )
     assert "user" not in form_fields
-    assert len(form_fields) == 3
+    assert len(form_fields) == 9

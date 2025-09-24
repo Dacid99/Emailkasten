@@ -566,6 +566,12 @@ def profile_payload(faker, owner_user):
         paperless_url=faker.url(),
         paperless_api_key=faker.password(),
         paperless_tika_enabled=True,
+        immich_url=faker.url(),
+        immich_api_key=faker.password(),
+        nextcloud_url=faker.url(),
+        nextcloud_username=faker.user_name(),
+        nextcloud_password=faker.password(),
+        nextcloud_addressbook=faker.user_name(),
     )
     payload = model_to_dict(profile_data)
     payload.pop("id")
