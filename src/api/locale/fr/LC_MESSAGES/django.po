@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-10 17:12+0000\n"
-"PO-Revision-Date: 2025-08-15 10:02+0000\n"
+"PO-Revision-Date: 2025-09-14 20:01+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/emailkasten/api/"
 "fr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: src/api/v1/mixins/ToggleFavoriteMixin.py:71
 #, python-format
@@ -48,16 +48,12 @@ msgid "Attachment file not found"
 msgstr "Fichier de la pièce jointe introuvable"
 
 #: src/api/v1/views/AttachmentViewSet.py:203
-#, fuzzy
-#| msgid "Attachment ids missing in request."
 msgid "Attachment ids are required."
-msgstr "Identifiants de la pièce jointe manquants dans la requête."
+msgstr "Les identifiants des pièces jointes sont requis."
 
 #: src/api/v1/views/AttachmentViewSet.py:211
-#, fuzzy
-#| msgid "Attachment ids missing in request."
 msgid "Attachment ids given in invalid format."
-msgstr "Identifiants de la pièce jointe manquants dans la requête."
+msgstr "Identifiants des pièces jointes donnés dans un format invalide."
 
 #: src/api/v1/views/AttachmentViewSet.py:218
 msgid "No attachments found"
@@ -74,74 +70,52 @@ msgid "Uploaded attachment document to Paperless."
 msgstr ""
 
 #: src/api/v1/views/CorrespondentViewSet.py:198
-#, fuzzy
-#| msgid "Attachment ids missing in request."
 msgid "Correspondent ids are required."
-msgstr "Identifiants de la pièce jointe manquants dans la requête."
+msgstr "Les identifiants des correspondants sont nécessaires."
 
 #: src/api/v1/views/CorrespondentViewSet.py:205
 msgid "Correspondent ids given in invalid format."
 msgstr ""
 
 #: src/api/v1/views/CorrespondentViewSet.py:212
-#, fuzzy
-#| msgid "No attachments found"
 msgid "No correspondents found"
-msgstr "Aucune pièce jointe trouvée"
+msgstr "Aucun correspondant trouvé"
 
 #: src/api/v1/views/DaemonViewSet.py:138
-#, fuzzy
-#| msgid "Tested daemon"
 msgid "Tested routine"
-msgstr "Démon testé"
+msgstr "Routine testée"
 
 #: src/api/v1/views/DaemonViewSet.py:171
-#, fuzzy
-#| msgid "Daemon started"
 msgid "Routine started"
-msgstr "Démon démarré"
+msgstr "Routine démarrée"
 
 #: src/api/v1/views/DaemonViewSet.py:174
-#, fuzzy
-#| msgid "Daemon is already running"
 msgid "Routine is already running"
-msgstr "Le démon est déjà en fonctionnement"
+msgstr "La routine est déjà en fonctionnement"
 
 #: src/api/v1/views/DaemonViewSet.py:201
-#, fuzzy
-#| msgid "Daemon stopped"
 msgid "Routine stopped"
-msgstr "Démon arrêté"
+msgstr "Routine arrêtée"
 
 #: src/api/v1/views/DaemonViewSet.py:204
-#, fuzzy
-#| msgid "Daemon not running"
 msgid "Routine not running"
-msgstr "Le démon est actif"
+msgstr "La routine est active"
 
 #: src/api/v1/views/EmailViewSet.py:216 src/api/v1/views/EmailViewSet.py:374
-#, fuzzy
-#| msgid "eml file not found"
 msgid "eml file not found."
-msgstr "Fichier eml introuvable"
+msgstr "Fichier eml introuvable."
 
 #: src/api/v1/views/EmailViewSet.py:247 src/api/v1/views/MailboxViewSet.py:306
-#, fuzzy
-#| msgid "File format missing in request."
 msgid "File format is required."
-msgstr "Format de fichier manquant dans la requête."
+msgstr "Le format de fichier est nécessaire."
 
 #: src/api/v1/views/EmailViewSet.py:252
-#, fuzzy
-#| msgid "Email ids missing in request."
 msgid "Email ids are required."
-msgstr "Identifiants des courriels manquants dans la requête."
+msgstr "Les identifiants des courriels sont nécessaires."
 
 #: src/api/v1/views/EmailViewSet.py:260
-#, fuzzy
-#| msgid "Email ids missing in request."
 msgid "Email ids given in invalid format."
-msgstr "Identifiants des courriels manquants dans la requête."
+msgstr "Identifiants des courriels donnés dans un format invalide."
 
 #: src/api/v1/views/EmailViewSet.py:269 src/api/v1/views/MailboxViewSet.py:314
 #, python-format
@@ -161,20 +135,16 @@ msgid "Restoring of email to mailbox failed."
 msgstr ""
 
 #: src/api/v1/views/EmailViewSet.py:383
-#, fuzzy
-#| msgid "Successfully uploaded mailbox file."
 msgid "Email successfully restored to mailbox."
-msgstr "Fichier de la boîte de réception téléversé avec succès."
+msgstr "Courriel restauré avec succès dans la boîte de réception."
 
 #: src/api/v1/views/MailboxViewSet.py:190
 msgid "Tested mailbox"
 msgstr "Boîte de réception testée"
 
 #: src/api/v1/views/MailboxViewSet.py:251
-#, fuzzy
-#| msgid "File missing in request."
 msgid "Fetching criterion is required."
-msgstr "Fichier manquant dans la requête."
+msgstr "Le critère de récupération est nécessaire."
 
 #: src/api/v1/views/MailboxViewSet.py:257
 #, python-format
