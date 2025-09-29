@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-10 17:12+0000\n"
-"PO-Revision-Date: 2025-08-15 10:01+0000\n"
+"PO-Revision-Date: 2025-09-14 20:02+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/emailkasten/"
 "emailkasten/fr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:726
 msgid "Received"
@@ -76,17 +76,17 @@ msgstr ""
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/Emailkasten/models/UserProfile.py:72
 msgid "user profile"
-msgstr ""
+msgstr "profil utilisateur"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/Emailkasten/models/UserProfile.py:74
 msgid "user profiles"
-msgstr ""
+msgstr "profils utilisateur"
 
 #: src/Emailkasten/models/UserProfile.py:83
 #, python-format
 msgid "Profile for user %(username)s "
-msgstr ""
+msgstr "Profil pour utilisateur %(username)s "
 
 #: src/Emailkasten/settings.py:588
 msgid "Emailkasten API"
@@ -228,15 +228,15 @@ msgstr "Vous envoyez trop de requêtes."
 #: src/Emailkasten/templates/account/profile.html:10
 #: src/Emailkasten/templates/allauth/layouts/manage.html:14
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: src/Emailkasten/templates/account/profile.html:14
 msgid "Your Profile"
-msgstr ""
+msgstr "Ton profil"
 
 #: src/Emailkasten/templates/account/profile.html:15
 msgid "Third Party Integrations"
-msgstr ""
+msgstr "Intégrations de tiers"
 
 #: src/Emailkasten/templates/account/profile.html:18
 msgid "Paperless"
@@ -244,7 +244,7 @@ msgstr ""
 
 #: src/Emailkasten/templates/account/profile.html:25
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 #: src/Emailkasten/templates/allauth/elements/language_dropdown.html:8
 #: src/Emailkasten/templates/allauth/elements/language_dropdown.html:12
@@ -294,7 +294,7 @@ msgstr "Changer le mot de passe"
 
 #: src/Emailkasten/templates/allauth/layouts/manage.html:30
 msgid "Two-Factor Authentication"
-msgstr ""
+msgstr "Authentification à deux facteurs"
 
 #: src/Emailkasten/templates/allauth/layouts/manage.html:38
 msgid "Sessions"
