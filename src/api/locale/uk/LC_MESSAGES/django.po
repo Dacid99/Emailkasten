@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-10 17:12+0000\n"
+"POT-Creation-Date: 2025-09-29 21:34+0000\n"
 "PO-Revision-Date: 2025-09-11 18:02+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
@@ -16,10 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 "
-"? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > "
-"14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % "
-"100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 "X-Generator: Weblate 5.14-dev\n"
 
 #: src/api/v1/mixins/ToggleFavoriteMixin.py:71
@@ -44,44 +44,73 @@ msgstr "Оновлені поштові скриньки"
 msgid "Tested mailaccount"
 msgstr "Перевірений обліковий запис електронної пошти"
 
-#: src/api/v1/views/AttachmentViewSet.py:175
-#: src/api/v1/views/AttachmentViewSet.py:261
-#: src/api/v1/views/AttachmentViewSet.py:292
+#: src/api/v1/views/AttachmentViewSet.py:187
+#: src/api/v1/views/AttachmentViewSet.py:273
+#: src/api/v1/views/AttachmentViewSet.py:304
+#: src/api/v1/views/AttachmentViewSet.py:346
 msgid "Attachment file not found"
 msgstr "Вкладений файл не знайдено"
 
-#: src/api/v1/views/AttachmentViewSet.py:203
+#: src/api/v1/views/AttachmentViewSet.py:215
 msgid "Attachment ids are required."
 msgstr "Ідентифікатори вкладень обов'язкові."
 
-#: src/api/v1/views/AttachmentViewSet.py:211
+#: src/api/v1/views/AttachmentViewSet.py:223
 msgid "Attachment ids given in invalid format."
 msgstr "Ідентифікатори вкладень надано в недійсному форматі."
 
-#: src/api/v1/views/AttachmentViewSet.py:218
+#: src/api/v1/views/AttachmentViewSet.py:230
 msgid "No attachments found"
 msgstr "Вкладень не знайдено"
 
 #. Translators: Paperless is a brand name.
-#: src/api/v1/views/AttachmentViewSet.py:297
+#: src/api/v1/views/AttachmentViewSet.py:309
 msgid "Upload to Paperless failed."
 msgstr "Не вдалося завантажити на Paperless архів."
 
 #. Translators: Paperless is a brand name.
-#: src/api/v1/views/AttachmentViewSet.py:303
+#: src/api/v1/views/AttachmentViewSet.py:315
 msgid "Uploaded attachment document to Paperless."
 msgstr "Завантажено вкладений документ до Paperless."
 
-#: src/api/v1/views/CorrespondentViewSet.py:198
+#. Translators: Immich is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:351
+#, fuzzy
+#| msgid "Upload to Paperless failed."
+msgid "Upload to Immich failed."
+msgstr "Не вдалося завантажити на Paperless архів."
+
+#. Translators: Immich is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:357
+#, fuzzy
+#| msgid "Uploaded attachment document to Paperless."
+msgid "Uploaded attachment document to Immich."
+msgstr "Завантажено вкладений документ до Paperless."
+
+#: src/api/v1/views/CorrespondentViewSet.py:210
 msgid "Correspondent ids are required."
 msgstr "Потрібні ідентифікатори кореспондентів."
 
-#: src/api/v1/views/CorrespondentViewSet.py:205
+#: src/api/v1/views/CorrespondentViewSet.py:217
 msgid "Correspondent ids given in invalid format."
 msgstr "Ідентифікатори кореспондентів надано в недійсному форматі."
 
-#: src/api/v1/views/CorrespondentViewSet.py:212
+#: src/api/v1/views/CorrespondentViewSet.py:224
 msgid "No correspondents found"
+msgstr "Кореспондентів не знайдено"
+
+#. Translators: Nextcloud is a brand name.
+#: src/api/v1/views/CorrespondentViewSet.py:258
+#, fuzzy
+#| msgid "Upload to Paperless failed."
+msgid "Upload to Nextcloud failed."
+msgstr "Не вдалося завантажити на Paperless архів."
+
+#. Translators: Nextcloud is a brand name.
+#: src/api/v1/views/CorrespondentViewSet.py:264
+#, fuzzy
+#| msgid "No correspondents found"
+msgid "Uploaded correspondent to Nextcloud."
 msgstr "Кореспондентів не знайдено"
 
 #: src/api/v1/views/DaemonViewSet.py:138
@@ -139,6 +168,12 @@ msgstr "Не вдалося відновити електронну пошту �
 
 #: src/api/v1/views/EmailViewSet.py:383
 msgid "Email successfully restored to mailbox."
+msgstr "Електронну пошту успішно відновлено у поштовій скриньці."
+
+#: src/api/v1/views/EmailViewSet.py:406
+#, fuzzy
+#| msgid "Email successfully restored to mailbox."
+msgid "Email successfully reprocessed."
 msgstr "Електронну пошту успішно відновлено у поштовій скриньці."
 
 #: src/api/v1/views/MailboxViewSet.py:190

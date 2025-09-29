@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-10 17:12+0000\n"
+"POT-Creation-Date: 2025-09-29 21:34+0000\n"
 "PO-Revision-Date: 2025-09-28 22:01+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/core/"
@@ -244,306 +244,397 @@ msgid ""
 "found in it!"
 msgstr "Dies löscht dieses Konto, alle Mailboxen, E-Mails und Anhänge darin!"
 
+#: src/core/models/Account.py:76
+#, fuzzy
+#| msgid ""
+#| "This will delete this account and all mailboxes, emails and attachments "
+#| "found in it!"
+msgid ""
+"This will delete these accounts and all mailboxes, emails and attachments "
+"found in them!"
+msgstr "Dies löscht dieses Konto, alle Mailboxen, E-Mails und Anhänge darin!"
+
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:81 src/core/models/Correspondent.py:61
+#: src/core/models/Account.py:84 src/core/models/Correspondent.py:69
 msgid "email address"
 msgstr "emailaddresse"
 
-#: src/core/models/Account.py:82
+#: src/core/models/Account.py:85
 msgid "The mail address to the account."
 msgstr "Die E-Mail-Adresse des Kontos."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:89
+#: src/core/models/Account.py:92
 msgid "password"
 msgstr "passwort"
 
-#: src/core/models/Account.py:90
+#: src/core/models/Account.py:93
 msgid "The password to the account."
 msgstr "Das Passwort fürs Konto."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:97
+#: src/core/models/Account.py:100
 msgid "mailserver URL"
 msgstr "emailserver-URL"
 
-#: src/core/models/Account.py:98
+#: src/core/models/Account.py:101
 msgid "The URL of the mailserver for the chosen protocol."
 msgstr "Die URL des E-Mail-Servers für das gewählte Protokoll."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:107
+#: src/core/models/Account.py:110
 msgid "mailserver portnumber"
 msgstr "mailserver Portnummer"
 
-#: src/core/models/Account.py:108
+#: src/core/models/Account.py:111
 msgid "The port of the mailserver for the chosen protocol."
 msgstr "Die Portnummer des E-Mail-Servers für das gewählte Protokoll."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:116
+#: src/core/models/Account.py:119
 msgid "email protocol"
 msgstr "e-mail Protokoll"
 
-#: src/core/models/Account.py:117
+#: src/core/models/Account.py:120
 msgid "The email protocol implemented by the server."
 msgstr "Das E-Mail-Protokoll des E-Mail-Servers."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:125
+#: src/core/models/Account.py:128
 msgid "connection timeout"
 msgstr "verbindungstimeout"
 
-#: src/core/models/Account.py:126
+#: src/core/models/Account.py:129
 msgid "Timeout for the connection to the mailserver."
 msgstr "Zeitüberschreitung für die Verbindung zum E-Mail-Server."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:135 src/core/models/Correspondent.py:87
+#: src/core/models/Account.py:138 src/core/models/Correspondent.py:95
 msgid "user"
 msgstr "Benutzer"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:145 src/core/models/Mailbox.py:94
+#: src/core/models/Account.py:148 src/core/models/Mailbox.py:98
 msgid "account"
 msgstr "konto"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:147
+#: src/core/models/Account.py:150
 msgid "accounts"
 msgstr "konten"
 
-#: src/core/models/Account.py:171
+#: src/core/models/Account.py:174
 #, python-format
 msgid "Account %(mail_address)s with protocol %(protocol)s"
 msgstr "Konto %(mail_address)s mit Protokoll %(protocol)s"
 
-#: src/core/models/Account.py:192
+#: src/core/models/Account.py:195
 msgid "This account already exists."
 msgstr "Dieses Konto existiert schon."
 
-#: src/core/models/Account.py:219 src/core/models/Account.py:222
+#: src/core/models/Account.py:222 src/core/models/Account.py:225
 #, python-format
 msgid "The protocol %s is not implemented in a fetcher class!"
 msgstr "Das E-Mail-Protokoll %s ist nicht implementiert!"
 
-#: src/core/models/Attachment.py:75
+#: src/core/models/Attachment.py:84
 msgid "This will only delete this attachment, not the email."
 msgstr "Dies löscht nur diesen Anhang, nicht seine E-Mail."
 
+#: src/core/models/Attachment.py:87
+#, fuzzy
+#| msgid "This will only delete this attachment, not the email."
+msgid "This will only delete these attachments, not their emails."
+msgstr "Dies löscht nur diesen Anhang, nicht seine E-Mail."
+
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:80
+#: src/core/models/Attachment.py:93
 msgid "filename"
 msgstr "dateiname"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:89
+#: src/core/models/Attachment.py:102
 msgid "content disposition"
 msgstr "inhaltsbestimmung"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:97
+#: src/core/models/Attachment.py:110
 msgid "content ID"
 msgstr "inhalts ID"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:105
+#: src/core/models/Attachment.py:118
 msgid "content maintype"
 msgstr "inhalts Haupttyp"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:113
+#: src/core/models/Attachment.py:126
 msgid "content subtype"
 msgstr "inhalts Untertyp"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:119 src/core/models/Email.py:156
+#: src/core/models/Attachment.py:132 src/core/models/Email.py:161
 msgid "datasize"
 msgstr "datengröße"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:128 src/core/models/Email.py:202
+#: src/core/models/Attachment.py:141 src/core/models/Email.py:207
 #: src/core/models/EmailCorrespondent.py:47
 msgid "email"
 msgstr "e-mail"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:138
+#: src/core/models/Attachment.py:151
 msgid "attachment"
 msgstr "anhang"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:140
+#: src/core/models/Attachment.py:153
 msgid "attachments"
 msgstr "anhänge"
 
-#: src/core/models/Attachment.py:150
+#: src/core/models/Attachment.py:163
 #, python-format
 msgid "Attachment %(file_name)s from %(email)s"
 msgstr "Anhang %(file_name)s in %(email)s"
 
-#: src/core/models/Attachment.py:213
+#. Translators: Paperless is a brand name.
+#: src/core/models/Attachment.py:227
 #, python-format
 msgid "Paperless URL is malformed: %(error)s"
 msgstr "Paperless URL ist ungültig aufgebaut: %(error)s"
 
 #. Translators: Paperless is a brand name.
-#: src/core/models/Attachment.py:219
+#: src/core/models/Attachment.py:234
 #, python-format
 msgid "Error connecting to the Paperless server: %(error)s"
 msgstr "Fehler beim Verbinden mit dem Paperless Server: %(error)s"
 
 #. Translators: Paperless is a brand name.
-#: src/core/models/Attachment.py:232
+#: src/core/models/Attachment.py:247
 #, python-format
 msgid "Authentication to Paperless failed: %(response)s"
 msgstr "Authentifizierung bei Paperless fehlgeschlagen: %(response)s"
 
-#: src/core/models/Attachment.py:237
+#. Translators: Paperless is a brand name.
+#: src/core/models/Attachment.py:252
 #, python-format
 msgid "Uploading to Paperless failed: %(response)s"
 msgstr "Hochladen zu Paperless fehlgeschlagen: %(response)s"
 
-#: src/core/models/Correspondent.py:56
+#. Translators: Immich is a brand name.
+#: src/core/models/Attachment.py:306
+#, fuzzy, python-format
+#| msgid "Paperless URL is malformed: %(error)s"
+msgid "Immich URL is malformed: %(error)s"
+msgstr "Paperless URL ist ungültig aufgebaut: %(error)s"
+
+#. Translators: Immich is a brand name.
+#: src/core/models/Attachment.py:313
+#, fuzzy, python-format
+#| msgid "Error connecting to the Paperless server: %(error)s"
+msgid "Error connecting to the Immich server: %(error)s"
+msgstr "Fehler beim Verbinden mit dem Paperless Server: %(error)s"
+
+#. Translators: Immich is a brand name.
+#: src/core/models/Attachment.py:326
+#, fuzzy, python-format
+#| msgid "Authentication to Paperless failed: %(response)s"
+msgid "Authentication to Immich failed: %(response)s"
+msgstr "Authentifizierung bei Paperless fehlgeschlagen: %(response)s"
+
+#. Translators: Immich is a brand name.
+#: src/core/models/Attachment.py:331
+#, fuzzy, python-format
+#| msgid "Uploading to Paperless failed: %(response)s"
+msgid "Uploading to Immich failed: %(response)s"
+msgstr "Hochladen zu Paperless fehlgeschlagen: %(response)s"
+
+#: src/core/models/Correspondent.py:60
 msgid "This will only delete this correspondent, not its emails."
 msgstr "Dies löscht nur diesen Korrespondenten, nicht seine Emails."
 
+#: src/core/models/Correspondent.py:63
+#, fuzzy
+#| msgid "This will only delete this correspondent, not its emails."
+msgid "This will only delete these correspondents, not their emails."
+msgstr "Dies löscht nur diesen Korrespondenten, nicht seine Emails."
+
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:69
+#: src/core/models/Correspondent.py:77
 msgid "mailer name"
 msgstr "mailer name"
 
-#: src/core/models/Correspondent.py:70
+#: src/core/models/Correspondent.py:78
 msgid "The mailer name of the correspondent."
 msgstr "Der Mailer-Name des Korrespondenten."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:79
+#: src/core/models/Correspondent.py:87
 msgid "real name"
 msgstr "klarname"
 
-#: src/core/models/Correspondent.py:80
+#: src/core/models/Correspondent.py:88
 msgid "The real name of the correspondent."
 msgstr "Der echte Name des Korrespondenten."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:95
+#: src/core/models/Correspondent.py:103
 msgid "list ID"
 msgstr "listen ID"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:103
+#: src/core/models/Correspondent.py:111
 msgid "list owner"
 msgstr "eigentümer der liste"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:111
+#: src/core/models/Correspondent.py:119
 msgid "list-subscribe"
 msgstr "liste abonnieren"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:119
+#: src/core/models/Correspondent.py:127
 msgid "list-unsubscribe"
 msgstr "liste deabonnieren"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:128
+#: src/core/models/Correspondent.py:136
 msgid "list-unsubscribe method"
 msgstr "liste deabonnieren Methode"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:136
+#: src/core/models/Correspondent.py:144
 msgid "list post"
 msgstr "an liste senden"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:144
+#: src/core/models/Correspondent.py:152
 msgid "list help"
 msgstr "listen hilfe"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:152
+#: src/core/models/Correspondent.py:160
 msgid "list archive"
 msgstr "listen archiv"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:162
+#: src/core/models/Correspondent.py:170
 #: src/core/models/EmailCorrespondent.py:56
 msgid "correspondent"
 msgstr "korrespondent"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Correspondent.py:164 src/core/models/Email.py:166
+#: src/core/models/Correspondent.py:172 src/core/models/Email.py:171
 msgid "correspondents"
 msgstr "korrespondenten"
 
-#: src/core/models/Correspondent.py:182
+#: src/core/models/Correspondent.py:190
 #, python-format
 msgid "Correspondent with address %(email_address)s"
 msgstr "Korrespondent mit Mail-Addresse %(email_address)s"
 
-#: src/core/models/Daemon.py:54
-msgid "This will only delete this daemon, not its mailbox."
+#. Translators: Nextcloud is a brand name.
+#: src/core/models/Correspondent.py:244
+#, fuzzy, python-format
+#| msgid "Paperless URL is malformed: %(error)s"
+msgid "Nextcloud URL is malformed: %(error)s"
+msgstr "Paperless URL ist ungültig aufgebaut: %(error)s"
+
+#. Translators: Nextcloud is a brand name.
+#: src/core/models/Correspondent.py:251
+#, fuzzy, python-format
+#| msgid "Error connecting to the Paperless server: %(error)s"
+msgid "Error connecting to the Nextcloud server: %(error)s"
+msgstr "Fehler beim Verbinden mit dem Paperless Server: %(error)s"
+
+#. Translators: Nextcloud is a brand name.
+#: src/core/models/Correspondent.py:264
+#, fuzzy, python-format
+#| msgid "Authentication to Paperless failed: %(response)s"
+msgid "Authentication to Nextcloud failed: %(response)s"
+msgstr "Authentifizierung bei Paperless fehlgeschlagen: %(response)s"
+
+#. Translators: Nextcloud is a brand name.
+#: src/core/models/Correspondent.py:269
+#, fuzzy, python-format
+#| msgid "Uploading to Paperless failed: %(response)s"
+msgid "Uploading to Nextcloud failed: %(response)s"
+msgstr "Hochladen zu Paperless fehlgeschlagen: %(response)s"
+
+#: src/core/models/Daemon.py:58
+#, fuzzy
+#| msgid "This will only delete this daemon, not its mailbox."
+msgid "This will only delete this routine, not its mailbox."
+msgstr "Dies löscht nur den Daemon, nicht seine Mailbox."
+
+#: src/core/models/Daemon.py:61
+#, fuzzy
+#| msgid "This will only delete this daemon, not its mailbox."
+msgid "This will only delete these routine, not their mailboxes."
 msgstr "Dies löscht nur den Daemon, nicht seine Mailbox."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Daemon.py:60
+#: src/core/models/Daemon.py:68
 msgid "UUID"
 msgstr "UUID"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Daemon.py:69 src/core/models/Email.py:176
-#: src/core/models/Mailbox.py:122
+#: src/core/models/Daemon.py:77 src/core/models/Email.py:181
+#: src/core/models/Mailbox.py:126
 msgid "mailbox"
 msgstr "mailbox"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Daemon.py:78
+#: src/core/models/Daemon.py:86
 msgid "fetching criterion"
 msgstr "abfrage kriterium"
 
-#: src/core/models/Daemon.py:79
+#: src/core/models/Daemon.py:87
 msgid "The selection criterion for emails to archive."
 msgstr "Das Kriterium nach dem Emails abgerufen werden."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Daemon.py:88
+#: src/core/models/Daemon.py:96
 msgid "celery task"
 msgstr "celery auftrag"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Daemon.py:96
+#: src/core/models/Daemon.py:104
 msgid "interval"
 msgstr "intervall"
 
-#: src/core/models/Daemon.py:97
-msgid "The time between two daemon runs in seconds."
+#: src/core/models/Daemon.py:105
+#, fuzzy
+#| msgid "The time between two daemon runs in seconds."
+msgid "The time between two routine runs in seconds."
 msgstr "Die Zeit zwischen zwei Ausführungen in Sekunden."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Daemon.py:107
-msgid "daemon"
-msgstr "routine"
+#: src/core/models/Daemon.py:115
+msgid "routine"
+msgstr ""
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Daemon.py:109
-msgid "daemons"
-msgstr "routinen"
+#: src/core/models/Daemon.py:117
+msgid "routines"
+msgstr ""
 
-#: src/core/models/Daemon.py:135
-#, python-format
-msgid "Emailfetcherdaemon %(uuid)s for mailbox %(mailbox)s"
+#: src/core/models/Daemon.py:143
+#, fuzzy, python-format
+#| msgid "Emailfetcherdaemon %(uuid)s for mailbox %(mailbox)s"
+msgid "Emailfetching routine %(uuid)s for mailbox %(mailbox)s"
 msgstr "Emailfetcherdaemon %(uuid)s für Mailbox %(mailbox)s"
 
-#: src/core/models/Daemon.py:169
+#: src/core/models/Daemon.py:177
 msgid "This fetching criterion is not available for this mailbox!"
 msgstr "Dieses Abruf-Kriterium ist für diese Mailbox nicht verfügbar!"
 
-#: src/core/models/Daemon.py:175
+#: src/core/models/Daemon.py:183
 msgid "No valid mailbox selected!"
 msgstr "Keine gültige Mailbox ausgewählt!"
 
-#: src/core/models/Email.py:94
+#: src/core/models/Email.py:95
 msgid ""
 "This will delete this email and all its attachments but not its "
 "correspondents."
@@ -551,62 +642,74 @@ msgstr ""
 "Dies löscht diese Email und alle ihre Anhänge, aber nicht ihre "
 "Korrespondenten."
 
+#: src/core/models/Email.py:99
+#, fuzzy
+#| msgid ""
+#| "This will delete this email and all its attachments but not its "
+#| "correspondents."
+msgid ""
+"This will delete these emails and all their attachments but not their "
+"correspondents."
+msgstr ""
+"Dies löscht diese Email und alle ihre Anhänge, aber nicht ihre "
+"Korrespondenten."
+
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:100
+#: src/core/models/Email.py:105
 msgid "message-ID"
 msgstr "nachrichten-ID"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:106
+#: src/core/models/Email.py:111
 msgid "time received"
 msgstr "erhalten"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:115
+#: src/core/models/Email.py:120
 msgid "subject"
 msgstr "betreff"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:123
+#: src/core/models/Email.py:128
 msgid "plain bodytext"
 msgstr "Klartextinhalt"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:131
+#: src/core/models/Email.py:136
 msgid "HTML bodytext"
 msgstr "HTML-Textinhalt"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:140
+#: src/core/models/Email.py:145
 msgid "in reply to email"
 msgstr "antwort auf E-Mail"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:150
+#: src/core/models/Email.py:155
 msgid "referencing emails"
 msgstr "referenzierende E-Mails"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:183
+#: src/core/models/Email.py:188
 msgid "headers"
 msgstr "kopfzeilen"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:192
+#: src/core/models/Email.py:197
 msgid "X-Spam Flag"
 msgstr "X-Spam Markierung"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Email.py:204
+#: src/core/models/Email.py:209
 msgid "emails"
 msgstr "E-Mails"
 
-#: src/core/models/Email.py:223
+#: src/core/models/Email.py:228
 #, python-format
 msgid "Email with ID %(message_id)s, received on %(datetime)s from %(mailbox)s"
 msgstr "Email mit ID %(message_id)s, erhalten am %(datetime)s von %(mailbox)s"
 
-#: src/core/models/Email.py:626 src/core/models/Mailbox.py:288
+#: src/core/models/Email.py:640 src/core/models/Mailbox.py:292
 #, python-format
 msgid "The file format %(file_format)s is not supported."
 msgstr "Das gegebene Dateiformat %(file_format)s wird nicht unterstützt."
@@ -635,41 +738,50 @@ msgid ""
 "This will delete this mailbox and all emails and attachments found in it!"
 msgstr "Dies löscht diese Mailbox und alle Emails und Anhänge in ihr!"
 
+#: src/core/models/Mailbox.py:83
+#, fuzzy
+#| msgid ""
+#| "This will delete this mailbox and all emails and attachments found in it!"
+msgid ""
+"This will delete these mailboxes and all emails and attachments found in "
+"them!"
+msgstr "Dies löscht diese Mailbox und alle Emails und Anhänge in ihr!"
+
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Mailbox.py:85
+#: src/core/models/Mailbox.py:89
 msgid "name"
 msgstr "name"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Mailbox.py:101
+#: src/core/models/Mailbox.py:105
 msgid "save attachments"
 msgstr "anhänge speichern"
 
-#: src/core/models/Mailbox.py:103
+#: src/core/models/Mailbox.py:107
 msgid "Whether the attachments from the emails in this mailbox will be saved."
 msgstr "Ob die Anhänge der Emails in dieser Mailbox gespeichert werden."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Mailbox.py:111
+#: src/core/models/Mailbox.py:115
 msgid "save as .eml"
 msgstr "als .eml speichern"
 
-#: src/core/models/Mailbox.py:112
+#: src/core/models/Mailbox.py:116
 msgid "Whether the emails in this mailbox will be stored in .eml files."
 msgstr "Ob die Emails in dieser Mailbox als .eml gespeichert werden."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Mailbox.py:124
+#: src/core/models/Mailbox.py:128
 msgid "mailboxes"
 msgstr "Postfächer"
 
-#: src/core/models/Mailbox.py:141
+#: src/core/models/Mailbox.py:145
 #, python-format
 msgid "Mailbox %(name)s of %(account)s"
 msgstr "Mailbox %(name)s in %(account)s"
 
-#: src/core/models/Mailbox.py:230 src/core/models/Mailbox.py:263
-#: src/core/models/Mailbox.py:281
+#: src/core/models/Mailbox.py:234 src/core/models/Mailbox.py:267
+#: src/core/models/Mailbox.py:285
 #, python-format
 msgid "The given file is not a valid %(file_format)s."
 msgstr "Die angegebene Datei ist kein gültiges %(file_format)s."

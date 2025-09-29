@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-10 17:12+0000\n"
+"POT-Creation-Date: 2025-09-29 21:34+0000\n"
 "PO-Revision-Date: 2025-09-14 20:02+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/emailkasten/web/"
@@ -198,6 +198,7 @@ msgstr "Nouveau compte"
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:38
 #: src/web/templates/web/partials/_cancel_edit-button.html:5
 #: src/web/templates/web/partials/_delete-modal.html:28
+#: src/web/templates/web/partials/_multi_delete-modal.html:25
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -258,16 +259,16 @@ msgid "Mailboxes"
 msgstr "Boîtes de réception"
 
 #: src/web/templates/web/account/account_detail.html:100
-#: src/web/templates/web/correspondent/correspondent_detail.html:75
+#: src/web/templates/web/correspondent/correspondent_detail.html:90
 #: src/web/templates/web/dashboard.html:16
 #: src/web/templates/web/mailbox/mailbox_detail.html:108
 msgid "Latest Emails"
 msgstr "Courriels les plus récents"
 
 #: src/web/templates/web/account/account_detail.html:105
-#: src/web/templates/web/correspondent/correspondent_detail.html:79
+#: src/web/templates/web/correspondent/correspondent_detail.html:94
 #: src/web/templates/web/dashboard.html:21
-#: src/web/templates/web/email/email_detail.html:164
+#: src/web/templates/web/email/email_detail.html:172
 #: src/web/templates/web/mailbox/mailbox_detail.html:113
 msgid "View all"
 msgstr "Tout voir"
@@ -291,7 +292,7 @@ msgstr "Comptes"
 msgid "Add account"
 msgstr "Ajouter un compte"
 
-#: src/web/templates/web/account/partials/_email_list_alternative.html:6
+#: src/web/templates/web/account/partials/_emails_list_alternative.html:6
 msgid "You can fetch emails from one of this accounts mailboxes."
 msgstr "Vous pouvez récupérer les courriels d'une de ces boîtes de réception."
 
@@ -321,36 +322,36 @@ msgstr "Actualiser les boîtes de réception"
 msgid "Attachment Details"
 msgstr "Détails de la pièce jointe"
 
-#: src/web/templates/web/attachment/attachment_detail.html:39
+#: src/web/templates/web/attachment/attachment_detail.html:35
 #: src/web/templates/web/attachment/partials/_attachment_card.html:10
 msgid "MIME Content-Type"
 msgstr "Type de contenu MIME"
 
-#: src/web/templates/web/attachment/attachment_detail.html:46
+#: src/web/templates/web/attachment/attachment_detail.html:42
 msgid "Size"
 msgstr "Taille"
 
-#: src/web/templates/web/attachment/attachment_detail.html:46
+#: src/web/templates/web/attachment/attachment_detail.html:42
 #: src/web/templates/web/attachment/partials/_attachment_card.html:22
-#: src/web/templates/web/email/email_detail.html:46
+#: src/web/templates/web/email/email_detail.html:54
 msgid "bytes"
 msgstr "octets"
 
-#: src/web/templates/web/attachment/attachment_detail.html:50
+#: src/web/templates/web/attachment/attachment_detail.html:46
 msgid "Content Disposition"
 msgstr "Disposition du contenu"
 
-#: src/web/templates/web/attachment/attachment_detail.html:54
+#: src/web/templates/web/attachment/attachment_detail.html:50
 msgid "Content Id"
 msgstr "Identifiant du contenu"
 
-#: src/web/templates/web/attachment/attachment_detail.html:56
+#: src/web/templates/web/attachment/attachment_detail.html:52
 #: src/web/templates/web/attachment/partials/_attachment_card.html:28
-#: src/web/templates/web/email/email_detail.html:38
+#: src/web/templates/web/email/email_detail.html:46
 msgid "Date received"
 msgstr "Reçu le"
 
-#: src/web/templates/web/attachment/attachment_detail.html:72
+#: src/web/templates/web/attachment/attachment_detail.html:68
 msgid "Email"
 msgstr "Courriel"
 
@@ -358,12 +359,12 @@ msgstr "Courriel"
 #: src/web/templates/web/attachment/attachment_filter_list.html:14
 #: src/web/templates/web/bases/base.html:53
 #: src/web/templates/web/dashboard.html:61
-#: src/web/templates/web/email/email_detail.html:121
+#: src/web/templates/web/email/email_detail.html:129
 msgid "Attachments"
 msgstr "Pièces jointes"
 
 #: src/web/templates/web/attachment/partials/_attachment_card.html:22
-#: src/web/templates/web/email/email_detail.html:46
+#: src/web/templates/web/email/email_detail.html:54
 msgid "Datasize"
 msgstr "Taille du fichier"
 
@@ -376,8 +377,12 @@ msgid "No attachments found."
 msgstr "Aucune pièce jointe trouvée."
 
 #: src/web/templates/web/attachment/partials/_filter_list_alternative.html:11
+#, fuzzy
+#| msgid ""
+#| "You can fetching some along with emails from the mailboxes you have set "
+#| "up."
 msgid ""
-"You can fetching some along with emails from the mailboxes you have set up."
+"You can fetch some along with emails from the mailboxes you have set up."
 msgstr ""
 "Vous pouvez en récupérer, avec les courriels, depuis les boîtes de réception "
 "que vous avez configurées."
@@ -387,6 +392,15 @@ msgstr ""
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:17
 msgid "Go to mailboxes"
 msgstr "Voir les boîtes de réception"
+
+#: src/web/templates/web/attachment/partials/_multi_download-button.html:4
+#: src/web/templates/web/correspondent/partials/_multi_download-button.html:4
+#: src/web/templates/web/daemon/partials/_download_logs-button.html:5
+#: src/web/templates/web/email/partials/_multi_download_dropdown.html:9
+#: src/web/templates/web/mailbox/partials/_download_dropdown.html:9
+#: src/web/templates/web/partials/_download-button.html:5
+msgid "Download"
+msgstr "Télécharger"
 
 #: src/web/templates/web/attachment/partials/_thumbnail.html:17
 msgid "Attachment image"
@@ -420,7 +434,7 @@ msgstr "Courriels"
 #: src/web/templates/web/correspondent/correspondent_filter_list.html:6
 #: src/web/templates/web/correspondent/correspondent_filter_list.html:14
 #: src/web/templates/web/dashboard.html:54
-#: src/web/templates/web/email/email_detail.html:110
+#: src/web/templates/web/email/email_detail.html:118
 msgid "Correspondents"
 msgstr "Correspondants"
 
@@ -433,13 +447,14 @@ msgstr ""
 
 #: src/web/templates/web/bases/base_create.html:13
 #: src/web/templates/web/bases/base_detail.html:21
-#: src/web/templates/web/bases/base_detail_with_thumbnail.html:19
+#: src/web/templates/web/bases/base_detail_with_thumbnail.html:21
+#: src/web/templates/web/bases/base_list.html:50
 msgid "Toolbar with button groups"
 msgstr "Barre d'outils avec groupes de boutons"
 
 #: src/web/templates/web/bases/base_create.html:16
 #: src/web/templates/web/bases/base_detail.html:42
-#: src/web/templates/web/bases/base_detail_with_thumbnail.html:40
+#: src/web/templates/web/bases/base_detail_with_thumbnail.html:42
 #, fuzzy
 #| msgid "Close button group"
 msgid "Close-buttons group"
@@ -452,13 +467,13 @@ msgid "Action-buttons groups"
 msgstr "Groupe de boutons d'action"
 
 #: src/web/templates/web/bases/base_detail.html:32
-#: src/web/templates/web/bases/base_detail_with_thumbnail.html:30
+#: src/web/templates/web/bases/base_detail_with_thumbnail.html:32
 #, fuzzy
 #| msgid "Edit button group"
 msgid "Edit-buttons group"
 msgstr "Modifier le groupe de boutons"
 
-#: src/web/templates/web/bases/base_detail_with_thumbnail.html:22
+#: src/web/templates/web/bases/base_detail_with_thumbnail.html:24
 #, fuzzy
 #| msgid "Action button group"
 msgid "Action-buttons group"
@@ -468,48 +483,55 @@ msgstr "Groupe de boutons d'action"
 msgid "Show filter options"
 msgstr "Afficher les options du filtre"
 
-#: src/web/templates/web/bases/base_filter_list.html:24
+#: src/web/templates/web/bases/base_filter_list.html:26
 msgid "Filter options"
 msgstr "Options du filtre"
 
-#: src/web/templates/web/bases/base_filter_list.html:32
+#: src/web/templates/web/bases/base_filter_list.html:34
 #: src/web/templates/web/partials/_delete-modal.html:17
+#: src/web/templates/web/partials/_multi_delete-modal.html:15
 msgid "Close"
 msgstr "Fermer"
+
+#: src/web/templates/web/bases/base_list.html:36
+msgid "Select All"
+msgstr ""
+
+#: src/web/templates/web/bases/base_list.html:53
+#, fuzzy
+#| msgid "Action button group"
+msgid "Multi-actions-buttons groups"
+msgstr "Groupe de boutons d'action"
 
 #: src/web/templates/web/correspondent/correspondent_detail.html:6
 msgid "Correspondent Details"
 msgstr "Détails du correspondant"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:37
+#: src/web/templates/web/correspondent/correspondent_detail.html:39
 msgid "Mailer name"
 msgstr "Nom d'expéditeur"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:42
+#: src/web/templates/web/correspondent/correspondent_detail.html:44
 msgid "Mailinglist"
 msgstr "Liste de diffusion"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:45
+#: src/web/templates/web/correspondent/correspondent_detail.html:49
 msgid "Subscribe"
 msgstr "S'abonner"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:48
+#: src/web/templates/web/correspondent/correspondent_detail.html:56
 msgid "Unsubscribe"
 msgstr "Se désabonner"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:52
-msgid "Unsubscribe Method"
-msgstr "Méthode de désabonnement"
-
-#: src/web/templates/web/correspondent/correspondent_detail.html:56
+#: src/web/templates/web/correspondent/correspondent_detail.html:64
 msgid "Post"
 msgstr "Envoyer"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:59
+#: src/web/templates/web/correspondent/correspondent_detail.html:70
 msgid "Archive"
 msgstr "Archive"
 
-#: src/web/templates/web/correspondent/correspondent_detail.html:62
+#: src/web/templates/web/correspondent/correspondent_detail.html:76
 msgid "Help"
 msgstr "Aide"
 
@@ -534,6 +556,7 @@ msgstr ""
 "que vous avez configurées."
 
 #: src/web/templates/web/daemon/daemon_create.html:6
+#: src/web/templates/web/mailbox/mailbox_daemon_create.html:6
 #, fuzzy
 #| msgid "Add Account"
 msgid "Add Routine"
@@ -549,7 +572,7 @@ msgstr "Détails du compte"
 #: src/web/templates/web/daemon/daemon_detail.html:72
 #: src/web/templates/web/daemon/daemon_edit.html:18
 #: src/web/templates/web/daemon/partials/_daemon_card.html:19
-#: src/web/templates/web/email/email_detail.html:49
+#: src/web/templates/web/email/email_detail.html:57
 #: src/web/templates/web/email/partials/_email_card.html:17
 msgid "Mailbox"
 msgstr "Boîte de réception"
@@ -557,7 +580,7 @@ msgstr "Boîte de réception"
 #: src/web/templates/web/daemon/daemon_detail.html:41
 #: src/web/templates/web/daemon/daemon_edit.html:21
 #: src/web/templates/web/daemon/partials/_daemon_card.html:22
-#: src/web/templates/web/email/email_detail.html:53
+#: src/web/templates/web/email/email_detail.html:61
 #: src/web/templates/web/email/partials/_email_card.html:20
 #: src/web/templates/web/mailbox/mailbox_detail.html:43
 #: src/web/templates/web/mailbox/partials/_mailbox_card.html:24
@@ -593,14 +616,11 @@ msgid "Edit Routine"
 msgstr "Modifier le compte"
 
 #: src/web/templates/web/daemon/partials/_add_button.html:6
-msgid "Add daemon"
-msgstr "Ajouter un démon"
-
-#: src/web/templates/web/daemon/partials/_download_logs-button.html:5
-#: src/web/templates/web/mailbox/partials/_download_dropdown.html:9
-#: src/web/templates/web/partials/_download-button.html:5
-msgid "Download"
-msgstr "Télécharger"
+#: src/web/templates/web/mailbox/partials/_add_daemon_button.html:7
+#, fuzzy
+#| msgid "Add Account"
+msgid "Add routine"
+msgstr "Ajouter un compte"
 
 #: src/web/templates/web/daemon/partials/_filter_list_alternative.html:7
 #, fuzzy
@@ -697,7 +717,7 @@ msgid "Year"
 msgstr "Année"
 
 #: src/web/templates/web/email/email_conversation_filter_list.html:6
-#: src/web/templates/web/email/email_detail.html:160
+#: src/web/templates/web/email/email_detail.html:168
 msgid "Conversation"
 msgstr "Conversation"
 
@@ -705,48 +725,48 @@ msgstr "Conversation"
 msgid "Email Details"
 msgstr "Détails du courriel"
 
-#: src/web/templates/web/email/email_detail.html:41
+#: src/web/templates/web/email/email_detail.html:49
 msgid "Time received"
 msgstr "Reçu à"
 
-#: src/web/templates/web/email/email_detail.html:43
+#: src/web/templates/web/email/email_detail.html:51
 msgid "Message Id"
 msgstr "Identifiant du message"
 
-#: src/web/templates/web/email/email_detail.html:44
+#: src/web/templates/web/email/email_detail.html:52
 msgid "X-Spam"
 msgstr "X-Spam"
 
-#: src/web/templates/web/email/email_detail.html:64
+#: src/web/templates/web/email/email_detail.html:72
 msgid "Plain bodytext"
 msgstr "Texte brut"
 
-#: src/web/templates/web/email/email_detail.html:82
+#: src/web/templates/web/email/email_detail.html:90
 msgid "Html bodytext"
 msgstr "Contenu HTML"
 
-#: src/web/templates/web/email/email_detail.html:101
+#: src/web/templates/web/email/email_detail.html:109
 #: src/web/templates/web/email/partials/_email_card.html:36
 msgid "Email content"
 msgstr "Contenu du courriel"
 
-#: src/web/templates/web/email/email_detail.html:137
+#: src/web/templates/web/email/email_detail.html:145
 msgid "Headers"
 msgstr "En-têtes"
 
-#: src/web/templates/web/email/email_detail.html:170
+#: src/web/templates/web/email/email_detail.html:178
 msgid "In Reply To"
 msgstr "En réponse à"
 
-#: src/web/templates/web/email/email_detail.html:180
+#: src/web/templates/web/email/email_detail.html:188
 msgid "Replies"
 msgstr "Réponses"
 
-#: src/web/templates/web/email/email_detail.html:190
+#: src/web/templates/web/email/email_detail.html:198
 msgid "References"
 msgstr "Références"
 
-#: src/web/templates/web/email/email_detail.html:200
+#: src/web/templates/web/email/email_detail.html:208
 msgid "Referenced by"
 msgstr "Référencé par"
 
@@ -772,13 +792,11 @@ msgstr ""
 msgid "Restore"
 msgstr ""
 
-#: src/web/templates/web/mailbox/mailbox_daemon_create.html:6
-msgid "Add Daemon"
-msgstr "Ajouter un démon"
-
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:18
-msgid "New Daemon"
-msgstr "Nouveaux démons"
+#, fuzzy
+#| msgid "Add Account"
+msgid "New Routine"
+msgstr "Ajouter un compte"
 
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:22
 msgid "for"
@@ -820,23 +838,25 @@ msgstr "Modifier la boîte de réception"
 msgid "of"
 msgstr "de"
 
-#: src/web/templates/web/mailbox/partials/_add_daemon_button.html:7
-#, fuzzy
-#| msgid "Add Account"
-msgid "Add routine"
-msgstr "Ajouter un compte"
-
 #: src/web/templates/web/mailbox/partials/_daemons_list_alternative.html:8
+#, fuzzy
+#| msgid ""
+#| "You can set up daemons for this mailbox to fetch its contents on a "
+#| "regular schedule."
 msgid ""
-"You can set up daemons for this mailbox to fetch its contents on a regular "
+"You can set up routines for this mailbox to fetch its contents on a regular "
 "schedule."
 msgstr ""
 "Vous pouvez configurer des démons pour cette boîte de réception pour "
 "récupérer son contenu régulièrement."
 
 #: src/web/templates/web/mailbox/partials/_emails_list_alternative.html:7
+#, fuzzy
+#| msgid ""
+#| "Fetch emails from this mailbox by setting up a daemon or fetching the "
+#| "content once."
 msgid ""
-"Fetch emails from this mailbox by setting up a daemon or fetching the "
+"Fetch emails from this mailbox by setting up a routine or fetching the "
 "content once."
 msgstr ""
 "Récupérez des courriels depuis cette boîte de réception en configurant un "
@@ -904,6 +924,8 @@ msgstr "Dernière modification"
 
 #: src/web/templates/web/partials/_delete-button.html:7
 #: src/web/templates/web/partials/_delete-modal.html:32
+#: src/web/templates/web/partials/_multi_delete-modal.html:11
+#: src/web/templates/web/partials/_multi_delete-modal.html:29
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -947,22 +969,26 @@ msgid "Licensed under the AGPLv3."
 msgstr ""
 
 #: src/web/templates/web/partials/_footer.html:15
+msgid "Website"
+msgstr ""
+
+#: src/web/templates/web/partials/_footer.html:18
 msgid "Gitlab"
 msgstr "Gitlab"
 
-#: src/web/templates/web/partials/_footer.html:18
+#: src/web/templates/web/partials/_footer.html:21
 msgid "Github"
 msgstr "GitHub"
 
-#: src/web/templates/web/partials/_footer.html:21
+#: src/web/templates/web/partials/_footer.html:24
 msgid "Dockerhub"
 msgstr ""
 
-#: src/web/templates/web/partials/_footer.html:24
+#: src/web/templates/web/partials/_footer.html:27
 msgid "Documentation"
 msgstr "Documentation"
 
-#: src/web/templates/web/partials/_footer.html:27
+#: src/web/templates/web/partials/_footer.html:30
 msgid "Translating"
 msgstr "Traductions"
 
@@ -977,6 +1003,12 @@ msgstr "Problème"
 #: src/web/templates/web/partials/_health_badge.html:15
 msgid "Health unknown"
 msgstr "Statut inconnu"
+
+#: src/web/templates/web/partials/_multi_delete-modal.html:19
+#, fuzzy
+#| msgid "Are you sure you want to delete %(object)s?"
+msgid "Are you sure you want to delete the selected items?"
+msgstr "Voulez-vous vraiment supprimer %(object)s ?"
 
 #: src/web/templates/web/partials/_pagination.html:4
 msgid "Results"
@@ -1024,11 +1056,12 @@ msgstr ""
 msgid "Updating mailboxes successful"
 msgstr "Boîtes de réception actualisées avec succès"
 
-#: src/web/views/attachment_views/AttachmentDetailWithDeleteView.py:85
+#: src/web/views/attachment_views/AttachmentDetailWithDeleteView.py:92
+#: src/web/views/correspondent_views/CorrespondentDetailWithDeleteView.py:100
 #, fuzzy
-#| msgid "Updating mailboxes successful"
-msgid "Sharing to Paperless successful"
-msgstr "Boîtes de réception actualisées avec succès"
+#| msgid "Fetching successful"
+msgid "Sharing successful"
+msgstr "La récupération est un succès"
 
 #: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:80
 msgid "Daemon started successfully"
@@ -1046,11 +1079,17 @@ msgstr "Le démon s'est arrêté avec succès"
 msgid "Daemon was not running"
 msgstr "Le démon n'était pas en fonctionnement"
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:89
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:85
+#, fuzzy
+#| msgid "Email successfully restored to mailbox."
+msgid "Email successfully reprocessed."
+msgstr "Courriel restauré avec succès dans la boîte de réception."
+
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:103
 msgid "POP accounts do not support restoring of emails to mailbox."
 msgstr ""
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:94
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:108
 #, fuzzy, python-format
 #| msgid ""
 #| "Updating mailboxes failed\n"
@@ -1060,11 +1099,11 @@ msgstr ""
 "Actualisation des boîtes de réception échouées\n"
 "%(error)s"
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:95
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:109
 msgid "eml file not found."
 msgstr "Fichier eml introuvable."
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:100
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:114
 #, fuzzy, python-format
 #| msgid ""
 #| "Updating mailboxes failed\n"
@@ -1074,7 +1113,7 @@ msgstr ""
 "Actualisation des boîtes de réception échouées\n"
 "%(error)s"
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:104
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:118
 msgid "Email successfully restored to mailbox."
 msgstr "Courriel restauré avec succès dans la boîte de réception."
 

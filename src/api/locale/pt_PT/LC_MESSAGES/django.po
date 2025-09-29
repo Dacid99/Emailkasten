@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-10 17:12+0000\n"
+"POT-Creation-Date: 2025-09-29 21:34+0000\n"
 "PO-Revision-Date: 2025-08-12 15:02+0000\n"
 "Last-Translator: Manuela Silva <mmsrs@sky.com>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
@@ -41,46 +41,67 @@ msgstr "Caixas de mensagens atualizadas"
 msgid "Tested mailaccount"
 msgstr "Conta de correio testada"
 
-#: src/api/v1/views/AttachmentViewSet.py:175
-#: src/api/v1/views/AttachmentViewSet.py:261
-#: src/api/v1/views/AttachmentViewSet.py:292
+#: src/api/v1/views/AttachmentViewSet.py:187
+#: src/api/v1/views/AttachmentViewSet.py:273
+#: src/api/v1/views/AttachmentViewSet.py:304
+#: src/api/v1/views/AttachmentViewSet.py:346
 msgid "Attachment file not found"
 msgstr "Ficheiro de anexo não encontrado"
 
-#: src/api/v1/views/AttachmentViewSet.py:203
+#: src/api/v1/views/AttachmentViewSet.py:215
 #, fuzzy
 #| msgid "Attachment file not found"
 msgid "Attachment ids are required."
 msgstr "Ficheiro de anexo não encontrado"
 
-#: src/api/v1/views/AttachmentViewSet.py:211
+#: src/api/v1/views/AttachmentViewSet.py:223
 msgid "Attachment ids given in invalid format."
 msgstr ""
 
-#: src/api/v1/views/AttachmentViewSet.py:218
+#: src/api/v1/views/AttachmentViewSet.py:230
 msgid "No attachments found"
 msgstr ""
 
 #. Translators: Paperless is a brand name.
-#: src/api/v1/views/AttachmentViewSet.py:297
+#: src/api/v1/views/AttachmentViewSet.py:309
 msgid "Upload to Paperless failed."
 msgstr ""
 
 #. Translators: Paperless is a brand name.
-#: src/api/v1/views/AttachmentViewSet.py:303
+#: src/api/v1/views/AttachmentViewSet.py:315
 msgid "Uploaded attachment document to Paperless."
 msgstr ""
 
-#: src/api/v1/views/CorrespondentViewSet.py:198
+#. Translators: Immich is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:351
+msgid "Upload to Immich failed."
+msgstr ""
+
+#. Translators: Immich is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:357
+msgid "Uploaded attachment document to Immich."
+msgstr ""
+
+#: src/api/v1/views/CorrespondentViewSet.py:210
 msgid "Correspondent ids are required."
 msgstr ""
 
-#: src/api/v1/views/CorrespondentViewSet.py:205
+#: src/api/v1/views/CorrespondentViewSet.py:217
 msgid "Correspondent ids given in invalid format."
 msgstr ""
 
-#: src/api/v1/views/CorrespondentViewSet.py:212
+#: src/api/v1/views/CorrespondentViewSet.py:224
 msgid "No correspondents found"
+msgstr ""
+
+#. Translators: Nextcloud is a brand name.
+#: src/api/v1/views/CorrespondentViewSet.py:258
+msgid "Upload to Nextcloud failed."
+msgstr ""
+
+#. Translators: Nextcloud is a brand name.
+#: src/api/v1/views/CorrespondentViewSet.py:264
+msgid "Uploaded correspondent to Nextcloud."
 msgstr ""
 
 #: src/api/v1/views/DaemonViewSet.py:138
@@ -142,6 +163,10 @@ msgstr ""
 
 #: src/api/v1/views/EmailViewSet.py:383
 msgid "Email successfully restored to mailbox."
+msgstr ""
+
+#: src/api/v1/views/EmailViewSet.py:406
+msgid "Email successfully reprocessed."
 msgstr ""
 
 #: src/api/v1/views/MailboxViewSet.py:190
