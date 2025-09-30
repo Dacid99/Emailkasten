@@ -48,5 +48,6 @@ include:
   - local: .gitlab/ci/.gitlab-ci-fix_and_format.yml
   - local: .gitlab/ci/.gitlab-ci-lint.yml
   - local: .gitlab/ci/.gitlab-ci-test.yml
+  - local: .gitlab/ci/.gitlab-ci-pages.yml
   - local: .gitlab/ci/.gitlab-ci-build.yml
   - local: .gitlab/ci/.gitlab-ci-debug-build.yml
