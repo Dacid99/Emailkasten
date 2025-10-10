@@ -49,7 +49,14 @@
             {% translate "Time received" %}: {{ object.datetime|time:"TIME_FORMAT" }}
         </li>
         <li class="list-group-item">{% translate "Message Id" %}: {{ object.message_id }}</li>
-        <li class="list-group-item">{% translate "X-Spam" %}: {{ object.x_spam }}</li>
+        <li class="list-group-item">
+            {% translate "Spam" %}:
+            {% if object.is_spam %}
+                <i class="fa-solid fa-check mx-1" aria-label={% translate "yes" %}></i>
+            {% else %}
+                <i class="fa-solid fa-xmark mx-1" aria-label={% translate "no" %}></i>
+            {% endif %}
+        </li>
         <li class="list-group-item">
             {% translate "Datasize" %}: {{ object.datasize }} {% translate "bytes" %}
         </li>

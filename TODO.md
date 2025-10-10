@@ -16,6 +16,7 @@
 - autotagging
 - async parsing, sync saving
 - download for account and batchdownload for mailbox
+- show pwd button
 
 ## To refactor
 

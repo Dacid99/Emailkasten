@@ -31,7 +31,7 @@ class EmailArchiveMixin(PageSizeMixin):
     BASE_TEMPLATE_NAME = "web/email/archive/"
     model: type[Email] | None = Email
     date_field: str | None = "datetime"
-    ordering: list[str] | None = ["datetime"]
+    ordering: list[str] | None = ["-datetime"]
     make_object_list = True
     allow_empty = True
     allow_future = True

@@ -2,6 +2,10 @@
 
 {% load i18n %}
 
+{% block card_class %}
+    {% if object.is_spam %}border-danger bg-danger-subtle{% endif %}
+{% endblock card_class %}
+
 {% block card_title %}
     {{ card_object.subject }}
 {% endblock card_title %}

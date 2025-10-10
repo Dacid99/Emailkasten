@@ -29,4 +29,5 @@ class EmailWeekArchiveView(LoginRequiredMixin, EmailArchiveMixin, WeekArchiveVie
 
     URL_NAME = EmailArchiveMixin.BASE_URL_NAME + "-week"
     template_name = EmailArchiveMixin.BASE_TEMPLATE_NAME + "week.html"
-    week_format = "%W"
+    week_format = "%V"
+    year_format = "%G"  # otherwise %V for week results in an error

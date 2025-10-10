@@ -64,5 +64,5 @@ class BaseAccountForm(RequiredMarkerModelForm):
         """Localize all fields."""
 
         widgets: ClassVar[dict[str, type[Widget]]] = {
-            "password": PasswordInput,
+            "password": PasswordInput(render_value=True),
         }

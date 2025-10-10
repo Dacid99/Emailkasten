@@ -140,7 +140,7 @@ def test_get(fake_account):
     assert form_initial_data["mail_address"] == fake_account.mail_address
     assert "password" in form_fields
     assert "password" in form_initial_data
-    assert form_initial_data["mail_address"] == fake_account.mail_address
+    assert form_initial_data["password"] == fake_account.password
     assert "mail_host" in form_fields
     assert "mail_host" in form_initial_data
     assert form_initial_data["mail_host"] == fake_account.mail_host
