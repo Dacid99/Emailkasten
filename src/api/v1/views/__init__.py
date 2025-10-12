@@ -25,6 +25,7 @@ from .DaemonViewSet import DaemonViewSet
 from .DatabaseStatsView import DatabaseStatsView
 from .EmailViewSet import EmailViewSet
 from .MailboxViewSet import MailboxViewSet
+from .UserProfileView import UserProfileView
 
 
 __all__ = [
@@ -35,4 +36,5 @@ __all__ = [
     "DatabaseStatsView",
     "EmailViewSet",
     "MailboxViewSet",
+    "UserProfileView",
 ]

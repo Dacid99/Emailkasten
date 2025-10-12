@@ -39,11 +39,6 @@ class BaseAccountSerializer(serializers.ModelSerializer[Account]):
     Other serializers for :class:`core.models.Account` should inherit from this.
     """
 
-    password = serializers.CharField(max_length=255, write_only=True)
-    """The :attr:`core.models.Account.Account.password` field
-    is set to write-only for security reasons.
-    """
-
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     """The :attr:`core.models.Account.Account.user` field is included but hidden."""
 
@@ -71,4 +66,9 @@ class BaseAccountSerializer(serializers.ModelSerializer[Account]):
         """The :attr:`core.models.Account.Account.is_healthy`,
         :attr:`core.models.Account.Account.created` and
         :attr:`core.models.Account.Account.updated` fields are read-only.
+        """
+
+        extra_kwargs = {"password": {"write_only": True}}
+        """The :attr:`core.models.Account.Account.password` field
+        is set to write-only for security reasons.
         """

@@ -24,6 +24,7 @@ The viewset tests are made against a mocked consistent database with an instance
 from __future__ import annotations
 
 import pytest
+from django.urls import reverse
 
 
 @pytest.fixture(autouse=True)
@@ -39,3 +40,9 @@ def complete_database(
     fake_mailbox,
 ):
     """Use a complete database setup for all view tests."""
+
+
+@pytest.fixture
+def url():
+    """Callable getting the viewsets url for list actions."""
+    return lambda view_class: reverse(f"api:v1:{view_class.NAME}")

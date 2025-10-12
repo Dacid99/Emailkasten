@@ -36,6 +36,7 @@ from api.v1.views import (
     DatabaseStatsView,
     EmailViewSet,
     MailboxViewSet,
+    UserProfileView,
 )
 
 
@@ -65,5 +66,10 @@ urlpatterns = [
         "stats",
         DatabaseStatsView.as_view(),
         name=DatabaseStatsView.NAME,
+    ),
+    path(
+        "auth/profile",
+        UserProfileView.as_view(),
+        name=UserProfileView.NAME,
     ),
 ]

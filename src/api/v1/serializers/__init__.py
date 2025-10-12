@@ -33,6 +33,7 @@ from .emailcorrespondent_serializers import (
 )
 from .mailbox_serializers import BaseMailboxSerializer, MailboxWithDaemonSerializer
 from .UploadEmailSerializer import UploadEmailSerializer
+from .UserProfileSerializer import UserProfileSerializer
 
 
 __all__ = [
@@ -52,4 +53,5 @@ __all__ = [
     "FullEmailSerializer",
     "MailboxWithDaemonSerializer",
     "UploadEmailSerializer",
+    "UserProfileSerializer",
 ]

@@ -558,11 +558,10 @@ def fake_other_attachment_with_file(faker, fake_file, fake_fs, fake_other_email)
 
 
 @pytest.fixture
-def profile_payload(faker, owner_user):
+def profile_payload(faker):
     """Fixture creating clean :class:`Emailkasten.models.UserProfile` payload with data deviating from the defaults."""
     profile_data = baker.prepare(
         UserProfile,
-        user=owner_user,
         paperless_url=faker.url(),
         paperless_api_key=faker.password(),
         paperless_tika_enabled=True,
