@@ -373,7 +373,6 @@ LANGUAGE_CODE = "en"
 WSGI_APPLICATION = "Emailkasten.wsgi.application"
 
 MIDDLEWARE = [
-    "Emailkasten.middleware.DBReconnectMiddleware.DBReconnectMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
