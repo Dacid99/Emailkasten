@@ -28,6 +28,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -122,20 +123,18 @@ DATABASES = {
         ),
     }
 }
-DATABASE_RECONNECT_RETRIES_DEFAULT = 10
-DATABASE_RECONNECT_RETRIES = env(
-    "DATABASE_RECONNECT_RETRIES", cast=int, default=DATABASE_RECONNECT_RETRIES_DEFAULT
-)
 
-DATABASE_RECONNECT_DELAY_DEFAULT = 10
-DATABASE_RECONNECT_DELAY = env(
-    "DATABASE_RECONNECT_DELAY", cast=int, default=DATABASE_RECONNECT_DELAY_DEFAULT
-)
 CONN_MAX_AGE = 3600
 CONN_HEALTH_CHECKS = True
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+### Cache
+# https://docs.djangoproject.com/en/5.1/ref/settings/#cache
+
+CACHE_MIDDLEWARE_SECONDS = env("CACHE_MIDDLEWARE_SECONDS", cast=int, default=600)
 
 
 ### Storage
@@ -161,13 +160,9 @@ STORAGES = {
 
 LOG_DIRECTORY_PATH = Path(env("LOG_DIRECTORY_PATH", default="/var/log/emailkasten"))
 
-LOGFILE_MAXSIZE_DEFAULT = 10485760
-LOGFILE_MAXSIZE = env("LOGFILE_MAXSIZE", cast=int, default=LOGFILE_MAXSIZE_DEFAULT)
+LOGFILE_MAXSIZE = env("LOGFILE_MAXSIZE", cast=int, default=10485760)
 
-LOGFILE_BACKUP_NUMBER_DEFAULT = 5
-LOGFILE_BACKUP_NUMBER = env(
-    "LOGFILE_BACKUP_NUMBER", cast=int, default=LOGFILE_BACKUP_NUMBER_DEFAULT
-)
+LOGFILE_BACKUP_NUMBER = env("LOGFILE_BACKUP_NUMBER", cast=int, default=5)
 
 LOGLEVEL_DEFAULT = "INFO"
 
@@ -351,8 +346,12 @@ LOCALE_PATHS = [
     BASE_DIR / "src" / "web" / "locale",
 ]
 
-LANGUAGE_COOKIE_AGE = 2419200  # 4 weeks
+DEFAULT_COOKIE_AGE = 2419200  # 4 weeks
+
+LANGUAGE_COOKIE_AGE = env("LANGUAGE_COOKIE_AGE", cast=int, default=DEFAULT_COOKIE_AGE)
 LANGUAGE_COOKIE_SECURE = not DEBUG
+LANGUAGE_COOKIE_SAMESITE = env("LANGUAGE_COOKIE_SAMESITE", cast=str, default="None")
+
 
 # Timezones
 # https://docs.djangoproject.com/en/5.2/topics/i18n/timezones/
@@ -391,7 +390,14 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=list, default=["localhost"])
 if "localhost" not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append("localhost")
 
-SECURE_HSTS_SECONDS = 0 if DEBUG else 31536000
+DISALLOWED_USER_AGENTS = [
+    re.compile(pattern)
+    for pattern in env("DISALLOWED_USER_AGENTS", cast=list, default=[])
+]
+
+SECURE_HSTS_SECONDS = (
+    0 if DEBUG else env("SECURE_HSTS_SECONDS", cast=int, default=31536000)
+)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
 
@@ -430,7 +436,10 @@ TEMPLATES = [
 
 # CSRF
 CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_AGE = env("CSRF_COOKIE_AGE", cast=int, default=31449600)
 CSRF_COOKIE_HTTPONLY = False  # to allow Cookie.js to access the cookie
+CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS", cast=list, default=[])
+CSRF_COOKIE_SAMESITE = env("CSRF_COOKIE_SAMESITE", cast=str, default="Lax")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
@@ -487,10 +496,13 @@ REGISTRATION_ENABLED = env(
 ##### django.contrib.sessions #####
 # https://docs.djangoproject.com/en/5.2/ref/settings/#sessions
 
-SESSION_COOKIE_AGE = LANGUAGE_COOKIE_AGE
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = env("SESSION_COOKIE_AGE", cast=int, default=DEFAULT_COOKIE_AGE)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = env(
+    "SESSION_EXPIRE_AT_BROWSER_CLOSE", cast=bool, default=False
+)
 SESSION_SAVE_EVERY_REQUEST = False
 SESSION_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SAMESITE = env("SESSION_COOKIE_SAMESITE", cast=str, default="Lax")
 
 
 ##### django.contrib.sites #####
@@ -559,20 +571,10 @@ HEADLESS_ONLY = False
 # mfa
 MFA_TOTP_ISSUER = "Emailkasten"
 MFA_ALLOW_UNVERIFIED_EMAIL = True
-MFA_TOTP_TOLERANCE = 1
+MFA_TOTP_TOLERANCE = env("MFA_TOTP_TOLERANCE", cast=int, default=1)
 
-MFA_TRUST_ENABLED = True
+MFA_TRUST_ENABLED = env("MFA_TRUST_ENABLED", cast=bool, default=True)
 MFA_TRUST_COOKIE_SECURE = not DEBUG
-
-##### dj-rest-auth #####
-# https://dj-rest-auth.readthedocs.io/en/latest/configuration.html
-
-REST_AUTH = {
-    "USE_JWT": False,
-    "REGISTER_PERMISSION_CLASSES": (
-        ("Emailkasten.utils.toggle_signup.ToggleSignUpPermissionClass",)
-    ),
-}
 
 
 ##### crispy_forms #####
