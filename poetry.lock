@@ -711,7 +711,7 @@ files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
 ]
-markers = {main = "sys_platform == \"win32\" or platform_system == \"Windows\"", docs = "sys_platform == \"win32\""}
+markers = {main = "platform_system == \"Windows\" or sys_platform == \"win32\"", docs = "sys_platform == \"win32\""}
 
 [[package]]
 name = "coverage"
@@ -980,19 +980,20 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-allauth"
-version = "65.11.2"
+version = "65.12.1"
 description = "Integrated set of Django applications addressing authentication, registration, account management as well as 3rd party (social) account authentication."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "django_allauth-65.11.2.tar.gz", hash = "sha256:7b7e771d3384d0e247d0d6aef31b0cb589f92305b7e975e70056a513525906e7"},
+    {file = "django_allauth-65.12.1.tar.gz", hash = "sha256:662666ff2d5c71766f66b1629ac7345c30796813221184e13e11ed7460940c6a"},
 ]
 
 [package.dependencies]
 asgiref = ">=3.8.1"
 Django = ">=4.2.16"
 fido2 = {version = ">=1.1.2,<3", optional = true, markers = "extra == \"mfa\""}
+PyYAML = {version = ">=6,<7", optional = true, markers = "extra == \"headless-spec\""}
 qrcode = {version = ">=7.0.0,<9", optional = true, markers = "extra == \"mfa\""}
 
 [package.extras]
@@ -4123,4 +4124,4 @@ test = ["build (==1.2.1)", "pytest", "pytest-cov", "responses (>=0.10.1,<0.26.0)
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0"
-content-hash = "ad877bdf2610e686fcc07b47947e389bf3081b6a1eef5811dd8c042dd77752dc"
+content-hash = "b3ada53733eed9c0c85436942612f29e76b4cf868be15484197d59a58c220503"
