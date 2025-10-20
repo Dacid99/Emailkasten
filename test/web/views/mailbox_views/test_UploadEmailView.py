@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,8 @@ from web.views import UploadEmailView
 
 
 @pytest.fixture
-def email_upload_payload(fake_file) -> dict:
+def email_upload_payload(fake_file):
+    """Random email file upload payload."""
     return {"file_format": "eml", "file": fake_file}
 
 

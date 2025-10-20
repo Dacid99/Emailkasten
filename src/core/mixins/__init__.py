@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,17 +18,23 @@
 
 """core.mixins for the core of Emailkasten project."""
 
-from .FavoriteMixin import FavoriteMixin
-from .HasDownloadMixin import HasDownloadMixin
-from .HasThumbnailMixin import HasThumbnailMixin
+from .DownloadMixin import DownloadMixin
+from .FavoriteModelMixin import FavoriteModelMixin
+from .FilePathModelMixin import FilePathModelMixin
+from .HealthModelMixin import HealthModelMixin
+from .ThumbnailMixin import ThumbnailMixin
+from .TimestampModelMixin import TimestampModelMixin
 from .UploadMixin import UploadMixin
 from .URLMixin import URLMixin
 
 
 __all__ = [
-    "FavoriteMixin",
-    "HasDownloadMixin",
-    "HasThumbnailMixin",
+    "DownloadMixin",
+    "FavoriteModelMixin",
+    "FilePathModelMixin",
+    "HealthModelMixin",
+    "ThumbnailMixin",
+    "TimestampModelMixin",
     "URLMixin",
     "UploadMixin",
 ]

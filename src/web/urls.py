@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -46,6 +46,7 @@ from .views import (
     DaemonUpdateOrDeleteView,
     DashboardView,
     EmailArchiveIndexView,
+    EmailConversationView,
     EmailDayArchiveView,
     EmailDetailWithDeleteView,
     EmailFilterView,
@@ -127,22 +128,22 @@ urlpatterns = [
         name=CorrespondentUpdateOrDeleteView.URL_NAME,
     ),
     path(
-        "daemons/",
+        "routines/",
         DaemonFilterView.as_view(),
         name=DaemonFilterView.URL_NAME,
     ),
     path(
-        "daemons/<int:pk>/",
+        "routines/<int:pk>/",
         DaemonDetailWithDeleteView.as_view(),
         name=DaemonDetailWithDeleteView.URL_NAME,
     ),
     path(
-        "daemons/<int:pk>/edit/",
+        "routines/<int:pk>/edit/",
         DaemonUpdateOrDeleteView.as_view(),
         name=DaemonUpdateOrDeleteView.URL_NAME,
     ),
     path(
-        "daemon/add/",
+        "routines/add/",
         DaemonCreateView.as_view(),
         name=DaemonCreateView.URL_NAME,
     ),
@@ -155,6 +156,11 @@ urlpatterns = [
         "emails/<int:pk>/",
         EmailDetailWithDeleteView.as_view(),
         name=EmailDetailWithDeleteView.URL_NAME,
+    ),
+    path(
+        "emails/<int:pk>/conversation/",
+        EmailConversationView.as_view(),
+        name=EmailConversationView.URL_NAME,
     ),
     path(
         "emails/archive/",
@@ -202,7 +208,7 @@ urlpatterns = [
         name=MailboxUpdateOrDeleteView.URL_NAME,
     ),
     path(
-        "mailboxes/<int:pk>/add-daemon/",
+        "mailboxes/<int:pk>/add-routine/",
         MailboxCreateDaemonView.as_view(),
         name=MailboxCreateDaemonView.URL_NAME,
     ),

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,12 @@
 
 """Module with utils for the Emailkasten :mod:`api` api."""
 
-type T = type
+type ParsableType = type
 
 
 def query_param_list_to_typed_list(
-    query_param_list: list[str], parse_type: T = str
-) -> list[T]:
+    query_param_list: list[str], parse_type: ParsableType = str
+) -> list[ParsableType]:
     """Helper function to parse a query_param list
     as returned by :func:`django.utils.datastructures.MultiValueDict.getlist`
     into a typed list.
@@ -40,7 +40,7 @@ def query_param_list_to_typed_list(
     Raises:
         ValueError: If one of the parameters cannot be parsed to the given type.
     """
-    typed_list: list[T] = []
+    typed_list: list[ParsableType] = []
     try:
         for query_param in query_param_list:
             if query_param:
@@ -54,7 +54,9 @@ def query_param_list_to_typed_list(
     return typed_list
 
 
-def csv_query_param_to_typed_list(query_param: str, parse_type: T = str) -> list[T]:
+def csv_query_param_to_typed_list(
+    query_param: str, parse_type: ParsableType = str
+) -> list[ParsableType]:
     """Helper function to parse a query_param in csv format into a typed list.
 
     A string without , also qualifies as csv and is valid input.

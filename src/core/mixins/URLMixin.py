@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -52,6 +52,14 @@ class URLMixin:
             The list webview url for the model instance.
         """
         return reverse("web:" + self.get_list_web_url_name())
+
+    def get_absolute_api_list_url(self) -> str:
+        """Gets the list api url for the model instance.
+
+        Returns:
+            The list api url for the model instance.
+        """
+        return reverse("api:v1:" + self.BASENAME + "-list")
 
     @classmethod
     def get_list_web_url_name(cls) -> str:

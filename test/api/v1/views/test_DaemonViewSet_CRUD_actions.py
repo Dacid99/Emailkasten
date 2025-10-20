@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,9 @@ def test_list_noauth(fake_daemon, noauth_api_client, list_url):
 
 @pytest.mark.django_db
 def test_list_auth_other(fake_daemon, other_api_client, list_url):
-    """Tests the list method on :class:`api.v1.views.DaemonViewSet` with the authenticated other user client."""
+    """Tests the `list` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated other user client.
+    """
     response = other_api_client.get(list_url(DaemonViewSet))
 
     assert response.status_code == status.HTTP_200_OK
@@ -49,7 +51,9 @@ def test_list_auth_other(fake_daemon, other_api_client, list_url):
 
 @pytest.mark.django_db
 def test_list_auth_owner(fake_daemon, owner_api_client, list_url):
-    """Tests the list method on :class:`api.v1.views.DaemonViewSet` with the authenticated owner user client."""
+    """Tests the `list` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated owner user client.
+    """
     response = owner_api_client.get(list_url(DaemonViewSet))
 
     assert response.status_code == status.HTTP_200_OK
@@ -68,7 +72,9 @@ def test_get_noauth(fake_daemon, noauth_api_client, detail_url):
 
 @pytest.mark.django_db
 def test_get_auth_other(fake_daemon, other_api_client, detail_url):
-    """Tests the get method on :class:`api.v1.views.DaemonViewSet` with the authenticated other user client."""
+    """Tests the `get` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated other user client.
+    """
     response = other_api_client.get(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -76,7 +82,9 @@ def test_get_auth_other(fake_daemon, other_api_client, detail_url):
 
 @pytest.mark.django_db
 def test_get_auth_owner(fake_daemon, owner_api_client, detail_url):
-    """Tests the list method on :class:`api.v1.views.DaemonViewSet` with the authenticated owner user client."""
+    """Tests the `list` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated owner user client.
+    """
     response = owner_api_client.get(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_200_OK
@@ -107,7 +115,9 @@ def test_patch_noauth(
 def test_patch_auth_other(
     fake_daemon, other_api_client, daemon_with_interval_payload, detail_url
 ):
-    """Tests the patch method on :class:`api.v1.views.DaemonViewSet` with the authenticated other user client."""
+    """Tests the `patch` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated other user client.
+    """
     response = other_api_client.patch(
         detail_url(DaemonViewSet, fake_daemon),
         data=daemon_with_interval_payload,
@@ -174,7 +184,9 @@ def test_put_noauth(
 def test_put_auth_other(
     fake_daemon, other_api_client, daemon_with_interval_payload, detail_url
 ):
-    """Tests the put method on :class:`api.v1.views.DaemonViewSet` with the authenticated other user client."""
+    """Tests the `put` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated other user client.
+    """
     response = other_api_client.put(
         detail_url(DaemonViewSet, fake_daemon),
         data=daemon_with_interval_payload,
@@ -235,7 +247,9 @@ def test_post_noauth(noauth_api_client, daemon_with_interval_payload, list_url):
 
 @pytest.mark.django_db
 def test_post_auth_other(other_api_client, daemon_with_interval_payload, list_url):
-    """Tests the post method on :class:`api.v1.views.DaemonViewSet` with the authenticated other user client."""
+    """Tests the `post` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated other user client.
+    """
     response = other_api_client.post(
         list_url(DaemonViewSet),
         data=daemon_with_interval_payload,
@@ -255,7 +269,9 @@ def test_post_auth_other(other_api_client, daemon_with_interval_payload, list_ur
 def test_post_auth_owner(
     owner_api_client, owner_user, daemon_with_interval_payload, list_url
 ):
-    """Tests the post method on :class:`api.v1.views.DaemonViewSet` with the authenticated owner user client."""
+    """Tests the `post` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated owner user client.
+    """
     response = owner_api_client.post(
         list_url(DaemonViewSet),
         data=daemon_with_interval_payload,
@@ -300,7 +316,9 @@ def test_delete_noauth(fake_daemon, noauth_api_client, detail_url):
 
 @pytest.mark.django_db
 def test_delete_auth_other(fake_daemon, other_api_client, detail_url):
-    """Tests the delete method on :class:`api.v1.views.DaemonViewSet` with the authenticated other user client."""
+    """Tests the `delete` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated other user client.
+    """
     response = other_api_client.delete(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -310,7 +328,9 @@ def test_delete_auth_other(fake_daemon, other_api_client, detail_url):
 
 @pytest.mark.django_db
 def test_delete_auth_owner(fake_daemon, owner_api_client, detail_url):
-    """Tests the delete method on :class:`api.v1.views.DaemonViewSet` with the authenticated owner user client."""
+    """Tests the `delete` method on :class:`api.v1.views.DaemonViewSet`
+    with the authenticated owner user client.
+    """
     response = owner_api_client.delete(detail_url(DaemonViewSet, fake_daemon))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT

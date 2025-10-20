@@ -65,6 +65,7 @@ $RECYCLE.BIN/
 .netrwhist
 .nfs*
 .nox/
+.poetry/
 .pytest_cache/
 .ruff_cache/
 .swp.*
@@ -115,6 +116,8 @@ parts/
 pip-selfcheck.json
 pytest-cov/
 pyvenv.cfg
+# ignore renovate config on master branch
+renovate.json
 reports/
 sdist/
 share/python-wheels/

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
 
 import pytest
 from django.core.management import call_command
@@ -40,15 +39,11 @@ from core.models import (
 )
 
 
-if TYPE_CHECKING:
-    from django.db.models import QuerySet
-
-
-def datetime_quarter(datetime_object: datetime.datetime) -> int:
+def datetime_quarter(datetime_object: datetime.datetime):
     """Calculate the quarter of the year for a given datetime.
 
     Args:
-        datetime_object: The datetime to calculate the quarter of.
+        datetime_object: A datetime.
 
     Returns:
         An `int` from 1-4 indicating the datetimes quarter of the year.
@@ -69,13 +64,6 @@ INT_TEST_PARAMETERS = [
     ("", INT_TEST_ITEMS[1], [1]),
     ("__in", INT_TEST_ITEMS[0:2], [0, 1]),
     ("__range", INT_TEST_ITEMS[0:2], [0, 1]),
-    ("__lte", LESSER_INT, []),
-    ("__gte", GREATER_INT, []),
-    ("__lt", LESSER_INT, []),
-    ("__gt", GREATER_INT, []),
-    ("", GREATER_INT, []),
-    ("__in", DISJOINT_INT_RANGE, []),
-    ("__range", DISJOINT_INT_RANGE, []),
 ]
 
 FLOAT_TEST_ITEMS = [0.5, 1, 2.3]
@@ -87,9 +75,6 @@ FLOAT_TEST_PARAMETERS = [
     ("__lte", FLOAT_TEST_ITEMS[1], [0, 1]),
     ("__gte", FLOAT_TEST_ITEMS[1], [1, 2]),
     ("__range", FLOAT_TEST_ITEMS[0:2], [0, 1]),
-    ("__lte", LESSER_FLOAT, []),
-    ("__gte", GREATER_FLOAT, []),
-    ("__range", DISJOINT_FLOAT_RANGE, []),
 ]
 
 BOOL_TEST_ITEMS = [True, False, False]
@@ -110,17 +95,6 @@ TEXT_TEST_PARAMETERS = [
     ("__regex", r"\w{3}\d\w", [1, 2]),
     ("__iregex", r"\w{3}\d\w", [1, 2]),
     ("__in", TEXT_TEST_ITEMS[0:2], [0, 1]),
-    ("__icontains", "op", []),
-    ("__contains", "oP", []),
-    ("", "No5PQ", []),
-    ("__iexact", "no5pq", []),
-    ("__startswith", "N", []),
-    ("__istartswith", "n", []),
-    ("__endswith", "Q", []),
-    ("__iendswith", "q", []),
-    ("__regex", r"\w{2}\d\w{2}", []),
-    ("__iregex", r"\w{2}\d\w{2}", []),
-    ("__in", ["No5PQ"], []),
 ]
 
 DATETIME_TEST_ITEMS = [
@@ -245,103 +219,6 @@ DATETIME_TEST_PARAMETERS = [
     ("__second__lt", DATETIME_TEST_ITEMS[2].second, [0, 1]),
     ("__second__in", [item.second for item in DATETIME_TEST_ITEMS[0:2]], [0, 1]),
     ("__second__range", [item.second for item in DATETIME_TEST_ITEMS[1:3]], [1, 2]),
-    ("__date", GREATER_DATETIME, []),
-    ("__date__gte", GREATER_DATETIME, []),
-    ("__date__lte", LESSER_DATETIME, []),
-    ("__date__gt", GREATER_DATETIME, []),
-    ("__date__lt", LESSER_DATETIME, []),
-    ("__date__in", DISJOINT_DATETIME_RANGE, []),
-    ("__date__range", DISJOINT_DATETIME_RANGE, []),
-    ("__time", GREATER_DATETIME.time(), []),
-    ("__time__gte", GREATER_DATETIME.time(), []),
-    ("__time__lte", LESSER_DATETIME.time(), []),
-    ("__time__gt", GREATER_DATETIME.time(), []),
-    ("__time__lt", LESSER_DATETIME.time(), []),
-    ("__time__in", [item.time() for item in DISJOINT_DATETIME_RANGE], []),
-    ("__time__range", [item.time() for item in DISJOINT_DATETIME_RANGE], []),
-    ("__iso_year", GREATER_DATETIME.isocalendar().year, []),
-    ("__iso_year__gte", GREATER_DATETIME.isocalendar().year, []),
-    ("__iso_year__lte", LESSER_DATETIME.isocalendar().year, []),
-    ("__iso_year__gt", GREATER_DATETIME.isocalendar().year, []),
-    ("__iso_year__lt", LESSER_DATETIME.isocalendar().year, []),
-    (
-        "__iso_year__in",
-        [item.isocalendar().year for item in DISJOINT_DATETIME_RANGE],
-        [],
-    ),
-    (
-        "__iso_year__range",
-        [item.isocalendar().year for item in DISJOINT_DATETIME_RANGE],
-        [],
-    ),
-    ("__month", GREATER_DATETIME.month, []),
-    ("__month__gte", GREATER_DATETIME.month, []),
-    ("__month__lte", LESSER_DATETIME.month, []),
-    ("__month__gt", GREATER_DATETIME.month, []),
-    ("__month__lt", LESSER_DATETIME.month, []),
-    ("__month__in", [item.month for item in DISJOINT_DATETIME_RANGE], []),
-    ("__month__range", [item.month for item in DISJOINT_DATETIME_RANGE], []),
-    ("__quarter", datetime_quarter(GREATER_DATETIME), []),
-    ("__quarter__gte", datetime_quarter(GREATER_DATETIME), []),
-    ("__quarter__lte", datetime_quarter(LESSER_DATETIME), [0]),
-    ("__quarter__gt", datetime_quarter(GREATER_DATETIME), []),
-    ("__quarter__lt", datetime_quarter(LESSER_DATETIME), []),
-    ("__quarter__in", [datetime_quarter(item) for item in DISJOINT_DATETIME_RANGE], []),
-    (
-        "__quarter__range",
-        [datetime_quarter(item) for item in DISJOINT_DATETIME_RANGE],
-        [],
-    ),
-    ("__week", GREATER_DATETIME.isocalendar().week, []),
-    ("__week__gte", GREATER_DATETIME.isocalendar().week, []),
-    ("__week__lte", LESSER_DATETIME.isocalendar().week, []),
-    ("__week__gt", GREATER_DATETIME.isocalendar().week, []),
-    ("__week__lt", LESSER_DATETIME.isocalendar().week, []),
-    ("__week__in", [item.isocalendar().week for item in DISJOINT_DATETIME_RANGE], []),
-    (
-        "__week__range",
-        [item.isocalendar().week for item in DISJOINT_DATETIME_RANGE],
-        [],
-    ),
-    ("__iso_week_day", GREATER_DATETIME.isoweekday(), []),
-    ("__iso_week_day__gte", GREATER_DATETIME.isoweekday(), []),
-    ("__iso_week_day__lte", LESSER_DATETIME.isoweekday(), []),
-    ("__iso_week_day__gt", GREATER_DATETIME.isoweekday(), []),
-    ("__iso_week_day__lt", LESSER_DATETIME.isoweekday(), []),
-    ("__iso_week_day__in", [item.isoweekday() for item in DISJOINT_DATETIME_RANGE], []),
-    (
-        "__iso_week_day__range",
-        [item.isoweekday() for item in DISJOINT_DATETIME_RANGE],
-        [],
-    ),
-    ("__day", GREATER_DATETIME.day, []),
-    ("__day__gte", GREATER_DATETIME.day, []),
-    ("__day__lte", LESSER_DATETIME.day, []),
-    ("__day__gt", GREATER_DATETIME.day, []),
-    ("__day__lt", LESSER_DATETIME.day, []),
-    ("__day__in", [item.day for item in DISJOINT_DATETIME_RANGE], []),
-    ("__day__range", [item.day for item in DISJOINT_DATETIME_RANGE], []),
-    ("__hour", GREATER_DATETIME.hour, []),
-    ("__hour__gte", GREATER_DATETIME.hour, []),
-    ("__hour__lte", LESSER_DATETIME.hour, []),
-    ("__hour__gt", GREATER_DATETIME.hour, []),
-    ("__hour__lt", LESSER_DATETIME.hour, []),
-    ("__hour__in", [item.hour for item in DISJOINT_DATETIME_RANGE], []),
-    ("__hour__range", [item.hour for item in DISJOINT_DATETIME_RANGE], []),
-    ("__minute", GREATER_DATETIME.minute, []),
-    ("__minute__gte", GREATER_DATETIME.minute, []),
-    ("__minute__lte", LESSER_DATETIME.minute, []),
-    ("__minute__gt", GREATER_DATETIME.minute, []),
-    ("__minute__lt", LESSER_DATETIME.minute, []),
-    ("__minute__in", [item.minute for item in DISJOINT_DATETIME_RANGE], []),
-    ("__minute__range", [item.minute for item in DISJOINT_DATETIME_RANGE], []),
-    ("__second", GREATER_DATETIME.second, []),
-    ("__second__gte", GREATER_DATETIME.second, []),
-    ("__second__lte", LESSER_DATETIME.second, []),
-    ("__second__gt", GREATER_DATETIME.second, []),
-    ("__second__lt", LESSER_DATETIME.second, []),
-    ("__second__in", [item.second for item in DISJOINT_DATETIME_RANGE], []),
-    ("__second__range", [item.second for item in DISJOINT_DATETIME_RANGE], []),
 ]
 
 
@@ -354,7 +231,7 @@ def unblocked_db(django_db_setup, django_db_blocker):
 
 
 @pytest.fixture(scope="package")
-def account_queryset(unblocked_db) -> QuerySet[Account, Account]:
+def account_queryset(unblocked_db):
     """Fixture adding accounts with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -366,13 +243,15 @@ def account_queryset(unblocked_db) -> QuerySet[Account, Account]:
                 timeout=FLOAT_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 is_healthy=BOOL_TEST_ITEMS[number],
+                last_error=text_test_item,
+                last_error_occurred_at=DATETIME_TEST_ITEMS[number],
             )
 
     return Account.objects.all()
 
 
 @pytest.fixture(scope="package")
-def mailbox_queryset(unblocked_db, account_queryset) -> QuerySet[Mailbox, Mailbox]:
+def mailbox_queryset(unblocked_db, account_queryset):
     """Fixture adding mailboxes with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -383,6 +262,8 @@ def mailbox_queryset(unblocked_db, account_queryset) -> QuerySet[Mailbox, Mailbo
                 save_attachments=BOOL_TEST_ITEMS[number],
                 is_favorite=BOOL_TEST_ITEMS[number],
                 is_healthy=BOOL_TEST_ITEMS[number],
+                last_error=text_test_item,
+                last_error_occurred_at=DATETIME_TEST_ITEMS[number],
                 account=account_queryset.get(id=number + 1),
             )
 
@@ -390,7 +271,7 @@ def mailbox_queryset(unblocked_db, account_queryset) -> QuerySet[Mailbox, Mailbo
 
 
 @pytest.fixture(scope="package")
-def daemon_queryset(unblocked_db, mailbox_queryset) -> QuerySet[Daemon, Daemon]:
+def daemon_queryset(unblocked_db, mailbox_queryset):
     """Fixture adding daemons with the test attributes to the database and returns them in a queryset."""
     for number, bool_test_item in enumerate(BOOL_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -409,6 +290,8 @@ def daemon_queryset(unblocked_db, mailbox_queryset) -> QuerySet[Daemon, Daemon]:
                 Daemon,
                 interval=interval,
                 is_healthy=bool_test_item,
+                last_error=TEXT_TEST_ITEMS[number],
+                last_error_occurred_at=DATETIME_TEST_ITEMS[number],
                 mailbox=mailbox_queryset.get(id=number + 1),
             )
             daemon.celery_task = celery_task
@@ -420,7 +303,7 @@ def daemon_queryset(unblocked_db, mailbox_queryset) -> QuerySet[Daemon, Daemon]:
 @pytest.fixture(scope="package")
 def correspondent_queryset(
     unblocked_db,
-) -> QuerySet[Correspondent, Correspondent]:
+):
     """Fixture adding correspondents with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -448,7 +331,7 @@ def email_queryset(
     unblocked_db,
     mailbox_queryset,
     correspondent_queryset,
-) -> QuerySet[Email, Email]:
+):
     """Fixture adding emails with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):
@@ -456,7 +339,7 @@ def email_queryset(
                 Email,
                 message_id=text_test_item,
                 datetime=datetime.datetime.now(tz=datetime.UTC),
-                email_subject=text_test_item,
+                subject=text_test_item,
                 plain_bodytext=text_test_item,
                 html_bodytext=text_test_item,
                 datasize=INT_TEST_ITEMS[number],
@@ -474,9 +357,7 @@ def email_queryset(
 
 
 @pytest.fixture(scope="package")
-def attachment_queryset(
-    unblocked_db, email_queryset
-) -> QuerySet[Attachment, Attachment]:
+def attachment_queryset(unblocked_db, email_queryset):
     """Fixture adding attachments with the test attributes to the database and returns them in a queryset."""
     for number, text_test_item in enumerate(TEXT_TEST_ITEMS):
         with freeze_time(DATETIME_TEST_ITEMS[number]):

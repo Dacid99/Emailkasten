@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,7 @@ from typing import TYPE_CHECKING, ClassVar, Final
 from django.forms import PasswordInput, Widget
 
 from core.models import Account
-
-from ...utils.forms import RequiredMarkerModelForm
+from web.utils.forms import RequiredMarkerModelForm
 
 
 if TYPE_CHECKING:
@@ -65,5 +64,5 @@ class BaseAccountForm(RequiredMarkerModelForm):
         """Localize all fields."""
 
         widgets: ClassVar[dict[str, type[Widget]]] = {
-            "password": PasswordInput,
+            "password": PasswordInput(render_value=True),
         }

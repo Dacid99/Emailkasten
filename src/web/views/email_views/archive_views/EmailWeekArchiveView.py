@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -29,4 +29,5 @@ class EmailWeekArchiveView(LoginRequiredMixin, EmailArchiveMixin, WeekArchiveVie
 
     URL_NAME = EmailArchiveMixin.BASE_URL_NAME + "-week"
     template_name = EmailArchiveMixin.BASE_TEMPLATE_NAME + "week.html"
-    week_format = "%W"
+    week_format = "%V"
+    year_format = "%G"  # otherwise %V for week results in an error

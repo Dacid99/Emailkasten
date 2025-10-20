@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.openapi import OpenApiResponse
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -37,6 +39,16 @@ class ToggleFavoriteMixin:
     URL_PATH_TOGGLE_FAVORITE = "toggle-favorite"
     URL_NAME_TOGGLE_FAVORITE = "toggle-favorite"
 
+    @extend_schema(
+        request=None,
+        responses={
+            200: OpenApiResponse(
+                response=str,
+                description="Success message indicating status change.",
+            ),
+        },
+        description="Toggles the favorite status of an instance.",
+    )
     @action(
         detail=True,
         methods=["post"],
@@ -54,8 +66,7 @@ class ToggleFavoriteMixin:
             A response detailing the request status.
         """
         toggle_object = self.get_object()
-        toggle_object.is_favorite = not toggle_object.is_favorite
-        toggle_object.save(update_fields=["is_favorite"])
+        toggle_object.toggle_favorite()
         if toggle_object.is_favorite:
             message = _("%(object)s marked as favorite.") % {"object": toggle_object}
         else:

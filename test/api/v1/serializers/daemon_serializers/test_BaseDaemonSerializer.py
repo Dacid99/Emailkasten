@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -71,11 +71,17 @@ def test_output(fake_daemon, request_context):
     assert serializer_data["last_error"] == fake_daemon.last_error
     assert "is_healthy" in serializer_data
     assert serializer_data["is_healthy"] == fake_daemon.is_healthy
+    assert "last_error" in serializer_data
+    assert serializer_data["last_error"] == fake_daemon.last_error
+    assert "last_error_occurred_at" in serializer_data
+    assert (
+        serializer_data["last_error_occurred_at"] == fake_daemon.last_error_occurred_at
+    )
     assert "created" in serializer_data
     assert datetime.fromisoformat(serializer_data["created"]) == fake_daemon.created
     assert "updated" in serializer_data
     assert datetime.fromisoformat(serializer_data["updated"]) == fake_daemon.updated
-    assert len(serializer_data) == 10
+    assert len(serializer_data) == 11
 
 
 @pytest.mark.django_db
@@ -112,6 +118,8 @@ def test_input(daemon_with_interval_payload, request_context):
     assert "celery_task" not in serializer_data
     assert "last_error" not in serializer_data
     assert "is_healthy" not in serializer_data
+    assert "last_error" not in serializer_data
+    assert "last_error_occurred_at" not in serializer_data
     assert "created" not in serializer_data
     assert "updated" not in serializer_data
     assert len(serializer_data) == 3
@@ -233,6 +241,7 @@ def test_post_bad_interval_every(
 def test_update_new_interval(
     fake_daemon, daemon_with_interval_payload, request_context
 ):
+    """Tests post direction of :class:`api.v1.serializers.BaseDaemonSerializer` with new interval data."""
     assert IntervalSchedule.objects.count() == 1
 
     serializer = BaseDaemonSerializer(
@@ -255,6 +264,7 @@ def test_update_new_interval(
 def test_update_existing_interval(
     fake_daemon, daemon_with_interval_payload, request_context
 ):
+    """Tests post direction of :class:`api.v1.serializers.BaseDaemonSerializer` with interval data matching an existing db entry."""
     baker.make(
         IntervalSchedule,
         every=daemon_with_interval_payload["interval"]["every"],

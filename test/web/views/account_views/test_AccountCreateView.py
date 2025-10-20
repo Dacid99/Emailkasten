@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -120,7 +120,9 @@ def test_post_auth_owner(account_payload, owner_user, owner_client, list_url):
 def test_post_duplicate_auth_owner(
     fake_account, account_payload, owner_client, list_url
 ):
-    """Tests :class:`web.views.AccountCreateView` with the authenticated owner user client."""
+    """Tests :class:`web.views.AccountCreateView` with the authenticated owner user client
+    in case of data duplicating another account.
+    """
     account_payload["mail_address"] = fake_account.mail_address
     account_payload["protocol"] = fake_account.protocol
     response = owner_client.post(list_url(AccountCreateView), account_payload)

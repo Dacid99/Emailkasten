@@ -20,14 +20,24 @@
 
 {% endblock badges %}
 
+{% block edit_buttons %}
+
+    {{ block.super }}
+
+    {% include "web/email/partials/_reprocess_email-button.html" with email=object %}
+
+{% endblock edit_buttons %}
+
 {% block action_buttons %}
 
     {% include "web/partials/_download-button.html" %}
 
+    {% include "web/email/partials/_restore_email-button.html" with email=object %}
+
 {% endblock action_buttons %}
 
 {% block card_title %}
-    {{ object.email_subject }}
+    {{ object.subject }}
 {% endblock card_title %}
 
 {% block card_content %}
@@ -39,7 +49,14 @@
             {% translate "Time received" %}: {{ object.datetime|time:"TIME_FORMAT" }}
         </li>
         <li class="list-group-item">{% translate "Message Id" %}: {{ object.message_id }}</li>
-        <li class="list-group-item">{% translate "X-Spam" %}: {{ object.x_spam }}</li>
+        <li class="list-group-item">
+            {% translate "Spam" %}:
+            {% if object.is_spam %}
+                <i class="fa-solid fa-check mx-1" aria-label={% translate "yes" %}></i>
+            {% else %}
+                <i class="fa-solid fa-xmark mx-1" aria-label={% translate "no" %}></i>
+            {% endif %}
+        </li>
         <li class="list-group-item">
             {% translate "Datasize" %}: {{ object.datasize }} {% translate "bytes" %}
         </li>
@@ -150,64 +167,59 @@
             </div>
         </div>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">
-                {% translate "Conversation" %}<i class="fa-solid fa-comments mx-2" aria-hidden="true"></i>
-            </h4>
-
-            {% include "web/email/partials/_email_list.html" with emails=object.full_conversation %}
-
-        </div>
-    </div>
-    {% if object.in_reply_to.exists %}
+    {% if object.conversation.count > 1 %}
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">
-                    {% translate "In Reply To" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
-                </h4>
+                <div class="d-flex justify-content-between m-1">
+                    <h4 class="card-title">
+                        {% translate "Conversation" %}<i class="fa-solid fa-comments mx-2" aria-hidden="true"></i>
+                    </h4>
+                    <a role="button"
+                       class="btn btn-outline-primary"
+                       href="{% url 'web:email-conversation' object.pk %}">{% translate "View all" %}</a>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% if object.in_reply_to.exists %}
+                        <li class="list-group-item">
+                            <h4 class="card-title">
+                                {% translate "In Reply To" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
+                            </h4>
 
-                {% include "web/email/partials/_email_list.html" with emails=object.in_reply_to.all %}
+                            {% include "web/email/partials/_email_list.html" with emails=object.in_reply_to.all %}
 
-            </div>
-        </div>
-    {% endif %}
+                        </li>
+                    {% endif %}
+                    {% if object.replies.exists %}
+                        <li class="list-group-item">
+                            <h4 class="card-title">
+                                {% translate "Replies" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
+                            </h4>
 
-    {% if object.replies.exists %}
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">
-                    {% translate "Replies" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
-                </h4>
+                            {% include "web/email/partials/_email_list.html" with emails=object.replies.all %}
 
-                {% include "web/email/partials/_email_list.html" with emails=object.replies.all %}
+                        </li>
+                    {% endif %}
+                    {% if object.references.exists %}
+                        <li class="list-group-item">
+                            <h4 class="card-title">
+                                {% translate "References" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
+                            </h4>
 
-            </div>
-        </div>
-    {% endif %}
+                            {% include "web/email/partials/_email_list.html" with emails=object.references.all %}
 
-    {% if object.references.exists %}
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">
-                    {% translate "References" %}<i class="fa-solid fa-share mx-2" aria-hidden="true"></i>
-                </h4>
+                        </li>
+                    {% endif %}
+                    {% if object.referenced_by.exists %}
+                        <li class="list-group-item">
+                            <h4 class="card-title">
+                                {% translate "Referenced by" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
+                            </h4>
 
-                {% include "web/email/partials/_email_list.html" with emails=object.references.all %}
+                            {% include "web/email/partials/_email_list.html" with emails=object.referenced_by.all %}
 
-            </div>
-        </div>
-    {% endif %}
-
-    {% if object.referenced_by.exists %}
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">
-                    {% translate "Referenced by" %}<i class="fa-solid fa-reply mx-2" aria-hidden="true"></i>
-                </h4>
-
-                {% include "web/email/partials/_email_list.html" with emails=object.referenced_by.all %}
-
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     {% endif %}

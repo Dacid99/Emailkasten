@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,7 @@ django.setup()
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Emailkasten"
-copyright = "2024-%Y, David Aderbauer"
+copyright = "2024-%Y, David Aderbauer & The Emailkasten Contributors; Licensed under CC BY-SA 4.0"
 author = "David Aderbauer"
 year = datetime.date.today().year
 
@@ -250,10 +250,6 @@ intersphinx_mapping = {
     ),
     "django_crispy_forms": (
         "https://django-crispy-forms.readthedocs.io/en/stable/",
-        None,
-    ),
-    "dj_rest_auth": (
-        "https://dj-rest-auth.readthedocs.io/en/stable/",
         None,
     ),
     "drf_spectacular": (

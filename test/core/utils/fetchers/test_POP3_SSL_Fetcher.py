@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,12 +24,10 @@ from core.constants import EmailProtocolChoices
 from core.utils.fetchers import POP3_SSL_Fetcher
 from core.utils.fetchers.exceptions import MailAccountError
 
-from .test_IMAP4_SSL_Fetcher import mock_ssl_create_default_context
-from .test_POP3Fetcher import mock_logger
-
 
 @pytest.fixture
 def pop3_ssl_mailbox(fake_mailbox):
+    """Extends :func:`test.conftest.fake_mailbox` to have POP3_SSL as protocol."""
     fake_mailbox.account.protocol = EmailProtocolChoices.POP3_SSL
     fake_mailbox.account.save(update_fields=["protocol"])
     return fake_mailbox
@@ -37,6 +35,7 @@ def pop3_ssl_mailbox(fake_mailbox):
 
 @pytest.fixture(autouse=True)
 def mock_POP3_SSL(mocker, faker):
+    """Mocks an :class:`poplib.POP3_SSL` with all positive method responses."""
     mock_POP3_SSL = mocker.patch(
         "core.utils.fetchers.POP3_SSL_Fetcher.poplib.POP3_SSL", autospec=True
     )
@@ -69,6 +68,9 @@ def test_POP3Fetcher_connect_to_host_success(
     mail_host_port,
     timeout,
 ):
+    """Tests :func:`core.utils.fetchers.POP3_SSL_Fetcher.connect_to_host`
+    in case of success.
+    """
     pop3_ssl_mailbox.account.mail_host_port = mail_host_port
     pop3_ssl_mailbox.account.timeout = timeout
 
@@ -90,11 +92,20 @@ def test_POP3Fetcher_connect_to_host_success(
 
 @pytest.mark.django_db
 def test_POP3Fetcher_connect_to_host_exception(
-    pop3_ssl_mailbox, mock_ssl_create_default_context, mock_logger, mock_POP3_SSL
+    fake_error_message,
+    pop3_ssl_mailbox,
+    mock_ssl_create_default_context,
+    mock_logger,
+    mock_POP3_SSL,
 ):
-    mock_POP3_SSL.side_effect = AssertionError
+    """Tests :func:`core.utils.fetchers.POP3_SSL_Fetcher.connect_to_host`
+    in case of an error.
+    """
+    mock_POP3_SSL.side_effect = AssertionError(fake_error_message)
 
-    with pytest.raises(MailAccountError, match="AssertionError occurred"):
+    with pytest.raises(
+        MailAccountError, match=f"AssertionError.*?{fake_error_message}"
+    ):
         POP3_SSL_Fetcher(pop3_ssl_mailbox.account)
 
     kwargs = {

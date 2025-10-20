@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -26,21 +26,20 @@ from django.db.models import Prefetch
 from django.http import FileResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.openapi import OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.openapi import OpenApiParameter, OpenApiResponse, OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.utils import query_param_list_to_typed_list
+from api.v1.filters import CorrespondentFilterSet
 from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from api.v1.serializers import BaseCorrespondentSerializer, CorrespondentSerializer
 from core.models import Correspondent, EmailCorrespondent
-
-from ..filters import CorrespondentFilterSet
-from ..serializers import BaseCorrespondentSerializer, CorrespondentSerializer
 
 
 if TYPE_CHECKING:
@@ -49,6 +48,52 @@ if TYPE_CHECKING:
     from rest_framework.serializers import BaseSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(description="Lists all instances matching the filter."),
+    retrieve=extend_schema(description="Retrieves a single instance."),
+    destroy=extend_schema(description="Deletes a single instance."),
+    download=extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description="Headers: Content-Disposition=correspondent",
+            )
+        },
+        description="Downloads the correspondent instance as vcard.",
+    ),
+    download_batch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "id",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                required=True,
+                explode=True,
+                many=True,
+                description="Accepts both id=1,2,3 and id=1&id=2&id=3 notation",
+            )
+        ],
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description="Headers: Content-Disposition=correspondent",
+            )
+        },
+        description="Downloads multiple correspondents as one vcard.",
+    ),
+    share_to_nextcloud=extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.STR,
+            ),
+            400: OpenApiResponse(
+                response=OpenApiTypes.STR,
+                description="If the request to the Nextcloud server fails. The reason is given as the response data.",
+            ),
+        },
+        description="Sends the correspondents data to Nextclouds addressbook.",
+    ),
+)
 class CorrespondentViewSet(
     viewsets.ReadOnlyModelViewSet[Correspondent],
     mixins.DestroyModelMixin,
@@ -135,14 +180,12 @@ class CorrespondentViewSet(
             ),
             as_attachment=True,
             filename=correspondent.name.replace(" ", "_") + ".vcf",
+            content_type="text/vcard",
         )
 
     URL_PATH_DOWNLOAD_BATCH = "download"
     URL_NAME_DOWNLOAD_BATCH = "download-batch"
 
-    @extend_schema(
-        parameters=[OpenApiParameter("id", OpenApiTypes.INT, OpenApiParameter.QUERY)]
-    )
     @action(
         detail=False,
         methods=["get"],
@@ -157,26 +200,22 @@ class CorrespondentViewSet(
 
         Raises:
             Http404: If no downloadable correspondent has been requested.
+            ValidationError: If id param is missing or in invalid format.
 
         Returns:
             A fileresponse containing the requested file.
-            A 400 response if the id param is missing in the request.
         """
         requested_id_query_params = request.query_params.getlist("id", [])
         if not requested_id_query_params:
-            return Response(
-                {"detail": _("Correspondent ids missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError({"id": _("Correspondent ids are required.")})
         try:
             requested_ids = query_param_list_to_typed_list(
                 requested_id_query_params, int
             )
         except ValueError:
-            return Response(
-                {"detail": _("Correspondent ids given in invalid format.")},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError(
+                {"id": _("Correspondent ids given in invalid format.")}
+            ) from None
         try:
             file = Correspondent.queryset_as_file(
                 self.get_queryset().filter(pk__in=requested_ids)
@@ -187,4 +226,41 @@ class CorrespondentViewSet(
             file,
             as_attachment=True,
             filename="correspondents.vcf",
+            content_type="text/vcard",
+        )
+
+    URL_PATH_SHARE_TO_NEXTCLOUD = "share/nextcloud"
+    URL_NAME_SHARE_TO_NEXTCLOUD = "share-to-nextcloud"
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path=URL_PATH_SHARE_TO_NEXTCLOUD,
+        url_name=URL_NAME_SHARE_TO_NEXTCLOUD,
+    )
+    def share_to_nextcloud(self, request: Request, pk: int | None = None) -> Response:
+        """Action method sending the correspondent to the users Immich server.
+
+        Args:
+            request: The request triggering the action.
+            pk: The private key of the correspondent to upload. Defaults to None.
+
+        Returns:
+            A fileresponse containing the requested file.
+        """
+        correspondent = self.get_object()
+        try:
+            correspondent.share_to_nextcloud()
+        except (RuntimeError, ConnectionError, PermissionError, ValueError) as error:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                # Translators: Nextcloud is a brand name.
+                data={"detail": _("Upload to Nextcloud failed."), "error": str(error)},
+            )
+        return Response(
+            status=status.HTTP_200_OK,
+            data={
+                # Translators: Nextcloud is a brand name.
+                "detail": _("Uploaded correspondent to Nextcloud."),
+            },
         )

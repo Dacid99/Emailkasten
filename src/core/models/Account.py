@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,42 +24,63 @@ import logging
 from typing import TYPE_CHECKING, Final, override
 
 from dirtyfields import DirtyFieldsMixin
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from core.mixins.FavoriteMixin import FavoriteMixin
-
-from ..constants import EmailProtocolChoices
-from ..mixins.URLMixin import URLMixin
-from ..utils.fetchers import (
+from core.constants import EmailProtocolChoices
+from core.mixins import (
+    FavoriteModelMixin,
+    HealthModelMixin,
+    TimestampModelMixin,
+    URLMixin,
+)
+from core.utils.fetchers import (
     ExchangeFetcher,
     IMAP4_SSL_Fetcher,
     IMAP4Fetcher,
     POP3_SSL_Fetcher,
     POP3Fetcher,
 )
-from ..utils.fetchers.exceptions import MailAccountError
+from core.utils.fetchers.exceptions import MailAccountError
+
 from .Mailbox import Mailbox
 
 
 if TYPE_CHECKING:
-    from ..utils.fetchers import BaseFetcher
+    from core.utils.fetchers import BaseFetcher
 
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
+class Account(
+    DirtyFieldsMixin,
+    URLMixin,
+    FavoriteModelMixin,
+    TimestampModelMixin,
+    HealthModelMixin,
+    models.Model,
+):
     """Database model for the account data of a mail account."""
+
+    BASENAME = "account"
+
+    DELETE_NOTICE = _(
+        "This will delete this account and all mailboxes, emails and attachments found in it!"
+    )
+    DELETE_NOTICE_PLURAL = _(
+        "This will delete these accounts and all mailboxes, emails and attachments found in them!"
+    )
 
     MAX_MAIL_HOST_PORT = 65535
 
     mail_address = models.EmailField(
         max_length=255,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("email address"),
         help_text=_("The mail address to the account."),
     )
@@ -67,6 +88,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
 
     password = models.CharField(
         max_length=255,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("password"),
         help_text=_("The password to the account."),
     )
@@ -74,6 +96,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
 
     mail_host = models.CharField(
         max_length=255,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("mailserver URL"),
         help_text=_("The URL of the mailserver for the chosen protocol."),
     )
@@ -83,6 +106,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         null=True,
         blank=True,
         validators=[MaxValueValidator(MAX_MAIL_HOST_PORT)],
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("mailserver portnumber"),
         help_text=_("The port of the mailserver for the chosen protocol."),
     )
@@ -91,6 +115,7 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
     protocol = models.CharField(
         choices=EmailProtocolChoices.choices,
         max_length=10,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("email protocol"),
         help_text=_("The email protocol implemented by the server."),
     )
@@ -99,56 +124,31 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
     timeout = models.PositiveIntegerField(
         null=True,
         blank=True,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("connection timeout"),
         help_text=_("Timeout for the connection to the mailserver."),
     )
     """The timeout parameter for the connection to the host. Can be null."""
 
-    is_healthy = models.BooleanField(
-        null=True,
-        verbose_name=_("healthy"),
-    )
-    """Flags whether the account can be accessed using the data. `None` by default.
-    When this field changes to `False`, all mailboxes :attr:`core.models.Mailbox.is_healthy` field will be updated accordingly.
-    When the :attr:`core.models.Mailbox.is_healthy` field of one of the mailboxes referencing this entry becomes `True`, this field will be set to `True` as well by a signal."""
-
-    is_favorite = models.BooleanField(
-        default=False,
-        verbose_name=_("favorite"),
-    )
-    """Flags favorite accounts. False by default."""
-
     user = models.ForeignKey(
-        get_user_model(),
+        settings.AUTH_USER_MODEL,
         related_name="accounts",
         on_delete=models.CASCADE,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("user"),
     )
     """The user this account belongs to. Deletion of that `user` deletes this correspondent."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
-
-    BASENAME = "account"
-
-    DELETE_NOTICE = _(
-        "This will delete this account and all mailboxes, emails and attachments found in it!"
-    )
 
     class Meta:
         """Metadata class for the model."""
 
         db_table = "accounts"
         """The name of the database table for the mail accounts."""
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name = _("account")
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name_plural = _("accounts")
+        get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
         constraints: Final[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
@@ -218,10 +218,11 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         logger.error(
             "The protocol %s is not implemented in a fetcher class!", self.protocol
         )
-        self.is_healthy = False
-        self.save(update_fields=["is_healthy"])
+        self.set_unhealthy(
+            _("The protocol %s is not implemented in a fetcher class!") % self.protocol
+        )
         raise ValueError(
-            "The requested protocol is not implemented in a fetcher class!"
+            _("The protocol %s is not implemented in a fetcher class!") % self.protocol
         )
 
     def get_fetcher(self) -> BaseFetcher:
@@ -240,10 +241,9 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         """
         try:
             fetcher = self.get_fetcher_class()(self)
-        except MailAccountError:
+        except MailAccountError as error:
             logger.exception("Failed to instantiate fetcher for %s!", self)
-            self.is_healthy = False
-            self.save(update_fields=["is_healthy"])
+            self.set_unhealthy(str(error))
             raise
         return fetcher
 
@@ -263,11 +263,9 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
                 fetcher.test()
         except MailAccountError as error:
             logger.info("Testing %s failed with error: %s.", self, error)
-            self.is_healthy = False
-            self.save(update_fields=["is_healthy"])
+            self.set_unhealthy(str(error))
             raise
-        self.is_healthy = True
-        self.save(update_fields=["is_healthy"])
+        self.set_healthy()
         logger.info("Successfully tested account.")
 
     def update_mailboxes(self) -> None:
@@ -283,12 +281,10 @@ class Account(DirtyFieldsMixin, URLMixin, FavoriteMixin, models.Model):
         with self.get_fetcher() as fetcher:
             try:
                 mailbox_list = fetcher.fetch_mailboxes()
-            except MailAccountError:
-                self.is_healthy = False
-                self.save(update_fields=["is_healthy"])
+            except MailAccountError as error:
+                self.set_unhealthy(str(error))
                 raise
-        self.is_healthy = True
-        self.save(update_fields=["is_healthy"])
+        self.set_healthy()
 
         logger.info("Parsing mailbox data ...")
 

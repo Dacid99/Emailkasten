@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ from typing import Any
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from ..models import Mailbox
+from core.models import Mailbox
 
 
 logger = logging.getLogger(__name__)
@@ -63,13 +63,13 @@ def post_save_mailbox_is_healthy(
                 "%s has become healthy, flagging its account as healthy ...",
                 instance,
             )
-            instance.account.is_healthy = True
-            instance.account.save(update_fields=["is_healthy"])
+            instance.account.set_healthy()
             logger.debug("Successfully flagged account as healthy.")
     elif "is_healthy" in instance.get_dirty_fields():
         logger.debug(
             "%s has become unhealthy, flagging its daemons as unhealthy ...",
             instance,
         )
-        instance.daemons.update(is_healthy=False)
+        for daemon in instance.daemons.all():
+            daemon.set_unhealthy(instance.last_error)
         logger.debug("Successfully flagged account as healthy.")

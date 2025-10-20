@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,10 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from django.core.files.storage import default_storage
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
-from ..models import Attachment
+from core.models import Attachment
 
 
 logger = logging.getLogger(__name__)
@@ -44,7 +43,4 @@ def post_delete_attachment(
         instance: The instance that has been saved.
         **kwargs: Other keyword arguments.
     """
-    if instance.file_path:
-        logger.debug("Removing file for %s from storage ...", instance)
-        default_storage.delete(str(instance.file_path))
-        logger.debug("Successfully removed the attachment file from storage.")
+    instance.delete_file()

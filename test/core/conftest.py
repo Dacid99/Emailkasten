@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -27,9 +27,5 @@ import pytest
 
 @pytest.fixture
 def mock_message(mocker):
-    """Fixture providing a mock :class:`email.message.EmailMessage` instance.
-
-    Returns:
-        :class:`unittest.mock.MagicMock`: The mock :class:`email.message.EmailMessage`.
-    """
+    """A mock :class:`email.message.EmailMessage` instance."""
     return mocker.MagicMock(spec=EmailMessage)

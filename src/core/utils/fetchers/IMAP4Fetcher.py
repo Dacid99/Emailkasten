@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,18 +25,20 @@ import imaplib
 from typing import TYPE_CHECKING, override
 
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from imap_tools.imap_utf7 import utf7_encode
 
+from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from core.utils.fetchers.exceptions import FetcherError, MailAccountError
 from core.utils.fetchers.SafeIMAPMixin import SafeIMAPMixin
 
-from ...constants import EmailFetchingCriterionChoices, EmailProtocolChoices
 from .BaseFetcher import BaseFetcher
 
 
 if TYPE_CHECKING:
-    from ...models.Account import Account
-    from ...models.Mailbox import Mailbox
+    from core.models.Account import Account
+    from core.models.Email import Email
+    from core.models.Mailbox import Mailbox
 
 
 class IMAP4Fetcher(BaseFetcher, SafeIMAPMixin):
@@ -130,14 +132,8 @@ class IMAP4Fetcher(BaseFetcher, SafeIMAPMixin):
             else:
                 self._mail_client = imaplib.IMAP4(host=mail_host)
         except Exception as error:
-            self.logger.exception(
-                "An %s occurred connecting to %s!",
-                error.__class__.__name__,
-                self.account,
-            )
-            raise MailAccountError(
-                f"An {error.__class__.__name__}: {error} occurred connecting to {self.account}!"
-            ) from error
+            self.logger.exception("Error connecting to %s!", self.account)
+            raise MailAccountError(error, _("connecting")) from error
         self.logger.info("Successfully connected to %s.", self.account)
 
     @override
@@ -273,6 +269,24 @@ class IMAP4Fetcher(BaseFetcher, SafeIMAPMixin):
             )
         self.logger.debug("Successfully fetched mailboxes in %s.", self.account)
         return bytes_mailboxes
+
+    @override
+    def restore(self, email: Email) -> None:
+        """Places an email in its mailbox.
+
+        Args:
+            email: The email to restore.
+
+        Raises:
+            ValueError: If the emails mailbox is not in this fetchers account.
+            FileNotFoundError: If the email has no eml file in storage.
+            MailboxError: If uploading the email to the mailserver fails or returns a bad response.
+        """
+        super().restore(email)
+        self.logger.debug("Restoring email %s to its mailbox ...", email)
+        with email.open_file() as email_file:
+            self.safe_append(email.mailbox.name, None, None, email_file.read())
+        self.logger.debug("Successfully restored email.")
 
     @override
     def close(self) -> None:

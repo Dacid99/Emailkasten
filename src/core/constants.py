@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -190,6 +190,108 @@ class SupportedEmailUploadFormats(TextChoices):
     MH = "zip[mh]", _(".zip with mh mailbox inside")
     MAILDIR = "zip[maildir]", _(".zip with maildir mailbox inside")
 
+
+PROTOCOLS_SUPPORTING_RESTORE: tuple[str] = (
+    EmailProtocolChoices.IMAP,
+    EmailProtocolChoices.IMAP4_SSL,
+    EmailProtocolChoices.EXCHANGE,
+)
+"""All protocols supporting restoring of emails."""
+
+HTML_SUPPORTED_AUDIO_TYPE: tuple[str] = (
+    "ogg",
+    "wav",
+    "mpeg",
+    "aac",
+)
+"""All audio types supported by html elements."""
+
+HTML_SUPPORTED_VIDEO_TYPES: tuple[str] = (
+    "ogg",
+    "mp4",
+    "mpeg",
+    "webm",
+    "avi",
+)
+"""All video types supported by html elements."""
+
+PAPERLESS_SUPPORTED_IMAGE_TYPES: tuple[str] = (
+    "png",
+    "jpeg",
+    "pjpeg",
+    "tiff",
+    "x-tiff",
+    "gif",
+    "webp",
+)
+"""All image types supported by Paperless."""
+
+PAPERLESS_TIKA_SUPPORTED_MIMETYPES: tuple[str] = (
+    "msword",
+    "vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "vnd.oasis.opendocument.text",
+    "powerpoint",
+    "mspowerpoint",
+    "vnd.ms-powerpoint",
+    "vnd.openxmlformats-officedocument.presentationml.presentation",
+    "vnd.oasis.opendocument.presentation",
+    "excel",
+    "msexcel",
+    "x-excel",
+    "x-msexcel",
+    "vnd.ms-excel",
+    "vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "vnd.oasis.opendocument.spreadsheet",
+)
+"""All application types supported by Paperless Tika."""
+
+IMMICH_SUPPORTED_APPLICATION_TYPES = ("photoshop", "x-matroska", "mp4")
+"""All application types supported by Immich."""
+
+IMMICH_SUPPORTED_IMAGE_TYPES = (
+    "avif",
+    "bmp",
+    "x-bmp",
+    "x-ms-bmp",
+    "gif",
+    "heic",
+    "heif",
+    "jp2",
+    "jpeg",
+    "pjpeg",
+    "jxl",
+    "png",
+    "vnd.adobe.photoshop",
+    "x-psd",
+    "raw",
+    "x-raw-panasonic",
+    "x-panasonic-raw",
+    "x-panasonic-raw2",
+    "x-panasonic-rw",
+    "x-panasonic-rw2",
+    "svg+xml",
+    "tiff",
+    "x-tiff",
+    "webp",
+)
+"""All image types supported by Immich."""
+
+IMMICH_SUPPORTED_VIDEO_TYPES = (
+    "3gpp",
+    "x-msvideo",
+    "x-flv",
+    "x-m4v",
+    "matroska",
+    "x-matroska",
+    "matroska-3d",
+    "mp2t",
+    "mp4",
+    "mpeg",
+    "quicktime",
+    "webm",
+    "x-ms-wmv",
+)
+"""All video types supported by Immich."""
 
 file_format_parsers: Final[
     dict[

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -30,9 +30,19 @@ from core.models import Correspondent
 
 @pytest.fixture
 def mock_Correspondent_queryset_as_file(mocker, fake_file):
+    """Patches `core.models.Correspondent.queryset_as_file`."""
     return mocker.patch(
         "api.v1.views.CorrespondentViewSet.Correspondent.queryset_as_file",
         return_value=fake_file,
+    )
+
+
+@pytest.fixture
+def mock_Correspondent_share_to_nextcloud(mocker):
+    """Patches `core.models.Correspondent.share_to_nextcloud`."""
+    return mocker.patch(
+        "core.models.Correspondent.Correspondent.share_to_nextcloud",
+        autospec=True,
     )
 
 
@@ -103,6 +113,8 @@ def test_download_auth_owner(
         in response["Content-Disposition"]
     )
     assert "attachment" in response["Content-Disposition"]
+    assert "Content-Type" in response.headers
+    assert response.headers["Content-Type"] == "text/vcard"
     assert (
         b"".join(response.streaming_content)
         == Correspondent.queryset_as_file(
@@ -158,6 +170,7 @@ def test_batch_download_no_ids_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["id"]
     assert not isinstance(response, FileResponse)
     mock_Correspondent_queryset_as_file.assert_not_called()
 
@@ -189,6 +202,7 @@ def test_batch_download_bad_ids_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["id"]
     assert not isinstance(response, FileResponse)
     mock_Correspondent_queryset_as_file.assert_not_called()
 
@@ -225,6 +239,8 @@ def test_batch_download_auth_owner(
     assert isinstance(response, FileResponse)
     assert "Content-Disposition" in response.headers
     assert 'filename="correspondents.vcf"' in response["Content-Disposition"]
+    assert "Content-Type" in response.headers
+    assert response.headers["Content-Type"] == "text/vcard"
     assert b"".join(response.streaming_content) == fake_file_bytes
     mock_Correspondent_queryset_as_file.assert_called_once()
     assert list(mock_Correspondent_queryset_as_file.call_args.args[0]) == list(
@@ -234,9 +250,13 @@ def test_batch_download_auth_owner(
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    fake_correspondent, noauth_api_client, custom_detail_action_url
+    faker, fake_correspondent, noauth_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.toggle_favorite` action with an unauthenticated user client."""
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_correspondent.is_favorite = previous_is_favorite
+    fake_correspondent.save(update_fields=["is_favorite"])
+
     response = noauth_api_client.post(
         custom_detail_action_url(
             CorrespondentViewSet,
@@ -247,14 +267,18 @@ def test_toggle_favorite_noauth(
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_correspondent.refresh_from_db()
-    assert fake_correspondent.is_favorite is False
+    assert fake_correspondent.is_favorite is previous_is_favorite
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    fake_correspondent, other_api_client, custom_detail_action_url
+    faker, fake_correspondent, other_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.toggle_favorite` action with the authenticated other user client."""
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_correspondent.is_favorite = previous_is_favorite
+    fake_correspondent.save(update_fields=["is_favorite"])
+
     response = other_api_client.post(
         custom_detail_action_url(
             CorrespondentViewSet,
@@ -265,14 +289,18 @@ def test_toggle_favorite_auth_other(
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_correspondent.refresh_from_db()
-    assert fake_correspondent.is_favorite is False
+    assert fake_correspondent.is_favorite is previous_is_favorite
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    fake_correspondent, owner_api_client, custom_detail_action_url
+    faker, fake_correspondent, owner_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.toggle_favorite` action with the authenticated owner user client."""
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_correspondent.is_favorite = previous_is_favorite
+    fake_correspondent.save(update_fields=["is_favorite"])
+
     response = owner_api_client.post(
         custom_detail_action_url(
             CorrespondentViewSet,
@@ -283,4 +311,109 @@ def test_toggle_favorite_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_correspondent.refresh_from_db()
-    assert fake_correspondent.is_favorite is True
+    assert fake_correspondent.is_favorite is not previous_is_favorite
+
+
+@pytest.mark.django_db
+def test_share_to_nextcloud_noauth(
+    fake_correspondent,
+    noauth_api_client,
+    custom_detail_action_url,
+    mock_Correspondent_share_to_nextcloud,
+):
+    """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.share_to_nextcloud` action
+    with an unauthenticated user client.
+    """
+    response = noauth_api_client.post(
+        custom_detail_action_url(
+            CorrespondentViewSet,
+            CorrespondentViewSet.URL_NAME_SHARE_TO_NEXTCLOUD,
+            fake_correspondent,
+        )
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    fake_correspondent.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_share_to_nextcloud_auth_other(
+    fake_correspondent,
+    other_api_client,
+    custom_detail_action_url,
+    mock_Correspondent_share_to_nextcloud,
+):
+    """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.share_to_nextcloud` action
+    with the authenticated other user client.
+    """
+    response = other_api_client.post(
+        custom_detail_action_url(
+            CorrespondentViewSet,
+            CorrespondentViewSet.URL_NAME_SHARE_TO_NEXTCLOUD,
+            fake_correspondent,
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    fake_correspondent.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_share_to_nextcloud_auth_owner_success(
+    fake_correspondent,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Correspondent_share_to_nextcloud,
+):
+    """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.share_to_nextcloud` action
+    with the authenticated owner user client.
+    """
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            CorrespondentViewSet,
+            CorrespondentViewSet.URL_NAME_SHARE_TO_NEXTCLOUD,
+            fake_correspondent,
+        )
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    fake_correspondent.refresh_from_db()
+    mock_Correspondent_share_to_nextcloud.assert_called_once_with(fake_correspondent)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "error",
+    [
+        ConnectionError,
+        PermissionError,
+        ValueError,
+        RuntimeError,
+    ],
+)
+def test_share_to_nextcloud_auth_owner_failure(
+    fake_error_message,
+    fake_correspondent,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Correspondent_share_to_nextcloud,
+    error,
+):
+    """Tests the post method :func:`api.v1.views.CorrespondentViewSet.CorrespondentViewSet.share_to_nextcloud` action
+    with the authenticated owner user client.
+    """
+    mock_Correspondent_share_to_nextcloud.side_effect = error(fake_error_message)
+
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            CorrespondentViewSet,
+            CorrespondentViewSet.URL_NAME_SHARE_TO_NEXTCLOUD,
+            fake_correspondent,
+        )
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "detail" in response.data
+    assert "error" in response.data
+    assert fake_error_message in response.data["error"]
+    mock_Correspondent_share_to_nextcloud.assert_called_once_with(fake_correspondent)

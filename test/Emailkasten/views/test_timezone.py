@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,12 +25,12 @@ from rest_framework import status
 
 from Emailkasten.middleware.TimezoneMiddleware import TimezoneMiddleware
 from Emailkasten.views.timezone import SET_TIMEZONE_URL_NAME
-
-from ...web.views.conftest import other_client, owner_client
+from test.web.conftest import other_client, owner_client
 
 
 @pytest.mark.django_db
 def test_get_noauth(client):
+    """Tests `get` on :func:`Emailkasten.views.timezone` for an unauthenticated user client."""
     response = client.get(reverse(SET_TIMEZONE_URL_NAME))
 
     assert isinstance(response, HttpResponseRedirect)
@@ -40,7 +40,8 @@ def test_get_noauth(client):
 
 
 @pytest.mark.django_db
-def test_get_owner(other_client):
+def test_get_other(other_client):
+    """Tests `get` on :func:`Emailkasten.views.timezone` for the authenticated other user client."""
     response = other_client.get(reverse(SET_TIMEZONE_URL_NAME))
 
     assert isinstance(response, HttpResponseRedirect)
@@ -50,7 +51,8 @@ def test_get_owner(other_client):
 
 
 @pytest.mark.django_db
-def test_get_other(owner_client):
+def test_get_owner(owner_client):
+    """Tests `get` on :func:`Emailkasten.views.timezone` for the authenticated owner user client."""
     response = owner_client.get(reverse(SET_TIMEZONE_URL_NAME))
 
     assert isinstance(response, HttpResponseRedirect)
@@ -61,6 +63,9 @@ def test_get_other(owner_client):
 
 @pytest.mark.django_db
 def test_post_noauth_good_timezone(client, fake_timezone):
+    """Tests `post` on :func:`Emailkasten.views.timezone` for an unauthenticated user client
+    in case of an available timezone in the request.
+    """
     response = client.post(reverse(SET_TIMEZONE_URL_NAME), {"timezone": fake_timezone})
 
     assert isinstance(response, HttpResponseRedirect)
@@ -72,6 +77,9 @@ def test_post_noauth_good_timezone(client, fake_timezone):
 
 @pytest.mark.django_db
 def test_post_noauth_no_timezone(client):
+    """Tests `post` on :func:`Emailkasten.views.timezone` for an unauthenticated user client
+    in case of no timezone in the request.
+    """
     response = client.post(reverse(SET_TIMEZONE_URL_NAME))
 
     assert isinstance(response, HttpResponseRedirect)
@@ -82,6 +90,9 @@ def test_post_noauth_no_timezone(client):
 
 @pytest.mark.django_db
 def test_post_noauth_bad_timezone(client):
+    """Tests `post` on :func:`Emailkasten.views.timezone` for an unauthenticated user client
+    in case of an unavailable timezone in the request.
+    """
     response = client.post(reverse(SET_TIMEZONE_URL_NAME), {"timezone": "BAD/TZONE"})
 
     assert isinstance(response, HttpResponseRedirect)
@@ -91,6 +102,9 @@ def test_post_noauth_bad_timezone(client):
 
 @pytest.mark.django_db
 def test_post_other_good_timezone(other_client, fake_timezone):
+    """Tests `post` on :func:`Emailkasten.views.timezone` for the authenticated other user client
+    in case of an available timezone in the request.
+    """
     response = other_client.post(
         reverse(SET_TIMEZONE_URL_NAME), {"timezone": fake_timezone}
     )
@@ -106,6 +120,9 @@ def test_post_other_good_timezone(other_client, fake_timezone):
 
 @pytest.mark.django_db
 def test_post_other_no_timezone(other_client):
+    """Tests `post` on :func:`Emailkasten.views.timezone` for the authenticated other user client
+    in case of no timezone in the request.
+    """
     response = other_client.post(reverse(SET_TIMEZONE_URL_NAME))
 
     assert isinstance(response, HttpResponseRedirect)
@@ -116,6 +133,9 @@ def test_post_other_no_timezone(other_client):
 
 @pytest.mark.django_db
 def test_post_other_bad_timezone(other_client):
+    """Tests `post` on :func:`Emailkasten.views.timezone` for the authenticated other user client
+    in case of an unavailable timezone in the request.
+    """
     response = other_client.post(
         reverse(SET_TIMEZONE_URL_NAME), {"timezone": "BAD/TZONE"}
     )
@@ -127,6 +147,9 @@ def test_post_other_bad_timezone(other_client):
 
 @pytest.mark.django_db
 def test_post_owner_good_timezone(owner_client, fake_timezone):
+    """Tests `post` on :func:`Emailkasten.views.timezone` for the authenticated owner user client
+    in case of an available timezone in the request.
+    """
     response = owner_client.post(
         reverse(SET_TIMEZONE_URL_NAME), {"timezone": fake_timezone}
     )
@@ -142,6 +165,9 @@ def test_post_owner_good_timezone(owner_client, fake_timezone):
 
 @pytest.mark.django_db
 def test_post_owner_no_timezone(owner_client):
+    """Tests `post` on :func:`Emailkasten.views.timezone` for the authenticated owner user client
+    in case of no timezone in the request.
+    """
     response = owner_client.post(reverse(SET_TIMEZONE_URL_NAME))
 
     assert isinstance(response, HttpResponseRedirect)
@@ -152,6 +178,9 @@ def test_post_owner_no_timezone(owner_client):
 
 @pytest.mark.django_db
 def test_post_owner_bad_timezone(owner_client):
+    """Tests `post` on :func:`Emailkasten.views.timezone` for the authenticated owner user client
+    in case of an unavailable timezone in the request.
+    """
     response = owner_client.post(
         reverse(SET_TIMEZONE_URL_NAME), {"timezone": "BAD/TZONE"}
     )

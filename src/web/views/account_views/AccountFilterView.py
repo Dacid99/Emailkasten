@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,9 +24,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 
 from core.models import Account
-
-from ...filters import AccountFilterSet
-from ..FilterPageView import FilterPageView
+from web.filters import AccountFilterSet
+from web.views.base import FilterPageView
 
 
 class AccountFilterView(LoginRequiredMixin, FilterPageView):
@@ -36,7 +35,7 @@ class AccountFilterView(LoginRequiredMixin, FilterPageView):
     model = Account
     template_name = "web/account/account_filter_list.html"
     filterset_class = AccountFilterSet
-    ordering = ["mail_address"]
+    ordering = ["-is_favorite", "mail_address"]
 
     @override
     def get_queryset(self) -> QuerySet[Account]:

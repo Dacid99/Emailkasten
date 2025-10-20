@@ -1,34 +1,40 @@
-codelint: pylintrc_src
-	pylint --rcfile=$< ../Emailkasten ../core/ ../api/ ../web/ | tee reports/pylint_code.ansi
+REPORT_PATH=reports/
 
-docslint: pylintrc_docs
-	pylint --rcfile=$< ../Emailkasten ../core/ ../api/ ../web/ | tee reports/pylint_docs.ansi
+pylint-code: pylintrc_src
+	poetry run pylint --rcfile=$< ../src | tee $(REPORT_PATH)pylint_code.ansi
 
-testlint: pylintrc_test
-	pylint --rcfile=$< ../test/ | tee reports/pylint_test.ansi
+pylint-docs: pylintrc_docs
+	poetry run pylint --rcfile=$< ../src | tee $(REPORT_PATH)pylint_docs.ansi
 
-rufflint: ruff.toml
-	ruff check --config=$< ../Emailkasten ../core/ ../api/ ../web/ ../test/ | tee reports/ruff.ansi
+pylint-test: pylintrc_test
+	poetry run pylint --rcfile=$< ../test/ | tee $(REPORT_PATH)pylint_test.ansi
 
-templatelint: djlintrc
-	djlint --configuration djlintrc ../web/templates | tee -a reports/htmllint.ansi
+ruff: ruff.toml
+	poetry run ruff check --config=$< ../src/ ../test/ | tee $(REPORT_PATH)ruff.ansi
 
-mypy-check: mypy.ini
-	export SECRET_KEY='something'
-	mypy --config-file $< ../Emailkasten ../core/ ../api/ ../web/ | tee reports/mypy/mypy.ansi
+djlint: djlintrc
+	poetry run djlint --configuration $< ../web/templates | tee $(REPORT_PATH)djlint.ansi
+
+mypy: mypy.ini
+	poetry run mypy --config-file $< ../src/ | tee $(REPORT_PATH)mypy/mypy.ansi
 
 dmypy-start: mypy.ini
-	export SECRET_KEY='something'
-	dmypy run --log-file reports/mypy/dmypy.log -- --config-file $< ../Emailkasten ../core/ ../api/ ../web/ | tee reports/mypy/mypy.ansi
+	poetry run dmypy run --log-file $(REPORT_PATH)mypy/dmypy.log -- --config-file $< ../src/ | tee $(REPORT_PATH)mypy/dmypy.ansi
 
 dmypy-check:
-	dmypy recheck | tee reports/mypy/mypy.ansi
+	poetry run dmypy recheck | tee $(REPORT_PATH)mypy/dmypy.ansi
 
-types:
-	python3 -m autotyping --safe ../Emailkasten ../core/ ../api/ ../web/
+autotyping:
+	poetry run python3 -m autotyping --safe ../src/
 
-spelling: .codespellrc
-	codespell ../Emailkasten/ ../core/ ../api/ ../web/ ../test/ ../docs/ ../.gitea/ ../.github/ ../.gitlab/ ../*.md --config=$< | tee reports/codespell.ansi
+doc8: doc8.ini
+	poetry run doc8 --config doc8.ini ../docs/source/rst/ | tee $(REPORT_PATH)doc8.ansi
+
+codespell: .codespellrc
+	poetry run codespell ../src ../test/ ../docs/ ../.gitea/ ../.github/ ../.gitlab/ ../*.md --config=$< | tee $(REPORT_PATH)codespell.ansi
+
+licenses:
+	pip-licenses --from=all --with-license-file --format=plain-vertical --no-license-path > ../THIRD_PARTY_LICENSES
 
 clean:
-	rm -f reports/* ../docs/build/html/mypy_report/*
+	rm -rf $(REPORT_PATH)*

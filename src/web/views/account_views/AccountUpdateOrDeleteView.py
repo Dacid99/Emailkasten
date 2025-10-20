@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,20 +25,20 @@ from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Account
+from web.forms import BaseAccountForm
+from web.views.base import UpdateOrDeleteView
 
-from ...forms import BaseAccountForm
-from ..UpdateOrDeleteView import UpdateOrDeleteView
 from .AccountFilterView import AccountFilterView
 
 
 class AccountUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     """View for updating or deleting a single :class:`core.models.Account` instance."""
 
+    URL_NAME = Account.get_edit_web_url_name()
     model = Account
     form_class = BaseAccountForm
     template_name = "web/account/account_edit.html"
     delete_success_url = reverse_lazy("web:" + AccountFilterView.URL_NAME)
-    URL_NAME = Account.get_edit_web_url_name()
 
     @override
     def get_queryset(self) -> QuerySet[Account]:

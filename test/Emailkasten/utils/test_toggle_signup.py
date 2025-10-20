@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ from Emailkasten.utils.toggle_signup import (
 
 @pytest.fixture
 def mock_request(mocker):
+    """An empty mock :class:`rest_framework.request.Request`."""
     return mocker.patch("rest_framework.request.Request", autospec=True)
 
 

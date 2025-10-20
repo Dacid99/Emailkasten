@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -50,13 +50,13 @@ class BaseEmailSerializer(serializers.ModelSerializer[Email]):
         model: Final[type[Model]] = Email
         """The model to serialize."""
 
-        exclude: ClassVar[list[str]] = ["eml_filepath"]
-        """Exclude the :attr:`core.models.Email.Email.eml_filepath` field."""
+        exclude: ClassVar[list[str]] = ["file_path"]
+        """Exclude the :attr:`core.models.Email.Email.file_path` field."""
 
         read_only_fields: Final[list[str]] = [
             "message_id",
             "datetime",
-            "email_subject",
+            "subject",
             "plain_bodytext",
             "html_bodytext",
             "in_reply_to",

@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<button type="submit"
+        class="btn btn-outline-primary"
+        name="restore"
+        {% if not email.can_be_restored %}disabled{% endif %}>
+    {% translate "Restore" as button_text %}
+
+    {% include "web/partials/_spinner-text.html" with text=button_text %}
+
+    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+</button>

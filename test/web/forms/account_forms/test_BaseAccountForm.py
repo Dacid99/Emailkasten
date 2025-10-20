@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 """Test module for the :class:`web.forms.BaseAccountForm` form class."""
 
 import pytest
-from django.forms.models import model_to_dict
 
 from web.forms import BaseAccountForm
 
@@ -141,7 +140,7 @@ def test_get(fake_account):
     assert form_initial_data["mail_address"] == fake_account.mail_address
     assert "password" in form_fields
     assert "password" in form_initial_data
-    assert form_initial_data["mail_address"] == fake_account.mail_address
+    assert form_initial_data["password"] == fake_account.password
     assert "mail_host" in form_fields
     assert "mail_host" in form_initial_data
     assert form_initial_data["mail_host"] == fake_account.mail_host

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -27,17 +27,16 @@ from django.views.generic import DetailView
 from django.views.generic.edit import BaseFormView
 
 from core.models import Mailbox
-
-from ...forms import CreateMailboxDaemonForm
+from web.forms import CreateMailboxDaemonForm
 
 
 class MailboxCreateDaemonView(LoginRequiredMixin, DetailView, BaseFormView):
     """View for creating a single :class:`core.models.Daemon` instance."""
 
+    URL_NAME = Mailbox.BASENAME + "-create-daemon"
     model = Mailbox
     form_class = CreateMailboxDaemonForm
     template_name = "web/mailbox/mailbox_daemon_create.html"
-    URL_NAME = Mailbox.BASENAME + "-create-daemon"
 
     @override
     def get_queryset(self) -> QuerySet[Mailbox]:

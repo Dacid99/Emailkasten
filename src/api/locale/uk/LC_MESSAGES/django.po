@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-22 09:37+0000\n"
-"PO-Revision-Date: 2025-08-12 15:02+0000\n"
+"POT-Creation-Date: 2025-09-29 21:34+0000\n"
+"PO-Revision-Date: 2025-09-11 18:02+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
 "api/uk/>\n"
@@ -20,155 +20,188 @@ msgstr ""
 "11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
 "100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
 "(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
-#: src/api/v1/mixins/NoCreateMixin.py:34
-msgid "POST method is not allowed on this endpoint."
-msgstr "Метод POST не дозволено на цій кінцевій точці."
-
-#: src/api/v1/mixins/ToggleFavoriteMixin.py:60
+#: src/api/v1/mixins/ToggleFavoriteMixin.py:71
 #, python-format
 msgid "%(object)s marked as favorite."
 msgstr "%(object)s позначено як обране."
 
-#: src/api/v1/mixins/ToggleFavoriteMixin.py:62
+#: src/api/v1/mixins/ToggleFavoriteMixin.py:73
 #, python-format
 msgid "%(object)s unmarked as favorite."
 msgstr "%(object)s знято з обраного."
 
-#: src/api/v1/views/AccountViewSet.py:110
+#: src/api/v1/views/AccountViewSet.py:142
 msgid "An error with the mailaccount occurred."
 msgstr "Сталася помилка з обліковим записом пошти."
 
-#: src/api/v1/views/AccountViewSet.py:116
+#: src/api/v1/views/AccountViewSet.py:148
 msgid "Updated mailboxes"
 msgstr "Оновлені поштові скриньки"
 
-#: src/api/v1/views/AccountViewSet.py:140
+#: src/api/v1/views/AccountViewSet.py:172
 msgid "Tested mailaccount"
 msgstr "Перевірений обліковий запис електронної пошти"
 
-#: src/api/v1/views/AttachmentViewSet.py:117
-#: src/api/v1/views/AttachmentViewSet.py:208
+#: src/api/v1/views/AttachmentViewSet.py:187
+#: src/api/v1/views/AttachmentViewSet.py:273
+#: src/api/v1/views/AttachmentViewSet.py:304
+#: src/api/v1/views/AttachmentViewSet.py:346
 msgid "Attachment file not found"
 msgstr "Вкладений файл не знайдено"
 
-#: src/api/v1/views/AttachmentViewSet.py:154
-msgid "Attachment ids missing in request."
-msgstr "У запиті відсутні ідентифікатори вкладень."
+#: src/api/v1/views/AttachmentViewSet.py:215
+msgid "Attachment ids are required."
+msgstr "Ідентифікатори вкладень обов'язкові."
 
-#: src/api/v1/views/AttachmentViewSet.py:163
-#, fuzzy
-#| msgid "Attachment ids missing in request."
+#: src/api/v1/views/AttachmentViewSet.py:223
 msgid "Attachment ids given in invalid format."
-msgstr "У запиті відсутні ідентифікатори вкладень."
+msgstr "Ідентифікатори вкладень надано в недійсному форматі."
 
-#: src/api/v1/views/AttachmentViewSet.py:171
+#: src/api/v1/views/AttachmentViewSet.py:230
 msgid "No attachments found"
 msgstr "Вкладень не знайдено"
 
-#: src/api/v1/views/CorrespondentViewSet.py:168
-#, fuzzy
-#| msgid "Attachment ids missing in request."
-msgid "Correspondent ids missing in request."
-msgstr "У запиті відсутні ідентифікатори вкладень."
+#. Translators: Paperless is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:309
+msgid "Upload to Paperless failed."
+msgstr "Не вдалося завантажити на Paperless архів."
 
-#: src/api/v1/views/CorrespondentViewSet.py:177
+#. Translators: Paperless is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:315
+msgid "Uploaded attachment document to Paperless."
+msgstr "Завантажено вкладений документ до Paperless."
+
+#. Translators: Immich is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:351
+#, fuzzy
+#| msgid "Upload to Paperless failed."
+msgid "Upload to Immich failed."
+msgstr "Не вдалося завантажити на Paperless архів."
+
+#. Translators: Immich is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:357
+#, fuzzy
+#| msgid "Uploaded attachment document to Paperless."
+msgid "Uploaded attachment document to Immich."
+msgstr "Завантажено вкладений документ до Paperless."
+
+#: src/api/v1/views/CorrespondentViewSet.py:210
+msgid "Correspondent ids are required."
+msgstr "Потрібні ідентифікатори кореспондентів."
+
+#: src/api/v1/views/CorrespondentViewSet.py:217
 msgid "Correspondent ids given in invalid format."
-msgstr ""
+msgstr "Ідентифікатори кореспондентів надано в недійсному форматі."
 
-#: src/api/v1/views/CorrespondentViewSet.py:185
-#, fuzzy
-#| msgid "No attachments found"
+#: src/api/v1/views/CorrespondentViewSet.py:224
 msgid "No correspondents found"
-msgstr "Вкладень не знайдено"
+msgstr "Кореспондентів не знайдено"
 
-#: src/api/v1/views/DaemonViewSet.py:107
-msgid "Tested daemon"
-msgstr "Перевірений демон"
-
-#: src/api/v1/views/DaemonViewSet.py:137
-msgid "Daemon started"
-msgstr "Демон запущено"
-
-#: src/api/v1/views/DaemonViewSet.py:140
-msgid "Daemon is already running"
-msgstr "Демон вже запущено"
-
-#: src/api/v1/views/DaemonViewSet.py:167
-msgid "Daemon stopped"
-msgstr "Демон зупинився"
-
-#: src/api/v1/views/DaemonViewSet.py:170
-msgid "Daemon not running"
-msgstr "Демон не працює"
-
-#: src/api/v1/views/EmailViewSet.py:135
-msgid "eml file not found"
-msgstr "eml-файл не знайдено"
-
-#: src/api/v1/views/EmailViewSet.py:175 src/api/v1/views/MailboxViewSet.py:226
-msgid "File format missing in request."
-msgstr "У запиті відсутній формат файлу."
-
-#: src/api/v1/views/EmailViewSet.py:181
-msgid "Email ids missing in request."
-msgstr "У запиті відсутні ідентифікатори електронної пошти."
-
-#: src/api/v1/views/EmailViewSet.py:190
+#. Translators: Nextcloud is a brand name.
+#: src/api/v1/views/CorrespondentViewSet.py:258
 #, fuzzy
-#| msgid "Email ids missing in request."
-msgid "Email ids given in invalid format."
-msgstr "У запиті відсутні ідентифікатори електронної пошти."
+#| msgid "Upload to Paperless failed."
+msgid "Upload to Nextcloud failed."
+msgstr "Не вдалося завантажити на Paperless архів."
 
-#: src/api/v1/views/EmailViewSet.py:200 src/api/v1/views/MailboxViewSet.py:235
-#: src/api/v1/views/MailboxViewSet.py:272
+#. Translators: Nextcloud is a brand name.
+#: src/api/v1/views/CorrespondentViewSet.py:264
+#, fuzzy
+#| msgid "No correspondents found"
+msgid "Uploaded correspondent to Nextcloud."
+msgstr "Кореспондентів не знайдено"
+
+#: src/api/v1/views/DaemonViewSet.py:138
+msgid "Tested routine"
+msgstr "Перевірена процедура"
+
+#: src/api/v1/views/DaemonViewSet.py:171
+msgid "Routine started"
+msgstr "Рутину розпочато"
+
+#: src/api/v1/views/DaemonViewSet.py:174
+msgid "Routine is already running"
+msgstr "Рутина вже виконується"
+
+#: src/api/v1/views/DaemonViewSet.py:201
+msgid "Routine stopped"
+msgstr "Рутину зупинено"
+
+#: src/api/v1/views/DaemonViewSet.py:204
+msgid "Routine not running"
+msgstr "Рутина не виконується"
+
+#: src/api/v1/views/EmailViewSet.py:216 src/api/v1/views/EmailViewSet.py:374
+msgid "eml file not found."
+msgstr "eml-файл не знайдено."
+
+#: src/api/v1/views/EmailViewSet.py:247 src/api/v1/views/MailboxViewSet.py:306
+msgid "File format is required."
+msgstr "Потрібно вказати формат файлу."
+
+#: src/api/v1/views/EmailViewSet.py:252
+msgid "Email ids are required."
+msgstr "Ідентифікатори електронної пошти обов'язкові."
+
+#: src/api/v1/views/EmailViewSet.py:260
+msgid "Email ids given in invalid format."
+msgstr "Ідентифікатори електронної пошти надано в недійсному форматі."
+
+#: src/api/v1/views/EmailViewSet.py:269 src/api/v1/views/MailboxViewSet.py:314
 #, python-format
 msgid "File format %(file_format)s is not supported."
 msgstr "Формат файлу %(file_format)s не підтримується."
 
-#: src/api/v1/views/EmailViewSet.py:206
+#: src/api/v1/views/EmailViewSet.py:274
 msgid "No emails found"
 msgstr "Електронних листів не знайдено"
 
-#: src/api/v1/views/MailboxViewSet.py:109
+#: src/api/v1/views/EmailViewSet.py:370
+msgid "POP accounts do not support restoring of emails."
+msgstr "Облікові записи POP не підтримують відновлення електронних листів."
+
+#: src/api/v1/views/EmailViewSet.py:378
+msgid "Restoring of email to mailbox failed."
+msgstr "Не вдалося відновити електронну пошту в поштовій скриньці."
+
+#: src/api/v1/views/EmailViewSet.py:383
+msgid "Email successfully restored to mailbox."
+msgstr "Електронну пошту успішно відновлено у поштовій скриньці."
+
+#: src/api/v1/views/EmailViewSet.py:406
+#, fuzzy
+#| msgid "Email successfully restored to mailbox."
+msgid "Email successfully reprocessed."
+msgstr "Електронну пошту успішно відновлено у поштовій скриньці."
+
+#: src/api/v1/views/MailboxViewSet.py:190
 msgid "Tested mailbox"
 msgstr "Перевірена поштова скринька"
 
-#: src/api/v1/views/MailboxViewSet.py:170
-#, fuzzy
-#| msgid "File missing in request."
-msgid "Fetching criterion missing in request."
-msgstr "У запиті відсутній файл."
+#: src/api/v1/views/MailboxViewSet.py:251
+msgid "Fetching criterion is required."
+msgstr "Потрібно вказати критерій отримання."
 
-#: src/api/v1/views/MailboxViewSet.py:177
-msgid "The given fetching criterion is not available for this mailbox."
-msgstr ""
+#: src/api/v1/views/MailboxViewSet.py:257
+#, python-format
+msgid "The given criterion %(criterion)s is not available for this mailbox."
+msgstr "Заданий критерій %(criterion)s недоступний для цієї поштової скриньки."
 
-#: src/api/v1/views/MailboxViewSet.py:187
+#: src/api/v1/views/MailboxViewSet.py:267
 msgid "Error with mailaccount or mailbox occurred."
 msgstr ""
 "Сталася помилка з обліковим записом електронної пошти або поштовою скринькою."
 
-#: src/api/v1/views/MailboxViewSet.py:193
+#: src/api/v1/views/MailboxViewSet.py:273
 msgid "All emails fetched."
 msgstr "Усі електронні листи отримано."
 
-#: src/api/v1/views/MailboxViewSet.py:241
+#: src/api/v1/views/MailboxViewSet.py:319
 msgid "No emails found."
 msgstr "Електронна пошта не знайдено."
 
-#: src/api/v1/views/MailboxViewSet.py:280
-msgid "File missing in request."
-msgstr "У запиті відсутній файл."
-
-#: src/api/v1/views/MailboxViewSet.py:289
-msgid "An error occurred while processing the file."
-msgstr "Під час обробки файлу сталася помилка."
-
-#: src/api/v1/views/MailboxViewSet.py:297
+#: src/api/v1/views/MailboxViewSet.py:362
 msgid "Successfully uploaded mailbox file."
 msgstr "Файл поштової скриньки успішно завантажено."
-
-#~ msgid "Logfile not found"
-#~ msgstr "Файл журналу не знайдено"

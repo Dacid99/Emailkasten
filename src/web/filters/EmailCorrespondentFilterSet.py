@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -28,8 +28,7 @@ from django.forms import widgets
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import HeaderFields
-
-from ..utils.widgets import AdaptedSelectDateWidget
+from web.utils.widgets import AdaptedSelectDateWidget
 
 
 if TYPE_CHECKING:
@@ -51,7 +50,7 @@ class EmailCorrespondentFilterSet(django_filters.FilterSet):
         ]
     )
 
-    text_search = django_filters.CharFilter(
+    search = django_filters.CharFilter(
         method="filter_text_fields",
         label=_("Search"),
         widget=widgets.SearchInput,

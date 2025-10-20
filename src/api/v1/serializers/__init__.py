@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -17,7 +17,6 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 """api.v1.serializers package containing serializers for the Emailkasten API version 1."""
-
 from .account_serializers import AccountSerializer, BaseAccountSerializer
 from .attachment_serializers import BaseAttachmentSerializer
 from .correspondent_serializers import (
@@ -33,6 +32,8 @@ from .emailcorrespondent_serializers import (
     EmailCorrespondentSerializer,
 )
 from .mailbox_serializers import BaseMailboxSerializer, MailboxWithDaemonSerializer
+from .UploadEmailSerializer import UploadEmailSerializer
+from .UserProfileSerializer import UserProfileSerializer
 
 
 __all__ = [
@@ -51,4 +52,6 @@ __all__ = [
     "EmailSerializer",
     "FullEmailSerializer",
     "MailboxWithDaemonSerializer",
+    "UploadEmailSerializer",
+    "UserProfileSerializer",
 ]

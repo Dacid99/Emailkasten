@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -39,11 +39,6 @@ class BaseAccountSerializer(serializers.ModelSerializer[Account]):
     Other serializers for :class:`core.models.Account` should inherit from this.
     """
 
-    password = serializers.CharField(max_length=255, write_only=True)
-    """The :attr:`core.models.Account.Account.password` field
-    is set to write-only for security reasons.
-    """
-
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     """The :attr:`core.models.Account.Account.user` field is included but hidden."""
 
@@ -61,8 +56,19 @@ class BaseAccountSerializer(serializers.ModelSerializer[Account]):
         fields = "__all__"
         """Include all fields."""
 
-        read_only_fields: Final[list[str]] = ["is_healthy", "created", "updated"]
+        read_only_fields: Final[list[str]] = [
+            "is_healthy",
+            "last_error",
+            "last_error_occurred_at",
+            "created",
+            "updated",
+        ]
         """The :attr:`core.models.Account.Account.is_healthy`,
         :attr:`core.models.Account.Account.created` and
         :attr:`core.models.Account.Account.updated` fields are read-only.
+        """
+
+        extra_kwargs = {"password": {"write_only": True}}
+        """The :attr:`core.models.Account.Account.password` field
+        is set to write-only for security reasons.
         """

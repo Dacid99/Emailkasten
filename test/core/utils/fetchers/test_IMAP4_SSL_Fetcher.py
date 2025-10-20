@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,18 +18,18 @@
 
 """Test file for the :class:`core.utils.fetchers.IMAP4_SSL_Fetcher`."""
 
-
 import pytest
 
 from core.constants import EmailProtocolChoices
 from core.utils.fetchers import IMAP4_SSL_Fetcher
 from core.utils.fetchers.exceptions import MailAccountError
 
-from .test_IMAP4Fetcher import FakeIMAP4Error, mock_logger
+from .test_IMAP4Fetcher import FakeIMAP4Error
 
 
 @pytest.fixture
 def imap_ssl_mailbox(fake_mailbox):
+    """Extends :func:`test.conftest.fake_mailbox` to have IMAP4_SSL as protocol."""
     fake_mailbox.account.protocol = EmailProtocolChoices.IMAP4_SSL
     fake_mailbox.account.save(update_fields=["protocol"])
     return fake_mailbox
@@ -37,6 +37,7 @@ def imap_ssl_mailbox(fake_mailbox):
 
 @pytest.fixture(autouse=True)
 def mock_IMAP4_SSL(mocker, faker):
+    """Mocks an :class:`imaplib.IMAP4_SSL` with all positive method responses."""
     mock_IMAP4_SSL = mocker.patch(
         "core.utils.fetchers.IMAP4_SSL_Fetcher.imaplib.IMAP4_SSL", autospec=True
     )
@@ -51,14 +52,6 @@ def mock_IMAP4_SSL(mocker, faker):
     mock_IMAP4_SSL.return_value.uid.return_value = ("OK", [fake_response, b""])
     mock_IMAP4_SSL.return_value.logout.return_value = ("BYE", [fake_response])
     return mock_IMAP4_SSL
-
-
-@pytest.fixture(autouse=True)
-def mock_ssl_create_default_context(mocker):
-    return mocker.patch(
-        "ssl.create_default_context",
-        return_value=mocker.sentinel,
-    )
 
 
 @pytest.mark.django_db
@@ -79,6 +72,9 @@ def test_IMAP4Fetcher_connect_to_host_success(
     mail_host_port,
     timeout,
 ):
+    """Tests :func:`core.utils.fetchers.IMAP4_SSL_Fetcher.connect_to_host`
+    in case of success.
+    """
     imap_ssl_mailbox.account.mail_host_port = mail_host_port
     imap_ssl_mailbox.account.timeout = timeout
 
@@ -100,11 +96,20 @@ def test_IMAP4Fetcher_connect_to_host_success(
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_connect_to_host_exception(
-    imap_ssl_mailbox, mock_ssl_create_default_context, mock_logger, mock_IMAP4_SSL
+    fake_error_message,
+    imap_ssl_mailbox,
+    mock_ssl_create_default_context,
+    mock_logger,
+    mock_IMAP4_SSL,
 ):
-    mock_IMAP4_SSL.side_effect = AssertionError
+    """Tests :func:`core.utils.fetchers.IMAP4_SSL_Fetcher.connect_to_host`
+    in case of an error.
+    """
+    mock_IMAP4_SSL.side_effect = AssertionError(fake_error_message)
 
-    with pytest.raises(MailAccountError, match="AssertionError occurred"):
+    with pytest.raises(
+        MailAccountError, match=f"AssertionError.*?{fake_error_message}"
+    ):
         IMAP4_SSL_Fetcher(imap_ssl_mailbox.account)
 
     kwargs = {

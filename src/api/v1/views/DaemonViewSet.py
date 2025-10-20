@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,16 +24,17 @@ from typing import TYPE_CHECKING, Final, override
 
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.openapi import OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from api.v1.filters import DaemonFilterSet
+from api.v1.serializers import BaseDaemonSerializer
 from core.models import Daemon
-
-from ..filters import DaemonFilterSet
-from ..serializers import BaseDaemonSerializer
 
 
 if TYPE_CHECKING:
@@ -41,6 +42,39 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
+@extend_schema_view(
+    list=extend_schema(description="Lists all instances matching the filter."),
+    retrieve=extend_schema(description="Retrieves a single instance."),
+    update=extend_schema(
+        description="Updates a single instance. You must specify format 'json'."
+    ),
+    create=extend_schema(
+        description="Creates a new instance. You must specify format 'json'."
+    ),
+    destroy=extend_schema(description="Deletes a single instance."),
+    test=extend_schema(
+        request=None,
+        responses={
+            200: inline_serializer(
+                name="test_daemon_response",
+                fields={
+                    "detail": OpenApiTypes.STR,
+                    "result": OpenApiTypes.BOOL,
+                    "data": BaseDaemonSerializer,
+                },
+            )
+        },
+        description="Tests the daemon instance.",
+    ),
+    start=extend_schema(
+        request=None,
+        description="Starts the daemon instances periodic task.",
+    ),
+    stop=extend_schema(
+        request=None,
+        description="Stops the daemon instances periodic task.",
+    ),
+)
 class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
     """Viewset for the :class:`core.models.Daemon`.
 
@@ -82,9 +116,6 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
             return Daemon.objects.none()
         return Daemon.objects.filter(mailbox__account__user=self.request.user).select_related("interval", "celery_task")  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
 
-    URL_PATH_START = "start"
-    URL_NAME_START = "start"
-
     URL_PATH_TEST = "test"
     URL_NAME_TEST = "test"
 
@@ -104,7 +135,7 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
         daemon = self.get_object()
         response = Response(
             {
-                "detail": _("Tested daemon"),
+                "detail": _("Tested routine"),
             }
         )
         try:
@@ -115,8 +146,11 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
         else:
             response.data["result"] = True
         daemon.refresh_from_db()
-        response.data["daemon"] = self.get_serializer(daemon).data
+        response.data["data"] = self.get_serializer(daemon).data
         return response
+
+    URL_PATH_START = "start"
+    URL_NAME_START = "start"
 
     @action(
         detail=True, methods=["post"], url_path=URL_PATH_START, url_name=URL_NAME_START
@@ -134,15 +168,15 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
         daemon = self.get_object()
         result = daemon.start()
         if result:
-            response = Response({"detail": _("Daemon started")})
+            response = Response({"detail": _("Routine started")})
         else:
             response = Response(
-                {"detail": _("Daemon is already running")},
+                {"detail": _("Routine is already running")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         daemon.refresh_from_db()
         daemon_data = self.get_serializer(daemon).data
-        response.data["daemon"] = daemon_data
+        response.data["data"] = daemon_data
         return response
 
     URL_PATH_STOP = "stop"
@@ -164,13 +198,13 @@ class DaemonViewSet(viewsets.ModelViewSet[Daemon]):
         daemon = self.get_object()
         result = daemon.stop()
         if result:
-            response = Response({"status": _("Daemon stopped")})
+            response = Response({"status": _("Routine stopped")})
         else:
             response = Response(
-                {"status": _("Daemon not running")},
+                {"status": _("Routine not running")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         daemon.refresh_from_db()
         daemon_data = self.get_serializer(daemon).data
-        response.data["daemon"] = daemon_data
+        response.data["data"] = daemon_data
         return response

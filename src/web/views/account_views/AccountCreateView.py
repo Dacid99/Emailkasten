@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,17 +24,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 
 from core.models import Account
-
-from ...forms import BaseAccountForm
+from web.forms import BaseAccountForm
 
 
 class AccountCreateView(LoginRequiredMixin, CreateView):
     """View for creating a single :class:`core.models.Account` instance."""
 
+    URL_NAME = Account.BASENAME + "-create"
     model = Account
     form_class = BaseAccountForm
     template_name = "web/account/account_create.html"
-    URL_NAME = Account.BASENAME + "-create"
 
     @override
     def get_form(

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -36,15 +36,18 @@ from api.v1.views import (
     DatabaseStatsView,
     EmailViewSet,
     MailboxViewSet,
+    UserProfileView,
 )
 
 
 app_name = "v1"
 
-router = DefaultRouter()
+router = DefaultRouter(
+    trailing_slash=False
+)  # no slash for data endpoints for consistency with allauth headless api
 router.register("accounts", AccountViewSet, basename=AccountViewSet.BASENAME)
 router.register("mailboxes", MailboxViewSet, basename=MailboxViewSet.BASENAME)
-router.register("daemons", DaemonViewSet, basename=DaemonViewSet.BASENAME)
+router.register("routines", DaemonViewSet, basename=DaemonViewSet.BASENAME)
 router.register(
     "correspondents",
     CorrespondentViewSet,
@@ -60,8 +63,13 @@ router.register("emails", EmailViewSet, basename=EmailViewSet.BASENAME)
 urlpatterns = [
     path("", include(router.urls)),
     path(
-        "stats/",
+        "stats",
         DatabaseStatsView.as_view(),
         name=DatabaseStatsView.NAME,
+    ),
+    path(
+        "auth/profile",
+        UserProfileView.as_view(),
+        name=UserProfileView.NAME,
     ),
 ]

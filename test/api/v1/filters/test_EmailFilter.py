@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,7 @@ from .conftest import (
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "searched_field", ["message_id", "email_subject", "plain_bodytext", "html_bodytext"]
+    "searched_field", ["message_id", "subject", "plain_bodytext", "html_bodytext"]
 )
 def test_search_filter(faker, email_queryset, searched_field):
     """Tests :class:`api.v1.filters.EmailFilterSet`'s search filtering."""
@@ -87,13 +87,11 @@ def test_datetime_filter(email_queryset, lookup_expr, filterquery, expected_indi
 @pytest.mark.parametrize(
     "lookup_expr, filterquery, expected_indices", TEXT_TEST_PARAMETERS
 )
-def test_email_subject_filter(
-    email_queryset, lookup_expr, filterquery, expected_indices
-):
+def test_subject_filter(email_queryset, lookup_expr, filterquery, expected_indices):
     """Tests :class:`api.v1.filters.EmailFilterSet`'s filtering
-    for the :attr:`core.models.Email.Email.email_subject` field.
+    for the :attr:`core.models.Email.Email.subject` field.
     """
-    query = {"email_subject" + lookup_expr: filterquery}
+    query = {"subject" + lookup_expr: filterquery}
 
     filtered_data = EmailFilterSet(query, queryset=email_queryset).qs
 
@@ -177,21 +175,6 @@ def test_is_favorite_filter(email_queryset, lookup_expr, filterquery, expected_i
     assert filtered_data.count() == len(expected_indices)
     for data in filtered_data:
         assert data.id - 1 in expected_indices
-
-
-# @pytest.mark.django_db
-# @pytest.mark.parametrize(
-#     "lookup_expr, filterquery, expected_indices", JSON_TEST_PARAMETERS
-# )
-# def test_headers_filter(email_queryset, lookup_expr, filterquery, expected_indices):
-#     query = {"headers" + lookup_expr: filterquery}
-
-#     filtered_data = EmailFilterSet(query, queryset=email_queryset).qs
-
-#     assert filtered_data.distinct().count() == filtered_data.count()
-#     assert filtered_data.count() == len(expected_indices)
-#     for data in filtered_data:
-#         assert data.id - 1 in expected_indices
 
 
 @pytest.mark.django_db

@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block title %}
-    {% translate "Daemon Details" %} -
+    {% translate "Routine Details" %} -
 {% endblock title %}
 
 {% block nav_class_daemons %}
@@ -25,8 +25,6 @@
     {% include "web/daemon/partials/_start-button.html" with daemon=object %}
 
     {% include "web/daemon/partials/_stop-button.html" with daemon=object %}
-
-    {% include "web/daemon/partials/_download_logs-button.html" %}
 
 {% endblock action_buttons %}
 
@@ -52,11 +50,14 @@
         <li class="list-group-item">
             {% translate "Total Run Count" %}: {{ object.celery_task.total_run_count }}
         </li>
-        {% if not object.is_healthy %}
-            <li class="list-group-item">
-                {% translate "Latest Error" %}: <pre><code>{{ object.last_error }}</code></pre>
-                <br />
-                <strong>{% translate "Test the daemon to see what is going wrong." %}</strong>
+        {% if object.is_healthy == False %}
+            <li class="list-group-item list-group-item-danger">
+                {% translate "Latest Error" %}:
+                <p>
+                    <code>{{ object.last_error }}</code>
+                </p>
+                <p>{% translate "Occurred At" %}: {{ object.last_error_occurred_at }}</p>
+                <strong>{% translate "Test the routine to see if this error persists." %}</strong>
             </li>
         {% endif %}
     </ul>

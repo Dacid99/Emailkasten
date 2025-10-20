@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -21,16 +21,11 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING
 
 import pytest
 from health_check.storage.backends import DefaultFileStorageHealthCheck
 
 from core.models import StorageShard
-
-
-if TYPE_CHECKING:
-    from unittest.mock import MagicMock
 
 
 @pytest.fixture(autouse=True)
@@ -39,8 +34,8 @@ def always_fake_fs(fake_fs):
 
 
 @pytest.fixture(autouse=True)
-def mock_logger(mocker) -> MagicMock:
-    """Mocks :attr:`core.models.Storage.logger` of the module."""
+def mock_logger(mocker):
+    """The mocked :attr:`core.models.Storage.logger`."""
     return mocker.patch("core.models.StorageShard.logger", autospec=True)
 
 
@@ -49,6 +44,9 @@ def mock_logger(mocker) -> MagicMock:
     "is_current, expected_status_str", [(True, "Current"), (False, "Archived")]
 )
 def test___str__(faker, is_current, expected_status_str):
+    """Tests :class:`core.models.StorageShard.__str__`
+    in cases of different `is_current` states.
+    """
     fake_filename = faker.file_name()
 
     result = str(StorageShard(current=is_current, shard_directory_name=fake_filename))
@@ -124,6 +122,9 @@ def test_Storage_health_check_missing_dir(settings, mock_logger):
 
 @pytest.mark.django_db
 def test_DefaultStorageStorageHealthCheck():
+    """Tests django-healthchecks DefaultFileStorageHealthCheck
+    impact on the StorageShard table.
+    """
     assert StorageShard.get_current_storage().file_count == 0
 
     result = DefaultFileStorageHealthCheck().check_status()

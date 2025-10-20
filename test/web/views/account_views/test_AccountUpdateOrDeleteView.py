@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -128,7 +128,7 @@ def test_post_delete_noauth(fake_account, client, detail_url, login_url):
     """Tests :class:`web.views.AccountUpdateOrDeleteView` with an unauthenticated user client."""
     response = client.post(
         detail_url(AccountUpdateOrDeleteView, fake_account),
-        {"delete": "Delete"},
+        {"delete": ""},
     )
 
     assert response.status_code == status.HTTP_302_FOUND
@@ -146,7 +146,7 @@ def test_post_delete_auth_other(fake_account, other_client, detail_url):
     """Tests :class:`web.views.AccountUpdateOrDeleteView` with the authenticated other user client."""
     response = other_client.post(
         detail_url(AccountUpdateOrDeleteView, fake_account),
-        {"delete": "Delete"},
+        {"delete": ""},
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -160,7 +160,7 @@ def test_post_delete_auth_owner(fake_account, owner_client, detail_url):
     """Tests :class:`web.views.AccountUpdateOrDeleteView` with the authenticated owner user client."""
     response = owner_client.post(
         detail_url(AccountUpdateOrDeleteView, fake_account),
-        {"delete": "Delete"},
+        {"delete": ""},
     )
 
     assert response.status_code == status.HTTP_302_FOUND

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,9 @@ from typing import TYPE_CHECKING, Final, override
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from ..constants import HeaderFields
+from core.constants import HeaderFields
+from core.mixins import TimestampModelMixin
+
 from .Correspondent import Correspondent
 
 
@@ -34,13 +36,14 @@ if TYPE_CHECKING:
     from .Email import Email
 
 
-class EmailCorrespondent(models.Model):
+class EmailCorrespondent(TimestampModelMixin, models.Model):
     """Database model for connecting emails and their correspondents."""
 
     email = models.ForeignKey(
         "Email",
         related_name="emailcorrespondents",
         on_delete=models.CASCADE,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("email"),
     )
     """The email :attr:`correspondent` was mentioned in. Unique together with :attr:`correspondent` and :attr:`mention`."""
@@ -49,6 +52,7 @@ class EmailCorrespondent(models.Model):
         "Correspondent",
         related_name="correspondentemails",
         on_delete=models.CASCADE,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("correspondent"),
     )
     """The correspondent mentioned in :attr:`email`. Unique together with :attr:`email` and :attr:`mention`."""
@@ -56,27 +60,19 @@ class EmailCorrespondent(models.Model):
     mention = models.CharField(
         choices=HeaderFields.Correspondents.choices,
         max_length=30,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("mention"),
     )
     """The mention of :attr:`correspondent` in :attr:`email`. Unique together with :attr:`email` and :attr:`correspondent`."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:
         """Metadata class for the model."""
 
         db_table = "email_correspondents"
         """The name of the database bridge table for emails and correspondents."""
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name = _("email-correspondents")
+        get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
         constraints: Final[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
@@ -130,13 +126,13 @@ class EmailCorrespondent(models.Model):
             raise ValueError("Email is not in the db!")
         new_email_correspondent_models = []
         for correspondent_tuple in getaddresses([header]):
-            new_correspondent = Correspondent.create_from_correspondent_tuple(
+            correspondent = Correspondent.create_from_correspondent_tuple(
                 correspondent_tuple, email.mailbox.account.user
             )
-            if new_correspondent is None:
+            if correspondent is None:
                 continue
             new_email_correspondent = cls(
-                correspondent=new_correspondent, email=email, mention=header_name
+                correspondent=correspondent, email=email, mention=header_name
             )
             new_email_correspondent.save()
             new_email_correspondent_models.append(new_email_correspondent)

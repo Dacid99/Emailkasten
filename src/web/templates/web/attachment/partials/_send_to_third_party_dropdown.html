@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<div class="dropdown btn-group">
+    <button class="btn btn-outline-primary dropdown-toggle"
+            type="button"
+            id="dropdownSendMenuButton"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        <i class="fa-solid fa-arrow-up-right-from-square mx-1"
+           aria-hidden="Share"></i>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownSendMenuButton">
+        {% if attachment.is_shareable_to_paperless %}
+            <li>
+                <button class="btn dropdown-item"
+                        type="submit"
+                        name="share"
+                        value="paperless">Paperless</button>
+            </li>
+        {% endif %}
+        {% if attachment.is_shareable_to_immich %}
+            <li>
+                <button class="btn dropdown-item" type="submit" name="share" value="immich">Immich</button>
+            </li>
+        {% endif %}
+    </ul>
+</div>

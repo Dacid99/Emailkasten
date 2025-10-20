@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,10 @@ import imaplib
 import ssl
 from typing import override
 
-from ... import constants
+from django.utils.translation import gettext_lazy as _
+
+from core import constants
+
 from .exceptions import MailAccountError
 from .IMAP4Fetcher import IMAP4Fetcher
 
@@ -80,12 +83,6 @@ class IMAP4_SSL_Fetcher(  # noqa: N801  # naming consistent with IMAP4_SSL class
                     ssl_context=ssl_context,
                 )
         except Exception as error:
-            self.logger.exception(
-                "An %s occurred connecting to %s!",
-                error.__class__.__name__,
-                self.account,
-            )
-            raise MailAccountError(
-                f"An {error.__class__.__name__} occurred connecting to {self.account}!"
-            ) from error
+            self.logger.exception("Error connecting to %s!", self.account)
+            raise MailAccountError(error, _("connecting")) from error
         self.logger.info("Successfully connected to %s.", self.account)

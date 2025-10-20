@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -22,16 +22,17 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Self, override
 
-from ...constants import EmailFetchingCriterionChoices
+from core.constants import EmailFetchingCriterionChoices
 
 
 if TYPE_CHECKING:
     from types import TracebackType
 
-    from ...models.Account import Account
-    from ...models.Mailbox import Mailbox
+    from core.models.Account import Account
+    from core.models.Email import Email
+    from core.models.Mailbox import Mailbox
 
 
 class BaseFetcher(ABC):
@@ -125,6 +126,20 @@ class BaseFetcher(ABC):
         """
 
     @abstractmethod
+    def restore(self, email: Email) -> None:
+        """Restores an email to a mailbox.
+
+        Args:
+            email: The email to restore.
+
+        Raises:
+            ValueError: If the emails mailbox is not in this fetchers account.
+        """
+        if email.mailbox.account != self.account:
+            self.logger.error("Mailbox of %s is not in %s!", email, self.account)
+            raise ValueError(f"Mailbox of {email} is not in {self.account}!")
+
+    @abstractmethod
     def close(self) -> None:
         """Closes the connection to the mail server."""
 
@@ -137,7 +152,7 @@ class BaseFetcher(ABC):
         """
         return f"{self.__class__.__name__} for {self.account}"
 
-    def __enter__(self) -> BaseFetcher:
+    def __enter__(self) -> Self:
         """Framework method for use of class in 'with' statement, creates an instance.
 
         Returns:

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -50,6 +50,12 @@ def test_output(fake_account, request_context):
     assert serializer_data["timeout"] == fake_account.timeout
     assert "is_healthy" in serializer_data
     assert serializer_data["is_healthy"] == fake_account.is_healthy
+    assert "last_error" in serializer_data
+    assert serializer_data["last_error"] == fake_account.last_error
+    assert "last_error_occurred_at" in serializer_data
+    assert (
+        serializer_data["last_error_occurred_at"] == fake_account.last_error_occurred_at
+    )
     assert "is_favorite" in serializer_data
     assert serializer_data["is_favorite"] == fake_account.is_favorite
     assert "created" in serializer_data
@@ -58,7 +64,7 @@ def test_output(fake_account, request_context):
     assert datetime.fromisoformat(serializer_data["updated"]) == fake_account.updated
 
     assert "user" not in serializer_data
-    assert len(serializer_data) == 10
+    assert len(serializer_data) == 12
 
 
 @pytest.mark.django_db
@@ -84,6 +90,8 @@ def test_input(account_payload, request_context):
     assert "timeout" in serializer_data
     assert serializer_data["timeout"] == account_payload["timeout"]
     assert "is_healthy" not in serializer_data
+    assert "last_error" not in serializer_data
+    assert "last_error_occurred_at" not in serializer_data
     assert "is_favorite" in serializer_data
     assert serializer_data["is_favorite"] == account_payload["is_favorite"]
     assert "created" not in serializer_data

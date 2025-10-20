@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ from django.template import Context, Template, TemplateSyntaxError
 
 
 def test_get_available_timezones_tag():
+    """Tests the :func:`Emailkasten.templatetags.get_available_timezones`."""
     template_str = "{% load timezones %}{% get_available_timezones as TIMEZONES %}"
     template = Template(template_str)
     context = Context({})
@@ -36,6 +37,9 @@ def test_get_available_timezones_tag():
 
 
 def test_get_available_timezones_tag_syntax_error():
+    """Tests the :func:`Emailkasten.templatetags.get_available_timezones`
+    in case of a syntax error in the template.
+    """
     bad_template_str = "{% load timezones %}{% get_available_timezones TIMEZONES %}"
 
     with pytest.raises(TemplateSyntaxError):

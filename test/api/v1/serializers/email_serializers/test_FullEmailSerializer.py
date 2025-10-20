@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@
 from datetime import datetime
 
 import pytest
-from django.forms.models import model_to_dict
 
 from api.v1.serializers import FullEmailSerializer
 
@@ -39,8 +38,8 @@ def test_output(fake_email, request_context):
     assert serializer_data["message_id"] == fake_email.message_id
     assert "datetime" in serializer_data
     assert datetime.fromisoformat(serializer_data["datetime"]) == fake_email.datetime
-    assert "email_subject" in serializer_data
-    assert serializer_data["email_subject"] == fake_email.email_subject
+    assert "subject" in serializer_data
+    assert serializer_data["subject"] == fake_email.subject
     assert "plain_bodytext" in serializer_data
     assert serializer_data["plain_bodytext"] == fake_email.plain_bodytext
     assert "html_bodytext" in serializer_data
@@ -58,7 +57,7 @@ def test_output(fake_email, request_context):
     assert serializer_data["datasize"] == fake_email.datasize
     assert "is_favorite" in serializer_data
     assert serializer_data["is_favorite"] == fake_email.is_favorite
-    assert "eml_filepath" not in serializer_data
+    assert "file_path" not in serializer_data
     assert "mailbox" in serializer_data
     assert serializer_data["mailbox"] == fake_email.mailbox.id
     assert "headers" in serializer_data
@@ -84,18 +83,16 @@ def test_output(fake_email, request_context):
 
 
 @pytest.mark.django_db
-def test_input(fake_email, request_context):
+def test_input(email_payload, request_context):
     """Tests for the expected input of the serializer."""
-    serializer = FullEmailSerializer(
-        data=model_to_dict(fake_email), context=request_context
-    )
+    serializer = FullEmailSerializer(data=email_payload, context=request_context)
     assert serializer.is_valid()
     serializer_data = serializer.validated_data
 
     assert "id" not in serializer_data
     assert "message_id" not in serializer_data
     assert "datetime" not in serializer_data
-    assert "email_subject" not in serializer_data
+    assert "subject" not in serializer_data
     assert "plain_bodytext" not in serializer_data
     assert "html_bodytext" not in serializer_data
     assert "in_reply_to" not in serializer_data
@@ -103,8 +100,8 @@ def test_input(fake_email, request_context):
     assert "referenced_by" not in serializer_data
     assert "datasize" not in serializer_data
     assert "is_favorite" in serializer_data
-    assert serializer_data["is_favorite"] == fake_email.is_favorite
-    assert "eml_filepath" not in serializer_data
+    assert serializer_data["is_favorite"] == email_payload["is_favorite"]
+    assert "file_path" not in serializer_data
     assert "mailbox" not in serializer_data
     assert "headers" not in serializer_data
     assert "x_spam" not in serializer_data

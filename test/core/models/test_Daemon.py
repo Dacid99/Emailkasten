@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -35,21 +35,19 @@ from core.utils.fetchers.exceptions import MailAccountError, MailboxError
 
 @pytest.fixture(autouse=True)
 def mock_logger(mocker):
-    """Mocks the :attr:`core.models.Daemon.logger`.
-
-    Returns:
-        The mocked logger instance.
-    """
+    """The mocked :attr:`core.models.Daemon.logger`."""
     return mocker.patch("core.models.Daemon.logger", autospec=True)
 
 
 @pytest.fixture
 def mock_Mailbox_fetch(mocker):
+    """Patches `core.models.Mailbox.fetch`."""
     return mocker.patch("core.models.Mailbox.Mailbox.fetch")
 
 
 @pytest.fixture
 def mock_celery_app(mocker):
+    """Patches the celery current app."""
     return mocker.patch("core.models.Daemon.current_app", autospec=True)
 
 
@@ -174,6 +172,9 @@ def test_Daemon_delete_no_celery_task(fake_daemon):
 
 @pytest.mark.django_db
 def test_Daemon_test_success(mock_celery_app, fake_daemon):
+    """Tests :func:`core.models.Daemon.Daemon.test`
+    in case of success.
+    """
     fake_daemon.test()
     args = json.loads(fake_daemon.celery_task.args or "[]")
     kwargs = json.loads(fake_daemon.celery_task.kwargs or "{}")
@@ -189,7 +190,10 @@ def test_Daemon_test_success(mock_celery_app, fake_daemon):
     "error", [AssertionError, ValueError, MailAccountError, MailboxError]
 )
 def test_Daemon_test_failure(mock_celery_app, fake_daemon, error):
-    mock_celery_app.send_task.return_value.get.side_effect = error
+    """Tests :func:`core.models.Daemon.Daemon.test`
+    in case of failure.
+    """
+    mock_celery_app.send_task.return_value.get.side_effect = error(Exception())
     args = json.loads(fake_daemon.celery_task.args or "[]")
     kwargs = json.loads(fake_daemon.celery_task.kwargs or "{}")
 

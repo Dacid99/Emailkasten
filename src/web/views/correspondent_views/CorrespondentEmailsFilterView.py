@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,9 +25,8 @@ from django.db.models import QuerySet
 from django.views.generic.detail import SingleObjectMixin
 
 from core.models import Correspondent, EmailCorrespondent
-
-from ...filters import CorrespondentEmailFilterSet
-from ..FilterPageView import FilterPageView
+from web.filters import CorrespondentEmailFilterSet
+from web.views.base import FilterPageView
 
 
 class CorrespondentEmailsFilterView(

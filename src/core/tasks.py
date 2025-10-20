@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -48,15 +48,10 @@ def fetch_emails(  # this must not be renamed or moved, otherwise existing daemo
     try:
         daemon.mailbox.fetch(daemon.fetching_criterion)
     except Exception as exc:
-        daemon.is_healthy = False
-        daemon.last_error = str(exc)
-        daemon.save(update_fields=["is_healthy", "last_error"])
+        daemon.set_unhealthy(str(exc))
         if isinstance(exc, MailAccountError):
-            daemon.mailbox.account.is_healthy = False
-            daemon.mailbox.account.save(update_fields=["is_healthy"])
+            daemon.mailbox.account.set_unhealthy(str(exc))
         elif isinstance(exc, MailboxError):
-            daemon.mailbox.is_healthy = False
-            daemon.mailbox.save(update_fields=["is_healthy"])
+            daemon.mailbox.set_unhealthy(str(exc))
         raise
-    daemon.is_healthy = True
-    daemon.save(update_fields=["is_healthy"])
+    daemon.set_healthy()

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -57,6 +57,8 @@ class BaseMailboxSerializer(serializers.ModelSerializer[Mailbox]):
             "name",
             "account",
             "is_healthy",
+            "last_error",
+            "last_error_occurred_at",
             "created",
             "updated",
         ]

@@ -14,10 +14,14 @@
                 <a class="page-link" aria-disabled="true"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
             </li>
         {% endif %}
-        {% for page_number in page_obj.paginator.page_range %}
+        {% for page_number in page_obj.paginator.get_elided_page_range %}
             <li class="page-item {% if page_number == page_obj.number %}active{% endif %}">
-                <a class="page-link"
-                   href="?page={{ page_number }}&page_size={{ page_size }}{% for param, value in query.items %}&{{ param }}={{ value }}{% endfor %}">{{ page_number }}</a>
+                {% if page_number == page_obj.paginator.ELLIPSIS %}
+                    <a class="page-link">{{ page_number }}</a>
+                {% else %}
+                    <a class="page-link"
+                       href="?page={{ page_number }}&page_size={{ page_size }}{% for param, value in query.items %}&{{ param }}={{ value }}{% endfor %}">{{ page_number }}</a>
+                {% endif %}
             </li>
         {% endfor %}
         {% if page_obj.has_next %}

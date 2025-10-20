@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-22 09:37+0000\n"
-"PO-Revision-Date: 2025-08-12 15:01+0000\n"
+"POT-Creation-Date: 2025-09-29 21:34+0000\n"
+"PO-Revision-Date: 2025-09-11 18:02+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
 "emailkasten/uk/>\n"
@@ -20,32 +20,171 @@ msgstr ""
 "11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
 "100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
 "(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
-#: src/Emailkasten/settings.py:511
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:730
+msgid "Received"
+msgstr "Отримано"
+
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:734
+msgid "From"
+msgstr "Від"
+
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:737
+msgid "To"
+msgstr "До"
+
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:740
+msgid "CC"
+msgstr "CC"
+
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:743
+msgid "BCC"
+msgstr "BCC"
+
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:756
+msgid "Attachments"
+msgstr "Вкладення"
+
+#. Translators: Do not capitalize the very first letter unless your language requires it. Paperless is a brand name.
+#: src/Emailkasten/models/UserProfile.py:45
+msgid "Paperless server URL"
+msgstr "Paperless сервер URL"
+
+#. Translators: Paperless is a brand name.
+#: src/Emailkasten/models/UserProfile.py:47
+msgid "URL of your Paperless server."
+msgstr "URL-адреса вашого Paperless сервера."
+
+#. Translators: Do not capitalize the very first letter unless your language requires it. Paperless is a brand name.
+#: src/Emailkasten/models/UserProfile.py:54
+msgid "Paperless server API key"
+msgstr "Paperless ключ API сервера"
+
+#. Translators: Paperless is a brand name.
+#: src/Emailkasten/models/UserProfile.py:56
+msgid "API key for your Paperless server."
+msgstr "Ключ API для вашого Paperless сервера."
+
+#. Translators: Do not capitalize the very first letter unless your language requires it. Paperless and Tika are brand names.
+#: src/Emailkasten/models/UserProfile.py:62
+msgid "Paperless Tika support enabled"
+msgstr "Paperless Підтримка Tika увімкнена"
+
+#. Translators: Paperless and Tika are brand names.
+#: src/Emailkasten/models/UserProfile.py:64
+msgid "Whether Tika support is enabled on your Paperless server."
+msgstr "Чи ввімкнено підтримку Tika на вашому Paperless сервері."
+
+#. Translators: Do not capitalize the very first letter unless your language requires it. Immich is a brand name.
+#: src/Emailkasten/models/UserProfile.py:72
+msgid "Immich server URL"
+msgstr ""
+
+#. Translators: Immich is a brand name.
+#: src/Emailkasten/models/UserProfile.py:74
+#, fuzzy
+#| msgid "URL of your Paperless server."
+msgid "URL of your Immich server."
+msgstr "URL-адреса вашого Paperless сервера."
+
+#. Translators: Do not capitalize the very first letter unless your language requires it. Immich is a brand name.
+#: src/Emailkasten/models/UserProfile.py:81
+#, fuzzy
+#| msgid "Paperless server API key"
+msgid "Immich server API key"
+msgstr "Paperless ключ API сервера"
+
+#. Translators: Immich is a brand name.
+#: src/Emailkasten/models/UserProfile.py:83
+#, fuzzy
+#| msgid "API key for your Paperless server."
+msgid "API key for your Immich server."
+msgstr "Ключ API для вашого Paperless сервера."
+
+#. Translators: Do not capitalize the very first letter unless your language requires it. Nextcloud is a brand name.
+#: src/Emailkasten/models/UserProfile.py:91
+#, fuzzy
+#| msgid "Paperless server URL"
+msgid "Nextcloud server URL"
+msgstr "Paperless сервер URL"
+
+#. Translators: Nextcloud is a brand name.
+#: src/Emailkasten/models/UserProfile.py:93
+#, fuzzy
+#| msgid "URL of your Paperless server."
+msgid "URL of your Nextcloud server."
+msgstr "URL-адреса вашого Paperless сервера."
+
+#. Translators: Do not capitalize the very first letter unless your language requires it. Nextcloud is a brand name.
+#: src/Emailkasten/models/UserProfile.py:100
+msgid "Nextcloud server username"
+msgstr ""
+
+#. Translators: Nextcloud is a brand name.
+#: src/Emailkasten/models/UserProfile.py:102
+msgid "Username for your Nextcloud account."
+msgstr ""
+
+#. Translators: Do not capitalize the very first letter unless your language requires it. Nextcloud is a brand name.
+#: src/Emailkasten/models/UserProfile.py:109
+msgid "Nextcloud server password"
+msgstr ""
+
+#. Translators: Nextcloud is a brand name.
+#: src/Emailkasten/models/UserProfile.py:111
+msgid "Password for your Nextcloud account."
+msgstr ""
+
+#. Translators: Do not capitalize the very first letter unless your language requires it. Nextcloud is a brand name.
+#: src/Emailkasten/models/UserProfile.py:118
+msgid "Nextcloud server addressbook"
+msgstr ""
+
+#. Translators: Nextcloud is a brand name.
+#: src/Emailkasten/models/UserProfile.py:120
+msgid "Main addressbook of your Nextcloud account."
+msgstr ""
+
+#. Translators: Do not capitalize the very first letter unless your language requires it.
+#: src/Emailkasten/models/UserProfile.py:128
+msgid "user profile"
+msgstr "профіль користувача"
+
+#. Translators: Do not capitalize the very first letter unless your language requires it.
+#: src/Emailkasten/models/UserProfile.py:130
+msgid "user profiles"
+msgstr "профілі користувачів"
+
+#: src/Emailkasten/models/UserProfile.py:139
+#, python-format
+msgid "Profile for user %(username)s "
+msgstr "Профіль користувача %(username)s "
+
+#: src/Emailkasten/settings.py:592
 msgid "Emailkasten API"
 msgstr "API електронної пошти"
 
-#: src/Emailkasten/settings.py:512
+#: src/Emailkasten/settings.py:593
 msgid "The API schema for the Emailkasten server."
 msgstr "Схема API для сервера Emailkasten."
 
-#: src/Emailkasten/settings.py:534
+#: src/Emailkasten/settings.py:722
 msgid "Default page size for paginated API response data"
 msgstr ""
 "Розмір сторінки за замовчуванням для даних відповідей API з посторінковою "
 "структурою"
 
-#: src/Emailkasten/settings.py:539
+#: src/Emailkasten/settings.py:727
 msgid "Maximum page size for paginated API response data"
 msgstr ""
 "Максимальний розмір сторінки для даних відповідей API з розбивкою на сторінки"
 
-#: src/Emailkasten/settings.py:544
+#: src/Emailkasten/settings.py:732
 msgid "Default page size for pagination in the webapp."
 msgstr "Розмір сторінки за замовчуванням для пагінації у вебзастосунку."
 
-#: src/Emailkasten/settings.py:550
+#: src/Emailkasten/settings.py:738
 msgid ""
 "Page size options for pagination in the webapp. Should contain the "
 "WEB_DEFAULT_PAGE_SIZE value."
@@ -53,7 +192,7 @@ msgstr ""
 "Параметри розміру сторінки для пагінації у вебзастосунку. Повинні містити "
 "значення WEB_DEFAULT_PAGE_SIZE."
 
-#: src/Emailkasten/settings.py:557
+#: src/Emailkasten/settings.py:745
 msgid ""
 "Maximum datasize for a thumbnail in the webapp. Thumbnails larger than this "
 "will not be loaded."
@@ -61,24 +200,28 @@ msgstr ""
 "Максимальний розмір даних для мініатюри у вебзастосунку. Мініатюри, більші "
 "за цей розмір, не завантажуватимуться."
 
-#: src/Emailkasten/settings.py:563
+#: src/Emailkasten/settings.py:751
 msgid "Maximum numbers of files in one storage unit."
 msgstr "Максимальна кількість файлів в одному сховищі."
 
-#: src/Emailkasten/settings.py:568
+#: src/Emailkasten/settings.py:756
 msgid "Whether or not to ignore emails that have a spam flag"
 msgstr "Чи ігнорувати електронні листи з позначкою спаму"
 
-#: src/Emailkasten/settings.py:574
+#: src/Emailkasten/settings.py:762
 msgid ""
-"List of mailboxes that are ignored when looking up mailboxes in an account."
+"Regex pattern (case-insensitive) for mailbox names that are ignored when "
+"looking up mailboxes in an account."
 msgstr ""
+"Шаблон регулярних виразів (без урахування регістру) для імен поштових "
+"скриньок, які ігноруються під час пошуку поштових скриньок в обліковому "
+"записі."
 
-#: src/Emailkasten/settings.py:580
+#: src/Emailkasten/settings.py:768
 msgid "List of content types prefixes to not parse as files."
 msgstr "Список префіксів типів контенту, які не слід розбирати як файли."
 
-#: src/Emailkasten/settings.py:586
+#: src/Emailkasten/settings.py:774
 msgid ""
 "List of content types prefixes to not parse as files. Plain and HTML text is "
 "always ignored as its the bodytext."
@@ -86,7 +229,7 @@ msgstr ""
 "Список префіксів типів контенту, які не слід розбирати як файли. Звичайний "
 "текст і текст HTML завжди ігноруються, оскільки це основний текст."
 
-#: src/Emailkasten/settings.py:650
+#: src/Emailkasten/settings.py:781
 msgid ""
 "Html template used to render emails to html. Uses the django template syntax "
 "and has access to all fields of the email database table. Removing template "
@@ -99,7 +242,7 @@ msgstr ""
 "може призвести до 500 відповідей під час запиту сторінок із мініатюрами "
 "електронних листів, тому будьте обережні."
 
-#: src/Emailkasten/settings.py:692
+#: src/Emailkasten/settings.py:788
 msgid ""
 "Css style used to render emails to html. Refer to HTML_TEMPLATE for context "
 "on the classes."
@@ -107,19 +250,19 @@ msgstr ""
 "Стиль CSS, що використовується для відображення електронних листів у форматі "
 "html. Зверніться до HTML_TEMPLATE для ознайомлення з контекстом класів."
 
-#: src/Emailkasten/settings.py:698
+#: src/Emailkasten/settings.py:794
 msgid "Default mailbox setting whether to store mails as eml."
 msgstr ""
 "Налаштування поштової скриньки за замовчуванням, яке визначає, чи зберігати "
 "листи у форматі EML."
 
-#: src/Emailkasten/settings.py:703
+#: src/Emailkasten/settings.py:799
 msgid "Default mailbox setting whether to store attachments."
 msgstr ""
 "Налаштування поштової скриньки за замовчуванням, яке визначає, чи зберігати "
 "вкладення."
 
-#: src/Emailkasten/settings.py:709
+#: src/Emailkasten/settings.py:805
 msgid ""
 "Set this to True to allow new users to sign up themselves. This setting only "
 "takes effect if the REGISTRATION_ENABLED environment setting is not 0."
@@ -128,27 +271,27 @@ msgstr ""
 "реєструватися самостійно. Цей параметр діє, лише якщо параметр середовища "
 "REGISTRATION_ENABLED не має значення 0."
 
-#: src/Emailkasten/settings.py:716
+#: src/Emailkasten/settings.py:812
 msgid "Server Configurations"
 msgstr "Конфігурації сервера"
 
-#: src/Emailkasten/settings.py:718
+#: src/Emailkasten/settings.py:814
 msgid "Default Values"
 msgstr "Значення за замовчуванням"
 
-#: src/Emailkasten/settings.py:725
+#: src/Emailkasten/settings.py:821
 msgid "Processing Settings"
 msgstr "Налаштування обробки"
 
-#: src/Emailkasten/settings.py:736
+#: src/Emailkasten/settings.py:832
 msgid "Storage Settings"
 msgstr "Налаштування пам'яті"
 
-#: src/Emailkasten/settings.py:740
+#: src/Emailkasten/settings.py:836
 msgid "API Settings"
 msgstr "Налаштування API"
 
-#: src/Emailkasten/settings.py:747
+#: src/Emailkasten/settings.py:843
 msgid "Web Settings"
 msgstr "Веб-налаштування"
 
@@ -159,6 +302,23 @@ msgstr "Забагато запитів"
 #: src/Emailkasten/templates/429.html:13
 msgid "You are sending too many requests."
 msgstr "Ви надсилаєте забагато запитів."
+
+#: src/Emailkasten/templates/account/profile.html:10
+#: src/Emailkasten/templates/allauth/layouts/manage.html:14
+msgid "Profile"
+msgstr "Профіль"
+
+#: src/Emailkasten/templates/account/profile.html:14
+msgid "Your Profile"
+msgstr "Ваш профіль"
+
+#: src/Emailkasten/templates/account/profile.html:15
+msgid "Third Party Integrations"
+msgstr "Інтеграції зі сторонніми розробниками"
+
+#: src/Emailkasten/templates/account/profile.html:43
+msgid "Save"
+msgstr "Зберегти"
 
 #: src/Emailkasten/templates/allauth/elements/language_dropdown.html:8
 #: src/Emailkasten/templates/allauth/elements/language_dropdown.html:12
@@ -202,49 +362,18 @@ msgstr "Увійти"
 msgid "Sign Up"
 msgstr "Зареєструватися"
 
-#: src/Emailkasten/templates/allauth/layouts/manage.html:14
-msgid "Change Email"
-msgstr "Змінити електронну пошту"
-
 #: src/Emailkasten/templates/allauth/layouts/manage.html:22
 msgid "Change Password"
 msgstr "Змінити пароль"
 
 #: src/Emailkasten/templates/allauth/layouts/manage.html:30
+msgid "Two-Factor Authentication"
+msgstr "Двофакторна автентифікація"
+
+#: src/Emailkasten/templates/allauth/layouts/manage.html:38
 msgid "Sessions"
 msgstr "Сесії"
 
-#: src/Emailkasten/templates/allauth/layouts/manage.html:37
+#: src/Emailkasten/templates/allauth/layouts/manage.html:45
 msgid "Admin panel"
 msgstr "Панель адміністратора"
-
-#~ msgid "Received"
-#~ msgstr "Отримано"
-
-#~ msgid "From"
-#~ msgstr "Від"
-
-#~ msgid "To"
-#~ msgstr "До"
-
-#~ msgid "CC"
-#~ msgstr "CC"
-
-#~ msgid "BCC"
-#~ msgstr "BCC"
-
-#~ msgid "Attachments"
-#~ msgstr "Вкладення"
-
-#~ msgid "Default cycle period setting of a daemon in seconds"
-#~ msgstr "Налаштування періоду циклу демона за замовчуванням у секундах"
-
-#~ msgid "Default restart time setting of a daemon in seconds"
-#~ msgstr "Налаштування часу перезапуску демона за замовчуванням у секундах"
-
-#~ msgid "Default number of daemon logfiles to keep"
-#~ msgstr ""
-#~ "Кількість файлів журналів демона, які потрібно зберігати за замовчуванням"
-
-#~ msgid "Default maximum size of a daemon logfile in bytes"
-#~ msgstr "Максимальний розмір файлу журналу демона за замовчуванням у байтах"

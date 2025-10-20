@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
 
 """Exceptions for errors during operations on mailservers."""
 
+from django.utils.translation import gettext_lazy as _
+
 
 class FetcherError(Exception):
     """Base exception class for errors during operations on mailservers."""
@@ -26,6 +28,40 @@ class FetcherError(Exception):
 class MailAccountError(FetcherError):
     """Exception for errors concerning the mail account."""
 
+    def __init__(self, error: Exception, command_name: str = _("interaction")) -> None:
+        """Extended for consistent message formatting."""
+        super().__init__(
+            _(
+                "A %(error_class_name)s: %(error)s occurred during %(command_name)s on account!"
+            )
+            % {
+                "error_class_name": error.__class__.__name__,
+                "error": error,
+                "command_name": command_name,
+            }
+        )
+
 
 class MailboxError(FetcherError):
     """Exception for errors concerning the mailbox."""
+
+    def __init__(self, error: Exception, command_name: str = _("interaction")) -> None:
+        """Extended for consistent message formatting."""
+        super().__init__(
+            _(
+                "A %(error_class_name)s: %(error)s occurred during %(command_name)s on mailbox!"
+            )
+            % {
+                "error_class_name": error.__class__.__name__,
+                "error": error,
+                "command_name": command_name,
+            }
+        )
+
+
+class BadServerResponseError(Exception):
+    """Exception for unexpected server responses."""
+
+    def __init__(self, response: str = "") -> None:
+        """Extended for consistent message formatting."""
+        super().__init__(_("Server responded %(response)s!") % {"response": response})

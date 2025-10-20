@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -145,6 +145,8 @@ def test_get(fake_daemon):
 
 @pytest.mark.django_db
 def test_save_new_interval(fake_daemon, daemon_with_interval_payload):
+    """Tests saving :class:`web.forms.BaseDaemonForm` with new interval data."""
+
     assert IntervalSchedule.objects.count() == 1
 
     form = BaseDaemonForm(instance=fake_daemon, data=daemon_with_interval_payload)
@@ -160,6 +162,7 @@ def test_save_new_interval(fake_daemon, daemon_with_interval_payload):
 
 @pytest.mark.django_db
 def test_save_existing_interval(fake_daemon, daemon_with_interval_payload):
+    """Tests saving :class:`web.forms.BaseDaemonForm` with new interval data matching an existing db entry."""
     baker.make(
         IntervalSchedule,
         every=daemon_with_interval_payload["interval_every"],

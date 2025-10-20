@@ -3,7 +3,7 @@
 {% load i18n django_bootstrap5 %}
 
 {% block title %}
-    {% translate "Add Daemon" %} -
+    {% translate "Add Routine" %} -
 {% endblock title %}
 
 {% block nav_class_daemons %}
@@ -15,7 +15,7 @@
 {% endblock close_to_list_button %}
 
 {% block card_title %}
-    {% translate "New Daemon" %}
+    {% translate "New Routine" %}
 {% endblock card_title %}
 
 {% block card_subtitle %}
@@ -26,9 +26,9 @@
 {% block form %}
     {% bootstrap_field form.mailbox %}
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">{% bootstrap_field form.interval_every %}</li>
-        <li class="list-group-item">{% bootstrap_field form.interval_period %}</li>
         <li class="list-group-item">{% bootstrap_field form.fetching_criterion %}</li>
+        <li class="list-group-item">{% bootstrap_field form.interval_period %}</li>
+        <li class="list-group-item">{% bootstrap_field form.interval_every %}</li>
     </ul>
 {% endblock form %}
 

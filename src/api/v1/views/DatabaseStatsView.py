@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -22,17 +22,23 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..serializers import DatabaseStatsSerializer
+from api.v1.serializers import DatabaseStatsSerializer
 
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description="Gets all the number of entries in the tables of the database."
+    )
+)
 class DatabaseStatsView(APIView):
     """APIView for the statistics of the database."""
 

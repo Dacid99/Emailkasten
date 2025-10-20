@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ from django.core.files.storage import default_storage
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from core.mixins.TimestampModelMixin import TimestampModelMixin
 from Emailkasten.utils.workarounds import get_config
 
 
@@ -36,7 +37,7 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class StorageShard(models.Model):
+class StorageShard(TimestampModelMixin, models.Model):
     """A database model to keep track of and manage the sharded storage's status and structure.
 
     Important:
@@ -47,12 +48,14 @@ class StorageShard(models.Model):
         default=uuid4,
         editable=False,
         unique=True,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("shard directory name"),
     )
     """The name of the directory tracked by this entry. Unique."""
 
     file_count = models.PositiveSmallIntegerField(
         default=0,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("file count"),
     )
     """The number of files in this directory. 0 by default.
@@ -60,28 +63,21 @@ class StorageShard(models.Model):
 
     current = models.BooleanField(
         default=False,
-        verbose_name=_("current"),
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name=_("status"),
     )
     """Flags whether this directory is the one where new data is being stored. False by default.
     There must only be one entry where this is set to True."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
 
     class Meta:
         """Metadata class for the model."""
 
         db_table = "storage_shards"
         """The name of the database table for the storage status."""
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name = _("storage shard")
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name_plural = _("storage shards")
 
     @override
     def __str__(self) -> str:
@@ -143,13 +139,6 @@ class StorageShard(models.Model):
         logger.debug("Successfully decremented subdirectory count.")
 
     @classmethod
-    def _add_shard(cls) -> StorageShard:
-        """Adds a new current storage directory."""
-        new_shard = cls(current=True)
-        new_shard.save()
-        return new_shard
-
-    @classmethod
     def get_current_storage(cls) -> StorageShard:
         """Gets the current storage instance.
 
@@ -164,6 +153,13 @@ class StorageShard(models.Model):
             storage_entry = cls._add_shard()
             logger.info("Successfully created first storage directory.")
         return storage_entry
+
+    @classmethod
+    def _add_shard(cls) -> StorageShard:
+        """Adds a new current storage directory."""
+        new_shard = cls(current=True)
+        new_shard.save()
+        return new_shard
 
     @classmethod
     def healthcheck(cls) -> bool:

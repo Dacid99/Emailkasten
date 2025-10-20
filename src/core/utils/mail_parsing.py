@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -159,6 +159,25 @@ def parse_mailbox_name(mailbox_bytes: bytes) -> str:
         .rsplit('"/"', maxsplit=1)[-1]
         .strip()
     )
+
+
+def find_best_href_in_header(header: str) -> str:
+    """Finds the best href in a header of hrefs.
+
+    The href is selected via the logic: https > http > ...
+
+    Returns:
+        The best hyperref.
+        The empty string if header is empty.
+    """
+    href_options = [part.strip().lstrip("<").rstrip(">") for part in header.split(",")]
+    for option in href_options:
+        if option.startswith("https"):
+            return option
+    for option in href_options:
+        if option.startswith("http"):
+            return option
+    return href_options[0]
 
 
 def is_x_spam(x_spam_header: str | None) -> bool:

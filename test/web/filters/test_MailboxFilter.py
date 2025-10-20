@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -31,12 +31,12 @@ from .conftest import (
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("searched_field", ["name"])
-def test_text_search_filter(faker, mailbox_queryset, searched_field):
+def test_search_filter(faker, mailbox_queryset, searched_field):
     """Tests :class:`web.filters.MailboxFilterSet`'s search filtering."""
     target_text = faker.sentence()
     target_id = faker.random.randint(0, len(mailbox_queryset) - 1)
     mailbox_queryset.filter(id=target_id).update(**{searched_field: target_text})
-    query = {"text_search": target_text[2:10]}
+    query = {"search": target_text[2:10]}
 
     filtered_data = MailboxFilterSet(query, queryset=mailbox_queryset).qs
 

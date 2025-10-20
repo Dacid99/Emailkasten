@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -23,15 +23,19 @@ from __future__ import annotations
 import poplib
 from typing import TYPE_CHECKING, override
 
-from ...constants import EmailFetchingCriterionChoices, EmailProtocolChoices
+from django.utils.translation import gettext_lazy as _
+
+from core.constants import EmailFetchingCriterionChoices, EmailProtocolChoices
+
 from .BaseFetcher import BaseFetcher
 from .exceptions import FetcherError, MailAccountError
 from .SafePOPMixin import SafePOPMixin
 
 
 if TYPE_CHECKING:
-    from ...models.Account import Account
-    from ...models.Mailbox import Mailbox
+    from core.models.Account import Account
+    from core.models.Email import Email
+    from core.models.Mailbox import Mailbox
 
 
 class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
@@ -88,13 +92,8 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
             else:
                 self._mail_client = poplib.POP3(host=mail_host)
         except Exception as error:
-            self.logger.exception(
-                "A POP error occurred connecting to %s!",
-                self.account,
-            )
-            raise MailAccountError(
-                f"An {error.__class__.__name__}: {error} occurred connecting to {self.account}!"
-            ) from error
+            self.logger.exception("Error connecting to %s!", self.account)
+            raise MailAccountError(error, _("connecting")) from error
         self.logger.info("Successfully connected to %s.", self.account)
 
     @override
@@ -183,6 +182,21 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
             The name of the mailbox in the account in a list.
         """
         return ["INBOX"]
+
+    @override
+    def restore(self, email: Email) -> None:
+        """Places an email in its mailbox.
+
+        Note:
+            POP doesn't offer an action to upload emails.
+
+        Args:
+            email: The email to restore.
+
+        Raises:
+            NotImplementedError: POP can't restore emails.
+        """
+        raise NotImplementedError("Restoring to POP account is not possible.")
 
     @override
     def close(self) -> None:

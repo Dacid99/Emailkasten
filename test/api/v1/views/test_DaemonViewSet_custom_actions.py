@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,6 @@
 
 from __future__ import annotations
 
-import os
-
 import pytest
 from rest_framework import status
 
@@ -30,23 +28,15 @@ from api.v1.views import DaemonViewSet
 
 @pytest.fixture
 def mock_open(mocker, fake_file_bytes):
-    """Fixture to mock the builtin :func:`open`."""
+    """Patches the builtin :func:`open` to return random bytes."""
     mock_open = mocker.mock_open(read_data=fake_file_bytes)
     mocker.patch("api.v1.views.DaemonViewSet.open", mock_open)
     return mock_open
 
 
 @pytest.fixture
-def mock_os_path_exists(mocker):
-    return mocker.patch(
-        "api.v1.views.DaemonViewSet.os.path.exists",
-        autospec=True,
-        return_value=True,
-    )
-
-
-@pytest.fixture
 def mock_Daemon_test(mocker):
+    """Patches `core.models.Daemon.test`."""
     return mocker.patch("api.v1.views.DaemonViewSet.Daemon.test", autospec=True)
 
 
@@ -65,7 +55,7 @@ def test_test_noauth(
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert "daemon" not in response.data
+    assert "data" not in response.data
     mock_Daemon_test.assert_not_called()
 
 
@@ -84,7 +74,7 @@ def test_test_auth_other(
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert "daemon" not in response.data
+    assert "data" not in response.data
     mock_Daemon_test.assert_not_called()
 
 
@@ -105,7 +95,7 @@ def test_test_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert response.data["result"] is True
     mock_Daemon_test.assert_called_once_with(fake_daemon)
 
@@ -129,7 +119,7 @@ def test_test_failure_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert response.data["result"] is False
     assert response.data["error"] == str(mock_Daemon_test.side_effect)
     mock_Daemon_test.assert_called_once_with(fake_daemon)
@@ -156,7 +146,7 @@ def test_start_noauth(
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_daemon.refresh_from_db()
     assert fake_daemon.celery_task.enabled is False
-    assert "daemon" not in response.data
+    assert "data" not in response.data
 
 
 @pytest.mark.django_db
@@ -180,7 +170,7 @@ def test_start_auth_other(
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_daemon.refresh_from_db()
     assert fake_daemon.celery_task.enabled is False
-    assert "daemon" not in response.data
+    assert "data" not in response.data
 
 
 @pytest.mark.django_db
@@ -203,7 +193,7 @@ def test_start_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert fake_daemon.celery_task.enabled is True
 
 
@@ -224,7 +214,7 @@ def test_start_failure_auth_owner(
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert fake_daemon.celery_task.enabled is True
 
 
@@ -246,7 +236,7 @@ def test_stop_noauth(
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_daemon.refresh_from_db()
     assert fake_daemon.celery_task.enabled is True
-    assert "daemon" not in response.data
+    assert "data" not in response.data
 
 
 @pytest.mark.django_db
@@ -267,7 +257,7 @@ def test_stop_auth_other(
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_daemon.refresh_from_db()
     assert fake_daemon.celery_task.enabled is True
-    assert "daemon" not in response.data
+    assert "data" not in response.data
 
 
 @pytest.mark.django_db
@@ -287,7 +277,7 @@ def test_stop_success_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert fake_daemon.celery_task.enabled is False
 
 
@@ -311,5 +301,5 @@ def test_stop_failure_auth_owner(
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     fake_daemon.refresh_from_db()
-    assert response.data["daemon"] == DaemonViewSet.serializer_class(fake_daemon).data
+    assert response.data["data"] == DaemonViewSet.serializer_class(fake_daemon).data
     assert fake_daemon.celery_task.enabled is False

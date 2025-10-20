@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-22 09:37+0000\n"
-"PO-Revision-Date: 2025-08-15 10:02+0000\n"
-"Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
+"POT-Creation-Date: 2025-09-29 21:34+0000\n"
+"PO-Revision-Date: 2025-09-11 18:01+0000\n"
+"Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/api/"
 "de/>\n"
 "Language: de\n"
@@ -17,154 +17,189 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13\n"
+"X-Generator: Weblate 5.14-dev\n"
 
-#: src/api/v1/mixins/NoCreateMixin.py:34
-msgid "POST method is not allowed on this endpoint."
-msgstr "POST ist an diesem Endpoint nicht erlaubt."
-
-#: src/api/v1/mixins/ToggleFavoriteMixin.py:60
+#: src/api/v1/mixins/ToggleFavoriteMixin.py:71
 #, python-format
 msgid "%(object)s marked as favorite."
 msgstr "%(object)s als Favorit markiert."
 
-#: src/api/v1/mixins/ToggleFavoriteMixin.py:62
+#: src/api/v1/mixins/ToggleFavoriteMixin.py:73
 #, python-format
 msgid "%(object)s unmarked as favorite."
 msgstr "%(object)s nicht mehr als Favorit markiert."
 
-#: src/api/v1/views/AccountViewSet.py:110
+#: src/api/v1/views/AccountViewSet.py:142
 msgid "An error with the mailaccount occurred."
 msgstr "Ein Fehler mit dem Konto ist aufgetreten."
 
-#: src/api/v1/views/AccountViewSet.py:116
+#: src/api/v1/views/AccountViewSet.py:148
 msgid "Updated mailboxes"
-msgstr "Mailboxen aktualisiert"
+msgstr "Postfächer aktualisiert"
 
-#: src/api/v1/views/AccountViewSet.py:140
+#: src/api/v1/views/AccountViewSet.py:172
 msgid "Tested mailaccount"
 msgstr "Konto getestet"
 
-#: src/api/v1/views/AttachmentViewSet.py:117
-#: src/api/v1/views/AttachmentViewSet.py:208
+#: src/api/v1/views/AttachmentViewSet.py:187
+#: src/api/v1/views/AttachmentViewSet.py:273
+#: src/api/v1/views/AttachmentViewSet.py:304
+#: src/api/v1/views/AttachmentViewSet.py:346
 msgid "Attachment file not found"
 msgstr "Anhang-Datei nicht gefunden"
 
-#: src/api/v1/views/AttachmentViewSet.py:154
-msgid "Attachment ids missing in request."
-msgstr "Anhangs-IDs fehlen in der Anfrage."
+#: src/api/v1/views/AttachmentViewSet.py:215
+msgid "Attachment ids are required."
+msgstr "Anhangs-IDs werden benötigt."
 
-#: src/api/v1/views/AttachmentViewSet.py:163
-#, fuzzy
-#| msgid "Attachment ids missing in request."
+#: src/api/v1/views/AttachmentViewSet.py:223
 msgid "Attachment ids given in invalid format."
-msgstr "Anhangs-IDs fehlen in der Anfrage."
+msgstr "Anhang-IDs in ungültigem Format angegeben."
 
-#: src/api/v1/views/AttachmentViewSet.py:171
+#: src/api/v1/views/AttachmentViewSet.py:230
 msgid "No attachments found"
 msgstr "Keine Anhänge gefunden"
 
-#: src/api/v1/views/CorrespondentViewSet.py:168
-#, fuzzy
-#| msgid "Attachment ids missing in request."
-msgid "Correspondent ids missing in request."
-msgstr "Anhangs-IDs fehlen in der Anfrage."
+#. Translators: Paperless is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:309
+msgid "Upload to Paperless failed."
+msgstr "Hochladen zu Paperless fehlgeschlagen."
 
-#: src/api/v1/views/CorrespondentViewSet.py:177
+#. Translators: Paperless is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:315
+msgid "Uploaded attachment document to Paperless."
+msgstr "Anhangsdokument zu Paperless hochgeladen."
+
+#. Translators: Immich is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:351
+#, fuzzy
+#| msgid "Upload to Paperless failed."
+msgid "Upload to Immich failed."
+msgstr "Hochladen zu Paperless fehlgeschlagen."
+
+#. Translators: Immich is a brand name.
+#: src/api/v1/views/AttachmentViewSet.py:357
+#, fuzzy
+#| msgid "Uploaded attachment document to Paperless."
+msgid "Uploaded attachment document to Immich."
+msgstr "Anhangsdokument zu Paperless hochgeladen."
+
+#: src/api/v1/views/CorrespondentViewSet.py:210
+msgid "Correspondent ids are required."
+msgstr "Korrespondenten-IDs werden benötigt."
+
+#: src/api/v1/views/CorrespondentViewSet.py:217
 msgid "Correspondent ids given in invalid format."
-msgstr ""
+msgstr "Die angegebenen Korrespondenten-IDs haben ein ungültiges Format."
 
-#: src/api/v1/views/CorrespondentViewSet.py:185
-#, fuzzy
-#| msgid "No attachments found"
+#: src/api/v1/views/CorrespondentViewSet.py:224
 msgid "No correspondents found"
-msgstr "Keine Anhänge gefunden"
+msgstr "Keine Korrespondenten gefunden"
 
-#: src/api/v1/views/DaemonViewSet.py:107
-msgid "Tested daemon"
-msgstr "Daemon getestet"
-
-#: src/api/v1/views/DaemonViewSet.py:137
-msgid "Daemon started"
-msgstr "Daemon gestartet"
-
-#: src/api/v1/views/DaemonViewSet.py:140
-msgid "Daemon is already running"
-msgstr "Daemon war bereits aktiviert"
-
-#: src/api/v1/views/DaemonViewSet.py:167
-msgid "Daemon stopped"
-msgstr "Daemon gestoppt"
-
-#: src/api/v1/views/DaemonViewSet.py:170
-msgid "Daemon not running"
-msgstr "Daemon nicht aktiv"
-
-#: src/api/v1/views/EmailViewSet.py:135
-msgid "eml file not found"
-msgstr "eml-Datei nicht gefunden"
-
-#: src/api/v1/views/EmailViewSet.py:175 src/api/v1/views/MailboxViewSet.py:226
-msgid "File format missing in request."
-msgstr "Dateiformat fehlt in der Anfrage."
-
-#: src/api/v1/views/EmailViewSet.py:181
-msgid "Email ids missing in request."
-msgstr "E-Mail-IDs fehlen in der Anfrage."
-
-#: src/api/v1/views/EmailViewSet.py:190
+#. Translators: Nextcloud is a brand name.
+#: src/api/v1/views/CorrespondentViewSet.py:258
 #, fuzzy
-#| msgid "Email ids missing in request."
-msgid "Email ids given in invalid format."
-msgstr "E-Mail-IDs fehlen in der Anfrage."
+#| msgid "Upload to Paperless failed."
+msgid "Upload to Nextcloud failed."
+msgstr "Hochladen zu Paperless fehlgeschlagen."
 
-#: src/api/v1/views/EmailViewSet.py:200 src/api/v1/views/MailboxViewSet.py:235
-#: src/api/v1/views/MailboxViewSet.py:272
+#. Translators: Nextcloud is a brand name.
+#: src/api/v1/views/CorrespondentViewSet.py:264
+#, fuzzy
+#| msgid "No correspondents found"
+msgid "Uploaded correspondent to Nextcloud."
+msgstr "Keine Korrespondenten gefunden"
+
+#: src/api/v1/views/DaemonViewSet.py:138
+msgid "Tested routine"
+msgstr "Routine getestet"
+
+#: src/api/v1/views/DaemonViewSet.py:171
+msgid "Routine started"
+msgstr "Routine gestartet"
+
+#: src/api/v1/views/DaemonViewSet.py:174
+msgid "Routine is already running"
+msgstr "Routine war bereits aktiviert"
+
+#: src/api/v1/views/DaemonViewSet.py:201
+msgid "Routine stopped"
+msgstr "Routine gestoppt"
+
+#: src/api/v1/views/DaemonViewSet.py:204
+msgid "Routine not running"
+msgstr "Routine nicht aktiv"
+
+#: src/api/v1/views/EmailViewSet.py:216 src/api/v1/views/EmailViewSet.py:374
+msgid "eml file not found."
+msgstr "eml-Datei nicht gefunden."
+
+#: src/api/v1/views/EmailViewSet.py:247 src/api/v1/views/MailboxViewSet.py:306
+msgid "File format is required."
+msgstr "Dateiformat wird benötigt."
+
+#: src/api/v1/views/EmailViewSet.py:252
+msgid "Email ids are required."
+msgstr "E-Mail-IDs werden benötigt."
+
+#: src/api/v1/views/EmailViewSet.py:260
+msgid "Email ids given in invalid format."
+msgstr "E-Mail-IDs in ungültigem Format angegeben."
+
+#: src/api/v1/views/EmailViewSet.py:269 src/api/v1/views/MailboxViewSet.py:314
 #, python-format
 msgid "File format %(file_format)s is not supported."
 msgstr "Dateiformat %(file_format)s wird nicht unterstützt."
 
-#: src/api/v1/views/EmailViewSet.py:206
+#: src/api/v1/views/EmailViewSet.py:274
 msgid "No emails found"
 msgstr "Keine E-Mails gefunden"
 
-#: src/api/v1/views/MailboxViewSet.py:109
-msgid "Tested mailbox"
-msgstr "Mailbox getestet"
+#: src/api/v1/views/EmailViewSet.py:370
+msgid "POP accounts do not support restoring of emails."
+msgstr "POP Konten unterstützen das Wiederherstellen von E-Mails nicht."
 
-#: src/api/v1/views/MailboxViewSet.py:170
+#: src/api/v1/views/EmailViewSet.py:378
+msgid "Restoring of email to mailbox failed."
+msgstr "Wiederherstellen der E-Mail im Postfach fehlgeschlagen."
+
+#: src/api/v1/views/EmailViewSet.py:383
+msgid "Email successfully restored to mailbox."
+msgstr "E-Mail wurde erfolgreich im Postfach wiederhergestellt."
+
+#: src/api/v1/views/EmailViewSet.py:406
 #, fuzzy
-#| msgid "File missing in request."
-msgid "Fetching criterion missing in request."
-msgstr "Datei fehlt in der Anfrage."
+#| msgid "Email successfully restored to mailbox."
+msgid "Email successfully reprocessed."
+msgstr "E-Mail wurde erfolgreich im Postfach wiederhergestellt."
 
-#: src/api/v1/views/MailboxViewSet.py:177
-msgid "The given fetching criterion is not available for this mailbox."
+#: src/api/v1/views/MailboxViewSet.py:190
+msgid "Tested mailbox"
+msgstr "Postfach getestet"
+
+#: src/api/v1/views/MailboxViewSet.py:251
+msgid "Fetching criterion is required."
+msgstr "Abrufkriterium wird benötigt."
+
+#: src/api/v1/views/MailboxViewSet.py:257
+#, python-format
+msgid "The given criterion %(criterion)s is not available for this mailbox."
 msgstr ""
+"Das angegebene Abrufkriterium %(criterion)s ist für dieses Postfach nicht "
+"verfügbar."
 
-#: src/api/v1/views/MailboxViewSet.py:187
+#: src/api/v1/views/MailboxViewSet.py:267
 msgid "Error with mailaccount or mailbox occurred."
-msgstr "Fehler mit Konto oder Mailbox ist aufgetreten."
+msgstr "Fehler mit Konto oder Postfach aufgetreten."
 
-#: src/api/v1/views/MailboxViewSet.py:193
+#: src/api/v1/views/MailboxViewSet.py:273
 msgid "All emails fetched."
 msgstr "Alle E-Mails abgerufen."
 
-#: src/api/v1/views/MailboxViewSet.py:241
+#: src/api/v1/views/MailboxViewSet.py:319
 msgid "No emails found."
 msgstr "Keine E-Mails gefunden."
 
-#: src/api/v1/views/MailboxViewSet.py:280
-msgid "File missing in request."
-msgstr "Datei fehlt in der Anfrage."
-
-#: src/api/v1/views/MailboxViewSet.py:289
-msgid "An error occurred while processing the file."
-msgstr "Ein Fehler beim Verarbeiten der Datei ist aufgetreten."
-
-#: src/api/v1/views/MailboxViewSet.py:297
+#: src/api/v1/views/MailboxViewSet.py:362
 msgid "Successfully uploaded mailbox file."
 msgstr "Mailbox-Datei erfolgreich hochgeladen."
-
-#~ msgid "Logfile not found"
-#~ msgstr "Protokolldatei nicht gefunden"

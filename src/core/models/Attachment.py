@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -20,25 +20,40 @@
 
 from __future__ import annotations
 
-import contextlib
 import logging
 import os
 from functools import cached_property
 from hashlib import md5
-from io import BytesIO
 from tempfile import NamedTemporaryFile
 from typing import TYPE_CHECKING, Any, override
 from zipfile import ZipFile
 
-from django.core.files.storage import default_storage
+import httpcore
+import httpx
 from django.db import models
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
+from rest_framework import status
 
+from core.constants import (
+    HTML_SUPPORTED_AUDIO_TYPE,
+    HTML_SUPPORTED_VIDEO_TYPES,
+    IMMICH_SUPPORTED_APPLICATION_TYPES,
+    IMMICH_SUPPORTED_IMAGE_TYPES,
+    IMMICH_SUPPORTED_VIDEO_TYPES,
+    PAPERLESS_SUPPORTED_IMAGE_TYPES,
+    PAPERLESS_TIKA_SUPPORTED_MIMETYPES,
+    HeaderFields,
+)
+from core.mixins import (
+    DownloadMixin,
+    FavoriteModelMixin,
+    FilePathModelMixin,
+    ThumbnailMixin,
+    TimestampModelMixin,
+    URLMixin,
+)
 from Emailkasten.utils.workarounds import get_config
-
-from ..constants import HeaderFields
-from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
 
 
 if TYPE_CHECKING:
@@ -54,31 +69,36 @@ logger = logging.getLogger(__name__)
 
 
 class Attachment(
-    HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models.Model
+    DownloadMixin,
+    ThumbnailMixin,
+    URLMixin,
+    FavoriteModelMixin,
+    FilePathModelMixin,
+    TimestampModelMixin,
+    models.Model,
 ):
     """Database model for an attachment file in a mail."""
 
+    BASENAME = "attachment"
+
+    DELETE_NOTICE = _("This will only delete this attachment, not the email.")
+
+    DELETE_NOTICE_PLURAL = _(
+        "This will only delete these attachments, not their emails."
+    )
+
     file_name = models.CharField(
         max_length=255,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("filename"),
     )
     """The filename of the attachment."""
-
-    file_path = models.CharField(
-        max_length=255,
-        unique=True,
-        blank=True,
-        null=True,
-        verbose_name=_("filepath"),
-    )
-    """The path in the storage where the attachment is stored. Unique together with :attr:`email`.
-    Can be null if the attachment has not been saved (null does not collide with the unique constraint.).
-    When this entry is deleted, the file will be removed by :func:`core.signals.delete_Attachment.post_delete_attachment`."""
 
     content_disposition = models.CharField(
         blank=True,
         default="",
         max_length=255,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("content disposition"),
     )
     """The disposition of the file. Typically 'attachment', 'inline' or ''."""
@@ -86,6 +106,7 @@ class Attachment(
     content_id = models.CharField(
         max_length=255,
         default="",
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("content ID"),
     )
     """The MIME subtype of the file."""
@@ -93,6 +114,7 @@ class Attachment(
     content_maintype = models.CharField(
         max_length=255,
         default="",
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("content maintype"),
     )
     """The MIME maintype of the file."""
@@ -100,50 +122,36 @@ class Attachment(
     content_subtype = models.CharField(
         max_length=255,
         default="",
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("content subtype"),
     )
     """The MIME subtype of the file."""
 
     datasize = models.PositiveIntegerField(
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("datasize"),
     )
     """The filesize of the attachment."""
-
-    is_favorite = models.BooleanField(
-        default=False,
-        verbose_name=_("favorite"),
-    )
-    """Flags favorite attachments. False by default."""
 
     email: models.ForeignKey[Email] = models.ForeignKey(
         "Email",
         related_name="attachments",
         on_delete=models.CASCADE,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("email"),
     )
     """The mail that the attachment was found in.  Deletion of that `email` deletes this attachment."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
-
-    BASENAME = "attachment"
-
-    DELETE_NOTICE = _("This will only delete this attachment, not the email.")
 
     class Meta:
         """Metadata class for the model."""
 
         db_table = "attachments"
         """The name of the database table for the attachments."""
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name = _("attachment")
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name_plural = _("attachments")
+        get_latest_by = "email__datetime"
 
     @override
     def __str__(self) -> str:
@@ -164,72 +172,261 @@ class Attachment(
         Saves the data to storage if configured.
         """
         self.file_name = get_valid_filename(self.file_name)
-        attachment_payload = kwargs.pop("attachment_payload", None)
+        if not self.email.mailbox.save_attachments:
+            kwargs.pop("file_payload", None)
         super().save(*args, **kwargs)
-        if attachment_payload is not None and self.email.mailbox.save_attachments:
-            self.save_to_storage(attachment_payload)
 
-    def save_to_storage(self, attachment_payload: bytes) -> None:
-        """Saves the attachment file to the storage.
+    @override
+    def _get_storage_file_name(self) -> str:
+        """Create the filename for the stored attachment."""
+        return str(self.pk) + "_" + self.file_name
 
-        If the file already exists, does not overwrite.
+    def share_to_paperless(self) -> str:
+        """Sends this attachment to the Paperless server of its user.
 
-        Args:
-            attachment_payload: The data of the attachment to be saved.
+        Returns:
+            The uuid string of the Paperless consumer task for the document.
+
+        Raises:
+            FileNotFoundError: If the attachment file was not found in the storage.
+            RuntimeError: If the users Paperless URL is not or improperly set.
+            ConnectionError: If connecting to Paperless failed.
+            PermissionError: If authentication to Paperless failed.
+            ValueError: If uploading the file to Paperless resulted in a bad response.
         """
-        if self.file_path:
-            logger.debug("%s is already stored.", self)
-            return
-
-        logger.debug("Storing %s ...", self)
-
-        self.file_path = default_storage.save(
-            str(self.pk) + "_" + self.file_name,
-            BytesIO(attachment_payload),
+        paperless_baseurl = (
+            self.email.mailbox.account.user.profile.paperless_url.rstrip("/")
         )
-        self.save(update_fields=["file_path"])
-        logger.debug("Successfully stored attachment.")
+        logger.debug(
+            "Sending %s to Paperless server at %s ...", str(self), paperless_baseurl
+        )
+        post_document_url = paperless_baseurl + "/api/documents/post_document/"
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"Token {self.email.mailbox.account.user.profile.paperless_api_key}".strip(),
+        }  # stripping the entire string to create a valid header even if the token is empty
+        try:
+            with self.open_file() as document:
+                response = httpx.post(
+                    post_document_url,
+                    headers=headers,
+                    data={"title": self.file_name, "created": str(self.created)},
+                    files={"document": (self.file_name, document, self.content_type)},
+                )
+        except (
+            httpcore.UnsupportedProtocol,
+            httpx.UnsupportedProtocol,
+            httpx.InvalidURL,
+        ) as error:
+            logger.info(
+                "Failed to send attachment to Paperless.",
+                exc_info=True,
+            )
+            raise RuntimeError(
+                # Translators: Paperless is a brand name.
+                _("Paperless URL is malformed: %(error)s")
+                % {"error": error}
+            ) from error
+        except httpx.RequestError as error:
+            logger.info("Failed to send attachment to Paperless.", exc_info=True)
+            raise ConnectionError(
+                # Translators: Paperless is a brand name.
+                _("Error connecting to the Paperless server: %(error)s")
+                % {"error": error}
+            ) from error
+        try:
+            response.raise_for_status()
+        except httpx.HTTPStatusError as error:
+            logger.info("Failed to send attachment to Paperless.", exc_info=True)
+            if error.response.status_code in [
+                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_403_FORBIDDEN,
+            ]:
+                raise PermissionError(
+                    # Translators: Paperless is a brand name.
+                    _("Authentication to Paperless failed: %(response)s")
+                    % {"response": error.response.json()}
+                ) from error
+            raise ValueError(
+                # Translators: Paperless is a brand name.
+                _("Uploading to Paperless failed: %(response)s")
+                % {"response": error.response.json()}
+            ) from error
+        logger.debug("Successfully sent attachment to Paperless.")
+        return response.json()
+
+    def share_to_immich(self) -> str:
+        """Sends this attachment to the Immich server of its user.
+
+        Returns:
+            The response by Immich with the id string of the stored immich image.
+
+        Raises:
+            FileNotFoundError: If the attachment file was not found in the storage.
+            RuntimeError: If the users Immich URL is not or improperly set.
+            ConnectionError: If connecting to Immich failed.
+            PermissionError: If authentication to Immich failed.
+            ValueError: If uploading the file to Immich resulted in a bad response.
+        """
+        immich_baseurl = self.email.mailbox.account.user.profile.immich_url.rstrip("/")
+        logger.debug("Sending %s to Immich server at %s ...", str(self), immich_baseurl)
+        post_document_url = immich_baseurl + "/api/assets"
+        headers = {
+            "Accept": "application/json",
+            "x-api-key": self.email.mailbox.account.user.profile.immich_api_key.strip(),
+        }
+        try:
+            with self.open_file() as image_file:
+                response = httpx.post(
+                    post_document_url,
+                    headers=headers,
+                    data={
+                        "assetId": self.file_name,
+                        "deviceAssetId": "emailkasten",
+                        "deviceId": "emailkasten",
+                        "fileCreatedAt": str(self.created.date()),
+                        "fileModifiedAt": str(self.created.date()),
+                        "metadata": [],
+                    },
+                    files={
+                        "assetData": (self.file_name, image_file, self.content_type)
+                    },
+                )
+        except (
+            httpcore.UnsupportedProtocol,
+            httpx.UnsupportedProtocol,
+            httpx.InvalidURL,
+        ) as error:
+            logger.info(
+                "Failed to send attachment to Immich.",
+                exc_info=True,
+            )
+            raise RuntimeError(
+                # Translators: Immich is a brand name.
+                _("Immich URL is malformed: %(error)s")
+                % {"error": error}
+            ) from error
+        except httpx.RequestError as error:
+            logger.info("Failed to send attachment to Immich.", exc_info=True)
+            raise ConnectionError(
+                # Translators: Immich is a brand name.
+                _("Error connecting to the Immich server: %(error)s")
+                % {"error": error}
+            ) from error
+        try:
+            response.raise_for_status()
+        except httpx.HTTPStatusError as error:
+            logger.info("Failed to send attachment to Immich.", exc_info=True)
+            if error.response.status_code in [
+                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_403_FORBIDDEN,
+            ]:
+                raise PermissionError(
+                    # Translators: Immich is a brand name.
+                    _("Authentication to Immich failed: %(response)s")
+                    % {"response": error.response.json()}
+                ) from error
+            raise ValueError(
+                # Translators: Immich is a brand name.
+                _("Uploading to Immich failed: %(response)s")
+                % {"response": error.response.json()}
+            ) from error
+        logger.debug("Successfully sent attachment to Immich.")
+        return response.json()
+
+    @override
+    @cached_property
+    def has_thumbnail(self) -> bool:
+        """Whether the attachment has a mimetype that can be embedded into html.
+
+        References:
+            https://stackoverflow.com/questions/51107683/which-mime-types-can-be-displayed-in-browser
+        """
+        return (
+            super().has_thumbnail
+            and not self.email.is_spam
+            and (self.datasize <= get_config("WEB_THUMBNAIL_MAX_DATASIZE"))
+            and (
+                self.content_maintype in ["image", "font"]
+                or (
+                    self.content_maintype == "text"
+                    and not self.content_subtype.endswith("calendar")
+                )
+                or (
+                    self.content_maintype == "audio"
+                    and self.content_subtype in HTML_SUPPORTED_AUDIO_TYPE
+                )
+                or (
+                    self.content_maintype == "video"
+                    and self.content_subtype in HTML_SUPPORTED_VIDEO_TYPES
+                )
+                or (
+                    self.content_maintype == "application"
+                    and (
+                        self.content_subtype in ["pdf", "json"]
+                        or self.content_subtype.endswith(("xml", "script"))
+                    )
+                )
+            )
+        )
 
     @property
     def content_type(self) -> str:
         """Reconstructs the full MIME content type of the attachment.
 
         Returns:
-            The attachments content type.
+            The attachments content type if known, else "".
         """
-        return self.content_maintype + "/" + self.content_subtype
+        if self.content_maintype and self.content_subtype:
+            return self.content_maintype + "/" + self.content_subtype
+        return ""
 
-    @staticmethod
-    def queryset_as_file(queryset: QuerySet[Attachment]) -> _TemporaryFileWrapper:
-        """Processes the files of the emails in the queryset into a temporary file.
+    @property
+    def is_shareable_to_paperless(self) -> bool:
+        """Whether the attachment has a mimetype that can be processed by a paperless server.
 
-        Args:
-            queryset: The email queryset to compile into a file.
-
-        Returns:
-            The temporary file wrapper.
-
-        Raises:
-            Attachment.DoesNotExist: If the :attr:`queryset` is empty.
+        References:
+            https://docs.paperless-ngx.com/faq/#what-file-types-does-paperless-ngx-support
         """
-        if not queryset.exists():
-            raise Attachment.DoesNotExist("The queryset is empty!")
-        tempfile = (
-            NamedTemporaryFile()  # noqa: SIM115  # pylint: disable=consider-using-with
-        )  #  the file must not be closed as it is returned later
-        with ZipFile(tempfile.name, "w") as zipfile:
-            for attachment_item in queryset:
-                if attachment_item.file_path is not None:
-                    with (
-                        zipfile.open(
-                            os.path.basename(attachment_item.file_path), "w"
-                        ) as zipped_file,
-                        contextlib.suppress(FileNotFoundError),
-                    ):
-                        zipped_file.write(
-                            default_storage.open(attachment_item.file_path).read()
-                        )
-        return tempfile
+        return self.file_path is not None and (
+            (self.content_maintype == "text" and self.content_subtype == "plain")
+            or (
+                self.content_maintype == "image"
+                and self.content_subtype in PAPERLESS_SUPPORTED_IMAGE_TYPES
+            )
+            or (
+                self.content_maintype == "application"
+                and (
+                    self.content_subtype == "pdf"
+                    or (
+                        self.email.mailbox.account.user.profile.paperless_tika_enabled
+                        and self.content_subtype in PAPERLESS_TIKA_SUPPORTED_MIMETYPES
+                    )
+                )
+            )
+        )
+
+    @property
+    def is_shareable_to_immich(self) -> bool:
+        """Whether the attachment has a mimetype that can be processed by a Immich server.
+
+        References:
+            https://immich.app/docs/features/supported-formats/
+        """
+        return self.file_path is not None and (
+            (
+                self.content_maintype == "image"
+                and self.content_subtype in IMMICH_SUPPORTED_IMAGE_TYPES
+            )
+            or (
+                self.content_maintype == "video"
+                and self.content_subtype in IMMICH_SUPPORTED_VIDEO_TYPES
+            )
+            or (
+                self.content_maintype == "application"
+                and self.content_subtype in IMMICH_SUPPORTED_APPLICATION_TYPES
+            )
+        )
 
     @classmethod
     def create_from_email_message(
@@ -287,48 +484,40 @@ class Attachment(
                         email=email,
                     )
                     logger.debug("Saving attachment %s to db ...", part.get_filename())
-                    new_attachment.save(attachment_payload=part_payload)
+                    new_attachment.save(file_payload=part_payload)
                     new_attachments.append(new_attachment)
         logger.debug("Successfully parsed and saved attachments.")
         return new_attachments
 
-    @override
-    @property
-    def has_download(self) -> bool:
-        return self.file_path is not None
+    @staticmethod
+    def queryset_as_file(queryset: QuerySet[Attachment]) -> _TemporaryFileWrapper:
+        """Processes the files of the emails in the queryset into a temporary file.
 
-    @override
-    @cached_property
-    def has_thumbnail(self) -> bool:
-        """Whether the attachment has a mimetype that can be embedded into html.
+        Args:
+            queryset: The email queryset to compile into a file.
 
-        References:
-            https://stackoverflow.com/questions/51107683/which-mime-types-can-be-displayed-in-browser
+        Returns:
+            The temporary file wrapper.
+
+        Raises:
+            Attachment.DoesNotExist: If the :attr:`queryset` is empty.
         """
-        return (
-            self.file_path is not None
-            and not self.email.is_spam
-            and (self.datasize <= get_config("WEB_THUMBNAIL_MAX_DATASIZE"))
-            and (
-                self.content_maintype in ["image", "font"]
-                or (
-                    self.content_maintype == "text"
-                    and not self.content_subtype.endswith("calendar")
-                )
-                or (
-                    self.content_maintype == "audio"
-                    and self.content_subtype in ["ogg", "wav", "mpeg", "aac"]
-                )
-                or (
-                    self.content_maintype == "video"
-                    and self.content_subtype in ["ogg", "mp4", "mpeg", "webm", "avi"]
-                )
-                or (
-                    self.content_maintype == "application"
-                    and (
-                        self.content_subtype in ["pdf", "json"]
-                        or self.content_subtype.endswith(("xml", "script"))
-                    )
-                )
-            )
-        )
+        if not queryset.exists():
+            raise Attachment.DoesNotExist("The queryset is empty!")
+        tempfile = (
+            NamedTemporaryFile()  # noqa: SIM115  # pylint: disable=consider-using-with
+        )  #  the file must not be closed as it is returned later
+        with ZipFile(tempfile.name, "w") as zipfile:
+            for attachment_item in queryset:
+                try:
+                    attachment_file = attachment_item.open_file()
+                except FileNotFoundError:
+                    continue
+                with (
+                    attachment_file,
+                    zipfile.open(
+                        os.path.basename(attachment_item.file_path), "w"
+                    ) as zipped_file,
+                ):
+                    zipped_file.write(attachment_file.read())
+        return tempfile

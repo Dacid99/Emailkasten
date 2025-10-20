@@ -7,11 +7,16 @@
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasFilter"
-            aria-controls="offcanvasFilter">{% translate "Show filter options" %}</button>
+            aria-controls="offcanvasFilter">
+        {% translate "Show filter options" %}
+        <i class="fa-solid fa-filter mx-2" aria-hidden="true"></i>
+    </button>
 {% endblock header_bar %}
 
 
 {% block overlay_elements %}
+    {{ block.super }}
+
     <div class="offcanvas offcanvas-start"
          data-bs-scroll="true"
          tabindex="-1"

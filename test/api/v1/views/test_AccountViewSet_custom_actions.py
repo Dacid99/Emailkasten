@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ from core.utils.fetchers.exceptions import MailAccountError
 
 @pytest.fixture
 def mock_Account_update_mailboxes(mocker):
+    """Patches `core.models.Account.update_mailboxes`."""
     return mocker.patch(
         "api.v1.views.AccountViewSet.Account.update_mailboxes", autospec=True
     )
@@ -36,6 +37,7 @@ def mock_Account_update_mailboxes(mocker):
 
 @pytest.fixture
 def mock_Account_test(mocker):
+    """Patches `core.models.Account.test`."""
     return mocker.patch("api.v1.views.AccountViewSet.Account.test", autospec=True)
 
 
@@ -46,7 +48,9 @@ def test_update_mailboxes_noauth(
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with an unauthenticated user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes`
+    action with an unauthenticated user client.
+    """
     response = noauth_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
@@ -65,7 +69,9 @@ def test_update_mailboxes_auth_other(
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated other user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes`
+    action with the authenticated other user client.
+    """
     response = other_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
@@ -84,7 +90,10 @@ def test_update_mailboxes_success_auth_owner(
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated owner user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes`
+    action with the authenticated owner user client
+    in case of success.
+    """
     response = owner_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_UPDATE_MAILBOXES, fake_account
@@ -92,24 +101,26 @@ def test_update_mailboxes_success_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["account"] == AccountViewSet.serializer_class(fake_account).data
-    )
+    assert response.data["data"] == AccountViewSet.serializer_class(fake_account).data
     assert "error" not in response.data
     mock_Account_update_mailboxes.assert_called_once_with(fake_account)
 
 
 @pytest.mark.django_db
 def test_update_mailboxes_failure_auth_owner(
-    faker,
+    fake_error_message,
     fake_account,
     owner_api_client,
     custom_detail_action_url,
     mock_Account_update_mailboxes,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes` action with the authenticated owner user client."""
-    fake_error_message = faker.sentence()
-    mock_Account_update_mailboxes.side_effect = MailAccountError(fake_error_message)
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.update_mailboxes`
+    action with the authenticated owner user client
+    in case of failure.
+    """
+    mock_Account_update_mailboxes.side_effect = MailAccountError(
+        Exception(fake_error_message)
+    )
 
     response = owner_api_client.post(
         custom_detail_action_url(
@@ -118,9 +129,7 @@ def test_update_mailboxes_failure_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert (
-        response.data["account"] == AccountViewSet.serializer_class(fake_account).data
-    )
+    assert response.data["data"] == AccountViewSet.serializer_class(fake_account).data
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
     mock_Account_update_mailboxes.assert_called_once_with(fake_account)
@@ -133,7 +142,9 @@ def test_test_noauth(
     custom_detail_action_url,
     mock_Account_test,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with an unauthenticated user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test`
+    action with an unauthenticated user client.
+    """
     previous_is_healthy = fake_account.is_healthy
 
     response = noauth_api_client.post(
@@ -156,7 +167,9 @@ def test_test_auth_other(
     custom_detail_action_url,
     mock_Account_test,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated other user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test`
+    action with the authenticated other user client.
+    """
 
     previous_is_healthy = fake_account.is_healthy
 
@@ -180,7 +193,10 @@ def test_test_success_auth_owner(
     custom_detail_action_url,
     mock_Account_test,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated owner user client."""
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test`
+    action with the authenticated owner user client
+    in case of success.
+    """
 
     response = owner_api_client.post(
         custom_detail_action_url(
@@ -189,9 +205,7 @@ def test_test_success_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["account"] == AccountViewSet.serializer_class(fake_account).data
-    )
+    assert response.data["data"] == AccountViewSet.serializer_class(fake_account).data
     assert response.data["result"] is True
     assert "error" not in response.data
     mock_Account_test.assert_called_once_with(fake_account)
@@ -199,15 +213,17 @@ def test_test_success_auth_owner(
 
 @pytest.mark.django_db
 def test_test_failure_auth_owner(
-    faker,
+    fake_error_message,
     fake_account,
     owner_api_client,
     custom_detail_action_url,
     mock_Account_test,
 ):
-    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test` action with the authenticated owner user client."""
-    fake_error_message = faker.sentence()
-    mock_Account_test.side_effect = MailAccountError(fake_error_message)
+    """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.test`
+    action with the authenticated owner user client
+    in case of failure.
+    """
+    mock_Account_test.side_effect = MailAccountError(Exception(fake_error_message))
 
     response = owner_api_client.post(
         custom_detail_action_url(
@@ -216,9 +232,7 @@ def test_test_failure_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["account"] == AccountViewSet.serializer_class(fake_account).data
-    )
+    assert response.data["data"] == AccountViewSet.serializer_class(fake_account).data
     assert response.data["result"] is False
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
@@ -227,9 +241,13 @@ def test_test_failure_auth_owner(
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    fake_account, noauth_api_client, custom_detail_action_url
+    faker, fake_account, noauth_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.toggle_favorite` action with an unauthenticated user client."""
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_account.is_favorite = previous_is_favorite
+    fake_account.save(update_fields=["is_favorite"])
+
     response = noauth_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, fake_account
@@ -238,14 +256,18 @@ def test_toggle_favorite_noauth(
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_account.refresh_from_db()
-    assert fake_account.is_favorite is False
+    assert fake_account.is_favorite is previous_is_favorite
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    fake_account, other_api_client, custom_detail_action_url
+    faker, fake_account, other_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.toggle_favorite` action with the authenticated other user client."""
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_account.is_favorite = previous_is_favorite
+    fake_account.save(update_fields=["is_favorite"])
+
     response = other_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, fake_account
@@ -254,14 +276,18 @@ def test_toggle_favorite_auth_other(
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_account.refresh_from_db()
-    assert fake_account.is_favorite is False
+    assert fake_account.is_favorite is previous_is_favorite
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    fake_account, owner_api_client, custom_detail_action_url
+    faker, fake_account, owner_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AccountViewSet.AccountViewSet.toggle_favorite` action with the authenticated owner user client."""
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_account.is_favorite = previous_is_favorite
+    fake_account.save(update_fields=["is_favorite"])
+
     response = owner_api_client.post(
         custom_detail_action_url(
             AccountViewSet, AccountViewSet.URL_NAME_TOGGLE_FAVORITE, fake_account
@@ -270,4 +296,4 @@ def test_toggle_favorite_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_account.refresh_from_db()
-    assert fake_account.is_favorite is True
+    assert fake_account.is_favorite is not previous_is_favorite

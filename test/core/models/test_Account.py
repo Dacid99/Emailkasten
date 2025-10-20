@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
 
 import pytest
 from django.db import IntegrityError
@@ -41,27 +40,15 @@ from core.utils.fetchers import (
 from core.utils.fetchers.exceptions import MailAccountError
 
 
-if TYPE_CHECKING:
-    from unittest.mock import MagicMock
-
-
 @pytest.fixture(autouse=True)
-def mock_logger(mocker) -> MagicMock:
-    """Mocks the :attr:`core.models.Account.logger`.
-
-    Returns:
-        The mocked logger instance.
-    """
+def mock_logger(mocker):
+    """The mocked :attr:`core.models.Account.logger`."""
     return mocker.patch("core.models.Account.logger", autospec=True)
 
 
 @pytest.fixture
-def mock_fetcher(mocker, faker) -> MagicMock:
-    """Fixture mocking a :class:`core.utils.fetchers.BaseFetcher.BaseFetcher` instance.
-
-    Returns:
-        The mocked fetcher instance.
-    """
+def mock_fetcher(mocker, faker):
+    """A mock :class:`core.utils.fetchers.BaseFetcher.BaseFetcher` instance."""
     mock_fetcher = mocker.MagicMock(spec=BaseFetcher)
     mock_fetcher.__enter__.return_value = mock_fetcher
     mock_fetcher.fetch_emails.return_value = [text.encode() for text in faker.texts()]
@@ -72,12 +59,8 @@ def mock_fetcher(mocker, faker) -> MagicMock:
 
 
 @pytest.fixture
-def mock_Account_get_fetcher(mocker, mock_fetcher) -> MagicMock:
-    """Fixture mocking a :func:`core.models.Account.Account.get_fetcher`.
-
-    Returns:
-        The mocked function.
-    """
+def mock_Account_get_fetcher(mocker, mock_fetcher):
+    """Mocked :func:`core.models.Account.Account.get_fetcher` method."""
     return mocker.patch(
         "core.models.Account.Account.get_fetcher",
         autospec=True,
@@ -87,11 +70,7 @@ def mock_Account_get_fetcher(mocker, mock_fetcher) -> MagicMock:
 
 @pytest.fixture
 def spy_Mailbox_create_from_data(mocker):
-    """Fixture spying on :func:`core.models.Account.Mailbox.create_from_data` instance.
-
-    Returns:
-        The spied on function.
-    """
+    """Spy for the :func:`core.models.Account.Mailbox.create_from_data` method."""
     return mocker.spy(Mailbox, "create_from_data")
 
 
@@ -210,7 +189,7 @@ def test_Account_get_fetcher_bad_protocol(mock_logger, fake_account):
     fake_account.save(update_fields=["is_healthy"])
     fake_account.protocol = "OTHER"
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="OTHER"):
         fake_account.get_fetcher()
 
     fake_account.refresh_from_db()
@@ -239,7 +218,7 @@ def test_Account_get_fetcher_init_failure(
     fake_account.save(update_fields=["is_healthy"])
     mocker.patch(
         f"core.models.Account.{expected_fetcher_class.__name__}.__init__",
-        side_effect=MailAccountError,
+        side_effect=MailAccountError(Exception()),
     )
     fake_account.protocol = protocol
 
@@ -285,7 +264,7 @@ def test_Account_get_fetcher_class_bad_protocol(fake_account, mock_logger):
     fake_account.protocol = "OTHER"
     fake_account.save(update_fields=["is_healthy"])
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="OTHER"):
         fake_account.get_fetcher_class()
 
     fake_account.refresh_from_db()
@@ -315,14 +294,18 @@ def test_Account_test_success(
 
 @pytest.mark.django_db
 def test_Account_test_bad_protocol(
-    fake_account, mock_logger, mock_fetcher, mock_Account_get_fetcher
+    fake_error_message,
+    fake_account,
+    mock_logger,
+    mock_fetcher,
+    mock_Account_get_fetcher,
 ):
     """Tests :func:`core.models.Account.Account.test`
     in case of the account has a bad :attr:`core.models.Account.Account.protocol` field and raises a :class:`ValueError`.
     """
-    mock_Account_get_fetcher.side_effect = ValueError
+    mock_Account_get_fetcher.side_effect = ValueError(fake_error_message)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=fake_error_message):
         fake_account.test()
 
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
@@ -337,7 +320,7 @@ def test_Account_test_failure(
     """Tests :func:`core.models.Account.Account.test`
     in case of the test fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_fetcher.test.side_effect = MailAccountError
+    mock_fetcher.test.side_effect = MailAccountError(Exception())
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
 
@@ -359,7 +342,7 @@ def test_Account_test_get_fetcher_error(
     in case the :func:`core.models.Account.Account.get_fetcher`
     raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_Account_get_fetcher.side_effect = MailAccountError
+    mock_Account_get_fetcher.side_effect = MailAccountError(Exception())
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
 
@@ -443,7 +426,7 @@ def test_Account_update_mailboxes_failure(
     """Tests :func:`core.models.Account.Account.update_mailboxes`
     in case fetching mailboxes fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_fetcher.fetch_mailboxes.side_effect = MailAccountError
+    mock_fetcher.fetch_mailboxes.side_effect = MailAccountError(Exception())
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
 
@@ -471,7 +454,7 @@ def test_Account_update_mailboxes_get_fetcher_error(
     in case :func:`core.models.Account.Account.get_fetcher`
     fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_Account_get_fetcher.side_effect = MailAccountError
+    mock_Account_get_fetcher.side_effect = MailAccountError(Exception())
     fake_account.is_healthy = True
     fake_account.save(update_fields=["is_healthy"])
 

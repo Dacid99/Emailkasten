@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -23,10 +23,10 @@ from __future__ import annotations
 import datetime
 import mailbox
 import os
+import re
 import shutil
 from io import BytesIO
 from tempfile import NamedTemporaryFile, TemporaryDirectory, gettempdir
-from typing import TYPE_CHECKING
 from zipfile import ZipFile
 
 import pytest
@@ -55,22 +55,15 @@ from test.conftest import TEST_EMAIL_PARAMETERS
 from .test_Account import mock_Account_get_fetcher, mock_fetcher
 
 
-if TYPE_CHECKING:
-    from unittest.mock import MagicMock
-
-
 @pytest.fixture(autouse=True)
-def mock_logger(mocker) -> MagicMock:
-    """Mocks :attr:`core.models.Mailbox.logger`.
-
-    Returns:
-        The mocked logger instance.
-    """
+def mock_logger(mocker):
+    """The mocked :attr:`core.models.Mailbox.logger`."""
     return mocker.patch("core.models.Mailbox.logger", autospec=True)
 
 
 @pytest.fixture
 def mock_parse_mailbox_name(mocker, faker):
+    """Patches `core.utils.mail_parsing.parse_mailbox_name`."""
     fake_name = faker.name()
     return mocker.patch(
         "core.models.Mailbox.parse_mailbox_name",
@@ -81,6 +74,7 @@ def mock_parse_mailbox_name(mocker, faker):
 
 @pytest.fixture
 def mock_Email_create_from_email_bytes(mocker):
+    """Patches `core.models.Email.create_from_email_bytes`."""
     return mocker.patch(
         "core.models.Email.Email.create_from_email_bytes", autospec=True
     )
@@ -93,8 +87,8 @@ def test_Mailbox_fields(fake_mailbox):
     assert fake_mailbox.name is not None
     assert fake_mailbox.account is not None
     assert isinstance(fake_mailbox.account, Account)
-    assert fake_mailbox.save_attachments is get_config("DEFAULT_SAVE_ATTACHMENTS")
-    assert fake_mailbox.save_to_eml is get_config("DEFAULT_SAVE_TO_EML")
+    assert fake_mailbox.save_attachments is True
+    assert fake_mailbox.save_to_eml is True
     assert fake_mailbox.is_favorite is False
     assert fake_mailbox.is_healthy is None
     assert isinstance(fake_mailbox.updated, datetime.datetime)
@@ -157,9 +151,7 @@ def test_Mailbox_get_available_fetching_criteria(
 ):
     """Tests :func:`core.models.Mailbox.Mailbox.get_available_fetching_criteria`.
 
-    Args:
-        protocol: The protocol parameter.
-        expected_fetching_criteria: The expected fetching_criteria result parameter.
+    expected_fetching_criteria: The expected fetching_criteria result parameter.
     """
 
     fake_mailbox.account.protocol = protocol
@@ -183,9 +175,7 @@ def test_Mailbox_get_available_fetching_criterion_choices(
 ):
     """Tests :func:`core.models.Mailbox.Mailbox.get_available_fetching_criteria`.
 
-    Args:
-        protocol: The protocol parameter.
-        expected_fetching_criteria: The expected fetching_criteria result parameter.
+    expected_fetching_criteria: The expected fetching_criteria result parameter.
     """
 
     fake_mailbox.account.protocol = protocol
@@ -225,9 +215,9 @@ def test_Mailbox_test_bad_protocol(
     in case the account of the mailbox has a bad :attr:`core.models.Account.Account.protocol` field
     and thus get_fetcher raises a :class:`ValueError`.
     """
-    mock_Account_get_fetcher.side_effect = ValueError
+    mock_Account_get_fetcher.side_effect = ValueError("Bad protocol OTHER")
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="OTHER"):
         fake_mailbox.test()
 
     mock_Account_get_fetcher.assert_called_once_with(fake_mailbox.account)
@@ -247,7 +237,7 @@ def test_Mailbox_test_failure(
     """Tests :func:`core.models.Mailbox.Mailbox.test`
     in case the test fails with a :class:`core.utils.fetchers.exceptions.FetcherError`.
     """
-    mock_fetcher.test.side_effect = test_side_effect
+    mock_fetcher.test.side_effect = test_side_effect(Exception())
     fake_mailbox.is_healthy = True
     fake_mailbox.save(update_fields=["is_healthy"])
 
@@ -272,7 +262,7 @@ def test_Mailbox_test_get_fetcher_error(
     raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     In that case the account should not be flagged, as that is already done in get_fetcher itself.
     """
-    mock_Account_get_fetcher.side_effect = MailAccountError
+    mock_Account_get_fetcher.side_effect = MailAccountError(Exception())
     fake_mailbox.is_healthy = True
     fake_mailbox.save(update_fields=["is_healthy"])
 
@@ -327,7 +317,7 @@ def test_Mailbox_fetch_failure(
     in case fetching fails with a :class:`core.utils.fetchers.exceptions.MailboxError`.
     """
     fake_criterion = faker.word()
-    mock_fetcher.fetch_emails.side_effect = MailboxError
+    mock_fetcher.fetch_emails.side_effect = MailboxError(Exception())
     fake_mailbox.is_healthy = True
     fake_mailbox.save(update_fields=["is_healthy"])
 
@@ -355,7 +345,7 @@ def test_Mailbox_fetch_get_fetcher_error(
     in case :func:`core.models.Account.Account.get_fetcher`
     raises a :class:`core.utils.fetchers.exceptions.MailAccountError`.
     """
-    mock_Account_get_fetcher.side_effect = MailAccountError
+    mock_Account_get_fetcher.side_effect = MailAccountError(Exception())
     fake_mailbox.is_healthy = True
     fake_mailbox.save(update_fields=["is_healthy"])
 
@@ -407,9 +397,10 @@ def test_Mailbox_add_emails_from_file_zip_eml_success(
         with ZipFile(tempfile, "w") as zipfile:
             for index in (0, 1, 2):
                 with zipfile.open(f"{index}.eml", "w") as zipped_file:
-                    with Pause(fake_fs), open(
-                        TEST_EMAIL_PARAMETERS[index][0], "rb"
-                    ) as test_email:
+                    with (
+                        Pause(fake_fs),
+                        open(TEST_EMAIL_PARAMETERS[index][0], "rb") as test_email,
+                    ):
                         test_email_bytes = test_email.read()
                     zipped_file.write(test_email_bytes)
             assert len(zipfile.namelist()) == 3
@@ -439,15 +430,16 @@ def test_Mailbox_add_emails_from_file_zip_eml_bad_file(
     file_format,
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
-    in case of .
+    in case of a bad zip of eml.
     """
     assert fake_mailbox.emails.count() == 0
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="zip"):
         fake_mailbox.add_emails_from_file(BytesIO(faker.text().encode()), file_format)
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
+    mock_logger.exception.assert_called()
 
 
 @pytest.mark.django_db
@@ -473,9 +465,10 @@ def test_Mailbox_add_emails_from_file_mailbox_file_success(
         parser = parser_class(tempfile.name, create=True)
         parser.lock()
         for index in (0, 1, 2):
-            with Pause(fake_fs), open(
-                TEST_EMAIL_PARAMETERS[index][0], "rb"
-            ) as test_email:
+            with (
+                Pause(fake_fs),
+                open(TEST_EMAIL_PARAMETERS[index][0], "rb") as test_email,
+            ):
                 parser.add(test_email.read())
         assert len(list(parser.iterkeys())) == 3
         parser.close()
@@ -490,6 +483,9 @@ def test_Mailbox_add_emails_from_file_mailbox_file_success(
             message_id=TEST_EMAIL_PARAMETERS[index][1]["message_id"]
         ).exists()
     assert os.listdir(gettempdir()) == []
+    mock_logger.info.assert_called()
+    mock_logger.error.assert_not_called()
+    mock_logger.exception.assert_not_called()
 
 
 @pytest.mark.django_db
@@ -517,6 +513,9 @@ def test_Mailbox_add_emails_from_file_mailbox_file_bad_file(
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
+    mock_logger.info.assert_called()
+    mock_logger.error.assert_not_called()
+    mock_logger.exception.assert_not_called()
 
 
 @pytest.mark.django_db
@@ -540,9 +539,10 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_success(
         parser = parser_class(os.path.join(tempdirpath, "test"), create=True)
         parser.lock()
         for index in (0, 1, 2):
-            with Pause(fake_fs), open(
-                TEST_EMAIL_PARAMETERS[index][0], "rb"
-            ) as test_email:
+            with (
+                Pause(fake_fs),
+                open(TEST_EMAIL_PARAMETERS[index][0], "rb") as test_email,
+            ):
                 test_email_bytes = test_email.read()
             parser.add(test_email_bytes)
         assert len(list(parser.iterkeys())) == 3
@@ -560,6 +560,9 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_success(
             message_id=TEST_EMAIL_PARAMETERS[index][1]["message_id"]
         ).exists()
     assert os.listdir(gettempdir()) == []
+    mock_logger.info.assert_called()
+    mock_logger.error.assert_not_called()
+    mock_logger.exception.assert_not_called()
 
 
 @pytest.mark.django_db
@@ -574,15 +577,16 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_bad_zip(
     faker, fake_fs, fake_mailbox, mock_logger, file_format
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
-    in case of success.
+    in case of bad zip of mailbox directory.
     """
     assert fake_mailbox.emails.count() == 0
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="zip"):
         fake_mailbox.add_emails_from_file(BytesIO(faker.text().encode()), file_format)
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
+    mock_logger.exception.assert_called()
 
 
 @pytest.mark.django_db
@@ -590,7 +594,7 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_bad_maildir(
     fake_fs, fake_mailbox, mock_logger
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
-    in case of success.
+    in case of a bad maildir in the zip.
     """
     with TemporaryDirectory() as tempdirpath:
         parser = mailbox.Maildir(tempdirpath, create=True)
@@ -606,13 +610,16 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_bad_maildir(
 
             assert fake_mailbox.emails.count() == 0
 
-            with pytest.raises(ValueError):
+            with pytest.raises(
+                ValueError, match=re.escape(SupportedEmailUploadFormats.MAILDIR.lower())
+            ):
                 fake_mailbox.add_emails_from_file(
                     tempfile, SupportedEmailUploadFormats.MAILDIR
                 )
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
+    mock_logger.exception.assert_called()
 
 
 @pytest.mark.django_db
@@ -620,7 +627,7 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_bad_mh(
     fake_fs, fake_mailbox, mock_logger
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
-    in case of success.
+    in case of a bad mh in the zip.
     """
     with TemporaryDirectory() as tempdirpath:
         parser = mailbox.MH(tempdirpath, create=True)
@@ -638,6 +645,7 @@ def test_Mailbox_add_emails_from_file_mailbox_dir_bad_mh(
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
+    mock_logger.exception.assert_not_called()
 
 
 @pytest.mark.django_db
@@ -647,15 +655,26 @@ def test_Mailbox_add_emails_from_file_bad_format(
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of the mailbox file format is an unsupported format.
     """
-    with pytest.raises(ValueError):
-        fake_mailbox.add_emails_from_file(fake_file, "unimplemented")
+    with pytest.raises(ValueError, match="unimplemented"):
+        fake_mailbox.add_emails_from_file(fake_file, "unimPLemented")
 
     assert os.listdir(gettempdir()) == []
+    mock_logger.error.assert_called()
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    "DEFAULT_SAVE_ATTACHMENTS, DEFAULT_SAVE_TO_EML",
+    [(True, True), (False, False), (True, False), (False, True)],
+)
 def test_Mailbox_create_from_data_success(
-    faker, fake_account, mock_logger, mock_parse_mailbox_name
+    faker,
+    override_config,
+    fake_account,
+    mock_logger,
+    mock_parse_mailbox_name,
+    DEFAULT_SAVE_ATTACHMENTS,
+    DEFAULT_SAVE_TO_EML,
 ):
     """Tests :func:`core.models.Account.Account.create_from_data`
     in case of success.
@@ -663,13 +682,18 @@ def test_Mailbox_create_from_data_success(
     fake_name_bytes = faker.name().encode()
 
     assert Mailbox.objects.count() == 0
-
-    new_mailbox = Mailbox.create_from_data(fake_name_bytes, fake_account)
+    with override_config(
+        DEFAULT_SAVE_ATTACHMENTS=DEFAULT_SAVE_ATTACHMENTS,
+        DEFAULT_SAVE_TO_EML=DEFAULT_SAVE_TO_EML,
+    ):
+        new_mailbox = Mailbox.create_from_data(fake_name_bytes, fake_account)
 
     assert Mailbox.objects.count() == 1
     assert new_mailbox.pk is not None
     mock_parse_mailbox_name.assert_called_once_with(fake_name_bytes)
     assert new_mailbox.name == mock_parse_mailbox_name.return_value
+    assert new_mailbox.save_attachments is DEFAULT_SAVE_ATTACHMENTS
+    assert new_mailbox.save_to_eml is DEFAULT_SAVE_TO_EML
     mock_logger.debug.assert_called()
 
 
@@ -696,18 +720,27 @@ def test_Mailbox_create_from_data_duplicate(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    "mailbox_name",
+    ["Spam", "Junk", "Account/Spam", "Junk-Email", "Emailjunk", "Warning:spam-folder"],
+)
 def test_Mailbox_create_from_data_ignored(
-    faker, override_config, fake_mailbox, mock_logger, mock_parse_mailbox_name
+    faker,
+    override_config,
+    fake_mailbox,
+    mock_logger,
+    mock_parse_mailbox_name,
+    mailbox_name,
 ):
     """Tests :func:`core.models.Account.Account.create_from_data`
-    in case of data that is already in the db.
+    in case of data that is in the ignorelist.
     """
     fake_name_bytes = faker.name().encode()
 
     assert Mailbox.objects.count() == 1
 
-    mock_parse_mailbox_name.return_value = fake_mailbox.name
-    with override_config(IGNORED_MAILBOXES=[mock_parse_mailbox_name.return_value]):
+    mock_parse_mailbox_name.return_value = mailbox_name
+    with override_config(IGNORED_MAILBOXES_REGEX="(Spam|Junk)"):
         new_mailbox = Mailbox.create_from_data(fake_name_bytes, fake_mailbox.account)
 
     assert Mailbox.objects.count() == 1

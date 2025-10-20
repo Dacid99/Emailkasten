@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ from __future__ import annotations
 import contextlib
 import logging
 import os
+import re
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from typing import TYPE_CHECKING, BinaryIO, Final, override
 from zipfile import BadZipFile, ZipFile
@@ -31,22 +32,30 @@ from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from Emailkasten.utils.workarounds import get_config
-
-from ..constants import (
+from core.constants import (
     EmailFetchingCriterionChoices,
     SupportedEmailDownloadFormats,
     SupportedEmailUploadFormats,
     file_format_parsers,
 )
-from ..mixins import FavoriteMixin, HasDownloadMixin, UploadMixin, URLMixin
-from ..utils.fetchers.exceptions import MailAccountError, MailboxError
-from ..utils.mail_parsing import parse_mailbox_name
+from core.mixins import (
+    DownloadMixin,
+    FavoriteModelMixin,
+    HealthModelMixin,
+    TimestampModelMixin,
+    UploadMixin,
+    URLMixin,
+)
+from core.utils.fetchers.exceptions import MailAccountError, MailboxError
+from core.utils.mail_parsing import parse_mailbox_name
+from Emailkasten.utils.workarounds import get_config
+
 from .Email import Email
 
 
 if TYPE_CHECKING:
     from .Account import Account
+
 
 logger = logging.getLogger(__name__)
 """The logger instance for this module."""
@@ -56,14 +65,27 @@ class Mailbox(
     DirtyFieldsMixin,
     URLMixin,
     UploadMixin,
-    HasDownloadMixin,
-    FavoriteMixin,
+    DownloadMixin,
+    FavoriteModelMixin,
+    HealthModelMixin,
+    TimestampModelMixin,
     models.Model,
 ):
     """Database model for a mailbox in a mail account."""
 
+    BASENAME = "mailbox"
+
+    DELETE_NOTICE = _(
+        "This will delete this mailbox and all emails and attachments found in it!"
+    )
+
+    DELETE_NOTICE_PLURAL = _(
+        "This will delete these mailboxes and all emails and attachments found in them!"
+    )
+
     name = models.CharField(
         max_length=255,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("name"),
     )
     """The mailaccount internal name of the mailbox. Unique together with :attr:`account`."""
@@ -72,12 +94,14 @@ class Mailbox(
         "Account",
         related_name="mailboxes",
         on_delete=models.CASCADE,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("account"),
     )
     """The mailaccount this mailbox was found in. Unique together with :attr:`name`. Deletion of that `account` deletes this mailbox."""
 
     save_attachments = models.BooleanField(
-        default=get_config("DEFAULT_SAVE_ATTACHMENTS"),
+        default=True,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("save attachments"),
         help_text=_(
             "Whether the attachments from the emails in this mailbox will be saved."
@@ -86,49 +110,23 @@ class Mailbox(
     """Whether to save attachments of the mails found in this mailbox. :attr:`constance.get_config('DEFAULT_SAVE_ATTACHMENTS')` by default."""
 
     save_to_eml = models.BooleanField(
-        default=get_config("DEFAULT_SAVE_TO_EML"),
+        default=True,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("save as .eml"),
         help_text=_("Whether the emails in this mailbox will be stored in .eml files."),
     )
     """Whether to save the mails found in this mailbox as .eml files. :attr:`constance.get_config('DEFAULT_SAVE_TO_EML')` by default."""
-
-    is_favorite = models.BooleanField(
-        default=False,
-        verbose_name=_("created"),
-    )
-    """Flags favorite mailboxes. False by default."""
-
-    is_healthy = models.BooleanField(
-        null=True,
-        verbose_name=_("healthy"),
-    )
-    """Flags whether the mailbox can be accessed and read. `None` by default.
-    When the :attr:`core.models.Account.is_healthy` field changes to `False`, this field is updated accordingly.
-    When this field changes to `True`, the :attr:`core.models.Account.is_healthy` field of :attr:`account` will be set to `True` as well by a signal."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
-
-    BASENAME = "mailbox"
-
-    DELETE_NOTICE = _(
-        "This will delete this mailbox and all emails and attachments found in it!"
-    )
 
     class Meta:
         """Metadata class for the model."""
 
         db_table = "mailboxes"
         """The name of the database table for the mailboxes."""
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name = _("mailbox")
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name_plural = _("mailboxes")
+        get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
         constraints: Final[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
@@ -149,34 +147,6 @@ class Mailbox(
             "name": self.name,
         }
 
-    @property
-    def available_fetching_criteria(self) -> tuple[str]:
-        """Gets the available fetching criteria based on the mail protocol of this mailbox.
-
-        Returns:
-            A tuple of all available fetching criteria for this mailbox.
-
-        Raises:
-            ValueError: If the account has an unimplemented protocol.
-        """
-        return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA  # type: ignore[no-any-return]  # for some reason mypy doesn't get this
-
-    @property
-    def available_fetching_criterion_choices(self) -> list[tuple[str, str]]:
-        """Gets the available fetching criterion choices based on the mail protocol of this mailbox.
-
-        Returns:
-            A choices-type tuple of all available fetching criteria for this mailbox.
-
-        Raises:
-            ValueError: If the account has an unimplemented protocol.
-        """
-        return [
-            (criterion, label)
-            for criterion, label in EmailFetchingCriterionChoices.choices
-            if criterion in self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA
-        ]
-
     def test(self) -> None:
         """Tests whether the data in the model is correct.
 
@@ -195,16 +165,13 @@ class Mailbox(
                 fetcher.test(self)
             except MailboxError as error:
                 logger.info("Failed testing %s with error: %s.", self, error)
-                self.is_healthy = False
-                self.save(update_fields=["is_healthy"])
+                self.set_unhealthy(str(error))
                 raise
             except MailAccountError as error:
                 logger.info("Failed testing %s with error %s.", self.account, error)
-                self.account.is_healthy = False
-                self.account.save(update_fields=["is_healthy"])
+                self.account.set_unhealthy(str(error))
                 raise
-        self.is_healthy = True
-        self.save(update_fields=["is_healthy"])
+        self.set_healthy()
         logger.info("Successfully tested mailbox")
 
     def fetch(self, criterion: str) -> None:
@@ -225,16 +192,13 @@ class Mailbox(
                 fetched_mails = fetcher.fetch_emails(self, criterion)
             except MailboxError as error:
                 logger.info("Failed fetching %s with error: %s.", self, error)
-                self.is_healthy = False
-                self.save(update_fields=["is_healthy"])
+                self.set_unhealthy(str(error))
                 raise
             except MailAccountError as error:
                 logger.info("Failed fetching %s with error: %s.", self, error)
-                self.account.is_healthy = False
-                self.account.save(update_fields=["is_healthy"])
+                self.account.set_unhealthy(str(error))
                 raise
-        self.is_healthy = True
-        self.save(update_fields=["is_healthy"])
+        self.set_healthy()
         logger.info("Successfully fetched emails.")
 
         logger.info("Saving fetched emails ...")
@@ -266,7 +230,10 @@ class Mailbox(
                         )
             except BadZipFile as error:
                 logger.exception("Error parsing file as %s!", file_format)
-                raise ValueError(_("The given file is not a valid zipfile.")) from error
+                raise ValueError(
+                    _("The given file is not a valid %(file_format)s.")
+                    % {"file_format": "zip"}
+                ) from error
         elif file_format in [
             SupportedEmailUploadFormats.MBOX,
             SupportedEmailUploadFormats.MMDF,
@@ -297,7 +264,8 @@ class Mailbox(
                 except BadZipFile as error:
                     logger.exception("Error parsing file as %s!", file_format)
                     raise ValueError(
-                        _("The given file is not a valid zipfile.")
+                        _("The given file is not a valid %(file_format)s.")
+                        % {"file_format": "zip"}
                     ) from error
                 for name in os.listdir(tempdirpath):
                     path = os.path.join(tempdirpath, name)
@@ -319,9 +287,54 @@ class Mailbox(
                             ) from error
                         parser.close()
         else:
-            logger.debug("Unsupported fileformat for uploaded file.")
-            raise ValueError(_("The given file format is not supported."))
+            logger.error("Unsupported fileformat for uploaded file.")
+            raise ValueError(
+                _("The file format %(file_format)s is not supported.")
+                % {"file_format": file_format}
+            )
         logger.info("Successfully added emails from file.")
+
+    @override
+    @property
+    def has_download(self) -> bool:
+        return self.emails.exists()
+
+    @property
+    def available_fetching_criteria(self) -> tuple[str]:
+        """Gets the available fetching criteria based on the mail protocol of this mailbox.
+
+        Returns:
+            A tuple of all available fetching criteria for this mailbox.
+
+        Raises:
+            ValueError: If the account has an unimplemented protocol.
+        """
+        return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA  # type: ignore[no-any-return]  # for some reason mypy doesn't get this
+
+    @property
+    def available_fetching_criterion_choices(self) -> list[tuple[str, str]]:
+        """Gets the available fetching criterion choices based on the mail protocol of this mailbox.
+
+        Returns:
+            A choices-type tuple of all available fetching criteria for this mailbox.
+
+        Raises:
+            ValueError: If the account has an unimplemented protocol.
+        """
+        return [
+            (criterion, label)
+            for criterion, label in EmailFetchingCriterionChoices.choices
+            if criterion in self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA
+        ]
+
+    @property
+    def available_download_formats(self) -> list[tuple[str, str]]:
+        """Get all formats that emails in this mailbox can be downloaded in.
+
+        Returns:
+            A list of download formats and format names.
+        """
+        return SupportedEmailDownloadFormats.choices  # type: ignore[return-value]  # strPromise is compatible with str
 
     @classmethod
     def create_from_data(
@@ -344,27 +357,21 @@ class Mailbox(
             if isinstance(mailbox_data, bytes)
             else mailbox_data
         )
-        if mailbox_name in get_config("IGNORED_MAILBOXES"):
+        if re.compile(
+            get_config("IGNORED_MAILBOXES_REGEX"), flags=re.IGNORECASE
+        ).search(mailbox_name):
             logger.debug("%s is in the ignorelist, it is skipped.", mailbox_name)
             return None
         try:
             new_mailbox = cls.objects.get(account=account, name=mailbox_name)
             logger.debug("%s already exists in db, it is skipped.", new_mailbox)
         except Mailbox.DoesNotExist:
-            new_mailbox = cls(account=account, name=mailbox_name)
+            new_mailbox = cls(
+                account=account,
+                name=mailbox_name,
+                save_to_eml=get_config("DEFAULT_SAVE_TO_EML"),
+                save_attachments=get_config("DEFAULT_SAVE_ATTACHMENTS"),
+            )
             new_mailbox.save()
             logger.debug("Successfully saved mailbox %s to db.", mailbox_name)
         return new_mailbox
-
-    @override
-    @property
-    def has_download(self) -> bool:
-        return self.emails.exists()
-
-    def available_download_formats(self) -> list[tuple[str, str]]:
-        """Get all formats that emails in this mailbox can be downloaded.
-
-        Returns:
-            A list of download formats and format names.
-        """
-        return SupportedEmailDownloadFormats.choices  # type: ignore[return-value]  # strPromise is compatible with str

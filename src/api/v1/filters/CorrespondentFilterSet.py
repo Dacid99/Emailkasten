@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ class CorrespondentFilterSet(filters.FilterSet):
     search = filters.CharFilter(
         method="filter_text_fields",
     )
+
     mention__iexact = filters.CharFilter(
         field_name="correspondentemails__mention", lookup_expr="iexact"
     )
@@ -46,43 +47,33 @@ class CorrespondentFilterSet(filters.FilterSet):
     account_mail_address__icontains = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="icontains"
     )
-
     account_mail_address__contains = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="contains"
     )
-
     account_mail_address = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="exact"
     )
-
     account_mail_address__iexact = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="iexact"
     )
-
     account_mail_address__startswith = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="startswith"
     )
-
     account_mail_address__istartswith = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="istartswith"
     )
-
     account_mail_address__endswith = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="endswith"
     )
-
     account_mail_address__iendswith = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="iendswith"
     )
-
     account_mail_address__regex = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="regex"
     )
-
     account_mail_address__iregex = filters.CharFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="iregex"
     )
-
     account_mail_address__in = filters.BaseInFilter(
         field_name="emails__mailbox__account__mail_address", lookup_expr="in"
     )
@@ -90,43 +81,33 @@ class CorrespondentFilterSet(filters.FilterSet):
     account_mail_host__icontains = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="icontains"
     )
-
     account_mail_host__contains = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="contains"
     )
-
     account_mail_host = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="exact"
     )
-
     account_mail_host__iexact = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="iexact"
     )
-
     account_mail_host__startswith = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="startswith"
     )
-
     account_mail_host__istartswith = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="istartswith"
     )
-
     account_mail_host__endswith = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="endswith"
     )
-
     account_mail_host__iendswith = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="iendswith"
     )
-
     account_mail_host__regex = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="regex"
     )
-
     account_mail_host__iregex = filters.CharFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="iregex"
     )
-
     account_mail_host__in = filters.BaseInFilter(
         field_name="emails__mailbox__account__mail_host", lookup_expr="in"
     )

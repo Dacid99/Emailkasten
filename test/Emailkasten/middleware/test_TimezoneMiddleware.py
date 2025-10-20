@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,9 @@ from Emailkasten.middleware.TimezoneMiddleware import TimezoneMiddleware
 
 @pytest.mark.django_db
 def test_good_timezone(fake_timezone, client):
+    """Tests setting of the session timezone by :class:`Emailkasten.middleware.TimezoneMiddleware`
+    in case a valid timezone is in the session.
+    """
     session = client.session
     session[TimezoneMiddleware.TIMEZONE_SESSION_KEY] = fake_timezone
     session.save()
@@ -42,6 +45,9 @@ def test_good_timezone(fake_timezone, client):
 
 @pytest.mark.django_db
 def test_bad_timezone(client):
+    """Tests setting of the session timezone by :class:`Emailkasten.middleware.TimezoneMiddleware`
+    in case an invalid timezone is in the session.
+    """
     session = client.session
     session[TimezoneMiddleware.TIMEZONE_SESSION_KEY] = "NO/TZONE"
     session.save()
@@ -57,6 +63,9 @@ def test_bad_timezone(client):
 
 @pytest.mark.django_db
 def test_no_timezone(client):
+    """Tests setting of the session timezone by :class:`Emailkasten.middleware.TimezoneMiddleware`
+    in case no timezone is in the session.
+    """
     assert timezone.get_current_timezone_name() == settings.TIME_ZONE
 
     client.get("/")

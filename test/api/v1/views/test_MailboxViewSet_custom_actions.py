@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -23,26 +23,27 @@ from __future__ import annotations
 import pytest
 from django.http import FileResponse
 from rest_framework import status
-from rest_framework.response import Response
 
 from api.v1.views import MailboxViewSet
-from core.constants import EmailFetchingCriterionChoices
+from core.constants import EmailFetchingCriterionChoices, SupportedEmailUploadFormats
 from core.utils.fetchers.exceptions import MailAccountError, MailboxError
-from test.conftest import fake_mailbox
 
 
 @pytest.fixture
 def mock_Mailbox_test(mocker):
+    """Patches `core.models.Mailbox.test`."""
     return mocker.patch("api.v1.views.MailboxViewSet.Mailbox.test", autospec=True)
 
 
 @pytest.fixture
 def mock_Mailbox_fetch(mocker):
+    """Patches `core.models.Mailbox.fetch`."""
     return mocker.patch("api.v1.views.MailboxViewSet.Mailbox.fetch", autospec=True)
 
 
 @pytest.fixture
 def mock_Mailbox_add_emails_from_file(mocker):
+    """Patches `core.models.Mailbox.add_email_from_file`, capturing the filestream passed to it."""
     captured_streams = []
 
     def capture_stream(*args, **kwargs):
@@ -63,6 +64,7 @@ def mock_Mailbox_add_emails_from_file(mocker):
 
 @pytest.fixture
 def mock_Email_queryset_as_file(mocker, fake_file):
+    """Patches `core.models.Email.fetch`."""
     return mocker.patch(
         "api.v1.views.MailboxViewSet.Email.queryset_as_file",
         return_value=fake_file,
@@ -130,9 +132,7 @@ def test_test_mailbox_success_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     assert response.data["result"] is True
     assert "error" not in response.data
     mock_Mailbox_test.assert_called_once_with(fake_mailbox)
@@ -141,7 +141,7 @@ def test_test_mailbox_success_auth_owner(
 @pytest.mark.django_db
 @pytest.mark.parametrize("test_side_effect", [MailboxError, MailAccountError])
 def test_test_mailbox_failure_auth_owner(
-    faker,
+    fake_error_message,
     fake_mailbox,
     owner_api_client,
     custom_detail_action_url,
@@ -149,7 +149,6 @@ def test_test_mailbox_failure_auth_owner(
     test_side_effect,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.test` action with the authenticated owner user client."""
-    fake_error_message = faker.sentence()
     mock_Mailbox_test.side_effect = test_side_effect(fake_error_message)
 
     response = owner_api_client.post(
@@ -159,9 +158,7 @@ def test_test_mailbox_failure_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     assert response.data["result"] is False
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
@@ -281,9 +278,7 @@ def test_fetch_success_auth_owner(
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     assert "error" not in response.data
     mock_Mailbox_fetch.assert_called_once_with(
         fake_mailbox, EmailFetchingCriterionChoices.ALL.value
@@ -293,7 +288,7 @@ def test_fetch_success_auth_owner(
 @pytest.mark.django_db
 @pytest.mark.parametrize("fetch_side_effect", [MailboxError, MailAccountError])
 def test_fetch_failure_auth_owner(
-    faker,
+    fake_error_message,
     fake_mailbox,
     owner_api_client,
     mock_Mailbox_fetch,
@@ -301,7 +296,6 @@ def test_fetch_failure_auth_owner(
     fetch_side_effect,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.fetch` action with the authenticated owner user client."""
-    fake_error_message = faker.sentence()
     mock_Mailbox_fetch.side_effect = fetch_side_effect(fake_error_message)
 
     response = owner_api_client.post(
@@ -312,9 +306,7 @@ def test_fetch_failure_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     assert "error" in response.data
     assert fake_error_message in response.data["error"]
     mock_Mailbox_fetch.assert_called_once_with(
@@ -324,7 +316,6 @@ def test_fetch_failure_auth_owner(
 
 @pytest.mark.django_db
 def test_fetch_auth_owner_no_criterion(
-    faker,
     fake_mailbox,
     owner_api_client,
     mock_Mailbox_fetch,
@@ -338,6 +329,7 @@ def test_fetch_auth_owner_no_criterion(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["criterion"]
     mock_Mailbox_fetch.assert_not_called()
 
 
@@ -358,6 +350,7 @@ def test_fetch_auth_owner_bad_criterion(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["criterion"]
     mock_Mailbox_fetch.assert_not_called()
 
 
@@ -525,7 +518,7 @@ def test_upload_mailbox_noauth(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "format": fake_format},
+        {"file": fake_file, "file_format": fake_format},
         format="multipart",
     )
 
@@ -553,7 +546,7 @@ def test_upload_mailbox_auth_other(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "format": fake_format},
+        {"file": fake_file, "file_format": fake_format},
         format="multipart",
     )
 
@@ -565,7 +558,6 @@ def test_upload_mailbox_auth_other(
 
 @pytest.mark.django_db
 def test_upload_mailbox_auth_owner(
-    faker,
     fake_mailbox,
     owner_api_client,
     custom_detail_action_url,
@@ -573,25 +565,24 @@ def test_upload_mailbox_auth_owner(
     fake_file,
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
-    fake_format = faker.word()
-
     response = owner_api_client.post(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "format": fake_format},
+        {"file": fake_file, "file_format": SupportedEmailUploadFormats.MH.value},
         format="multipart",
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert (
-        response.data["mailbox"] == MailboxViewSet.serializer_class(fake_mailbox).data
-    )
+    assert response.data["data"] == MailboxViewSet.serializer_class(fake_mailbox).data
     mock_Mailbox_add_emails_from_file.assert_called_once()
     assert mock_Mailbox_add_emails_from_file.call_args.args[0] == fake_mailbox
     assert len(mock_Mailbox_add_emails_from_file.captured_streams) == 1
     assert mock_Mailbox_add_emails_from_file.captured_streams[0] == fake_file.getvalue()
-    assert mock_Mailbox_add_emails_from_file.call_args.args[2] == fake_format
+    assert (
+        mock_Mailbox_add_emails_from_file.call_args.args[2]
+        == SupportedEmailUploadFormats.MH.value
+    )
 
 
 @pytest.mark.django_db
@@ -611,10 +602,11 @@ def test_upload_mailbox_no_file_auth_owner(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"format": fake_format},
+        {"file_format": fake_format},
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["file"]
     mock_Mailbox_add_emails_from_file.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
     assert "name" not in response.data
@@ -640,13 +632,40 @@ def test_upload_mailbox_no_format_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["file_format"]
     mock_Mailbox_add_emails_from_file.assert_not_called()
     assert fake_mailbox.emails.all().count() == 1
     assert "name" not in response.data
 
 
 @pytest.mark.django_db
-def test_upload_mailbox_bad_file_or_format_auth_owner(
+def test_upload_mailbox_bad_format_auth_owner(
+    fake_mailbox,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Mailbox_add_emails_from_file,
+    fake_file,
+):
+    """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
+    assert fake_mailbox.emails.all().count() == 1
+
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
+        ),
+        {"file": fake_file, "format": "Unsupported"},
+        format="multipart",
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["file_format"]
+    mock_Mailbox_add_emails_from_file.assert_not_called()
+    assert fake_mailbox.emails.all().count() == 1
+    assert "name" not in response.data
+
+
+@pytest.mark.django_db
+def test_upload_mailbox_bad_file_auth_owner(
     faker,
     fake_mailbox,
     owner_api_client,
@@ -656,7 +675,6 @@ def test_upload_mailbox_bad_file_or_format_auth_owner(
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.upload_mailbox` action with the authenticated owner user client."""
     mock_Mailbox_add_emails_from_file.side_effect = ValueError(faker.text())
-    fake_format = faker.word()
 
     assert fake_mailbox.emails.all().count() == 1
 
@@ -664,12 +682,12 @@ def test_upload_mailbox_bad_file_or_format_auth_owner(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_UPLOAD_MAILBOX, fake_mailbox
         ),
-        {"file": fake_file, "format": fake_format},
+        {"file": fake_file, "file_format": SupportedEmailUploadFormats.MMDF.value},
         format="multipart",
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["error"] == str(mock_Mailbox_add_emails_from_file.side_effect)
+    assert response.data["file"] == str(mock_Mailbox_add_emails_from_file.side_effect)
     mock_Mailbox_add_emails_from_file.assert_called_once()
     assert fake_mailbox.emails.all().count() == 1
     assert "name" not in response.data
@@ -677,9 +695,13 @@ def test_upload_mailbox_bad_file_or_format_auth_owner(
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    fake_mailbox, noauth_api_client, custom_detail_action_url
+    faker, fake_mailbox, noauth_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.toggle_favorite` action with an unauthenticated user client."""
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_mailbox.is_favorite = previous_is_favorite
+    fake_mailbox.save(update_fields=["is_favorite"])
+
     response = noauth_api_client.post(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_TOGGLE_FAVORITE, fake_mailbox
@@ -688,14 +710,18 @@ def test_toggle_favorite_noauth(
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_mailbox.refresh_from_db()
-    assert fake_mailbox.is_favorite is False
+    assert fake_mailbox.is_favorite is previous_is_favorite
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    fake_mailbox, other_api_client, custom_detail_action_url
+    faker, fake_mailbox, other_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.toggle_favorite` action with the authenticated other user client."""
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_mailbox.is_favorite = previous_is_favorite
+    fake_mailbox.save(update_fields=["is_favorite"])
+
     response = other_api_client.post(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_TOGGLE_FAVORITE, fake_mailbox
@@ -704,14 +730,18 @@ def test_toggle_favorite_auth_other(
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_mailbox.refresh_from_db()
-    assert fake_mailbox.is_favorite is False
+    assert fake_mailbox.is_favorite is previous_is_favorite
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    fake_mailbox, owner_api_client, custom_detail_action_url
+    faker, fake_mailbox, owner_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.MailboxViewSet.MailboxViewSet.toggle_favorite` action with the authenticated owner user client."""
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_mailbox.is_favorite = previous_is_favorite
+    fake_mailbox.save(update_fields=["is_favorite"])
+
     response = owner_api_client.post(
         custom_detail_action_url(
             MailboxViewSet, MailboxViewSet.URL_NAME_TOGGLE_FAVORITE, fake_mailbox
@@ -720,4 +750,4 @@ def test_toggle_favorite_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_mailbox.refresh_from_db()
-    assert fake_mailbox.is_favorite is True
+    assert fake_mailbox.is_favorite is not previous_is_favorite

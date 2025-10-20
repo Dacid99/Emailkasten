@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -27,33 +27,36 @@ from email.utils import format_datetime
 import pytest
 
 from core.utils import mail_parsing
-
-from ...conftest import TEST_EMAIL_PARAMETERS
+from test.conftest import TEST_EMAIL_PARAMETERS
 
 
 @pytest.fixture(autouse=True)
 def mock_logger(mocker):
-    """Mocks :attr:`logger` of the module."""
+    """The mocked :attr:`core.utils.mail_parsing.logger`."""
     return mocker.patch("core.utils.mail_parsing.logger", autospec=True)
 
 
 @pytest.fixture
 def fake_single_header(faker):
+    """Fixture providing a header tuple with a single value."""
     return (faker.word(), faker.sentence(nb_words=5))
 
 
 @pytest.fixture
 def fake_date_headervalue(faker):
+    """Fixture providing a datetime value."""
     return faker.date_time(tzinfo=faker.pytimezone())
 
 
 @pytest.fixture
 def fake_unstripped_header(faker):
+    """Fixture providing a header tuple with an unstripped value."""
     return (faker.word(), " " + faker.sentence(nb_words=2) + "  ")
 
 
 @pytest.fixture
 def fake_multi_header(faker):
+    """Fixture providing a header tuple with multiple values."""
     return (
         faker.word(),
         [faker.sentence(nb_words=5), faker.name(), "  " + faker.name() + " "],
@@ -62,7 +65,7 @@ def fake_multi_header(faker):
 
 @pytest.fixture
 def email_message(fake_single_header, fake_unstripped_header, fake_multi_header):
-    """A valid :class:`email.message.EmailMessage`."""
+    """Fixture providing a valid :class:`email.message.EmailMessage` with various headers."""
     test_message = EmailMessage()
     test_message.add_header(*fake_single_header)
     test_message.add_header(*fake_unstripped_header)
@@ -73,7 +76,7 @@ def email_message(fake_single_header, fake_unstripped_header, fake_multi_header)
 
 @pytest.fixture
 def bad_email_message():
-    """A valid :class:`email.message.EmailMessage`."""
+    """Fixture providing an :class:`email.message.EmailMessage` with an invalid header."""
     test_message = EmailMessage()
     test_message.add_header("Date", "not a datetime str")
     return test_message
@@ -105,30 +108,43 @@ def bad_email_message():
     ],
 )
 def test_decode_header_success(header, expected_result):
+    """Tests :func:`core.utils.mail_parsing.decode_header`."""
     result = mail_parsing.decode_header(header)
 
     assert result == expected_result
 
 
 def test_get_header_single_success(email_message, fake_single_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header exists once.
+    """
     result = mail_parsing.get_header(email_message, fake_single_header[0])
 
     assert result == fake_single_header[1].strip()
 
 
 def test_get_header_unstripped_success(email_message, fake_unstripped_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header is unstripped.
+    """
     result = mail_parsing.get_header(email_message, fake_unstripped_header[0])
 
     assert result == fake_unstripped_header[1].strip()
 
 
 def test_get_header_multi_success(email_message, fake_multi_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header exists multiple times.
+    """
     result = mail_parsing.get_header(email_message, fake_multi_header[0])
 
     assert result == ",".join([header.strip() for header in fake_multi_header[1]])
 
 
 def test_get_header_multi_joinparam_success(email_message, fake_multi_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header exists multiple times and a joining_string is given.
+    """
     result = mail_parsing.get_header(
         email_message, fake_multi_header[0], joining_string="test"
     )
@@ -137,17 +153,26 @@ def test_get_header_multi_joinparam_success(email_message, fake_multi_header):
 
 
 def test_get_header_fallback(fake_single_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case the header doesn't exists.
+    """
     result = mail_parsing.get_header(EmailMessage(), fake_single_header[0])
 
     assert result == ""
 
 
 def test_get_header_failure(fake_single_header):
+    """Tests :func:`core.utils.mail_parsing.get_header`
+    in case there is no emailmessage.
+    """
     with pytest.raises(AttributeError):
         mail_parsing.get_header(None, fake_single_header[0])
 
 
 def test_parse_datetime_header_success(faker, mock_logger):
+    """Tests :func:`core.utils.mail_parsing.parse_datetime_header`
+    in case of success.
+    """
     fake_date_headervalue = format_datetime(faker.date_time(tzinfo=faker.pytimezone()))
 
     result = mail_parsing.parse_datetime_header(fake_date_headervalue)
@@ -158,6 +183,9 @@ def test_parse_datetime_header_success(faker, mock_logger):
 
 
 def test_parse_datetime_header_fallback(mocker, faker, mock_logger):
+    """Tests :func:`core.utils.mail_parsing.parse_datetime_header`
+    in case the datetime header can't be parsed.
+    """
     mock_timezone_now = mocker.patch(
         "django.utils.timezone.now", autospec=True, return_value=faker.date_time()
     )
@@ -171,6 +199,9 @@ def test_parse_datetime_header_fallback(mocker, faker, mock_logger):
 
 
 def test_parse_datetime_header_no_header(mocker, faker, mock_logger):
+    """Tests :func:`core.utils.mail_parsing.parse_datetime_header`
+    in case there is no header.
+    """
     mock_timezone_now = mocker.patch(
         "django.utils.timezone.now", autospec=True, return_value=faker.date_time()
     )
@@ -209,7 +240,8 @@ def test_parse_datetime_header_no_header(mocker, faker, mock_logger):
         ),
     ],
 )
-def test_parse_mailbox_name_success(name_bytes, expected_name):
+def test_parse_mailbox_name(name_bytes, expected_name):
+    """Tests :func:`core.utils.mail_parsing.parse_mailbox_name`."""
     result = mail_parsing.parse_mailbox_name(name_bytes)
 
     assert result == expected_name
@@ -226,6 +258,7 @@ def test_get_bodytexts(
     expected_correspondents_features,
     expected_attachments_features,
 ):
+    """Tests :func:`core.utils.mail_parsing.get_bodytexts` on test-email data."""
     with open(test_email_path, "br") as test_email_file:
         test_email_message = email.message_from_bytes(
             test_email_file.read(), policy=policy.default
@@ -237,6 +270,27 @@ def test_get_bodytexts(
     assert result.get("plain", "") == expected_email_features["plain_bodytext"]
     assert ("html" in result) is bool(expected_email_features["html_bodytext"])
     assert result.get("html", "") == expected_email_features["html_bodytext"]
+
+
+@pytest.mark.parametrize(
+    "header, expected_href",
+    [
+        ("", ""),
+        ("https://test.list.com", "https://test.list.com"),
+        ("<https://usub.maillist.io>", "https://usub.maillist.io"),
+        ("<mailto:getridofthe@list.us>, <http://other.way.us>,", "http://other.way.us"),
+        ("<mailto:one@mail.it>, <mailto:other@mail.it>,", "mailto:one@mail.it"),
+        ("<https://firstref.ca>, https://secondref.ca,", "https://firstref.ca"),
+        ("http://insecure.ru, https://sslftw.org,", "https://sslftw.org"),
+    ],
+)
+def test_find_best_href_in_header(header, expected_href):
+    """Tests :func:`core.utils.mail_parsing.find_best_href_in_header`
+    for different typical cases of header.
+    """
+    result = mail_parsing.find_best_href_in_header(header)
+
+    assert result == expected_href
 
 
 @pytest.mark.parametrize(

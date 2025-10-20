@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -23,18 +23,8 @@ The viewset tests are made against a mocked consistent database with an instance
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 from django.urls import reverse
-from rest_framework.test import APIClient
-
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from django.db.models import Model
-    from rest_framework.viewsets import ModelViewSet
 
 
 @pytest.fixture(autouse=True)
@@ -49,93 +39,10 @@ def complete_database(
     fake_emailcorrespondent,
     fake_mailbox,
 ):
-    """Fixture providing a complete database setup."""
+    """Use a complete database setup for all view tests."""
 
 
 @pytest.fixture
-def noauth_api_client() -> APIClient:
-    """Fixture creating an unauthenticated :class:`rest_framework.test.APIClient` instance.
-
-    Returns:
-        The unauthenticated APIClient.
-    """
-    return APIClient()
-
-
-@pytest.fixture
-def other_api_client(noauth_api_client, other_user) -> APIClient:
-    """Fixture creating a :class:`rest_framework.test.APIClient` instance that is authenticated as :attr:`other_user`.
-
-    Args:
-        noauth_api_client: Depends on :func:`fixture_noauth_api_client`.
-        other_user: Depends on :func:`fixture_other_user`.
-
-    Returns:
-        The authenticated APIClient.
-    """
-    noauth_api_client.force_authenticate(user=other_user)
-    return noauth_api_client
-
-
-@pytest.fixture
-def owner_api_client(noauth_api_client, owner_user) -> APIClient:
-    """Fixture creating a :class:`rest_framework.test.APIClient` instance that is authenticated as :attr:`owner_user`.
-
-    Args:
-        noauth_api_client: Depends on :func:`fixture_noauth_api_client`.
-        owner_user: Depends on :func:`fixture_owner_user`.
-
-    Returns:
-        The authenticated APIClient.
-    """
-    noauth_api_client.force_authenticate(user=owner_user)
-    return noauth_api_client
-
-
-@pytest.fixture(scope="package")
-def list_url() -> Callable[[type[ModelViewSet]], str]:
-    """Fixture getting the viewsets url for list actions.
-
-    Returns:
-        The list url.
-    """
-    return lambda viewset_class: reverse(f"api:v1:{viewset_class.BASENAME}-list")
-
-
-@pytest.fixture(scope="package")
-def detail_url() -> Callable[[type[ModelViewSet], Model], str]:
-    """Fixture getting the viewsets url for detail actions.
-
-    Returns:
-        The detail url.
-    """
-    return lambda viewset_class, instance: reverse(
-        f"api:v1:{viewset_class.BASENAME}-detail", args=[instance.id]
-    )
-
-
-@pytest.fixture(scope="package")
-def custom_list_action_url() -> Callable[[type[ModelViewSet], str], str]:
-    """Fixture getting the viewsets url for custom list actions.
-
-    Returns:
-        A callable that gets the list url of the viewset from the custom action name.
-    """
-    return lambda viewset_class, custom_list_action_url_name: (
-        reverse(f"api:v1:{viewset_class.BASENAME}-{custom_list_action_url_name}")
-    )
-
-
-@pytest.fixture(scope="package")
-def custom_detail_action_url() -> Callable[[type[ModelViewSet], str, Model], str]:
-    """Fixture getting the viewsets url for custom detail actions.
-
-    Returns:
-        A callable that gets the detail url of the viewset from the custom action name.
-    """
-    return lambda viewset_class, custom_detail_action_url_name, instance: (
-        reverse(
-            f"api:v1:{viewset_class.BASENAME}-{custom_detail_action_url_name}",
-            args=[instance.id],
-        )
-    )
+def url():
+    """Callable getting the viewsets url for list actions."""
+    return lambda view_class: reverse(f"api:v1:{view_class.NAME}")

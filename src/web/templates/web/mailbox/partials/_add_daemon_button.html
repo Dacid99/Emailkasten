@@ -1,7 +1,8 @@
 {% load i18n %}
 
 <a href="{% url 'web:mailbox-create-daemon' object.pk %}"
-   class="btn btn-outline-primary"
+   class="btn btn-outline-primary {% if not mailbox.is_healthy %}disabled{% endif %}"
+   {% if mailbox.is_healthy %}href="{{ mailbox.get_absolute_upload_url }}"{% else %}aria-disabled="true"{% endif %}
    role="button">
-    {% translate "Add daemon" %}<i class="fa fa-plus mx-1" aria-hidden="true"></i>
+    {% translate "Add routine" %}<i class="fa fa-plus mx-1" aria-hidden="true"></i>
 </a>

@@ -14,11 +14,19 @@
     {% translate "Correspondents" %}
 {% endblock header_title %}
 
+{% block action_buttons %}
+
+    {% include "web/correspondent/partials/_multi_download-button.html" %}
+
+{% endblock action_buttons %}
+
+
 {% block list %}
 
     {% include "web/correspondent/partials/_correspondent_list.html" with correspondents=page_obj %}
 
 {% endblock list %}
+
 
 {% block list_alternative %}
 

@@ -1,3 +1,9 @@
+..
+   SPDX-License-Identifier: CC-BY-SA 4.0
+
+   Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
+   Licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+
 Installation
 ============
 
@@ -71,6 +77,20 @@ Alternatively, you can run the application bare metal.
 4. Finally the Emailkasten server is started via the docker entrypoint script
    ``docker/docker-compose.yml``.
 
+Other database type
+^^^^^^^^^^^^^^^^^^^
+
+Depending on your setup, you may want to use a database that is not a mariadb.
+
+In that case you can set the type of database you want to use in the docker-compose.yml file.
+See :doc:`configuration` for more details on this.
+
+It is crucial that the name of the database service in the stack is `db`!
+Otherwise the connection from the Emailkasten container to the database will fail.
+
+.. note::
+   Using a database other than the default mysql can lead to issues.
+   If possible try to stick with the default, which is tested and guaranteed to work flawlessly.
 
 Updating
 ========

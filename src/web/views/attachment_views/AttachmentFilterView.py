@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,9 +24,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 
 from core.models import Attachment
-
-from ...filters import AttachmentFilterSet
-from ..FilterPageView import FilterPageView
+from web.filters import AttachmentFilterSet
+from web.views.base import FilterPageView
 
 
 class AttachmentFilterView(LoginRequiredMixin, FilterPageView):
@@ -37,7 +36,7 @@ class AttachmentFilterView(LoginRequiredMixin, FilterPageView):
     template_name = "web/attachment/attachment_filter_list.html"
     context_object_name = "attachments"
     filterset_class = AttachmentFilterSet
-    ordering = ["file_name"]
+    ordering = ["-is_favorite", "file_name"]
 
     @override
     def get_queryset(self) -> QuerySet[Attachment]:

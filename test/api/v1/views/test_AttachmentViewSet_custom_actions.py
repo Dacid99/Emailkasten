@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -31,9 +31,30 @@ from core.models import Attachment
 
 @pytest.fixture
 def mock_Attachment_queryset_as_file(mocker, fake_file):
+    """Patches `core.models.Attachment.queryset_as_file`."""
     return mocker.patch(
         "api.v1.views.AttachmentViewSet.Attachment.queryset_as_file",
         return_value=fake_file,
+    )
+
+
+@pytest.fixture
+def mock_Attachment_share_to_paperless(mocker, faker):
+    """Patches `core.models.Attachment.share_to_paperless`."""
+    return mocker.patch(
+        "core.models.Attachment.Attachment.share_to_paperless",
+        autospec=True,
+        return_value=faker.uuid4(),
+    )
+
+
+@pytest.fixture
+def mock_Attachment_share_to_immich(mocker, faker):
+    """Patches `core.models.Attachment.share_to_immich`."""
+    return mocker.patch(
+        "core.models.Attachment.Attachment.share_to_immich",
+        autospec=True,
+        return_value={"id": faker.uuid4()},
     )
 
 
@@ -123,6 +144,10 @@ def test_download_auth_owner(
         in response["Content-Disposition"]
     )
     assert "attachment" in response["Content-Disposition"]
+    assert "Content-Type" in response.headers
+    assert response.headers["Content-Type"] == (
+        fake_attachment_with_file.content_type or "application/octet-stream"
+    )
     assert (
         b"".join(response.streaming_content)
         == default_storage.open(fake_attachment_with_file.file_path).read()
@@ -176,6 +201,7 @@ def test_batch_download_no_ids_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["id"]
     assert not isinstance(response, FileResponse)
     mock_Attachment_queryset_as_file.assert_not_called()
 
@@ -204,6 +230,7 @@ def test_batch_download_bad_ids_auth_owner(
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data["id"]
     assert not isinstance(response, FileResponse)
     mock_Attachment_queryset_as_file.assert_not_called()
 
@@ -240,6 +267,8 @@ def test_batch_download_auth_owner(
     assert isinstance(response, FileResponse)
     assert "Content-Disposition" in response.headers
     assert 'filename="attachments.zip"' in response["Content-Disposition"]
+    assert "Content-Type" in response.headers
+    assert response.headers["Content-Type"] == "application/zip"
     assert b"".join(response.streaming_content) == fake_file_bytes
     mock_Attachment_queryset_as_file.assert_called_once()
     assert list(mock_Attachment_queryset_as_file.call_args.args[0]) == list(
@@ -336,7 +365,9 @@ def test_download_thumbnail_auth_owner(
     )
     assert "inline" in response["Content-Disposition"]
     assert "Content-Type" in response.headers
-    assert response.headers["Content-Type"] == fake_attachment_with_file.content_type
+    assert response.headers["Content-Type"] == (
+        fake_attachment_with_file.content_type or "application/octet-stream"
+    )
     assert "X-Frame-Options" in response.headers
     assert response.headers["X-Frame-Options"] == "SAMEORIGIN"
     assert "Content-Security-Policy" in response.headers
@@ -349,11 +380,15 @@ def test_download_thumbnail_auth_owner(
 
 @pytest.mark.django_db
 def test_toggle_favorite_noauth(
-    fake_attachment, noauth_api_client, custom_detail_action_url
+    faker, fake_attachment, noauth_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.toggle_favorite` action
     with an unauthenticated user client.
     """
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_attachment.is_favorite = previous_is_favorite
+    fake_attachment.save(update_fields=["is_favorite"])
+
     response = noauth_api_client.post(
         custom_detail_action_url(
             AttachmentViewSet,
@@ -364,16 +399,20 @@ def test_toggle_favorite_noauth(
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
     fake_attachment.refresh_from_db()
-    assert fake_attachment.is_favorite is False
+    assert fake_attachment.is_favorite is previous_is_favorite
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_other(
-    fake_attachment, other_api_client, custom_detail_action_url
+    faker, fake_attachment, other_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.toggle_favorite` action
     with the authenticated other user client.
     """
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_attachment.is_favorite = previous_is_favorite
+    fake_attachment.save(update_fields=["is_favorite"])
+
     response = other_api_client.post(
         custom_detail_action_url(
             AttachmentViewSet,
@@ -384,16 +423,20 @@ def test_toggle_favorite_auth_other(
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     fake_attachment.refresh_from_db()
-    assert fake_attachment.is_favorite is False
+    assert fake_attachment.is_favorite is previous_is_favorite
 
 
 @pytest.mark.django_db
 def test_toggle_favorite_auth_owner(
-    fake_attachment, owner_api_client, custom_detail_action_url
+    faker, fake_attachment, owner_api_client, custom_detail_action_url
 ):
     """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.toggle_favorite` action
     with the authenticated owner user client.
     """
+    previous_is_favorite = bool(faker.random.getrandbits(1))
+    fake_attachment.is_favorite = previous_is_favorite
+    fake_attachment.save(update_fields=["is_favorite"])
+
     response = owner_api_client.post(
         custom_detail_action_url(
             AttachmentViewSet,
@@ -404,4 +447,270 @@ def test_toggle_favorite_auth_owner(
 
     assert response.status_code == status.HTTP_200_OK
     fake_attachment.refresh_from_db()
-    assert fake_attachment.is_favorite is True
+    assert fake_attachment.is_favorite is not previous_is_favorite
+
+
+@pytest.mark.django_db
+def test_share_to_paperless_noauth(
+    fake_attachment,
+    noauth_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_paperless,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_paperless` action
+    with an unauthenticated user client.
+    """
+    response = noauth_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_PAPERLESS,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    fake_attachment.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_share_to_paperless_auth_other(
+    fake_attachment,
+    other_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_paperless,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_paperless` action
+    with the authenticated other user client.
+    """
+    response = other_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_PAPERLESS,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    fake_attachment.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_share_to_paperless_auth_owner_success(
+    fake_attachment,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_paperless,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_paperless` action
+    with the authenticated owner user client.
+    """
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_PAPERLESS,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert "data" in response.data
+    assert response.data["data"] == mock_Attachment_share_to_paperless.return_value
+    fake_attachment.refresh_from_db()
+    mock_Attachment_share_to_paperless.assert_called_once_with(fake_attachment)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "error",
+    [
+        ConnectionError,
+        PermissionError,
+        ValueError,
+        RuntimeError,
+    ],
+)
+def test_share_to_paperless_auth_owner_failure(
+    fake_error_message,
+    fake_attachment,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_paperless,
+    error,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_paperless` action
+    with the authenticated owner user client.
+    """
+    mock_Attachment_share_to_paperless.side_effect = error(fake_error_message)
+
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_PAPERLESS,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "detail" in response.data
+    assert "error" in response.data
+    assert fake_error_message in response.data["error"]
+    mock_Attachment_share_to_paperless.assert_called_once_with(fake_attachment)
+
+
+@pytest.mark.django_db
+def test_share_to_paperless_auth_owner_no_file(
+    fake_error_message,
+    fake_attachment,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_paperless,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_paperless` action
+    with the authenticated owner user client.
+    """
+    mock_Attachment_share_to_paperless.side_effect = FileNotFoundError
+
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_PAPERLESS,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert "detail" in response.data
+    mock_Attachment_share_to_paperless.assert_called_once_with(fake_attachment)
+
+
+@pytest.mark.django_db
+def test_share_to_immich_noauth(
+    fake_attachment,
+    noauth_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_immich,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_immich` action
+    with an unauthenticated user client.
+    """
+    response = noauth_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_IMMICH,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    fake_attachment.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_share_to_immich_auth_other(
+    fake_attachment,
+    other_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_immich,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_immich` action
+    with the authenticated other user client.
+    """
+    response = other_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_IMMICH,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    fake_attachment.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_share_to_immich_auth_owner_success(
+    fake_attachment,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_immich,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_immich` action
+    with the authenticated owner user client.
+    """
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_IMMICH,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert "data" in response.data
+    assert response.data["data"] == mock_Attachment_share_to_immich.return_value
+    fake_attachment.refresh_from_db()
+    mock_Attachment_share_to_immich.assert_called_once_with(fake_attachment)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "error",
+    [
+        ConnectionError,
+        PermissionError,
+        ValueError,
+        RuntimeError,
+    ],
+)
+def test_share_to_immich_auth_owner_failure(
+    fake_error_message,
+    fake_attachment,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_immich,
+    error,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_immich` action
+    with the authenticated owner user client.
+    """
+    mock_Attachment_share_to_immich.side_effect = error(fake_error_message)
+
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_IMMICH,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "detail" in response.data
+    assert "error" in response.data
+    assert fake_error_message in response.data["error"]
+    mock_Attachment_share_to_immich.assert_called_once_with(fake_attachment)
+
+
+@pytest.mark.django_db
+def test_share_to_immich_auth_owner_no_file(
+    fake_error_message,
+    fake_attachment,
+    owner_api_client,
+    custom_detail_action_url,
+    mock_Attachment_share_to_immich,
+):
+    """Tests the post method :func:`api.v1.views.AttachmentViewSet.AttachmentViewSet.share_to_immich` action
+    with the authenticated owner user client.
+    """
+    mock_Attachment_share_to_immich.side_effect = FileNotFoundError
+
+    response = owner_api_client.post(
+        custom_detail_action_url(
+            AttachmentViewSet,
+            AttachmentViewSet.URL_NAME_SHARE_TO_IMMICH,
+            fake_attachment,
+        )
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert "detail" in response.data
+    mock_Attachment_share_to_immich.assert_called_once_with(fake_attachment)

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,19 +18,27 @@
 
 """Module with the :class:`web.views.EmailDetailWithDeleteView` view."""
 
-from typing import override
+from typing import Any, override
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch, QuerySet
+from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+from django.views.generic.edit import DeletionMixin
 
 from core.models import Email, EmailCorrespondent
+from core.utils.fetchers.exceptions import FetcherError
+from web.mixins import CustomActionMixin
+from web.views.base import DetailWithDeleteView
 
-from ..DetailWithDeleteView import DetailWithDeleteView
 from .EmailFilterView import EmailFilterView
 
 
-class EmailDetailWithDeleteView(LoginRequiredMixin, DetailWithDeleteView):
+class EmailDetailWithDeleteView(
+    LoginRequiredMixin, DetailWithDeleteView, CustomActionMixin
+):
     """View for a single :class:`core.models.Email` instance."""
 
     URL_NAME = Email.get_detail_web_url_name()
@@ -56,3 +64,57 @@ class EmailDetailWithDeleteView(LoginRequiredMixin, DetailWithDeleteView):
                 )
             )
         )
+
+    @override
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if "delete" in request.POST:
+            return DeletionMixin.post(self, request)
+        return CustomActionMixin.post(self, request)
+
+    def handle_reprocess(self, request: HttpRequest) -> HttpResponse:
+        """Handler function for the `reprocess` action.
+
+        Args:
+            request: The action request to handle.
+
+        Returns:
+            A template response with the updated view after the action.
+        """
+        self.object = self.get_object()
+        self.object.reprocess()
+        messages.success(request, _("Email successfully reprocessed."))
+        return self.get(request)
+
+    def handle_restore(self, request: HttpRequest) -> HttpResponse:
+        """Handler function for the `restore` action.
+
+        Args:
+            request: The action request to handle.
+
+        Returns:
+            A template response with the updated view after the action.
+        """
+        self.object = self.get_object()
+        try:
+            self.object.restore_to_mailbox()
+        except NotImplementedError:
+            messages.error(
+                request,
+                _("POP accounts do not support restoring of emails to mailbox."),
+            )
+        except FileNotFoundError:
+            messages.error(
+                request,
+                _("Restoring of email failed: %(error)s")
+                % {"error": _("eml file not found.")},
+            )
+        except FetcherError as error:
+            messages.error(
+                request,
+                _("Restoring of email to mailbox failed: %(error)s")
+                % {"error": str(error)},
+            )
+        else:
+            messages.success(request, _("Email successfully restored to mailbox."))
+
+        return self.get(request)

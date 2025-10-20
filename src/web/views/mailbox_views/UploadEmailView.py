@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -27,8 +27,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import FormView
 
 from core.models import Mailbox
-
-from ...forms.UploadEmailForm import UploadEmailForm
+from web.forms.UploadEmailForm import UploadEmailForm
 
 
 class UploadEmailView(LoginRequiredMixin, DetailView, FormView):

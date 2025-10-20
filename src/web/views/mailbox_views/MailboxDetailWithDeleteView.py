@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -31,10 +31,10 @@ from django.views.generic.edit import DeletionMixin
 from core.constants import EmailFetchingCriterionChoices
 from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
+from web.mixins.CustomActionMixin import CustomActionMixin
+from web.mixins.TestActionMixin import TestActionMixin
+from web.views.base import DetailWithDeleteView
 
-from ...mixins.CustomActionMixin import CustomActionMixin
-from ...mixins.TestActionMixin import TestActionMixin
-from ..DetailWithDeleteView import DetailWithDeleteView
 from .MailboxFilterView import MailboxFilterView
 
 
@@ -103,7 +103,7 @@ class MailboxDetailWithDeleteView(
             self.object.fetch(criterion)
         except FetcherError as error:
             messages.error(
-                request, _("Fetching failed\n%(error)s") % {"error": str(error)}
+                request, _("Fetching failed: %(error)s") % {"error": str(error)}
             )
         else:
             messages.success(request, _("Fetching successful"))

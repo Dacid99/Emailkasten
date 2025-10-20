@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -30,11 +30,16 @@ class Pagination(PageNumberPagination):
 
     page_size = get_config("API_DEFAULT_PAGE_SIZE")
     """The number of results per page.
-        Set from :attr:`constance.get_config('API_DEFAULT_PAGE_SIZE')`."""
+    Set from :attr:`constance.get_config('API_DEFAULT_PAGE_SIZE')`.
+
+    Note:
+        Has to be set here and not in the apisettings to be apply changes directly.
+    """
 
     page_size_query_param = "page_size"
     """The query parameter for the page size."""
 
     max_page_size = get_config("API_MAX_PAGE_SIZE")
     """The maximal number of results per page.
-        Set from :attr:`constance.get_config('API_MAX_PAGE_SIZE')`."""
+    Set from :attr:`constance.get_config('API_MAX_PAGE_SIZE')`.
+    """

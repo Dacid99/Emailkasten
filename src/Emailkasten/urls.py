@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,6 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 References:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
 """
-
 from __future__ import annotations
 
 from django.contrib import admin
@@ -34,6 +33,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from Emailkasten.views import UserProfileView
 from Emailkasten.views.timezone import SET_TIMEZONE_URL_NAME, set_timezone
 
 
@@ -48,9 +48,7 @@ urlpatterns = [
     re_path(r"^robots\.txt", include("robots.urls")),
     # api
     path("api/", include("api.urls")),
-    path("api/auth/", include("dj_rest_auth.urls")),
-    path("api/registration/", include("dj_rest_auth.registration.urls")),
-    path("api/browse/", include("rest_framework.urls", namespace="rest_framework")),
+    path("api/auth/", include("allauth.headless.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name=SCHEMA_NAME),
     path(
         "api/schema/swagger/",
@@ -65,4 +63,5 @@ urlpatterns = [
     # web
     path("", include("web.urls")),
     path("users/", include("allauth.urls")),
+    path("users/profile/", UserProfileView.as_view(), name=UserProfileView.URL_NAME),
 ]

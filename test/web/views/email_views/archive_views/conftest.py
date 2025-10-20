@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -20,25 +20,13 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 from django.urls import reverse
 
 
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from rest_framework.viewsets import ModelViewSet
-
-
 @pytest.fixture(scope="package")
-def date_url() -> Callable[[type[ModelViewSet]], str]:
-    """Fixture getting the view url for date based views.
-
-    Returns:
-        The date url.
-    """
+def date_url():
+    """Callable getting the view url for date based views."""
     return lambda view_class, date_args=[]: reverse(
         f"web:{view_class.URL_NAME}", args=date_args
     )

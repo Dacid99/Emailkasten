@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,19 +25,23 @@ from typing import TYPE_CHECKING, Final, override
 from django.http import FileResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, viewsets
+from drf_spectacular.openapi import OpenApiParameter, OpenApiResponse, OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import ChoiceField
 
-from api.v1.mixins.ToggleFavoriteMixin import ToggleFavoriteMixin
+from api.v1.filters import MailboxFilterSet
+from api.v1.mixins import ToggleFavoriteMixin
+from api.v1.serializers import MailboxWithDaemonSerializer
+from api.v1.serializers.UploadEmailSerializer import UploadEmailSerializer
+from core.constants import EmailFetchingCriterionChoices, SupportedEmailDownloadFormats
 from core.models import Email, Mailbox
 from core.utils.fetchers.exceptions import FetcherError
-
-from ..filters import MailboxFilterSet
-from ..mixins.NoCreateMixin import NoCreateMixin
-from ..serializers import MailboxWithDaemonSerializer
 
 
 if TYPE_CHECKING:
@@ -45,8 +49,85 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
+@extend_schema_view(
+    list=extend_schema(description="Lists all instances matching the filter."),
+    retrieve=extend_schema(description="Retrieves a single instance."),
+    update=extend_schema(description="Updates a single instance."),
+    destroy=extend_schema(description="Deletes a single instance."),
+    test=extend_schema(
+        request=None,
+        responses={
+            200: inline_serializer(
+                name="test_mailbox_response",
+                fields={
+                    "detail": OpenApiTypes.STR,
+                    "result": OpenApiTypes.BOOL,
+                    "data": MailboxWithDaemonSerializer,
+                },
+            )
+        },
+        description="Tests the mailbox instance.",
+    ),
+    fetching_options=extend_schema(
+        responses={200: OpenApiTypes.JSON_PTR},
+        description="Lists all available fetching criteria for the mailbox instance.",
+    ),
+    fetch=extend_schema(
+        request=inline_serializer(
+            name="fetch_criterion_data",
+            fields={
+                "criterion": ChoiceField(choices=EmailFetchingCriterionChoices.choices)
+            },
+        ),
+        responses={
+            200: inline_serializer(
+                name="test_mailbox_response",
+                fields={
+                    "detail": OpenApiTypes.STR,
+                    "result": OpenApiTypes.BOOL,
+                    "data": MailboxWithDaemonSerializer,
+                },
+            )
+        },
+        description="Fetches the emails from the maiilbox instance based on the given criterion. Only criteria available for the instance are accepted.",
+    ),
+    download=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "file_format",
+                OpenApiTypes.STR,
+                OpenApiParameter.QUERY,
+                required=True,
+                enum=SupportedEmailDownloadFormats,
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description="Headers: Content-Disposition=attachment",
+            )
+        },
+        description="Downloads all emails of a mailbox instance.",
+    ),
+    upload_emails=extend_schema(
+        request=UploadEmailSerializer,
+        responses={
+            200: inline_serializer(
+                name="upload_emails_mailbox_response",
+                fields={
+                    "detail": OpenApiTypes.STR,
+                    "data": MailboxWithDaemonSerializer,
+                },
+            )
+        },
+        description="Upload emails for a file to a mailbox instance.",
+    ),
+)
 class MailboxViewSet(
-    NoCreateMixin, viewsets.ModelViewSet[Mailbox], ToggleFavoriteMixin
+    viewsets.ReadOnlyModelViewSet[Mailbox],
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    ToggleFavoriteMixin,
 ):
     """Viewset for the :class:`core.models.Mailbox.Mailbox`.
 
@@ -93,7 +174,7 @@ class MailboxViewSet(
     @action(
         detail=True, methods=["post"], url_path=URL_PATH_TEST, url_name=URL_NAME_TEST
     )
-    def test_mailbox(self, request: Request, pk: int | None = None) -> Response:
+    def test(self, request: Request, pk: int | None = None) -> Response:
         """Action method testing the mailbox data.
 
         Args:
@@ -117,7 +198,7 @@ class MailboxViewSet(
         else:
             response.data["result"] = True
         mailbox.refresh_from_db()
-        response.data["mailbox"] = self.get_serializer(mailbox).data
+        response.data["data"] = self.get_serializer(mailbox).data
         return response
 
     URL_PATH_FETCHING_OPTIONS = "fetching-options"
@@ -166,18 +247,17 @@ class MailboxViewSet(
         mailbox = self.get_object()
         criterion = request.data.get("criterion")
         if not criterion:
-            return Response(
-                {"detail": _("Fetching criterion missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                {"criterion": _("Fetching criterion is required.")},
             )
         if criterion not in mailbox.available_fetching_criteria:
-            return Response(
+            raise ValidationError(
                 {
-                    "detail": _(
-                        "The given fetching criterion is not available for this mailbox."
+                    "criterion": _(
+                        "The given criterion %(criterion)s is not available for this mailbox."
                     )
+                    % {"criterion": criterion}
                 },
-                status=status.HTTP_400_BAD_REQUEST,
             )
         try:
             mailbox.fetch(criterion)
@@ -192,7 +272,7 @@ class MailboxViewSet(
         else:
             response = Response({"detail": _("All emails fetched.")})
         mailbox.refresh_from_db()
-        response.data["mailbox"] = self.get_serializer(mailbox).data
+        response.data["data"] = self.get_serializer(mailbox).data
         return response
 
     URL_PATH_DOWNLOAD = "download"
@@ -215,36 +295,33 @@ class MailboxViewSet(
 
         Raises:
             Http404: If there are no emails in the mailbox.
+            ValidationError: If file_format is missing or unsupported.
 
         Returns:
             A fileresponse containing the emails in the requested format.
-            A 400 response if file_format or id param are missing in the request.
         """
         file_format = request.query_params.get("file_format", None)
         if not file_format:
-            return Response(
-                {"detail": _("File format missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                {"file_format": _("File format is required.")},
             )
         mailbox = self.get_object()
         try:
             file = Email.queryset_as_file(mailbox.emails.all(), file_format)
         except ValueError:
-            return Response(
+            raise ValidationError(
                 {
-                    "detail": _("File format %(file_format)s is not supported.")
+                    "file_format": _("File format %(file_format)s is not supported.")
                     % {"file_format": file_format}
                 },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            ) from None
         except Email.DoesNotExist:
             raise Http404(_("No emails found.")) from None
-        else:
-            return FileResponse(
-                file,
-                as_attachment=True,
-                filename=mailbox.name + "." + file_format.split("[", maxsplit=1)[0],
-            )
+        return FileResponse(
+            file,
+            as_attachment=True,
+            filename=mailbox.name + "." + file_format.split("[", maxsplit=1)[0],
+        )
 
     URL_PATH_UPLOAD_MAILBOX = "upload"
     URL_NAME_UPLOAD_MAILBOX = "upload"
@@ -265,36 +342,24 @@ class MailboxViewSet(
         Returns:
             A response detailing the request status.
         """
-        file_format = request.data.get("format", None)
-        if file_format is None:
-            return Response(
-                {
-                    "detail": _("File format %(file_format)s is not supported.")
-                    % {"file_format": file_format}
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        uploaded_file = request.FILES.get("file", None)
-        if uploaded_file is None:
-            return Response(
-                {"detail": _("File missing in request.")},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        mailbox = self.get_object()
+        mailbox = (
+            self.get_object()
+        )  # this must be called first to return 404 for missing authentication even if the data is invalid
+        upload_serializer = UploadEmailSerializer(data=request.data)
+        upload_serializer.is_valid(raise_exception=True)
         try:
-            mailbox.add_emails_from_file(uploaded_file, file_format)
-        except ValueError as error:
-            return Response(
-                {
-                    "detail": _("An error occurred while processing the file."),
-                    "error": str(error),
-                },
-                status=status.HTTP_400_BAD_REQUEST,
+            mailbox.add_emails_from_file(
+                upload_serializer.validated_data["file"],
+                upload_serializer.validated_data["file_format"],
             )
+        except ValueError as error:
+            raise ValidationError(
+                {"file": str(error)},
+            ) from None
         mailbox_serializer = self.get_serializer(mailbox)
         return Response(
             {
                 "detail": _("Successfully uploaded mailbox file."),
-                "mailbox": mailbox_serializer.data,
+                "data": mailbox_serializer.data,
             }
         )

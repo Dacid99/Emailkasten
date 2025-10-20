@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -32,8 +32,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
 
-from ..constants import EmailFetchingCriterionChoices
-from ..mixins import URLMixin
+from core.constants import EmailFetchingCriterionChoices
+from core.mixins import HealthModelMixin, TimestampModelMixin, URLMixin
 
 
 if TYPE_CHECKING:
@@ -44,12 +44,27 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
-    """Database model for the daemon fetching a mailbox."""
+class Daemon(
+    DirtyFieldsMixin, URLMixin, HealthModelMixin, TimestampModelMixin, models.Model
+):
+    """Database model for the daemon fetching a mailbox.
+
+    Note:
+        The internal name of this object is ``daemon``, the external name for the user interface is ``routine``.
+    """
+
+    BASENAME = "daemon"
+
+    DELETE_NOTICE = _("This will only delete this routine, not its mailbox.")
+
+    DELETE_NOTICE_PLURAL = _(
+        "This will only delete these routine, not their mailboxes."
+    )
 
     uuid = models.UUIDField(
         default=uuid.uuid4,
         editable=False,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("UUID"),
     )
     """The uuid of this daemon. Used to create a unique logfile."""
@@ -58,6 +73,7 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
         "Mailbox",
         related_name="daemons",
         on_delete=models.CASCADE,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("mailbox"),
     )
     """The mailbox this daemon fetches. Unique. Deletion of that :attr:`mailbox` deletes this daemon."""
@@ -66,6 +82,7 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
         choices=EmailFetchingCriterionChoices.choices,
         default=EmailFetchingCriterionChoices.ALL,
         max_length=127,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("fetching criterion"),
         help_text=_("The selection criterion for emails to archive."),
     )
@@ -75,6 +92,7 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
         PeriodicTask,
         on_delete=models.CASCADE,
         null=True,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("celery task"),
     )
     """The periodic celery task wrapped by this daemon."""
@@ -82,48 +100,22 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
     interval: models.ForeignKey[IntervalSchedule] = models.ForeignKey(
         IntervalSchedule,
         on_delete=models.PROTECT,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("interval"),
-        help_text=_("The time between two daemon runs in seconds."),
+        help_text=_("The time between two routine runs in seconds."),
     )
     """The period with which the daemon is running."""
-
-    is_healthy = models.BooleanField(
-        null=True,
-        verbose_name=_("healthy"),
-    )
-    """Flags whether the daemon is healthy. `None` by default.
-    When the :attr:`core.models.Mailbox.is_healthy` field changes to `False`, this field is updated accordingly.
-    When this field changes to `True`, the :attr:`core.models.Mailbox.is_healthy` field of :attr:`mailbox` will be set to `True` as well by a signal.
-    """
-
-    last_error = models.TextField(
-        blank=True,
-        default="",
-        verbose_name=_("last error"),
-    )
-    """The error from the most recent failed task execution."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
-
-    BASENAME = "daemon"
-
-    DELETE_NOTICE = _("This will only delete this daemon, not its mailbox.")
 
     class Meta:
         """Metadata class for the model."""
 
         db_table = "daemons"
         """The name of the database table for the daemons."""
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name = _("routine")
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name_plural = _("routines")
+        get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
         constraints: Final[list[models.BaseConstraint]] = [
             models.CheckConstraint(
@@ -148,7 +140,7 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
         Returns:
             The string representation of the daemon, using :attr:`uuid` and :attr:`mailbox`.
         """
-        return _("Emailfetcherdaemon %(uuid)s for mailbox %(mailbox)s") % {
+        return _("Emailfetching routine %(uuid)s for mailbox %(mailbox)s") % {
             "uuid": self.uuid,
             "mailbox": self.mailbox,
         }
@@ -200,7 +192,7 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
         Raises:
             Exception: Any exception raised by the task.
         """
-        logger.info("Testing daemon %s ...", self)
+        logger.info("Testing routine %s ...", self)
 
         daemon_task = self.celery_task.task
         args = json.loads(self.celery_task.args or "[]")
@@ -208,9 +200,9 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
         try:
             current_app.send_task(daemon_task, args=args, kwargs=kwargs).get()
         except Exception:
-            logger.exception("Failed testing daemon %s!", self)
+            logger.exception("Failed testing routine %s!", self)
             raise
-        logger.info("Successfully tested daemon %s ...", self)
+        logger.info("Successfully tested routine %s ...", self)
 
     def start(self) -> bool:
         """Start the daemons :attr:`celery_task`.
@@ -222,7 +214,7 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
         if not self.celery_task.enabled:
             self.celery_task.enabled = True
             self.celery_task.save(update_fields=["enabled"])
-            logger.debug("Successfully started daemon.")
+            logger.debug("Successfully started routine.")
             return True
         logger.debug("%s was already running.", self)
         return False
@@ -237,7 +229,7 @@ class Daemon(DirtyFieldsMixin, URLMixin, models.Model):
         if self.celery_task.enabled:
             self.celery_task.enabled = False
             self.celery_task.save(update_fields=["enabled"])
-            logger.debug("Successfully stopped daemon.")
+            logger.debug("Successfully stopped routine.")
             return True
         logger.debug("%s was not running.", self)
         return False

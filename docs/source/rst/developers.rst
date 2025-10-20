@@ -1,3 +1,9 @@
+..
+   SPDX-License-Identifier: CC-BY-SA 4.0
+
+   Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
+   Licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+
 Developers Section
 ==================
 
@@ -12,22 +18,6 @@ please make sure to read the guidelines for developers.
     development
     contributing
     code_of_conduct
-
-
-If you are looking for a thing to help with please check out the ToDo list for ideas
-
-.. toctree::
-    :maxdepth: 1
-
-    todo
-
-Maybe you are using Emailkasten in parallel to another similar service.
-Programs that migrate databases from other applications to the Emailkasten database layout are always welcome.
-
-If you are interested in such an endeavour, please get in touch.
-
-You can find a graphical representation of the Emailkasten database layout :doc:`on this page <db-graph>`.
-We are always happy to help and give additional detailed information about the database layout.
 
 
 The full source code documentation can be found here
@@ -45,3 +35,42 @@ Graphical representation of the project code are shown on these pages
 
     db-graph
     import-graph
+
+
+Where to start
+--------------
+
+If you are looking for a thing to help with please check out the ToDo list for ideas
+
+.. toctree::
+    :maxdepth: 1
+
+    todo
+
+Migrations
+^^^^^^^^^^
+
+Maybe you are using Emailkasten in parallel to another similar service.
+Programs that migrate databases from other applications to the Emailkasten database layout are always welcome.
+
+If you are interested in such an endeavour, please get in touch.
+
+You can find a graphical representation of the Emailkasten database layout :doc:`on this page <db-graph>`.
+We are always happy to help and give additional detailed information about the database layout.
+
+
+Frontend development
+^^^^^^^^^^^^^^^^^^^^
+
+If you are interested in implementing a frontend option for Emailkasten, you are invited to do so.
+
+Especially mobile development is very welcome!
+
+To allow other frontends to use the same logic and user management as the native web frontend,
+the allauth views have an analogous API that can be used in its place.
+
+All other data can be accessed via the api endpoints designed in parallel to the web frontend pages.
+
+See the :doc:`API Instructions <api-instructions>` for more details.
+
+If you feel like there's anything missing, please give us a heads up about it!

@@ -1,1 +1,37 @@
-../../.gitlab/issue_templates/missing_accessibility.md
+---
+name: Missing Accessibility
+about: Use this template to report on inaccessible parts of the user interface.
+labels: accessibility
+---
+**Thank you for taking the time to report missing accessibility in the Emailkasten frontend!**
+
+- [ ] I have checked that there is no existing issue dealing with this problem.
+
+## Location *
+
+*Where the inaccessible UI element(s) can be found. Ideally the URL and location description in that page.*
+
+
+## Inaccessibility *
+
+*What makes the UI element(s) inaccessible.*
+
+
+## Device *
+
+*On what device or software does the inaccessibility appear?*
+
+
+## Emailkasten version *
+
+*The version of the application you used to find the bug. Ideally a docker image tag (not 'latest').*
+
+
+## Files
+
+*Put screenshots or audio recordings that may be required to understand the problem here.*
+
+
+## Possible diagnosis
+
+*If you have an idea what could be causing the inaccessibility please let us know.*

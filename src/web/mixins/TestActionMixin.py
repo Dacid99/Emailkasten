@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -44,16 +44,16 @@ class TestActionMixin:
             messages.error(
                 request,
                 _(
-                    "Test failed, there is something wrong with this objects setup\n%(error)s"
+                    "Test failed, there is something wrong with this objects setup: %(error)s"
                 )
                 % {"error": str(error)},
             )
         except FetcherError as error:
-            messages.error(request, _("Test failed\n%(error)s") % {"error": str(error)})
+            messages.error(request, _("Test failed: %(error)s") % {"error": str(error)})
         except Exception as error:
             messages.error(
                 request,
-                _("Test failed due to an unexpected error\n%(error)s")
+                _("Test failed due to an unexpected error: %(error)s")
                 % {"error": str(error)},
             )
         else:

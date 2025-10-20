@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,12 +25,11 @@ from typing import TYPE_CHECKING, Any, ClassVar, Final, override
 from django_celery_beat.models import IntervalSchedule
 from rest_framework import serializers
 
-from core.models import Daemon, Mailbox
-
-from ..django_celery_beat_serializers import (
+from api.v1.serializers.django_celery_beat_serializers import (
     IntervalScheduleSerializer,
     PeriodicTaskSerializer,
 )
+from core.models import Daemon, Mailbox
 
 
 if TYPE_CHECKING:
@@ -71,8 +70,9 @@ class BaseDaemonSerializer(serializers.ModelSerializer[Daemon]):
 
         read_only_fields: Final[list[str]] = [
             "uuid",
-            "last_error",
             "is_healthy",
+            "last_error",
+            "last_error_occurred_at",
             "created",
             "updated",
         ]

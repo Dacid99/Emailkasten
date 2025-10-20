@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -20,19 +20,24 @@
 
 from typing import Any, override
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+from django.views.generic.edit import DeletionMixin
+from rest_framework import status
 
 from core.models import Correspondent, EmailCorrespondent
+from web.mixins import CustomActionMixin
+from web.views.base import DetailWithDeleteView
 
-from ..DetailWithDeleteView import DetailWithDeleteView
 from .CorrespondentFilterView import CorrespondentFilterView
 
 
 class CorrespondentDetailWithDeleteView(
-    LoginRequiredMixin,
-    DetailWithDeleteView,
+    LoginRequiredMixin, DetailWithDeleteView, CustomActionMixin
 ):
     """View for a single :class:`core.models.Correspondent` instance."""
 
@@ -60,3 +65,38 @@ class CorrespondentDetailWithDeleteView(
             .distinct()[:25]
         )
         return context
+
+    @override
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if "delete" in request.POST:
+            return DeletionMixin.post(self, request)
+        return CustomActionMixin.post(self, request)
+
+    def handle_share(self, request: HttpRequest) -> HttpResponse:
+        """Handler function for the `share` action.
+
+        Args:
+            request: The action request to handle.
+
+        Returns:
+            A template response with the updated view after the action.
+        """
+        self.object = self.get_object()
+        service = request.POST.get("share")
+        try:
+            if service == "nextcloud":
+                self.object.share_to_nextcloud()
+            else:
+                return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        except (
+            FileNotFoundError,
+            ConnectionError,
+            PermissionError,
+            ValueError,
+            RuntimeError,
+        ) as error:
+            messages.error(request, str(error))
+        else:
+            messages.success(request, _("Sharing successful"))
+
+        return self.get(request)

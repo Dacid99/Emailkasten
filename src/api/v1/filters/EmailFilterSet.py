@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -82,7 +82,7 @@ class EmailFilterSet(filters.FilterSet):
         fields: ClassVar[dict[str, list[str]]] = {
             "message_id": FilterSetups.TEXT,
             "datetime": FilterSetups.DATETIME,
-            "email_subject": FilterSetups.TEXT,
+            "subject": FilterSetups.TEXT,
             "plain_bodytext": FilterSetups.TEXT,
             "html_bodytext": FilterSetups.TEXT,
             "datasize": FilterSetups.INT,
@@ -113,7 +113,7 @@ class EmailFilterSet(filters.FilterSet):
         """
         return queryset.filter(
             Q(message_id__icontains=value)
-            | Q(email_subject__icontains=value)
+            | Q(subject__icontains=value)
             | Q(plain_bodytext__icontains=value)
             | Q(html_bodytext__icontains=value)
             | Q(headers__has_any_keys=value)

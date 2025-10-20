@@ -63,6 +63,16 @@
                 <i class="fa-solid fa-xmark mx-1" aria-label={% translate "off" %}></i>
             {% endif %}
         </li>
+        {% if object.is_healthy == False %}
+            <li class="list-group-item list-group-item-danger">
+                {% translate "Latest Error" %}:
+                <p>
+                    <code>{{ object.last_error }}</code>
+                </p>
+                <p>{% translate "Occurred At" %}: {{ object.last_error_occurred_at }}</p>
+                <strong>{% translate "Test the mailbox to see if this error persists." %}</strong>
+            </li>
+        {% endif %}
     </ul>
 {% endblock card_content %}
 
@@ -71,7 +81,7 @@
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">
-                {% translate "Daemons" %}<i class="fa-solid fa-robot mx-2" aria-hidden="true"></i>
+                {% translate "Routines" %}<i class="fa-solid fa-calendar-days mx-2" aria-hidden="true"></i>
             </h4>
             <div class="m-1">
                 {% if object.daemons.exists %}

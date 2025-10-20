@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -29,27 +29,38 @@ import shutil
 from email import policy
 from functools import cached_property
 from hashlib import md5
-from io import BytesIO
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from typing import TYPE_CHECKING, Any, Final, override
 from zipfile import ZipFile
 
-from django.core.files.storage import default_storage
-from django.db import models, transaction
+from django.db import connection, models, transaction
 from django.template import engines
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 
-from Emailkasten.utils.workarounds import get_config
-
-from ..constants import HeaderFields, SupportedEmailDownloadFormats, file_format_parsers
-from ..mixins import FavoriteMixin, HasDownloadMixin, HasThumbnailMixin, URLMixin
-from ..utils.mail_parsing import (
+from core.constants import (
+    PROTOCOLS_SUPPORTING_RESTORE,
+    HeaderFields,
+    SupportedEmailDownloadFormats,
+    file_format_parsers,
+)
+from core.mixins import (
+    DownloadMixin,
+    FavoriteModelMixin,
+    FilePathModelMixin,
+    ThumbnailMixin,
+    TimestampModelMixin,
+    URLMixin,
+)
+from core.utils.fetchers.exceptions import MailboxError
+from core.utils.mail_parsing import (
     get_bodytexts,
     get_header,
     is_x_spam,
     parse_datetime_header,
 )
+from Emailkasten.utils.workarounds import get_config
+
 from .Attachment import Attachment
 from .EmailCorrespondent import EmailCorrespondent
 
@@ -67,24 +78,45 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models.Model):
+class Email(
+    DownloadMixin,
+    ThumbnailMixin,
+    URLMixin,
+    FavoriteModelMixin,
+    FilePathModelMixin,
+    TimestampModelMixin,
+    models.Model,
+):
     """Database model for an email."""
+
+    BASENAME = "email"
+
+    DELETE_NOTICE = _(
+        "This will delete this email and all its attachments but not its correspondents."
+    )
+
+    DELETE_NOTICE_PLURAL = _(
+        "This will delete these emails and all their attachments but not their correspondents."
+    )
 
     message_id = models.CharField(
         max_length=255,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("message-ID"),
     )
     """The messageID header of the mail. Unique together with :attr:`mailbox`."""
 
     datetime = models.DateTimeField(
-        verbose_name=_("received"),
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name=_("time received"),
     )
     """The Date header of the mail."""
 
-    email_subject = models.CharField(
+    subject = models.CharField(
         max_length=255,
         blank=True,
         default="",
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("subject"),
     )
     """The subject header of the mail."""
@@ -92,6 +124,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     plain_bodytext = models.TextField(
         blank=True,
         default="",
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("plain bodytext"),
     )
     """The plain bodytext of the mail. Can be blank."""
@@ -99,6 +132,7 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     html_bodytext = models.TextField(
         blank=True,
         default="",
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("HTML bodytext"),
     )
     """The html bodytext of the mail. Can be blank."""
@@ -107,7 +141,8 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         "self",
         symmetrical=False,
         related_name="replies",
-        verbose_name=_("in reply to"),
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name=_("in reply to email"),
     )
     """The mails that this mail is a response to.
     Technically just a single mail, but as a mail can exist in multiple mailboxes, this needs to be able to reference multiples."""
@@ -116,38 +151,23 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         "self",
         symmetrical=False,
         related_name="referenced_by",
-        verbose_name=_("referenced by"),
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name=_("referencing emails"),
     )
     """The mails that this email references."""
 
     datasize = models.PositiveIntegerField(
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("datasize"),
     )
     """The bytes size of the mail."""
-
-    eml_filepath = models.CharField(
-        max_length=255,
-        unique=True,
-        blank=True,
-        null=True,
-        verbose_name=_("EML filepath"),
-    )
-    """The path in the storage where the mail is stored in .eml format.
-    Can be null if the mail has not been saved.
-    When this entry is deleted, the file will be removed by :func:`core.signals.delete_Email.post_delete_email_files`.
-    """
-
-    is_favorite = models.BooleanField(
-        default=False,
-        verbose_name=_("favorite"),
-    )
-    """Flags favorite mails. False by default."""
 
     correspondents: models.ManyToManyField[Correspondent, Correspondent] = (
         models.ManyToManyField(
             "Correspondent",
             through="EmailCorrespondent",
             related_name="emails",
+            # Translators: Do not capitalize the very first letter unless your language requires it.
             verbose_name=_("correspondents"),
         )
     )
@@ -157,12 +177,14 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         "Mailbox",
         related_name="emails",
         on_delete=models.CASCADE,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("mailbox"),
     )
     """The mailbox that this mail has been found in. Unique together with :attr:`message_id`. Deletion of that `mailbox` deletes this mail."""
 
     headers = models.JSONField(
         null=True,
+        # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("headers"),
     )
     """All other header fields of the mail. Can be null."""
@@ -171,33 +193,21 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         max_length=255,
         blank=True,
         default="",
-        verbose_name=_("X-Spam"),
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name=_("X-Spam Flag"),
     )
     """The x_spam header of this mail. Can be blank."""
-
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created"),
-    )
-    """The datetime this entry was created. Is set automatically."""
-
-    updated = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("last updated"),
-    )
-    """The datetime this entry was last updated. Is set automatically."""
-
-    BASENAME = "email"
-
-    DELETE_NOTICE = _(
-        "This will delete this email and all its attachments but not its correspondents."
-    )
 
     class Meta:
         """Metadata class for the model."""
 
         db_table = "emails"
         """The name of the database table for the emails."""
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name = _("email")
+        # Translators: Do not capitalize the very first letter unless your language requires it.
+        verbose_name_plural = _("emails")
+        get_latest_by = "datetime"
 
         constraints: Final[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
@@ -226,154 +236,22 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
     def save(self, *args: Any, **kwargs: Any) -> None:
         """Extended :django::func:`django.models.Model.save` method.
 
-        Renders and saves the data to eml if configured.
+        Saves the data to eml if configured.
         """
-        email_data = kwargs.pop("email_data", None)
+        if not self.mailbox.save_to_eml:
+            kwargs.pop("file_payload", None)
         super().save(*args, **kwargs)
-        if email_data is not None and self.mailbox.save_to_eml:
-            self.save_eml_to_storage(email_data)
 
-    def save_eml_to_storage(self, email_data: bytes) -> None:
-        """Saves the email to the storage in eml format.
+    @override
+    def _get_storage_file_name(self) -> str:
+        """Create the filename for the stored eml."""
+        return str(self.pk) + "_" + self.message_id + ".eml"
 
-        If the file already exists, does not overwrite.
-
-        Args:
-            email_data: The data of the email to be saved.
-        """
-        if self.eml_filepath:
-            logger.debug("%s is already stored as eml.", self)
-            return
-
-        logger.debug("Storing %s as eml ...", self)
-
-        self.eml_filepath = default_storage.save(
-            str(self.pk) + "_" + self.message_id + ".eml",
-            BytesIO(email_data),
-        )
-        self.save(update_fields=["eml_filepath"])
-        logger.debug("Successfully stored email as eml.")
-
-    def sub_conversation(self) -> list[Email]:
-        """Gets all emails that follow this email in the conversation.
-
-        Returns:
-            The list of all mails in the subconversation.
-        """
-        sub_conversation_emails = [self]
-        for reply_email in self.replies.all().prefetch_related("replies"):
-            sub_conversation_emails.extend(reply_email.sub_conversation())
-        return sub_conversation_emails
-
-    def full_conversation(self) -> list[Email]:
-        """Gets all emails that are connected to this email via in_reply_to.
-
-        Based on :func:`core.models.Email.Email.sub_conversation`
-        to recurse through the entire conversation.
-
-        Todo:
-            This needs to be properly adapted to in_reply_to being many-to-many.
-
-        Returns:
-            The list of all mails in the conversation.
-        """
-        root_email = self
-        while root_email.in_reply_to.first() is not None:
-            root_email = root_email.in_reply_to.first()
-        return root_email.sub_conversation()
-
-    @property
-    def is_spam(self) -> bool:
-        """Checks the spam headers to decide whether the mail is spam.
-
-        Returns:
-            Whether the mail is considered spam.
-        """
-        return is_x_spam(self.x_spam)
-
-    @staticmethod
-    def queryset_as_file(
-        queryset: QuerySet[Email], file_format: str
-    ) -> _TemporaryFileWrapper:
-        """Processes the files of the emails in the queryset into a temporary file.
+    def fill_from_email_bytes(self, email_bytes: bytes) -> Email:
+        """Fills the :class:`core.models.Email` with data from an email in bytes form.
 
         Args:
-            queryset: The email queryset to compile into a file.
-            file_format: The desired format of the file. Must be one of :class:`core.constants.SupportedEmailDownloadFormats`. Case-insensitive.
-
-        Returns:
-            The temporary file wrapper.
-
-        Raises:
-            ValueError: If the given :attr:`file_format` is not supported.
-            Email.DoesNotExist: If the :attr:`queryset` is empty.
-        """
-        if not queryset.exists():
-            raise Email.DoesNotExist("The queryset is empty!")
-        tempfile = (
-            NamedTemporaryFile(  # noqa: SIM115  # pylint: disable=consider-using-with
-                suffix=".zip"  # the suffix allows zipping to this file with shutil
-            )
-        )  # the file must not be closed as it is returned later
-        file_format = file_format.lower()
-        if file_format == SupportedEmailDownloadFormats.ZIP_EML:
-            with ZipFile(tempfile.name, "w") as zipfile:
-                for email_item in queryset:
-                    if email_item.eml_filepath is not None:
-                        try:
-                            eml_file = default_storage.open(email_item.eml_filepath)
-                        except FileNotFoundError:
-                            continue
-                        else:
-                            with zipfile.open(
-                                os.path.basename(email_item.eml_filepath), "w"
-                            ) as zipped_file:
-                                zipped_file.write(eml_file.read())
-        elif file_format in [
-            SupportedEmailDownloadFormats.MBOX,
-            SupportedEmailDownloadFormats.BABYL,
-            SupportedEmailDownloadFormats.MMDF,
-        ]:
-            parser_class = file_format_parsers[file_format]
-            parser = parser_class(tempfile.name, create=True)
-            parser.lock()
-            for email_item in queryset:
-                if email_item.eml_filepath is not None:
-                    with contextlib.suppress(FileNotFoundError):
-                        parser.add(default_storage.open(email_item.eml_filepath))
-            parser.close()
-        elif file_format in [
-            SupportedEmailDownloadFormats.MAILDIR,
-            SupportedEmailDownloadFormats.MH,
-        ]:
-            with TemporaryDirectory() as tempdirpath:
-                mailbox_path = os.path.join(tempdirpath, file_format)
-                parser_class = file_format_parsers[file_format]
-                parser = parser_class(mailbox_path, create=True)
-                parser.lock()
-                for email_item in queryset:
-                    if email_item.eml_filepath is not None:
-                        # this construction is necessary as Maildir.add can also raise FileNotFound
-                        # if the directory is incorrectly structured, that warning must not be blocked
-                        try:
-                            eml_file = default_storage.open(email_item.eml_filepath)
-                        except FileNotFoundError:
-                            continue
-                        parser.add(eml_file)
-                parser.close()
-                shutil.make_archive(
-                    os.path.splitext(tempfile.name)[0], "zip", tempdirpath
-                )
-        else:
-            raise ValueError("The given file format is not supported!")
-        return tempfile
-
-    @classmethod
-    def fill_from_email_bytes(cls, email_bytes: bytes) -> Email:
-        """Constructs an :class:`core.models.Email` from an email in bytes form.
-
-        Args:
-            email_bytes: The email bytes to parse the emaildata from.
+            email_bytes: The email bytes data.
 
         Returns:
             The :class:`core.models.Email` instance with data from the bytes.
@@ -383,17 +261,20 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         for header_name in email_message:
             header_dict[header_name.lower()] = get_header(email_message, header_name)
         bodytexts = get_bodytexts(email_message)
-        return cls(
-            headers=header_dict,
-            message_id=header_dict.get(HeaderFields.MESSAGE_ID)
-            or md5(email_bytes).hexdigest(),  # noqa: S324  # no safe hash required here
-            datetime=parse_datetime_header(header_dict.get(HeaderFields.DATE)),
-            email_subject=header_dict.get(HeaderFields.SUBJECT) or __("No subject"),
-            x_spam=header_dict.get(HeaderFields.X_SPAM) or "",
-            datasize=len(email_bytes),
-            plain_bodytext=bodytexts.get("plain", ""),
-            html_bodytext=bodytexts.get("html", ""),
+
+        self.headers = header_dict
+        self.message_id = (
+            header_dict.get(HeaderFields.MESSAGE_ID)
+            or md5(email_bytes).hexdigest()  # noqa: S324  # no safe hash required here
         )
+        self.datetime = parse_datetime_header(header_dict.get(HeaderFields.DATE))
+        self.subject = header_dict.get(HeaderFields.SUBJECT) or __("No subject")
+        self.x_spam = header_dict.get(HeaderFields.X_SPAM) or ""
+        self.datasize = len(email_bytes)
+        self.plain_bodytext = bodytexts.get("plain", "")
+        self.html_bodytext = bodytexts.get("html", "")
+
+        return self
 
     def add_correspondents(self) -> None:
         """Adds the correspondents from the headerfields to the model."""
@@ -465,6 +346,159 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
                         ):
                             self.references.add(referenced_email)
 
+    def reprocess(self) -> None:
+        """Reprocesses the mails connections to other emails in the database."""
+        with contextlib.suppress(FileNotFoundError):
+            with self.open_file() as email_file:
+                email_bytes = email_file.read()
+            self.fill_from_email_bytes(email_bytes)
+        with transaction.atomic():
+            self.save()
+            self.in_reply_to.clear()
+            self.add_in_reply_to()
+            self.references.clear()
+            self.add_references()
+
+    def restore_to_mailbox(self) -> None:
+        """Restores the email to its mailbox.
+
+        Raises:
+            NotImplementedError: If the emails account does not allow restoring.
+            FileNotFoundError: If there is no eml file for the email.
+            MailAccountError: If there was an error connected to the account.
+            MailboxError: If there was an error with the mailbox.
+        """
+        logger.debug("Restoring %s to its mailbox.", self)
+        with self.mailbox.account.get_fetcher() as fetcher:
+            try:
+                fetcher.restore(self)
+            except MailboxError as error:
+                logger.exception("Restoring of email %s to its mailbox failed!", self)
+                self.mailbox.set_unhealthy(error)
+                raise
+        logger.debug("Successfully restored email.")
+
+    @cached_property
+    def conversation(self) -> QuerySet[Email]:
+        """Recursively gets all emails that are part of this emails conversation,
+        connected through references or in_reply_to.
+
+        Returns:
+            Queryset of all mails in the conversation.
+        """
+        conversation_sql = """
+        WITH RECURSIVE
+        emails_links AS (
+            SELECT from_email_id, to_email_id FROM emails_in_reply_to
+            UNION ALL
+            SELECT from_email_id, to_email_id FROM emails_references
+        ),
+
+        conversation_root AS (
+            SELECT e.id
+            FROM emails e
+            WHERE e.id = %s
+
+            UNION ALL
+
+            SELECT DISTINCT linked.id
+            FROM emails linked
+            JOIN emails_links l ON l.to_email_id = linked.id
+            JOIN conversation_root cr ON cr.id = l.from_email_id
+        ),
+
+        conversation_thread AS (
+            SELECT e.id
+            FROM emails e
+            JOIN conversation_root cr ON e.id = cr.id
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM emails_links l
+                WHERE l.from_email_id = e.id
+            )
+
+            UNION ALL
+
+            SELECT DISTINCT linking.id
+            FROM emails linking
+            JOIN emails_links l ON l.from_email_id = linking.id
+            JOIN conversation_thread ct ON l.to_email_id = ct.id
+        )
+
+        SELECT DISTINCT id
+        FROM conversation_thread;
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(conversation_sql, [self.id])
+            conversation_rows = cursor.fetchall()
+        conversation_ids = [
+            conversation_row[0] for conversation_row in conversation_rows
+        ]
+        return Email.objects.filter(
+            id__in=conversation_ids, mailbox__account__user=self.mailbox.account.user
+        ).order_by("datetime")
+
+    @override
+    @property
+    def has_thumbnail(self) -> bool:
+        return not self.is_spam
+
+    @property
+    def can_be_restored(self) -> bool:
+        """Checks if the email can be restored to its mailbox.
+
+        Returns:
+            Whether the email can be restored.
+        """
+        return (
+            self.file_path is not None
+            and self.mailbox.account.protocol in PROTOCOLS_SUPPORTING_RESTORE
+            and self.mailbox.is_healthy
+        )
+
+    @cached_property
+    def html_version(self) -> str:
+        """Renders a html version of this email.
+
+        Uses the template and css from constance settings.
+
+        Returns:
+            The emails html version.
+        """
+        engine = engines["django"]
+        template = engine.from_string(get_config("EMAIL_HTML_TEMPLATE"))
+        from_emailcorrespondents = self.emailcorrespondents.filter(
+            mention=HeaderFields.Correspondents.FROM
+        ).select_related("correspondent")
+        to_emailcorrespondents = self.emailcorrespondents.filter(
+            mention=HeaderFields.Correspondents.TO
+        ).select_related("correspondent")
+        cc_emailcorrespondents = self.emailcorrespondents.filter(
+            mention=HeaderFields.Correspondents.CC
+        ).select_related("correspondent")
+        bcc_emailcorrespondents = self.emailcorrespondents.filter(
+            mention=HeaderFields.Correspondents.BCC
+        ).select_related("correspondent")
+        return template.render(
+            context={
+                "email": self,
+                "email_css": get_config("EMAIL_CSS"),
+                "from_emailcorrespondents": from_emailcorrespondents,
+                "to_emailcorrespondents": to_emailcorrespondents,
+                "cc_emailcorrespondents": cc_emailcorrespondents,
+                "bcc_emailcorrespondents": bcc_emailcorrespondents,
+            }
+        )
+
+    @property
+    def is_spam(self) -> bool:
+        """Checks the spam headers to decide whether the mail is spam.
+
+        Returns:
+            Whether the mail is considered spam.
+        """
+        return is_x_spam(self.x_spam)
+
     @classmethod
     def create_from_email_bytes(
         cls, email_bytes: bytes, mailbox: Mailbox
@@ -508,14 +542,13 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
             )
             return None
 
-        new_email = cls.fill_from_email_bytes(email_bytes=email_bytes)
-        new_email.mailbox = mailbox
+        new_email = cls(mailbox=mailbox).fill_from_email_bytes(email_bytes=email_bytes)
 
         logger.debug("Successfully parsed email.")
         logger.debug("Saving email %s to db...", message_id)
         try:
             with transaction.atomic():
-                new_email.save(email_data=email_bytes)
+                new_email.save(file_payload=email_bytes)
                 new_email.add_correspondents()
                 new_email.add_in_reply_to()
                 new_email.add_references()
@@ -528,46 +561,83 @@ class Email(HasDownloadMixin, HasThumbnailMixin, URLMixin, FavoriteMixin, models
         logger.debug("Successfully saved email to db.")
         return new_email
 
-    @cached_property
-    def html_version(self) -> str:
-        """Renders a html version of this email.
+    @staticmethod
+    def queryset_as_file(
+        queryset: QuerySet[Email], file_format: str
+    ) -> _TemporaryFileWrapper:
+        """Processes the files of the emails in the queryset into a temporary file.
 
-        Uses the template and css from constance settings.
+        Args:
+            queryset: The email queryset to compile into a file.
+            file_format: The desired format of the file. Must be one of :class:`core.constants.SupportedEmailDownloadFormats`. Case-insensitive.
 
         Returns:
-            The emails html version.
+            The temporary file wrapper.
+
+        Raises:
+            ValueError: If the given :attr:`file_format` is not supported.
+            Email.DoesNotExist: If the :attr:`queryset` is empty.
         """
-        engine = engines["django"]
-        template = engine.from_string(get_config("EMAIL_HTML_TEMPLATE"))
-        from_emailcorrespondents = self.emailcorrespondents.filter(
-            mention=HeaderFields.Correspondents.FROM
-        ).select_related("correspondent")
-        to_emailcorrespondents = self.emailcorrespondents.filter(
-            mention=HeaderFields.Correspondents.TO
-        ).select_related("correspondent")
-        cc_emailcorrespondents = self.emailcorrespondents.filter(
-            mention=HeaderFields.Correspondents.CC
-        ).select_related("correspondent")
-        bcc_emailcorrespondents = self.emailcorrespondents.filter(
-            mention=HeaderFields.Correspondents.BCC
-        ).select_related("correspondent")
-        return template.render(
-            context={
-                "email": self,
-                "email_css": get_config("EMAIL_CSS"),
-                "from_emailcorrespondents": from_emailcorrespondents,
-                "to_emailcorrespondents": to_emailcorrespondents,
-                "cc_emailcorrespondents": cc_emailcorrespondents,
-                "bcc_emailcorrespondents": bcc_emailcorrespondents,
-            }
-        )
-
-    @override
-    @property
-    def has_thumbnail(self) -> bool:
-        return not self.is_spam
-
-    @override
-    @property
-    def has_download(self) -> bool:
-        return self.eml_filepath is not None
+        if not queryset.exists():
+            raise Email.DoesNotExist("The queryset is empty!")
+        tempfile = (
+            NamedTemporaryFile(  # noqa: SIM115  # pylint: disable=consider-using-with
+                suffix=".zip"  # the suffix allows zipping to this file with shutil
+            )
+        )  # the file must not be closed as it is returned later
+        file_format = file_format.lower()
+        if file_format == SupportedEmailDownloadFormats.ZIP_EML:
+            with ZipFile(tempfile.name, "w") as zipfile:
+                for email_item in queryset:
+                    try:
+                        eml_file = email_item.open_file()
+                    except FileNotFoundError:
+                        continue
+                    with eml_file, zipfile.open(
+                        os.path.basename(email_item.file_path), "w"
+                    ) as zipped_file:
+                        zipped_file.write(eml_file.read())
+        elif file_format in [
+            SupportedEmailDownloadFormats.MBOX,
+            SupportedEmailDownloadFormats.BABYL,
+            SupportedEmailDownloadFormats.MMDF,
+        ]:
+            parser_class = file_format_parsers[file_format]
+            parser = parser_class(tempfile.name, create=True)
+            parser.lock()
+            for email_item in queryset:
+                try:
+                    eml_file = email_item.open_file()
+                except FileNotFoundError:
+                    continue
+                with eml_file:
+                    parser.add(eml_file)
+            parser.close()
+        elif file_format in [
+            SupportedEmailDownloadFormats.MAILDIR,
+            SupportedEmailDownloadFormats.MH,
+        ]:
+            with TemporaryDirectory() as tempdirpath:
+                mailbox_path = os.path.join(tempdirpath, file_format)
+                parser_class = file_format_parsers[file_format]
+                parser = parser_class(mailbox_path, create=True)
+                parser.lock()
+                for email_item in queryset:
+                    # this construction is strictly necessary as Maildir.add can also raise FileNotFound
+                    # if the directory is incorrectly structured; that warning must not be blocked
+                    try:
+                        eml_file = email_item.open_file()
+                    except FileNotFoundError:
+                        continue
+                    with eml_file:
+                        parser.add(eml_file)
+                parser.close()
+                shutil.make_archive(
+                    os.path.splitext(tempfile.name)[0], "zip", tempdirpath
+                )
+        else:
+            raise ValueError(
+                _("The file format %(file_format)s is not supported.")
+                % {"file_format": file_format}
+            )
+        return tempfile

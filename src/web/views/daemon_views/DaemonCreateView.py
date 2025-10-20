@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Emailkasten - a open-source self-hostable email archiving server
-# Copyright (C) 2024  David & Philipp Aderbauer
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,17 +24,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 
 from core.models import Daemon
-
-from ...forms import CreateDaemonForm
+from web.forms import CreateDaemonForm
 
 
 class DaemonCreateView(LoginRequiredMixin, CreateView):
     """View for creating a single :class:`core.models.Daemon` instance."""
 
+    URL_NAME = Daemon.BASENAME + "-create"
     model = Daemon
     form_class = CreateDaemonForm
     template_name = "web/daemon/daemon_create.html"
-    URL_NAME = Daemon.BASENAME + "-create"
 
     @override
     def get_form_kwargs(self) -> dict[str, Any]:
