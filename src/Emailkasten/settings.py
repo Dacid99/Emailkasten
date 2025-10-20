@@ -382,6 +382,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "allauth.usersessions.middleware.UserSessionsMiddleware",
     "Emailkasten.middleware.TimezoneMiddleware.TimezoneMiddleware",
 ]
 
@@ -559,22 +560,47 @@ BROKER_URL = CELERY_BROKER_URL  # required for rabbitmq django-healthcheck
 # https://django-allauth.readthedocs.io/en/latest/index.html
 
 # account
-ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]
-ACCOUNT_LOGIN_METHODS = {"username"}
-ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_ADAPTER = "Emailkasten.utils.toggle_signup.ToggleSignupAccountAdapter"
+ACCOUNT_LOGIN_METHODS = {"username"}
+ACCOUNT_LOGIN_TIMEOUT = env("ACCOUNT_LOGIN_TIMEOUT", cast=int, default=900)
+ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]
+ACCOUNT_USERNAME_BLACKLIST = env("ACCOUNT_USERNAME_BLACKLIST", cast=list, default=[])
+ACCOUNT_USERNAME_MIN_LENGTH = env("ACCOUNT_USERNAME_MIN_LENGTH", cast=int, default=1)
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_SESSION_REMEMBER = env("ACCOUNT_SESSION_REMEMBER", cast=bool, default=None)
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = env(
+    "ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE", cast=bool, default=False
+)
+ACCOUNT_REAUTHENTICATION_TIMEOUT = env(
+    "ACCOUNT_REAUTHENTICATION_TIMEOUT", cast=int, default=300
+)
+ACCOUNT_REAUTHENTICATION_REQUIRED = env(
+    "ACCOUNT_REAUTHENTICATION_REQUIRED", cast=bool, default=False
+)
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https" if not DEBUG else "http"
+ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD = "phone"
+
+# usersessions
+USERSESSIONS_TRACK_ACTIVITY = env("USERSESSIONS_KEEP_UPDATED", cast=bool, default=True)
 
 # headless
 HEADLESS_ONLY = False
 
 # mfa
-MFA_TOTP_ISSUER = "Emailkasten"
 MFA_ALLOW_UNVERIFIED_EMAIL = True
+
+MFA_TOTP_ISSUER = env("MFA_TOTP_ISSUER", cast=str, default="Emailkasten")
+MFA_TOTP_PERIOD = env("MFA_TOTP_PERIOD", cast=int, default=30)
+MFA_TOTP_DIGITS = env("MFA_TOTP_DIGITS", cast=int, default=6)
 MFA_TOTP_TOLERANCE = env("MFA_TOTP_TOLERANCE", cast=int, default=1)
 
+MFA_RECOVERY_CODE_COUNT = env("MFA_RECOVERY_CODE_COUNT", cast=int, default=10)
+MFA_RECOVERY_CODE_DIGITS = env("MFA_RECOVERY_CODE_DIGITS", cast=int, default=8)
+
 MFA_TRUST_ENABLED = env("MFA_TRUST_ENABLED", cast=bool, default=True)
+MFA_TRUST_COOKIE_AGE = env("MFA_TRUST_COOKIE_AGE", cast=int, default=DEFAULT_COOKIE_AGE)
 MFA_TRUST_COOKIE_SECURE = not DEBUG
+MFA_TRUST_COOKIE_SAMESITE = env("MFA_TRUST_COOKIE_SAMESITE", cast=str, default="Lax")
 
 
 ##### crispy_forms #####

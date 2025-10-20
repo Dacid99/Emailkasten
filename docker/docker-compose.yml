@@ -18,7 +18,7 @@ services:
       start_period: 10s
 
   web:
-    image: emailkasten-debug
+    image: dacid99/emailkasten
     container_name: emailkasten-web
     volumes:
       - /path/to/emailkasten/archive:/mnt/archive
@@ -26,6 +26,7 @@ services:
     ports:
       - 1122:443
     environment:
+    # see the docs for all details  https://emailkasten.readthedocs.io/latest/rst/configuration.html#server-admin-settings
     # mandatory
       - DATABASE=email_archive_django # must match db:MARIADB_DATABASE
       - DATABASE_USER=user # must match db:MARIADB_USER
@@ -37,8 +38,23 @@ services:
     # optional
       - REGISTRATION_ENABLED=False
       - STRICT_PASSWORDS=True
-      - MFA_TRUST_ENABLED=True
+      - ACCOUNT_LOGIN_TIMEOUT=900
+      - ACCOUNT_USERNAME_BLACKLIST=[]
+      - ACCOUNT_USERNAME_MIN_LENGTH=1
+      - ACCOUNT_SESSION_REMEMBER=  # set this to True if you want users to always be remembered and to False to never remember them. Leave empty to ask on login.
+      - ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE=False
+      - ACCOUNT_REAUTHENTICATION_TIMEOUT=300
+      - ACCOUNT_REAUTHENTICATION_REQUIRED=False
+      - USERSESSIONS_KEEP_UPDATED=True
+      - MFA_TOTP_ISSUER=Emailkasten
       - MFA_TOTP_TOLERANCE=1
+      - MFA_TOTP_PERIOD=30
+      - MFA_TOTP_DIGITS=6
+      - MFA_RECOVERY_CODE_COUNT=10
+      - MFA_RECOVERY_CODE_DIGITS=8
+      - MFA_TRUST_ENABLED=True
+      - MFA_TRUST_COOKIE_AGE=2419200
+      - MFA_TRUST_COOKIE_SAMESITE=Lax # the samesite value on the trust-browser-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
       - APP_LOG_LEVEL=INFO
       - DJANGO_LOG_LEVEL=INFO
       - CELERY_LOG_LEVEL=INFO
