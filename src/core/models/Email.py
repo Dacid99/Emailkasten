@@ -92,11 +92,11 @@ class Email(
     BASENAME = "email"
 
     DELETE_NOTICE = _(
-        "This will delete this email and all its attachments but not its correspondents."
+        "This will delete the records of this email and all its attachments but not its correspondents."
     )
 
     DELETE_NOTICE_PLURAL = _(
-        "This will delete these emails and all their attachments but not their correspondents."
+        "This will delete the records of these emails and all their attachments but not their correspondents."
     )
 
     message_id = models.CharField(

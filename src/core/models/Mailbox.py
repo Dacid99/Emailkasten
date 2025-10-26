@@ -76,11 +76,11 @@ class Mailbox(
     BASENAME = "mailbox"
 
     DELETE_NOTICE = _(
-        "This will delete this mailbox and all emails and attachments found in it!"
+        "This will delete the record of this mailbox and all emails and attachments found in it!"
     )
 
     DELETE_NOTICE_PLURAL = _(
-        "This will delete these mailboxes and all emails and attachments found in them!"
+        "This will delete the records of these mailboxes and all emails and attachments found in them!"
     )
 
     name = models.CharField(

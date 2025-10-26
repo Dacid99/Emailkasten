@@ -57,10 +57,12 @@ class Correspondent(
 
     BASENAME = "correspondent"
 
-    DELETE_NOTICE = _("This will only delete this correspondent, not its emails.")
+    DELETE_NOTICE = _(
+        "This will only delete the record of this correspondent, not of its emails."
+    )
 
     DELETE_NOTICE_PLURAL = _(
-        "This will only delete these correspondents, not their emails."
+        "This will only delete the records of these correspondents, not of their emails."
     )
 
     email_address = models.CharField(

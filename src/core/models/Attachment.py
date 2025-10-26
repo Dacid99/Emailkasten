@@ -81,10 +81,12 @@ class Attachment(
 
     BASENAME = "attachment"
 
-    DELETE_NOTICE = _("This will only delete this attachment, not the email.")
+    DELETE_NOTICE = _(
+        "This will only delete the record of this attachment, not of the email."
+    )
 
     DELETE_NOTICE_PLURAL = _(
-        "This will only delete these attachments, not their emails."
+        "This will only delete the records of these attachments, not of their emails."
     )
 
     file_name = models.CharField(
