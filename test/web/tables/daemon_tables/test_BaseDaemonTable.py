@@ -25,13 +25,12 @@ from web.tables import BaseDaemonTable
 def test_output(fake_daemon):
     table = BaseDaemonTable(Daemon.objects.all())
 
-    table_list = list(table.as_values())
-    assert len(table_list) == 2
+    values = table.rows
+    assert len(values) == 1
     fields = table.columns
+    assert "checkbox" in fields
     assert "uuid" in fields
     assert "fetching_criterion" in fields
     assert "interval__period" in fields
     assert "interval__every" in fields
-    assert len(fields) == 4
-    values = table_list[1]
-    assert len(values) == 4
+    assert len(fields) == 5

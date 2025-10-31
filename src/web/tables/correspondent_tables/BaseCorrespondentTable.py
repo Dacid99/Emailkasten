@@ -18,12 +18,16 @@
 
 """test.web.tables.correspondent_tables package containing correspondent tables of the Emailkasten webapp."""
 
-from django_tables2 import Table
+from django_tables2 import Column, Table
 
 from core.models import Correspondent
+from web.utils.columns import CheckboxColumn
 
 
 class BaseCorrespondentTable(Table):
+    checkbox = CheckboxColumn()
+    email_address = Column(linkify=True)
+
     class Meta:
         model = Correspondent
         fields = (
@@ -31,3 +35,4 @@ class BaseCorrespondentTable(Table):
             "email_name",
             "real_name",
         )
+        sequence = ("checkbox", *fields)

@@ -18,12 +18,16 @@
 
 """test.web.tables.attachment_tables package containing attachment tables of the Emailkasten webapp."""
 
-from django_tables2 import Table
+from django_tables2 import Column, Table
 
 from core.models import Attachment
+from web.utils.columns import CheckboxColumn
 
 
 class BaseAttachmentTable(Table):
+    file_name = Column(linkify=True)
+    checkbox = CheckboxColumn()
+
     class Meta:
         model = Attachment
         fields = (
@@ -33,3 +37,4 @@ class BaseAttachmentTable(Table):
             "content_type",
             "datasize",
         )
+        sequence = ("checkbox", *fields)

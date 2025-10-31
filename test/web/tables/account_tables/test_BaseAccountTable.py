@@ -25,14 +25,13 @@ from web.tables import BaseAccountTable
 def test_output(fake_account):
     table = BaseAccountTable(Account.objects.all())
 
-    table_list = list(table.as_values())
-    assert len(table_list) == 2
+    values = table.rows
+    assert len(values) == 1
     fields = table.columns
+    assert "checkbox" in fields
     assert "mail_address" in fields
     assert "mail_host" in fields
     assert "mail_host_port" in fields
     assert "protocol" in fields
     assert "timeout" in fields
-    assert len(fields) == 5
-    values = table_list[1]
-    assert len(values) == 5
+    assert len(fields) == 6

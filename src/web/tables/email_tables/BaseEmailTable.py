@@ -18,19 +18,21 @@
 
 """test.web.tables.email_tables package containing email tables of the Emailkasten webapp."""
 
-from django_tables2 import Table
+from django_tables2 import Column, Table
 
 from core.models import Email
+from web.utils.columns import CheckboxColumn
 
 
 class BaseEmailTable(Table):
+    checkbox = CheckboxColumn()
+    subject = Column(linkify=True)
+
     class Meta:
         model = Email
         fields = (
-            "message_id",
             "subject",
             "datetime",
-            "plain_bodytext",
-            "html_bodytext",
             "datasize",
         )
+        sequence = ("checkbox", *fields)

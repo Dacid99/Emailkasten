@@ -18,12 +18,16 @@
 
 """test.web.tables.mailbox_tables package containing mailbox tables of the Emailkasten webapp."""
 
-from django_tables2 import Table
+from django_tables2 import Column, Table
 
 from core.models import Mailbox
+from web.utils.columns import CheckboxColumn
 
 
 class BaseMailboxTable(Table):
+    checkbox = CheckboxColumn()
+    name = Column(linkify=True)
+
     class Meta:
         model = Mailbox
         fields = (
@@ -31,3 +35,4 @@ class BaseMailboxTable(Table):
             "save_attachments",
             "save_to_eml",
         )
+        sequence = ("checkbox", *fields)

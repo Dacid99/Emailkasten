@@ -25,15 +25,11 @@ from web.tables import BaseEmailTable
 def test_output(fake_email):
     table = BaseEmailTable(Email.objects.all())
 
-    table_list = list(table.as_values())
-    assert len(table_list) == 2
+    values = table.rows
+    assert len(values) == 1
     fields = table.columns
+    assert "checkbox" in fields
     assert "subject" in fields
-    assert "message_id" in fields
     assert "datetime" in fields
-    assert "plain_bodytext" in fields
-    assert "html_bodytext" in fields
     assert "datasize" in fields
-    assert len(fields) == 6
-    values = table_list[1]
-    assert len(values) == 6
+    assert len(fields) == 4

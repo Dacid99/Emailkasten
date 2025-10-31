@@ -25,12 +25,11 @@ from web.tables import BaseMailboxTable
 def test_output(fake_mailbox):
     table = BaseMailboxTable(Mailbox.objects.all())
 
-    table_list = list(table.as_values())
-    assert len(table_list) == 2
+    values = table.rows
+    assert len(values) == 1
     fields = table.columns
+    assert "checkbox" in fields
     assert "name" in fields
     assert "save_attachments" in fields
     assert "save_to_eml" in fields
-    assert len(fields) == 3
-    values = table_list[1]
-    assert len(values) == 3
+    assert len(fields) == 4

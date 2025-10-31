@@ -18,12 +18,16 @@
 
 """test.web.tables.daemon_tables package containing daemon tables of the Emailkasten webapp."""
 
-from django_tables2 import Table
+from django_tables2 import Column, Table
 
 from core.models import Daemon
+from web.utils.columns import CheckboxColumn
 
 
 class BaseDaemonTable(Table):
+    checkbox = CheckboxColumn()
+    uuid = Column(linkify=True)
+
     class Meta:
         model = Daemon
         fields = (
@@ -32,3 +36,4 @@ class BaseDaemonTable(Table):
             "interval__period",
             "interval__every",
         )
+        sequence = ("checkbox", *fields)

@@ -25,14 +25,13 @@ from web.tables import BaseAttachmentTable
 def test_output(fake_attachment):
     table = BaseAttachmentTable(Attachment.objects.all())
 
-    table_list = list(table.as_values())
-    assert len(table_list) == 2
+    values = table.rows
+    assert len(values) == 1
     fields = table.columns
+    assert "checkbox" in fields
     assert "file_name" in fields
     assert "content_disposition" in fields
     assert "content_id" in fields
     assert "content_type" in fields
     assert "datasize" in fields
-    assert len(fields) == 5
-    values = table_list[1]
-    assert len(values) == 5
+    assert len(fields) == 6
