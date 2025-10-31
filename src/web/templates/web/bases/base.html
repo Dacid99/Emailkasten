@@ -1,4 +1,6 @@
-{% load static i18n django_bootstrap5 %}
+{% load static %}
+{% load bootstrap_css bootstrap_javascript bootstrap_messages from django_bootstrap5 %}
+{% load translate get_current_language from i18n %}
 
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>

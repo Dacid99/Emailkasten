@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load translate from i18n %}
 
 <span class="btn badge {% if object.is_favorite %}bg-warning{% else %}bg-secondary{% endif %} shadow mx-1 favorite-badge"
       data-url="{{ object.get_absolute_toggle_favorite_url }}"

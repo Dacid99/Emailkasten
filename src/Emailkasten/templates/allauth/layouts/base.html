@@ -1,5 +1,8 @@
-{% load static i18n allauth django_bootstrap5 %}
+{% load static allauth %}
+{% load bootstrap_css bootstrap_field bootstrap_javascript from django_bootstrap5 %}
+{% load translate get_current_language from i18n %}
 
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" data-bs-theme="auto">
     <head>

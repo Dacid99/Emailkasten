@@ -1,6 +1,6 @@
 {% extends "web/partials/bases/_base_card_with_thumbnail.html" %}
 
-{% load i18n %}
+{% load translate from i18n %}
 
 {% block card_class %}
     {% if object.is_spam %}border-danger bg-danger-subtle{% endif %}
