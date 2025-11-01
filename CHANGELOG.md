@@ -2,6 +2,9 @@
 
 ## Version 0.1.1
 
+- Features:
+  - Table interface as alternative to card lists
+
 - Fixes:
   - mailbox names for some servers were parsed incorrectly
   - accepting subject lines of length > 255 chars

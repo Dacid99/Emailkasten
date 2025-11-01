@@ -225,6 +225,16 @@ Each of these can be search and filtered by various criteria. Every single item 
 Items that are important to you can marked as favorites. Just click the star icon in the card of the item to toggle the favorite status.
 Favorite items are sorted to the top of lists so they are easily found.
 
+Tables and lists
+""""""""""""""""
+
+You can get an overview of your data in two formats: listed or tabular.
+
+The listed format presents a series of cards representing the data
+while the tabular interface gives you a clean table with information with each object in its own row.
+
+The table interface can always be found by appending `table/` to the url of the corresponding list overview.
+
 Emails
 ^^^^^^
 
