@@ -13,7 +13,7 @@ ruff: ruff.toml
 	poetry run ruff check --config=$< ../src/ ../test/ | tee $(REPORT_PATH)ruff.ansi
 
 djlint: djlintrc
-	poetry run djlint --configuration $< ../web/templates | tee $(REPORT_PATH)djlint.ansi
+	poetry run djlint --configuration $< ../src/web/templates | tee $(REPORT_PATH)djlint.ansi
 
 mypy: mypy.ini
 	poetry run mypy --config-file $< ../src/ | tee $(REPORT_PATH)mypy/mypy.ansi

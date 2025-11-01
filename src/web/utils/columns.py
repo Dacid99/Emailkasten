@@ -53,7 +53,7 @@ class CheckboxColumn(Column):
         """
         return format_html(
             """<label for="select-{id}" class="form-check-label visually-hidden">{select_string}</label>
-            <input class="form-check-input ms-2" type="checkbox" id="select-{id}" data-id="{id}"/>
+            <input class="form-check-input mx-2" type="checkbox" id="select-{id}" data-id="{id}"/>
             """,
             id=record.id,
             select_string=_("Select"),

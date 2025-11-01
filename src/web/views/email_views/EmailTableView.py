@@ -18,6 +18,8 @@
 
 """Module with the :class:`web.views.EmailTableView` view."""
 
+from typing import override
+
 from django.db.models import QuerySet
 from django_tables2.views import SingleTableMixin
 
@@ -33,6 +35,7 @@ class EmailTableView(SingleTableMixin, EmailFilterView):
     template_name = "web/email/email_table.html"
     table_class = BaseEmailTable
 
+    @override
     def get_paginate_by(self, table_data: QuerySet) -> int | None:
         """Overridden to reconcile mixin and view."""
         return EmailFilterView.get_paginate_by(self, table_data)

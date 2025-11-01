@@ -45,8 +45,8 @@ class BaseDaemonTable(Table):
             "uuid",
             "mailbox",
             "fetching_criterion",
-            "interval__period",
             "interval__every",
+            "interval__period",
             "is_healthy",
         )
         sequence = ("checkbox", *fields)

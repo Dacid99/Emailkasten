@@ -18,6 +18,8 @@
 
 """Module with the :class:`web.views.AttachmentTableView` view."""
 
+from typing import override
+
 from django.db.models import QuerySet
 from django_tables2.views import SingleTableMixin
 
@@ -33,6 +35,7 @@ class AttachmentTableView(SingleTableMixin, AttachmentFilterView):
     template_name = "web/attachment/attachment_table.html"
     table_class = BaseAttachmentTable
 
+    @override
     def get_paginate_by(self, table_data: QuerySet) -> int | None:
         """Overridden to reconcile mixin and view."""
         return AttachmentFilterView.get_paginate_by(self, table_data)

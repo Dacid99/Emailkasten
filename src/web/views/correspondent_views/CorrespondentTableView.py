@@ -18,6 +18,8 @@
 
 """Module with the :class:`web.views.CorrespondentTableView` view."""
 
+from typing import override
+
 from django.db.models import QuerySet
 from django_tables2.views import SingleTableMixin
 
@@ -35,6 +37,7 @@ class CorrespondentTableView(SingleTableMixin, CorrespondentFilterView):
     template_name = "web/correspondent/correspondent_table.html"
     table_class = BaseCorrespondentTable
 
+    @override
     def get_paginate_by(self, table_data: QuerySet) -> int | None:
         """Overridden to reconcile mixin and view."""
         return CorrespondentFilterView.get_paginate_by(self, table_data)

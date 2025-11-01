@@ -46,9 +46,9 @@ class BaseAttachmentTable(Table):
             "is_favorite",
             "file_name",
             "email",
+            "content_type",
             "content_disposition",
             "content_id",
-            "content_type",
             "datasize",
         )
         sequence = ("checkbox", *fields)

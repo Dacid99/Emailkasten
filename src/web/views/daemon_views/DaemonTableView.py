@@ -18,6 +18,8 @@
 
 """Module with the :class:`web.views.DaemonTableView` view."""
 
+from typing import override
+
 from django.db.models import QuerySet
 from django_tables2.views import SingleTableMixin
 
@@ -33,6 +35,7 @@ class DaemonTableView(SingleTableMixin, DaemonFilterView):
     template_name = "web/daemon/daemon_table.html"
     table_class = BaseDaemonTable
 
+    @override
     def get_paginate_by(self, table_data: QuerySet) -> int | None:
         """Overridden to reconcile mixin and view."""
         return DaemonFilterView.get_paginate_by(self, table_data)
