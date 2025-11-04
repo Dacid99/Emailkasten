@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "debug_toolbar",
+    "import_export",
     "django_filters",
     "django_tables2",
     "rest_framework",
@@ -400,7 +401,11 @@ if "localhost" not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append("localhost")
 if "127.0.0.1" not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append("127.0.0.1")
-if "0.0.0.0" not in ALLOWED_HOSTS and DEBUG:
+if (
+    "0.0.0.0"  # noqa: S104 ; allow access from inside the docker container
+    not in ALLOWED_HOSTS
+    and DEBUG
+):
     ALLOWED_HOSTS.append(
         "0.0.0.0"  # noqa: S104 ; allow access from inside the docker container
     )
