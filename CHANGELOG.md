@@ -10,6 +10,7 @@
   - accepting subject lines of length > 255 chars
   - limit on current emails on the dashboard
   - clarified deletion notes
+  - fixed api authentication via X-Session-Token
 
 ## Version 0.1.0
 
