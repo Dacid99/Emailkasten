@@ -36,6 +36,6 @@ class DaemonTableView(SingleTableMixin, DaemonFilterView):
     table_class = BaseDaemonTable
 
     @override
-    def get_paginate_by(self, table_data: QuerySet) -> int | None:
+    def get_paginate_by(self, table_data: QuerySet) -> int:
         """Overridden to reconcile mixin and view."""
         return DaemonFilterView.get_paginate_by(self, table_data)

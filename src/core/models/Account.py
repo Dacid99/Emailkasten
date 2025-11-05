@@ -21,7 +21,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Final, override
+from typing import TYPE_CHECKING, ClassVar, override
 
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
@@ -150,7 +150,7 @@ class Account(
         verbose_name_plural = _("accounts")
         get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
                 fields=["mail_address", "protocol", "user"],
                 name="account_unique_together_mail_address_protocol_user",

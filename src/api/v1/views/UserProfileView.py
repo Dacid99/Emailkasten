@@ -20,18 +20,17 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from api.v1.serializers import UserProfileSerializer
-from Emailkasten.models import UserProfile
 
 
 if TYPE_CHECKING:
-    from django.db.models import QuerySet
+    from Emailkasten.models import UserProfile
 
 
 @extend_schema_view(
@@ -45,12 +44,11 @@ class UserProfileView(RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_object(self) -> QuerySet[UserProfile]:
+    @override
+    def get_object(self) -> UserProfile:
         """Fetches the profile connected to the request user.
 
         Returns:
             The UserProfile model of the request user.
         """
-        if getattr(self, "swagger_fake_view", False):
-            return UserProfile.objects.none()
-        return self.request.user.profile
+        return self.request.user.profile  # type: ignore[union-attr]  # user auth is checked by permissions, we also test for this

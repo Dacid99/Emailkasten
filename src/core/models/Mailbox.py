@@ -25,7 +25,7 @@ import logging
 import os
 import re
 from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import TYPE_CHECKING, BinaryIO, Final, override
+from typing import TYPE_CHECKING, BinaryIO, ClassVar, override
 from zipfile import BadZipFile, ZipFile
 
 from dirtyfields import DirtyFieldsMixin
@@ -128,7 +128,7 @@ class Mailbox(
         verbose_name_plural = _("mailboxes")
         get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
                 fields=["name", "account"], name="mailbox_unique_together_name_account"
             )

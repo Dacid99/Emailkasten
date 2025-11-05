@@ -36,6 +36,6 @@ class AttachmentTableView(SingleTableMixin, AttachmentFilterView):
     table_class = BaseAttachmentTable
 
     @override
-    def get_paginate_by(self, table_data: QuerySet) -> int | None:
+    def get_paginate_by(self, table_data: QuerySet) -> int:
         """Overridden to reconcile mixin and view."""
         return AttachmentFilterView.get_paginate_by(self, table_data)

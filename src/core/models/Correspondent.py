@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import logging
 from io import BytesIO
-from typing import TYPE_CHECKING, Final, override
+from typing import TYPE_CHECKING, ClassVar, override
 
 import httpcore
 import httpx
@@ -174,7 +174,7 @@ class Correspondent(
         verbose_name_plural = _("correspondents")
         get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
                 fields=["email_address", "user"],
                 name="email_unique_together_email_address_user",

@@ -61,10 +61,10 @@ class BaseCorrespondentEmailTable(Table):
         )
         sequence = ("checkbox", *fields)
 
-    def render_checkbox(self, record: Model, column: CheckboxColumn):
+    def render_checkbox(self, record: Model, column: CheckboxColumn) -> str:
         """Fixes the rendering of checkbox to use the email as record."""
         return column.render(record=record.email)
 
-    def render_email__is_favorite(self, record: Model, column: IsFavoriteColumn):
+    def render_email__is_favorite(self, record: Model, column: IsFavoriteColumn) -> str:
         """Fixes the rendering of the favorite badge to use the email as record."""
         return column.render(record=record.email)

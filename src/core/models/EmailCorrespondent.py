@@ -21,7 +21,7 @@
 from __future__ import annotations
 
 from email.utils import getaddresses
-from typing import TYPE_CHECKING, Final, override
+from typing import TYPE_CHECKING, ClassVar, override
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -74,7 +74,7 @@ class EmailCorrespondent(TimestampModelMixin, models.Model):
         verbose_name = _("email-correspondents")
         get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
                 fields=["email", "correspondent", "mention"],
                 name="emailcorrespondents_unique_together_email_correspondent_mention",

@@ -30,7 +30,7 @@ from email import policy
 from functools import cached_property
 from hashlib import md5
 from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import TYPE_CHECKING, Any, Final, override
+from typing import TYPE_CHECKING, Any, ClassVar, override
 from zipfile import ZipFile
 
 from django.db import connection, models, transaction
@@ -208,7 +208,7 @@ class Email(
         verbose_name_plural = _("emails")
         get_latest_by = "datetime"
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
                 fields=["message_id", "mailbox"],
                 name="email_unique_together_message_id_mailbox",

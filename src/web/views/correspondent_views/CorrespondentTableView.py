@@ -38,6 +38,6 @@ class CorrespondentTableView(SingleTableMixin, CorrespondentFilterView):
     table_class = BaseCorrespondentTable
 
     @override
-    def get_paginate_by(self, table_data: QuerySet) -> int | None:
+    def get_paginate_by(self, table_data: QuerySet) -> int:
         """Overridden to reconcile mixin and view."""
         return CorrespondentFilterView.get_paginate_by(self, table_data)

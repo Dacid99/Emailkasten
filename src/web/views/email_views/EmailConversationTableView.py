@@ -36,6 +36,6 @@ class EmailConversationTableView(SingleTableMixin, EmailConversationView):
     table_class = BaseEmailTable
 
     @override
-    def get_paginate_by(self, table_data: QuerySet) -> int | None:
+    def get_paginate_by(self, table_data: QuerySet) -> int:
         """Overridden to reconcile mixin and view."""
         return EmailConversationView.get_paginate_by(self, table_data)

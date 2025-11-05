@@ -24,7 +24,8 @@ from django.db.models import QuerySet
 from django_tables2.views import SingleTableMixin
 
 from web.tables import BaseEmailTable
-from web.views.account_views import AccountEmailsFilterView
+
+from .AccountEmailsFilterView import AccountEmailsFilterView
 
 
 class AccountEmailsTableView(SingleTableMixin, AccountEmailsFilterView):
@@ -35,6 +36,6 @@ class AccountEmailsTableView(SingleTableMixin, AccountEmailsFilterView):
     table_class = BaseEmailTable
 
     @override
-    def get_paginate_by(self, table_data: QuerySet) -> int | None:
+    def get_paginate_by(self, table_data: QuerySet) -> int:
         """Overridden to reconcile mixin and view."""
         return AccountEmailsFilterView.get_paginate_by(self, table_data)

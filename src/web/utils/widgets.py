@@ -27,7 +27,7 @@ from django.utils.translation import gettext as _
 class AdaptedSelectDateWidget(SelectDateWidget):
     """Adapted version to fit the need of this project."""
 
-    def __init__(self, **kwargs: Any):
+    def __init__(self, **kwargs: Any) -> None:
         """Extended to ensure a default backward selection of years."""
         kwargs.pop("empty_label", None)
         super().__init__(

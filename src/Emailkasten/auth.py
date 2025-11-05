@@ -21,9 +21,9 @@
 from typing import Any, override
 
 from allauth.mfa.adapter import get_adapter
-from django.http import HttpRequest
 from rest_framework import exceptions
 from rest_framework.authentication import BasicAuthentication
+from rest_framework.request import Request
 
 
 class BasicNoMFAuthentication(BasicAuthentication):
@@ -34,12 +34,11 @@ class BasicNoMFAuthentication(BasicAuthentication):
     """
 
     @override
-    def authenticate(self, request: HttpRequest) -> tuple[Any, Any] | None:
+    def authenticate(self, request: Request) -> tuple[Any, Any] | None:
         """Extended to check whether MFA is enabled for the authenticating user."""
         user_tuple = super().authenticate(request)
         user = user_tuple[0] if user_tuple else None
         mfa_adapter = get_adapter()
         if user and mfa_adapter.is_mfa_enabled(user):
             raise exceptions.AuthenticationFailed("MFA required")
-
         return user_tuple

@@ -162,7 +162,7 @@ class EmailViewSet(
         if getattr(self, "swagger_fake_view", False):
             return Email.objects.none()
         return (
-            Email.objects.filter(mailbox__account__user=self.request.user)  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
+            Email.objects.filter(mailbox__account__user=self.request.user)  # type: ignore[misc]  # user auth is checked by permissions, we also test for this
             .prefetch_related(
                 "attachments", "in_reply_to", "replies", "references", "referenced_by"
             )

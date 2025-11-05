@@ -53,5 +53,4 @@ class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
         form.fields["fetching_criterion"].choices = (
             self.object.mailbox.available_fetching_criterion_choices
         )
-
         return form

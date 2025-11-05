@@ -191,14 +191,14 @@ class SupportedEmailUploadFormats(TextChoices):
     MAILDIR = "zip[maildir]", _(".zip with maildir mailbox inside")
 
 
-PROTOCOLS_SUPPORTING_RESTORE: tuple[str] = (
+PROTOCOLS_SUPPORTING_RESTORE = (
     EmailProtocolChoices.IMAP,
     EmailProtocolChoices.IMAP4_SSL,
     EmailProtocolChoices.EXCHANGE,
 )
 """All protocols supporting restoring of emails."""
 
-HTML_SUPPORTED_AUDIO_TYPE: tuple[str] = (
+HTML_SUPPORTED_AUDIO_TYPE = (
     "ogg",
     "wav",
     "mpeg",
@@ -206,7 +206,7 @@ HTML_SUPPORTED_AUDIO_TYPE: tuple[str] = (
 )
 """All audio types supported by html elements."""
 
-HTML_SUPPORTED_VIDEO_TYPES: tuple[str] = (
+HTML_SUPPORTED_VIDEO_TYPES = (
     "ogg",
     "mp4",
     "mpeg",
@@ -215,7 +215,7 @@ HTML_SUPPORTED_VIDEO_TYPES: tuple[str] = (
 )
 """All video types supported by html elements."""
 
-PAPERLESS_SUPPORTED_IMAGE_TYPES: tuple[str] = (
+PAPERLESS_SUPPORTED_IMAGE_TYPES = (
     "png",
     "jpeg",
     "pjpeg",
@@ -226,7 +226,7 @@ PAPERLESS_SUPPORTED_IMAGE_TYPES: tuple[str] = (
 )
 """All image types supported by Paperless."""
 
-PAPERLESS_TIKA_SUPPORTED_MIMETYPES: tuple[str] = (
+PAPERLESS_TIKA_SUPPORTED_MIMETYPES = (
     "msword",
     "vnd.openxmlformats-officedocument.wordprocessingml.document",
     "vnd.oasis.opendocument.text",

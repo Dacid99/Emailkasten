@@ -95,7 +95,7 @@ class IsHealthyColumn(Column):
         super().__init__(*args, **kwargs)
 
     @override
-    def render(self, value: bool) -> str:
+    def render(self, value: bool | None) -> str:
         """Renders the value in form of a badge.
 
         Args:
