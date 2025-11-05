@@ -33,6 +33,7 @@ import httpx
 from django.db import models
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 from rest_framework import status
 
 from core.constants import (
@@ -69,6 +70,7 @@ logger = logging.getLogger(__name__)
 
 
 class Attachment(
+    ExportModelOperationsMixin("attachment"),
     DownloadMixin,
     ThumbnailMixin,
     URLMixin,

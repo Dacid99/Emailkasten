@@ -37,6 +37,7 @@ from django.db import connection, models, transaction
 from django.template import engines
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 
 from core.constants import (
     PROTOCOLS_SUPPORTING_RESTORE,
@@ -79,6 +80,7 @@ logger = logging.getLogger(__name__)
 
 
 class Email(
+    ExportModelOperationsMixin("email"),
     DownloadMixin,
     ThumbnailMixin,
     URLMixin,

@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "django_prometheus",
     "debug_toolbar",
     "import_export",
     "schema_viewer",
@@ -114,7 +115,9 @@ INSTALLED_APPS = [
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends." + env("DATABASE_TYPE", default="mysql"),
+        "ENGINE": (
+            "django_prometheus.db.backends." + env("DATABASE_TYPE", default="mysql")
+        ),
         "NAME": env("DATABASE", default="email_archive_django"),
         "USER": env("DATABASE_USER", default="user"),
         "PASSWORD": env("DATABASE_PASSWORD", default="passwd"),
@@ -135,10 +138,14 @@ CONN_HEALTH_CHECKS = True
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 ### Cache
 # https://docs.djangoproject.com/en/5.1/ref/settings/#cache
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_prometheus.cache.backends.locmem.LocMemCache",
+    }
+}
 CACHE_MIDDLEWARE_SECONDS = env("CACHE_MIDDLEWARE_SECONDS", cast=int, default=600)
 
 
@@ -381,6 +388,7 @@ hostname, __, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [".".join([*ip.split(".")[:-1], "1"]) for ip in ips]
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
@@ -394,6 +402,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "allauth.usersessions.middleware.UserSessionsMiddleware",
     "Emailkasten.middleware.TimezoneMiddleware.TimezoneMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 # Security
@@ -546,6 +555,12 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": "debug_toolbar.middleware.show_toolbar_with_docker",
 }
+
+
+##### django_prometheus ######
+# https://github.com/django-commons/django-prometheus/blob/master/README.md
+
+PROMETHEUS_METRIC_NAMESPACE = "emailkasten"
 
 
 ##### restframework #####

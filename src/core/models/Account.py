@@ -29,6 +29,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 
 from core.constants import EmailProtocolChoices
 from core.mixins import (
@@ -58,6 +59,7 @@ logger = logging.getLogger(__name__)
 
 
 class Account(
+    ExportModelOperationsMixin("account"),
     DirtyFieldsMixin,
     URLMixin,
     FavoriteModelMixin,

@@ -31,6 +31,7 @@ from zipfile import BadZipFile, ZipFile
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 
 from core.constants import (
     EmailFetchingCriterionChoices,
@@ -62,6 +63,7 @@ logger = logging.getLogger(__name__)
 
 
 class Mailbox(
+    ExportModelOperationsMixin("mailbox"),
     DirtyFieldsMixin,
     URLMixin,
     UploadMixin,

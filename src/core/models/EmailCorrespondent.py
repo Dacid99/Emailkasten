@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING, ClassVar, override
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 
 from core.constants import HeaderFields
 from core.mixins import TimestampModelMixin
@@ -36,7 +37,9 @@ if TYPE_CHECKING:
     from .Email import Email
 
 
-class EmailCorrespondent(TimestampModelMixin, models.Model):
+class EmailCorrespondent(
+    ExportModelOperationsMixin("email_correspondent"), TimestampModelMixin, models.Model
+):
     """Database model for connecting emails and their correspondents."""
 
     email = models.ForeignKey(

@@ -4,6 +4,8 @@
 
 - Features:
   - Table interface as alternative to card lists
+  - Integration with Prometheus
+  - Database export and import in the admin panel
 
 - Fixes:
   - mailbox names for some servers were parsed incorrectly

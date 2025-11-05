@@ -20,7 +20,7 @@ As a user you may like this application because of
 - Import and export of emails in various formats
 - Identification of related emails
 - Restoring of emails to your mailaccount
-- Cross integrations with other self-hosted projects like Paperless-ngx and Searxng
+- Cross integrations with other self-hosted projects like Paperless-ngx, Searxng and Grafana
 - Mobile-friendly Bootstrap5 webapp
 - Easy filtering and searching options for your archived emails, attachments and correspondents
 

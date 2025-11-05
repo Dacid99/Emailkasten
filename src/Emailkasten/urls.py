@@ -45,6 +45,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("db-schema/", include("schema_viewer.urls")),
     path("health/", include("health_check.urls")),
+    path("", include("django_prometheus.urls")),
     path("", include("django.conf.urls.i18n")),
     path("settz/", set_timezone, name=SET_TIMEZONE_URL_NAME),
     re_path(r"^robots\.txt", include("robots.urls")),
