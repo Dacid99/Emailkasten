@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 18:26+0000\n"
-"PO-Revision-Date: 2025-09-30 23:01+0000\n"
+"PO-Revision-Date: 2025-11-06 19:18+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/"
 "emailkasten/de/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:796
 msgid "Received"
@@ -156,23 +156,23 @@ msgstr "Emailkasten"
 
 #: src/Emailkasten/settings.py:561
 msgid "Your email archiving server"
-msgstr ""
+msgstr "Dein E-Mail Archivserver"
 
 #: src/Emailkasten/settings.py:581
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 #: src/Emailkasten/settings.py:583
 msgid "Shortcut to the dashboard"
-msgstr ""
+msgstr "Abkürzung zum Dashboard"
 
 #: src/Emailkasten/settings.py:586
 msgid "Timeline"
-msgstr ""
+msgstr "Chronik"
 
 #: src/Emailkasten/settings.py:588
 msgid "Shortcut to the email timeline"
-msgstr ""
+msgstr "Abkürzung zur E-Mail Chronik"
 
 #: src/Emailkasten/settings.py:716
 msgid "Emailkasten API"
