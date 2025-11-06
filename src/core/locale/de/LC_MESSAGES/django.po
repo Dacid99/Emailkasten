@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-01 22:05+0000\n"
-"PO-Revision-Date: 2025-09-30 23:02+0000\n"
+"PO-Revision-Date: 2025-11-02 22:51+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/emailkasten/core/"
 "de/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 
 #: src/core/constants.py:38
 msgid "All emails received the last DAY"
@@ -206,7 +206,7 @@ msgstr ".eml"
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/core/mixins/FavoriteModelMixin.py:32
 msgid "favorite status"
-msgstr "Favoriten Status"
+msgstr "Favoritenstatus"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/core/mixins/FilePathModelMixin.py:43
@@ -239,30 +239,25 @@ msgid "time of last update"
 msgstr "Datum der letzten Aktualisierung"
 
 #: src/core/models/Account.py:73
-#, fuzzy
-#| msgid ""
-#| "This will delete this account and all mailboxes, emails and attachments "
-#| "found in it!"
 msgid ""
 "This will delete the records of this account and all mailboxes, emails and "
 "attachments found in it!"
-msgstr "Dies löscht dieses Konto, alle Mailboxen, E-Mails und Anhänge darin!"
+msgstr ""
+"Dies löscht den Eintrag für dieses Konto und alle Mailboxen, E-Mails und "
+"Anhänge darin!"
 
 #: src/core/models/Account.py:76
-#, fuzzy
-#| msgid ""
-#| "This will delete these accounts and all mailboxes, emails and attachments "
-#| "found in them!"
 msgid ""
 "This will delete the records of these accounts and all mailboxes, emails and "
 "attachments found in them!"
 msgstr ""
-"Dies löscht diese Konten und alle Mailboxen, E-Mails und Anhänge darin!"
+"Dies löscht die Einträge für diese Konten und alle Mailboxen, E-Mails und "
+"Anhänge darin!"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/core/models/Account.py:84 src/core/models/Correspondent.py:71
 msgid "email address"
-msgstr "E-Mailaddresse"
+msgstr "E-Mailadresse"
 
 #: src/core/models/Account.py:85
 msgid "The mail address to the account."
@@ -343,17 +338,13 @@ msgid "The protocol %s is not implemented in a fetcher class!"
 msgstr "Das E-Mail-Protokoll %s ist nicht implementiert!"
 
 #: src/core/models/Attachment.py:85
-#, fuzzy
-#| msgid "This will only delete this attachment, not the email."
 msgid "This will only delete the record of this attachment, not of the email."
-msgstr "Dies löscht nur diesen Anhang, nicht seine E-Mail."
+msgstr "Dies löscht nur den Eintrag für diesen Anhang, nicht seine E-Mail."
 
 #: src/core/models/Attachment.py:89
-#, fuzzy
-#| msgid "This will only delete these attachments, not their emails."
 msgid ""
 "This will only delete the records of these attachments, not of their emails."
-msgstr "Dies löscht nur diese Anhänge, nicht ihre E-Mails."
+msgstr "Dies löscht nur die Einträge für diese Anhänge, nicht ihre E-Mails."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/core/models/Attachment.py:95
@@ -455,19 +446,17 @@ msgid "Uploading to Immich failed: %(response)s"
 msgstr "Hochladen zu Immich fehlgeschlagen: %(response)s"
 
 #: src/core/models/Correspondent.py:61
-#, fuzzy
-#| msgid "This will only delete this correspondent, not its emails."
 msgid ""
 "This will only delete the record of this correspondent, not of its emails."
-msgstr "Dies löscht nur diesen Korrespondenten, nicht seine Emails."
+msgstr ""
+"Dies löscht nur den Eintrag für diesen Korrespondenten, nicht seine Emails."
 
 #: src/core/models/Correspondent.py:65
-#, fuzzy
-#| msgid "This will only delete these correspondents, not their emails."
 msgid ""
 "This will only delete the records of these correspondents, not of their "
 "emails."
-msgstr "Dies löscht nur diese Korrespondenten, nicht ihre Emails."
+msgstr ""
+"Dies löscht nur die Einträge für diese Korrespondenten, nicht ihre Emails."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/core/models/Correspondent.py:79
@@ -541,7 +530,7 @@ msgstr "Korrespondenten"
 #: src/core/models/Correspondent.py:192
 #, python-format
 msgid "Correspondent with address %(email_address)s"
-msgstr "Korrespondent mit Mail-Addresse %(email_address)s"
+msgstr "Korrespondent mit E-Mail-Adresse %(email_address)s"
 
 #. Translators: Nextcloud is a brand name.
 #: src/core/models/Correspondent.py:246
@@ -626,35 +615,27 @@ msgstr "Emailabrufroutine %(uuid)s für Mailbox %(mailbox)s"
 
 #: src/core/models/Daemon.py:177
 msgid "This fetching criterion is not available for this mailbox!"
-msgstr "Dieses Abruf-Kriterium ist für diese Mailbox nicht verfügbar!"
+msgstr "Dieses Abfragekriterium ist für diese Mailbox nicht verfügbar!"
 
 #: src/core/models/Daemon.py:183
 msgid "No valid mailbox selected!"
 msgstr "Keine gültige Mailbox ausgewählt!"
 
 #: src/core/models/Email.py:95
-#, fuzzy
-#| msgid ""
-#| "This will delete this email and all its attachments but not its "
-#| "correspondents."
 msgid ""
 "This will delete the records of this email and all its attachments but not "
 "its correspondents."
 msgstr ""
-"Dies löscht diese Email und alle ihre Anhänge, aber nicht ihre "
-"Korrespondenten."
+"Dies löscht den Eintrag für diese Email und alle ihre Anhänge, aber nicht "
+"ihre Korrespondenten."
 
 #: src/core/models/Email.py:99
-#, fuzzy
-#| msgid ""
-#| "This will delete these emails and all their attachments but not their "
-#| "correspondents."
 msgid ""
 "This will delete the records of these emails and all their attachments but "
 "not their correspondents."
 msgstr ""
-"Dies löscht diese Emails und all ihre Anhänge, aber nicht ihre "
-"Korrespondenten."
+"Dies löscht die Einträge für diese Emails und all ihre Anhänge, aber nicht "
+"ihre Korrespondenten."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/core/models/Email.py:105
@@ -736,23 +717,20 @@ msgstr ""
 "%(correspondent)s mit Erwähnung %(mention)s"
 
 #: src/core/models/Mailbox.py:79
-#, fuzzy
-#| msgid ""
-#| "This will delete this mailbox and all emails and attachments found in it!"
 msgid ""
 "This will delete the record of this mailbox and all emails and attachments "
 "found in it!"
-msgstr "Dies löscht diese Mailbox und alle Emails und Anhänge in ihr!"
+msgstr ""
+"Dies löscht den Eintrag für diese Mailbox und die aller Emails und Anhänge "
+"in ihr!"
 
 #: src/core/models/Mailbox.py:83
-#, fuzzy
-#| msgid ""
-#| "This will delete these mailboxes and all emails and attachments found in "
-#| "them!"
 msgid ""
 "This will delete the records of these mailboxes and all emails and "
 "attachments found in them!"
-msgstr "Dies löscht diese Mailboxen und alle Emails und Anhänge in ihnen!"
+msgstr ""
+"Dies löscht die Einträge für diese Mailboxen und alle Emails und Anhänge in "
+"ihnen!"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/core/models/Mailbox.py:89
