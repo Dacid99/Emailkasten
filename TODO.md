@@ -42,6 +42,7 @@
 
 - favicon.ico for the icon
 - staticfiles subfolder for icons
+- simplify lang list with getlanguageinfo
 
 ### Work in progress
 
