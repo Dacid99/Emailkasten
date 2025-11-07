@@ -25,6 +25,7 @@ References:
 """
 from __future__ import annotations
 
+from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import include, path, re_path
 from drf_spectacular.views import (
@@ -42,7 +43,10 @@ SCHEMA_NAME = "schema"
 urlpatterns = [
     # root
     path("admin/", admin.site.urls),
+    path("", include("pwa.urls")),
+    path("db-schema/", include("schema_viewer.urls")),
     path("health/", include("health_check.urls")),
+    path("", include("django_prometheus.urls")),
     path("", include("django.conf.urls.i18n")),
     path("settz/", set_timezone, name=SET_TIMEZONE_URL_NAME),
     re_path(r"^robots\.txt", include("robots.urls")),
@@ -64,4 +68,5 @@ urlpatterns = [
     path("", include("web.urls")),
     path("users/", include("allauth.urls")),
     path("users/profile/", UserProfileView.as_view(), name=UserProfileView.URL_NAME),
+    *debug_toolbar_urls(),
 ]

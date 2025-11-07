@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Emailkasten - a open-source self-hostable email archiving server
+# Copyright (C) 2024 David Aderbauer & The Emailkasten Contributors
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+"""Module with the :class:`web.tables.BaseCorrespondentTable` table class."""
+
+from django_tables2 import Column, Table
+
+from core.models import Correspondent
+from web.utils.columns import CheckboxColumn, IsFavoriteColumn
+
+
+class BaseCorrespondentTable(Table):
+    """Table class for :class:`core.models.Correspondent.Correspondent`."""
+
+    checkbox = CheckboxColumn()
+    is_favorite = IsFavoriteColumn()
+    email_address = Column(linkify=True)
+
+    class Meta:
+        """Metadata class for the table."""
+
+        model = Correspondent
+        fields = (
+            "is_favorite",
+            "email_address",
+            "email_name",
+            "real_name",
+        )
+        sequence = ("checkbox", *fields)

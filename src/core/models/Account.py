@@ -21,7 +21,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Final, override
+from typing import TYPE_CHECKING, ClassVar, override
 
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
@@ -29,6 +29,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 
 from core.constants import EmailProtocolChoices
 from core.mixins import (
@@ -58,6 +59,7 @@ logger = logging.getLogger(__name__)
 
 
 class Account(
+    ExportModelOperationsMixin("account"),
     DirtyFieldsMixin,
     URLMixin,
     FavoriteModelMixin,
@@ -70,10 +72,10 @@ class Account(
     BASENAME = "account"
 
     DELETE_NOTICE = _(
-        "This will delete this account and all mailboxes, emails and attachments found in it!"
+        "This will delete the records of this account and all mailboxes, emails and attachments found in it!"
     )
     DELETE_NOTICE_PLURAL = _(
-        "This will delete these accounts and all mailboxes, emails and attachments found in them!"
+        "This will delete the records of these accounts and all mailboxes, emails and attachments found in them!"
     )
 
     MAX_MAIL_HOST_PORT = 65535
@@ -150,7 +152,7 @@ class Account(
         verbose_name_plural = _("accounts")
         get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
                 fields=["mail_address", "protocol", "user"],
                 name="account_unique_together_mail_address_protocol_user",

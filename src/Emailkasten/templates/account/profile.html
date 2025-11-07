@@ -1,6 +1,10 @@
 {% extends "allauth/layouts/manage.html" %}
 
-{% load allauth i18n django_bootstrap5 %}
+{% load allauth %}
+
+{% load bootstrap_field from django_bootstrap5 %}
+
+{% load translate from i18n %}
 
 {% block nav_class_profile %}
     {{ block.super }} active

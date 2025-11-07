@@ -1,11 +1,19 @@
 {% extends "web/email/email_filter_list.html" %}
 
-{% load i18n %}
+{% load translate from i18n %}
 
 {% block header_subtitle %}
     {% translate "with" %} <a class="link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
     href="{{ correspondent.get_absolute_url }}">{{ correspondent.email_address }}</a>
 {% endblock header_subtitle %}
+
+{% block header_buttons %}
+
+    <a role="button"
+       class="btn btn-outline-primary"
+       href="{% url 'web:correspondent-emails-table' correspondent.id %}"><i class="fa-solid fa-table-list" aria-hidden="true"></i> {% translate "Table" %}</a>
+
+{% endblock header_buttons %}
 
 {% block list %}
 

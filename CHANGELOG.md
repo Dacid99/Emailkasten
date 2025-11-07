@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 0.1.1
+
+- Features:
+  - Table interface as alternative to card lists
+  - Integration with Prometheus
+  - Database export and import in the admin panel
+
+- Fixes:
+  - mailbox names for some servers were parsed incorrectly
+  - accepting subject lines of length > 255 chars
+  - limit on current emails on the dashboard
+  - clarified deletion notes
+  - fixed api authentication via X-Session-Token
+
 ## Version 0.1.0
 
 - Features

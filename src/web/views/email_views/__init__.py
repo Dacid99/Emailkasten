@@ -25,18 +25,22 @@ from .archive_views import (
     EmailWeekArchiveView,
     EmailYearArchiveView,
 )
+from .EmailConversationTableView import EmailConversationTableView
 from .EmailConversationView import EmailConversationView
 from .EmailDetailWithDeleteView import EmailDetailWithDeleteView
 from .EmailFilterView import EmailFilterView
+from .EmailTableView import EmailTableView
 
 
 __all__ = [
     "EmailArchiveIndexView",
+    "EmailConversationTableView",
     "EmailConversationView",
     "EmailDayArchiveView",
     "EmailDetailWithDeleteView",
     "EmailFilterView",
     "EmailMonthArchiveView",
+    "EmailTableView",
     "EmailWeekArchiveView",
     "EmailYearArchiveView",
 ]

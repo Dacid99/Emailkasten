@@ -9,9 +9,7 @@ labels: missing language
 
 ## What language is missing on weblate? *
 
-*Please look up the [http://www.i18nguy.com/unicode/language-identifiers.html](i18n language code) as well.*
 
+## What is the i18n language code of the missing language? *
 
-## What is the name of the language in the language itself? *
-
-*This will be shown to users in the language selection menu.*
+*You can look it up [http://www.i18nguy.com/unicode/language-identifiers.html](in this list).*

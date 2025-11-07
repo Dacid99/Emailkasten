@@ -1,5 +1,14 @@
 # Emailkasten
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/dacid99/emailkasten)](https://hub.docker.com/repository/docker/dacid99/emailkasten/general)
+[![Docker Image Version](https://img.shields.io/docker/v/dacid99/emailkasten)](https://hub.docker.com/repository/docker/dacid99/emailkasten/general)
+[![Read the Docs](https://img.shields.io/readthedocs/emailkasten/latest)](https://emailkasten.readthedocs.io/latest/)
+[![Translation status](https://img.shields.io/weblate/progress/emailkasten)](https://hosted.weblate.org/projects/emailkasten/)
+[![Coverage](https://gitlab.com/Dacid99/emailkasten/badges/master/coverage.svg?job=test_codebase)](https://gitlab.com/Dacid99/emailkasten/)
+[![Pipeline](https://gitlab.com/Dacid99/emailkasten/badges/master/pipeline.svg)](https://gitlab.com/Dacid99/emailkasten/)
+[![Framework](https://pypi-camo.freetls.fastly.net/beb496af0833573259d4094b1fe3b0a3ea831607/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6672616d65776f726b2d446a616e676f2d3043334332362e737667)](https://www.djangoproject.com/)
+[![Code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
 A open-source self-hostable email archive using the [django framework](https://www.djangoproject.com/).
 
 ## Features
@@ -11,8 +20,8 @@ As a user you may like this application because of
 - Import and export of emails in various formats
 - Identification of related emails
 - Restoring of emails to your mailaccount
-- Cross integrations with other self-hosted projects like Paperless-ngx and Searxng
-- Mobile-friendly Bootstrap5 webapp
+- Cross integrations with other self-hosted projects like Paperless-ngx, Searxng and Grafana
+- Mobile-friendly Bootstrap5 webapp with PWA support
 - Easy filtering and searching options for your archived emails, attachments and correspondents
 
 As an admin you may choose this project because of its

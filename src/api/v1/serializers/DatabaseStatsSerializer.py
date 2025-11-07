@@ -18,8 +18,6 @@
 
 """Module with the :class:`DatabaseStatsSerializer` serializer."""
 
-from typing import Any
-
 from rest_framework import serializers
 
 from core.models import Account, Attachment, Correspondent, Email, Mailbox
@@ -34,7 +32,7 @@ class DatabaseStatsSerializer(serializers.Serializer):
     account_count = serializers.SerializerMethodField(read_only=True)
     mailbox_count = serializers.SerializerMethodField(read_only=True)
 
-    def get_email_count(self, obj: Any) -> int:
+    def get_email_count(self, value: dict) -> int:
         """Gets the count of emails for the user.
 
         Returns:
@@ -44,7 +42,7 @@ class DatabaseStatsSerializer(serializers.Serializer):
         user = getattr(request, "user", None)
         return Email.objects.filter(mailbox__account__user=user).count()
 
-    def get_correspondent_count(self, obj: Any) -> int:
+    def get_correspondent_count(self, value: dict) -> int:
         """Gets the count of correspondents for the user.
 
         Returns:
@@ -54,7 +52,7 @@ class DatabaseStatsSerializer(serializers.Serializer):
         user = getattr(request, "user", None)
         return Correspondent.objects.filter(user=user).distinct().count()
 
-    def get_attachment_count(self, obj: Any) -> int:
+    def get_attachment_count(self, value: dict) -> int:
         """Gets the count of attachments for the user.
 
         Returns:
@@ -64,7 +62,7 @@ class DatabaseStatsSerializer(serializers.Serializer):
         user = getattr(request, "user", None)
         return Attachment.objects.filter(email__mailbox__account__user=user).count()
 
-    def get_account_count(self, obj: Any) -> int:
+    def get_account_count(self, value: dict) -> int:
         """Gets the count of accounts for the user.
 
         Returns:
@@ -74,7 +72,7 @@ class DatabaseStatsSerializer(serializers.Serializer):
         user = getattr(request, "user", None)
         return Account.objects.filter(user=user).count()
 
-    def get_mailbox_count(self, obj: Any) -> int:
+    def get_mailbox_count(self, value: dict) -> int:
         """Gets the count of mailboxes for the user.
 
         Returns:

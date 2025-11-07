@@ -1,0 +1,48 @@
+{% extends 'django_tables2/bootstrap5-responsive.html' %}
+
+{% load django_tables2 %}
+
+{% block table.thead %}
+    {% if table.show_header %}
+        <thead {{ table.attrs.thead.as_html }}>
+            <tr>
+                {% for column in table.columns %}
+                    <th {{ column.attrs.th.as_html }} scope="col">
+                        {% if column.orderable %}
+                            <a class="link-body-emphasis link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                               href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">
+                                {{ column.header }}
+                            </a>
+                        {% else %}
+                            {{ column.header }}
+                        {% endif %}
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+    {% endif %}
+{% endblock table.thead %}
+
+{% block table.tfoot %}
+    {% if table.show_header %}
+        <tfoot {{ table.attrs.tfoot.as_html }}>
+            <tr>
+                {% for column in table.columns %}
+                    <th {{ column.attrs.th.as_html }} scope="col">
+                        {% if column.orderable %}
+                            <a class="link-body-emphasis link-offset-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                               href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">
+                                {{ column.header }}
+                            </a>
+                        {% else %}
+                            {{ column.header }}
+                        {% endif %}
+                    </th>
+                {% endfor %}
+            </tr>
+        </tfoot>
+    {% endif %}
+{% endblock table.tfoot %}
+
+{% block pagination %}
+{% endblock pagination %}

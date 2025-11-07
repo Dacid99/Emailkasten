@@ -39,7 +39,7 @@ class TimezoneMiddleware:
 
     TIMEZONE_SESSION_KEY = "django_timezone"
 
-    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         """Sets up the middleware."""
         self.get_response = get_response
 

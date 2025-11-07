@@ -1,6 +1,10 @@
 {% extends "web/bases/base.html" %}
 
-{% load static i18n django_bootstrap5 %}
+{% load static %}
+
+{% load bootstrap_form from django_bootstrap5 %}
+
+{% load translate from i18n %}
 
 {% block title %}
     {% translate "Upload email" %} -

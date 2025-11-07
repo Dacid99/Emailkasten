@@ -17,6 +17,7 @@
 - async parsing, sync saving
 - download for account and batchdownload for mailbox
 - show pwd button
+- table and list as nav-dropdown options in main navbar
 
 ## To refactor
 
@@ -40,6 +41,7 @@
 ## To implement
 
 - favicon.ico for the icon
+- staticfiles subfolder for icons
 
 ### Work in progress
 
@@ -49,6 +51,7 @@
 
 ## To fix
 
+- pwa when icons are created
 - filteroptions for existing db entries leak other user data
 - fetching too many emails leads to browser timeout
 - ci:

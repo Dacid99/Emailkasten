@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-29 21:34+0000\n"
-"PO-Revision-Date: 2025-09-11 18:02+0000\n"
+"POT-Creation-Date: 2025-11-01 22:05+0000\n"
+"PO-Revision-Date: 2025-09-30 23:02+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/emailkasten/"
 "api/uk/>\n"
@@ -75,17 +75,13 @@ msgstr "Завантажено вкладений документ до Paperles
 
 #. Translators: Immich is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:351
-#, fuzzy
-#| msgid "Upload to Paperless failed."
 msgid "Upload to Immich failed."
-msgstr "Не вдалося завантажити на Paperless архів."
+msgstr "Завантаження до Immich не вдалося."
 
 #. Translators: Immich is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:357
-#, fuzzy
-#| msgid "Uploaded attachment document to Paperless."
 msgid "Uploaded attachment document to Immich."
-msgstr "Завантажено вкладений документ до Paperless."
+msgstr "Завантажено вкладений документ до Immich."
 
 #: src/api/v1/views/CorrespondentViewSet.py:210
 msgid "Correspondent ids are required."
@@ -101,35 +97,31 @@ msgstr "Кореспондентів не знайдено"
 
 #. Translators: Nextcloud is a brand name.
 #: src/api/v1/views/CorrespondentViewSet.py:258
-#, fuzzy
-#| msgid "Upload to Paperless failed."
 msgid "Upload to Nextcloud failed."
-msgstr "Не вдалося завантажити на Paperless архів."
+msgstr "Не вдалося завантажити на Nextcloud."
 
 #. Translators: Nextcloud is a brand name.
 #: src/api/v1/views/CorrespondentViewSet.py:264
-#, fuzzy
-#| msgid "No correspondents found"
 msgid "Uploaded correspondent to Nextcloud."
-msgstr "Кореспондентів не знайдено"
+msgstr "Завантажено кореспондента до Nextcloud."
 
-#: src/api/v1/views/DaemonViewSet.py:138
+#: src/api/v1/views/DaemonViewSet.py:142
 msgid "Tested routine"
 msgstr "Перевірена процедура"
 
-#: src/api/v1/views/DaemonViewSet.py:171
+#: src/api/v1/views/DaemonViewSet.py:175
 msgid "Routine started"
 msgstr "Рутину розпочато"
 
-#: src/api/v1/views/DaemonViewSet.py:174
+#: src/api/v1/views/DaemonViewSet.py:178
 msgid "Routine is already running"
 msgstr "Рутина вже виконується"
 
-#: src/api/v1/views/DaemonViewSet.py:201
+#: src/api/v1/views/DaemonViewSet.py:205
 msgid "Routine stopped"
 msgstr "Рутину зупинено"
 
-#: src/api/v1/views/DaemonViewSet.py:204
+#: src/api/v1/views/DaemonViewSet.py:208
 msgid "Routine not running"
 msgstr "Рутина не виконується"
 
@@ -171,10 +163,8 @@ msgid "Email successfully restored to mailbox."
 msgstr "Електронну пошту успішно відновлено у поштовій скриньці."
 
 #: src/api/v1/views/EmailViewSet.py:406
-#, fuzzy
-#| msgid "Email successfully restored to mailbox."
 msgid "Email successfully reprocessed."
-msgstr "Електронну пошту успішно відновлено у поштовій скриньці."
+msgstr "Електронний лист успішно оброблено повторно."
 
 #: src/api/v1/views/MailboxViewSet.py:190
 msgid "Tested mailbox"

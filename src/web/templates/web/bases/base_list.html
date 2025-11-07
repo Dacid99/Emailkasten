@@ -1,6 +1,8 @@
 {% extends "web/bases/base.html" %}
 
-{% load static i18n %}
+{% load translate from i18n %}
+
+{% load static %}
 
 {% block content %}
     {% with selectable=True %}
@@ -12,7 +14,7 @@
                     {% endblock header_title %}
 
                 </h2>
-                <h4 class="text-center">
+                <h4>
 
                     {% block header_subtitle %}
                     {% endblock header_subtitle %}

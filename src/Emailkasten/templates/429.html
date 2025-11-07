@@ -1,6 +1,8 @@
 {% extends "allauth/layouts/entrance.html" %}
 
-{% load i18n allauth %}
+{% load allauth %}
+
+{% load translate from i18n %}
 
 {% block head_title %}
     {% translate "Too Many Requests" %} -

@@ -16,9 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""The admin module for :mod:`core`. Registers all models with the admin."""
+"""The admin module for :mod:`core`. Registers all models and import-export resources with the admin."""
 
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
+from import_export.resources import modelresource_factory
 
 from .models import (
     Account,
@@ -32,15 +34,61 @@ from .models import (
 )
 
 
-admin.site.register(
-    [
-        Account,
-        Attachment,
-        Correspondent,
-        Daemon,
-        Email,
-        EmailCorrespondent,
-        Mailbox,
-        StorageShard,
-    ]
-)
+admin.site.register([StorageShard])
+
+AccountResource = modelresource_factory(Account)
+AttachmentResource = modelresource_factory(Attachment)
+CorrespondentResource = modelresource_factory(Correspondent)
+DaemonResource = modelresource_factory(Daemon)
+EmailResource = modelresource_factory(Email)
+EmailCorrespondentResource = modelresource_factory(EmailCorrespondent)
+MailboxResource = modelresource_factory(Mailbox)
+
+
+@admin.register(Account)
+class AccountAdmin(ImportExportModelAdmin):
+    """Admin config for :class:`core.models.Account`."""
+
+    resource_class = [AccountResource]
+
+
+@admin.register(Attachment)
+class AttachmentAdmin(ImportExportModelAdmin):
+    """Admin config for :class:`core.models.Attachment`."""
+
+    resource_class = [AttachmentResource]
+
+
+@admin.register(Correspondent)
+class CorrespondentAdmin(ImportExportModelAdmin):
+    """Admin config for :class:`core.models.Correspondent`."""
+
+    resource_class = [CorrespondentResource]
+
+
+@admin.register(Daemon)
+class DaemonAdmin(ImportExportModelAdmin):
+    """Admin config for :class:`core.models.Daemon`."""
+
+    resource_class = [DaemonResource]
+
+
+@admin.register(Email)
+class EmailAdmin(ImportExportModelAdmin):
+    """Admin config for :class:`core.models.Email`."""
+
+    resource_class = [EmailResource]
+
+
+@admin.register(EmailCorrespondent)
+class EmailCorrespondentAdmin(ImportExportModelAdmin):
+    """Admin config for :class:`core.models.EmailCorrespondent`."""
+
+    resource_class = [EmailCorrespondentResource]
+
+
+@admin.register(Mailbox)
+class MailboxAdmin(ImportExportModelAdmin):
+    """Admin config for :class:`core.models.Mailbox`."""
+
+    resource_class = [MailboxResource]

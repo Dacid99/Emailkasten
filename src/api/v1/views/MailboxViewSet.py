@@ -162,7 +162,7 @@ class MailboxViewSet(
         """
         if getattr(self, "swagger_fake_view", False):
             return Mailbox.objects.none()
-        return Mailbox.objects.filter(  # type: ignore[misc]  # user auth is checked by LoginRequiredMixin, we also test for this
+        return Mailbox.objects.filter(  # type: ignore[misc]  # user auth is checked by permissions, we also test for this
             account__user=self.request.user
         ).prefetch_related(
             "daemons"

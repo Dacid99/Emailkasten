@@ -35,6 +35,18 @@ class EmailFetchingCriterionChoices(TextChoices):
     POP does not support queries at all, so everything will be fetched.
     """
 
+    DAILY = "DAILY", _("All emails received the last DAY")
+    """Filter using "SENTSINCE" for mails sent the previous day."""
+
+    WEEKLY = "WEEKLY", _("All emails received the last WEEK")
+    """Filter using "SENTSINCE" for mails sent the previous week."""
+
+    MONTHLY = "MONTHLY", _("All emails receiced the last MONTH")
+    """Filter using "SENTSINCE" for mails sent the previous 4 weeks."""
+
+    ANNUALLY = "ANNUALLY", _("All emails received the last YEAR")
+    """Filter using "SENTSINCE" for mails sent the previous 52 weeks."""
+
     RECENT = "RECENT", _("All RECENT emails")
     """Filter by "RECENT" flag."""
 
@@ -73,18 +85,6 @@ class EmailFetchingCriterionChoices(TextChoices):
 
     UNDELETED = "UNDELETED", _("All UNDELETED emails")
     """Filter by "UNDELETED" flag."""
-
-    DAILY = "DAILY", _("All emails received the last DAY")
-    """Filter using "SENTSINCE" for mails sent the previous day."""
-
-    WEEKLY = "WEEKLY", _("All emails received the last WEEK")
-    """Filter using "SENTSINCE" for mails sent the previous week."""
-
-    MONTHLY = "MONTHLY", _("All emails receiced the last MONTH")
-    """Filter using "SENTSINCE" for mails sent the previous 4 weeks."""
-
-    ANNUALLY = "ANNUALLY", _("All emails received the last YEAR")
-    """Filter using "SENTSINCE" for mails sent the previous 52 weeks."""
 
 
 class EmailProtocolChoices(TextChoices):
@@ -191,14 +191,14 @@ class SupportedEmailUploadFormats(TextChoices):
     MAILDIR = "zip[maildir]", _(".zip with maildir mailbox inside")
 
 
-PROTOCOLS_SUPPORTING_RESTORE: tuple[str] = (
+PROTOCOLS_SUPPORTING_RESTORE = (
     EmailProtocolChoices.IMAP,
     EmailProtocolChoices.IMAP4_SSL,
     EmailProtocolChoices.EXCHANGE,
 )
 """All protocols supporting restoring of emails."""
 
-HTML_SUPPORTED_AUDIO_TYPE: tuple[str] = (
+HTML_SUPPORTED_AUDIO_TYPE = (
     "ogg",
     "wav",
     "mpeg",
@@ -206,7 +206,7 @@ HTML_SUPPORTED_AUDIO_TYPE: tuple[str] = (
 )
 """All audio types supported by html elements."""
 
-HTML_SUPPORTED_VIDEO_TYPES: tuple[str] = (
+HTML_SUPPORTED_VIDEO_TYPES = (
     "ogg",
     "mp4",
     "mpeg",
@@ -215,7 +215,7 @@ HTML_SUPPORTED_VIDEO_TYPES: tuple[str] = (
 )
 """All video types supported by html elements."""
 
-PAPERLESS_SUPPORTED_IMAGE_TYPES: tuple[str] = (
+PAPERLESS_SUPPORTED_IMAGE_TYPES = (
     "png",
     "jpeg",
     "pjpeg",
@@ -226,7 +226,7 @@ PAPERLESS_SUPPORTED_IMAGE_TYPES: tuple[str] = (
 )
 """All image types supported by Paperless."""
 
-PAPERLESS_TIKA_SUPPORTED_MIMETYPES: tuple[str] = (
+PAPERLESS_TIKA_SUPPORTED_MIMETYPES = (
     "msword",
     "vnd.openxmlformats-officedocument.wordprocessingml.document",
     "vnd.oasis.opendocument.text",

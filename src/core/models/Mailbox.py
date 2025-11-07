@@ -25,12 +25,13 @@ import logging
 import os
 import re
 from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import TYPE_CHECKING, BinaryIO, Final, override
+from typing import TYPE_CHECKING, BinaryIO, ClassVar, override
 from zipfile import BadZipFile, ZipFile
 
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 
 from core.constants import (
     EmailFetchingCriterionChoices,
@@ -62,6 +63,7 @@ logger = logging.getLogger(__name__)
 
 
 class Mailbox(
+    ExportModelOperationsMixin("mailbox"),
     DirtyFieldsMixin,
     URLMixin,
     UploadMixin,
@@ -76,11 +78,11 @@ class Mailbox(
     BASENAME = "mailbox"
 
     DELETE_NOTICE = _(
-        "This will delete this mailbox and all emails and attachments found in it!"
+        "This will delete the record of this mailbox and all emails and attachments found in it!"
     )
 
     DELETE_NOTICE_PLURAL = _(
-        "This will delete these mailboxes and all emails and attachments found in them!"
+        "This will delete the records of these mailboxes and all emails and attachments found in them!"
     )
 
     name = models.CharField(
@@ -128,7 +130,7 @@ class Mailbox(
         verbose_name_plural = _("mailboxes")
         get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
                 fields=["name", "account"], name="mailbox_unique_together_name_account"
             )
@@ -352,11 +354,7 @@ class Mailbox(
         """
         if account.pk is None:
             raise ValueError("Account is not in the db!")
-        mailbox_name = (
-            parse_mailbox_name(mailbox_data)
-            if isinstance(mailbox_data, bytes)
-            else mailbox_data
-        )
+        mailbox_name = parse_mailbox_name(mailbox_data)
         if re.compile(
             get_config("IGNORED_MAILBOXES_REGEX"), flags=re.IGNORECASE
         ).search(mailbox_name):

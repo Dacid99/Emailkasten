@@ -14,6 +14,9 @@ To log in, open the webapp by opening the IP address of your server
 with the port of the application, by default ``1122``.
 Emailkasten will force you to use HTTPS using its certificate, so the url must start with *https://*.
 
+You can install Emailkasten as a progressive-webapp on your device to use it like a regular app.
+The way you can do this depends on your browser.
+
 Registration
 ------------
 
@@ -225,6 +228,16 @@ Each of these can be search and filtered by various criteria. Every single item 
 Items that are important to you can marked as favorites. Just click the star icon in the card of the item to toggle the favorite status.
 Favorite items are sorted to the top of lists so they are easily found.
 
+Tables and lists
+""""""""""""""""
+
+You can get an overview of your data in two formats: listed or tabular.
+
+The listed format presents a series of cards representing the data
+while the tabular interface gives you a clean table with information with each object in its own row.
+
+The table interface can always be found by appending `table/` to the url of the corresponding list overview.
+
 Emails
 ^^^^^^
 
@@ -331,6 +344,8 @@ If you have a file in a proprietary format like .msg or .ost,
 please convert it to one of the upper formats using a conversion tool,
 plenty of these are available on github and other platforms.
 
+You can also import data in various tabular formats into the database via the admin panel.
+
 
 Export
 ^^^^^^
@@ -340,3 +355,6 @@ or by handpicking and downloading these emails in a bunch.
 The second option is currently only available via the API.
 Please refer to the :doc:`API documentation for instructions <api-instructions>` on the usage of these endpoints.
 The same formats as above are accepted.
+
+You can also export data from the database in various tabular formats via the admin panel.
+The supported formats are csv, xls, xlsx, tsv, ods, json, yaml, html.

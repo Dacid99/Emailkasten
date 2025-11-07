@@ -48,7 +48,7 @@ class BaseFetcher(ABC):
     """Tuple of all criteria available for fetching. Should refer to :class:`MailFetchingCriteria`. Must be immutable!"""
 
     @abstractmethod
-    def __init__(self, account: Account):
+    def __init__(self, account: Account) -> None:
         """Constructor basis, sets up the instance logger.
 
         Args:

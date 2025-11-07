@@ -36,7 +36,7 @@ class CreateDaemonForm(BaseDaemonForm):
         """Exposes all fields that the user should be able to change."""
 
     @override
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Extended to restrict the choices for mailbox to the users mailboxes."""
         user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)

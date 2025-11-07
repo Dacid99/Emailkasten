@@ -29,10 +29,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from __future__ import annotations
 
 import re
+import socket
 import sys
 from pathlib import Path
 
 import tomli
+from django.utils.translation import get_language, get_language_bidi, get_language_info
 from django.utils.translation import gettext_lazy as _
 from environ import FileAwareEnv
 
@@ -69,8 +71,14 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "pwa",
     "django_extensions",
+    "django_prometheus",
+    "debug_toolbar",
+    "import_export",
+    "schema_viewer",
     "django_filters",
+    "django_tables2",
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",
@@ -109,7 +117,9 @@ INSTALLED_APPS = [
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends." + env("DATABASE_TYPE", default="mysql"),
+        "ENGINE": (
+            "django_prometheus.db.backends." + env("DATABASE_TYPE", default="mysql")
+        ),
         "NAME": env("DATABASE", default="email_archive_django"),
         "USER": env("DATABASE_USER", default="user"),
         "PASSWORD": env("DATABASE_PASSWORD", default="passwd"),
@@ -130,10 +140,14 @@ CONN_HEALTH_CHECKS = True
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 ### Cache
 # https://docs.djangoproject.com/en/5.1/ref/settings/#cache
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_prometheus.cache.backends.locmem.LocMemCache",
+    }
+}
 CACHE_MIDDLEWARE_SECONDS = env("CACHE_MIDDLEWARE_SECONDS", cast=int, default=600)
 
 
@@ -292,51 +306,54 @@ DEBUG = env("DEBUG", cast=bool, default=False)
 # https://docs.djangoproject.com/en/5.2/ref/settings/#globalization-i18n-l10n
 USE_I18N = True
 
+LANGUAGE_CODES = [
+    "ar",
+    "az",
+    "bg",
+    "ca",
+    "cs",
+    "da",
+    "de",
+    "el",
+    "en",
+    "es",
+    "et",
+    "eu",
+    "fa",
+    "fi",
+    "fr",
+    "he",
+    "hr",
+    "hu",
+    "id",
+    "it",
+    "ja",
+    "ka",
+    "ko",
+    "ky",
+    "lt",
+    "lv",
+    "mn",
+    "nb",
+    "nl",
+    "pl",
+    "pt-BR",
+    "pt-PT",
+    "ro",
+    "ru",
+    "sk",
+    "sl",
+    "sr",
+    "sr",
+    "sv",
+    "th",
+    "tr",
+    "uk",
+    "zh-hans",
+    "zh-hant",
+]
 LANGUAGES = [
-    ("ar", "العربية الفصحى"),
-    ("az", "Azərbaycan dili"),
-    ("bg", "Български"),
-    ("ca", "català"),
-    ("cs", "čeština"),
-    ("da", "dansk"),
-    ("de", "Deutsch"),
-    ("el", "ελληνικά"),
-    ("en", "English"),
-    ("es", "español"),
-    ("et", "eesti keel"),
-    ("eu", "Euskara"),
-    ("fa", "فارسی"),
-    ("fi", "suomi"),
-    ("fr", "français"),
-    ("he", "עברית"),
-    ("hr", "hrvatski"),
-    ("hu", "magyar"),
-    ("id", "Bahasa Indonesia"),
-    ("it", "italiano"),
-    ("ja", "日本語"),
-    ("ka", "ქართული ენა"),
-    ("ko", "한국어 [韓國語]"),
-    ("ky", "Кыргыз тили"),
-    ("lt", "lietuvių kalba"),
-    ("lv", "latviešu valoda"),
-    ("mn", "монгол"),
-    ("nb", "norsk"),
-    ("nl", "Nederlands"),
-    ("pl", "polski"),
-    ("pt-BR", "Português (Brasil)"),
-    ("pt-PT", "Português (Portugal)"),
-    ("ro", "română"),
-    ("ru", "Русский"),
-    ("sk", "slovenčina"),
-    ("sl", "slovenščina"),
-    ("sr", "српски / srpski"),
-    ("sr-Latn", "српски / srpski (Latin)"),
-    ("sv", "svenska"),
-    ("th", "ภาษาไทย"),
-    ("tr", "Türkçe"),
-    ("uk", "українська мова"),
-    ("zh-hans", "簡體中文"),
-    ("zh-hant", "繁體中文"),
+    (language, get_language_info(language)["name_local"]) for language in LANGUAGE_CODES
 ]
 
 LOCALE_PATHS = [
@@ -350,7 +367,7 @@ DEFAULT_COOKIE_AGE = 2419200  # 4 weeks
 
 LANGUAGE_COOKIE_AGE = env("LANGUAGE_COOKIE_AGE", cast=int, default=DEFAULT_COOKIE_AGE)
 LANGUAGE_COOKIE_SECURE = not DEBUG
-LANGUAGE_COOKIE_SAMESITE = env("LANGUAGE_COOKIE_SAMESITE", cast=str, default="None")
+LANGUAGE_COOKIE_SAMESITE = env("LANGUAGE_COOKIE_SAMESITE", cast=str, default=None)
 
 
 # Timezones
@@ -371,9 +388,15 @@ LANGUAGE_CODE = "en"
 
 WSGI_APPLICATION = "Emailkasten.wsgi.application"
 
+# https://knasmueller.net/fix-djangos-debug-toolbar-not-showing-inside-docker
+hostname, __, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS = [".".join([*ip.split(".")[:-1], "1"]) for ip in ips]
+
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -384,12 +407,23 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "allauth.usersessions.middleware.UserSessionsMiddleware",
     "Emailkasten.middleware.TimezoneMiddleware.TimezoneMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 # Security
-ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=list, default=["localhost"])
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=list, default=["localhost", "127.0.0.1"])
 if "localhost" not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append("localhost")
+if "127.0.0.1" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("127.0.0.1")
+if (
+    "0.0.0.0"  # noqa: S104 ; allow access from inside the docker container
+    not in ALLOWED_HOSTS
+    and DEBUG
+):
+    ALLOWED_HOSTS.append(
+        "0.0.0.0"  # noqa: S104 ; allow access from inside the docker container
+    )
 
 DISALLOWED_USER_AGENTS = [
     re.compile(pattern)
@@ -520,6 +554,58 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
+##### django-pwa #####
+# https://pypi.org/project/django-pwa/
+
+PWA_APP_NAME = _("Emailkasten")
+PWA_APP_DESCRIPTION = _("Your email archiving server")
+PWA_APP_THEME_COLOR = "#0d6efd"
+PWA_APP_BACKGROUND_COLOR = "#ffffff"
+PWA_APP_DISPLAY = "standalone"
+PWA_APP_SCOPE = "/"
+PWA_APP_ORIENTATION = "any"
+PWA_APP_START_URL = "/dashboard/"
+PWA_APP_STATUS_BAR_COLOR = "default"
+PWA_APP_ICONS = [{"src": STATIC_URL + "favicon.ico", "sizes": "512x512"}]
+PWA_APP_ICONS_APPLE = [{"src": STATIC_URL + "favicon.ico", "sizes": "512x512"}]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        "src": STATIC_URL + "favicon.ico",
+        "media": "(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)",
+    }
+]
+PWA_APP_DIR = "rtl" if get_language_bidi() else "ltr"
+PWA_APP_LANG = get_language()
+PWA_APP_SHORTCUTS = [
+    {
+        "name": _("Dashboard"),
+        "url": "/dashboard/",
+        "description": _("Shortcut to the dashboard"),
+    },
+    {
+        "name": _("Timeline"),
+        "url": "/emails/archive/",
+        "description": _("Shortcut to the email timeline"),
+    },
+]
+PWA_APP_SCREENSHOTS = []
+PWA_APP_DEBUG_MODE = DEBUG
+
+
+##### django-debug-toolbar #####
+# https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": "debug_toolbar.middleware.show_toolbar_with_docker",
+}
+
+
+##### django_prometheus ######
+# https://github.com/django-commons/django-prometheus/blob/master/README.md
+
+PROMETHEUS_METRIC_NAMESPACE = "emailkasten"
+
+
 ##### restframework #####
 # https://www.django-rest-framework.org/
 
@@ -610,6 +696,17 @@ MFA_TRUST_COOKIE_SAMESITE = env("MFA_TRUST_COOKIE_SAMESITE", cast=str, default="
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 CRISPY_FAIL_SILENTLY = not DEBUG
+
+
+##### django_tables2 #####
+# https://django-tables2.readthedocs.io/en/latest/pages/custom-rendering.html
+
+DJANGO_TABLES2_TEMPLATE = "web/partials/_table.html"
+DJANGO_TABLES2_TABLE_ATTRS = {
+    "class": "table table-hover table-striped-columns align-middle",
+    "tbody": {"class": "table-group-divider"},
+    "tfoot": {"class": "table-group-divider"},
+}
 
 
 ##### drf_spectacular #####

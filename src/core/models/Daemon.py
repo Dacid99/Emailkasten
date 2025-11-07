@@ -23,7 +23,7 @@ from __future__ import annotations
 import json
 import logging
 import uuid
-from typing import TYPE_CHECKING, Any, Final, override
+from typing import TYPE_CHECKING, Any, ClassVar, override
 
 from celery import current_app
 from dirtyfields import DirtyFieldsMixin
@@ -31,6 +31,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
+from django_prometheus.models import ExportModelOperationsMixin
 
 from core.constants import EmailFetchingCriterionChoices
 from core.mixins import HealthModelMixin, TimestampModelMixin, URLMixin
@@ -45,7 +46,12 @@ logger = logging.getLogger(__name__)
 
 
 class Daemon(
-    DirtyFieldsMixin, URLMixin, HealthModelMixin, TimestampModelMixin, models.Model
+    ExportModelOperationsMixin("routine"),
+    DirtyFieldsMixin,
+    URLMixin,
+    HealthModelMixin,
+    TimestampModelMixin,
+    models.Model,
 ):
     """Database model for the daemon fetching a mailbox.
 
@@ -117,7 +123,7 @@ class Daemon(
         verbose_name_plural = _("routines")
         get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.CheckConstraint(
                 condition=models.Q(
                     fetching_criterion__in=EmailFetchingCriterionChoices.values

@@ -114,3 +114,12 @@ Then pick content_query parameters based on what info you'd like to be shown in 
 Dont forget to come up with a different shortcut name.
 
 See the `Searxng docs on this subject <https://docs.searxng.org/dev/engines/json_engine.html>`_ for more details.
+
+
+Prometheus
+----------
+
+Emailkasten exports database, database-models, migrations, cache and other metrics for Prometheus.
+The metrics data can be scraped under `/metrics`, their names all start with ``emailkasten``.
+
+For reference on configuration refer to the [Prometheus](https://prometheus.io/docs/introduction/overview/) and [django-prometheus](https://github.com/django-commons/django-prometheus/blob/master/README.md) docs.

@@ -28,6 +28,7 @@ import email
 import email.header
 import email.utils
 import logging
+import re
 from typing import TYPE_CHECKING
 
 import imap_tools.imap_utf7
@@ -142,23 +143,34 @@ def get_bodytexts(email_message: EmailMessage) -> dict[str, str]:
     return bodytexts
 
 
-def parse_mailbox_name(mailbox_bytes: bytes) -> str:
+def parse_mailbox_name(mailbox_data: bytes | str) -> str:
     """Parses the mailbox name as received by the `fetch_mailboxes` method in :mod:`core.utils.fetchers`.
 
     Note:
         Uses :func:`imap_tools.imap_utf7.utf7_decode` to decode IMAPs modified utf7 encoding.
         The result must not be changed afterwards, otherwise opening the mailbox via this name is not possible!
+
     Args:
-        mailbox_bytes: The mailbox name in bytes as received from the mail server.
+        mailbox_data: The mailbox name in bytes or as str as received from the mail server.
 
     Returns:
         The serverside name of the mailbox
     """
-    return (
-        imap_tools.imap_utf7.utf7_decode(mailbox_bytes)
-        .rsplit('"/"', maxsplit=1)[-1]
-        .strip()
+    mailbox_str = (
+        imap_tools.imap_utf7.utf7_decode(mailbox_data)
+        if isinstance(mailbox_data, bytes)
+        else mailbox_data
     )
+    match = re.search(
+        r"\([\S ]*?\) [\S]+ (.+)", mailbox_str
+    )  # regex taken from imap_tools.folder.MailBoxFolderManager.list
+    if not match:
+        return (
+            mailbox_str.rsplit('"/"', maxsplit=1)[-1]
+            .rsplit('"."', maxsplit=1)[-1]
+            .strip()
+        )
+    return match.group(1)
 
 
 def find_best_href_in_header(header: str) -> str:

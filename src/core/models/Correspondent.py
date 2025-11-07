@@ -22,13 +22,14 @@ from __future__ import annotations
 
 import logging
 from io import BytesIO
-from typing import TYPE_CHECKING, Final, override
+from typing import TYPE_CHECKING, ClassVar, override
 
 import httpcore
 import httpx
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 from rest_framework import status
 from vobject import vCard
 
@@ -51,16 +52,23 @@ logger = logging.getLogger(__name__)
 
 
 class Correspondent(
-    DownloadMixin, URLMixin, FavoriteModelMixin, TimestampModelMixin, models.Model
+    ExportModelOperationsMixin("correspondent"),
+    DownloadMixin,
+    URLMixin,
+    FavoriteModelMixin,
+    TimestampModelMixin,
+    models.Model,
 ):
     """Database model for the correspondent data found in a mail."""
 
     BASENAME = "correspondent"
 
-    DELETE_NOTICE = _("This will only delete this correspondent, not its emails.")
+    DELETE_NOTICE = _(
+        "This will only delete the record of this correspondent, not of its emails."
+    )
 
     DELETE_NOTICE_PLURAL = _(
-        "This will only delete these correspondents, not their emails."
+        "This will only delete the records of these correspondents, not of their emails."
     )
 
     email_address = models.CharField(
@@ -172,7 +180,7 @@ class Correspondent(
         verbose_name_plural = _("correspondents")
         get_latest_by = TimestampModelMixin.Meta.get_latest_by
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
                 fields=["email_address", "user"],
                 name="email_unique_together_email_address_user",

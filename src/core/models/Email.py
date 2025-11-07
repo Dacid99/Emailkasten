@@ -30,13 +30,14 @@ from email import policy
 from functools import cached_property
 from hashlib import md5
 from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import TYPE_CHECKING, Any, Final, override
+from typing import TYPE_CHECKING, Any, ClassVar, override
 from zipfile import ZipFile
 
 from django.db import connection, models, transaction
 from django.template import engines
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 
 from core.constants import (
     PROTOCOLS_SUPPORTING_RESTORE,
@@ -79,6 +80,7 @@ logger = logging.getLogger(__name__)
 
 
 class Email(
+    ExportModelOperationsMixin("email"),
     DownloadMixin,
     ThumbnailMixin,
     URLMixin,
@@ -92,11 +94,11 @@ class Email(
     BASENAME = "email"
 
     DELETE_NOTICE = _(
-        "This will delete this email and all its attachments but not its correspondents."
+        "This will delete the records of this email and all its attachments but not its correspondents."
     )
 
     DELETE_NOTICE_PLURAL = _(
-        "This will delete these emails and all their attachments but not their correspondents."
+        "This will delete the records of these emails and all their attachments but not their correspondents."
     )
 
     message_id = models.CharField(
@@ -112,8 +114,7 @@ class Email(
     )
     """The Date header of the mail."""
 
-    subject = models.CharField(
-        max_length=255,
+    subject = models.TextField(
         blank=True,
         default="",
         # Translators: Do not capitalize the very first letter unless your language requires it.
@@ -209,7 +210,7 @@ class Email(
         verbose_name_plural = _("emails")
         get_latest_by = "datetime"
 
-        constraints: Final[list[models.BaseConstraint]] = [
+        constraints: ClassVar[list[models.BaseConstraint]] = [
             models.UniqueConstraint(
                 fields=["message_id", "mailbox"],
                 name="email_unique_together_message_id_mailbox",
@@ -593,9 +594,12 @@ class Email(
                         eml_file = email_item.open_file()
                     except FileNotFoundError:
                         continue
-                    with eml_file, zipfile.open(
-                        os.path.basename(email_item.file_path), "w"
-                    ) as zipped_file:
+                    with (
+                        eml_file,
+                        zipfile.open(
+                            os.path.basename(email_item.file_path), "w"
+                        ) as zipped_file,
+                    ):
                         zipped_file.write(eml_file.read())
         elif file_format in [
             SupportedEmailDownloadFormats.MBOX,

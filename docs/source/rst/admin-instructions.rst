@@ -57,11 +57,18 @@ If the admin user password has been forgotten, there are a variety of options.
 
 If the admin password has not been changed, you can just look it up in the ``docker-compose.yml`` environmental variables.
 
-Otherwise you can create another admin account by running
+If you have access to the docker management, you can use ``docker exec`` to run
+
+.. code-block::
+    python3 manage.py changepassword admin
+
+and change the password.
+
+Alternatively, you can create another admin account by running
 
 .. code-block:: bash
 
-    docker exec -it emailkasten-web poetry run python3 manage.py createsuperuser --username=rescueadmin --email=  --noinput
+    docker exec -it emailkasten-web python3 manage.py createsuperuser --username=rescueadmin --email=  --noinput
 
 in the servers terminal.
 This ``rescueadmin`` account can be accessed with the password from the ``docker-compose.yml``.

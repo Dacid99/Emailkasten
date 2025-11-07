@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`RequiredMarkerModelForm` form class."""
+"""Module with custom form classes."""
 
 from typing import Any
 
@@ -29,7 +29,7 @@ class RequiredMarkerModelForm(ModelForm):
 
     required_marker = _(" *")
 
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Extended constructor adding :attr:`required_marker` to the required field labels."""
         super().__init__(*args, **kwargs)
         for field_name in self.fields:
@@ -45,7 +45,7 @@ class RequiredMarkerForm(Form):
 
     required_marker = _(" *")
 
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Extended constructor adding :attr:`required_marker` to the required field labels."""
         super().__init__(*args, **kwargs)
         for field_name in self.fields:

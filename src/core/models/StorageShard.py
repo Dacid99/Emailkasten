@@ -28,6 +28,7 @@ from uuid import uuid4
 from django.core.files.storage import default_storage
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_prometheus.models import ExportModelOperationsMixin
 
 from core.mixins.TimestampModelMixin import TimestampModelMixin
 from Emailkasten.utils.workarounds import get_config
@@ -37,7 +38,9 @@ logger = logging.getLogger(__name__)
 """The logger instance for this module."""
 
 
-class StorageShard(TimestampModelMixin, models.Model):
+class StorageShard(
+    ExportModelOperationsMixin("storage_shard"), TimestampModelMixin, models.Model
+):
     """A database model to keep track of and manage the sharded storage's status and structure.
 
     Important:

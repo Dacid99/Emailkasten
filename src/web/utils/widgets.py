@@ -18,7 +18,6 @@
 
 """Module with the adapted widget classes."""
 
-
 from typing import Any
 
 from django.forms import SelectDateWidget
@@ -28,14 +27,14 @@ from django.utils.translation import gettext as _
 class AdaptedSelectDateWidget(SelectDateWidget):
     """Adapted version to fit the need of this project."""
 
-    def __init__(self, **kwargs: Any):
+    def __init__(self, **kwargs: Any) -> None:
         """Extended to ensure a default backward selection of years."""
         kwargs.pop("empty_label", None)
         super().__init__(
             empty_label=[
-                f"--- {_("Year")} ---",
-                f"--- {_("Month")} ---",
-                f"--- {_("Day")} ---",
+                f"--- {_('Year')} ---",
+                f"--- {_('Month')} ---",
+                f"--- {_('Day')} ---",
             ],
             **kwargs,
         )
