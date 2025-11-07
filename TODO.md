@@ -42,7 +42,6 @@
 
 - favicon.ico for the icon
 - staticfiles subfolder for icons
-- simplify lang list with getlanguageinfo
 
 ### Work in progress
 
@@ -52,7 +51,7 @@
 
 ## To fix
 
-- automerge weblate
+- pwa when icons are created
 - filteroptions for existing db entries leak other user data
 - fetching too many emails leads to browser timeout
 - ci:

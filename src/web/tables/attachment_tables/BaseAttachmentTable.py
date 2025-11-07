@@ -36,7 +36,10 @@ class BaseAttachmentTable(Table):
         linkify=lambda record: record.email.get_absolute_url(),
         accessor="email__subject",
     )
-    content_type = Column(order_by=("content_maintype", "content_subtype"))
+    content_type = Column(
+        verbose_name=_("Content type"),
+        order_by=("content_maintype", "content_subtype"),
+    )
 
     class Meta:
         """Metadata class for the table."""
