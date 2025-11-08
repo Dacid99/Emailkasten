@@ -89,7 +89,9 @@ def test_Account_fields(django_user_model, fake_account):
     assert any(
         fake_account.protocol == protocol for protocol in EmailProtocolChoices.values
     )
-    assert fake_account.timeout is None
+    assert fake_account.timeout is not None
+    assert isinstance(fake_account.timeout, int)
+    assert fake_account.timeout == 10
     assert fake_account.is_healthy is None
     assert fake_account.is_favorite is False
     assert fake_account.user is not None

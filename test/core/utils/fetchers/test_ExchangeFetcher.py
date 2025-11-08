@@ -229,12 +229,10 @@ def test_ExchangeFetcher___init___bad_protocol(
 @pytest.mark.django_db
 @pytest.mark.parametrize("http_protocol", ["http://", "https://"])
 @pytest.mark.parametrize(
-    "mail_host_port, timeout",
+    "mail_host_port",
     [
-        (123, 300),
-        (123, None),
-        (None, 300),
-        (None, None),
+        123,
+        None,
     ],
 )
 def test_ExchangeFetcher_connect_to_host_hostURL_success(
@@ -242,7 +240,6 @@ def test_ExchangeFetcher_connect_to_host_hostURL_success(
     mock_logger,
     mock_ExchangeAccount,
     mail_host_port,
-    timeout,
     http_protocol,
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.connect_to_host`
@@ -250,7 +247,6 @@ def test_ExchangeFetcher_connect_to_host_hostURL_success(
     """
     exchange_mailbox.account.mail_host = http_protocol + "path.MyDomain.tld"
     exchange_mailbox.account.mail_host_port = mail_host_port
-    exchange_mailbox.account.timeout = timeout
 
     ExchangeFetcher(exchange_mailbox.account)
 
@@ -280,11 +276,7 @@ def test_ExchangeFetcher_connect_to_host_hostURL_success(
     )
     assert isinstance(
         mock_ExchangeAccount.call_args.kwargs["config"].retry_policy,
-        (
-            exchangelib.FaultTolerance
-            if exchange_mailbox.account.timeout
-            else exchangelib.FailFast
-        ),
+        exchangelib.FaultTolerance,
     )
     if exchange_mailbox.account.timeout:
         assert mock_ExchangeAccount.call_args.kwargs[
@@ -302,23 +294,20 @@ def test_ExchangeFetcher_connect_to_host_hostURL_success(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "mail_host_port, timeout",
+    "mail_host_port",
     [
-        (123, 300),
-        (123, None),
-        (None, 300),
-        (None, None),
+        123,
+        None,
     ],
 )
 def test_ExchangeFetcher_connect_to_host_hostname_success(
-    exchange_mailbox, mock_logger, mock_ExchangeAccount, mail_host_port, timeout
+    exchange_mailbox, mock_logger, mock_ExchangeAccount, mail_host_port
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.connect_to_host`
     in cases of success with different combinations of account `mail_host` in hostname form, `timeout` and `mail_host_port` settings.
     """
     exchange_mailbox.account.mail_host = "path.MyDomain.tld"
     exchange_mailbox.account.mail_host_port = mail_host_port
-    exchange_mailbox.account.timeout = timeout
     expected_url = (
         f"{exchange_mailbox.account.mail_host}:{exchange_mailbox.account.mail_host_port}"
         if exchange_mailbox.account.mail_host_port
@@ -351,11 +340,7 @@ def test_ExchangeFetcher_connect_to_host_hostname_success(
     )
     assert isinstance(
         mock_ExchangeAccount.call_args.kwargs["config"].retry_policy,
-        (
-            exchangelib.FaultTolerance
-            if exchange_mailbox.account.timeout
-            else exchangelib.FailFast
-        ),
+        exchangelib.FaultTolerance,
     )
     if exchange_mailbox.account.timeout:
         assert mock_ExchangeAccount.call_args.kwargs[

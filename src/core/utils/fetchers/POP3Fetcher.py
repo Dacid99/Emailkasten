@@ -81,16 +81,12 @@ class POP3Fetcher(BaseFetcher, poplib.POP3, SafePOPMixin):
         mail_host_port = self.account.mail_host_port
         timeout = self.account.timeout
         try:
-            if mail_host_port and timeout:
+            if mail_host_port:
                 self._mail_client = poplib.POP3(
                     host=mail_host, port=mail_host_port, timeout=timeout
                 )
-            elif mail_host_port:
-                self._mail_client = poplib.POP3(host=mail_host, port=mail_host_port)
-            elif timeout:
-                self._mail_client = poplib.POP3(host=mail_host, timeout=timeout)
             else:
-                self._mail_client = poplib.POP3(host=mail_host)
+                self._mail_client = poplib.POP3(host=mail_host, timeout=timeout)
         except Exception as error:
             self.logger.exception("Error connecting to %s!", self.account)
             raise MailAccountError(error, _("connecting")) from error

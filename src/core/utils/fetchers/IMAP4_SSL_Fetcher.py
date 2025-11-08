@@ -58,28 +58,17 @@ class IMAP4_SSL_Fetcher(  # noqa: N801  # naming consistent with IMAP4_SSL class
         timeout = self.account.timeout
         ssl_context = ssl.create_default_context()
         try:
-            if mail_host_port and timeout:
+            if mail_host_port:
                 self._mail_client = imaplib.IMAP4_SSL(
                     host=mail_host,
                     port=mail_host_port,
-                    timeout=timeout,
-                    ssl_context=ssl_context,
-                )
-            elif mail_host_port:
-                self._mail_client = imaplib.IMAP4_SSL(
-                    host=mail_host,
-                    port=mail_host_port,
-                    ssl_context=ssl_context,
-                )
-            elif timeout:
-                self._mail_client = imaplib.IMAP4_SSL(
-                    host=mail_host,
                     timeout=timeout,
                     ssl_context=ssl_context,
                 )
             else:
                 self._mail_client = imaplib.IMAP4_SSL(
                     host=mail_host,
+                    timeout=timeout,
                     ssl_context=ssl_context,
                 )
         except Exception as error:

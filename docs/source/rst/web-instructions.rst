@@ -66,17 +66,16 @@ If you don't set the mailserver port, the default port of the protocol is used.
     If you use Exchange you can specify a full URL path starting with http(s):// to the service endpoint as mailserver-URL.
     In that case the port setting is not used as the port should already be part of that URL.
 
-If you don't set a timeout value when using IMAP and POP,
-the connection to the mailserver doesn't time out.
-That is the intended behaviour as the fetching of emails is quick
-and the connection is closed afterwards anyway.
+If you don't set a timeout value, the default value of 10 seconds is used.
+For IMAP and POP this means that if a request to the mailserver takes longer than the timeout value,
+the request is treated as if the server was unavailable.
+If you know the mailserver of an account to be slow, you can set a larger value.
 
-For Exchange this setting behaves a bit differently.
-Setting a value enables a retry and faulttolerance logic timing out after the given value.
-It is encouraged to use this option with a value of a few seconds
-to reduce random connection errors.
-Don't use larger values as this may significantly impact
-the runtime of individual requests to the server.
+For Exchange this enables a retry and faulttolerance logic timing out after the given value.
+
+Don't use larger timeout values than 60 seconds, as this may significantly impact
+the runtime of individual fetch operations and may at worst delay the archiving schedule.
+The minimal accepted timeout value is 0.1.
 
 After you have added the account, you can test the configuration via the test button.
 If the service is unknown, check the email server URL.
