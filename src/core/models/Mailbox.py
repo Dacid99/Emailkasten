@@ -244,6 +244,7 @@ class Mailbox(
             parser_class = file_format_parsers[file_format]
             with NamedTemporaryFile() as tempfile:
                 tempfile.write(file.read())
+                tempfile.seek(0)
                 parser = parser_class(tempfile.name, create=False)
                 parser.lock()
                 for key in parser.iterkeys():
