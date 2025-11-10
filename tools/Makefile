@@ -33,6 +33,9 @@ doc8: doc8.ini
 codespell: .codespellrc
 	poetry run codespell ../src ../test/ ../docs/ ../.gitea/ ../.github/ ../.gitlab/ ../*.md --config=$< | tee $(REPORT_PATH)codespell.ansi
 
+eslint:
+	npx --yes eslint --no-config-lookup --fix
+
 licenses:
 	pip-licenses --from=all --with-license-file --format=plain-vertical --no-license-path > ../THIRD_PARTY_LICENSES
 

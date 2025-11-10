@@ -57,6 +57,17 @@ else
   fi
 fi
 
+CHANGED_JS_FILES=$(git diff --cached --name-only --diff-filter=ACMRT | grep '\.js$')
+if [ -z "$CHANGED_JS_FILES" ]; then
+  echo "No js files in commit."
+else
+  npx --yes eslint --no-config-lookup --fix
+  if [ $? -ne 0 ]; then
+    echo "Eslint failed, please check "$REPORT_PATH"eslint_precommit.ansi ."
+    exit 1
+  fi
+fi
+
 CHANGED_RST_FILES=$(git diff --cached --name-only --diff-filter=ACMRT | grep '\.rst$')
 
 if [ -z "$CHANGED_RST_FILES" ]; then

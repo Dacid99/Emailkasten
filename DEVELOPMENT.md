@@ -11,13 +11,13 @@ Make sure to also install the **python-dev** version!
 First install the packages required for the build environment, on debian based distros:
 
 ```bash
-sudo apt-get -y update && apt-get -y install build-essential gettext default-mysql-client libmysqlclient-dev pkg-config
+sudo apt-get -y update && apt-get -y install build-essential gettext default-mysql-client libmysqlclient-dev pkg-config npx
 ```
 
 and on redhat distros:
 
 ```bash
-sudo dnf -y update && dnf -y install gcc gettext mysql-devel pkgconf
+sudo dnf -y update && dnf -y install gcc gettext mysql-devel pkgconf npx
 ```
 
 Then to install the python dependencies start a new virtual environment and activate it:
