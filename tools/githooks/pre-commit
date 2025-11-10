@@ -76,7 +76,13 @@ else
   poetry run doc8 --config $CONFIG_PATH'doc8.ini' $CHANGED_RST_FILES > $REPORT_PATH'doc8_precommit.ansi'
 fi
 
-#spellcheck
+CHANGED_DOCKERFILE=$(git diff --cached --name-only --diff-filter=ACMRT | grep '^docker/Dockerfile$')
+if [ -z "$CHANGED_DOCKERFILE" ]; then
+  echo "Dockerfile not in commit."
+else
+  docker run --rm -i hadolint/hadolint < docker/Dockerfile > $REPORT_PATH'hadolint_precommit.ansi'
+fi
+
 poetry run codespell --config=$CONFIG_PATH'.codespellrc' src/ test/ docs/ .gitea/ .github/ .gitlab/ *.md > $REPORT_PATH'codespell_precommit.ansi'
 
 echo "All precommit actions passed successfully."

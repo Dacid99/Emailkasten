@@ -36,6 +36,9 @@ codespell: .codespellrc
 eslint:
 	npx --yes eslint --no-config-lookup --fix
 
+hadolint:
+	docker run --rm -i hadolint/hadolint < docker/Dockerfile | tee $(REPORT_PATH)hadolint.ansi
+
 licenses:
 	pip-licenses --from=all --with-license-file --format=plain-vertical --no-license-path > ../THIRD_PARTY_LICENSES
 
