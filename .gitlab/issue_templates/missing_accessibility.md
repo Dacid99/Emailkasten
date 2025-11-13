@@ -30,3 +30,8 @@
 ## Possible diagnosis
 
 *If you have an idea what could be causing the inaccessibility please let us know.*
+
+
+## Fix it yourself?
+
+*What you be interested in fixing this problem yourself? If you do we are happy to support you on the way.*

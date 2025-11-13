@@ -1,4 +1,4 @@
-# Eonvelope
+# E￮nvelope
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/dacid99/eonvelope)](https://hub.docker.com/repository/docker/dacid99/eonvelope/general)
 [![Docker Image Version](https://img.shields.io/docker/v/dacid99/eonvelope)](https://hub.docker.com/repository/docker/dacid99/eonvelope/general)
@@ -9,7 +9,7 @@
 [![Framework](https://pypi-camo.freetls.fastly.net/beb496af0833573259d4094b1fe3b0a3ea831607/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6672616d65776f726b2d446a616e676f2d3043334332362e737667)](https://www.djangoproject.com/)
 [![Code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-A open-source self-hostable email archive using the [django framework](https://www.djangoproject.com/).
+Preserve your emails for [an indefinite long period of time](https://en.wikipedia.org/wiki/Aeon) with this open-source self-hostable email archive!
 
 ## Features
 
@@ -39,15 +39,7 @@ Your emails are serious business, so this projects codebase has > 95% test-cover
 
 *Tell us what you'd like to see in a feature request!*
 
-## We need your opinion
-
-This project is currently in **beta** stage.
-
-We are looking for people to run it and give feedback!
-
-Interested? Just go ahead and run this application on your homelab.
-
-If you encounter an issue please let us know via an issue or direct message!
+*If you encounter an issue please let us know via an issue or direct message!*
 
 ## Installation
 

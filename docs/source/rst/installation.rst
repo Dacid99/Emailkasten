@@ -10,8 +10,6 @@ Installation
 General
 -------
 
-**This project is currently still in active development.**
-
 While the general functionalities are stable, there may be breaking changes nonetheless.
 If you need to archive your emails for a critical purpose, it is not recommended to solely
 rely on this application.
@@ -24,6 +22,8 @@ It is not safe or intended for use on the open web.
 
 Therefore, do not expose this application to the web without a reverse proxy like `nginx <https://nginx.org>`_.
 
+.. note::
+   The SSL certificate is a different one for every version of Eonvelope.
 
 Recommended
 -----------
@@ -31,7 +31,7 @@ Recommended
 The project is intended to be run with the container image
 provided at `dockerhub <https://hub.docker.com/repository/docker/dacid99/eonvelope/general>`_.
 
-The eonvelope service mounts 2 volumes,
+The Eonvelope service mounts 2 volumes,
 one for the logfiles of Eonvelope and one for the files that Eonvelope archives.
 
 .. Note::
@@ -118,8 +118,10 @@ If your containers have different names, you may have to exchange the `eonvelope
 
 For more details see `the django docs on this topic <https://django-extensions.readthedocs.io/en/latest/runscript.html>`_.
 
-
-
+.. note::
+   If you are migrating from version 0.2.0 or lower to a version above 0.2.0,
+   you will have to add an adminer container (see the docker-compose.debug.yml for reference) to the stack
+   and change the ``app`` column of all rows in the migrations table that have emailkasten as value to eonvelope.
 
 
 Migration
