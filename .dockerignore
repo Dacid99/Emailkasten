@@ -1,8 +1,10 @@
 # alphanumeric order
 # blacklist
 $RECYCLE.BIN/
+*$py.class
 *.ansi
 *.cab
+*.css.map
 *.code-workspace
 *.diff
 *.egg
@@ -121,9 +123,12 @@ fabric.properties
 htmlcov/
 lib/
 lib64/
+node_modules/
 nohup.out
 nosetests.xml
 out/
+package.json
+package-lock.json
 parts/
 pip-selfcheck.json
 pytest-cov/

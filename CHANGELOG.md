@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.1
+
+- rebranded to Eonvelope
+- updated translations
+- updated dependencies
+
 ## Version 0.2.0
 
 - Features:

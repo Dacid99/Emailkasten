@@ -1,0 +1,8 @@
+// https://getbootstrap.com/docs/5.3/customize/sass/
+// workflow:
+//   npm install bootstrap
+//   npx --yes sass eonvelope.scss src/eonvelope/static/eonvelope/css/eonvelope.css --no-source-map
+
+$primary: #3e7bb6ff;
+
+@import "node_modules/bootstrap/scss/bootstrap";

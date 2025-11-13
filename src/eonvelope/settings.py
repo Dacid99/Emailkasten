@@ -730,6 +730,12 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 CRISPY_FAIL_SILENTLY = not DEBUG
 
 
+##### django-bootstrap5 #####
+# https://django-bootstrap5.readthedocs.io/en/latest/settings.html
+
+BOOTSTRAP5 = {"css_url": STATIC_URL + "eonvelope/css/eonvelope.css"}
+
+
 ##### django_tables2 #####
 # https://django-tables2.readthedocs.io/en/latest/pages/custom-rendering.html
 
