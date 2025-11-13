@@ -1,4 +1,5 @@
 # alphanumeric order
+# blacklist
 $RECYCLE.BIN/
 *.ansi
 *.cab
@@ -139,3 +140,5 @@ var/
 venv/
 wheels/
 xcuserdata/
+# whitelist
+!src/eonvelope/static/eonvelope/icons/*

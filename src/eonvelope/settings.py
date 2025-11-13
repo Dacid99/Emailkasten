@@ -567,13 +567,35 @@ PWA_APP_SCOPE = "/"
 PWA_APP_ORIENTATION = "any"
 PWA_APP_START_URL = "/dashboard/"
 PWA_APP_STATUS_BAR_COLOR = "default"
-PWA_APP_ICONS = [{"src": STATIC_URL + "favicon.ico", "sizes": "512x512"}]
-PWA_APP_ICONS_APPLE = [{"src": STATIC_URL + "favicon.ico", "sizes": "512x512"}]
+PWA_APP_ICONS = [
+    {
+        "src": STATIC_URL + "icons/eonvelope/favicon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable",
+    },
+    {
+        "src": STATIC_URL + "icons/eonvelope/favicon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "maskable",
+    },
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        "src": STATIC_URL + "icons/eonvelope/apple-touch-icon.png",
+        "sizes": "180x180",
+        "type": "image/png",
+    }
+]
 PWA_APP_SPLASH_SCREEN = [
     {
-        "src": STATIC_URL + "favicon.ico",
+        "src": STATIC_URL + "icons/eonvelope/favicon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable",
         "media": "(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)",
-    }
+    },
 ]
 PWA_APP_DIR = "rtl" if get_language_bidi() else "ltr"
 PWA_APP_LANG = get_language()

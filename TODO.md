@@ -40,9 +40,6 @@
 
 ## To implement
 
-- favicon.ico for the icon
-- staticfiles subfolder for icons
-
 ### Work in progress
 
 - tests

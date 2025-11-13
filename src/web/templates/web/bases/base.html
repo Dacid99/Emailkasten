@@ -14,6 +14,15 @@
               content="© 2025 David Aderbauer &amp; The Eonvelope Contributors." />
         <meta name="license" content="AGPLv3" />
         {% progressive_web_app_meta %}
+        <link rel="icon" href="{% static 'eonvelope/icons/favicon.ico' %}" />
+        <link rel="icon"
+              type="image/png"
+              sizes="32x32"
+              href="{% static 'eonvelope/icons/favicon-32x32.png' %}" />
+        <link rel="icon"
+              type="image/png"
+              sizes="16x16"
+              href="{% static 'eonvelope/icons/favicon-16x16.png' %}" />
         <title>
 
             {% block title %}
@@ -41,7 +50,14 @@
             <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top"
                  role="navigation">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="{% url 'web:dashboard' %}">{% translate "Eonvelope" %}</a>
+                    <a class="navbar-brand" href="{% url 'web:dashboard' %}">
+                        <img class="me-1"
+                             src="{% static 'eonvelope/icons/favicon.svg' %}"
+                             alt="{% translate "Eonvelope" %}"
+                             height="26"
+                             width="26" />
+                        E○nvelope
+                    </a>
                     <button class="navbar-toggler"
                             type="button"
                             data-bs-toggle="collapse"
