@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-15 16:39+0000\n"
-"PO-Revision-Date: 2025-11-06 19:18+0000\n"
+"PO-Revision-Date: 2025-11-15 16:49+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/eonvelope/core/de/"
 ">\n"
@@ -446,22 +446,16 @@ msgid "Uploading to Immich failed: %(response)s"
 msgstr "Hochladen zu Immich fehlgeschlagen: %(response)s"
 
 #: src/core/models/Attachment.py:410
-#, fuzzy
-#| msgid "attachment"
 msgid "Attachment image"
-msgstr "Anhang"
+msgstr "Bildanhang"
 
 #: src/core/models/Attachment.py:420
-#, fuzzy
-#| msgid "attachment"
 msgid "Attachment text"
-msgstr "Anhang"
+msgstr "Textanhang"
 
 #: src/core/models/Attachment.py:429
-#, fuzzy
-#| msgid "fetching of mail contents"
 msgid "Attachment file content"
-msgstr "Abrufen von E-Mails"
+msgstr "Anhangsdateiinhalt"
 
 #: src/core/models/Correspondent.py:67
 msgid ""
