@@ -37,7 +37,8 @@ variables:
   TEST_REPORT_PATH: "test/reports/"
 
 services:
-  - docker:dind
+ - name: docker:29-dind
+   alias: docker
 
 stages:
   - check

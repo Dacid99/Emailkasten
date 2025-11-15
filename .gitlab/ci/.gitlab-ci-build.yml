@@ -1,6 +1,6 @@
 build_docker:
   stage: build
-  image: docker:stable
+  image: docker:29  # must match dind service version in main ci config
   rules:
     - if: '$CI_COMMIT_TAG =~ /^[0-9]/'
   before_script:
