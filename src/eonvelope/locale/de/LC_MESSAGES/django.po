@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-13 23:05+0000\n"
+"POT-Creation-Date: 2025-11-15 16:39+0000\n"
 "PO-Revision-Date: 2025-11-06 19:18+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/eonvelope/"
@@ -19,39 +19,33 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.15-dev\n"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:885
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:864
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:892
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:864
 msgid "Received"
 msgstr "Erhalten"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:889
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:868
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:896
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:868
 msgid "From"
 msgstr "Von"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:892
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:871
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:899
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:871
 msgid "To"
 msgstr "An"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:895
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:874
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:902
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:874
 msgid "CC"
 msgstr "CC"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:898
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:877
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:905
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:877
 msgid "BCC"
 msgstr "BCC"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:911
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:890
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:918
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:890
 msgid "Attachments"
 msgstr "Anhänge"
 
@@ -160,12 +154,6 @@ msgstr "benutzerprofile"
 msgid "Profile for user %(username)s "
 msgstr "Profil für Benutzer %(username)s "
 
-#: src/eonvelope/settings.py:561
-#: src/eonvelope/templates/allauth/layouts/base.html:31
-#: src/eonvelope/templates/allauth/layouts/base.html:54
-msgid "Eonvelope"
-msgstr "Eonvelope"
-
 #: src/eonvelope/settings.py:562
 msgid "Your email archiving server"
 msgstr "Dein E-Mail Archivserver"
@@ -185,14 +173,6 @@ msgstr "Chronik"
 #: src/eonvelope/settings.py:611
 msgid "Shortcut to the email timeline"
 msgstr "Abkürzung zur E-Mail Chronik"
-
-#: src/eonvelope/settings.py:754
-msgid "Eonvelope API"
-msgstr "Eonvelope-API"
-
-#: src/eonvelope/settings.py:755
-msgid "The API schema for the Eonvelope server."
-msgstr "Das API-Schema des Eonvelope-Servers."
 
 #: src/eonvelope/settings.py:884
 msgid "Default page size for paginated API response data"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-13 23:05+0000\n"
+"POT-Creation-Date: 2025-11-15 16:39+0000\n"
 "PO-Revision-Date: 2025-11-08 11:51+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/eonvelope/core/"
@@ -340,113 +340,131 @@ msgstr "Цей обліковий запис вже існує."
 msgid "The protocol %s is not implemented in a fetcher class!"
 msgstr "Протокол %s не реалізовано в класі fetcher!"
 
-#: src/core/models/Attachment.py:87
+#: src/core/models/Attachment.py:88
 msgid "This will only delete the record of this attachment, not of the email."
 msgstr "Це видалить лише запис цього вкладення, а не весь електронний лист."
 
-#: src/core/models/Attachment.py:91
+#: src/core/models/Attachment.py:92
 msgid ""
 "This will only delete the records of these attachments, not of their emails."
 msgstr "Це видалить лише записи цих вкладень, а не їхні електронні листи."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:97
+#: src/core/models/Attachment.py:98
 msgid "filename"
 msgstr "ім'я файлу"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:106
+#: src/core/models/Attachment.py:107
 msgid "content disposition"
 msgstr "розташування контенту"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:114
+#: src/core/models/Attachment.py:115
 msgid "content ID"
 msgstr "ідентифікатор вмісту"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:122
+#: src/core/models/Attachment.py:123
 msgid "content maintype"
 msgstr "основний тип контенту"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:130
+#: src/core/models/Attachment.py:131
 msgid "content subtype"
 msgstr "підтип контенту"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:136 src/core/models/Email.py:162
+#: src/core/models/Attachment.py:137 src/core/models/Email.py:162
 msgid "datasize"
 msgstr "розмір даних"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:145 src/core/models/Email.py:208
+#: src/core/models/Attachment.py:146 src/core/models/Email.py:208
 #: src/core/models/EmailCorrespondent.py:50
 msgid "email"
 msgstr "електронна пошта"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:155
+#: src/core/models/Attachment.py:156
 msgid "attachment"
 msgstr "вкладення"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Attachment.py:157
+#: src/core/models/Attachment.py:158
 msgid "attachments"
 msgstr "вкладенням"
 
-#: src/core/models/Attachment.py:167
+#: src/core/models/Attachment.py:168
 #, python-format
 msgid "Attachment %(file_name)s from %(email)s"
 msgstr "Вкладення %(file_name)s від %(email)s"
 
 #. Translators: Paperless is a brand name.
-#: src/core/models/Attachment.py:231
+#: src/core/models/Attachment.py:232
 #, python-format
 msgid "Paperless URL is malformed: %(error)s"
 msgstr "URL-адреса без паперу має неправильний формат: %(error)s"
 
 #. Translators: Paperless is a brand name.
-#: src/core/models/Attachment.py:238
+#: src/core/models/Attachment.py:239
 #, python-format
 msgid "Error connecting to the Paperless server: %(error)s"
 msgstr "Помилка підключення до сервера Paperless: %(error)s"
 
 #. Translators: Paperless is a brand name.
-#: src/core/models/Attachment.py:251
+#: src/core/models/Attachment.py:252
 #, python-format
 msgid "Authentication to Paperless failed: %(response)s"
 msgstr "Не вдалося автентифікацію для Paperless доступу: %(response)s"
 
 #. Translators: Paperless is a brand name.
-#: src/core/models/Attachment.py:256
+#: src/core/models/Attachment.py:257
 #, python-format
 msgid "Uploading to Paperless failed: %(response)s"
 msgstr "Не вдалося завантажити на Paperless архів: %(response)s"
 
 #. Translators: Immich is a brand name.
-#: src/core/models/Attachment.py:310
+#: src/core/models/Attachment.py:311
 #, python-format
 msgid "Immich URL is malformed: %(error)s"
 msgstr "URL-адреса Immich має неправильний формат: %(error)s"
 
 #. Translators: Immich is a brand name.
-#: src/core/models/Attachment.py:317
+#: src/core/models/Attachment.py:318
 #, python-format
 msgid "Error connecting to the Immich server: %(error)s"
 msgstr "Помилка підключення до сервера Immich: %(error)s"
 
 #. Translators: Immich is a brand name.
-#: src/core/models/Attachment.py:330
+#: src/core/models/Attachment.py:331
 #, python-format
 msgid "Authentication to Immich failed: %(response)s"
 msgstr "Автентифікація в Іммічі не вдалася: %(response)s"
 
 #. Translators: Immich is a brand name.
-#: src/core/models/Attachment.py:335
+#: src/core/models/Attachment.py:336
 #, python-format
 msgid "Uploading to Immich failed: %(response)s"
 msgstr "Завантаження до Immich не вдалося: %(response)s"
+
+#: src/core/models/Attachment.py:410
+#, fuzzy
+#| msgid "attachment"
+msgid "Attachment image"
+msgstr "вкладення"
+
+#: src/core/models/Attachment.py:420
+#, fuzzy
+#| msgid "attachment"
+msgid "Attachment text"
+msgstr "вкладення"
+
+#: src/core/models/Attachment.py:429
+#, fuzzy
+#| msgid "fetching of mail contents"
+msgid "Attachment file content"
+msgstr "отримання вмісту пошти"
 
 #: src/core/models/Correspondent.py:67
 msgid ""

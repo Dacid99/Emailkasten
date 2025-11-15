@@ -558,7 +558,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 ##### django-pwa #####
 # https://pypi.org/project/django-pwa/
 
-PWA_APP_NAME = _("Eonvelope")
+PWA_APP_NAME = "Eonvelope"
 PWA_APP_DESCRIPTION = _("Your email archiving server")
 PWA_APP_THEME_COLOR = "#0d6efd"
 PWA_APP_BACKGROUND_COLOR = "#ffffff"
@@ -751,8 +751,8 @@ DJANGO_TABLES2_TABLE_ATTRS = {
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": _("Eonvelope API"),
-    "DESCRIPTION": _("The API schema for the Eonvelope server."),
+    "TITLE": "Eonvelope API",
+    "DESCRIPTION": "The API schema for the Eonvelope server.",
     "VERSION": VERSION,
     "SERVE_INCLUDE_SCHEMA": True,
 }

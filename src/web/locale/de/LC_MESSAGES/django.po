@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-13 23:05+0000\n"
+"POT-Creation-Date: 2025-11-15 16:39+0000\n"
 "PO-Revision-Date: 2025-11-06 19:18+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/eonvelope/web/de/"
@@ -274,7 +274,7 @@ msgid "Test the account to see if this error persists."
 msgstr "Teste dieses Konto um zu überprüfen ob der Fehler weiter auftritt."
 
 #: src/web/templates/web/account/account_detail.html:77
-#: src/web/templates/web/bases/base.html:88
+#: src/web/templates/web/bases/base.html:87
 #: src/web/templates/web/mailbox/mailbox_filter_list.html:6
 #: src/web/templates/web/mailbox/mailbox_filter_list.html:14
 msgid "Mailboxes"
@@ -282,14 +282,14 @@ msgstr "Postfächer"
 
 #: src/web/templates/web/account/account_detail.html:100
 #: src/web/templates/web/correspondent/correspondent_detail.html:90
-#: src/web/templates/web/dashboard.html:16
+#: src/web/templates/web/dashboard.html:17
 #: src/web/templates/web/mailbox/mailbox_detail.html:108
 msgid "Latest Emails"
 msgstr "Neueste E-Mails"
 
 #: src/web/templates/web/account/account_detail.html:105
 #: src/web/templates/web/correspondent/correspondent_detail.html:94
-#: src/web/templates/web/dashboard.html:21
+#: src/web/templates/web/dashboard.html:22
 #: src/web/templates/web/email/email_detail.html:179
 #: src/web/templates/web/mailbox/mailbox_detail.html:113
 msgid "View all"
@@ -332,7 +332,7 @@ msgstr "Liste"
 
 #: src/web/templates/web/account/account_filter_list.html:6
 #: src/web/templates/web/account/account_filter_list.html:10
-#: src/web/templates/web/bases/base.html:85
+#: src/web/templates/web/bases/base.html:84
 msgid "Accounts"
 msgstr "Konten"
 
@@ -395,8 +395,8 @@ msgstr "Erhalten am"
 
 #: src/web/templates/web/attachment/attachment_filter_list.html:6
 #: src/web/templates/web/attachment/attachment_filter_list.html:14
-#: src/web/templates/web/bases/base.html:77
-#: src/web/templates/web/dashboard.html:61
+#: src/web/templates/web/bases/base.html:76
+#: src/web/templates/web/dashboard.html:62
 #: src/web/templates/web/email/email_detail.html:136
 msgid "Attachments"
 msgstr "Anhänge"
@@ -434,43 +434,26 @@ msgstr "Zu den Postfächern"
 msgid "Download"
 msgstr "Herunterladen"
 
-#: src/web/templates/web/attachment/partials/_thumbnail.html:17
-msgid "Attachment image"
-msgstr "Bildanhang"
-
-#: src/web/templates/web/attachment/partials/_thumbnail.html:21
-msgid "Attachment text"
-msgstr "Textanhang"
-
-#: src/web/templates/web/attachment/partials/_thumbnail.html:25
-msgid "Attachment file content"
-msgstr "Anhangdatei-Inhalt"
-
-#: src/web/templates/web/bases/base.html:31
-#: src/web/templates/web/bases/base.html:56
-msgid "Eonvelope"
-msgstr "Eonvelope"
-
-#: src/web/templates/web/bases/base.html:67
+#: src/web/templates/web/bases/base.html:66
 msgid "Toggle navigation"
 msgstr "Navigation umschalten"
 
-#: src/web/templates/web/bases/base.html:74
-#: src/web/templates/web/dashboard.html:47
+#: src/web/templates/web/bases/base.html:73
+#: src/web/templates/web/dashboard.html:48
 #: src/web/templates/web/email/email_filter_list.html:6
 #: src/web/templates/web/email/email_filter_list.html:14
 msgid "Emails"
 msgstr "E-Mails"
 
-#: src/web/templates/web/bases/base.html:80
+#: src/web/templates/web/bases/base.html:79
 #: src/web/templates/web/correspondent/correspondent_filter_list.html:6
 #: src/web/templates/web/correspondent/correspondent_filter_list.html:14
-#: src/web/templates/web/dashboard.html:54
+#: src/web/templates/web/dashboard.html:55
 #: src/web/templates/web/email/email_detail.html:125
 msgid "Correspondents"
 msgstr "Korrespondenten"
 
-#: src/web/templates/web/bases/base.html:91
+#: src/web/templates/web/bases/base.html:90
 #: src/web/templates/web/daemon/daemon_filter_list.html:6
 #: src/web/templates/web/daemon/daemon_filter_list.html:14
 #: src/web/templates/web/mailbox/mailbox_detail.html:84
@@ -646,21 +629,22 @@ msgstr "Stoppen"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: src/web/templates/web/dashboard.html:10
+#. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
+#: src/web/templates/web/dashboard.html:11
 #, fuzzy
 #| msgid "Welcome to Eonvelope"
-msgid "Welcome to E⚬nvelope"
+msgid "Welcome to E∘nvelope"
 msgstr "Willkommen bei Eonvelope"
 
-#: src/web/templates/web/dashboard.html:34
+#: src/web/templates/web/dashboard.html:35
 msgid "Statistics"
 msgstr "Statistiken"
 
-#: src/web/templates/web/dashboard.html:40
+#: src/web/templates/web/dashboard.html:41
 msgid "Data"
 msgstr "Daten"
 
-#: src/web/templates/web/dashboard.html:41
+#: src/web/templates/web/dashboard.html:42
 msgid "Count"
 msgstr "Anzahl"
 
@@ -675,7 +659,7 @@ msgid "Email Timeline"
 msgstr "E-Mail Chronik"
 
 #: src/web/templates/web/email/archive/day.html:6
-#: src/web/templates/web/email/archive/day.html:10 src/web/utils/widgets.py:37
+#: src/web/templates/web/email/archive/day.html:10
 msgid "Day"
 msgstr "Tag"
 
@@ -694,7 +678,6 @@ msgstr "Diese Woche"
 
 #: src/web/templates/web/email/archive/month.html:6
 #: src/web/templates/web/email/archive/month.html:10
-#: src/web/utils/widgets.py:36
 msgid "Month"
 msgstr "Monat"
 
@@ -708,7 +691,7 @@ msgid "Week #"
 msgstr "Woche Nr."
 
 #: src/web/templates/web/email/archive/year.html:6
-#: src/web/templates/web/email/archive/year.html:10 src/web/utils/widgets.py:35
+#: src/web/templates/web/email/archive/year.html:10
 msgid "Year"
 msgstr "Jahr"
 
@@ -944,7 +927,6 @@ msgid "End edit"
 msgstr "Bearbeiten beenden"
 
 #: src/web/templates/web/partials/_favorite_badge.html:5
-#: src/web/utils/columns.py:85
 msgid "Favorite"
 msgstr "Favorit"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-13 23:05+0000\n"
+"POT-Creation-Date: 2025-11-15 16:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,39 +19,33 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
 "2);\n"
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:885
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:864
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:892
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:864
 msgid "Received"
 msgstr ""
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:889
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:868
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:896
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:868
 msgid "From"
 msgstr ""
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:892
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:871
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:899
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:871
 msgid "To"
 msgstr ""
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:895
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:874
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:902
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:874
 msgid "CC"
 msgstr ""
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:898
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:877
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:905
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:877
 msgid "BCC"
 msgstr ""
 
-#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:911
+#: test/reports/cov/z_6ac22c25bf7159a4_settings_py.html:890
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:918
-#: test/reports/cov/z_f0b3d748295ae8c0_settings_py.html:890
 msgid "Attachments"
 msgstr ""
 
@@ -160,12 +154,6 @@ msgstr ""
 msgid "Profile for user %(username)s "
 msgstr ""
 
-#: src/eonvelope/settings.py:561
-#: src/eonvelope/templates/allauth/layouts/base.html:31
-#: src/eonvelope/templates/allauth/layouts/base.html:54
-msgid "Eonvelope"
-msgstr ""
-
 #: src/eonvelope/settings.py:562
 msgid "Your email archiving server"
 msgstr ""
@@ -184,14 +172,6 @@ msgstr ""
 
 #: src/eonvelope/settings.py:611
 msgid "Shortcut to the email timeline"
-msgstr ""
-
-#: src/eonvelope/settings.py:754
-msgid "Eonvelope API"
-msgstr ""
-
-#: src/eonvelope/settings.py:755
-msgid "The API schema for the Eonvelope server."
 msgstr ""
 
 #: src/eonvelope/settings.py:884
