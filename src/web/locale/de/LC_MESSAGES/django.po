@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-15 16:39+0000\n"
-"PO-Revision-Date: 2025-11-06 19:18+0000\n"
+"PO-Revision-Date: 2025-11-15 16:49+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/eonvelope/web/de/"
-">\n"
+"Language-Team: German <https://hosted.weblate.org/projects/eonvelope/web/de/>"
+"\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -631,10 +631,8 @@ msgstr "Dashboard"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
 #: src/web/templates/web/dashboard.html:11
-#, fuzzy
-#| msgid "Welcome to Eonvelope"
 msgid "Welcome to E∘nvelope"
-msgstr "Willkommen bei Eonvelope"
+msgstr "Willkommen bei E∘nvelope"
 
 #: src/web/templates/web/dashboard.html:35
 msgid "Statistics"
@@ -949,11 +947,11 @@ msgstr "Lizensiert unter AGPLv3."
 
 #: src/web/templates/web/partials/_footer.html:13
 msgid "Version"
-msgstr ""
+msgstr "Version"
 
 #: src/web/templates/web/partials/_footer.html:15
 msgid "DEBUG"
-msgstr ""
+msgstr "DEBUG"
 
 #: src/web/templates/web/partials/_footer.html:22
 msgid "Website"
