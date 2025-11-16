@@ -10,6 +10,8 @@ FAQ
 This is a list of frequently asked questions with their answers
 and quick solutions to common problems.
 
+If you have run into a problem running Eonvelope, check out the :doc:`troubleshooting page <troubleshooting>`.
+
 
 I am new to self-hosting, how can I set up an instance the easiest?
 -------------------------------------------------------------------
@@ -35,34 +37,6 @@ That means that everyone can freely use this software.
 There is only a restriction if you want to alter and publish the source code.
 In that case your version of the program has to be released under the same license,
 so the project remains free software.
-
-
-I can't access my instance using the port I assigned to it.
------------------------------------------------------------
-
-Eonvelope is served exclusively over https. Please make sure that the URL you use starts with https://.
-Perhaps you are trying to access Eonvelope via an address that is not in the ALLOWED_HOSTS docker environment variable.
-If none of these fixes work, please check the logs to see if the webserver (gunicorn) in the container has trouble starting.
-Its logs should give you a hint of what is going on.
-
-
-After setting up my instance, I don't know how to sign up or log in.
---------------------------------------------------------------------
-
-You can login with the default admin account, which is automatically created.
-The credentials are `admin` and the `DJANGO_SUPERUSER_PASSWORD` that you set in the docker-compose file.
-Using this account and the admin interface, you can create other users.
-If users should be able to sign up themselves, set `REGISTRATION_ENABLED` to `True`.
-More details are available on the :doc:`installation page <installation>`.
-
-
-I can't access my Eonvelopes webapp, I always land on the no internet connection page.
---------------------------------------------------------------------------------------
-
-This can happen if you have the PWA offline page cached and have not yet accepted the self-signed certificate.
-Open your browsers developer bar and delete all files cached by django-pwa. 
-Now when you refresh, you should be prompted to accept the certificate.
-To solve this issue long-term, reverse-proxy your instance.
 
 
 If I delete an account in Eonvelope, does that delete the account on the mailserver too?

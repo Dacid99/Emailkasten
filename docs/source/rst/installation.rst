@@ -18,15 +18,13 @@ The docker image comes with a SSL certificate issued and signed by the Eonvelope
 It ensures safe communication between your server and your reverse proxy
 as well as within your local network.
 
-It is not safe or intended for use on the open web.
-
-Therefore, do not expose this application to the web without a reverse proxy like `nginx <https://nginx.org>`_.
-
 .. note::
    The SSL certificate is a different one for every version of Eonvelope.
 
-.. note::
-   If you reverse proxy, make sure to add the address to the ALLOWED_HOSTS environment variable in the docker-compose file.
+It is not safe or intended for use on the open web.
+
+Therefore, do not expose this application to the web without a reverse proxy like `nginx <https://nginx.org>`_.
+Further details on this can be found in the :ref:`Reverse-proxy` section below.
 
 Recommended
 -----------
@@ -96,6 +94,24 @@ Otherwise the connection from the Eonvelope container to the database will fail.
 .. note::
    Using a database other than the default mysql can lead to issues.
    If possible try to stick with the default, which is tested and guaranteed to work flawlessly.
+
+Reverse-proxy
+-------------
+
+If you reverse-proxy or expose your Eonvelope instance another way,
+you must make sure that the prometheus endpoint ``/metrics`` is not exposed for the entire world to see!
+
+Just add
+
+.. code-block::
+   location /metrics {
+      return 403;   # or 404
+   }
+
+to your nginx config.
+
+.. note::
+   Make sure to add the address to the ALLOWED_HOSTS environment variable in the docker-compose file.
 
 Updating
 ========

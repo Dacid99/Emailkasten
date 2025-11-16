@@ -52,7 +52,7 @@ If your problem doesn't fall in one of these categories, please go ahead and fil
 
 ## Files/Emails
 
-*If the bug occurs when processing a specific email or file, please send them to *18516197-Dacid99@users.noreply.gitlab.com* if possible. This can help to improve Eonvelope's capabilities of parsing emails correctly and completely and guard against similar bugs in the future.*
+*If the bug occurs when processing a specific email or file, please send them to *eonvelope@mailo.com* if possible. This can help to improve Eonvelope's capabilities of parsing emails correctly and completely and guard against similar bugs in the future.*
 
 
 ## Possible diagnosis

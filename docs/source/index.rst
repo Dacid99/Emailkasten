@@ -24,6 +24,7 @@ If you need information about how the application works, try the :doc:`instructi
 
    rst/quickstart
    rst/faq
+   rst/troubleshooting
    rst/installation
    rst/configuration
    rst/instructions
@@ -33,3 +34,4 @@ If you need information about how the application works, try the :doc:`instructi
    rst/contributors
    rst/changelog
    rst/license
+   rst/contact

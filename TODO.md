@@ -48,6 +48,7 @@
 
 ## To fix
 
+- buttons in list-alts are disconnected
 - filteroptions for existing db entries leak other user data
 - fetching too many emails leads to browser timeout
 - ci:

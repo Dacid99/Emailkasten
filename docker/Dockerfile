@@ -46,7 +46,7 @@ FROM s6-overlay-base AS eonvelope
 ### general config
 
 # labels
-LABEL org.opencontainers.image.authors="David Aderbauer & The Eonvelope Contributors <18516197-Dacid99@users.noreply.gitlab.com>"
+LABEL org.opencontainers.image.authors="David Aderbauer & The Eonvelope Contributors <eonvelope@mailo.com>"
 LABEL org.opencontainers.image.documentation="https://eonvelope.readthedocs.io"
 LABEL org.opencontainers.image.source="https://gitlab.com/Dacid99/eonvelope"
 LABEL org.opencontainers.image.url="https://gitlab.com/Dacid99/eonvelope"
