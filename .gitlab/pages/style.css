@@ -19,13 +19,13 @@ Free HTML CSS Template
 }
 
 :root {
-	--primary: #2D5A87;
-	--secondary: #4A7C8A;
-	--accent: #6B9B7A;
+	--primary: #3e7bb6;
+	--secondary: #ff8d00;
+	--accent: #3e7bb6;
 	--light: #F7F7F7;
-	--dark: #2A2A3E;
-	--gradient-1: linear-gradient(135deg, #2D5A87 0%, #4A7C8A 100%);
-	--gradient-2: linear-gradient(135deg, #F1E5AC 0%, #4a90e2 100%);
+	--dark: #2A2A2A;
+	--gradient-1: linear-gradient(135deg, #2D5A87 0%, #60a1b3 100%);
+	--gradient-2: linear-gradient(135deg, #ffb04f 0%, #4a90e2 100%);
 }
 
 body {
@@ -1242,11 +1242,11 @@ nav {
 
 /* Real thumbnail images */
 .readthedocs {
-	background-image: url('images/readthedocs.png');
+	background-image: url('images/rtd.png');
 }
 
 .source-code {
-	background-image: url('images/unsplash-blue-lakeside.avif');
+	background-image: url('images/gitlab.png');
 }
 
 .weblate {
@@ -1254,11 +1254,27 @@ nav {
 }
 
 .dockerhub {
-	background-image: url('images/unsplash-library-bookshelf.avif');
+	background-image: url('images/dockerhub.png');
 }
 
 .issues {
-	background-image: url('images/unsplash-people-meeting-room.avif');
+	background-image: url('images/github.png');
+}
+
+.readthedocs_wide {
+	background-image: url('images/rtd_wide.png');
+}
+
+.source-code_wide {
+	background-image: url('images/gitlab_wide.png');
+}
+
+.weblate_wide {
+	background-image: url('images/weblate_wide.png');
+}
+
+.issues_wide {
+	background-image: url('images/github_wide.png');
 }
 
 .resource-image::before {
