@@ -37,9 +37,6 @@ variables:
   TEST_CONFIG_PATH: "test/"
   TEST_REPORT_PATH: "test/reports/"
 
-services:
-  - docker:dind
-
 stages:
   - check
   - build
