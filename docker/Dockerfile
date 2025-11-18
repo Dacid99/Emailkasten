@@ -22,17 +22,24 @@ ARG S6_OVERLAY_VERSION=3.2.1.0
 WORKDIR /tmp
 
 # install s6-overlay
+ARG TARGETARCH
+ARG TARGETVARIANT
+
 ARG BUILD_S6_APK_DEPENDENCIES="curl xz"
 
 RUN apk add --no-cache ${BUILD_S6_APK_DEPENDENCIES} && \
+    S6_ARCH="" && \
+    if [ "${TARGETARCH}${TARGETVARIANT}" = "amd64" ]; then S6_ARCH="x86_64"; \
+    elif [ "${TARGETARCH}${TARGETVARIANT}" = "arm64" ]; then S6_ARCH="aarch64"; fi && \
+    if [ -z "${S6_ARCH}" ]; then { echo "Error: Not able to determine target platform"; exit 1; }; fi && \
     curl --fail --silent --no-progress-meter --show-error --location --remote-name-all --parallel --parallel-max 4 \
     "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz" \
     "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz.sha256" \
-    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz" \
-    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz.sha256" && \
+    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz" \
+    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz.sha256" && \
     sha256sum -c ./*.sha256 && \
     tar --directory / -Jxpf s6-overlay-noarch.tar.xz && \
-    tar --directory / -Jxpf s6-overlay-x86_64.tar.xz && \
+    tar --directory / -Jxpf s6-overlay-${S6_ARCH}.tar.xz && \
     apk del ${BUILD_S6_APK_DEPENDENCIES} && \
     rm ./*.tar.xz && \
     rm ./*.sha256 && \
@@ -46,7 +53,7 @@ FROM s6-overlay-base AS eonvelope
 ### general config
 
 # labels
-LABEL org.opencontainers.image.authors="David Aderbauer & The Eonvelope Contributors <18516197-Dacid99@users.noreply.gitlab.com>"
+LABEL org.opencontainers.image.authors="David Aderbauer & The Eonvelope Contributors <eonvelope@mailo.com>"
 LABEL org.opencontainers.image.documentation="https://eonvelope.readthedocs.io"
 LABEL org.opencontainers.image.source="https://gitlab.com/Dacid99/eonvelope"
 LABEL org.opencontainers.image.url="https://gitlab.com/Dacid99/eonvelope"

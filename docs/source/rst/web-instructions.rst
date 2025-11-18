@@ -66,6 +66,12 @@ If you don't set the mailserver port, the default port of the protocol is used.
     If you use Exchange you can specify a full URL path starting with http(s):// to the service endpoint as mailserver-URL.
     In that case the port setting is not used as the port should already be part of that URL.
 
+.. note::
+    The Exchange autodiscover mechanism is not implemented in Eonvelope.
+    If you don't know your exact exchange mailserver URL, either ask your admin,
+    try to look up the address from autodiscover in your outlook client (various instructions exist online)
+    or you can try your luck with `the official analyser tool <https://testconnectivity.microsoft.com/tests/exo>`_.
+
 If you don't set a timeout value, the default value of 10 seconds is used.
 For IMAP and POP this means that if a request to the mailserver takes longer than the timeout value,
 the request is treated as if the server was unavailable.

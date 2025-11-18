@@ -3,7 +3,7 @@ name = "eonvelope"
 version = "0.2.1"
 description = "Preserve your emails with this open-source self-hosted email archive."
 authors = [
-    {name = "David Aderbauer & The Eonvelope Contributors", email = "18516197-Dacid99@users.noreply.gitlab.com"}
+    {name = "David Aderbauer & The Eonvelope Contributors", email = "eonvelope@mailo.com"}
 ]
 license = {text = "AGPL-3.0-or-later"}
 readme = "README.md"

@@ -4,6 +4,10 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="author" content="David Aderbauer" />
+        <meta name="copyright"
+              content="© 2025 David Aderbauer &amp; The Eonvelope Contributors" />
+        <meta name="license" content="AGPLv3" />
         <title>Eonvelope</title>
         <link href="style.css" rel="stylesheet" />
 
@@ -16,21 +20,7 @@
         <header>
             <nav>
                 <a href="#hero" class="logo">
-                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                        <!-- djlint:off -->
-                                                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                                                </linearGradient>
-                        <!-- djlint:on -->
-                        </defs>
-                        <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2" />
-                        <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7" />
-                        <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5" />
-                        <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3" />
-                        <circle cx="20" cy="20" r="3" fill="url(#logoGradient)" />
-                    </svg>
+                    <img src="images/favicon.svg" width="30" height="30" alt="Eonvelope logo" />
                     <span class="logo-text">E∘nvelope</span>
                 </a>
                 <div class="menu-toggle" onclick="toggleMenu()"></div>
@@ -108,7 +98,7 @@
             <div class="about-floating-cards">
                 <div class="floating-card">
                     <div class="card-icon">
-                        <div class="icon-wrapper">🧡</div>
+                        <div class="icon-wrapper">❤️</div>
                     </div>
                     <h3>For Users</h3>
                     <ul>
@@ -296,7 +286,7 @@
                             <p class="practice-description">
                                 Get a first look at all your recently archived emails and an overview of the database.
                             </p>
-                            <div class="practice-image weblate"></div>
+                            <div class="practice-image dashboard"></div>
                         </div>
 
                         <div class="practice-card-new">
@@ -365,9 +355,9 @@
             <div id="user" class="tab-content active">
                 <div class="resource-list">
                     <div class="resource-card">
-                        <a href="https://hosted.weblate.org/eonvelope" target="_plain">
+                        <a href="https://eonvelope.readthedocs.io/latest/" target="_plain">
                             <div class="resource-image">
-                                <div class="resource-thumbnail readthedocs"></div>
+                                <div class="resource-thumbnail readthedocs_wide"></div>
                             </div>
                         </a>
                         <div class="resource-body">
@@ -375,6 +365,38 @@
                             <p>
                                 Read our documentation for instructions on how to use
                                 E∘nvelope.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://github.com/Dacid99/Eonvelope/issues" target="_plain">
+                            <div class="resource-image">
+                                <div class="resource-thumbnail issues_wide"></div>
+                            </div>
+                        </a>
+                        <div class="resource-body">
+                            <h3>Issue Trackers</h3>
+                            <p>
+                                Submit issue reports and feature ideas via one of the issue trackers for this project. One is
+                                hosted on <a href="https://github.com/Dacid99/Eonvelope/issues" target="_blank">Github</a>, the other on <a href="https://gitlab.com/Dacid99/eonvelope/-/issues" target="_blank">Gitlab</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="admin" class="tab-content">
+                <div class="resource-list">
+                    <div class="resource-card">
+                        <a href="https://eonvelope.readthedocs.io/latest/" target="_plain">
+                            <div class="resource-image">
+                                <div class="resource-thumbnail readthedocs"></div>
+                            </div>
+                        </a>
+                        <div class="resource-body">
+                            <h3>Documentation</h3>
+                            <p>
+                                Get instructions on how to set up and manage various configurations of E∘nvelope from our ReadTheDocs-hosted documentation.
                             </p>
                         </div>
                     </div>
@@ -392,41 +414,8 @@
                             </p>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div id="admin" class="tab-content">
-                <div class="resource-list">
                     <div class="resource-card">
-                        <a href="https://hosted.weblate.org/eonvelope" target="_plain">
-                            <div class="resource-image">
-                                <div class="resource-thumbnail readthedocs"></div>
-                            </div>
-                        </a>
-                        <div class="resource-body">
-                            <h3>Documentation</h3>
-                            <p>
-                                Get instructions on how to set up and manage various configurations of E∘nvelope from our ReadTheDocs-hosted documentation.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="resource-card">
-                        <a href="https://github.com/Dacid99/Eonvelope" target="_plain">
-                            <div class="resource-image">
-                                <div class="resource-thumbnail issues"></div>
-                            </div>
-                        </a>
-                        <div class="resource-body">
-                            <h3>Issue Trackers</h3>
-                            <p>
-                                Submit issue reports and feature ideas via one of the issue trackers for this project. One is
-                                hosted on <a href="https://github.com/Dacid99/Eonvelope/issues" target="_blank">Github</a>, the other on <a href="https://gitlab.com/Dacid99/eonvelope/-/issues" target="_blank">Gitlab</a>.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="resource-card">
-                        <a href="https://hub.docker.com/repository/docker/dacid99/eonvelope/general"
-                           target="_plain">
+                        <a href="https://hub.docker.com/r/dacid99/eonvelope" target="_plain">
                             <div class="resource-image">
                                 <div class="resource-thumbnail dockerhub"></div>
                             </div>
@@ -447,7 +436,7 @@
                     <div class="resource-card">
                         <a href="https://gitlab.com/eonvelope" target="_plain">
                             <div class="resource-image">
-                                <div class="resource-thumbnail source-code"></div>
+                                <div class="resource-thumbnail source-code_wide"></div>
                             </div>
                         </a>
                         <div class="resource-body">
@@ -461,7 +450,7 @@
                     <div class="resource-card">
                         <a href="https://hosted.weblate.org/eonvelope" target="_plain">
                             <div class="resource-image">
-                                <div class="resource-thumbnail weblate"></div>
+                                <div class="resource-thumbnail weblate_wide"></div>
                             </div>
                         </a>
                         <div class="resource-body">
@@ -516,7 +505,7 @@
                             </path>
                         </svg>
                     </a>
-                    <a href="https://hub.docker.com/repository/docker/dacid99/eonvelope/general"
+                    <a href="https://hub.docker.com/r/dacid99/eonvelope"
                        target="_blank"
                        aria-label="Dockerhub">
                         <svg height="25" width="25" xmlns="http://www.w3.org/2000/svg">
@@ -545,7 +534,7 @@
                     </a>
                 </div>
                 <div class="copyright">
-                    <p>© 2025 David Aderbauer &amp; The Eonvelope Contributors.</p>
+                    <p>© 2025 David Aderbauer &amp; The Eonvelope Contributors</p>
                 </div>
             </div>
         </footer>
