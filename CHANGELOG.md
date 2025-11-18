@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 0.2.2
+
+- Features:
+  - builds for arm64
+
+- Fixes:
+  - some buttons in the ui didn't work as expected
+
+- Updates:
+  - dependencies
+
 ## Version 0.2.1
 
 - Features:
