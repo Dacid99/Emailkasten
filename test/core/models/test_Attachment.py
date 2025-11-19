@@ -91,7 +91,7 @@ def test_Attachment_foreign_key_deletion(fake_attachment):
 @pytest.mark.django_db
 def test_Attachment_unique_constraints():
     """Tests the unique constraints of :class:`core.models.Attachment.Attachment`."""
-    email = baker.make(Email, x_spam="NO")
+    email = baker.make(Email, x_spam_flag=False)
 
     baker.make(Attachment, file_path="test", email=email)
     with pytest.raises(IntegrityError):
@@ -816,7 +816,7 @@ def test_Attachment_has_thumbnail_spam(
     fake_attachment_with_file.content_maintype = content_maintype
     fake_attachment_with_file.content_subtype = content_subtype
     fake_attachment_with_file.datasize = 0
-    fake_attachment_with_file.email.x_spam = "YES"
+    fake_attachment_with_file.email.x_spam_flag = True
     fake_attachment_with_file.email.save()
 
     result = fake_attachment_with_file.has_thumbnail

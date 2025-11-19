@@ -190,14 +190,13 @@ class Email(
     )
     """All other header fields of the mail. Can be null."""
 
-    x_spam = models.CharField(
-        max_length=255,
+    x_spam_flag = models.BooleanField(
+        null=True,
         blank=True,
-        default="",
         # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("X-Spam Flag"),
     )
-    """The x_spam header of this mail. Can be blank."""
+    """The x_spam header of this mail. Can be null."""
 
     class Meta:
         """Metadata class for the model."""
@@ -270,7 +269,7 @@ class Email(
         )
         self.datetime = parse_datetime_header(header_dict.get(HeaderFields.DATE))
         self.subject = header_dict.get(HeaderFields.SUBJECT) or __("No subject")
-        self.x_spam = header_dict.get(HeaderFields.X_SPAM) or ""
+        self.x_spam_flag = is_x_spam(header_dict.get(HeaderFields.X_SPAM))
         self.datasize = len(email_bytes)
         self.plain_bodytext = bodytexts.get("plain", "")
         self.html_bodytext = bodytexts.get("html", "")
@@ -498,7 +497,7 @@ class Email(
         Returns:
             Whether the mail is considered spam.
         """
-        return is_x_spam(self.x_spam)
+        return bool(self.x_spam_flag)
 
     @classmethod
     def create_from_email_bytes(
@@ -526,8 +525,8 @@ class Email(
             or md5(email_bytes).hexdigest()  # noqa: S324  # no safe hash required here
         )
         logger.debug("Parsed email %s ...", message_id)
-        x_spam = get_header(email_message, HeaderFields.X_SPAM) or ""
-        if is_x_spam(x_spam) and get_config("THROW_OUT_SPAM"):
+        x_spam = is_x_spam(get_header(email_message, HeaderFields.X_SPAM))
+        if x_spam and get_config("THROW_OUT_SPAM"):
             logger.debug(
                 "Skipping email with Message-ID %s in %s, it is flagged as spam.",
                 message_id,

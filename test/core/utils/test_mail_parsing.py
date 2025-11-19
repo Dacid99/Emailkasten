@@ -303,10 +303,10 @@ def test_find_best_href_in_header(header, expected_href):
 
 
 @pytest.mark.parametrize(
-    "x_spam, expected_result",
+    "x_spam_header, expected_result",
     [
-        (None, False),
-        ("", False),
+        (None, None),
+        ("", None),
         ("YES", True),
         ("NO", False),
         ("NO, YES", True),
@@ -315,8 +315,8 @@ def test_find_best_href_in_header(header, expected_href):
         ("CRAZY", False),
     ],
 )
-def test_is_x_spam(x_spam, expected_result):
+def test_is_x_spam(x_spam_header, expected_result):
     """Tests :func:`core.models.Email.Email.is_spam`."""
-    result = mail_parsing.is_x_spam(x_spam)
+    result = mail_parsing.is_x_spam(x_spam_header)
 
     assert result is expected_result

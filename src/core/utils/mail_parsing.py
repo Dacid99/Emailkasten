@@ -192,7 +192,7 @@ def find_best_href_in_header(header: str) -> str:
     return href_options[0]
 
 
-def is_x_spam(x_spam_header: str | None) -> bool:
+def is_x_spam(x_spam_header: str | None) -> bool | None:
     """Evaluates a x_spam header spam marker.
 
     Args:
@@ -200,5 +200,6 @@ def is_x_spam(x_spam_header: str | None) -> bool:
 
     Returns:
         Whether the header marks its mail as spam.
+        None if there is no header and thus no statement about the spam property.
     """
-    return "YES" in str(x_spam_header)
+    return ("YES" in x_spam_header) if x_spam_header else None
