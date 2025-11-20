@@ -43,6 +43,9 @@
             <li class="list-group-item d-flex align-items-center">
                 <span class="me-3">{% translate "Mailinglist" %}:</span>
                 <ul class="list-group-flush">
+                    {% if object.list_id %}
+                        <li class="list-group-item">{% translate "List Id" %}{{ object.list_id }}</li>
+                    {% endif %}
                     {% if object.list_subscribe %}
                         <li class="list-group-item">
                             <a href="{{ object.list_subscribe_href }}"
