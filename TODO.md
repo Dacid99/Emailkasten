@@ -32,7 +32,6 @@
 
 ## To test
 
-- views customactions for response with updated modeldata
 - storagebackend for colliding file/dir
 - test failing single message fetch (imap,pop)
 - page_obj of list views for correct email content
