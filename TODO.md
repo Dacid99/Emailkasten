@@ -17,7 +17,6 @@
 - async parsing, sync saving
 - download for account and batchdownload for mailbox
 - show pwd button
-- table and list as nav-dropdown options in main navbar
 
 ## To refactor
 

@@ -68,26 +68,114 @@
                     </button>
                     <div class="collapse navbar-collapse nav-pills" id="navbarNav">
                         <div class="navbar-nav me-auto">
-                            <a class="nav-link 
-                                {% block nav_class_emails %}link-body-emphasis{% endblock nav_class_emails %}
-                             " href="{% url 'web:email-filter-list' %}">{% translate "Emails" %}<i class="fa-regular fa-envelope mx-1" aria-hidden="true"></i></a>
-                            <a class="nav-link 
-                                {% block nav_class_attachments %}link-body-emphasis{% endblock nav_class_attachments %}
-                             " href="{% url 'web:attachment-filter-list' %}">{% translate "Attachments" %}<i class="fa-solid fa-paperclip mx-1" aria-hidden="true"></i></a>
-                            <a class="nav-link 
-                                {% block nav_class_correspondents %}link-body-emphasis{% endblock nav_class_correspondents %}
-                             " href="{% url 'web:correspondent-filter-list' %}">{% translate "Correspondents" %}<i class="fa-solid fa-address-book mx-1" aria-hidden="true"></i></a>
+                            <div class="nav-item">
+                                <div class="dropdown"
+                                     onmouseover="new bootstrap.Dropdown(this).toggle()"
+                                     onmouseout="new bootstrap.Dropdown(this).toggle()">
+                                    <a class="nav-link 
+                                        {% block nav_class_emails %}link-body-emphasis{% endblock nav_class_emails %}
+                                     " href="{% url 'web:email-filter-list' %}">{% translate "Emails" %}<i class="fa-regular fa-envelope mx-1" aria-hidden="true"></i></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:email-filter-list' %}"><i class="fa-solid fa-list mx-1" aria-hidden="true"></i>{% translate "List" %}</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:email-table' %}"><i class="fa-solid fa-table-list mx-1" aria-hidden="true"></i>{% translate "Table" %}</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:email-archive-index' %}"><i class="fa-solid fa-timeline mx-1" aria-hidden="true"></i>{% translate "Timeline" %}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="dropdown"
+                                     onmouseover="new bootstrap.Dropdown(this).toggle()"
+                                     onmouseout="new bootstrap.Dropdown(this).toggle()">
+                                    <a class="nav-link 
+                                        {% block nav_class_attachments %}link-body-emphasis{% endblock nav_class_attachments %}
+                                     " href="{% url 'web:attachment-filter-list' %}">{% translate "Attachments" %}<i class="fa-solid fa-paperclip mx-1" aria-hidden="true"></i></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:attachment-filter-list' %}"><i class="fa-solid fa-list mx-1" aria-hidden="true"></i>{% translate "List" %}</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:attachment-table' %}"><i class="fa-solid fa-table-list mx-1" aria-hidden="true"></i>{% translate "Table" %}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="dropdown"
+                                     onmouseover="new bootstrap.Dropdown(this).toggle()"
+                                     onmouseout="new bootstrap.Dropdown(this).toggle()">
+                                    <a class="nav-link 
+                                        {% block nav_class_correspondents %}link-body-emphasis{% endblock nav_class_correspondents %}
+                                     " href="{% url 'web:correspondent-filter-list' %}">{% translate "Correspondents" %}<i class="fa-solid fa-address-book mx-1" aria-hidden="true"></i></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item"
+                                               href="{% url 'web:correspondent-filter-list' %}"><i class="fa-solid fa-list mx-1" aria-hidden="true"></i>{% translate "List" %}</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:correspondent-table' %}"><i class="fa-solid fa-table-list mx-1" aria-hidden="true"></i>{% translate "Table" %}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <div class="navbar-nav me-auto">
-                            <a class="nav-link 
-                                {% block nav_class_accounts %}link-body-emphasis{% endblock nav_class_accounts %}
-                             " href="{% url 'web:account-filter-list' %}">{% translate "Accounts" %}<i class="fa-solid fa-at mx-1"></i></a>
-                            <a class="nav-link 
-                                {% block nav_class_mailboxes %}link-body-emphasis{% endblock nav_class_mailboxes %}
-                             " href="{% url 'web:mailbox-filter-list' %}">{% translate "Mailboxes" %}<i class="fa-solid fa-inbox mx-1" aria-hidden="true"></i></a>
-                            <a class="nav-link 
-                                {% block nav_class_daemons %}link-body-emphasis{% endblock nav_class_daemons %}
-                             " href="{% url 'web:daemon-filter-list' %}">{% translate "Routines" %}<i class="fa-solid fa-calendar-days mx-1" aria-hidden="true"></i></a>
+                            <div class="nav-item">
+                                <div class="dropdown"
+                                     onmouseover="new bootstrap.Dropdown(this).toggle()"
+                                     onmouseout="new bootstrap.Dropdown(this).toggle()">
+                                    <a class="nav-link 
+                                        {% block nav_class_accounts %}link-body-emphasis{% endblock nav_class_accounts %}
+                                     " href="{% url 'web:account-filter-list' %}">{% translate "Accounts" %}<i class="fa-solid fa-at mx-1"></i></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:account-filter-list' %}"><i class="fa-solid fa-list mx-1" aria-hidden="true"></i>{% translate "List" %}</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:account-table' %}"><i class="fa-solid fa-table-list mx-1" aria-hidden="true"></i>{% translate "Table" %}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="dropdown"
+                                     onmouseover="new bootstrap.Dropdown(this).toggle()"
+                                     onmouseout="new bootstrap.Dropdown(this).toggle()">
+                                    <a class="nav-link 
+                                        {% block nav_class_mailboxes %}link-body-emphasis{% endblock nav_class_mailboxes %}
+                                     " href="{% url 'web:mailbox-filter-list' %}">{% translate "Mailboxes" %}<i class="fa-solid fa-inbox mx-1" aria-hidden="true"></i></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:mailbox-filter-list' %}"><i class="fa-solid fa-list mx-1" aria-hidden="true"></i>{% translate "List" %}</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:mailbox-table' %}"><i class="fa-solid fa-table-list mx-1" aria-hidden="true"></i>{% translate "Table" %}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="dropdown"
+                                     onmouseover="new bootstrap.Dropdown(this).toggle()"
+                                     onmouseout="new bootstrap.Dropdown(this).toggle()">
+                                    <a class="nav-link 
+                                        {% block nav_class_daemons %}link-body-emphasis{% endblock nav_class_daemons %}
+                                     " href="{% url 'web:daemon-filter-list' %}">{% translate "Routines" %}<i class="fa-solid fa-calendar-days mx-1" aria-hidden="true"></i></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:daemon-filter-list' %}"><i class="fa-solid fa-list mx-1" aria-hidden="true"></i>{% translate "List" %}</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'web:daemon-table' %}"><i class="fa-solid fa-table-list mx-1" aria-hidden="true"></i>{% translate "Table" %}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <div class="navbar-nav align-items-end">
                             {% if user.is_authenticated %}
