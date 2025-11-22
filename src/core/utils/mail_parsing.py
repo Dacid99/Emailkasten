@@ -29,16 +29,19 @@ import email.header
 import email.utils
 import logging
 import re
-from typing import TYPE_CHECKING
+from datetime import datetime, time
+from typing import TYPE_CHECKING, TextIO
 
 import imap_tools.imap_utf7
+import vobject
 from django.utils import timezone
+from django.utils.timezone import get_current_timezone
 
 
 if TYPE_CHECKING:
-    import datetime
     from email.header import Header
     from email.message import EmailMessage
+
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +96,7 @@ def get_header(
     )
 
 
-def parse_datetime_header(date_header: str | None) -> datetime.datetime:
+def parse_datetime_header(date_header: str | None) -> datetime:
     """Parses the date header into a datetime object.
 
     If an error occurs uses the current time as fallback.
@@ -203,3 +206,57 @@ def is_x_spam(x_spam_header: str | None) -> bool | None:
         None if there is no header and thus no statement about the spam property.
     """
     return ("YES" in x_spam_header) if x_spam_header else None
+
+
+def make_icalendar_readout(
+    icalendar_file: TextIO,
+) -> list[tuple[datetime, datetime, str, str]]:
+    """Parses the main features of a icalendar file into a list.
+
+    References:
+        https://www.rfc-editor.org/rfc/rfc5545.html#page-52
+
+    Args:
+        icalendar_file: The icalendar file to parse.
+
+    Returns:
+        A list with the calendar events main features in tuples.
+    """
+    calendar_readout = []
+    for calendar in vobject.readComponents(icalendar_file):
+        for event in calendar.vevent_list:
+            if "dtstart" not in event.contents:
+                continue
+            dtstart = event.dtstart.value
+            dtstart = (
+                dtstart.astimezone(get_current_timezone())
+                if isinstance(dtstart, datetime)
+                else datetime.combine(
+                    dtstart,
+                    time.min,
+                    tzinfo=get_current_timezone(),
+                )
+            )
+            if "dtend" in event.contents:
+                dtend = event.dtend.value
+                dtend = (
+                    dtend.astimezone(get_current_timezone())
+                    if isinstance(dtend, datetime)
+                    else datetime.combine(
+                        dtend,
+                        time.min,
+                        tzinfo=get_current_timezone(),
+                    )
+                )
+            elif "duration" in event.contents:
+                dtend = dtstart + event.duration.value
+            else:
+                dtend = datetime.combine(
+                    dtstart.date(),
+                    time.max,
+                    dtstart.tzinfo,
+                )
+            summary = event.summary.value if "summary" in event.contents else ""
+            location = event.location.value if "location" in event.contents else ""
+            calendar_readout.append((dtstart, dtend, summary, location))
+    return calendar_readout

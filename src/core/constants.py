@@ -308,3 +308,37 @@ file_format_parsers: Final[
     SupportedEmailUploadFormats.MH.value: mailbox.MH,
 }
 """Mapping of supported file formats to their parser classes."""
+
+ICALENDAR_TEMPLATE = """<div class="row g-0 overflow-y-scroll">
+                                <div class="d-flex flex-column align-items-start">
+                                    {% for dtstart, dtend, summary, location in icalendar_readout %}
+                                        <div class="card shadow-sm">
+                                            <div class="card-body d-flex align-items-center justify-content-center gap-3">
+                                                <div class="text-center border rounded p-2 fw-bold">
+                                                    <div class="text-bg-success px-2 py-1 fs-5">
+                                                        {{ dtstart | date:"M" }}
+                                                    </div>
+                                                    <div class="fs-2">
+                                                        {{ dtstart | date:"j"}}
+                                                    </div>
+                                                    <div class="text-muted">
+                                                        {{ dtstart |date:"Y" }}
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow">
+                                                    <h5 class="card-title">{{ summary }}</h5>
+                                                    <p class="card-text text-muted d-flex flex-column">
+                                                        <span>{{ dtstart | time }}</span>
+                                                        <span class="mx-1">–</span>
+                                                        {% if dtend.date != dtstart.date %}<span class="fw-bold me-1">{{dtend |date }}</span>{% endif %}
+                                                        <span>{{ dtend | time }}</span>
+                                                    </p>
+                                                    <p class="card-text text-muted">
+                                                        {{ location }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>"""

@@ -730,7 +730,7 @@ def test_Attachment_has_download(fake_attachment, file_path, expected_has_downlo
         ("video", "45rtyghj", False),
         ("text", "html", True),
         ("text", "8549c", True),
-        ("text", "calendar", False),
+        ("text", "calendar", True),
         ("application", "pdf", True),
         ("application", "json", True),
         ("application", "xml", True),
@@ -880,6 +880,9 @@ def test_Attachment_thumbnail(fake_attachment, content_maintype, content_subtype
     assert fake_attachment.thumbnail
     assert fake_attachment.thumbnail.strip().startswith("<")
     assert fake_attachment.thumbnail.strip().endswith(">")
+    if content_subtype == "calendar":
+        with open("thumb.html", "w") as f:
+            f.write(fake_attachment.thumbnail)
 
 
 @pytest.mark.django_db
