@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-30 15:30+0000\n"
-"PO-Revision-Date: 2025-11-06 19:18+0000\n"
+"PO-Revision-Date: 2025-12-01 16:00+0000\n"
 "Last-Translator: Dacid99 <dave.aderbauer@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/eonvelope/"
 "eonvelope/de/>\n"
@@ -21,23 +21,23 @@ msgstr ""
 
 #: test/reports/cov/z_0618756b1ff51bca_constants_py.html:450
 msgid "Contact picture"
-msgstr ""
+msgstr "Kontaktfoto"
 
 #: test/reports/cov/z_0618756b1ff51bca_constants_py.html:453
 msgid "Contact picture placeholder"
-msgstr ""
+msgstr "Kontaktfoto-Platzhalter"
 
 #: test/reports/cov/z_0618756b1ff51bca_constants_py.html:458
 msgid "Address"
-msgstr ""
+msgstr "Adresse"
 
 #: test/reports/cov/z_0618756b1ff51bca_constants_py.html:461
 msgid "Email"
-msgstr ""
+msgstr "E-Mail"
 
 #: test/reports/cov/z_0618756b1ff51bca_constants_py.html:464
 msgid "Tel"
-msgstr ""
+msgstr "Tel"
 
 #: test/reports/cov/z_7ec8bdc87900f1b3_settings_py.html:895
 msgid "Received"
