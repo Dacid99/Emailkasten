@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-30 15:30+0000\n"
-"PO-Revision-Date: 2025-11-15 06:51+0000\n"
+"PO-Revision-Date: 2025-12-01 16:00+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/eonvelope/web/"
 "uk/>\n"
@@ -16,10 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
-"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
-"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
-"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 "
+"? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > "
+"14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % "
+"100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 "X-Generator: Weblate 5.15-dev\n"
 
 #: src/web/filters/AccountFilterSet.py:55
@@ -428,10 +428,8 @@ msgid "Mailinglist"
 msgstr "Список розсилки"
 
 #: src/web/templates/web/correspondent/correspondent_detail.html:44
-#, fuzzy
-#| msgid "List"
 msgid "List Id"
-msgstr "Список"
+msgstr "Ідентифікатор списку"
 
 #: src/web/templates/web/correspondent/correspondent_detail.html:49
 msgid "Subscribe"
@@ -970,7 +968,7 @@ msgstr "Перемикання навігації"
 #: src/web/templates/web/partials/_header.html:127
 #: src/web/templates/web/partials/_header.html:149
 msgid "Toggle Dropdown"
-msgstr ""
+msgstr "Перемикання випадаючого меню"
 
 #: src/web/templates/web/partials/_header.html:36
 #: src/web/templates/web/partials/_header.html:62
