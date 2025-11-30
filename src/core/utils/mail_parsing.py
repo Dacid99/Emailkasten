@@ -292,9 +292,9 @@ def make_vcard_readout(
         for contact in vobject.readComponents(vcard_file):
             full_name = contact.fn.value if "fn" in contact.contents else ""
             photo_data = (
-                b64encode(
-                    contact.photo.value
-                ).decode()  # to get a string for use in img src
+                b64encode(contact.photo.value).decode(
+                    "utf-8"
+                )  # to get a string for use in img src
                 if "photo" in contact.contents
                 else ""
             )
