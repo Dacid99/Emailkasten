@@ -21,6 +21,7 @@ workflow:  # when the pipeline should be triggered
 variables:
   CI: "true"
   GITLAB_API_URL: "https://gitlab.com/-/project/$CI_PROJECT_ID"
+  GITHUB_API_URL: "https://github.com/-/project/$CI_PROJECT_ID"
   APK_DEPENDENCIES: "gettext \
     python3-dev \
     linux-headers \
@@ -48,3 +49,4 @@ include:
   - local: .gitlab/ci/.gitlab-ci-test.yml
   - local: .gitlab/ci/.gitlab-ci-build.yml
   - local: .gitlab/ci/.gitlab-ci-debug-build.yml
+  - local: .gitlab/ci/.gitlab-ci-release.yml
