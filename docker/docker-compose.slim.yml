@@ -1,0 +1,45 @@
+services:
+  db: # this service name must not be changed!!
+    image: mariadb:latest
+    container_name: eonvelope-db
+    volumes:
+      - /path/to/eonvelope/mysql:/var/lib/mysql
+    environment:
+      - MARIADB_DATABASE=email_archive_django # must match web:DATABASE_NAME
+      - MARIADB_USER=user # must match web:DATABASE_USER
+      - MARIADB_PASSWORD=passwd # must match web:DATABASE_PASSWORD
+      - MARIADB_ROOT_PASSWORD=example
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "mariadb -u$$MARIADB_USER -p$$MARIADB_PASSWORD -e 'SELECT 1'" ]
+      interval: 30s
+      timeout: 10s
+      retries: 12
+      start_period: 10s
+
+  web:
+    image: dacid99/eonvelope:latest
+    container_name: eonvelope-web
+    volumes:
+      - /path/to/eonvelope/archive:/mnt/archive
+      - /path/to/eonvelope/log:/var/log/eonvelope
+    ports:
+      - 1122:443
+    environment:
+      - DATABASE=email_archive_django # must match db:MARIADB_DATABASE
+      - DATABASE_USER=user # must match db:MARIADB_USER
+      - DATABASE_PASSWORD=passwd # must match db:MARIADB_PASSWORD
+      - DJANGO_SUPERUSER_PASSWORD=rootqwertz123
+      - SECRET_KEY='PLEASE_REPLACE_ME_WITH_THE_OUTPUT_OF_A_STRONG_RANDOM_GENERATOR!'
+      - ALLOWED_HOSTS=localhost,eonvelope.mydomain.tld # all allowed host URLs separated by ,
+      - SLIM=True
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kf https://localhost:443/health/ || exit 1"]
+      interval: 300s  # you can make the test even more rare if needed
+      timeout: 60s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      db:
+        condition: service_healthy

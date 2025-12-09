@@ -16,6 +16,9 @@ The redoc interface for the user management API can be found under */api/auth/op
 Alternatively you can also get a raw yaml OpenAPI schema from */api/schema*.
 The raw user management API schema is available under */api/auth/openapi.yaml* or */api/auth/openapi.json*.
 
+.. note::
+    These interfaces are not available in slim mode.
+
 If you have no option to run Eonvelope, you can refer to :ref:`API Schema` for the same schema file.
 You can render it to any API overview using one of the existing webtools or the docker image provided by swagger
 

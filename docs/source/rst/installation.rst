@@ -45,10 +45,13 @@ and to skim the docker settings section of the :doc:`configuration reference <co
 Docker
 ^^^^^^
 
-There are two example compose-files in the docker directory of the repository,
-a minimal version and one with all settings for full customization.
+There are example compose-files in the docker directory of the repository,
+to install for the first time we recommend the minimal version.
 
-Take one of these examples,
+If your system is low-spec and quite limited in its resources, use the slim version.
+This has slim mode enabled, which reduces the resources Eonvelope consumes at runtime.
+
+Take the docker-compose of your choice,
 adapt it to your needs and start the stack with ``docker compose up -d``
 or via your container manager.
 Done!

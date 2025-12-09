@@ -29,6 +29,7 @@ As an admin you may choose this project because of its
 - Quick and easy setup and configuration via container (docker, podman, kubernetes, etc.)
 - SSL certificate out of the box
 - Full-fledged API
+- Slim mode for low-spec systems
 
 *Check out the [project website](https://dacid99.gitlab.io/eonvelope) for screenshots and more information.*
 

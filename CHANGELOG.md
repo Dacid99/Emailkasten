@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.4
+
+- Features:
+  - slim mode for use on systems with restricted resources
+  - customized adminpanel
+
 ## Version 0.2.3
 
 - Features:
