@@ -19,29 +19,8 @@
 """The admin module for :mod:`eonvelope`. Registers all models with the admin. Defines a custom admin site."""
 
 from django.contrib import admin
-from django.contrib.admin import AdminSite
-from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
-
-from web.views import DashboardView
 
 from .models import UserProfile
 
-
-class EonvelopeAdminSite(AdminSite):
-    """Customized admin site class for Eonvelope."""
-
-    # Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
-    site_header = _("E∘nvelope Administration")
-    # Translators: Eonvelope is the brand name.
-    site_title = _("Eonvelope Administration")
-    site_url = reverse_lazy("web:" + DashboardView.URL_NAME)
-    # Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
-    index_title = _("E∘nvelope Settings")
-
-
-admin_site = EonvelopeAdminSite()
-
-admin_site.register([UserProfile])
 
 admin.site.register([UserProfile])

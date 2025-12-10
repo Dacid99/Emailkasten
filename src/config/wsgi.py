@@ -15,12 +15,12 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
-"""ASGI config for Eonvelope project.
+"""WSGI config for Eonvelope project.
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+It exposes the WSGI callable as a module-level variable named ``application``.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
+https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/
 """
 
 from __future__ import annotations
@@ -29,11 +29,11 @@ import os
 import sys
 from pathlib import Path
 
-from django.core.asgi import get_asgi_application
+from django.core.wsgi import get_wsgi_application
 
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eonvelope.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
-application = get_asgi_application()
+application = get_wsgi_application()

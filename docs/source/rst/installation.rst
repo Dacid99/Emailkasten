@@ -79,7 +79,7 @@ Alternatively, you can run the application bare metal.
 2. Install the dependencies for python and the system
    as described in :doc:`development <development>`.
 3. Spin up a mysql db server matching the configurations
-   in the django application settings ``eonvelope/settings.py`` on your machine.
+   in the django application settings ``config.settings.py`` on your machine.
 4. Finally the Eonvelope server is started via the docker entrypoint script
    ``docker/docker-compose.yml``.
 

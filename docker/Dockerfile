@@ -73,7 +73,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=${SRC_PATH}'src/' \
     PYTHONUNBUFFERED=1 \
     XDG_RUNTIME_DIR=/tmp/xdg_runtime \
-    DJANGO_SETTINGS_MODULE=eonvelope.settings
+    DJANGO_SETTINGS_MODULE=config.settings
 
 # create ssl cert
 RUN apk add --no-cache openssl && \

@@ -64,7 +64,7 @@ SLIM = env("SLIM", cast=bool, default=False)
 ### Models
 
 INSTALLED_APPS = [
-    "eonvelope.apps.EonvelopeAdminConfig",
+    "config.apps.EonvelopeAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -390,7 +390,7 @@ LANGUAGE_CODE = "en"
 ### HTTP
 # https://docs.djangoproject.com/en/5.2/ref/settings/#http
 
-WSGI_APPLICATION = "eonvelope.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 # https://knasmueller.net/fix-djangos-debug-toolbar-not-showing-inside-docker
 hostname, __, ips = socket.gethostbyname_ex(socket.gethostname())
@@ -450,7 +450,7 @@ SECURE_SSL_REDIRECT = not DEBUG
 ### URLs
 # https://docs.djangoproject.com/en/5.2/ref/settings/#urls
 
-ROOT_URLCONF = "eonvelope.urls"
+ROOT_URLCONF = "config.urls"
 
 
 ### Templates

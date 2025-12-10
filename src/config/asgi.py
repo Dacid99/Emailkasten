@@ -15,25 +15,25 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
+"""ASGI config for Eonvelope project.
 
-"""The apps module for :mod:`core`."""
+It exposes the ASGI callable as a module-level variable named ``application``.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
+"""
 
 from __future__ import annotations
 
-from typing import override
+import os
+import sys
+from pathlib import Path
 
-from django.apps import AppConfig
+from django.core.asgi import get_asgi_application
 
 
-class EonvelopeConfig(AppConfig):
-    """App config for :mod:`eonvelope`."""
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-    default_auto_field = "django.db.models.BigAutoField"
-    name = "eonvelope"
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
-    @override
-    def ready(self) -> None:
-        """Imports all model signals."""
-        # ruff: noqa: F401,PLC0415
-        # pylint: disable=import-outside-toplevel, unused-import  # this is the way it is intended by django
-        import eonvelope.signals
+application = get_asgi_application()

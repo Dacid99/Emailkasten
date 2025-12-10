@@ -20,20 +20,14 @@
 
 from __future__ import annotations
 
-from typing import override
-
-from django.apps import AppConfig
+from django.contrib.admin.apps import AdminConfig
 
 
-class EonvelopeConfig(AppConfig):
-    """App config for :mod:`eonvelope`."""
+class EonvelopeAdminConfig(AdminConfig):
+    """App config for django admin to set the custom site as default.
 
-    default_auto_field = "django.db.models.BigAutoField"
-    name = "eonvelope"
+    References:
+        https://docs.djangoproject.com/en/5.2/ref/contrib/admin/#overriding-the-default-admin-site
+    """
 
-    @override
-    def ready(self) -> None:
-        """Imports all model signals."""
-        # ruff: noqa: F401,PLC0415
-        # pylint: disable=import-outside-toplevel, unused-import  # this is the way it is intended by django
-        import eonvelope.signals
+    default_site = "config.admin.EonvelopeAdminSite"

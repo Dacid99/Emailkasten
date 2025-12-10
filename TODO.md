@@ -40,7 +40,7 @@
 
 ## To implement
 
-- migration to py3.14
+- migration to django6.0
 
 ### Work in progress
 

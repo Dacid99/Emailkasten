@@ -16,20 +16,25 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Celery module for Eonvelope project."""
+"""The admin module for :mod:`eonvelope`. Registers all models with the admin. Defines a custom admin site."""
 
-import os
-import sys
-from pathlib import Path
+from django.contrib.admin import AdminSite
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
-from celery import Celery
+from web.views import DashboardView
 
 
-sys.path.append(str(Path(__file__).resolve().parent.parent))
+class EonvelopeAdminSite(AdminSite):
+    """Customized admin site class for Eonvelope."""
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eonvelope.settings")
+    # Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
+    site_header = _("E∘nvelope Administration")
+    # Translators: Eonvelope is the brand name.
+    site_title = _("Eonvelope Administration")
+    site_url = reverse_lazy("web:" + DashboardView.URL_NAME)
+    # Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
+    index_title = _("E∘nvelope Settings")
 
-app = Celery("eonvelope")
 
-app.config_from_object("django.conf:settings", namespace="CELERY")
-app.autodiscover_tasks()
+admin_site = EonvelopeAdminSite()

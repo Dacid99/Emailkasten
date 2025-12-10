@@ -25,7 +25,7 @@ from typing import Any
 
 from constance import config
 
-from eonvelope.settings import CONSTANCE_CONFIG
+from config.settings import CONSTANCE_CONFIG
 
 
 logger = logging.getLogger(__name__)
