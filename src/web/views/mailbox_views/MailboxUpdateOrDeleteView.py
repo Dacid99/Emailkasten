@@ -18,10 +18,11 @@
 
 """Module with the :class:`web.views.MailboxUpdateView` view."""
 
-from typing import override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Mailbox
@@ -29,6 +30,10 @@ from web.forms import BaseMailboxForm
 from web.views.base import UpdateOrDeleteView
 
 from .MailboxFilterView import MailboxFilterView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class MailboxUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):

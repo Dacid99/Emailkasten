@@ -18,6 +18,8 @@
 
 """:mod:`web.views.email_views.archive_views.EmailArchiveIndexView` module with the EmailArchiveIndexView view."""
 
+from __future__ import annotations
+
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin

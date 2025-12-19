@@ -18,16 +18,21 @@
 
 """Module with the :class:`web.views.DaemonUpdateView` view."""
 
-from typing import Any, override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
-from django.http import HttpRequest, HttpResponse
 from django.views.generic import DetailView
 from django.views.generic.edit import BaseFormView
 
 from core.models import Mailbox
 from web.forms import CreateMailboxDaemonForm
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
+    from django.http import HttpRequest, HttpResponse
 
 
 class MailboxCreateDaemonView(LoginRequiredMixin, DetailView, BaseFormView):

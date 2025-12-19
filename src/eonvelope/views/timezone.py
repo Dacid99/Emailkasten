@@ -18,13 +18,19 @@
 
 """Module with views for working with timezones in Eonvelope project."""
 
+from __future__ import annotations
+
 import zoneinfo
+from typing import TYPE_CHECKING
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.http.request import HttpRequest
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from eonvelope.middleware.TimezoneMiddleware import TimezoneMiddleware
+
+
+if TYPE_CHECKING:
+    from django.http.request import HttpRequest
 
 
 TIMEZONE_FIELD_NAME = "timezone"

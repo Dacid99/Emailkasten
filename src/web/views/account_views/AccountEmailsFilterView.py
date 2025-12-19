@@ -18,13 +18,18 @@
 
 """Module with the :class:`web.views.AccountEmailsFilterView` view."""
 
-from typing import Any, override
+from __future__ import annotations
 
-from django.db.models import QuerySet
+from typing import TYPE_CHECKING, Any, override
+
 from django.views.generic.detail import SingleObjectMixin
 
 from core.models import Account, Email
 from web.views.email_views import EmailFilterView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class AccountEmailsFilterView(EmailFilterView, SingleObjectMixin):  # type: ignore[misc]  # SingleObjectMixin attributes are shadowed purposefully

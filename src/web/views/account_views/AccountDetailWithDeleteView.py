@@ -18,12 +18,12 @@
 
 """Module with the :class:`web.views.AccountDetailWithDeleteView` view."""
 
-from typing import Any, override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, override
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
-from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import DeletionMixin
@@ -35,6 +35,11 @@ from web.mixins.TestActionMixin import TestActionMixin
 from web.views.base import DetailWithDeleteView
 
 from .AccountFilterView import AccountFilterView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
+    from django.http import HttpRequest, HttpResponse
 
 
 class AccountDetailWithDeleteView(

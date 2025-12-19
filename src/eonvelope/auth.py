@@ -18,12 +18,17 @@
 
 """Module for authentication methods for Eonvelope."""
 
-from typing import Any, override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, override
 
 from allauth.mfa.adapter import get_adapter
 from rest_framework import exceptions
 from rest_framework.authentication import BasicAuthentication
-from rest_framework.request import Request
+
+
+if TYPE_CHECKING:
+    from rest_framework.request import Request
 
 
 class BasicNoMFAuthentication(BasicAuthentication):

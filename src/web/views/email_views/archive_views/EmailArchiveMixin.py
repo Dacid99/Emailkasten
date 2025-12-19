@@ -18,10 +18,16 @@
 
 """:mod:`web.views.email_views.archive_views.EmailArchiveMixin` module with the EmailArchiveMixin mixin."""
 
-from django.db.models import QuerySet
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from core.models import Email
 from web.mixins import PageSizeMixin
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class EmailArchiveMixin(PageSizeMixin):

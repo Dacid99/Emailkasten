@@ -18,15 +18,20 @@
 
 """Module with the :class:`web.views.CorrespondentEmailsFilterView` view."""
 
-from typing import Any, override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
 from django.views.generic.detail import SingleObjectMixin
 
 from core.models import Correspondent, EmailCorrespondent
 from web.filters import CorrespondentEmailFilterSet
 from web.views.base import FilterPageView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class CorrespondentEmailsFilterView(

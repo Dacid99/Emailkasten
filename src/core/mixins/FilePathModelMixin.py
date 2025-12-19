@@ -18,14 +18,19 @@
 
 """Module with the :class:`core.mixins.FilePathModelMixin` mixin."""
 
+from __future__ import annotations
+
 import logging
 from io import BytesIO
-from typing import Any, override
+from typing import TYPE_CHECKING, Any, override
 
-from django.core.files import File
 from django.core.files.storage import default_storage
 from django.db.models import CharField, Model
 from django.utils.translation import gettext_lazy as _
+
+
+if TYPE_CHECKING:
+    from django.core.files import File
 
 
 logger = logging.getLogger(__name__)

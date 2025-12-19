@@ -172,7 +172,7 @@ class Account(
         """Returns a string representation of the model data.
 
         Returns:
-            The string representation of the account, using :attr:`mail_address`, :attr:`mail_host` and :attr:`protocol`.
+            The string representation of the account, using :attr:`mail_address` and :attr:`protocol`.
         """
         return _("Account %(mail_address)s with protocol %(protocol)s") % {
             "mail_address": self.mail_address,

@@ -18,13 +18,20 @@
 
 """Module with the :class:`TimezoneMiddleware`."""
 
+from __future__ import annotations
+
 import logging
 import zoneinfo
-from collections.abc import Callable
+from typing import TYPE_CHECKING
 
-from django.http.request import HttpRequest
-from django.http.response import HttpResponse
 from django.utils import timezone
+
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from django.http.request import HttpRequest
+    from django.http.response import HttpResponse
 
 
 logger = logging.getLogger(__name__)

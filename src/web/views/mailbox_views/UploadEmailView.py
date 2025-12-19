@@ -18,16 +18,21 @@
 
 """Module with the :class:`web.views.UploadEmailView` view class."""
 
-from typing import override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
-from django.http import HttpResponse
 from django.views.generic import DetailView
 from django.views.generic.edit import FormView
 
 from core.models import Mailbox
 from web.forms.UploadEmailForm import UploadEmailForm
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
+    from django.http import HttpResponse
 
 
 class UploadEmailView(LoginRequiredMixin, DetailView, FormView):

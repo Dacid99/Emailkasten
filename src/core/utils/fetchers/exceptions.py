@@ -18,9 +18,15 @@
 
 """Exceptions for errors during operations on mailservers."""
 
-from typing import Any
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from django.utils.translation import gettext_lazy as _
+
+
+if TYPE_CHECKING:
+    from django_stubs_ext import StrOrPromise
 
 
 class FetcherError(Exception):
@@ -30,7 +36,9 @@ class FetcherError(Exception):
 class MailAccountError(FetcherError):
     """Exception for errors concerning the mail account."""
 
-    def __init__(self, error: Exception, command_name: str = _("interaction")) -> None:
+    def __init__(
+        self, error: Exception, command_name: StrOrPromise = "interaction"
+    ) -> None:
         """Extended for consistent message formatting."""
         super().__init__(
             _(
@@ -39,7 +47,7 @@ class MailAccountError(FetcherError):
             % {
                 "error_class_name": error.__class__.__name__,
                 "error": error,
-                "command_name": command_name,
+                "command_name": _(str(command_name)),
             }
         )
 
@@ -47,7 +55,7 @@ class MailAccountError(FetcherError):
 class MailboxError(FetcherError):
     """Exception for errors concerning the mailbox."""
 
-    def __init__(self, error: Exception, command_name: str = _("interaction")) -> None:
+    def __init__(self, error: Exception, command_name: str = "interaction") -> None:
         """Extended for consistent message formatting."""
         super().__init__(
             _(
@@ -56,7 +64,7 @@ class MailboxError(FetcherError):
             % {
                 "error_class_name": error.__class__.__name__,
                 "error": error,
-                "command_name": command_name,
+                "command_name": str(command_name),
             }
         )
 

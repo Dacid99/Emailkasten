@@ -41,7 +41,7 @@ class EmailFetchingCriterionChoices(TextChoices):
     WEEKLY = "WEEKLY", _("All emails received the last WEEK")
     """Filter using "SENTSINCE" for mails sent the previous week."""
 
-    MONTHLY = "MONTHLY", _("All emails receiced the last MONTH")
+    MONTHLY = "MONTHLY", _("All emails received the last MONTH")
     """Filter using "SENTSINCE" for mails sent the previous 4 weeks."""
 
     ANNUALLY = "ANNUALLY", _("All emails received the last YEAR")
@@ -103,7 +103,7 @@ class EmailProtocolChoices(TextChoices):
     """The POP3 protocol"""
 
     EXCHANGE = "EXCHANGE", _("Microsoft Exchange")
-    """Microsofts Exchange protocol"""
+    """Microsoft's Exchange protocol"""
 
 
 class HeaderFields:

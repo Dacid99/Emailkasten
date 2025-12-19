@@ -18,11 +18,15 @@
 
 """Module with the :class:`web.views.FilterPageView.FilterPageView`."""
 
-from typing import Any
+from __future__ import annotations
 
-from django.db.models import QuerySet
+from typing import TYPE_CHECKING, Any
 
 from eonvelope.utils.workarounds import get_config
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class PageSizeMixin:

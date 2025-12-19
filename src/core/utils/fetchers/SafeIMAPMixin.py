@@ -18,10 +18,9 @@
 
 """Module with the SafeIMAPMixin mixin."""
 
-import imaplib
-import logging
-from collections.abc import Callable
-from typing import Any, Literal, Protocol, Self, TypeVar, overload
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Literal, Protocol, Self, TypeVar, overload
 
 from core.utils.fetchers.exceptions import (
     BadServerResponseError,
@@ -30,6 +29,11 @@ from core.utils.fetchers.exceptions import (
     MailboxError,
 )
 
+
+if TYPE_CHECKING:
+    import imaplib
+    import logging
+    from collections.abc import Callable
 
 type IMAP4Response = tuple[
     str,

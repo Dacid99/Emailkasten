@@ -55,6 +55,8 @@ from .Email import Email
 
 
 if TYPE_CHECKING:
+    from django_stubs_ext import StrOrPromise
+
     from .Account import Account
 
 
@@ -319,13 +321,13 @@ class Mailbox(
             )
         logger.info("Successfully added emails from file.")
 
-    @override
     @property
+    @override
     def has_download(self) -> bool:
         return self.emails.exists()
 
     @property
-    def available_fetching_criteria(self) -> tuple[str]:
+    def available_fetching_criteria(self) -> tuple[StrOrPromise]:
         """Gets the available fetching criteria based on the mail protocol of this mailbox.
 
         Returns:
@@ -337,7 +339,7 @@ class Mailbox(
         return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA  # type: ignore[no-any-return]  # for some reason mypy doesn't get this
 
     @property
-    def available_fetching_criterion_choices(self) -> list[tuple[str, str]]:
+    def available_fetching_criterion_choices(self) -> list[tuple[str, StrOrPromise]]:
         """Gets the available fetching criterion choices based on the mail protocol of this mailbox.
 
         Returns:
@@ -353,13 +355,13 @@ class Mailbox(
         ]
 
     @property
-    def available_download_formats(self) -> list[tuple[str, str]]:
+    def available_download_formats(self) -> list[tuple[str, StrOrPromise]]:
         """Get all formats that emails in this mailbox can be downloaded in.
 
         Returns:
             A list of download formats and format names.
         """
-        return SupportedEmailDownloadFormats.choices  # type: ignore[return-value]  # strPromise is compatible with str
+        return SupportedEmailDownloadFormats.choices
 
     @classmethod
     def create_from_data(

@@ -438,8 +438,8 @@ class Email(
             id__in=conversation_ids, mailbox__account__user=self.mailbox.account.user
         ).order_by("datetime")
 
-    @override
     @property
+    @override
     def has_thumbnail(self) -> bool:
         return not self.is_spam
 

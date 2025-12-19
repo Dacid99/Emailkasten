@@ -18,7 +18,6 @@
 
 """Module with the :class:`web.tables.BaseCorrespondentEmailTable` table class."""
 
-from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from django_tables2 import Column, Table
 
@@ -61,10 +60,14 @@ class BaseCorrespondentEmailTable(Table):
         )
         sequence = ("checkbox", *fields)
 
-    def render_checkbox(self, record: Model, column: CheckboxColumn) -> str:
+    def render_checkbox(
+        self, record: EmailCorrespondent, column: CheckboxColumn
+    ) -> str:
         """Fixes the rendering of checkbox to use the email as record."""
         return column.render(record=record.email)
 
-    def render_email__is_favorite(self, record: Model, column: IsFavoriteColumn) -> str:
+    def render_email__is_favorite(
+        self, record: EmailCorrespondent, column: IsFavoriteColumn
+    ) -> str:
         """Fixes the rendering of the favorite badge to use the email as record."""
         return column.render(record=record.email)

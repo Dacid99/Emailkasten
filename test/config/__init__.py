@@ -16,30 +16,4 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Module with the :class:`web.views.DaemonUpdateView` view."""
-
-from __future__ import annotations
-
-from typing import Any, override
-
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView
-
-from core.models import Daemon
-from web.forms import CreateDaemonForm
-
-
-class DaemonCreateView(LoginRequiredMixin, CreateView):
-    """View for creating a single :class:`core.models.Daemon` instance."""
-
-    URL_NAME = Daemon.BASENAME + "-create"
-    model = Daemon
-    form_class = CreateDaemonForm
-    template_name = "web/daemon/daemon_create.html"
-
-    @override
-    def get_form_kwargs(self) -> dict[str, Any]:
-        """Extended to add the user to the form kwargs."""
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs["user"] = self.request.user
-        return form_kwargs
+"""Test package for the :mod:`config` package of Eonvelope project."""

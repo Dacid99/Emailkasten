@@ -18,10 +18,11 @@
 
 """Module with the :class:`web.views.DaemonUpdateView` view."""
 
-from typing import override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Daemon
@@ -29,6 +30,10 @@ from web.forms import BaseDaemonForm
 from web.views.base import UpdateOrDeleteView
 
 from .DaemonFilterView import DaemonFilterView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class DaemonUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):

@@ -25,7 +25,6 @@ Global variables:
 from __future__ import annotations
 
 import contextlib
-import email
 import email.header
 import email.utils
 import logging
@@ -298,12 +297,16 @@ def make_vcard_readout(
                 if "photo" in contact.contents
                 else ""
             )
-            email = (
+            contact_email = (
                 str(contact.email.value).strip() if "email" in contact.contents else ""
             )
-            address = (
+            contact_address = (
                 str(contact.adr.value).strip() if "adr" in contact.contents else ""
             )
-            tel = str(contact.tel.value).strip() if "tel" in contact.contents else ""
-            calendar_readout.append((full_name, photo_data, email, address, tel))
+            contact_tel = (
+                str(contact.tel.value).strip() if "tel" in contact.contents else ""
+            )
+            calendar_readout.append(
+                (full_name, photo_data, contact_email, contact_address, contact_tel)
+            )
     return calendar_readout

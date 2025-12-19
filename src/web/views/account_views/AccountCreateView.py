@@ -18,6 +18,8 @@
 
 """Module with the :class:`web.views.AccountCreateView` view."""
 
+from __future__ import annotations
+
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin

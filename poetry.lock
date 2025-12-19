@@ -4546,6 +4546,21 @@ slack = ["slack-sdk"]
 telegram = ["requests"]
 
 [[package]]
+name = "types-django-import-export"
+version = "4.3.0.20250822"
+description = "Typing stubs for django-import-export"
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+files = [
+    {file = "types_django_import_export-4.3.0.20250822-py3-none-any.whl", hash = "sha256:40e8b44c3b174c4bd62a9b3b8dbc5091695ac203ad3bd0bd3f59a5e725a0e804"},
+    {file = "types_django_import_export-4.3.0.20250822.tar.gz", hash = "sha256:a7af11abb15e173c296e2a9e7e6d4a297c032a58049e252f4a99e1f2494d625d"},
+]
+
+[package.dependencies]
+django-stubs = "*"
+
+[[package]]
 name = "types-pyyaml"
 version = "6.0.12.20250915"
 description = "Typing stubs for PyYAML"
@@ -4772,4 +4787,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "c1d2a0c23a321b557da54e817f5b1bef909cf53d4748f5bc6248c42f0ede4c3a"
+content-hash = "4f3bb2475ed7586d8b64bd379961b601b444cab395534830e6bae04c69300277"
