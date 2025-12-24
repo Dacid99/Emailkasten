@@ -28,6 +28,11 @@ from api.v1.views import AccountViewSet
 from core.models import Account
 
 
+@pytest.fixture(autouse=True)
+def auto_mock_Account_test(mock_Account_test):
+    """All tests mock Accounts test."""
+
+
 @pytest.mark.django_db
 def test_list_noauth(fake_account, noauth_api_client, list_url):
     """Tests the `list` method on :class:`api.v1.views.AccountViewSet`

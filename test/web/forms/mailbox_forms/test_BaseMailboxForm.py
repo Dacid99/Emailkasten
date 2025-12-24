@@ -40,7 +40,7 @@ def test_post(mailbox_payload):
     assert "is_healthy" not in form_data
     assert "created" not in form_data
     assert "updated" not in form_data
-    assert len(form_data) == 3
+    assert len(form_data) == 2
 
 
 @pytest.mark.django_db
@@ -62,4 +62,4 @@ def test_get(fake_mailbox):
     assert "is_healthy" not in form_fields
     assert "created" not in form_fields
     assert "updated" not in form_fields
-    assert len(form_fields) == 3
+    assert len(form_fields) == 2

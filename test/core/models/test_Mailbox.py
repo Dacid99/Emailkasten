@@ -694,6 +694,7 @@ def test_Mailbox_create_from_data_success(
     assert new_mailbox.name == mock_parse_mailbox_name.return_value
     assert new_mailbox.save_attachments is DEFAULT_SAVE_ATTACHMENTS
     assert new_mailbox.save_to_eml is DEFAULT_SAVE_TO_EML
+    assert new_mailbox.is_healthy
     mock_logger.debug.assert_called()
 
 
@@ -716,6 +717,8 @@ def test_Mailbox_create_from_data_duplicate(
     assert new_mailbox.pk is not None
     mock_parse_mailbox_name.assert_called_once_with(fake_name_bytes)
     assert new_mailbox == fake_mailbox
+    fake_mailbox.refresh_from_db()
+    assert fake_mailbox.is_healthy
     mock_logger.debug.assert_called()
 
 

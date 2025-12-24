@@ -36,7 +36,7 @@ def test_post(correspondent_payload):
     assert "email_address" not in form_data
     assert "created" not in form_data
     assert "updated" not in form_data
-    assert len(form_data) == 2
+    assert len(form_data) == 1
 
 
 @pytest.mark.django_db
@@ -53,4 +53,4 @@ def test_get(fake_correspondent):
     assert "email_address" not in form_fields
     assert "created" not in form_fields
     assert "updated" not in form_fields
-    assert len(form_fields) == 2
+    assert len(form_fields) == 1
