@@ -22,5 +22,7 @@
 
 
 {% block form %}
+    {{ block.super }}
+
     {% bootstrap_field form.real_name %}
 {% endblock form %}

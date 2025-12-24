@@ -1,5 +1,7 @@
 {% extends "web/layouts/base_detail_editable.html" %}
 
+{% load bootstrap_form_errors from django_bootstrap5 %}
+
 {% block edit_buttons %}
 
     {% include "web/partials/_end_edit-button.html" %}
@@ -8,10 +10,11 @@
 
 
 {% block card_content %}
-    <form method="post">
+    <form method="post" class="py-2">
         {% csrf_token %}
 
         {% block form %}
+            {% bootstrap_form_errors form type='non_fields' %}
         {% endblock form %}
 
 

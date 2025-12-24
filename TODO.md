@@ -50,7 +50,6 @@
 
 ## To fix
 
-- form errors not shown in account edit page (https://django-bootstrap5.readthedocs.io/en/latest/templatetags.html)
 - filteroptions for existing db entries leak other user data
 - fetching too many emails leads to browser timeout
 - ci:
