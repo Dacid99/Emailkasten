@@ -24,6 +24,7 @@ from django.db.models import BooleanField, DateTimeField, Model, TextField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -82,7 +83,8 @@ class HealthModelMixin(Model):
     def set_healthy(self) -> None:
         """Sets the `is_healthy` flag to `True`.
 
-        Only saves if the model is already in the database and runs the model is not already healthy.
+        Runs only if the model is not already healthy.
+        Only saves if the model is already in the database.
         """
         if not self.is_healthy:
             self.is_healthy = True

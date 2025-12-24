@@ -39,7 +39,7 @@ one for the logfiles of Eonvelope and one for the files that Eonvelope archives.
     You can also mount all logfiles of the container by changing the path in the docker-compose.yml to /var/log.
     In that case you will have to give the directory 777 permissions, otherwise services will fail to start and log properly.
 
-It is recommeneded to use the minimal version of the docker-compose for the first time you deploy Eonvelope
+It is recommended to use the minimal version of the docker-compose for the first time you deploy Eonvelope
 and to skim the docker settings section of the :doc:`configuration reference <configurations page>` beforehand.
 
 Docker

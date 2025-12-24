@@ -94,7 +94,9 @@ class BaseAccountSerializer(serializers.ModelSerializer[Account]):
 
         try:
             instance.full_clean()
-        except ValidationError as e:
-            raise serializers.ValidationError(e.message_dict or e.messages)
+        except ValidationError as error:
+            raise serializers.ValidationError(
+                error.message_dict or error.messages
+            ) from error
 
         return attrs

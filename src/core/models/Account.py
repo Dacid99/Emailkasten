@@ -49,6 +49,7 @@ from core.utils.fetchers.exceptions import MailAccountError
 
 from .Mailbox import Mailbox
 
+
 if TYPE_CHECKING:
     from core.utils.fetchers import BaseFetcher
 
@@ -212,7 +213,7 @@ class Account(
                 raise ValidationError(
                     _("Testing this account data failed: %(error)s")
                     % {"error": str(error)}
-                )
+                ) from error
 
     def get_fetcher_class(self) -> type[BaseFetcher]:
         """Returns the fetcher class from :class:`core.utils.fetchers` corresponding to :attr:`protocol`.
