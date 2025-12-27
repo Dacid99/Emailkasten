@@ -361,6 +361,7 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [
+    BASE_DIR / "src" / "config" / "locale",
     BASE_DIR / "src" / "eonvelope" / "locale",
     BASE_DIR / "src" / "core" / "locale",
     BASE_DIR / "src" / "api" / "locale",

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-30 15:30+0000\n"
+"POT-Creation-Date: 2025-12-27 16:58+0000\n"
 "PO-Revision-Date: 2025-08-15 11:01+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/eonvelope/core/fr/"
@@ -28,7 +28,7 @@ msgid "All emails received the last WEEK"
 msgstr ""
 
 #: src/core/constants.py:44
-msgid "All emails receiced the last MONTH"
+msgid "All emails received the last MONTH"
 msgstr ""
 
 #: src/core/constants.py:47
@@ -204,31 +204,31 @@ msgid ".eml"
 msgstr ""
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/mixins/FavoriteModelMixin.py:32
+#: src/core/mixins/FavoriteModelMixin.py:33
 #, fuzzy
 #| msgid "favorite"
 msgid "favorite status"
 msgstr "favori"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/mixins/FilePathModelMixin.py:43
+#: src/core/mixins/FilePathModelMixin.py:48
 msgid "filepath"
 msgstr "chemin du fichier"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/mixins/HealthModelMixin.py:37
+#: src/core/mixins/HealthModelMixin.py:38
 #, fuzzy
 #| msgid "healthy"
 msgid "health status"
 msgstr "sain"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/mixins/HealthModelMixin.py:45
+#: src/core/mixins/HealthModelMixin.py:46
 msgid "last error"
 msgstr ""
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/mixins/HealthModelMixin.py:52
+#: src/core/mixins/HealthModelMixin.py:54
 msgid "time of last error occurrence"
 msgstr ""
 
@@ -328,7 +328,7 @@ msgid "user"
 msgstr "utilisateur"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Account.py:151 src/core/models/Mailbox.py:100
+#: src/core/models/Account.py:151 src/core/models/Mailbox.py:102
 msgid "account"
 msgstr "compte"
 
@@ -344,11 +344,16 @@ msgstr "compte"
 msgid "Account %(mail_address)s with protocol %(protocol)s"
 msgstr "Compte %(mail_address)s avec le protocole %(protocol)s"
 
-#: src/core/models/Account.py:198
+#: src/core/models/Account.py:199
 msgid "This account already exists."
 msgstr "Ce compte existe déjà."
 
-#: src/core/models/Account.py:225 src/core/models/Account.py:228
+#: src/core/models/Account.py:214
+#, python-format
+msgid "Testing this account data failed: %(error)s"
+msgstr ""
+
+#: src/core/models/Account.py:243 src/core/models/Account.py:246
 #, fuzzy, python-format
 #| msgid "The email protocol implemented by the server."
 msgid "The protocol %s is not implemented in a fetcher class!"
@@ -611,7 +616,7 @@ msgstr ""
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/core/models/Daemon.py:83 src/core/models/Email.py:182
-#: src/core/models/Mailbox.py:128
+#: src/core/models/Mailbox.py:130
 msgid "mailbox"
 msgstr ""
 
@@ -740,7 +745,7 @@ msgstr "courriel"
 msgid "Email with ID %(message_id)s, received on %(datetime)s from %(mailbox)s"
 msgstr ""
 
-#: src/core/models/Email.py:682 src/core/models/Mailbox.py:317
+#: src/core/models/Email.py:682 src/core/models/Mailbox.py:319
 #, python-format
 msgid "The file format %(file_format)s is not supported."
 msgstr ""
@@ -764,7 +769,7 @@ msgid ""
 "%(correspondent)s with mention %(mention)s"
 msgstr ""
 
-#: src/core/models/Mailbox.py:81
+#: src/core/models/Mailbox.py:83
 #, fuzzy
 #| msgid ""
 #| "This will delete this account and all mailboxes, emails and attachments "
@@ -776,7 +781,7 @@ msgstr ""
 "Ceci supprimera ce compte et toutes les boîtes de réception, courriels et "
 "pièces jointes qu'il contient !"
 
-#: src/core/models/Mailbox.py:85
+#: src/core/models/Mailbox.py:87
 #, fuzzy
 #| msgid ""
 #| "This will delete this account and all mailboxes, emails and attachments "
@@ -789,40 +794,40 @@ msgstr ""
 "pièces jointes qu'il contient !"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Mailbox.py:91
+#: src/core/models/Mailbox.py:93
 msgid "name"
 msgstr "nom"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Mailbox.py:107
+#: src/core/models/Mailbox.py:109
 msgid "save attachments"
 msgstr ""
 
-#: src/core/models/Mailbox.py:109
+#: src/core/models/Mailbox.py:111
 msgid "Whether the attachments from the emails in this mailbox will be saved."
 msgstr ""
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Mailbox.py:117
+#: src/core/models/Mailbox.py:119
 msgid "save as .eml"
 msgstr ""
 
-#: src/core/models/Mailbox.py:118
+#: src/core/models/Mailbox.py:120
 msgid "Whether the emails in this mailbox will be stored in .eml files."
 msgstr ""
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
-#: src/core/models/Mailbox.py:130
+#: src/core/models/Mailbox.py:132
 msgid "mailboxes"
 msgstr ""
 
-#: src/core/models/Mailbox.py:147
+#: src/core/models/Mailbox.py:149
 #, python-format
 msgid "Mailbox %(name)s of %(account)s"
 msgstr ""
 
-#: src/core/models/Mailbox.py:227 src/core/models/Mailbox.py:264
-#: src/core/models/Mailbox.py:282
+#: src/core/models/Mailbox.py:229 src/core/models/Mailbox.py:266
+#: src/core/models/Mailbox.py:284
 #, python-format
 msgid "The given file is not a valid %(file_format)s."
 msgstr ""
@@ -891,12 +896,7 @@ msgstr ""
 msgid "connecting"
 msgstr "délai d'attente de connexion"
 
-#: src/core/utils/fetchers/exceptions.py:33
-#: src/core/utils/fetchers/exceptions.py:50
-msgid "interaction"
-msgstr ""
-
-#: src/core/utils/fetchers/exceptions.py:37
+#: src/core/utils/fetchers/exceptions.py:45
 #, fuzzy, python-format
 #| msgid "An %(error_class_name)s: %(error)s occurred during %(action_name)s!"
 msgid ""
@@ -905,7 +905,7 @@ msgid ""
 msgstr ""
 "Une %(error_class_name)s: %(error)s s'est produite pendant %(action_name)s !"
 
-#: src/core/utils/fetchers/exceptions.py:54
+#: src/core/utils/fetchers/exceptions.py:62
 #, fuzzy, python-format
 #| msgid "An %(error_class_name)s: %(error)s occurred during %(action_name)s!"
 msgid ""
@@ -914,7 +914,7 @@ msgid ""
 msgstr ""
 "Une %(error_class_name)s: %(error)s s'est produite pendant %(action_name)s !"
 
-#: src/core/utils/fetchers/exceptions.py:69
+#: src/core/utils/fetchers/exceptions.py:77
 #, python-format
 msgid "Server responded %(response)s!"
 msgstr ""
