@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.3.0
+
+- Features:
+  - slim mode for use on systems with restricted resources
+  - customized adminpanel
+  - automatic testing of account when created or updated
+  - update mailboxes now also updates their health flags
+
 ## Version 0.2.3
 
 - Features:

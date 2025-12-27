@@ -16,20 +16,4 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-"""Celery module for Eonvelope project."""
-
-import os
-import sys
-from pathlib import Path
-
-from celery import Celery
-
-
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eonvelope.settings")
-
-app = Celery("eonvelope")
-
-app.config_from_object("django.conf:settings", namespace="CELERY")
-app.autodiscover_tasks()
+"""Test package for the :mod:`config` package of Eonvelope project."""

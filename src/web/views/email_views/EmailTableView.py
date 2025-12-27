@@ -18,14 +18,19 @@
 
 """Module with the :class:`web.views.EmailTableView` view."""
 
-from typing import override
+from __future__ import annotations
 
-from django.db.models import QuerySet
+from typing import TYPE_CHECKING, override
+
 from django_tables2.views import SingleTableMixin
 
 from web.tables.email_tables.BaseEmailTable import BaseEmailTable
 
 from .EmailFilterView import EmailFilterView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class EmailTableView(SingleTableMixin, EmailFilterView):

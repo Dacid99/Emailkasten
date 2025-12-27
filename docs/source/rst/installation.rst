@@ -39,16 +39,19 @@ one for the logfiles of Eonvelope and one for the files that Eonvelope archives.
     You can also mount all logfiles of the container by changing the path in the docker-compose.yml to /var/log.
     In that case you will have to give the directory 777 permissions, otherwise services will fail to start and log properly.
 
-It is recommeneded to use the minimal version of the docker-compose for the first time you deploy Eonvelope
+It is recommended to use the minimal version of the docker-compose for the first time you deploy Eonvelope
 and to skim the docker settings section of the :doc:`configuration reference <configurations page>` beforehand.
 
 Docker
 ^^^^^^
 
-There are two example compose-files in the docker directory of the repository,
-a minimal version and one with all settings for full customization.
+There are example compose-files in the docker directory of the repository,
+to install for the first time we recommend the minimal version.
 
-Take one of these examples,
+If your system is low-spec and quite limited in its resources, use the slim version.
+This has slim mode enabled, which reduces the resources Eonvelope consumes at runtime.
+
+Take the docker-compose of your choice,
 adapt it to your needs and start the stack with ``docker compose up -d``
 or via your container manager.
 Done!
@@ -76,7 +79,7 @@ Alternatively, you can run the application bare metal.
 2. Install the dependencies for python and the system
    as described in :doc:`development <development>`.
 3. Spin up a mysql db server matching the configurations
-   in the django application settings ``eonvelope/settings.py`` on your machine.
+   in the django application settings ``config.settings.py`` on your machine.
 4. Finally the Eonvelope server is started via the docker entrypoint script
    ``docker/docker-compose.yml``.
 

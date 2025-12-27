@@ -14,7 +14,13 @@
        role="button"></a>
 {% endblock close_to_list_button %}
 
+{% block card_title %}
+    {% translate "New Routine" %}
+{% endblock card_title %}
+
 {% block form %}
+    {{ block.super }}
+
     <ul class="list-group list-group-flush">
         <li class="list-group-item">{% bootstrap_field form.mailbox %}</li>
         <li class="list-group-item">{% bootstrap_field form.fetching_criterion %}</li>

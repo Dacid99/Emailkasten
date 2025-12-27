@@ -123,3 +123,6 @@ Eonvelope exports database, database-models, migrations, cache and other metrics
 The metrics data can be scraped under `/metrics`, their names all start with ``eonvelope``.
 
 For reference on configuration refer to the [Prometheus](https://prometheus.io/docs/introduction/overview/) and [django-prometheus](https://github.com/django-commons/django-prometheus/blob/master/README.md) docs.
+
+.. note::
+    This integration is not available in slim mode.

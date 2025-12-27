@@ -18,11 +18,18 @@
 
 """Module with :class:`web.mixins.TestActionMixin`."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from django.contrib import messages
-from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 
 from core.utils.fetchers.exceptions import FetcherError
+
+
+if TYPE_CHECKING:
+    from django.http import HttpRequest, HttpResponse
 
 
 class TestActionMixin:

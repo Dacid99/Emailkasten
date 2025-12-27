@@ -18,14 +18,19 @@
 
 """Module with the :class:`web.views.AttachmentTableView` view."""
 
-from typing import override
+from __future__ import annotations
 
-from django.db.models import QuerySet
+from typing import TYPE_CHECKING, override
+
 from django_tables2.views import SingleTableMixin
 
 from web.tables.attachment_tables.BaseAttachmentTable import BaseAttachmentTable
 
 from .AttachmentFilterView import AttachmentFilterView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class AttachmentTableView(SingleTableMixin, AttachmentFilterView):

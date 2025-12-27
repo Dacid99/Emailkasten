@@ -18,14 +18,19 @@
 
 """Module with the :class:`web.views.AttachmentFilterView` view."""
 
-from typing import override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
 
 from core.models import Attachment
 from web.filters import AttachmentFilterSet
 from web.views.base import FilterPageView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class AttachmentFilterView(LoginRequiredMixin, FilterPageView):

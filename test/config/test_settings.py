@@ -22,7 +22,7 @@ import logging.config
 
 import pytest
 
-from eonvelope.settings import LOG_DIRECTORY_PATH, LOGGING
+from config.settings import LOG_DIRECTORY_PATH, LOGGING
 
 
 @pytest.fixture

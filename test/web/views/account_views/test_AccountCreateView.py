@@ -24,7 +24,13 @@ from django.urls import reverse
 from rest_framework import status
 
 from core.models import Account
+from core.utils.fetchers.exceptions import MailAccountError
 from web.views import AccountCreateView
+
+
+@pytest.fixture(autouse=True)
+def auto_mock_Account_test(mock_Account_test):
+    """All tests mock Accounts test."""
 
 
 @pytest.mark.django_db
@@ -55,6 +61,19 @@ def test_get_auth_other(other_client, list_url):
 def test_get_auth_owner(owner_client, list_url):
     """Tests :class:`web.views.AccountCreateView` with the authenticated owner user client."""
     response = owner_client.get(list_url(AccountCreateView))
+
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(response, HttpResponse)
+    assert "web/account/account_create.html" in [
+        template.name for template in response.templates
+    ]
+    assert "form" in response.context
+
+
+@pytest.mark.django_db
+def test_get_auth_admin(admin_client, list_url):
+    """Tests :class:`web.views.AccountCreateView` with the authenticated admin user client."""
+    response = admin_client.get(list_url(AccountCreateView))
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
@@ -98,7 +117,9 @@ def test_post_auth_other(account_payload, other_user, other_client, list_url):
 
 
 @pytest.mark.django_db
-def test_post_auth_owner(account_payload, owner_user, owner_client, list_url):
+def test_post_auth_owner_test_success(
+    account_payload, owner_user, owner_client, list_url
+):
     """Tests :class:`web.views.AccountCreateView` with the authenticated owner user client."""
     assert Account.objects.all().count() == 1
 
@@ -117,17 +138,20 @@ def test_post_auth_owner(account_payload, owner_user, owner_client, list_url):
 
 
 @pytest.mark.django_db
-def test_post_duplicate_auth_owner(
-    fake_account, account_payload, owner_client, list_url
+def test_post_auth_owner_test_failure(
+    fake_error_message,
+    account_payload,
+    owner_user,
+    mock_Account_test,
+    owner_client,
+    list_url,
 ):
-    """Tests :class:`web.views.AccountCreateView` with the authenticated owner user client
-    in case of data duplicating another account.
-    """
-    account_payload["mail_address"] = fake_account.mail_address
-    account_payload["protocol"] = fake_account.protocol
-    response = owner_client.post(list_url(AccountCreateView), account_payload)
+    """Tests :class:`web.views.AccountCreateView` with the authenticated owner user client."""
+    mock_Account_test.side_effect = MailAccountError(ValueError(fake_error_message))
 
     assert Account.objects.all().count() == 1
+
+    response = owner_client.post(list_url(AccountCreateView), account_payload)
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, HttpResponse)
@@ -136,3 +160,44 @@ def test_post_duplicate_auth_owner(
     ]
     assert "form" in response.context
     assert Account.objects.all().count() == 1
+
+
+@pytest.mark.django_db
+def test_post_duplicate_auth_owner(
+    fake_account, account_payload, owner_client, list_url
+):
+    """Tests :class:`web.views.AccountCreateView` with the authenticated owner user client
+    in case of data duplicating another account.
+    """
+    account_payload["mail_address"] = fake_account.mail_address
+    account_payload["protocol"] = fake_account.protocol
+
+    response = owner_client.post(list_url(AccountCreateView), account_payload)
+
+    assert Account.objects.all().count() == 1
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(response, HttpResponse)
+    assert "web/account/account_create.html" in [
+        template.name for template in response.templates
+    ]
+    assert "form" in response.context
+    assert Account.objects.all().count() == 1
+
+
+@pytest.mark.django_db
+def test_post_auth_admin(account_payload, admin_user, admin_client, list_url):
+    """Tests :class:`web.views.AccountCreateView` with the authenticated admin user client."""
+    assert Account.objects.all().count() == 1
+
+    response = admin_client.post(list_url(AccountCreateView), account_payload)
+
+    assert response.status_code == status.HTTP_302_FOUND
+    assert isinstance(response, HttpResponseRedirect)
+    assert response.url.startswith(reverse("web:" + Account.get_list_web_url_name()))
+    assert Account.objects.all().count() == 2
+    added_account = Account.objects.filter(
+        mail_address=account_payload["mail_address"], user=admin_user
+    ).get()
+    assert added_account.password == account_payload["password"]
+    assert added_account.mail_host == account_payload["mail_host"]
+    assert added_account.mail_host_port == account_payload["mail_host_port"]

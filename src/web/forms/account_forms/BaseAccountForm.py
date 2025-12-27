@@ -56,7 +56,6 @@ class BaseAccountForm(RequiredMarkerModelForm):
             "protocol",
             "mail_host_port",
             "timeout",
-            "is_favorite",
         ]
         """Exposes all fields that the user should be able to change."""
 
@@ -66,3 +65,4 @@ class BaseAccountForm(RequiredMarkerModelForm):
         widgets: ClassVar[dict[str, type[Widget] | Widget]] = {
             "password": PasswordInput(render_value=True),
         }
+        """Allow initial values in the password field."""

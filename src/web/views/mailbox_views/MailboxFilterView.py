@@ -18,14 +18,19 @@
 
 """Module with the :class:`web.views.MailboxFilterView` view."""
 
-from typing import override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
 
 from core.models import Mailbox
 from web.filters import MailboxFilterSet
 from web.views.base import FilterPageView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class MailboxFilterView(LoginRequiredMixin, FilterPageView):

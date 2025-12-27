@@ -18,15 +18,21 @@
 
 """Module with baseviews for the Eonvelope webapp."""
 
-from typing import Any, override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, override
 
 from django.core.exceptions import ImproperlyConfigured
-from django.http import HttpRequest, HttpResponse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeletionMixin, UpdateView
 from django_filters.views import FilterView
 
 from web.mixins import PageSizeMixin
+
+
+if TYPE_CHECKING:
+    from django.http import HttpRequest, HttpResponse
+    from django_stubs_ext import StrOrPromise
 
 
 class FilterPageView(PageSizeMixin, FilterView):
@@ -58,10 +64,10 @@ class DetailWithDeleteView(DetailView, DeletionMixin):
 class UpdateOrDeleteView(UpdateView, DeletionMixin):
     """A view that implements both updating and deleting."""
 
-    delete_success_url: str | None = None
+    delete_success_url: StrOrPromise | None = None
     """The URL to redirect to after deletion. Must be set."""
 
-    success_url: str | None = None
+    success_url: StrOrPromise | None = None
     """The URL to redirect to after form submission.
     If this is not set, the models get_absolute_url method is used.
     """
@@ -71,10 +77,16 @@ class UpdateOrDeleteView(UpdateView, DeletionMixin):
         """Overridden method to redirect to filter-list after `delete` else to detail."""
         if "delete" in self.request.POST:
             if self.delete_success_url:
-                return self.delete_success_url
-            raise ImproperlyConfigured(
-                "No URL to redirect to. Provide a delete_success_url."
-            )
+                url = self.delete_success_url.format(**self.object.__dict__)
+            else:
+                try:
+                    url = self.get_delete_success_url()
+                except AttributeError as error:
+                    raise ImproperlyConfigured(
+                        "No URL to redirect to. Either provide a delete_success_url or define"
+                        " a get_delete_success_url method."
+                    ) from error
+            return url
         return UpdateView.get_success_url(self)
 
     @override

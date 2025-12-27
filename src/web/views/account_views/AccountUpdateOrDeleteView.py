@@ -18,10 +18,11 @@
 
 """Module with the :class:`web.views.AccountUpdateView` view."""
 
-from typing import override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
 from django.urls import reverse_lazy
 
 from core.models import Account
@@ -29,6 +30,10 @@ from web.forms import BaseAccountForm
 from web.views.base import UpdateOrDeleteView
 
 from .AccountFilterView import AccountFilterView
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class AccountUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
@@ -44,3 +49,11 @@ class AccountUpdateOrDeleteView(LoginRequiredMixin, UpdateOrDeleteView):
     def get_queryset(self) -> QuerySet[Account]:
         """Restricts the queryset to objects owned by the requesting user."""
         return super().get_queryset().filter(user=self.request.user)
+
+    @override
+    def get_form(
+        self, form_class: type[BaseAccountForm] | None = None
+    ) -> BaseAccountForm:
+        form = super().get_form(form_class)
+        form.instance.user = self.request.user
+        return form  # type: ignore[no-any-return]  # super().get_form returns the form_class arg or classvar, which are both BaseAccountForm

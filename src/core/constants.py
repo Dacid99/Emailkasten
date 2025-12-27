@@ -41,7 +41,7 @@ class EmailFetchingCriterionChoices(TextChoices):
     WEEKLY = "WEEKLY", _("All emails received the last WEEK")
     """Filter using "SENTSINCE" for mails sent the previous week."""
 
-    MONTHLY = "MONTHLY", _("All emails receiced the last MONTH")
+    MONTHLY = "MONTHLY", _("All emails received the last MONTH")
     """Filter using "SENTSINCE" for mails sent the previous 4 weeks."""
 
     ANNUALLY = "ANNUALLY", _("All emails received the last YEAR")
@@ -103,7 +103,7 @@ class EmailProtocolChoices(TextChoices):
     """The POP3 protocol"""
 
     EXCHANGE = "EXCHANGE", _("Microsoft Exchange")
-    """Microsofts Exchange protocol"""
+    """Microsoft's Exchange protocol"""
 
 
 class HeaderFields:
@@ -329,7 +329,7 @@ ICALENDAR_TEMPLATE = """<div class="row g-0 overflow-y-scroll">
                                                 <h5 class="card-title">{{ summary }}</h5>
                                                 <p class="card-text text-muted d-flex flex-column">
                                                     <span>{{ dtstart | time }}</span>
-                                                    <span class="mx-1">–</span>
+                                                    <span class="mx-1">-</span>
                                                     {% if dtend.date != dtstart.date %}<span class="fw-bold me-1">{{dtend |date }}</span>{% endif %}
                                                     <span>{{ dtend | time }}</span>
                                                 </p>

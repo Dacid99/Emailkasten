@@ -32,7 +32,7 @@ import tomli
 
 sys.path.insert(0, os.path.abspath("../../src/"))
 
-os.environ["DJANGO_SETTINGS_MODULE"] = "eonvelope.settings"
+os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings"
 django.setup()
 
 # -- Project information -----------------------------------------------------

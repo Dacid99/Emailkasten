@@ -19,6 +19,8 @@
 {% endblock card_title %}
 
 {% block form %}
+    {{ block.super }}
+
     <ul class="list-group list-group-flush">
         <li class="list-group-item">{% bootstrap_field form.mail_address %}</li>
         <li class="list-group-item">{% bootstrap_field form.password %}</li>

@@ -33,6 +33,7 @@ class HealthModelMixin(Model):
 
     is_healthy = BooleanField(
         null=True,
+        blank=True,
         # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("health status"),
     )
@@ -48,6 +49,7 @@ class HealthModelMixin(Model):
 
     last_error_occurred_at = DateTimeField(
         null=True,
+        blank=True,
         # Translators: Do not capitalize the very first letter unless your language requires it.
         verbose_name=_("time of last error occurrence"),
     )
@@ -58,19 +60,33 @@ class HealthModelMixin(Model):
 
         abstract = True
 
-    def set_unhealthy(self, errormessage: str) -> None:
+    def set_unhealthy(self, errormessage: str | Exception) -> None:
         """Sets the `is_healthy` flag to `False` and adds the `last_error` and its time.
 
+        Only saves if the model is already in the database.
+
         Args:
-            errormessage: The message of the error causing the health change.
+            errormessage: The error causing the health change or its message.
         """
         logger.info("Setting %s to unhealthy because of error: %s", self, errormessage)
-        self.last_error = errormessage
+        if isinstance(errormessage, str):
+            self.last_error = errormessage
+        elif isinstance(errormessage, Exception):
+            self.last_error = str(errormessage)
         self.last_error_occurred_at = timezone.now()
         self.is_healthy = False
-        self.save(update_fields=["is_healthy", "last_error", "last_error_occurred_at"])
+        if self.pk:
+            self.save(
+                update_fields=["is_healthy", "last_error", "last_error_occurred_at"]
+            )
 
     def set_healthy(self) -> None:
-        """Sets the `is_healthy` flag to `True`."""
-        self.is_healthy = True
-        self.save(update_fields=["is_healthy"])
+        """Sets the `is_healthy` flag to `True`.
+
+        Runs only if the model is not already healthy.
+        Only saves if the model is already in the database.
+        """
+        if not self.is_healthy:
+            self.is_healthy = True
+            if self.pk:
+                self.save(update_fields=["is_healthy"])

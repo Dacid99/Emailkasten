@@ -56,6 +56,7 @@ VERSION = config["project"]["version"]
 
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/ for safe settings
 
+SLIM = env("SLIM", cast=bool, default=False)
 
 ##### django core #####
 # https://docs.djangoproject.com/en/5.2/ref/settings/#core-settings
@@ -63,7 +64,7 @@ VERSION = config["project"]["version"]
 ### Models
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "config.apps.EonvelopeAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -73,22 +74,17 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "pwa",
     "django_extensions",
-    "django_prometheus",
     "debug_toolbar",
-    "import_export",
-    "schema_viewer",
     "django_filters",
     "django_tables2",
     "rest_framework",
     "rest_framework.authtoken",
-    "drf_spectacular",
     "allauth",
     "allauth.account",
     "allauth.mfa",
     "allauth.headless",
     "allauth.socialaccount",
     "allauth.usersessions",
-    "robots",
     "constance",
     "constance.backends.database",
     "health_check",
@@ -105,11 +101,19 @@ INSTALLED_APPS = [
     "health_check.contrib.celery_ping",
     "django_celery_results",
     "django_celery_beat",
-    "eonvelope",
-    "core",
-    "api",
-    "web",
+    "eonvelope.apps.EonvelopeConfig",
+    "core.apps.CoreConfig",
+    "api.apps.APIConfig",
+    "web.apps.WebConfig",
 ]
+if not SLIM:
+    INSTALLED_APPS += [
+        "django_prometheus",
+        "schema_viewer",
+        "drf_spectacular",
+        "import_export",
+        "robots",
+    ]
 
 
 ### Database
@@ -357,6 +361,7 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [
+    BASE_DIR / "src" / "config" / "locale",
     BASE_DIR / "src" / "eonvelope" / "locale",
     BASE_DIR / "src" / "core" / "locale",
     BASE_DIR / "src" / "api" / "locale",
@@ -386,14 +391,13 @@ LANGUAGE_CODE = "en"
 ### HTTP
 # https://docs.djangoproject.com/en/5.2/ref/settings/#http
 
-WSGI_APPLICATION = "eonvelope.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 # https://knasmueller.net/fix-djangos-debug-toolbar-not-showing-inside-docker
 hostname, __, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [".".join([*ip.split(".")[:-1], "1"]) for ip in ips]
 
 MIDDLEWARE = [
-    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
@@ -407,8 +411,13 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "allauth.usersessions.middleware.UserSessionsMiddleware",
     "eonvelope.middleware.TimezoneMiddleware.TimezoneMiddleware",
-    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
+if not SLIM:
+    MIDDLEWARE = [
+        "django_prometheus.middleware.PrometheusBeforeMiddleware",
+        *MIDDLEWARE,
+        "django_prometheus.middleware.PrometheusAfterMiddleware",
+    ]
 
 # Security
 ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=list, default=["localhost", "127.0.0.1"])
@@ -442,7 +451,7 @@ SECURE_SSL_REDIRECT = not DEBUG
 ### URLs
 # https://docs.djangoproject.com/en/5.2/ref/settings/#urls
 
-ROOT_URLCONF = "eonvelope.urls"
+ROOT_URLCONF = "config.urls"
 
 
 ### Templates

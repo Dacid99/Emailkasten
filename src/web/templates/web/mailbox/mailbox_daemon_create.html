@@ -23,6 +23,8 @@
 {% endblock card_subtitle %}
 
 {% block form %}
+    {{ block.super }}
+
     {% bootstrap_field form.mailbox %}
     <ul class="list-group list-group-flush">
         <li class="list-group-item">{% bootstrap_field form.fetching_criterion %}</li>

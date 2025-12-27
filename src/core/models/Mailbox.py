@@ -55,6 +55,8 @@ from .Email import Email
 
 
 if TYPE_CHECKING:
+    from django_stubs_ext import StrOrPromise
+
     from .Account import Account
 
 
@@ -167,11 +169,11 @@ class Mailbox(
                 fetcher.test(self)
             except MailboxError as error:
                 logger.info("Failed testing %s with error: %s.", self, error)
-                self.set_unhealthy(str(error))
+                self.set_unhealthy(error)
                 raise
             except MailAccountError as error:
                 logger.info("Failed testing %s with error %s.", self.account, error)
-                self.account.set_unhealthy(str(error))
+                self.account.set_unhealthy(error)
                 raise
         self.set_healthy()
         logger.info("Successfully tested mailbox")
@@ -194,11 +196,11 @@ class Mailbox(
                 fetched_mails = fetcher.fetch_emails(self, criterion)
             except MailboxError as error:
                 logger.info("Failed fetching %s with error: %s.", self, error)
-                self.set_unhealthy(str(error))
+                self.set_unhealthy(error)
                 raise
             except MailAccountError as error:
                 logger.info("Failed fetching %s with error: %s.", self, error)
-                self.account.set_unhealthy(str(error))
+                self.account.set_unhealthy(error)
                 raise
         self.set_healthy()
         logger.info("Successfully fetched emails.")
@@ -319,13 +321,13 @@ class Mailbox(
             )
         logger.info("Successfully added emails from file.")
 
-    @override
     @property
+    @override
     def has_download(self) -> bool:
         return self.emails.exists()
 
     @property
-    def available_fetching_criteria(self) -> tuple[str]:
+    def available_fetching_criteria(self) -> tuple[StrOrPromise]:
         """Gets the available fetching criteria based on the mail protocol of this mailbox.
 
         Returns:
@@ -337,7 +339,7 @@ class Mailbox(
         return self.account.get_fetcher_class().AVAILABLE_FETCHING_CRITERIA  # type: ignore[no-any-return]  # for some reason mypy doesn't get this
 
     @property
-    def available_fetching_criterion_choices(self) -> list[tuple[str, str]]:
+    def available_fetching_criterion_choices(self) -> list[tuple[str, StrOrPromise]]:
         """Gets the available fetching criterion choices based on the mail protocol of this mailbox.
 
         Returns:
@@ -353,19 +355,22 @@ class Mailbox(
         ]
 
     @property
-    def available_download_formats(self) -> list[tuple[str, str]]:
+    def available_download_formats(self) -> list[tuple[str, StrOrPromise]]:
         """Get all formats that emails in this mailbox can be downloaded in.
 
         Returns:
             A list of download formats and format names.
         """
-        return SupportedEmailDownloadFormats.choices  # type: ignore[return-value]  # strPromise is compatible with str
+        return SupportedEmailDownloadFormats.choices
 
     @classmethod
     def create_from_data(
         cls, mailbox_data: bytes | str, account: Account
     ) -> Mailbox | None:
         """Creates a :class:`core.models.Mailbox` from the mailboxname in bytes.
+
+        Note:
+            Mailbox created from data is considered healthy by default.
 
         Args:
             mailbox_data: The bytes with the mailboxname.
@@ -384,15 +389,19 @@ class Mailbox(
             logger.debug("%s is in the ignorelist, it is skipped.", mailbox_name)
             return None
         try:
-            new_mailbox = cls.objects.get(account=account, name=mailbox_name)
-            logger.debug("%s already exists in db, it is skipped.", new_mailbox)
+            mailbox = cls.objects.get(account=account, name=mailbox_name)
+            mailbox.set_healthy()
+            logger.debug(
+                "%s already exists in db, it has been set to healthy.", mailbox
+            )
         except Mailbox.DoesNotExist:
-            new_mailbox = cls(
+            mailbox = cls(
                 account=account,
                 name=mailbox_name,
                 save_to_eml=get_config("DEFAULT_SAVE_TO_EML"),
                 save_attachments=get_config("DEFAULT_SAVE_ATTACHMENTS"),
+                is_healthy=True,
             )
-            new_mailbox.save()
+            mailbox.save()
             logger.debug("Successfully saved mailbox %s to db.", mailbox_name)
-        return new_mailbox
+        return mailbox

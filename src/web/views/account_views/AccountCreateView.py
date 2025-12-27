@@ -18,6 +18,8 @@
 
 """Module with the :class:`web.views.AccountCreateView` view."""
 
+from __future__ import annotations
+
 from typing import override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -39,7 +41,6 @@ class AccountCreateView(LoginRequiredMixin, CreateView):
     def get_form(
         self, form_class: type[BaseAccountForm] | None = None
     ) -> BaseAccountForm:
-        """Extended method to add the requesting user to the created account."""
         form = super().get_form(form_class)
         form.instance.user = self.request.user
         return form  # type: ignore[no-any-return]  # super().get_form returns the form_class arg or classvar, which are both BaseAccountForm

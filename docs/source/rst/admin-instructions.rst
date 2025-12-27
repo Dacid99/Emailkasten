@@ -108,6 +108,9 @@ See and :doc:`configuration <configuration>` for more details.
 Robots.txt
 ----------
 
+.. note::
+    This feature is not available in slim mode.
+
 Since the rise of AI, uncounted numbers of webcrawlers are out and about online.
 The robots.txt file served by many web services (including your Eonvelope instance)
 is intended to tell them which pages they may access (if they care).

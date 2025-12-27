@@ -9,7 +9,7 @@
 - mechanism to remove all correspondents without emails
 - download for main logfiles
 - fetching in bunches to handle large amounts of emails, fetch as generator
-- autotest account before form submission, fetch mailboxes on submission
+- autofetch mailboxes on submission
 - [progressbar](https://getbootstrap.com/docs/5.3/components/progress/) for actions
 - notes field for models
 - more tags
@@ -40,7 +40,7 @@
 
 ## To implement
 
-- migration to py3.14
+- migration to django6.0
 
 ### Work in progress
 

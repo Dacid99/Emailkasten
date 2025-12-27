@@ -83,7 +83,9 @@ Don't use larger timeout values than 60 seconds, as this may significantly impac
 the runtime of individual fetch operations and may at worst delay the archiving schedule.
 The minimal accepted timeout value is 0.1.
 
-After you have added the account, you can test the configuration via the test button.
+When you submit the data to add the account, Eonvelope will test
+whether it can access this account with the given information.
+In case this is not possible, you will get feedback about the problem that occured.
 If the service is unknown, check the email server URL.
 In case of a failed authentication, check the credentials.
 
@@ -349,7 +351,8 @@ If you have a file in a proprietary format like .msg or .ost,
 please convert it to one of the upper formats using a conversion tool,
 plenty of these are available on github and other platforms.
 
-You can also import data in various tabular formats into the database via the admin panel.
+You can also import data in various tabular formats into the database via the admin panel
+if your instance is not in slim mode.
 
 
 Export
@@ -361,5 +364,6 @@ The second option is currently only available via the API.
 Please refer to the :doc:`API documentation for instructions <api-instructions>` on the usage of these endpoints.
 The same formats as above are accepted.
 
-You can also export data from the database in various tabular formats via the admin panel.
+You can also export data from the database in various tabular formats via the admin panel
+if your instance is not in slim mode.
 The supported formats are csv, xls, xlsx, tsv, ods, json, yaml, html.

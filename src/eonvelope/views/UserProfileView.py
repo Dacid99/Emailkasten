@@ -18,15 +18,20 @@
 
 """Module with the :class:`web.views.AccountUpdateView` view."""
 
-from typing import override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView
 
 from eonvelope.forms import UserProfileForm
 from eonvelope.models import UserProfile
+
+
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
 
 
 class UserProfileView(LoginRequiredMixin, UpdateView):

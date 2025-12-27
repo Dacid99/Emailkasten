@@ -15,25 +15,26 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
-"""WSGI config for Eonvelope project.
 
-It exposes the WSGI callable as a module-level variable named ``application``.
+"""The admin module for :mod:`eonvelope`. Registers all models with the admin. Defines a custom admin site."""
 
-For more information on this file, see
-https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/
-"""
+from django.contrib.admin import AdminSite
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
-from __future__ import annotations
-
-import os
-import sys
-from pathlib import Path
-
-from django.core.wsgi import get_wsgi_application
+from web.views import DashboardView
 
 
-sys.path.append(str(Path(__file__).resolve().parent.parent))
+class EonvelopeAdminSite(AdminSite):
+    """Customized admin site class for Eonvelope."""
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eonvelope.settings")
+    # Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
+    site_header = _("E∘nvelope Administration")
+    # Translators: Eonvelope is the brand name.
+    site_title = _("Eonvelope Administration")
+    site_url = reverse_lazy("web:" + DashboardView.URL_NAME)
+    # Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
+    index_title = _("E∘nvelope Settings")
 
-application = get_wsgi_application()
+
+admin_site = EonvelopeAdminSite()

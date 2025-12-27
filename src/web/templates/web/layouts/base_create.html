@@ -2,6 +2,8 @@
 
 {% load translate from i18n %}
 
+{% load bootstrap_form_errors from django_bootstrap5 %}
+
 {% block content %}
 
     <div class="card 
@@ -34,10 +36,11 @@
                 {% endblock card_subtitle %}
 
             </h5>
-            <form method="post">
+            <form method="post" class="py-2">
                 {% csrf_token %}
 
                 {% block form %}
+                    {% bootstrap_form_errors form type='non_fields' %}
                 {% endblock form %}
 
                 {% include "web/partials/_submit_form-button.html" %}

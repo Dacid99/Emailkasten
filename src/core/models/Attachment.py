@@ -343,8 +343,8 @@ class Attachment(
         logger.debug("Successfully sent attachment to Immich.")
         return response.json()
 
+    @property
     @override
-    @cached_property
     def has_thumbnail(self) -> bool:
         """Whether the attachment has a mimetype that can be embedded into html.
 

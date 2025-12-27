@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-30 15:30+0000\n"
+"POT-Creation-Date: 2025-12-27 16:58+0000\n"
 "PO-Revision-Date: 2025-09-14 20:02+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/eonvelope/web/fr/"
@@ -87,7 +87,7 @@ msgstr "Fichier courriel ou de messagerie"
 msgid "Pick a file for upload."
 msgstr "Choisissez un fichier à téléverser."
 
-#: src/web/mixins/TestActionMixin.py:47
+#: src/web/mixins/TestActionMixin.py:54
 #, fuzzy, python-format
 #| msgid ""
 #| "Test failed, there is something wrong with this objects setup\n"
@@ -99,7 +99,7 @@ msgstr ""
 "objets\n"
 "%(error)s"
 
-#: src/web/mixins/TestActionMixin.py:52
+#: src/web/mixins/TestActionMixin.py:59
 #, fuzzy, python-format
 #| msgid ""
 #| "Test failed\n"
@@ -109,7 +109,7 @@ msgstr ""
 "Test échoué\n"
 "%(error)s"
 
-#: src/web/mixins/TestActionMixin.py:56
+#: src/web/mixins/TestActionMixin.py:63
 #, fuzzy, python-format
 #| msgid ""
 #| "Test failed due to an unexpected error\n"
@@ -119,7 +119,7 @@ msgstr ""
 "Le test a échoué en raison d'une erreur inattendue\n"
 "%(error)s"
 
-#: src/web/mixins/TestActionMixin.py:60
+#: src/web/mixins/TestActionMixin.py:67
 msgid "Test was successful"
 msgstr "Le test a réussi"
 
@@ -144,7 +144,7 @@ msgstr "octets"
 
 #: src/web/tables/daemon_tables/BaseDaemonTable.py:34
 #: src/web/tables/email_tables/BaseEmailTable.py:35
-#: src/web/tables/emailcorrespondent_tables/BaseCorrespondentEmailTable.py:38
+#: src/web/tables/emailcorrespondent_tables/BaseCorrespondentEmailTable.py:37
 #: src/web/templates/web/daemon/daemon_detail.html:32
 #: src/web/templates/web/daemon/daemon_detail.html:66
 #: src/web/templates/web/daemon/daemon_edit.html:17
@@ -155,7 +155,7 @@ msgid "Mailbox"
 msgstr "Boîte de réception"
 
 #: src/web/tables/email_tables/BaseEmailTable.py:40
-#: src/web/tables/emailcorrespondent_tables/BaseCorrespondentEmailTable.py:43
+#: src/web/tables/emailcorrespondent_tables/BaseCorrespondentEmailTable.py:42
 #: src/web/tables/mailbox_tables/BaseMailboxTable.py:36
 #: src/web/templates/web/daemon/daemon_detail.html:35
 #: src/web/templates/web/daemon/daemon_edit.html:20
@@ -237,9 +237,9 @@ msgstr "Ajouter un compte"
 msgid "New Account"
 msgstr "Nouveau compte"
 
-#: src/web/templates/web/account/account_create.html:35
-#: src/web/templates/web/daemon/daemon_create.html:29
-#: src/web/templates/web/mailbox/mailbox_daemon_create.html:37
+#: src/web/templates/web/account/account_create.html:37
+#: src/web/templates/web/daemon/daemon_create.html:35
+#: src/web/templates/web/mailbox/mailbox_daemon_create.html:39
 #: src/web/templates/web/partials/_cancel_edit-button.html:5
 #: src/web/templates/web/partials/_delete-modal.html:28
 #: src/web/templates/web/partials/_multi_delete-modal.html:25
@@ -508,6 +508,13 @@ msgstr ""
 msgid "Add Routine"
 msgstr "Ajouter un compte"
 
+#: src/web/templates/web/daemon/daemon_create.html:18
+#: src/web/templates/web/mailbox/mailbox_daemon_create.html:17
+#, fuzzy
+#| msgid "Add Account"
+msgid "New Routine"
+msgstr "Ajouter un compte"
+
 #: src/web/templates/web/daemon/daemon_detail.html:6
 #, fuzzy
 #| msgid "Account Details"
@@ -625,7 +632,7 @@ msgid "Email Timeline"
 msgstr ""
 
 #: src/web/templates/web/email/archive/day.html:6
-#: src/web/templates/web/email/archive/day.html:10
+#: src/web/templates/web/email/archive/day.html:10 src/web/utils/widgets.py:37
 msgid "Day"
 msgstr "Jour"
 
@@ -644,6 +651,7 @@ msgstr "Cette semaine"
 
 #: src/web/templates/web/email/archive/month.html:6
 #: src/web/templates/web/email/archive/month.html:10
+#: src/web/utils/widgets.py:36
 msgid "Month"
 msgstr "Mois"
 
@@ -657,7 +665,7 @@ msgid "Week #"
 msgstr "Semaine nᵒ"
 
 #: src/web/templates/web/email/archive/year.html:6
-#: src/web/templates/web/email/archive/year.html:10
+#: src/web/templates/web/email/archive/year.html:10 src/web/utils/widgets.py:35
 msgid "Year"
 msgstr "Année"
 
@@ -753,14 +761,14 @@ msgstr ""
 msgid "Restore"
 msgstr ""
 
-#: src/web/templates/web/layouts/base_create.html:13
+#: src/web/templates/web/layouts/base_create.html:15
 #: src/web/templates/web/layouts/base_detail.html:23
 #: src/web/templates/web/layouts/base_detail_with_thumbnail.html:23
 #: src/web/templates/web/layouts/base_list.html:52
 msgid "Toolbar with button groups"
 msgstr "Barre d'outils avec groupes de boutons"
 
-#: src/web/templates/web/layouts/base_create.html:16
+#: src/web/templates/web/layouts/base_create.html:18
 #: src/web/templates/web/layouts/base_detail.html:44
 #: src/web/templates/web/layouts/base_detail_with_thumbnail.html:44
 #, fuzzy
@@ -810,12 +818,6 @@ msgstr ""
 #| msgid "Action button group"
 msgid "Multi-actions-buttons groups"
 msgstr "Groupe de boutons d'action"
-
-#: src/web/templates/web/mailbox/mailbox_daemon_create.html:17
-#, fuzzy
-#| msgid "Add Account"
-msgid "New Routine"
-msgstr "Ajouter un compte"
 
 #: src/web/templates/web/mailbox/mailbox_daemon_create.html:21
 msgid "for"
@@ -967,6 +969,7 @@ msgid "End edit"
 msgstr "Finir la modification"
 
 #: src/web/templates/web/partials/_favorite_badge.html:5
+#: src/web/utils/columns.py:90
 msgid "Favorite"
 msgstr "Favori"
 
@@ -1053,17 +1056,17 @@ msgid "Table"
 msgstr "Activé"
 
 #: src/web/templates/web/partials/_health_badge.html:5
-#: src/web/utils/columns.py:112
+#: src/web/utils/columns.py:117
 msgid "Healthy"
 msgstr "Sain"
 
 #: src/web/templates/web/partials/_health_badge.html:10
-#: src/web/utils/columns.py:118
+#: src/web/utils/columns.py:123
 msgid "Unhealthy"
 msgstr "Problème"
 
 #: src/web/templates/web/partials/_health_badge.html:15
-#: src/web/utils/columns.py:124
+#: src/web/utils/columns.py:129
 msgid "Health unknown"
 msgstr "Statut inconnu"
 
@@ -1101,7 +1104,7 @@ msgstr "Enregistrer"
 msgid "Test"
 msgstr "Test"
 
-#: src/web/utils/columns.py:59
+#: src/web/utils/columns.py:64
 msgid "Select"
 msgstr ""
 
@@ -1109,7 +1112,7 @@ msgstr ""
 msgid " *"
 msgstr " *"
 
-#: src/web/views/account_views/AccountDetailWithDeleteView.py:95
+#: src/web/views/account_views/AccountDetailWithDeleteView.py:100
 #, fuzzy, python-format
 #| msgid ""
 #| "Updating mailboxes failed\n"
@@ -1119,44 +1122,44 @@ msgstr ""
 "Actualisation des boîtes de réception échouées\n"
 "%(error)s"
 
-#: src/web/views/account_views/AccountDetailWithDeleteView.py:98
+#: src/web/views/account_views/AccountDetailWithDeleteView.py:103
 msgid "Updating mailboxes successful"
 msgstr "Boîtes de réception actualisées avec succès"
 
-#: src/web/views/attachment_views/AttachmentDetailWithDeleteView.py:92
-#: src/web/views/correspondent_views/CorrespondentDetailWithDeleteView.py:100
+#: src/web/views/attachment_views/AttachmentDetailWithDeleteView.py:98
+#: src/web/views/correspondent_views/CorrespondentDetailWithDeleteView.py:106
 #, fuzzy
 #| msgid "Fetching successful"
 msgid "Sharing successful"
 msgstr "La récupération est un succès"
 
-#: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:80
+#: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:85
 msgid "Daemon started successfully"
 msgstr "Le démon a été démarré avec succès"
 
-#: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:82
+#: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:87
 msgid "Daemon was already running"
 msgstr "Le démon était déjà en fonctionnement"
 
-#: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:98
+#: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:103
 msgid "Daemon stopped successfully"
 msgstr "Le démon s'est arrêté avec succès"
 
-#: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:100
+#: src/web/views/daemon_views/DaemonDetailWithDeleteView.py:105
 msgid "Daemon was not running"
 msgstr "Le démon n'était pas en fonctionnement"
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:85
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:90
 #, fuzzy
 #| msgid "Email successfully restored to mailbox."
 msgid "Email successfully reprocessed."
 msgstr "Courriel restauré avec succès dans la boîte de réception."
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:103
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:108
 msgid "POP accounts do not support restoring of emails to mailbox."
 msgstr ""
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:108
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:113
 #, fuzzy, python-format
 #| msgid ""
 #| "Updating mailboxes failed\n"
@@ -1166,11 +1169,11 @@ msgstr ""
 "Actualisation des boîtes de réception échouées\n"
 "%(error)s"
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:109
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:114
 msgid "eml file not found."
 msgstr "Fichier eml introuvable."
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:114
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:119
 #, fuzzy, python-format
 #| msgid ""
 #| "Updating mailboxes failed\n"
@@ -1180,16 +1183,16 @@ msgstr ""
 "Actualisation des boîtes de réception échouées\n"
 "%(error)s"
 
-#: src/web/views/email_views/EmailDetailWithDeleteView.py:118
+#: src/web/views/email_views/EmailDetailWithDeleteView.py:123
 msgid "Email successfully restored to mailbox."
 msgstr "Courriel restauré avec succès dans la boîte de réception."
 
-#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:97
+#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:102
 #, python-format
 msgid "The chosen criterion %(criterion)s is not available for this mailbox."
 msgstr ""
 
-#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:106
+#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:111
 #, fuzzy, python-format
 #| msgid ""
 #| "Fetching failed\n"
@@ -1199,6 +1202,6 @@ msgstr ""
 "Récupération échouée\n"
 "%(error)s"
 
-#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:109
+#: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:114
 msgid "Fetching successful"
 msgstr "La récupération est un succès"

@@ -18,19 +18,24 @@
 
 """Module with custom columns classes."""
 
-from typing import Any, override
+from __future__ import annotations
 
-from django.db.models import Model
+from typing import TYPE_CHECKING, Any, override
+
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django_tables2 import Column
+
+
+if TYPE_CHECKING:
+    from django.db.models import Model
 
 
 class CheckboxColumn(Column):
     """Column with select checkboxes matching the templates."""
 
     @override
-    def __init__(self, *args: list[Any], **kwargs: dict[str, Any]) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         kwargs.update(
             {
                 "verbose_name": "",

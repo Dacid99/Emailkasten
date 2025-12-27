@@ -18,10 +18,9 @@
 
 """Module with the SafePOPMixin mixin."""
 
-import logging
-import poplib
-from collections.abc import Callable
-from typing import Any, Protocol, Self, TypeVar, overload
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Protocol, Self, TypeVar, overload
 
 from core.utils.fetchers.exceptions import (
     BadServerResponseError,
@@ -29,6 +28,11 @@ from core.utils.fetchers.exceptions import (
     MailAccountError,
 )
 
+
+if TYPE_CHECKING:
+    import logging
+    import poplib
+    from collections.abc import Callable
 
 type POP3Response = bytes | tuple[bytes, list[bytes], int]
 
