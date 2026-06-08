@@ -8,38 +8,39 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-02 12:09+0000\n"
-"PO-Revision-Date: 2025-12-31 20:13+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Finnish <https://hosted.weblate.org/projects/eonvelope/api/fi/"
-">\n"
+"PO-Revision-Date: 2026-06-09 18:01+0000\n"
+"Last-Translator: Kieli Puoli <kielipuoli@gmail.com>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/eonvelope/api/"
+"fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 2026.6\n"
 
 #: src/api/auth.py:63
 msgid "Basic authentication is only allowed if you do not have MFA enabled."
 msgstr ""
+"Perustodennus on sallittu vain, jos monivaiheinen todennus ei ole käytössä."
 
 #: src/api/v1/mixins/ToggleFavoriteMixin.py:49
 msgid "Message indicating status change."
-msgstr ""
+msgstr "Tilanmuutoksesta ilmoittava viesti."
 
 #: src/api/v1/mixins/ToggleFavoriteMixin.py:52
 msgid "Toggles the favorite status of an instance."
-msgstr ""
+msgstr "Vaihtaa esiintymän suosikkitilaa."
 
 #: src/api/v1/mixins/ToggleFavoriteMixin.py:73
 #, python-format
 msgid "%(object)s marked as favorite."
-msgstr ""
+msgstr "%(object)s merkitty suosikiksi."
 
 #: src/api/v1/mixins/ToggleFavoriteMixin.py:75
 #, python-format
 msgid "%(object)s unmarked as favorite."
-msgstr ""
+msgstr "%(object)s poistettu suosikeista."
 
 #: src/api/v1/views/AccountViewSet.py:57
 #: src/api/v1/views/AttachmentViewSet.py:56
@@ -47,7 +48,7 @@ msgstr ""
 #: src/api/v1/views/DaemonViewSet.py:45 src/api/v1/views/EmailViewSet.py:61
 #: src/api/v1/views/MailboxViewSet.py:62
 msgid "Lists all instances matching the filter."
-msgstr ""
+msgstr "Näyttää luettelon kaikista suodatinta vastaavista esiintymistä."
 
 #: src/api/v1/views/AccountViewSet.py:58
 #: src/api/v1/views/AttachmentViewSet.py:57
@@ -55,17 +56,17 @@ msgstr ""
 #: src/api/v1/views/DaemonViewSet.py:46 src/api/v1/views/EmailViewSet.py:62
 #: src/api/v1/views/MailboxViewSet.py:63
 msgid "Retrieves a single instance."
-msgstr ""
+msgstr "Noutaa yksittäisen esiintymän."
 
 #: src/api/v1/views/AccountViewSet.py:59
 #: src/api/v1/views/CorrespondentViewSet.py:60
 #: src/api/v1/views/DaemonViewSet.py:48 src/api/v1/views/MailboxViewSet.py:64
 msgid "Updates a single instance."
-msgstr ""
+msgstr "Päivittää yksittäisen esiintymän."
 
 #: src/api/v1/views/AccountViewSet.py:60
 msgid "Creates a new instance."
-msgstr ""
+msgstr "Luo uuden esiintymän."
 
 #: src/api/v1/views/AccountViewSet.py:61
 #: src/api/v1/views/AttachmentViewSet.py:58
@@ -73,65 +74,65 @@ msgstr ""
 #: src/api/v1/views/DaemonViewSet.py:57 src/api/v1/views/EmailViewSet.py:63
 #: src/api/v1/views/MailboxViewSet.py:65
 msgid "Deletes a single instance."
-msgstr ""
+msgstr "Poistaa yksittäisen esiintymän."
 
 #: src/api/v1/views/AccountViewSet.py:73
 msgid "Updates the mailboxes of an account."
-msgstr ""
+msgstr "Päivittää tilin postilaatikot."
 
 #: src/api/v1/views/AccountViewSet.py:84
 msgid ""
 "Adds a standard set of routines for archiving all traffic to an account."
-msgstr ""
+msgstr "Lisää perusrutiinit kaiken tilille tulevan liikenteen arkistoimiseksi."
 
 #: src/api/v1/views/AccountViewSet.py:99
 msgid "Tests an account."
-msgstr ""
+msgstr "Testaa tiliä."
 
 #: src/api/v1/views/AccountViewSet.py:118
 msgid "Downloads all emails of an account."
-msgstr ""
+msgstr "Lataa kaikki tilin sähköpostiviestit."
 
 #: src/api/v1/views/AccountViewSet.py:185
 msgid "An error with the mailaccount occurred."
-msgstr ""
+msgstr "Sähköpostitilillä tapahtui virhe."
 
 #: src/api/v1/views/AccountViewSet.py:191
 msgid "Updated mailboxes"
-msgstr ""
+msgstr "Postilaatikot päivitetty"
 
 #: src/api/v1/views/AccountViewSet.py:217
 msgid "Added routines to inbox and sentbox."
-msgstr ""
+msgstr "Rutiinit lisätty saapuneisiin ja lähteviin."
 
 #: src/api/v1/views/AccountViewSet.py:238
 msgid "Tested mailaccount"
-msgstr ""
+msgstr "Sähköpostitili testattu"
 
 #: src/api/v1/views/AccountViewSet.py:280 src/api/v1/views/EmailViewSet.py:280
 #: src/api/v1/views/MailboxViewSet.py:360
 #: src/api/v1/views/MailboxViewSet.py:408
 msgid "File format is required."
-msgstr ""
+msgstr "Tiedostomuoto on pakollinen."
 
 #: src/api/v1/views/AccountViewSet.py:288 src/api/v1/views/EmailViewSet.py:302
 #: src/api/v1/views/MailboxViewSet.py:368
 #: src/api/v1/views/MailboxViewSet.py:430
 #, python-format
 msgid "File format %(file_format)s is not supported."
-msgstr ""
+msgstr "Tiedostomuotoa %(file_format)s ei tueta."
 
 #: src/api/v1/views/AccountViewSet.py:293
 msgid "No mailboxes found."
-msgstr ""
+msgstr "Postilaatikkoja ei löytynyt."
 
 #: src/api/v1/views/AttachmentViewSet.py:67
 msgid "Downloads an attachment's file."
-msgstr ""
+msgstr "Lataa liitetiedoston."
 
 #: src/api/v1/views/AttachmentViewSet.py:79
 msgid "A list of integer values identifying the accounts."
-msgstr ""
+msgstr "Luettelo tilit tunnistavista kokonaisluvuista."
 
 #: src/api/v1/views/AttachmentViewSet.py:82
 #: src/api/v1/views/CorrespondentViewSet.py:87
@@ -139,190 +140,197 @@ msgstr ""
 msgid ""
 "Duplicates are ignored. Accepts both id=1,2,3 and id=1&id=2&id=3 notation"
 msgstr ""
+"Kaksoiskappaleet ohitetaan. Hyväksyy merkintätavat id=1,2,3 ja id=1&id=2&id=3"
 
 #: src/api/v1/views/AttachmentViewSet.py:93
 msgid "Downloads multiple zipped attachment files."
-msgstr ""
+msgstr "Lataa useita zip-liitetiedostoja."
 
 #: src/api/v1/views/AttachmentViewSet.py:103
 msgid "Downloads a attachment's thumbnail."
-msgstr ""
+msgstr "Lataa liitteen pikkukuvakkeen."
 
 #. Translators: Paperless is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:114
 msgid "If the request to the Paperless server succeeded."
-msgstr ""
+msgstr "Jos pyyntö Paperless-palvelimelle onnistui."
 
 #: src/api/v1/views/AttachmentViewSet.py:123
 msgid ""
 "If the request to the Paperless server fails. The reason is given as the "
 "response data."
 msgstr ""
+"Jos pyyntö Paperless-palvelimelle epäonnistui. Syy ilmoitetaan "
+"vastaustiedoissa."
 
 #. Translators: Paperless is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:128
 msgid "Sends a attachment's file to the user's Paperless server."
-msgstr ""
+msgstr "Lähettää liitetiedoston käyttäjän Paperless-palvelimelle."
 
 #. Translators: Immich is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:139
 msgid "If the request to the Immich server succeeded."
-msgstr ""
+msgstr "Jos pyyntö Immich-palvelimelle onnistui."
 
 #: src/api/v1/views/AttachmentViewSet.py:148
 msgid ""
 "If the request to the Immich server fails. The reason is given as the "
 "response data."
 msgstr ""
+"Jos pyyntö Immich-palvelimelle epäonnistui. Syy ilmoitetaan vastaustiedoissa."
 
 #. Translators: Immich is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:153
 msgid "Sends the attachment's file to the user's Immich server."
-msgstr ""
+msgstr "Lähettää liitetiedoston käyttäjän Immich-palvelimelle."
 
 #: src/api/v1/views/AttachmentViewSet.py:227
 #: src/api/v1/views/AttachmentViewSet.py:313
 #: src/api/v1/views/AttachmentViewSet.py:344
 #: src/api/v1/views/AttachmentViewSet.py:386
 msgid "Attachment file not found"
-msgstr ""
+msgstr "Liitetiedostoa ei löytynyt"
 
 #: src/api/v1/views/AttachmentViewSet.py:255
 msgid "Attachment ids are required."
-msgstr ""
+msgstr "Liitteiden tunnukset ovat pakollisia."
 
 #: src/api/v1/views/AttachmentViewSet.py:263
 msgid "Attachment ids given in invalid format."
-msgstr ""
+msgstr "Liitteiden tunnusten muoto on virheellinen."
 
 #: src/api/v1/views/AttachmentViewSet.py:270
 msgid "No attachments found"
-msgstr ""
+msgstr "Liitteitä ei löytynyt"
 
 #. Translators: Paperless is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:349
 msgid "Upload to Paperless failed."
-msgstr ""
+msgstr "Lataus Paperlessiin epäonnistui."
 
 #. Translators: Paperless is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:355
 msgid "Uploaded attachment document to Paperless."
-msgstr ""
+msgstr "Liitetiedosto ladattiin Paperlessiin."
 
 #. Translators: Immich is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:391
 msgid "Upload to Immich failed."
-msgstr ""
+msgstr "Lataus Immichiin epäonnistui."
 
 #. Translators: Immich is a brand name.
 #: src/api/v1/views/AttachmentViewSet.py:397
 msgid "Uploaded attachment document to Immich."
-msgstr ""
+msgstr "Liitetiedosto ladattiin Immichiin."
 
 #: src/api/v1/views/CorrespondentViewSet.py:70
 msgid "Downloads a correspondent as vcard."
-msgstr ""
+msgstr "Lataa yhteystiedon vcard-muodossa."
 
 #: src/api/v1/views/CorrespondentViewSet.py:83
 msgid "A list of integer values identifying the correspondents."
-msgstr ""
+msgstr "Luettelo yhteystiedot tunnistavista kokonaisluvuista."
 
 #: src/api/v1/views/CorrespondentViewSet.py:98
 msgid "Downloads multiple correspondents as one vcard."
-msgstr ""
+msgstr "Lataa useita yhteystietoja vcard-muodossa."
 
 #. Translators: Nextcloud is a brand name.
 #: src/api/v1/views/CorrespondentViewSet.py:109
 msgid "If the request to the Nextcloud server succeeded."
-msgstr ""
+msgstr "Jos pyyntö Nextcloud-palvelimelle onnistui."
 
 #: src/api/v1/views/CorrespondentViewSet.py:118
 msgid ""
 "If the request to the Nextcloud server fails. The reason is given as the "
 "response data."
 msgstr ""
+"Jos pyyntö Nextcloud-palvelimelle epäonnistui. Syy ilmoitetaan "
+"vastaustiedoissa."
 
 #: src/api/v1/views/CorrespondentViewSet.py:124
 msgid "Sends a correspondent's data to the user's Nextcloud addressbook."
-msgstr ""
+msgstr "Lähettää yhteystiedon tiedot käyttäjän Nextcloud-osoitekirjaan."
 
 #: src/api/v1/views/CorrespondentViewSet.py:242
 msgid "Correspondent IDs are required."
-msgstr ""
+msgstr "Yhteystietojen tunnukset ovat pakollisia."
 
 #: src/api/v1/views/CorrespondentViewSet.py:249
 msgid "Correspondent IDs given in invalid format."
-msgstr ""
+msgstr "Yhteystietojen tunnusten muoto on virheellinen."
 
 #: src/api/v1/views/CorrespondentViewSet.py:256
 msgid "No correspondents found"
-msgstr ""
+msgstr "Yhteystietoja ei löytynyt"
 
 #. Translators: Nextcloud is a brand name.
 #: src/api/v1/views/CorrespondentViewSet.py:290
 msgid "Upload to Nextcloud failed."
-msgstr ""
+msgstr "Lataus Nextcloudiin epäonnistui."
 
 #. Translators: Nextcloud is a brand name.
 #: src/api/v1/views/CorrespondentViewSet.py:296
 msgid "Uploaded correspondent to Nextcloud."
-msgstr ""
+msgstr "Yhteystieto ladattiin Nextcloudiin."
 
 #: src/api/v1/views/DaemonViewSet.py:50 src/api/v1/views/DaemonViewSet.py:55
+#, fuzzy
 msgid "You must set header 'Accept: application/json'."
-msgstr ""
+msgstr "Ylätunniste 'Accept: application/json' on asetettava."
 
 #: src/api/v1/views/DaemonViewSet.py:53
 msgid "Creates a new instance"
-msgstr ""
+msgstr "Luo uuden esiintymän"
 
 #: src/api/v1/views/DaemonViewSet.py:70
 msgid "Tests a routine."
-msgstr ""
+msgstr "Testaa rutiinia."
 
 #: src/api/v1/views/DaemonViewSet.py:74
 msgid "Starts a routine's periodic task."
-msgstr ""
+msgstr "Käynnistää rutiinin säännöllisen tehtävän."
 
 #: src/api/v1/views/DaemonViewSet.py:78
 msgid "Stops a routine's periodic task."
-msgstr ""
+msgstr "Pysäyttää rutiinin säännöllisen tehtävän."
 
 #: src/api/v1/views/DaemonViewSet.py:145
 msgid "Tested routine"
-msgstr ""
+msgstr "Rutiini testattu"
 
 #: src/api/v1/views/DaemonViewSet.py:178
 msgid "Routine started"
-msgstr ""
+msgstr "Rutiini käynnistetty"
 
 #: src/api/v1/views/DaemonViewSet.py:181
 msgid "Routine is already running"
-msgstr ""
+msgstr "Rutiini on jo käynnissä"
 
 #: src/api/v1/views/DaemonViewSet.py:208
 msgid "Routine stopped"
-msgstr ""
+msgstr "Rutiini pysäytetty"
 
 #: src/api/v1/views/DaemonViewSet.py:211
 msgid "Routine not running"
-msgstr ""
+msgstr "Rutiini ei käynnissä"
 
 #: src/api/v1/views/DatabaseStatsView.py:39
 msgid "Gets all the entry counts in the tables of the database."
-msgstr ""
+msgstr "Noutaa kaikki tietokannan taulukoiden tietueiden määrät."
 
 #: src/api/v1/views/EmailViewSet.py:72
 msgid "Downloads an email's eml file."
-msgstr ""
+msgstr "Lataa sähköpostiviestin eml-tiedoston."
 
 #: src/api/v1/views/EmailViewSet.py:84
 msgid "A list of integer values identifying the emails."
-msgstr ""
+msgstr "Luettelo sähköpostiviestit tunnistavista kokonaisluvuista."
 
 #: src/api/v1/views/EmailViewSet.py:105
 msgid "Downloads multiple email's eml files."
-msgstr ""
+msgstr "Lataa useiden sähköpostiviestien eml-tiedostoja."
 
 #: src/api/v1/views/EmailViewSet.py:113
 msgid ""
@@ -332,141 +340,148 @@ msgstr ""
 
 #: src/api/v1/views/EmailViewSet.py:117
 msgid "Downloads a single emails thumbnail."
-msgstr ""
+msgstr "Lataa yksittäisen sähköpostiviestin pikkukuvakkeen."
 
 #: src/api/v1/views/EmailViewSet.py:122
+#, fuzzy
 msgid "Lists the conversation involving an email."
-msgstr ""
+msgstr "Näyttää luettelon sähköpostiviestiä koskevasta keskustelusta."
 
 #: src/api/v1/views/EmailViewSet.py:128
 msgid "Restoring was successful"
-msgstr ""
+msgstr "Palauttaminen onnistui"
 
 #: src/api/v1/views/EmailViewSet.py:131
 msgid "Restoring failed"
-msgstr ""
+msgstr "Palauttaminen epäonnistui"
 
 #: src/api/v1/views/EmailViewSet.py:134
 msgid "The eml file was not found"
-msgstr ""
+msgstr "Eml-tiedostoa ei löytynyt"
 
 #: src/api/v1/views/EmailViewSet.py:137
 msgid "Restores an email to its mailbox on the server."
-msgstr ""
+msgstr "Palauttaa sähköpostiviestin postilaatikkoonsa palvelimella."
 
 #: src/api/v1/views/EmailViewSet.py:152
 msgid "Reprocesses an email using the stored data."
-msgstr ""
+msgstr "Käsittelee sähköpostiviestin uudelleen tallennettujen tietojen avulla."
 
 #: src/api/v1/views/EmailViewSet.py:249 src/api/v1/views/EmailViewSet.py:407
 msgid "eml file not found."
-msgstr ""
+msgstr "Eml-tiedostoa ei löytynyt."
 
 #: src/api/v1/views/EmailViewSet.py:285
 msgid "Email ids are required."
-msgstr ""
+msgstr "Sähköpostiviestien tunnisteet ovat pakollisia."
 
 #: src/api/v1/views/EmailViewSet.py:293
 msgid "Email ids given in invalid format."
-msgstr ""
+msgstr "Sähköpostiviestien tunnusten muoto on virheellinen."
 
 #: src/api/v1/views/EmailViewSet.py:307
 msgid "No emails found"
-msgstr ""
+msgstr "Sähköpostiviestejä ei löytynyt"
 
 #: src/api/v1/views/EmailViewSet.py:403
 msgid "POP accounts do not support restoring of emails."
-msgstr ""
+msgstr "POP-tilit eivät tue sähköpostiviestien palauttamista."
 
 #: src/api/v1/views/EmailViewSet.py:411
 msgid "Restoring of email to mailbox failed."
-msgstr ""
+msgstr "Sähköpostiviestin palauttaminen postilaatikkoon epäonnistui."
 
 #: src/api/v1/views/EmailViewSet.py:416
 msgid "Email successfully restored to mailbox."
-msgstr ""
+msgstr "Sähköpostiviestin palauttaminen postilaatikkoon onnistui."
 
 #: src/api/v1/views/EmailViewSet.py:441
 msgid "Email successfully reprocessed."
-msgstr ""
+msgstr "Sähköpostiviestin uudelleenkäsittely onnistui."
 
 #: src/api/v1/views/MailboxViewSet.py:78
 msgid "Tests a mailbox."
-msgstr ""
+msgstr "Testaa postilaatikkoa."
 
 #: src/api/v1/views/MailboxViewSet.py:83
 msgid "Lists all available fetching criteria for a mailbox."
 msgstr ""
+"Näyttää luettelon kaikista saatavilla olevista postilaatikon "
+"noutokriteereistä."
 
 #: src/api/v1/views/MailboxViewSet.py:104
 msgid ""
 "Fetches the emails from a mailbox based on the given criterion. Only "
 "criteria available for that mailbox are accepted."
 msgstr ""
+"Noutaa sähköpostiviestit postilaatikosta annetun kriteerin perusteella. Vain "
+"kyseiselle postilaatikolle saatavilla olevat kriteerit hyväksytään."
 
 #: src/api/v1/views/MailboxViewSet.py:124
 msgid "Downloads all emails of a mailbox."
-msgstr ""
+msgstr "Lataa kaikki postilaatikon sähköpostiviestit."
 
 #: src/api/v1/views/MailboxViewSet.py:137
 msgid ""
 "A list of integer values identifying the mailboxes. Duplicates are ignored. "
 "Accepts both id=1,2,3 and id=1&id=2&id=3 notation"
 msgstr ""
+"Luettelo postilaatikot tunnistavista kokonaisluvuista. Kaksoiskappaleet "
+"ohitetaan. Hyväksyy merkintätavat id=1,2,3 ja id=1&id=2&id=3"
 
 #: src/api/v1/views/MailboxViewSet.py:155
 msgid "Downloads all emails of multiple mailbox instances."
-msgstr ""
+msgstr "Lataa kaikki sähköpostiviestit useista postilaatikkoesiintymistä."
 
 #: src/api/v1/views/MailboxViewSet.py:168
 msgid "Upload emails in a file to a mailbox instance."
-msgstr ""
+msgstr "Lataa sähköpostiviestit tiedostossa postilaatikkoesiintymään."
 
 #: src/api/v1/views/MailboxViewSet.py:235
 msgid "Tested mailbox"
-msgstr ""
+msgstr "Postilaatikko testattu"
 
 #: src/api/v1/views/MailboxViewSet.py:297
 msgid "Fetching criterion is required."
-msgstr ""
+msgstr "Noutokriteeri on pakollinen."
 
 #: src/api/v1/views/MailboxViewSet.py:303
 #, python-format
 msgid "The given criterion %(criterion)s is not available for this mailbox."
-msgstr ""
+msgstr "Annettu kriteeri %(criterion)s ei ole saatavilla tälle postilaatikolle."
 
 #: src/api/v1/views/MailboxViewSet.py:321
 msgid "Error with mailaccount or mailbox occurred."
-msgstr ""
+msgstr "Sähköpostitilillä tai postilaatikossa tapahtui virhe."
 
 #: src/api/v1/views/MailboxViewSet.py:327
 msgid "All emails fetched."
-msgstr ""
+msgstr "Kaikki sähköpostiviestit noudettu."
 
 #: src/api/v1/views/MailboxViewSet.py:373
 msgid "No emails found."
-msgstr ""
+msgstr "Sähköpostiviestejä ei löytynyt."
 
 #: src/api/v1/views/MailboxViewSet.py:413
 msgid "Mailbox ids are required."
-msgstr ""
+msgstr "Postilaatikkojen tunnukset ovat pakollisia."
 
 #: src/api/v1/views/MailboxViewSet.py:421
 msgid "Mailbox ids given in invalid format."
-msgstr ""
+msgstr "Postilaatikkojen tunnusten muoto on virheellinen."
 
 #: src/api/v1/views/MailboxViewSet.py:435
 msgid "No mailboxes found"
-msgstr ""
+msgstr "Postilaatikkoja ei löytynyt"
 
 #: src/api/v1/views/MailboxViewSet.py:485
 msgid "Successfully uploaded mailbox file."
-msgstr ""
+msgstr "Postilaatikkotiedoston lataus onnistui."
 
 #: src/api/v1/views/UserProfileView.py:37
 msgid "Retrieves the user's profile data."
-msgstr ""
+msgstr "Noutaa käyttäjän profiilitiedot."
 
 #: src/api/v1/views/UserProfileView.py:38
 msgid "Updates the user's profile data."
-msgstr ""
+msgstr "Päivittää käyttäjän profiilitiedot."
