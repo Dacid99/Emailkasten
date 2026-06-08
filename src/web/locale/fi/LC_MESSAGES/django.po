@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-02 12:09+0000\n"
-"PO-Revision-Date: 2025-12-31 20:14+0000\n"
-"Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
-"Language-Team: Finnish <https://hosted.weblate.org/projects/eonvelope/web/fi/"
-">\n"
+"PO-Revision-Date: 2026-06-09 18:01+0000\n"
+"Last-Translator: Kieli Puoli <kielipuoli@gmail.com>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/eonvelope/web/"
+"fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 2026.6\n"
 
 #: src/web/filters/AccountFilterSet.py:54
 #: src/web/filters/AttachmentFilterSet.py:54
@@ -624,7 +624,7 @@ msgstr ""
 
 #: src/web/templates/web/dashboard.html:8
 msgid "Dashboard"
-msgstr ""
+msgstr "Koontinäyttö"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
 #: src/web/templates/web/dashboard.html:13
@@ -660,7 +660,7 @@ msgstr ""
 #: src/web/templates/web/email/archive/base_archive.html:6
 #: src/web/templates/web/partials/_header.html:42
 msgid "Timeline"
-msgstr ""
+msgstr "Aikajana"
 
 #: src/web/templates/web/email/archive/base_archive.html:15
 msgid "Email Timeline"
@@ -776,7 +776,7 @@ msgstr ""
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:7
 msgid "No emails found."
-msgstr ""
+msgstr "Sähköpostiviestejä ei löytynyt."
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:11
 msgid "You can fetch some from the mailboxes you have set up."
@@ -900,7 +900,7 @@ msgstr ""
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:7
 msgid "No mailboxes found."
-msgstr ""
+msgstr "Postilaatikkoja ei löytynyt."
 
 #: src/web/templates/web/mailbox/partials/_filter_list_alternative.html:11
 msgid ""
@@ -1159,7 +1159,7 @@ msgstr ""
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:89
 msgid "Email successfully reprocessed."
-msgstr ""
+msgstr "Sähköpostiviestin uudelleenkäsittely onnistui."
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:107
 msgid "POP accounts do not support restoring of emails to mailbox."
@@ -1171,10 +1171,8 @@ msgid "Restoring of email failed: %(error)s"
 msgstr ""
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:113
-#, fuzzy
-#| msgid "No email accounts found."
 msgid "eml file not found."
-msgstr "Ei löytynyt sähköpostitilejä."
+msgstr "Eml-tiedostoa ei löytynyt."
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:118
 #, python-format
@@ -1183,7 +1181,7 @@ msgstr ""
 
 #: src/web/views/email_views/EmailDetailWithDeleteView.py:122
 msgid "Email successfully restored to mailbox."
-msgstr ""
+msgstr "Sähköpostiviestin palauttaminen postilaatikkoon onnistui."
 
 #: src/web/views/mailbox_views/MailboxDetailWithDeleteView.py:102
 #, python-format
