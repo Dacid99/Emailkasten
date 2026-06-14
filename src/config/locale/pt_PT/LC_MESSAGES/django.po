@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-01 16:41+0000\n"
-"PO-Revision-Date: 2025-12-31 20:14+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2026-06-14 15:01+0000\n"
+"Last-Translator: António Oliveira <antonio.oliveira5487@gmail.com>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "eonvelope/config/pt_PT/>\n"
 "Language: pt_PT\n"
@@ -17,114 +17,123 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 2026.7.dev0\n"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
 #: src/config/admin.py:32
 msgid "E∘nvelope Administration"
-msgstr ""
+msgstr "Administração do E∘nvelope"
 
 #. Translators: Eonvelope is the brand name.
 #: src/config/admin.py:34
 msgid "Eonvelope Administration"
-msgstr ""
+msgstr "Adinistração Eonvelope"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
 #: src/config/admin.py:37
 msgid "E∘nvelope Settings"
-msgstr ""
+msgstr "Definições do E∘nvelope"
 
 #: src/config/settings.py:568
 msgid "Your email archiving server"
-msgstr ""
+msgstr "O seu servidor de arquivação de email"
 
 #: src/config/settings.py:609
 msgid "Dashboard"
-msgstr ""
+msgstr "Painel de Controlo"
 
 #: src/config/settings.py:611
 msgid "Shortcut to the dashboard"
-msgstr ""
+msgstr "Atalho para o painel de controlo"
 
 #: src/config/settings.py:614
 msgid "Timeline"
-msgstr ""
+msgstr "Linha de tempo"
 
 #: src/config/settings.py:616
 msgid "Shortcut to the email timeline"
-msgstr ""
+msgstr "Atalho para a linha de tempo do email"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
 #: src/config/settings.py:784
 msgid "E∘nvelope API"
-msgstr ""
+msgstr "API E∘nvelope"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
 #: src/config/settings.py:786
 msgid "API schema for the E∘nvelope server."
-msgstr ""
+msgstr "Esquema do API para o servidor E∘nvelope."
 
 #. Translators: AGPL-3.0-or-later is the official license shorthand, it must not be changed.
 #: src/config/settings.py:789
 msgid "Licensed under AGPL-3.0-or-later"
-msgstr ""
+msgstr "Licenciado sob AGPL-3.0-ou-posterior"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218. ReadTheDocs is a brand name.
 #: src/config/settings.py:794
 msgid "Read the E∘nvelope Documentation on ReadTheDocs"
-msgstr ""
+msgstr "Leia a Documentação do E∘nvelope no ReadTheDocs"
 
 #: src/config/settings.py:931
 msgid "Default page size for paginated API response data"
-msgstr ""
+msgstr "Tamanho padrão da página para dados da resposta da API paginados"
 
 #: src/config/settings.py:936
 msgid "Maximum page size for paginated API response data"
-msgstr ""
+msgstr "Tamanho máximo da página para dados de resposta da API paginados"
 
 #: src/config/settings.py:941
 msgid "Default page size for pagination in the webapp."
-msgstr ""
+msgstr "Tamanho padrão da página para paginação na webapp."
 
 #: src/config/settings.py:947
 msgid ""
 "Page size options for pagination in the webapp. Should contain the "
 "WEB_DEFAULT_PAGE_SIZE value."
 msgstr ""
+"Opções de tamanho da página para paginação na webapp. Deve conter o valor "
+"WEB_DEFAULT_PAGE_SIZE."
 
 #: src/config/settings.py:954
 msgid ""
 "Maximum datasize for a thumbnail in the webapp. Thumbnails larger than this "
 "will not be loaded."
 msgstr ""
+"Tamanho máximo dos dados para uma miniatura na webapp. Miniaturas maiores "
+"que isto não serão carregadas."
 
 #: src/config/settings.py:960
 msgid "Whether to show tooltips in the web interface."
-msgstr ""
+msgstr "Se as dicas de ferramentas devem ser exibidas na interface web."
 
 #: src/config/settings.py:965
 msgid "Maximum numbers of files in one storage unit."
-msgstr ""
+msgstr "Número máximo de ficheiros em uma unidade de armazenamento."
 
 #: src/config/settings.py:970
 msgid "Whether or not to ignore emails and mailboxes that have a spam flag"
-msgstr ""
+msgstr "Se os emails e caixas de correio marcadas como spam devem ser ignoradas"
 
 #: src/config/settings.py:976
 msgid ""
 "Regex pattern (case-insensitive) for mailbox names that are ignored when "
 "looking up mailboxes in an account."
 msgstr ""
+"Padrão de regex (ignora capitalização de texto) para nomes de caixas de "
+"correio que são ignoradas ao procurar caixas de correio em uma conta."
 
 #: src/config/settings.py:982
 msgid "List of content types prefixes to not parse as files."
-msgstr ""
+msgstr "Lista de prefixos de conteúdo a não analisar como ficheiros."
 
 #: src/config/settings.py:988
 msgid ""
 "List of content types prefixes to not parse as files. Plain and HTML text is "
 "always ignored as its the bodytext."
 msgstr ""
+"Lista de prefixos de tipos de conteúdos a não analisar como ficheiros. "
+"Ficheiros de texto simples e HTML são sempre ignorados bem com o corpo de "
+"texto."
 
 #: src/config/settings.py:995
 msgid ""
@@ -133,79 +142,102 @@ msgid ""
 "tag imports may result in 500 responses when requesting pages with email "
 "thumbnails, so be careful."
 msgstr ""
+"Modelo html usado para renderizar emails para html. Usa o modelo de sintaxe "
+"django e tem acesso a todos os campos da tabela da base de dados do email. "
+"Remover a etiqueta de importes de modelo pode resultar em respostas 500 ao "
+"pedir páginas com miniaturas de email, por isso tenha cuidado."
 
 #: src/config/settings.py:1002
 msgid ""
 "Css style used to render emails to html. Refer to HTML_TEMPLATE for context "
 "on the classes."
 msgstr ""
+"Estilo css usado para renderizar emails para html. Consulte HTML_TEMPLATE "
+"para contexto nas classes."
 
 #: src/config/settings.py:1008
 msgid "Default mailbox setting whether to store mails as eml."
 msgstr ""
+"Definição padrão da caixa de correio se armazena-se emails enquanto eml ou "
+"não."
 
 #: src/config/settings.py:1013
 msgid "Default mailbox setting whether to store attachments."
-msgstr ""
+msgstr "Definição padrão da caixa de correio se armazena-se anexos ou não."
 
 #: src/config/settings.py:1019
 msgid ""
 "Default number of periods between two runs of a standard routine for a INBOX "
 "mailbox."
 msgstr ""
+"Número padrão de períodos entre duas execuções de uma rotina padrão para uma "
+"caixa de entrada da caixa de correio."
 
 #: src/config/settings.py:1025
 msgid "Default fetching criterion for a standard routine for a INBOX mailbox."
 msgstr ""
+"Critérios padrão de pesquisa para uma rotina padrão para uma caixa de "
+"entrada de uma caixa de correio."
 
 #: src/config/settings.py:1031
 msgid ""
 "Default number of periods between two runs of a standard routine for a SENT "
 "mailbox."
 msgstr ""
+"Número padrão de períodos entre duas execuções de uma rotina padrão para uma "
+"caixa de envios da caixa de correio."
 
 #: src/config/settings.py:1037
 msgid "Default fetching criterion for a standard routine for a SENT mailbox."
 msgstr ""
+"Critério padrão de pesquisa para uma rotina padrão para a caixa de envios da "
+"caixa de correio."
 
 #: src/config/settings.py:1043
 msgid ""
 "Set this to True to allow new users to sign up themselves. This setting only "
 "takes effect if the REGISTRATION_ENABLED environment setting is not 0."
 msgstr ""
+"Defina isto para True para permitir novos utilizadores inscreverem-se. Esta "
+"definição apenas tem efeito se a definição de ambiente REGISTRATION_ENABLED "
+"é definida para 0."
 
 #: src/config/settings.py:1050
 msgid ""
 "Set this to True to tolerate connections involving an unverified SSL "
 "certificate, e.g. a self-signed one."
 msgstr ""
+"Defina isto para True para tolerar conexões envolvendo um certificado SSL "
+"não verificado, p.ex. um certificado auto-assinado."
 
 #: src/config/settings.py:1057
 msgid ""
 "Emails are auto-deleted this number of days past their 'Received' timestamp. "
 "A non-positive number disables auto-deletion."
 msgstr ""
+"Emails são eliminados automaticamente este número de dias após a data de "
+"'Recebido'. Um número não positivo desativa auto eliminação."
 
 #: src/config/settings.py:1065
 msgid "Server Configurations"
-msgstr ""
+msgstr "Configurações de Servidor"
 
 #: src/config/settings.py:1072
 msgid "Default Values"
-msgstr ""
+msgstr "Valores Padrão"
 
 #: src/config/settings.py:1083
 msgid "Processing Settings"
-msgstr ""
+msgstr "Definições de Processamento"
 
 #: src/config/settings.py:1094
 msgid "Storage Settings"
-msgstr ""
+msgstr "Definições de Armazenamento"
 
 #: src/config/settings.py:1101
 msgid "API Settings"
-msgstr ""
+msgstr "Definições de API"
 
 #: src/config/settings.py:1108
 msgid "Web Settings"
-msgstr ""
+msgstr "Definições Web"
