@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-01 16:41+0000\n"
-"PO-Revision-Date: 2026-06-14 15:01+0000\n"
+"PO-Revision-Date: 2026-06-16 01:01+0000\n"
 "Last-Translator: António Oliveira <antonio.oliveira5487@gmail.com>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "eonvelope/config/pt_PT/>\n"
@@ -176,8 +176,8 @@ msgstr ""
 #: src/config/settings.py:1025
 msgid "Default fetching criterion for a standard routine for a INBOX mailbox."
 msgstr ""
-"Critérios padrão de pesquisa para uma rotina padrão para uma caixa de "
-"entrada de uma caixa de correio."
+"Critérios padrão de busca para uma rotina padrão para uma caixa de entrada "
+"de uma caixa de correio."
 
 #: src/config/settings.py:1031
 msgid ""
@@ -190,7 +190,7 @@ msgstr ""
 #: src/config/settings.py:1037
 msgid "Default fetching criterion for a standard routine for a SENT mailbox."
 msgstr ""
-"Critério padrão de pesquisa para uma rotina padrão para a caixa de envios da "
+"Critério padrão de busca para uma rotina padrão para a caixa de envios da "
 "caixa de correio."
 
 #: src/config/settings.py:1043
