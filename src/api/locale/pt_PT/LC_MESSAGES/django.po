@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-02 12:09+0000\n"
-"PO-Revision-Date: 2026-06-14 15:01+0000\n"
+"PO-Revision-Date: 2026-06-16 01:01+0000\n"
 "Last-Translator: António Oliveira <antonio.oliveira5487@gmail.com>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "eonvelope/api/pt_PT/>\n"
@@ -196,7 +196,7 @@ msgstr "Ficheiro de anexo não encontrado"
 
 #: src/api/v1/views/AttachmentViewSet.py:255
 msgid "Attachment ids are required."
-msgstr "É obrigatório indicar os IDs dos anexos."
+msgstr "É obrigatório indicar os ids dos anexos."
 
 #: src/api/v1/views/AttachmentViewSet.py:263
 msgid "Attachment ids given in invalid format."
@@ -361,7 +361,7 @@ msgstr "Falha ao restaurar"
 
 #: src/api/v1/views/EmailViewSet.py:134
 msgid "The eml file was not found"
-msgstr "O ficheiro eml não foi encontrado."
+msgstr "O ficheiro eml não foi encontrado"
 
 #: src/api/v1/views/EmailViewSet.py:137
 msgid "Restores an email to its mailbox on the server."
@@ -446,13 +446,13 @@ msgstr "Caixa de correio testada"
 
 #: src/api/v1/views/MailboxViewSet.py:297
 msgid "Fetching criterion is required."
-msgstr "Critério de pesquisa é necessário."
+msgstr "Critério de busca é necessário."
 
 #: src/api/v1/views/MailboxViewSet.py:303
 #, python-format
 msgid "The given criterion %(criterion)s is not available for this mailbox."
 msgstr ""
-"O critério de pesquisa %(criterion)s não está disponível para esta caixa de "
+"O critério de busca %(criterion)s não está disponível para esta caixa de "
 "correio."
 
 #: src/api/v1/views/MailboxViewSet.py:321
