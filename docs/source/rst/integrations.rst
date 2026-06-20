@@ -88,16 +88,17 @@ Here is an exemplary configuration:
     - name: eonvelope-emails
       engine: json_engine
       shortcut: emls
-      categories: [ external memory ]
+      categories: [ external memory, files ]
       disabled: false
       paging: true
       content_html_to_text: true
       search_url: https://<eonvelope.mydomain.tld>/api/v1/emails?search={query}&page={pageno}
       verify: false
+      no_result_for_http_status: [404]
       url_query: id
       url_prefix: https://<eonvelope.mydomain.tld>/emails/
       results_query: results
-      title_query: email_subject
+      title_query: subject
       content_query: plain_bodytext
       headers:
         Authorization: token <your_accesstoken>
