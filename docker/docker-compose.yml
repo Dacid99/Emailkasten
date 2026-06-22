@@ -76,6 +76,7 @@ services:
       - SESSION_EXPIRE_AT_BROWSER_CLOSE=False
       - SESSION_COOKIE_SAMESITE=Lax # the samesite value on the session-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
       - GUNICORN_WORKER_NUMBER=2
+      - CELERY_WORKER_NUMBER=4
       - ENABLE_FLOWER=False
       - DEBUG=False
     restart: unless-stopped

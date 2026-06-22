@@ -685,7 +685,8 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 CELERY_WORKER_CANCEL_LONG_RUNNING_TASKS_ON_CONNECTION_LOSS = True
-
+if "CELERY_WORKER_NUMBER" in env:
+    CELERY_WORKER_CONCURRENCY = env("CELERY_WORKER_NUMBER", cast=int)
 
 ##### django-health-check #####
 # https://codingjoe.dev/django-health-check
