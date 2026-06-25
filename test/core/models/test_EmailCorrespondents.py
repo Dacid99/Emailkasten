@@ -124,11 +124,13 @@ def test_EmailCorrespondent_create_from_header__success(
     assert Correspondent.objects.count() == len(expected_results)
     assert isinstance(result, set)
     assert len(result) == len(expected_results)
-    for item, expected_result in zip(result, expected_results, strict=True):
+    for item in result:
         assert isinstance(item, EmailCorrespondent)
         assert item.pk is not None
-        assert item.correspondent.email_name == expected_result[0]
-        assert item.correspondent.email_address == expected_result[1]
+        assert (
+            item.correspondent.email_name,
+            item.correspondent.email_address,
+        ) in expected_results
         assert item.email == fake_email
         assert item.mention == fake_header_name
 

@@ -101,6 +101,9 @@ Optional
 |                                   |             | For better load balancing set this to 2-4 * NUM_CORES,                                                                    |
 |                                   |             | as recommended by the `gunicorn docs <https://docs.gunicorn.org/en/stable/settings.html#workers>`                         |
 +-----------------------------------+-------------+---------------------------------------------------------------------------------------------------------------------------+
+| CELERY_WORKER_NUMBER              | *NUM_CORES* | The number of worker processes running the background tasks.                                                              |
+|                                   |             | Increase this if you use a lot of email fetching routines.                                                                |
++-----------------------------------+-------------+---------------------------------------------------------------------------------------------------------------------------+
 | STRICT_PASSWORDS                  | *True*      | Set this to `True` to have user passwords strictly validated for length, commonness and simplicity.                       |
 +-----------------------------------+-------------+---------------------------------------------------------------------------------------------------------------------------+
 | DEBUG                             | *False*     | Set this to `True` to run the application in debug mode.                                                                  |

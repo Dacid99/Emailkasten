@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-27 17:03+0000\n"
-"PO-Revision-Date: 2025-12-31 20:14+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2026-06-16 01:01+0000\n"
+"Last-Translator: António Oliveira <antonio.oliveira5487@gmail.com>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "eonvelope/eonvelope/pt_PT/>\n"
 "Language: pt_PT\n"
@@ -17,183 +17,183 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 2026.7.dev0\n"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it. Paperless is a brand name.
 #: src/eonvelope/models/UserProfile.py:45
 msgid "Paperless server URL"
-msgstr ""
+msgstr "url do servidor Paperless"
 
 #. Translators: Paperless is a brand name.
 #: src/eonvelope/models/UserProfile.py:47
 msgid "URL of your Paperless server."
-msgstr ""
+msgstr "URL do seu servidor Paperless."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it. Paperless is a brand name.
 #: src/eonvelope/models/UserProfile.py:54
 msgid "Paperless server API key"
-msgstr ""
+msgstr "chave da API do servidor Paperless"
 
 #. Translators: Paperless is a brand name.
 #: src/eonvelope/models/UserProfile.py:56
 msgid "API key for your Paperless server."
-msgstr ""
+msgstr "A chave API do seu servidor Paperless."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it. Paperless and Tika are brand names.
 #: src/eonvelope/models/UserProfile.py:62
 msgid "Paperless Tika support enabled"
-msgstr ""
+msgstr "suporte Paperless Tika ativo"
 
 #. Translators: Paperless and Tika are brand names.
 #: src/eonvelope/models/UserProfile.py:64
 msgid "Whether Tika support is enabled on your Paperless server."
-msgstr ""
+msgstr "Se o suporte Tika está ativo no seu servidor Paperless."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it. Immich is a brand name.
 #: src/eonvelope/models/UserProfile.py:72
 msgid "Immich server URL"
-msgstr ""
+msgstr "url do servidor Immich"
 
 #. Translators: Immich is a brand name.
 #: src/eonvelope/models/UserProfile.py:74
 msgid "URL of your Immich server."
-msgstr ""
+msgstr "O URL do seu servidor Immich."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it. Immich is a brand name.
 #: src/eonvelope/models/UserProfile.py:81
 msgid "Immich server API key"
-msgstr ""
+msgstr "chave API do servidor Immich"
 
 #. Translators: Immich is a brand name.
 #: src/eonvelope/models/UserProfile.py:83
 msgid "API key for your Immich server."
-msgstr ""
+msgstr "A chave API do seu servidor Immich."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it. Nextcloud is a brand name.
 #: src/eonvelope/models/UserProfile.py:91
 msgid "Nextcloud server URL"
-msgstr ""
+msgstr "url do servidor Nextcloud"
 
 #. Translators: Nextcloud is a brand name.
 #: src/eonvelope/models/UserProfile.py:93
 msgid "URL of your Nextcloud server."
-msgstr ""
+msgstr "O URL do seu servidor Nextcloud."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it. Nextcloud is a brand name.
 #: src/eonvelope/models/UserProfile.py:100
 msgid "Nextcloud server username"
-msgstr ""
+msgstr "nome de utilizador Nextcloud"
 
 #. Translators: Nextcloud is a brand name.
 #: src/eonvelope/models/UserProfile.py:102
 msgid "Username for your Nextcloud account."
-msgstr ""
+msgstr "O nome de utilizador para a sua conta Nextcloud."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it. Nextcloud is a brand name.
 #: src/eonvelope/models/UserProfile.py:109
 msgid "Nextcloud server password"
-msgstr ""
+msgstr "palavra-passe do servidor Nextcloud"
 
 #. Translators: Nextcloud is a brand name.
 #: src/eonvelope/models/UserProfile.py:111
 msgid "Password for your Nextcloud account."
-msgstr ""
+msgstr "palavra-passe da sua conta Nextcloud."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it. Nextcloud is a brand name.
 #: src/eonvelope/models/UserProfile.py:118
 msgid "Nextcloud server addressbook"
-msgstr ""
+msgstr "livro de endereços do servidor Nextcloud"
 
 #. Translators: Nextcloud is a brand name.
 #: src/eonvelope/models/UserProfile.py:120
 msgid "Main addressbook of your Nextcloud account."
-msgstr ""
+msgstr "Livro de endereços principal da sua conta Nextcloud."
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/eonvelope/models/UserProfile.py:128
 msgid "user profile"
-msgstr ""
+msgstr "perfil de utilizador"
 
 #. Translators: Do not capitalize the very first letter unless your language requires it.
 #: src/eonvelope/models/UserProfile.py:130
 msgid "user profiles"
-msgstr ""
+msgstr "perfis de utilizadores"
 
 #: src/eonvelope/models/UserProfile.py:139
 #, python-format
 msgid "Profile for user %(username)s "
-msgstr ""
+msgstr "Perfil para o utilizador %(username)s "
 
 #: src/eonvelope/templates/429.html:8 src/eonvelope/templates/429.html:13
 msgid "Too Many Requests"
-msgstr ""
+msgstr "Demasiados Pedidos"
 
 #: src/eonvelope/templates/429.html:15
 msgid "You are sending too many requests."
-msgstr ""
+msgstr "Está a enviar demasiados pedidos."
 
 #: src/eonvelope/templates/account/profile.html:14
 #: src/eonvelope/templates/allauth/layouts/manage.html:16
 msgid "Profile"
-msgstr ""
+msgstr "Perfil"
 
 #: src/eonvelope/templates/account/profile.html:18
 msgid "Your Profile"
-msgstr ""
+msgstr "O Seu Perfil"
 
 #: src/eonvelope/templates/account/profile.html:19
 msgid "Third Party Integrations"
-msgstr ""
+msgstr "Integrações de Terceiros"
 
 #: src/eonvelope/templates/account/profile.html:62
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 #: src/eonvelope/templates/allauth/elements/language_dropdown.html:8
 #: src/eonvelope/templates/allauth/elements/language_dropdown.html:12
 msgid "Select Language"
-msgstr ""
+msgstr "Selecionar Idioma"
 
 #: src/eonvelope/templates/allauth/elements/theme_dropdown.html:21
 msgid "Light"
-msgstr ""
+msgstr "Claro"
 
 #: src/eonvelope/templates/allauth/elements/theme_dropdown.html:30
 msgid "Dark"
-msgstr ""
+msgstr "Escuro"
 
 #: src/eonvelope/templates/allauth/elements/theme_dropdown.html:39
 msgid "Auto"
-msgstr ""
+msgstr "Automático"
 
 #: src/eonvelope/templates/allauth/layouts/base.html:65
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Alternar navegação"
 
 #: src/eonvelope/templates/allauth/layouts/base.html:83
 msgid "Sign Out"
-msgstr ""
+msgstr "Terminar Sessão"
 
 #: src/eonvelope/templates/allauth/layouts/base.html:87
 msgid "Sign In"
-msgstr ""
+msgstr "Iniciar Sessão"
 
 #: src/eonvelope/templates/allauth/layouts/base.html:90
 msgid "Sign Up"
-msgstr ""
+msgstr "Inscrever"
 
 #: src/eonvelope/templates/allauth/layouts/manage.html:24
 msgid "Change Password"
-msgstr ""
+msgstr "Mudar Palavra-Passe"
 
 #: src/eonvelope/templates/allauth/layouts/manage.html:32
 msgid "Two-Factor Authentication"
-msgstr ""
+msgstr "Autenticação de Dois Fatores"
 
 #: src/eonvelope/templates/allauth/layouts/manage.html:40
 msgid "Sessions"
-msgstr ""
+msgstr "Sessões"
 
 #: src/eonvelope/templates/allauth/layouts/manage.html:47
 msgid "Admin panel"
-msgstr ""
+msgstr "Painel de administrador"
