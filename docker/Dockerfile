@@ -3,7 +3,7 @@
 # Copyright © 2024 David Aderbauer & The Eonvelope Contributors
 
 ARG PYTHON_VERSION=3.14
-ARG ALPINE_VERSION=3.24
+ARG ALPINE_VERSION=3.23  # update this to 3.24 once celery is above 5.7
 ARG S6_OVERLAY_VERSION=3.2.1.0
 
 ARG RUNTIME_APK_DEPENDENCIES="rabbitmq-server \
