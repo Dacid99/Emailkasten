@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.7.2
+
+- Features:
+  - option for number of celery workers
+
 ## Version 0.7.1
 
 - Features:
