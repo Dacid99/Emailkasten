@@ -90,7 +90,7 @@ gitlab-ci-verify = "*"
 optional=true
 
 [tool.poetry.group.test.dependencies]
-pytest = "^9.0.0"
+pytest = ">9.0.0, <9.1.0"
 pytest-django = "^4.11.0"
 pytest-mock = "^3.14.0"
 pytest-cov = "^7.0.0"
