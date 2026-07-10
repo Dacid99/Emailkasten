@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-02 12:09+0000\n"
-"PO-Revision-Date: 2026-02-01 05:01+0000\n"
+"PO-Revision-Date: 2026-07-11 16:01+0000\n"
 "Last-Translator: Priit Jõerüüt <jrthwlate@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/eonvelope/api/"
 "et/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.16-dev\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
 
 #: src/api/auth.py:63
 msgid "Basic authentication is only allowed if you do not have MFA enabled."
@@ -76,10 +76,8 @@ msgid "Deletes a single instance."
 msgstr ""
 
 #: src/api/v1/views/AccountViewSet.py:73
-#, fuzzy
-#| msgid "Updated mailboxes"
 msgid "Updates the mailboxes of an account."
-msgstr "Uuendatud postkastid"
+msgstr "Uuendab kasutajakonto postkastid."
 
 #: src/api/v1/views/AccountViewSet.py:84
 msgid ""
@@ -87,10 +85,8 @@ msgid ""
 msgstr ""
 
 #: src/api/v1/views/AccountViewSet.py:99
-#, fuzzy
-#| msgid "Tested mailaccount"
 msgid "Tests an account."
-msgstr "Testitud e-postikonto"
+msgstr "Testib e-postikontot."
 
 #: src/api/v1/views/AccountViewSet.py:118
 msgid "Downloads all emails of an account."
@@ -251,16 +247,12 @@ msgid "Sends a correspondent's data to the user's Nextcloud addressbook."
 msgstr ""
 
 #: src/api/v1/views/CorrespondentViewSet.py:242
-#, fuzzy
-#| msgid "Attachment ids are required."
 msgid "Correspondent IDs are required."
-msgstr "Manuste tunnused on vajalikud."
+msgstr "Osapoolte tunnused (Correspondent IDs) on vajalikud."
 
 #: src/api/v1/views/CorrespondentViewSet.py:249
-#, fuzzy
-#| msgid "Attachment ids given in invalid format."
 msgid "Correspondent IDs given in invalid format."
-msgstr "Lisatud manuste tunnused on vigases vormingus."
+msgstr "Osapoolte tunnused (Correspondent IDs) on vigases vormingus."
 
 #: src/api/v1/views/CorrespondentViewSet.py:256
 msgid "No correspondents found"
@@ -285,10 +277,8 @@ msgid "Creates a new instance"
 msgstr ""
 
 #: src/api/v1/views/DaemonViewSet.py:70
-#, fuzzy
-#| msgid "Tested mailaccount"
 msgid "Tests a routine."
-msgstr "Testitud e-postikonto"
+msgstr "Testib protseduuri."
 
 #: src/api/v1/views/DaemonViewSet.py:74
 msgid "Starts a routine's periodic task."
@@ -350,25 +340,23 @@ msgstr ""
 
 #: src/api/v1/views/EmailViewSet.py:128
 msgid "Restoring was successful"
-msgstr ""
+msgstr "Taastamine õnnestus"
 
 #: src/api/v1/views/EmailViewSet.py:131
 msgid "Restoring failed"
-msgstr ""
+msgstr "Taastamine ei õnnestunud"
 
 #: src/api/v1/views/EmailViewSet.py:134
-#, fuzzy
-#| msgid "Attachment file not found"
 msgid "The eml file was not found"
-msgstr "Manuse faili ei leidu"
+msgstr "Eml-faili faili ei leidu"
 
 #: src/api/v1/views/EmailViewSet.py:137
 msgid "Restores an email to its mailbox on the server."
-msgstr ""
+msgstr "Taastab e-kirja tema postkasti serveris."
 
 #: src/api/v1/views/EmailViewSet.py:152
 msgid "Reprocesses an email using the stored data."
-msgstr ""
+msgstr "Töötleb e-kirja uuesti tema salvestatud andmete alusel."
 
 #: src/api/v1/views/EmailViewSet.py:249 src/api/v1/views/EmailViewSet.py:407
 msgid "eml file not found."
@@ -457,27 +445,23 @@ msgstr ""
 
 #: src/api/v1/views/MailboxViewSet.py:373
 msgid "No emails found."
-msgstr ""
+msgstr "Ühtegi e-kirja ei leidu."
 
 #: src/api/v1/views/MailboxViewSet.py:413
-#, fuzzy
-#| msgid "Attachment ids are required."
 msgid "Mailbox ids are required."
-msgstr "Manuste tunnused on vajalikud."
+msgstr "Postkastide tunnused (mailbox ids) on vajalikud."
 
 #: src/api/v1/views/MailboxViewSet.py:421
-#, fuzzy
-#| msgid "Attachment ids given in invalid format."
 msgid "Mailbox ids given in invalid format."
-msgstr "Lisatud manuste tunnused on vigases vormingus."
+msgstr "Postkastide tunnused (mailbox ids) on vigases vormingus."
 
 #: src/api/v1/views/MailboxViewSet.py:435
 msgid "No mailboxes found"
-msgstr ""
+msgstr "Ühtegi postkasti ei leidu"
 
 #: src/api/v1/views/MailboxViewSet.py:485
 msgid "Successfully uploaded mailbox file."
-msgstr ""
+msgstr "Postkastifaili (mailbox file) üleslaadimine õnnestus."
 
 #: src/api/v1/views/UserProfileView.py:37
 msgid "Retrieves the user's profile data."
