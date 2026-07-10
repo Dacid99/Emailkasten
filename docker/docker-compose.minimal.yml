@@ -3,7 +3,7 @@ services:
     image: mariadb:latest
     container_name: eonvelope-db
     volumes:
-      - /path/to/eonvelope/mysql:/var/lib/mysql
+      - eonvelope-db-data:/var/lib/mysql
     environment:
       - MARIADB_DATABASE=email_archive_django # must match web:DATABASE_NAME
       - MARIADB_USER=user # must match web:DATABASE_USER
@@ -22,8 +22,8 @@ services:
     image: dacid99/eonvelope:latest
     container_name: eonvelope-web
     volumes:
-      - /path/to/eonvelope/archive:/mnt/archive
-      - /path/to/eonvelope/log:/var/log/eonvelope
+      - eonvelope-archive:/mnt/archive
+      - eonvelope-logs:/var/log/eonvelope
     ports:
       - 1122:443
     environment:
@@ -37,3 +37,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+volumes:
+  eonvelope-db-data:
+  eonvelope-archive:
+  eonvelope-logs:
