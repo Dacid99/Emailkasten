@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-01 16:41+0000\n"
-"PO-Revision-Date: 2026-02-01 05:01+0000\n"
+"PO-Revision-Date: 2026-07-11 16:01+0000\n"
 "Last-Translator: Priit Jõerüüt <jrthwlate@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/eonvelope/"
 "config/et/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.16-dev\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
 #: src/config/admin.py:32
@@ -56,20 +56,18 @@ msgstr "Viide e-kirja ajajoonele"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
 #: src/config/settings.py:784
-#, fuzzy
-#| msgid "E∘nvelope Settings"
 msgid "E∘nvelope API"
-msgstr "E∘nvelope'i seadistused"
+msgstr "E∘nvelope'i API"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
 #: src/config/settings.py:786
 msgid "API schema for the E∘nvelope server."
-msgstr ""
+msgstr "API-skeem E∘nvelope'i serveri jaoks."
 
 #. Translators: AGPL-3.0-or-later is the official license shorthand, it must not be changed.
 #: src/config/settings.py:789
 msgid "Licensed under AGPL-3.0-or-later"
-msgstr ""
+msgstr "Litsentseeritud „AGPL-3.0-or-later“ alusel"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218. ReadTheDocs is a brand name.
 #: src/config/settings.py:794
