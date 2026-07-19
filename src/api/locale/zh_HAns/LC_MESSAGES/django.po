@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-02 12:09+0000\n"
-"PO-Revision-Date: 2026-05-31 15:01+0000\n"
-"Last-Translator: keru zeng <2417640630@qq.com>\n"
+"PO-Revision-Date: 2026-07-19 15:01+0000\n"
+"Last-Translator: reducedradius "
+"<137701630+flytothehighest@users.noreply.github.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/eonvelope/api/zh_Hans/>\n"
 "Language: zh_HAns\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.6.dev0\n"
+"X-Generator: Weblate 2026.8.dev0\n"
 
 #: src/api/auth.py:63
 msgid "Basic authentication is only allowed if you do not have MFA enabled."
@@ -90,7 +91,7 @@ msgstr ""
 
 #: src/api/v1/views/AccountViewSet.py:118
 msgid "Downloads all emails of an account."
-msgstr ""
+msgstr "下载账户的所有电子邮件。"
 
 #: src/api/v1/views/AccountViewSet.py:185
 msgid "An error with the mailaccount occurred."
