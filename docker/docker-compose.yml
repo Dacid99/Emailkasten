@@ -58,6 +58,9 @@ services:
       - MFA_TRUST_ENABLED=True
       - MFA_TRUST_COOKIE_AGE=2419200
       - MFA_TRUST_COOKIE_SAMESITE=Lax # the samesite value on the trust-browser-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
+      - OIDC_CONFIG=[] # list of json configurations for the IODC integration. See https://docs.allauth.org/en/latest/socialaccount/providers/openid_connect.html for details.
+      - OIDC_ONLY=False
+      - OIDC_AUTO_SIGNUP=True
       - APP_LOG_LEVEL=INFO
       - DJANGO_LOG_LEVEL=INFO
       - CELERY_LOG_LEVEL=INFO

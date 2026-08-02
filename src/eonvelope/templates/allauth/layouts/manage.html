@@ -24,6 +24,14 @@
                          " href="{{ change_password_url_ }}">{% translate "Change Password" %}</a>
                     </li>
                 {% endif %}
+                {% url 'socialaccount_connections' as connections_url_ %}
+                {% if connections_url_ %}
+                    <li class="nav-item">
+                        <a class=" 
+                            {% block nav_class_socialaccount %}nav-link{% endblock nav_class_socialaccount %}
+                         " href="{{ connections_url_ }}">{% translate "Third-Party Accounts" %}</a>
+                    </li>
+                {% endif %}
                 {% url 'mfa_index' as mfa_index_url_ %}
                 {% if mfa_index_url_ %}
                     <li class="nav-item">

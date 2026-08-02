@@ -1148,23 +1148,24 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-allauth"
-version = "65.18.0"
+version = "65.19.0"
 description = "Integrated set of Django applications addressing authentication, registration, account management as well as 3rd party (social) account authentication."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "django_allauth-65.18.0-py3-none-any.whl", hash = "sha256:e508640c83b94eaf1a9b4e9ac5332dc310dcdc83fca40d58a3f670e15bad1e84"},
-    {file = "django_allauth-65.18.0.tar.gz", hash = "sha256:afb82e2c545b9a5539370ad120468faaed84715e095a7b6e76972dacdc6376fe"},
+    {file = "django_allauth-65.19.0-py3-none-any.whl", hash = "sha256:e37efea604d0bf40a6b16edd5b00e1560414e2c3ed07c2431b6e5bb058e2a771"},
+    {file = "django_allauth-65.19.0.tar.gz", hash = "sha256:9a615fd7f48f31985e1e3d886f8983e12d09e189f8d00d7a9750b3d300b7b366"},
 ]
 
 [package.dependencies]
 asgiref = ">=3.8.1"
 Django = ">=4.2.16"
 fido2 = {version = ">=1.1.2,<3", optional = true, markers = "extra == \"mfa\""}
-pyjwt = {version = ">=2.0,<3", extras = ["crypto"], optional = true, markers = "extra == \"headless\""}
-PyYAML = {version = ">=6,<7", optional = true, markers = "extra == \"headless-spec\""}
+oauthlib = {version = ">=3.3.0,<4", optional = true, markers = "extra == \"socialaccount\""}
+pyjwt = {version = ">=2.0,<3", extras = ["crypto"], optional = true, markers = "extra == \"socialaccount\""}
 qrcode = {version = ">=7.0.0,<9", optional = true, markers = "extra == \"mfa\""}
+requests = {version = ">=2.0.0,<3", optional = true, markers = "extra == \"socialaccount\""}
 
 [package.extras]
 headless = ["pyjwt[crypto] (>=2.0,<3)"]
@@ -1850,18 +1851,18 @@ tzdata = ["tzdata"]
 
 [[package]]
 name = "fido2"
-version = "2.2.0"
+version = "2.2.1"
 description = "FIDO2/WebAuthn library for implementing clients and servers."
 optional = false
 python-versions = "<4,>=3.10"
 groups = ["main"]
 files = [
-    {file = "fido2-2.2.0-py3-none-any.whl", hash = "sha256:3587ccf0af7b71b5dd73f17e1dbec9f0fd157292f9163f02e7778f46d0d25fe5"},
-    {file = "fido2-2.2.0.tar.gz", hash = "sha256:0d8122e690096ad82afde42ac9d6433a4eeffda64084f36341ea02546b181dd1"},
+    {file = "fido2-2.2.1-py3-none-any.whl", hash = "sha256:ed397da981b9ab133da6ead7309e41f924b566b749956129efe286fae097749f"},
+    {file = "fido2-2.2.1.tar.gz", hash = "sha256:85787428a94c3f8eaf72f0ff30afba983b559a1b1b795c93318c81b4ad4062c4"},
 ]
 
 [package.dependencies]
-cryptography = ">=2.6,<35 || >35,<49"
+cryptography = ">=2.6,<35 || >35,<52"
 
 [package.extras]
 pcsc = ["pyscard (>=1.9,<3)"]
@@ -5546,4 +5547,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "7f4b56f6fc9d02e45022db4b90b26b29e480b8482e4a951279852049e95d8836"
+content-hash = "a0b015bef9b5081e18259ffb02390ef5c4eefe8add73d9666d28f906b62ce20b"

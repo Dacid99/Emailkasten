@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.8.0
+
+- Features:
+  - OIDC auth support
+  - more translations
+
 ## Version 0.7.2
 
 - Features:

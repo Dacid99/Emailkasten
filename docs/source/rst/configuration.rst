@@ -23,6 +23,10 @@ Server Admin Settings
 These settings are stored in environmental variables
 that can be adapted via the *docker-compose.yml* file.
 
+.. important::
+
+    Make sure to use valid values as Eonvelope may refuse to start otherwise.
+
 You can check out the docker-compose files in the repository for further reference.
 
 Mandatory
@@ -180,7 +184,13 @@ Optional
 | MFA_TRUST_COOKIE_SAMESITE         | *Lax*       | The samesite value on the trust-browser cookie.                                                                           |
 |                                   |             | See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.                            |
 +-----------------------------------+-------------+---------------------------------------------------------------------------------------------------------------------------+
-
+| OIDC_CONFIG                       | *[]*        | List of OIDC provider configurations in json format.                                                                      |
+|                                   |             | See https://docs.allauth.org/en/latest/socialaccount/providers/openid_connect.html for details.                           |
++-----------------------------------+-------------+---------------------------------------------------------------------------------------------------------------------------+
+| OIDC_ONLY                         | *False*     | Whether to disable login with local accounts.                                                                             |
++-----------------------------------+-------------+---------------------------------------------------------------------------------------------------------------------------+
+| OIDC_AUTO_SIGNUP                  | *True*      | Whether to use OIDC info for signup on first login.                                                                       |
++-----------------------------------+-------------+---------------------------------------------------------------------------------------------------------------------------+
 
 Admin User Settings
 -------------------
