@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 16:41+0000\n"
+"POT-Creation-Date: 2026-08-09 19:33+0000\n"
 "PO-Revision-Date: 2026-01-21 21:01+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/eonvelope/"
@@ -37,64 +37,64 @@ msgstr "Адміністрація Eonvelope"
 msgid "E∘nvelope Settings"
 msgstr "Параметри конверта"
 
-#: src/config/settings.py:568
+#: src/config/settings.py:569
 msgid "Your email archiving server"
 msgstr "Ваш сервер архівування електронної пошти"
 
-#: src/config/settings.py:609
+#: src/config/settings.py:610
 msgid "Dashboard"
 msgstr "Інформаційна панель"
 
-#: src/config/settings.py:611
+#: src/config/settings.py:612
 msgid "Shortcut to the dashboard"
 msgstr "Ярлик до панелі інструментів"
 
-#: src/config/settings.py:614
+#: src/config/settings.py:615
 msgid "Timeline"
 msgstr "Хронологія"
 
-#: src/config/settings.py:616
+#: src/config/settings.py:617
 msgid "Shortcut to the email timeline"
 msgstr "Скорочення до часової шкали електронної пошти"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
-#: src/config/settings.py:784
+#: src/config/settings.py:793
 #, fuzzy
 #| msgid "E∘nvelope Settings"
 msgid "E∘nvelope API"
 msgstr "Параметри конверта"
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218.
-#: src/config/settings.py:786
+#: src/config/settings.py:795
 msgid "API schema for the E∘nvelope server."
 msgstr ""
 
 #. Translators: AGPL-3.0-or-later is the official license shorthand, it must not be changed.
-#: src/config/settings.py:789
+#: src/config/settings.py:798
 msgid "Licensed under AGPL-3.0-or-later"
 msgstr ""
 
 #. Translators: E∘nvelope is the brand name. The ∘ is the ring operator U+2218. ReadTheDocs is a brand name.
-#: src/config/settings.py:794
+#: src/config/settings.py:803
 msgid "Read the E∘nvelope Documentation on ReadTheDocs"
 msgstr ""
 
-#: src/config/settings.py:931
+#: src/config/settings.py:940
 msgid "Default page size for paginated API response data"
 msgstr ""
 "Розмір сторінки за замовчуванням для даних відповідей API з посторінковою "
 "структурою"
 
-#: src/config/settings.py:936
+#: src/config/settings.py:945
 msgid "Maximum page size for paginated API response data"
 msgstr ""
 "Максимальний розмір сторінки для даних відповідей API з розбивкою на сторінки"
 
-#: src/config/settings.py:941
+#: src/config/settings.py:950
 msgid "Default page size for pagination in the webapp."
 msgstr "Розмір сторінки за замовчуванням для пагінації у вебзастосунку."
 
-#: src/config/settings.py:947
+#: src/config/settings.py:956
 msgid ""
 "Page size options for pagination in the webapp. Should contain the "
 "WEB_DEFAULT_PAGE_SIZE value."
@@ -102,7 +102,7 @@ msgstr ""
 "Параметри розміру сторінки для пагінації у вебзастосунку. Повинні містити "
 "значення WEB_DEFAULT_PAGE_SIZE."
 
-#: src/config/settings.py:954
+#: src/config/settings.py:963
 msgid ""
 "Maximum datasize for a thumbnail in the webapp. Thumbnails larger than this "
 "will not be loaded."
@@ -110,19 +110,19 @@ msgstr ""
 "Максимальний розмір даних для мініатюри у вебзастосунку. Мініатюри, більші "
 "за цей розмір, не завантажуватимуться."
 
-#: src/config/settings.py:960
+#: src/config/settings.py:969
 msgid "Whether to show tooltips in the web interface."
 msgstr ""
 
-#: src/config/settings.py:965
+#: src/config/settings.py:974
 msgid "Maximum numbers of files in one storage unit."
 msgstr "Максимальна кількість файлів в одному сховищі."
 
-#: src/config/settings.py:970
+#: src/config/settings.py:979
 msgid "Whether or not to ignore emails and mailboxes that have a spam flag"
 msgstr "Чи ігнорувати електронні листи та поштові скриньки з позначкою спаму"
 
-#: src/config/settings.py:976
+#: src/config/settings.py:985
 msgid ""
 "Regex pattern (case-insensitive) for mailbox names that are ignored when "
 "looking up mailboxes in an account."
@@ -131,11 +131,11 @@ msgstr ""
 "скриньок, які ігноруються під час пошуку поштових скриньок в обліковому "
 "записі."
 
-#: src/config/settings.py:982
+#: src/config/settings.py:991
 msgid "List of content types prefixes to not parse as files."
 msgstr "Список префіксів типів контенту, які не слід розбирати як файли."
 
-#: src/config/settings.py:988
+#: src/config/settings.py:997
 msgid ""
 "List of content types prefixes to not parse as files. Plain and HTML text is "
 "always ignored as its the bodytext."
@@ -143,7 +143,7 @@ msgstr ""
 "Список префіксів типів контенту, які не слід розбирати як файли. Звичайний "
 "текст і текст HTML завжди ігноруються, оскільки це основний текст."
 
-#: src/config/settings.py:995
+#: src/config/settings.py:1004
 msgid ""
 "Html template used to render emails to html. Uses the django template syntax "
 "and has access to all fields of the email database table. Removing template "
@@ -156,7 +156,7 @@ msgstr ""
 "може призвести до 500 відповідей під час запиту сторінок із мініатюрами "
 "електронних листів, тому будьте обережні."
 
-#: src/config/settings.py:1002
+#: src/config/settings.py:1011
 msgid ""
 "Css style used to render emails to html. Refer to HTML_TEMPLATE for context "
 "on the classes."
@@ -164,19 +164,19 @@ msgstr ""
 "Стиль CSS, що використовується для відображення електронних листів у форматі "
 "html. Зверніться до HTML_TEMPLATE для ознайомлення з контекстом класів."
 
-#: src/config/settings.py:1008
+#: src/config/settings.py:1017
 msgid "Default mailbox setting whether to store mails as eml."
 msgstr ""
 "Налаштування поштової скриньки за замовчуванням, яке визначає, чи зберігати "
 "листи у форматі EML."
 
-#: src/config/settings.py:1013
+#: src/config/settings.py:1022
 msgid "Default mailbox setting whether to store attachments."
 msgstr ""
 "Налаштування поштової скриньки за замовчуванням, яке визначає, чи зберігати "
 "вкладення."
 
-#: src/config/settings.py:1019
+#: src/config/settings.py:1028
 msgid ""
 "Default number of periods between two runs of a standard routine for a INBOX "
 "mailbox."
@@ -184,13 +184,13 @@ msgstr ""
 "Кількість періодів за замовчуванням між двома запусками стандартної "
 "процедури для поштової скриньки INBOX."
 
-#: src/config/settings.py:1025
+#: src/config/settings.py:1034
 msgid "Default fetching criterion for a standard routine for a INBOX mailbox."
 msgstr ""
 "Критерій отримання за замовчуванням для стандартної процедури для поштової "
 "скриньки INBOX."
 
-#: src/config/settings.py:1031
+#: src/config/settings.py:1040
 msgid ""
 "Default number of periods between two runs of a standard routine for a SENT "
 "mailbox."
@@ -198,13 +198,13 @@ msgstr ""
 "Кількість періодів за замовчуванням між двома запусками стандартної "
 "процедури для поштової скриньки SENT."
 
-#: src/config/settings.py:1037
+#: src/config/settings.py:1046
 msgid "Default fetching criterion for a standard routine for a SENT mailbox."
 msgstr ""
 "Критерій отримання за замовчуванням для стандартної процедури для поштової "
 "скриньки SENT."
 
-#: src/config/settings.py:1043
+#: src/config/settings.py:1052
 msgid ""
 "Set this to True to allow new users to sign up themselves. This setting only "
 "takes effect if the REGISTRATION_ENABLED environment setting is not 0."
@@ -213,38 +213,38 @@ msgstr ""
 "реєструватися самостійно. Цей параметр діє, лише якщо параметр середовища "
 "REGISTRATION_ENABLED не має значення 0."
 
-#: src/config/settings.py:1050
+#: src/config/settings.py:1059
 msgid ""
 "Set this to True to tolerate connections involving an unverified SSL "
 "certificate, e.g. a self-signed one."
 msgstr ""
 
-#: src/config/settings.py:1057
+#: src/config/settings.py:1066
 msgid ""
 "Emails are auto-deleted this number of days past their 'Received' timestamp. "
 "A non-positive number disables auto-deletion."
 msgstr ""
 
-#: src/config/settings.py:1065
+#: src/config/settings.py:1074
 msgid "Server Configurations"
 msgstr "Конфігурації сервера"
 
-#: src/config/settings.py:1072
+#: src/config/settings.py:1081
 msgid "Default Values"
 msgstr "Значення за замовчуванням"
 
-#: src/config/settings.py:1083
+#: src/config/settings.py:1092
 msgid "Processing Settings"
 msgstr "Налаштування обробки"
 
-#: src/config/settings.py:1094
+#: src/config/settings.py:1103
 msgid "Storage Settings"
 msgstr "Налаштування пам'яті"
 
-#: src/config/settings.py:1101
+#: src/config/settings.py:1110
 msgid "API Settings"
 msgstr "Налаштування API"
 
-#: src/config/settings.py:1108
+#: src/config/settings.py:1117
 msgid "Web Settings"
 msgstr "Веб-налаштування"
