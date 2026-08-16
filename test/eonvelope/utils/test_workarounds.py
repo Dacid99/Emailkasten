@@ -18,18 +18,11 @@
 
 """Test file for the :mod:`eonvelope.utils` module."""
 
-import os
+import logging
 
 import pytest
-from django.views import View
 
 from eonvelope.utils.workarounds import get_config
-
-
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """Fixture mocking the modules logger instance."""
-    return mocker.patch("eonvelope.utils.workarounds.logger", autospec=True)
 
 
 @pytest.fixture
@@ -38,7 +31,7 @@ def mock_getattr(mocker):
     return mocker.patch("eonvelope.utils.workarounds.getattr")
 
 
-def test_get_config__success(monkeypatch, faker, mock_logger, mock_getattr):
+def test_get_config__success(monkeypatch, faker, caplog_all, mock_getattr):
     """Tests getting a constance value in case of success."""
     fake_config_default = faker.word()
     monkeypatch.setattr(
@@ -52,13 +45,13 @@ def test_get_config__success(monkeypatch, faker, mock_logger, mock_getattr):
 
     mock_getattr.assert_called_once()
     assert config_value == fake_config
-    mock_logger.debug.assert_not_called()
-    mock_logger.info.assert_not_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.critical.assert_not_called()
+    assert not any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(record.levelno == logging.ERROR for record in caplog_all.records)
+    assert not any(record.levelno == logging.CRITICAL for record in caplog_all.records)
 
 
-def test_get_config_workaround__success(monkeypatch, faker, mock_logger, mock_getattr):
+def test_get_config_workaround__success(monkeypatch, faker, caplog_all, mock_getattr):
     """Tests getting a constance value in case of success via the workaround."""
     fake_config_default = faker.word()
     monkeypatch.setattr(
@@ -72,13 +65,13 @@ def test_get_config_workaround__success(monkeypatch, faker, mock_logger, mock_ge
     mock_getattr.assert_called_once()
     assert config_value == fake_config_default
 
-    mock_logger.debug.assert_called()
-    mock_logger.critical.assert_not_called()
-    mock_logger.info.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(record.levelno == logging.ERROR for record in caplog_all.records)
+    assert not any(record.levelno == logging.CRITICAL for record in caplog_all.records)
 
 
-def test_get_config_workaround__failure(monkeypatch, faker, mock_logger, mock_getattr):
+def test_get_config_workaround__failure(monkeypatch, faker, caplog_all, mock_getattr):
     """Tests getting a constance value in case of failure."""
     fake_config_default = faker.word()
     monkeypatch.setattr(
@@ -91,7 +84,7 @@ def test_get_config_workaround__failure(monkeypatch, faker, mock_logger, mock_ge
         get_config("NO_CONFIG")
 
     mock_getattr.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.critical.assert_called()
-    mock_logger.info.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.CRITICAL for record in caplog_all.records)
+    assert not any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(record.levelno == logging.ERROR for record in caplog_all.records)

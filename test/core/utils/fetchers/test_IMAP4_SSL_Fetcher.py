@@ -18,6 +18,7 @@
 
 """Test file for the :class:`core.utils.fetchers.IMAP4_SSL_Fetcher`."""
 
+import logging
 import ssl
 
 import pytest
@@ -69,7 +70,7 @@ def mock_IMAP4_SSL(mocker, faker):
 def test_IMAP4Fetcher_connect_to_host__success(
     override_config,
     imap_ssl_mailbox,
-    mock_logger,
+    caplog_all,
     mock_IMAP4_SSL,
     account_allow_insecure,
     config_allow_insecure,
@@ -105,16 +106,18 @@ def test_IMAP4Fetcher_connect_to_host__success(
             == imap_ssl_mailbox.account.mail_host_port
         )
     assert len(mock_IMAP4_SSL.call_args.kwargs) == 4 if mail_host_port else 3
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_connect_to_host__exception(
     fake_error_message,
     imap_ssl_mailbox,
-    mock_logger,
+    caplog_all,
     mock_IMAP4_SSL,
 ):
     """Tests :func:`core.utils.fetchers.IMAP4_SSL_Fetcher.connect_to_host`
@@ -126,5 +129,5 @@ def test_IMAP4Fetcher_connect_to_host__exception(
         IMAP4_SSL_Fetcher(imap_ssl_mailbox.account)
 
     mock_IMAP4_SSL.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)

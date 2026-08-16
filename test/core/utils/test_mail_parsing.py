@@ -19,6 +19,7 @@
 """Test module for :mod:`core.utils.mail_parsing`."""
 
 import email
+import logging
 from datetime import UTC, datetime
 from email import policy
 from email.message import EmailMessage
@@ -29,12 +30,6 @@ from django.utils.timezone import get_current_timezone
 
 from core.utils import mail_parsing
 from test.conftest import TEST_EMAIL_PARAMETERS
-
-
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """The mocked :attr:`core.utils.mail_parsing.logger`."""
-    return mocker.patch("core.utils.mail_parsing.logger", autospec=True)
 
 
 @pytest.fixture
@@ -170,7 +165,7 @@ def test_get_header__failure(fake_single_header):
         mail_parsing.get_header(None, fake_single_header[0])
 
 
-def test_parse_datetime_header__success(faker, mock_logger):
+def test_parse_datetime_header__success(faker, caplog_all):
     """Tests :func:`core.utils.mail_parsing.parse_datetime_header`
     in case of success.
     """
@@ -178,12 +173,12 @@ def test_parse_datetime_header__success(faker, mock_logger):
 
     result = mail_parsing.parse_datetime_header(fake_date_headervalue)
 
-    mock_logger.warning.assert_not_called()
+    assert not any(record.levelno == logging.WARNING for record in caplog_all.records)
     assert isinstance(result, datetime)
     assert format_datetime(result) == fake_date_headervalue
 
 
-def test_parse_datetime_header_fallback(mocker, faker, mock_logger):
+def test_parse_datetime_header_fallback(mocker, faker, caplog_all):
     """Tests :func:`core.utils.mail_parsing.parse_datetime_header`
     in case the datetime header can't be parsed.
     """
@@ -193,13 +188,13 @@ def test_parse_datetime_header_fallback(mocker, faker, mock_logger):
 
     result = mail_parsing.parse_datetime_header("no datetime header")
 
-    mock_logger.warning.assert_called()
+    assert any(record.levelno == logging.WARNING for record in caplog_all.records)
     mock_timezone_now.assert_called()
     assert isinstance(result, datetime)
     assert format_datetime(result) == format_datetime(mock_timezone_now.return_value)
 
 
-def test_parse_datetime_header__no_header(mocker, faker, mock_logger):
+def test_parse_datetime_header__no_header(mocker, faker, caplog_all):
     """Tests :func:`core.utils.mail_parsing.parse_datetime_header`
     in case there is no header.
     """
@@ -209,7 +204,7 @@ def test_parse_datetime_header__no_header(mocker, faker, mock_logger):
 
     result = mail_parsing.parse_datetime_header(None)
 
-    mock_logger.warning.assert_called()
+    assert any(record.levelno == logging.WARNING for record in caplog_all.records)
     mock_timezone_now.assert_called()
     assert isinstance(result, datetime)
     assert format_datetime(result) == format_datetime(mock_timezone_now.return_value)

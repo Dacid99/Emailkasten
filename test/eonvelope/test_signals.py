@@ -18,18 +18,14 @@
 
 """Test module for :mod:`core.signals.save_Account`."""
 
+import logging
+
 import pytest
 from django.contrib.auth import get_user_model
 
 
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """The mocked :attr:`eonvelope.signals.logger`."""
-    return mocker.patch("eonvelope.signals.logger", autospec=True)
-
-
 @pytest.mark.django_db
-def test_User_post_save_created(faker, mock_logger):
+def test_User_post_save_created(faker, caplog_all):
     """Tests the post_save function of :class:`django.contrib.auth.models.User`
     in case the user is newly created.
     """
@@ -38,18 +34,18 @@ def test_User_post_save_created(faker, mock_logger):
     )
 
     assert hasattr(new_user, "profile")
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_User_post_save_exists(owner_user, mock_logger):
+def test_User_post_save_exists(owner_user, caplog_all):
     """Tests the post_save function of :class:`django.contrib.auth.models.User`.
     in case the user already exists.
     """
     assert hasattr(owner_user, "profile")
-    pre_logger_calls = mock_logger.debug.call_count
+    caplog_all.clear()
 
     owner_user.save()
 
     assert hasattr(owner_user, "profile")
-    assert mock_logger.debug.call_count == pre_logger_calls
+    assert not caplog_all.records

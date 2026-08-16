@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 import os
 import re
 from tempfile import TemporaryDirectory, gettempdir
@@ -44,12 +45,6 @@ from eonvelope.utils.workarounds import get_config
 from test.conftest import TEST_EMAIL_PARAMETERS
 
 from .test_Account import mock_Account_get_fetcher, mock_fetcher
-
-
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """The mocked :attr:`core.models.Email.logger`."""
-    return mocker.patch("core.models.Email.logger", autospec=True)
 
 
 @pytest.mark.django_db
@@ -152,7 +147,7 @@ def test_Email_unique_constraints(fake_mailbox, mock_Account_update_mailboxes):
 
 
 @pytest.mark.django_db
-def test_Email_delete_emailfiles__success(fake_email_with_file, mock_logger):
+def test_Email_delete_emailfiles__success(fake_email_with_file, caplog_all):
     """Tests :func:`core.models.Email.Email.delete`
     if the file removal is successful.
     """
@@ -166,7 +161,7 @@ def test_Email_delete_emailfiles__success(fake_email_with_file, mock_logger):
 
 
 @pytest.mark.django_db
-def test_Email_delete_email__delete_error(mocker, fake_email_with_file, mock_logger):
+def test_Email_delete_email__delete_error(mocker, fake_email_with_file, caplog_all):
     """Tests :func:`core.models.Email.Email.delete`
     if delete raises an exception.
     """
@@ -181,7 +176,7 @@ def test_Email_delete_email__delete_error(mocker, fake_email_with_file, mock_log
 
     assert default_storage.exists(fake_email_with_file.file_path)
     mock_delete.assert_called_once()
-    mock_logger.debug.assert_not_called()
+    assert not any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -389,7 +384,7 @@ def test_Email_reprocess__no_file(fake_email):
 
 @pytest.mark.django_db
 def test_Email_restore_to_mailbox__success(
-    fake_email, mock_logger, mock_fetcher, mock_Account_get_fetcher
+    fake_email, caplog_all, mock_fetcher, mock_Account_get_fetcher
 ):
     """Tests :func:`core.models.Email.Email.restore_to_mailbox`
     in case of success.
@@ -399,16 +394,18 @@ def test_Email_restore_to_mailbox__success(
     fake_email.refresh_from_db()
     mock_Account_get_fetcher.assert_called_once_with(fake_email.mailbox.account)
     mock_fetcher.restore.assert_called_with(fake_email)
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_Email_restore_to_mailbox__no_file(
     fake_error_message,
     fake_email,
-    mock_logger,
+    caplog_all,
     mock_fetcher,
     mock_Account_get_fetcher,
 ):
@@ -422,12 +419,12 @@ def test_Email_restore_to_mailbox__no_file(
 
     mock_Account_get_fetcher.assert_called_once_with(fake_email.mailbox.account)
     mock_fetcher.restore.assert_not_called()
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Email_restore_to_mailbox__failure(
-    fake_email, mock_logger, mock_fetcher, mock_Account_get_fetcher
+    fake_email, caplog_all, mock_fetcher, mock_Account_get_fetcher
 ):
     """Tests :func:`core.models.Email.Email.restore_to_mailbox`
     in case of the test fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
@@ -440,13 +437,13 @@ def test_Email_restore_to_mailbox__failure(
     fake_email.refresh_from_db()
     mock_Account_get_fetcher.assert_called_once_with(fake_email.mailbox.account)
     mock_fetcher.restore.assert_called_with(fake_email)
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Email_restore_to_mailbox__get_fetcher_error(
-    fake_email, mock_logger, mock_fetcher, mock_Account_get_fetcher
+    fake_email, caplog_all, mock_fetcher, mock_Account_get_fetcher
 ):
     """Tests :func:`core.models.Email.Email.restore_to_mailbox`
     in case the :func:`core.models.Account.Account.get_fetcher`
@@ -460,7 +457,7 @@ def test_Email_restore_to_mailbox__get_fetcher_error(
     fake_email.refresh_from_db()
     mock_Account_get_fetcher.assert_called_once_with(fake_email.mailbox.account)
     mock_fetcher.restore.assert_not_called()
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -964,7 +961,7 @@ def test_Email_create_from_email_bytes__success(
     override_config,
     fake_fs,
     fake_mailbox,
-    mock_logger,
+    caplog_all,
     test_email_path,
     expected_email_features,
     expected_correspondents_features,
@@ -1027,10 +1024,11 @@ def test_Email_create_from_email_bytes__success(
     with default_storage.open(result.file_path) as email_file:
         assert email_file.read() == test_email_bytes
 
-    mock_logger.debug.assert_called()
-    mock_logger.warning.assert_not_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.critical.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.WARNING, logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -1038,7 +1036,7 @@ def test_Email_create_from_email_bytes__duplicate(
     override_config,
     fake_fs,
     fake_email,
-    mock_logger,
+    caplog_all,
 ):
     """Tests :func:`core.models.Email.Email.create_from_email_bytes`
     in case the email to be parsed is already in the database.
@@ -1055,11 +1053,11 @@ def test_Email_create_from_email_bytes__duplicate(
 
     assert result is None
     assert fake_email.mailbox.emails.count() == previous_email_count
-    mock_logger.debug.assert_called()
-    mock_logger.warning.assert_not_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.critical.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.WARNING, logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -1086,7 +1084,7 @@ def test_Email_create_from_email_bytes_spam(
     override_config,
     fake_fs,
     fake_mailbox,
-    mock_logger,
+    caplog_all,
     x_spam_flag,
     THROW_OUT_SPAM,
     expected_is_none,
@@ -1100,16 +1098,17 @@ def test_Email_create_from_email_bytes_spam(
         )
 
     assert (result is None) is expected_is_none
-    mock_logger.debug.assert_called()
-    mock_logger.warning.assert_not_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.critical.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.WARNING for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_Email_create_from_email_bytes__dberror(
-    mocker, override_config, fake_mailbox, mock_logger
+    mocker, override_config, fake_mailbox, caplog_all
 ):
     """Tests :func:`core.models.Email.Email.create_from_email_bytes`
     in case an database :class:`django.db.IntegrityError` occurs.
@@ -1125,10 +1124,11 @@ def test_Email_create_from_email_bytes__dberror(
 
     assert result is None
     mock_Email_save.assert_called()
-    mock_logger.debug.assert_called()
-    mock_logger.warning.assert_not_called()
-    mock_logger.exception.assert_called()
-    mock_logger.critical.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db

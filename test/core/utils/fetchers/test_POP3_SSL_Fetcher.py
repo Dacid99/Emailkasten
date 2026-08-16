@@ -18,6 +18,7 @@
 
 """Test file for the :class:`core.utils.fetchers.IMAP4_SSL_Fetcher`."""
 
+import logging
 import ssl
 
 import pytest
@@ -65,7 +66,7 @@ def mock_POP3_SSL(mocker, faker):
 def test_POP3Fetcher_connect_to_host__success(
     override_config,
     pop3_ssl_mailbox,
-    mock_logger,
+    caplog_all,
     mock_POP3_SSL,
     account_allow_insecure,
     config_allow_insecure,
@@ -99,16 +100,18 @@ def test_POP3Fetcher_connect_to_host__success(
             == pop3_ssl_mailbox.account.mail_host_port
         )
     assert len(mock_POP3_SSL.call_args.kwargs) == 4 if mail_host_port else 3
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_connect_to_host__exception(
     fake_error_message,
     pop3_ssl_mailbox,
-    mock_logger,
+    caplog_all,
     mock_POP3_SSL,
 ):
     """Tests :func:`core.utils.fetchers.POP3_SSL_Fetcher.connect_to_host`
@@ -120,5 +123,5 @@ def test_POP3Fetcher_connect_to_host__exception(
         POP3_SSL_Fetcher(pop3_ssl_mailbox.account)
 
     mock_POP3_SSL.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)

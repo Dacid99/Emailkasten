@@ -20,6 +20,7 @@
 
 import datetime
 import email
+import logging
 import os
 import re
 from tempfile import gettempdir
@@ -35,12 +36,6 @@ from pyfakefs.fake_filesystem_unittest import Pause
 
 from core.models import Attachment, Email
 from test.conftest import TEST_EMAIL_PARAMETERS
-
-
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """Fixture mocking the logger :attr:`core.models.Attachment.logger` of the module."""
-    return mocker.patch("core.models.Attachment.logger", autospec=True)
 
 
 @pytest.fixture
@@ -102,7 +97,7 @@ def test_Attachment_unique_constraints(fake_mailbox):
 @pytest.mark.django_db
 def test_Attachment_delete_attachmentfile__success(
     fake_attachment_with_file,
-    mock_logger,
+    caplog_all,
 ):
     """Tests :func:`core.models.Attachment.Attachment.delete`
     in case the file removal is successful.
@@ -120,7 +115,7 @@ def test_Attachment_delete_attachmentfile__success(
 def test_Attachment_delete_attachmentfile__delete_error(
     mocker,
     fake_attachment_with_file,
-    mock_logger,
+    caplog_all,
 ):
     """Tests :func:`core.models.Attachment.Attachment.delete`
     in case delete raises an exception.
@@ -136,7 +131,7 @@ def test_Attachment_delete_attachmentfile__delete_error(
 
     assert default_storage.exists(fake_attachment_with_file.file_path)
     mock_delete.assert_called_once()
-    mock_logger.debug.assert_not_called()
+    assert not any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -352,7 +347,7 @@ def test_Attachment_queryset_as_file_empty_queryset():
 
 @pytest.mark.django_db
 def test_Attachment_share_to_paperless__success(
-    faker, fake_attachment_with_file, mock_logger, mock_httpx_post
+    faker, fake_attachment_with_file, caplog_all, mock_httpx_post
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_paperless`
     in case of success.
@@ -389,7 +384,7 @@ def test_Attachment_share_to_paperless__success(
         mock_httpx_post.call_args.kwargs["files"]["document"][2]
         == fake_attachment_with_file.content_type
     )
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -403,7 +398,7 @@ def test_Attachment_share_to_paperless__no_file(fake_attachment):
 
 @pytest.mark.django_db
 def test_Attachment_share_to_paperless__no_api_key(
-    faker, fake_attachment_with_file, mock_logger, mock_httpx_post
+    faker, fake_attachment_with_file, caplog_all, mock_httpx_post
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_paperless`
     in case there is no apikey.
@@ -418,14 +413,14 @@ def test_Attachment_share_to_paperless__no_api_key(
     with pytest.raises(PermissionError):
         fake_attachment_with_file.share_to_paperless()
 
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("paperless_url", ["test.org", "smb://100.200.051.421", ""])
 def test_Attachment_share_to_paperless__request_setup_error(
-    fake_attachment_with_file, mock_logger, paperless_url
+    fake_attachment_with_file, caplog_all, paperless_url
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_paperless`
     in case of an error with the request.
@@ -438,15 +433,15 @@ def test_Attachment_share_to_paperless__request_setup_error(
     with pytest.raises(RuntimeError):
         fake_attachment_with_file.share_to_paperless()
 
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Attachment_share_to_paperless__request_error(
     fake_error_message,
     fake_attachment_with_file,
-    mock_logger,
+    caplog_all,
     mock_httpx_post,
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_paperless`
@@ -458,8 +453,8 @@ def test_Attachment_share_to_paperless__request_error(
         fake_attachment_with_file.share_to_paperless()
 
     mock_httpx_post.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -468,7 +463,7 @@ def test_Attachment_share_to_paperless_unauthorized(
     fake_error_message,
     fake_attachment_with_file,
     mock_httpx_post,
-    mock_logger,
+    caplog_all,
     status_code,
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_paperless`
@@ -484,8 +479,8 @@ def test_Attachment_share_to_paperless_unauthorized(
         fake_attachment_with_file.share_to_paperless()
 
     mock_httpx_post.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -494,7 +489,7 @@ def test_Attachment_share_to_paperless__status_error(
     fake_error_message,
     fake_attachment_with_file,
     mock_httpx_post,
-    mock_logger,
+    caplog_all,
     status_code,
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_paperless`
@@ -510,13 +505,13 @@ def test_Attachment_share_to_paperless__status_error(
         fake_attachment_with_file.share_to_paperless()
 
     mock_httpx_post.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Attachment_share_to_immich__success(
-    faker, fake_attachment_with_file, mock_logger, mock_httpx_post
+    faker, fake_attachment_with_file, caplog_all, mock_httpx_post
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
     in case of success.
@@ -557,7 +552,7 @@ def test_Attachment_share_to_immich__success(
         mock_httpx_post.call_args.kwargs["files"]["assetData"][2]
         == fake_attachment_with_file.content_type
     )
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -571,7 +566,7 @@ def test_Attachment_share_to_immich__no_file(fake_attachment):
 
 @pytest.mark.django_db
 def test_Attachment_share_to_immich__no_api_key(
-    faker, fake_attachment_with_file, mock_logger, mock_httpx_post
+    faker, fake_attachment_with_file, caplog_all, mock_httpx_post
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
     in case there is no apikey.
@@ -586,14 +581,14 @@ def test_Attachment_share_to_immich__no_api_key(
     with pytest.raises(PermissionError):
         fake_attachment_with_file.share_to_immich()
 
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("immich_url", ["test.org", "smb://100.200.051.421", ""])
 def test_Attachment_share_to_immich__request_setup_error(
-    fake_attachment_with_file, mock_logger, immich_url
+    fake_attachment_with_file, caplog_all, immich_url
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
     in case of an error with the request.
@@ -604,15 +599,15 @@ def test_Attachment_share_to_immich__request_setup_error(
     with pytest.raises(RuntimeError):
         fake_attachment_with_file.share_to_immich()
 
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Attachment_share_to_immich__request_error(
     fake_error_message,
     fake_attachment_with_file,
-    mock_logger,
+    caplog_all,
     mock_httpx_post,
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
@@ -624,8 +619,8 @@ def test_Attachment_share_to_immich__request_error(
         fake_attachment_with_file.share_to_immich()
 
     mock_httpx_post.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -634,7 +629,7 @@ def test_Attachment_share_to_immich_unauthorized(
     fake_error_message,
     fake_attachment_with_file,
     mock_httpx_post,
-    mock_logger,
+    caplog_all,
     status_code,
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
@@ -650,8 +645,8 @@ def test_Attachment_share_to_immich_unauthorized(
         fake_attachment_with_file.share_to_immich()
 
     mock_httpx_post.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -660,7 +655,7 @@ def test_Attachment_share_to_immich__status_error(
     fake_error_message,
     fake_attachment_with_file,
     mock_httpx_post,
-    mock_logger,
+    caplog_all,
     status_code,
 ):
     """Tests :func:`core.models.Attachment.Attachment.share_to_immich`
@@ -676,8 +671,8 @@ def test_Attachment_share_to_immich__status_error(
         fake_attachment_with_file.share_to_immich()
 
     mock_httpx_post.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db

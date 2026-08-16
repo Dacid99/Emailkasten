@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 import re
 
 import pytest
@@ -46,12 +47,6 @@ from core.utils.fetchers import (
     POP3Fetcher,
 )
 from core.utils.fetchers.exceptions import FetcherError, MailAccountError
-
-
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """The mocked :attr:`core.models.Account.logger`."""
-    return mocker.patch("core.models.Account.logger", autospec=True)
 
 
 @pytest.fixture
@@ -232,7 +227,7 @@ def test_Account_unique_constraints(mocker, django_user_model):
 
 
 @pytest.mark.django_db
-def test_Account_save__new(mocker, owner_user, mock_logger):
+def test_Account_save__new(mocker, owner_user, caplog_all):
     """Tests saving a :class:`core.models.Account.Account`
     in case it is not the db.
     """
@@ -246,12 +241,15 @@ def test_Account_save__new(mocker, owner_user, mock_logger):
     assert Account.objects.count() == 1
 
     mock_update_mailboxes.assert_called_once()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
-def test_Account_save__old(mocker, fake_account, mock_logger):
+def test_Account_save__old(mocker, fake_account, caplog_all):
     """Tests saving a :class:`core.models.Account.Account`
     in case it is already in the db.
     """
@@ -264,13 +262,16 @@ def test_Account_save__old(mocker, fake_account, mock_logger):
     assert Account.objects.count() == 1
 
     mock_update_mailboxes.assert_not_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
+    assert not any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_Account_save__autoupdate_error(
-    mocker, fake_error_message, owner_user, mock_logger
+    mocker, fake_error_message, owner_user, caplog_all
 ):
     """Tests saving a :class:`core.models.Account.Account`
     in case it is not in the db and updating mailboxes fails.
@@ -282,8 +283,8 @@ def test_Account_save__autoupdate_error(
     new_account.save()
 
     mock_update_mailboxes.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -299,7 +300,7 @@ def test_Account_save__autoupdate_error(
     ],
 )
 def test_Account_get_fetcher__success(
-    mocker, mock_logger, fake_account, protocol, expected_fetcher_class
+    mocker, caplog_all, fake_account, protocol, expected_fetcher_class
 ):
     """Tests :func:`core.models.Account.Account.get_fetcher`
     in case of success.
@@ -313,11 +314,14 @@ def test_Account_get_fetcher__success(
     fetcher = fake_account.get_fetcher()
 
     assert isinstance(fetcher, expected_fetcher_class)
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
-def test_Account_get_fetcher__bad_protocol(mock_logger, fake_account):
+def test_Account_get_fetcher__bad_protocol(caplog_all, fake_account):
     """Tests :func:`core.models.Account.Account.get_fetcher`
     in case the account has a bad :attr:`core.models.Account.Account.protocol` field.
     """
@@ -330,7 +334,7 @@ def test_Account_get_fetcher__bad_protocol(mock_logger, fake_account):
 
     fake_account.refresh_from_db()
     assert fake_account.is_healthy is False
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -346,7 +350,7 @@ def test_Account_get_fetcher__bad_protocol(mock_logger, fake_account):
     ],
 )
 def test_Account_get_fetcher_init__failure(
-    mocker, mock_logger, fake_account, protocol, expected_fetcher_class
+    mocker, caplog_all, fake_account, protocol, expected_fetcher_class
 ):
     """Tests :func:`core.models.Account.Account.get_fetcher`
     in case the fetcher fails to construct with a :class:`core.utils.fetcher.exceptions.MailAccountError`.
@@ -364,7 +368,7 @@ def test_Account_get_fetcher_init__failure(
 
     fake_account.refresh_from_db()
     assert fake_account.is_healthy is False
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -380,7 +384,7 @@ def test_Account_get_fetcher_init__failure(
     ],
 )
 def test_Account_get_fetcher_class__success(
-    fake_account, mock_logger, protocol, expected_fetcher_class
+    fake_account, caplog_all, protocol, expected_fetcher_class
 ):
     """Tests :func:`core.models.Account.Account.get_fetcher_class`
     in case of success.
@@ -390,11 +394,14 @@ def test_Account_get_fetcher_class__success(
     fetcher_class = fake_account.get_fetcher_class()
 
     assert fetcher_class == expected_fetcher_class
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
-def test_Account_get_fetcher_class__bad_protocol(fake_account, mock_logger):
+def test_Account_get_fetcher_class__bad_protocol(fake_account, caplog_all):
     """Tests :func:`core.models.Account.Account.get_fetcher_class`
     in case the account has a bad :attr:`core.models.Account.Account.protocol` field.
     """
@@ -407,12 +414,12 @@ def test_Account_get_fetcher_class__bad_protocol(fake_account, mock_logger):
 
     fake_account.refresh_from_db()
     assert fake_account.is_healthy is False
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Account_test_success(
-    fake_account, mock_logger, mock_fetcher, mock_Account_get_fetcher
+    fake_account, caplog_all, mock_fetcher, mock_Account_get_fetcher
 ):
     """Tests :func:`core.models.Account.Account.test`
     in case of success.
@@ -426,15 +433,18 @@ def test_Account_test_success(
     assert fake_account.is_healthy is True
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
     mock_fetcher.test.assert_called_once_with()
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_Account_test__bad_protocol(
     fake_error_message,
     fake_account,
-    mock_logger,
+    caplog_all,
     mock_fetcher,
     mock_Account_get_fetcher,
 ):
@@ -448,12 +458,12 @@ def test_Account_test__bad_protocol(
 
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
     mock_fetcher.test.assert_not_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Account_test__failure(
-    fake_account, mock_logger, mock_fetcher, mock_Account_get_fetcher
+    fake_account, caplog_all, mock_fetcher, mock_Account_get_fetcher
 ):
     """Tests :func:`core.models.Account.Account.test`
     in case of the test fails with a :class:`core.utils.fetchers.exceptions.MailAccountError`.
@@ -469,12 +479,12 @@ def test_Account_test__failure(
     assert fake_account.is_healthy is False
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
     mock_fetcher.test.assert_called_once_with()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Account_test__get_fetcher_error(
-    fake_account, mock_logger, mock_Account_get_fetcher
+    fake_account, caplog_all, mock_Account_get_fetcher
 ):
     """Tests :func:`core.models.Account.Account.test`
     in case the :func:`core.models.Account.Account.get_fetcher`
@@ -491,13 +501,13 @@ def test_Account_test__get_fetcher_error(
     assert fake_account.is_healthy is False
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
     mock_Account_get_fetcher.return_value.test.assert_not_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Account_update_mailboxes__success(
     fake_account,
-    mock_logger,
+    caplog_all,
     mock_fetcher,
     mock_Account_get_fetcher,
     spy_Mailbox_create_from_data,
@@ -520,13 +530,13 @@ def test_Account_update_mailboxes__success(
     assert spy_Mailbox_create_from_data.call_count == len(
         mock_fetcher.fetch_mailboxes.return_value
     )
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db(transaction=True)
 def test_Account_update_mailboxes__duplicate(
     fake_account,
-    mock_logger,
+    caplog_all,
     mock_fetcher,
     mock_Account_get_fetcher,
     spy_Mailbox_create_from_data,
@@ -550,13 +560,13 @@ def test_Account_update_mailboxes__duplicate(
     assert spy_Mailbox_create_from_data.call_count == len(
         mock_fetcher.fetch_mailboxes.return_value
     )
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Account_update_mailboxes__failure(
     fake_account,
-    mock_logger,
+    caplog_all,
     mock_fetcher,
     mock_Account_get_fetcher,
     spy_Mailbox_create_from_data,
@@ -577,13 +587,13 @@ def test_Account_update_mailboxes__failure(
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
     mock_fetcher.fetch_mailboxes.assert_called_once_with()
     spy_Mailbox_create_from_data.assert_not_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Account_update_mailboxes__get_fetcher_error(
     fake_account,
-    mock_logger,
+    caplog_all,
     mock_fetcher,
     mock_Account_get_fetcher,
     spy_Mailbox_create_from_data,
@@ -605,7 +615,7 @@ def test_Account_update_mailboxes__get_fetcher_error(
     mock_Account_get_fetcher.assert_called_once_with(fake_account)
     mock_fetcher.fetch_mailboxes.assert_not_called()
     spy_Mailbox_create_from_data.assert_not_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db

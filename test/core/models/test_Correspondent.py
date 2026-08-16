@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 
 import httpx
 import pytest
@@ -36,12 +37,6 @@ from core.models import Correspondent
 def fake_correspondent_tuple(faker):
     """Returns a fake correspondent tuple."""
     return (faker.name(), faker.email())
-
-
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """The mocked :attr:`core.models.Correspondent.logger`."""
-    return mocker.patch("core.models.Correspondent.logger", autospec=True)
 
 
 @pytest.fixture
@@ -104,7 +99,7 @@ def test_Correspondent_unique_together_constraint(fake_correspondent):
 
 @pytest.mark.django_db
 def test_Correspondent_share_to_nextcloud__success(
-    faker, fake_correspondent, mock_logger, mock_httpx_put
+    faker, fake_correspondent, caplog_all, mock_httpx_put
 ):
     """Tests :func:`core.models.Correspondent.Correspondent.share_to_nextcloud`
     in case of success.
@@ -142,12 +137,12 @@ def test_Correspondent_share_to_nextcloud__success(
             password=profile.nextcloud_password,
         )._auth_header
     )
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Correspondent_share_to_nextcloud__no_password(
-    faker, fake_correspondent, mock_logger, mock_httpx_put
+    faker, fake_correspondent, caplog_all, mock_httpx_put
 ):
     """Tests :func:`core.models.Correspondent.Correspondent.share_to_nextcloud`
     in case there is no apikey.
@@ -160,14 +155,14 @@ def test_Correspondent_share_to_nextcloud__no_password(
     with pytest.raises(PermissionError):
         fake_correspondent.share_to_nextcloud()
 
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("nextcloud_url", ["test.org", "smb://100.200.051.421", ""])
 def test_Correspondent_share_to_nextcloud__request_setup_error(
-    fake_correspondent, mock_logger, nextcloud_url
+    fake_correspondent, caplog_all, nextcloud_url
 ):
     """Tests :func:`core.models.Correspondent.Correspondent.share_to_nextcloud`
     in case of an error with the request.
@@ -178,15 +173,15 @@ def test_Correspondent_share_to_nextcloud__request_setup_error(
     with pytest.raises(RuntimeError):
         fake_correspondent.share_to_nextcloud()
 
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Correspondent_share_to_nextcloud__request_error(
     fake_error_message,
     fake_correspondent,
-    mock_logger,
+    caplog_all,
     mock_httpx_put,
 ):
     """Tests :func:`core.models.Correspondent.Correspondent.share_to_nextcloud`
@@ -198,8 +193,8 @@ def test_Correspondent_share_to_nextcloud__request_error(
         fake_correspondent.share_to_nextcloud()
 
     mock_httpx_put.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -208,7 +203,7 @@ def test_Correspondent_share_to_nextcloud_unauthorized(
     fake_error_message,
     fake_correspondent,
     mock_httpx_put,
-    mock_logger,
+    caplog_all,
     status_code,
 ):
     """Tests :func:`core.models.Correspondent.Correspondent.share_to_nextcloud`
@@ -224,8 +219,8 @@ def test_Correspondent_share_to_nextcloud_unauthorized(
         fake_correspondent.share_to_nextcloud()
 
     mock_httpx_put.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -234,7 +229,7 @@ def test_Correspondent_share_to_nextcloud__status_error(
     fake_error_message,
     fake_correspondent,
     mock_httpx_put,
-    mock_logger,
+    caplog_all,
     status_code,
 ):
     """Tests :func:`core.models.Correspondent.Correspondent.share_to_nextcloud`
@@ -250,8 +245,8 @@ def test_Correspondent_share_to_nextcloud__status_error(
         fake_correspondent.share_to_nextcloud()
 
     mock_httpx_put.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -415,7 +410,7 @@ def test_Correspondent_create_from_correspondent_tuple__duplicate(
 
 @pytest.mark.django_db
 def test_Correspondent_create_from_correspondent_tuple__no_address(
-    mock_logger, fake_correspondent_tuple, owner_user
+    caplog_all, fake_correspondent_tuple, owner_user
 ):
     """Tests :func:`core.models.Correspondent.Correspondent.create_from_correspondent_tuple`
     in case of there is no address in the header.
@@ -430,7 +425,7 @@ def test_Correspondent_create_from_correspondent_tuple__no_address(
 
     assert result is None
     assert Correspondent.objects.count() == 0
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db

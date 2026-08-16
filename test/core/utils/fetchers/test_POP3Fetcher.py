@@ -18,6 +18,7 @@
 
 """Test module for the :class:`POP3Fetcher` class."""
 
+import logging
 import re
 
 import pytest
@@ -56,7 +57,7 @@ def mock_POP3(mocker, faker):
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher___init___success(mocker, pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher___init___success(mocker, pop3_mailbox, caplog_all, mock_POP3):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.__init__`
     in case of success.
     """
@@ -71,13 +72,15 @@ def test_POP3Fetcher___init___success(mocker, pop3_mailbox, mock_logger, mock_PO
         pop3_mailbox.account.mail_address
     )
     mock_POP3.return_value.pass_.assert_called_once_with(pop3_mailbox.account.password)
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher___init___connection_error(
-    mocker, fake_error_message, pop3_mailbox, mock_logger, mock_POP3
+    mocker, fake_error_message, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.__init__`
     in case of failure establishing a connection.
@@ -91,12 +94,12 @@ def test_POP3Fetcher___init___connection_error(
     spy_POP3Fetcher_connect_to_host.assert_called_once()
     mock_POP3.return_value.user.assert_not_called()
     mock_POP3.return_value.pass_.assert_not_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher___init____bad_protocol(
-    mocker, pop3_mailbox, mock_logger, mock_POP3
+    mocker, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.__init__`
     in case of the mailbox has a non-POP protocol.
@@ -110,7 +113,7 @@ def test_POP3Fetcher___init____bad_protocol(
     spy_POP3Fetcher_connect_to_host.assert_not_called()
     mock_POP3.return_value.user.assert_not_called()
     mock_POP3.return_value.pass_.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -121,7 +124,7 @@ def test_POP3Fetcher___init__login__exception(
     mocker,
     fake_error_message,
     pop3_mailbox,
-    mock_logger,
+    caplog_all,
     mock_POP3,
     raising_function,
     expected_calls,
@@ -146,7 +149,7 @@ def test_POP3Fetcher___init__login__exception(
     assert mock_POP3.return_value.pass_.call_count == expected_calls[1]
     if expected_calls[1]:
         mock_POP3.return_value.pass_.assert_called_with(pop3_mailbox.account.password)
-    mock_logger.exception.assert_called()
+        assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -157,7 +160,7 @@ def test_POP3Fetcher___init__login__bad_response(
     mocker,
     fake_error_message,
     pop3_mailbox,
-    mock_logger,
+    caplog_all,
     mock_POP3,
     raising_function,
     expected_calls,
@@ -182,7 +185,7 @@ def test_POP3Fetcher___init__login__bad_response(
     assert mock_POP3.return_value.pass_.call_count == expected_calls[1]
     if expected_calls[1]:
         mock_POP3.return_value.pass_.assert_called_with(pop3_mailbox.account.password)
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -191,7 +194,7 @@ def test_POP3Fetcher___init__login__bad_response(
     [123, None],
 )
 def test_POP3Fetcher_connect_to_host__success(
-    pop3_mailbox, mock_logger, mock_POP3, mail_host_port
+    pop3_mailbox, caplog_all, mock_POP3, mail_host_port
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.connect_to_host`
     in case of success.
@@ -207,14 +210,16 @@ def test_POP3Fetcher_connect_to_host__success(
     if mail_host_port:
         kwargs["port"] = mail_host_port
     mock_POP3.assert_called_with(**kwargs)
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_connect_to_host__exception(
-    fake_error_message, pop3_mailbox, mock_logger, mock_POP3
+    fake_error_message, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.connect_to_host`
     in case of an error.
@@ -230,12 +235,12 @@ def test_POP3Fetcher_connect_to_host__exception(
     if timeout := pop3_mailbox.account.timeout:
         kwargs["timeout"] = timeout
     mock_POP3.assert_called_with(**kwargs)
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_test_account__success(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_test_account__success(pop3_mailbox, caplog_all, mock_POP3):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.test`
     in case of success with no mailbox given.
     """
@@ -243,14 +248,16 @@ def test_POP3Fetcher_test_account__success(pop3_mailbox, mock_logger, mock_POP3)
 
     assert result is None
     mock_POP3.return_value.noop.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_test_account__bad_response(
-    fake_error_message, pop3_mailbox, mock_logger, mock_POP3
+    fake_error_message, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.test`
     in case of a bad response with no mailbox given.
@@ -261,13 +268,13 @@ def test_POP3Fetcher_test_account__bad_response(
         POP3Fetcher(pop3_mailbox.account).test()
 
     mock_POP3.return_value.noop.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_test_account__exception(
-    fake_error_message, pop3_mailbox, mock_logger, mock_POP3
+    fake_error_message, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.test`
     in case of an error with no mailbox given.
@@ -278,12 +285,12 @@ def test_POP3Fetcher_test_account__exception(
         POP3Fetcher(pop3_mailbox.account).test()
 
     mock_POP3.return_value.noop.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_test_mailbox__success(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_test_mailbox__success(pop3_mailbox, caplog_all, mock_POP3):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.test`
     in case of success with a mailbox given.
     """
@@ -292,14 +299,16 @@ def test_POP3Fetcher_test_mailbox__success(pop3_mailbox, mock_logger, mock_POP3)
     assert result is None
     mock_POP3.return_value.noop.assert_called_once_with()
     mock_POP3.return_value.list.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_test_mailbox__wrong_mailbox(
-    fake_other_account, pop3_mailbox, mock_logger, mock_POP3
+    fake_other_account, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.test`
     in case of success the given mailbox doesn't belong to the given account.
@@ -310,12 +319,12 @@ def test_POP3Fetcher_test_mailbox__wrong_mailbox(
         POP3Fetcher(pop3_mailbox.account).test(wrong_mailbox)
 
     mock_POP3.return_value.noop.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_test_mailbox__bad_response(
-    fake_error_message, pop3_mailbox, mock_logger, mock_POP3
+    fake_error_message, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.test`
     in case of a bad response with a given mailbox.
@@ -327,13 +336,13 @@ def test_POP3Fetcher_test_mailbox__bad_response(
 
     mock_POP3.return_value.noop.assert_called_once_with()
     mock_POP3.return_value.list.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_test_mailbox__exception(
-    fake_error_message, pop3_mailbox, mock_logger, mock_POP3
+    fake_error_message, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.test`
     in case of an error with a given mailbox.
@@ -345,14 +354,12 @@ def test_POP3Fetcher_test_mailbox__exception(
 
     mock_POP3.return_value.noop.assert_called_once_with()
     mock_POP3.return_value.list.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetch_emails__success(
-    mocker, pop3_mailbox, mock_logger, mock_POP3
-):
+def test_POP3Fetcher_fetch_emails__success(mocker, pop3_mailbox, caplog_all, mock_POP3):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.fetch_emails`
     in case of success.
     """
@@ -369,15 +376,17 @@ def test_POP3Fetcher_fetch_emails__success(
     mock_POP3.return_value.list.assert_called_once_with()
     assert mock_POP3.return_value.retr.call_count == len(expected_retr_calls)
     mock_POP3.return_value.retr.assert_has_calls(expected_retr_calls)
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_fetch_emails__wrong_mailbox(
-    fake_other_account, pop3_mailbox, mock_logger
+    fake_other_account, pop3_mailbox, caplog_all
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.fetch_emails`
     in case the given mailbox does not belong to the given account.
@@ -387,11 +396,11 @@ def test_POP3Fetcher_fetch_emails__wrong_mailbox(
     with pytest.raises(ValueError, match=re.compile("mailbox", re.IGNORECASE)):
         list(POP3Fetcher(pop3_mailbox.account).fetch_emails(wrong_mailbox))
 
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_fetch_emails__bad_criterion(pop3_mailbox, mock_logger):
+def test_POP3Fetcher_fetch_emails__bad_criterion(pop3_mailbox, caplog_all):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.fetch_emails`
     in case of an unavailable criterion.
     """
@@ -402,12 +411,12 @@ def test_POP3Fetcher_fetch_emails__bad_criterion(pop3_mailbox, mock_logger):
             )
         )
 
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_fetch_emails__bad_response(
-    fake_error_message, pop3_mailbox, mock_logger, mock_POP3
+    fake_error_message, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.fetch_emails`
     in case of a bad response.
@@ -419,13 +428,13 @@ def test_POP3Fetcher_fetch_emails__bad_response(
 
     mock_POP3.return_value.list.assert_called_once_with()
     mock_POP3.return_value.retr.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_fetch_emails__exception(
-    fake_error_message, pop3_mailbox, mock_logger, mock_POP3
+    fake_error_message, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.fetch_emails`
     in case of an error.
@@ -437,13 +446,13 @@ def test_POP3Fetcher_fetch_emails__exception(
 
     mock_POP3.return_value.list.assert_called_once_with()
     mock_POP3.return_value.retr.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_fetch_emails__bad_response__ignored(
-    mocker, pop3_mailbox, mock_logger, mock_POP3
+    mocker, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.fetch_emails`
     in case of an ignored bad response.
@@ -460,15 +469,15 @@ def test_POP3Fetcher_fetch_emails__bad_response__ignored(
     mock_POP3.return_value.list.assert_called_once_with()
     assert mock_POP3.return_value.retr.call_count == len(expected_retr_calls)
     mock_POP3.return_value.retr.assert_has_calls(expected_retr_calls)
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.warning.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert any(record.levelno == logging.WARNING for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_POP3Fetcher_fetch_emails__exception__ignored(
-    mocker, pop3_mailbox, mock_logger, mock_POP3
+    mocker, pop3_mailbox, caplog_all, mock_POP3
 ):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.fetch_emails`
     in case of an ignored error.
@@ -485,10 +494,10 @@ def test_POP3Fetcher_fetch_emails__exception__ignored(
     mock_POP3.return_value.list.assert_called_once_with()
     assert mock_POP3.return_value.retr.call_count == len(expected_retr_calls)
     mock_POP3.return_value.retr.assert_has_calls(expected_retr_calls)
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.warning.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert any(record.levelno == logging.WARNING for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -519,20 +528,22 @@ def test_POP3Fetcher_restore__wrong_mailbox(
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_close__success(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_close__success(pop3_mailbox, caplog_all, mock_POP3):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.close`
     in case of success.
     """
     POP3Fetcher(pop3_mailbox.account).close()
 
     mock_POP3.return_value.quit.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_close__bad_response(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_close__bad_response(pop3_mailbox, caplog_all, mock_POP3):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.close`
     in case of a bad response.
     """
@@ -541,12 +552,12 @@ def test_POP3Fetcher_close__bad_response(pop3_mailbox, mock_logger, mock_POP3):
     POP3Fetcher(pop3_mailbox.account).close()
 
     mock_POP3.return_value.quit.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_close__exception(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_close__exception(pop3_mailbox, caplog_all, mock_POP3):
     """Tests :func:`core.utils.fetchers.POP3Fetcher.close`
     in case of an error.
     """
@@ -555,8 +566,8 @@ def test_POP3Fetcher_close__exception(pop3_mailbox, mock_logger, mock_POP3):
     POP3Fetcher(pop3_mailbox.account).close()
 
     mock_POP3.return_value.quit.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -569,16 +580,18 @@ def test_POP3Fetcher___str__(pop3_mailbox):
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_context_manager(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_context_manager(pop3_mailbox, caplog_all, mock_POP3):
     """Tests the context managing of :class:`core.utils.fetchers.POP3Fetcher`."""
     with POP3Fetcher(pop3_mailbox.account):
         pass
-    mock_POP3.return_value.quit.assert_called_once()
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
-def test_POP3Fetcher_context_manager_exception(pop3_mailbox, mock_logger, mock_POP3):
+def test_POP3Fetcher_context_manager_exception(pop3_mailbox, caplog_all, mock_POP3):
     """Tests the context managing of :class:`core.utils.fetchers.POP3Fetcher`
     in case of an error.
     """
@@ -586,4 +599,4 @@ def test_POP3Fetcher_context_manager_exception(pop3_mailbox, mock_logger, mock_P
         raise AssertionError
 
     mock_POP3.return_value.quit.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)

@@ -18,6 +18,7 @@
 
 """Test module for the :class:`IMAP4Fetcher` class."""
 
+import logging
 import re
 from collections.abc import Iterable, Sized
 
@@ -184,7 +185,7 @@ def mock_JMAP_client(mocker, faker, mock_JMAP_request_handler):
 def test_JMAPFetcher___init___success(
     override_config,
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     account_allow_insecure,
     config_allow_insecure,
@@ -224,9 +225,11 @@ def test_JMAPFetcher___init___success(
     assert mock_JMAP_client.return_value.requests_session.return_value.verify is not (
         config_allow_insecure and account_allow_insecure
     )
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.parametrize(
@@ -236,7 +239,7 @@ def test_JMAPFetcher___init___success(
 def test_JMAPFetcher___init____failure(
     fake_error_message,
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     error,
 ):
@@ -247,10 +250,10 @@ def test_JMAPFetcher___init____failure(
         JMAPFetcher(jmap_mailbox.account)
 
     mock_JMAP_client.create_with_password.assert_called_once()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
-def test_JMAPFetcher_test_account__success(jmap_mailbox, mock_logger, mock_JMAP_client):
+def test_JMAPFetcher_test_account__success(jmap_mailbox, caplog_all, mock_JMAP_client):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success with no mailbox given.
     """
@@ -258,14 +261,16 @@ def test_JMAPFetcher_test_account__success(jmap_mailbox, mock_logger, mock_JMAP_
 
     assert result is None
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_test_account_non_single_response(
-    fake_error_message, mock_logger, jmap_mailbox, mock_JMAP_client
+    fake_error_message, caplog_all, jmap_mailbox, mock_JMAP_client
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success with no mailbox given.
@@ -278,13 +283,13 @@ def test_JMAPFetcher_test_account_non_single_response(
         JMAPFetcher(jmap_mailbox.account).test()
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_test_account__error_response(
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     mock_JMAP_error_response_handler,
 ):
@@ -297,13 +302,13 @@ def test_JMAPFetcher_test_account__error_response(
         JMAPFetcher(jmap_mailbox.account).test()
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_test_account__bad_response(
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     mock_JMAP__bad_response_handler,
 ):
@@ -316,13 +321,13 @@ def test_JMAPFetcher_test_account__bad_response(
         JMAPFetcher(jmap_mailbox.account).test()
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("error", [requests.HTTPError, requests.ConnectionError])
 def test_JMAPFetcher_test_account__requests_error(
-    fake_error_message, mock_logger, jmap_mailbox, mock_JMAP_client, error
+    fake_error_message, caplog_all, jmap_mailbox, mock_JMAP_client, error
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success with no mailbox given.
@@ -333,11 +338,11 @@ def test_JMAPFetcher_test_account__requests_error(
         JMAPFetcher(jmap_mailbox.account).test()
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_JMAPFetcher_test_mailbox__success(jmap_mailbox, mock_logger, mock_JMAP_client):
+def test_JMAPFetcher_test_mailbox__success(jmap_mailbox, caplog_all, mock_JMAP_client):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success with mailbox given.
     """
@@ -346,9 +351,11 @@ def test_JMAPFetcher_test_mailbox__success(jmap_mailbox, mock_logger, mock_JMAP_
     assert result is None
     mock_JMAP_client.return_value.request.assert_called()
     assert mock_JMAP_client.return_value.request.call_count == 2
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -356,7 +363,7 @@ def test_JMAPFetcher_test_mailbox__success(jmap_mailbox, mock_logger, mock_JMAP_
 def test_JMAPFetcher_test_mailbox__failure(
     fake_error_message,
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     error,
 ):
@@ -367,12 +374,12 @@ def test_JMAPFetcher_test_mailbox__failure(
         JMAPFetcher(jmap_mailbox.account).test(jmap_mailbox)
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_test_mailbox_non_single_response(
-    fake_error_message, mock_logger, jmap_mailbox, mock_JMAP_client
+    fake_error_message, caplog_all, jmap_mailbox, mock_JMAP_client
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success with no mailbox given.
@@ -385,7 +392,7 @@ def test_JMAPFetcher_test_mailbox_non_single_response(
         JMAPFetcher(jmap_mailbox.account).test(jmap_mailbox)
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -404,7 +411,7 @@ def test_JMAPFetcher_test_mailbox__wrong_mailbox(
 @pytest.mark.django_db
 def test_JMAPFetcher_test_mailbox__error_response(
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     mock_JMAP_error_response_handler,
 ):
@@ -417,13 +424,13 @@ def test_JMAPFetcher_test_mailbox__error_response(
         JMAPFetcher(jmap_mailbox.account).test(jmap_mailbox)
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_test_mailbox__bad_response(
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     mock_JMAP__bad_response_handler,
 ):
@@ -436,13 +443,13 @@ def test_JMAPFetcher_test_mailbox__bad_response(
         JMAPFetcher(jmap_mailbox.account).test(jmap_mailbox)
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_fetch_mailboxes__success(
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_mailboxes`
@@ -453,15 +460,17 @@ def test_JMAPFetcher_fetch_mailboxes__success(
     assert result
     assert len(result[0]) == 2
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("error", [requests.HTTPError, requests.ConnectionError])
 def test_JMAPFetcher_fetch_mailboxes__failure(
-    fake_error_message, mock_logger, jmap_mailbox, mock_JMAP_client, error
+    fake_error_message, caplog_all, jmap_mailbox, mock_JMAP_client, error
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_mailboxes`
     in case of success.
@@ -472,12 +481,12 @@ def test_JMAPFetcher_fetch_mailboxes__failure(
         JMAPFetcher(jmap_mailbox.account).fetch_mailboxes()
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_fetch_mailboxes_non_single_response(
-    fake_error_message, mock_logger, jmap_mailbox, mock_JMAP_client
+    fake_error_message, caplog_all, jmap_mailbox, mock_JMAP_client
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success with no mailbox given.
@@ -490,13 +499,13 @@ def test_JMAPFetcher_fetch_mailboxes_non_single_response(
         JMAPFetcher(jmap_mailbox.account).fetch_mailboxes()
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_fetch_mailboxes__error_response(
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     mock_JMAP_error_response_handler,
 ):
@@ -509,13 +518,13 @@ def test_JMAPFetcher_fetch_mailboxes__error_response(
         JMAPFetcher(jmap_mailbox.account).fetch_mailboxes()
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_fetch_mailboxes__bad_response(
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     mock_JMAP__bad_response_handler,
 ):
@@ -528,11 +537,11 @@ def test_JMAPFetcher_fetch_mailboxes__bad_response(
         JMAPFetcher(jmap_mailbox.account).fetch_mailboxes()
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_JMAPFetcher_fetch_emails__success(jmap_mailbox, mock_logger, mock_JMAP_client):
+def test_JMAPFetcher_fetch_emails__success(jmap_mailbox, caplog_all, mock_JMAP_client):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of success.
     """
@@ -542,16 +551,18 @@ def test_JMAPFetcher_fetch_emails__success(jmap_mailbox, mock_logger, mock_JMAP_
     mock_JMAP_client.return_value.request.assert_called()
     mock_JMAP_client.return_value.requests_session.get.assert_called()
     assert mock_JMAP_client.return_value.request.call_count == 2
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("error", [requests.HTTPError, requests.ConnectionError])
 def test_JMAPFetcher_fetch_emails__failure_request(
-    fake_error_message, mock_logger, jmap_mailbox, mock_JMAP_client, error
+    fake_error_message, caplog_all, jmap_mailbox, mock_JMAP_client, error
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of an error with request.
@@ -563,13 +574,13 @@ def test_JMAPFetcher_fetch_emails__failure_request(
 
     mock_JMAP_client.return_value.request.assert_called_once()
     mock_JMAP_client.return_value.requests_session.get.assert_not_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("error", [requests.HTTPError, requests.ConnectionError])
 def test_JMAPFetcher_fetch_emails__failure_download(
-    fake_error_message, mock_logger, jmap_mailbox, mock_JMAP_client, error
+    fake_error_message, caplog_all, jmap_mailbox, mock_JMAP_client, error
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of an error with request.
@@ -584,12 +595,12 @@ def test_JMAPFetcher_fetch_emails__failure_download(
     mock_JMAP_client.return_value.request.assert_called()
     assert mock_JMAP_client.return_value.request.call_count == 2
     mock_JMAP_client.return_value.requests_session.get.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_fetch_emails_non_single_response(
-    fake_error_message, mock_logger, jmap_mailbox, mock_JMAP_client
+    fake_error_message, caplog_all, jmap_mailbox, mock_JMAP_client
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success with no mailbox given.
@@ -602,13 +613,13 @@ def test_JMAPFetcher_fetch_emails_non_single_response(
         list(JMAPFetcher(jmap_mailbox.account).fetch_emails(jmap_mailbox))
 
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_fetch_emails__error_response(
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     mock_JMAP_error_response_handler,
 ):
@@ -622,13 +633,13 @@ def test_JMAPFetcher_fetch_emails__error_response(
 
     mock_JMAP_client.return_value.request.assert_called_once()
     mock_JMAP_client.return_value.requests_session.get.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_fetch_emails__bad_response(
     jmap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_JMAP_client,
     mock_JMAP__bad_response_handler,
 ):
@@ -642,7 +653,7 @@ def test_JMAPFetcher_fetch_emails__bad_response(
 
     mock_JMAP_client.return_value.request.assert_called_once()
     mock_JMAP_client.return_value.requests_session.get.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -676,7 +687,7 @@ def test_JMAPFetcher_fetch_emails__bad_criterion(
 
 @pytest.mark.django_db
 def test_JMAPFetcher_restore__success(
-    fake_email_with_file, mock_logger, jmap_mailbox, mock_JMAP_client
+    fake_email_with_file, caplog_all, jmap_mailbox, mock_JMAP_client
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.restore`
     in case of success.
@@ -685,16 +696,18 @@ def test_JMAPFetcher_restore__success(
 
     mock_JMAP_client.return_value.upload_blob.assert_called_once()
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("error", [requests.HTTPError, requests.ConnectionError])
 def test_JMAPFetcher_restore__failure_upload_blob(
     fake_error_message,
-    mock_logger,
+    caplog_all,
     fake_email_with_file,
     jmap_mailbox,
     mock_JMAP_client,
@@ -710,14 +723,14 @@ def test_JMAPFetcher_restore__failure_upload_blob(
 
     mock_JMAP_client.return_value.upload_blob.assert_called_once()
     mock_JMAP_client.return_value.request.assert_not_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("error", [requests.HTTPError, requests.ConnectionError])
 def test_JMAPFetcher_restore__failure_request(
     fake_error_message,
-    mock_logger,
+    caplog_all,
     fake_email_with_file,
     jmap_mailbox,
     mock_JMAP_client,
@@ -733,13 +746,13 @@ def test_JMAPFetcher_restore__failure_request(
 
     mock_JMAP_client.return_value.upload_blob.assert_called_once()
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_restore__error_response(
     fake_email_with_file,
-    mock_logger,
+    caplog_all,
     jmap_mailbox,
     mock_JMAP_client,
     mock_JMAP_error_response_handler,
@@ -754,13 +767,13 @@ def test_JMAPFetcher_restore__error_response(
 
     mock_JMAP_client.return_value.upload_blob.assert_called_once()
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_JMAPFetcher_restore__bad_response(
     fake_email_with_file,
-    mock_logger,
+    caplog_all,
     jmap_mailbox,
     mock_JMAP_client,
     mock_JMAP__bad_response_handler,
@@ -775,7 +788,7 @@ def test_JMAPFetcher_restore__bad_response(
 
     mock_JMAP_client.return_value.upload_blob.assert_called_once()
     mock_JMAP_client.return_value.request.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -807,14 +820,16 @@ def test_JMAPFetcher_restore__no_filepath(fake_email, jmap_mailbox, mock_JMAP_cl
 
 
 @pytest.mark.django_db
-def test_JMAPFetcher_close__success(jmap_mailbox, mock_logger):
+def test_JMAPFetcher_close__success(jmap_mailbox, caplog_all):
     """Tests :func:`core.utils.fetchers.JMAPFetcher.close`
     in case of success.
     """
     JMAPFetcher(jmap_mailbox.account).close()
 
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -827,21 +842,23 @@ def test_JMAPFetcher___str__(jmap_mailbox):
 
 
 @pytest.mark.django_db
-def test_JMAPFetcher_context_manager(jmap_mailbox, mock_logger):
+def test_JMAPFetcher_context_manager(jmap_mailbox, caplog_all):
     """Tests the context managing of :class:`core.utils.fetchers.JMAPFetcher`."""
     with JMAPFetcher(jmap_mailbox.account):
         pass
 
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
-def test_JMAPFetcher_context_manager_exception(jmap_mailbox, mock_logger):
+def test_JMAPFetcher_context_manager_exception(jmap_mailbox, caplog_all):
     """Tests the context managing of :class:`core.utils.fetchers.JMAPFetcher`
     in case of an error.
     """
     with pytest.raises(AssertionError), JMAPFetcher(jmap_mailbox.account):
         raise AssertionError
 
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)

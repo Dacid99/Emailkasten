@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 import mailbox
 import os
 import re
@@ -59,12 +60,6 @@ from eonvelope.utils.workarounds import get_config
 from test.conftest import TEST_EMAIL_PARAMETERS
 
 from .test_Account import mock_Account_get_fetcher, mock_fetcher
-
-
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """The mocked :attr:`core.models.Mailbox.logger`."""
-    return mocker.patch("core.models.Mailbox.logger", autospec=True)
 
 
 @pytest.fixture
@@ -242,7 +237,7 @@ def test_Mailbox_available__no_arg_fetching_criterion_choices(
 
 @pytest.mark.django_db
 def test_Mailbox_test__success(
-    fake_mailbox, mock_logger, mock_fetcher, mock_Account_get_fetcher
+    fake_mailbox, caplog_all, mock_fetcher, mock_Account_get_fetcher
 ):
     """Tests :func:`core.models.Mailbox.Mailbox.test`
     in case of success.
@@ -256,13 +251,16 @@ def test_Mailbox_test__success(
     assert fake_mailbox.is_healthy is True
     mock_Account_get_fetcher.assert_called_once_with(fake_mailbox.account)
     mock_fetcher.test.assert_called_once_with(fake_mailbox)
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_Mailbox_test__bad_protocol(
-    fake_mailbox, mock_logger, mock_Account_get_fetcher, mock_fetcher
+    fake_mailbox, caplog_all, mock_Account_get_fetcher, mock_fetcher
 ):
     """Tests :func:`core.models.Mailbox.Mailbox.test`
     in case the account of the mailbox has a bad :attr:`core.models.Account.Account.protocol` field
@@ -277,14 +275,14 @@ def test_Mailbox_test__bad_protocol(
 
     mock_Account_get_fetcher.assert_called_once_with(fake_mailbox.account)
     mock_fetcher.test.assert_not_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("test_side_effect", [MailboxError, MailAccountError])
 def test_Mailbox_test__failure(
     fake_mailbox,
-    mock_logger,
+    caplog_all,
     mock_Account_get_fetcher,
     mock_fetcher,
     test_side_effect,
@@ -305,12 +303,12 @@ def test_Mailbox_test__failure(
         assert fake_mailbox.account.is_healthy is False
     mock_Account_get_fetcher.assert_called_once_with(fake_mailbox.account)
     mock_fetcher.test.assert_called_once_with(fake_mailbox)
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Mailbox_test__get_fetcher_error(
-    fake_mailbox, mock_logger, mock_Account_get_fetcher, mock_fetcher
+    fake_mailbox, caplog_all, mock_Account_get_fetcher, mock_fetcher
 ):
     """Tests :func:`core.models.Mailbox.Mailbox.test`
     in case :func:`core.models.Account.Account.get_fetcher`
@@ -327,14 +325,14 @@ def test_Mailbox_test__get_fetcher_error(
     assert fake_mailbox.account.is_healthy is True
     mock_Account_get_fetcher.assert_called_once_with(fake_mailbox.account)
     mock_fetcher.test.assert_not_called()
-    mock_logger.info.assert_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Mailbox_fetch__success(
     faker,
     fake_mailbox,
-    mock_logger,
+    caplog_all,
     mock_Account_get_fetcher,
     mock_fetcher,
     mock_Email_create_from_email_bytes,
@@ -358,15 +356,18 @@ def test_Mailbox_fetch__success(
     assert mock_Email_create_from_email_bytes.call_count == len(
         mock_fetcher.fetch_emails.return_value
     )
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_Mailbox_fetch__failure(
     faker,
     fake_mailbox,
-    mock_logger,
+    caplog_all,
     mock_fetcher,
     mock_Account_get_fetcher,
     mock_Email_create_from_email_bytes,
@@ -390,14 +391,17 @@ def test_Mailbox_fetch__failure(
         fake_mailbox, FetchingCriterion(fake_criterion, fake_criterion_arg)
     )
     mock_Email_create_from_email_bytes.assert_not_called()
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_Mailbox_fetch__get_fetcher_error(
     fake_mailbox,
-    mock_logger,
+    caplog_all,
     mock_Account_get_fetcher,
     mock_fetcher,
     mock_Email_create_from_email_bytes,
@@ -418,8 +422,11 @@ def test_Mailbox_fetch__get_fetcher_error(
     mock_Account_get_fetcher.assert_called_once_with(fake_mailbox.account)
     mock_fetcher.fetch_emails.assert_not_called()
     mock_Email_create_from_email_bytes.assert_not_called()
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -428,7 +435,7 @@ def test_Mailbox_fetch__get_fetcher_error(
     [SupportedEmailUploadFormats.EML, SupportedEmailUploadFormats.EML.title()],
 )
 def test_Mailbox_add_emails_from_file_eml__success(
-    fake_fs, fake_mailbox, mock_logger, file_format
+    fake_fs, fake_mailbox, caplog_all, file_format
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of .
@@ -449,7 +456,7 @@ def test_Mailbox_add_emails_from_file_eml__success(
     [SupportedEmailUploadFormats.ZIP_EML, SupportedEmailUploadFormats.ZIP_EML.title()],
 )
 def test_Mailbox_add_emails_from_file_zip_eml__success(
-    fake_fs, fake_mailbox, mock_logger, file_format
+    fake_fs, fake_mailbox, caplog_all, file_format
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of .
@@ -476,7 +483,10 @@ def test_Mailbox_add_emails_from_file_zip_eml__success(
         ).exists()
 
     assert os.listdir(gettempdir()) == []
-    mock_logger.exception.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -488,7 +498,7 @@ def test_Mailbox_add_emails_from_file__zip_eml__bad_file(
     faker,
     fake_fs,
     fake_mailbox,
-    mock_logger,
+    caplog_all,
     file_format,
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
@@ -501,7 +511,7 @@ def test_Mailbox_add_emails_from_file__zip_eml__bad_file(
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -517,7 +527,7 @@ def test_Mailbox_add_emails_from_file__zip_eml__bad_file(
     ],
 )
 def test_Mailbox_add_emails_from_file__mailbox_file__success(
-    fake_fs, fake_mailbox, mock_logger, file_format
+    fake_fs, fake_mailbox, caplog_all, file_format
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of success.
@@ -545,9 +555,11 @@ def test_Mailbox_add_emails_from_file__mailbox_file__success(
             message_id=TEST_EMAIL_PARAMETERS[index][1]["message_id"]
         ).exists()
     assert os.listdir(gettempdir()) == []
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -563,7 +575,7 @@ def test_Mailbox_add_emails_from_file__mailbox_file__bad_file(
     faker,
     fake_fs,
     fake_mailbox,
-    mock_logger,
+    caplog_all,
     file_format,
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
@@ -575,9 +587,11 @@ def test_Mailbox_add_emails_from_file__mailbox_file__bad_file(
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -591,7 +605,7 @@ def test_Mailbox_add_emails_from_file__mailbox_file__bad_file(
     ],
 )
 def test_Mailbox_add_emails_from_file__mailbox_dir__success(
-    fake_fs, fake_mailbox, mock_logger, file_format
+    fake_fs, fake_mailbox, caplog_all, file_format
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of success.
@@ -622,9 +636,11 @@ def test_Mailbox_add_emails_from_file__mailbox_dir__success(
             message_id=TEST_EMAIL_PARAMETERS[index][1]["message_id"]
         ).exists()
     assert os.listdir(gettempdir()) == []
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_not_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -636,7 +652,7 @@ def test_Mailbox_add_emails_from_file__mailbox_dir__success(
     ],
 )
 def test_Mailbox_add_emails_from_file__mailbox_dir__bad_zip(
-    faker, fake_fs, fake_mailbox, mock_logger, file_format
+    faker, fake_fs, fake_mailbox, caplog_all, file_format
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of bad zip of mailbox directory.
@@ -648,12 +664,12 @@ def test_Mailbox_add_emails_from_file__mailbox_dir__bad_zip(
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Mailbox_add_emails_from_file__mailbox_dir__bad_maildir(
-    fake_fs, fake_mailbox, mock_logger
+    fake_fs, fake_mailbox, caplog_all
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of a bad maildir in the zip.
@@ -681,12 +697,12 @@ def test_Mailbox_add_emails_from_file__mailbox_dir__bad_maildir(
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_Mailbox_add_emails_from_file__mailbox_dir__bad_mh(
-    fake_fs, fake_mailbox, mock_logger
+    fake_fs, fake_mailbox, caplog_all
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of a bad mh in the zip.
@@ -707,12 +723,15 @@ def test_Mailbox_add_emails_from_file__mailbox_dir__bad_mh(
 
     assert fake_mailbox.emails.count() == 0
     assert os.listdir(gettempdir()) == []
-    mock_logger.exception.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_Mailbox_add_emails_from_file__bad_format(
-    fake_fs, fake_file, fake_mailbox, mock_logger
+    fake_fs, fake_file, fake_mailbox, caplog_all
 ):
     """Tests :func:`core.models.Account.Account.add_emails_from_file`
     in case of the mailbox file format is an unsupported format.
@@ -721,7 +740,7 @@ def test_Mailbox_add_emails_from_file__bad_format(
         fake_mailbox.add_emails_from_file(fake_file, "unimPLemented")
 
     assert os.listdir(gettempdir()) == []
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -904,7 +923,7 @@ def test_Mailbox_create_from_data__success(
     faker,
     override_config,
     fake_account,
-    mock_logger,
+    caplog_all,
     DEFAULT_SAVE_ATTACHMENTS,
     DEFAULT_SAVE_TO_EML,
 ):
@@ -928,11 +947,11 @@ def test_Mailbox_create_from_data__success(
     assert new_mailbox.save_attachments is DEFAULT_SAVE_ATTACHMENTS
     assert new_mailbox.save_to_eml is DEFAULT_SAVE_TO_EML
     assert new_mailbox.is_healthy
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_Mailbox_create_from_data__duplicate(faker, fake_mailbox, mock_logger):
+def test_Mailbox_create_from_data__duplicate(faker, fake_mailbox, caplog_all):
     """Tests :func:`core.models.Account.Account.create_from_data`
     in case of data that is already in the db.
     """
@@ -950,7 +969,7 @@ def test_Mailbox_create_from_data__duplicate(faker, fake_mailbox, mock_logger):
     assert new_mailbox.type == fake_type
     fake_mailbox.refresh_from_db()
     assert fake_mailbox.is_healthy
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -961,7 +980,7 @@ def test_Mailbox_create_from_data__duplicate(faker, fake_mailbox, mock_logger):
 def test_Mailbox_create_from_data__ignored__by_name(
     override_config,
     fake_mailbox,
-    mock_logger,
+    caplog_all,
     mailbox_name,
 ):
     """Tests :func:`core.models.Account.Account.create_from_data`
@@ -976,13 +995,13 @@ def test_Mailbox_create_from_data__ignored__by_name(
 
     assert Mailbox.objects.count() == 1
     assert new_mailbox is None
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 def test_Mailbox_create_from_data__ignored__by_type(
     override_config,
     fake_mailbox,
-    mock_logger,
+    caplog_all,
 ):
     """Tests :func:`core.models.Account.Account.create_from_data`
     in case of a type that is in the ignored.
@@ -994,7 +1013,7 @@ def test_Mailbox_create_from_data__ignored__by_type(
 
     assert Mailbox.objects.count() == 1
     assert new_mailbox is None
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db

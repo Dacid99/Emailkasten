@@ -18,6 +18,7 @@
 
 """Test module for the :class:`ExchangeFetcher` class."""
 
+import logging
 import os
 import re
 
@@ -139,7 +140,7 @@ def mock_ExchangeAccount(mocker, mock_msg_folder_root):
 
 @pytest.mark.django_db
 def test_ExchangeFetcher___init___success(
-    mocker, exchange_mailbox, mock_logger, mock_ExchangeAccount
+    mocker, exchange_mailbox, caplog_all, mock_ExchangeAccount
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.__init__`
     in case of success.
@@ -151,13 +152,15 @@ def test_ExchangeFetcher___init___success(
     assert result.account == exchange_mailbox.account
     assert result._mail_client == mock_ExchangeAccount.return_value.msg_folder_root
     spy_ExchangeFetcher_connect_to_host.assert_called_once()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher___init____failure(
-    mocker, fake_error_message, exchange_mailbox, mock_logger, mock_ExchangeAccount
+    mocker, fake_error_message, exchange_mailbox, caplog_all, mock_ExchangeAccount
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.__init__`
     in case of failure.
@@ -169,12 +172,12 @@ def test_ExchangeFetcher___init____failure(
     with pytest.raises(MailAccountError, match=fake_error_message):
         ExchangeFetcher(exchange_mailbox.account)
 
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher___init____bad_protocol(
-    mocker, exchange_mailbox, mock_logger, mock_ExchangeAccount
+    mocker, exchange_mailbox, caplog_all, mock_ExchangeAccount
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.__init__`
     in case of the mailbox has a non-Exchange protocol.
@@ -187,7 +190,7 @@ def test_ExchangeFetcher___init____bad_protocol(
 
     spy_ExchangeFetcher_connect_to_host.assert_not_called()
     mock_ExchangeAccount.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -204,7 +207,7 @@ def test_ExchangeFetcher___init____bad_protocol(
 def test_ExchangeFetcher_connect_to_host_hostURL__success(
     override_config,
     exchange_mailbox,
-    mock_logger,
+    caplog_all,
     mock_ExchangeAccount,
     account_allow_insecure,
     config_allow_insecure,
@@ -265,9 +268,11 @@ def test_ExchangeFetcher_connect_to_host_hostURL__success(
     assert mock_ExchangeAccount.call_args.kwargs[
         "default_timezone"
     ] == exchangelib.EWSTimeZone("UTC")
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -279,7 +284,7 @@ def test_ExchangeFetcher_connect_to_host_hostURL__success(
     ],
 )
 def test_ExchangeFetcher_connect_to_host_hostname__success(
-    exchange_mailbox, mock_logger, mock_ExchangeAccount, mail_host_port
+    exchange_mailbox, caplog_all, mock_ExchangeAccount, mail_host_port
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.connect_to_host`
     in cases of success with different combinations of account `mail_host` in hostname form, `timeout` and `mail_host_port` settings.
@@ -333,14 +338,16 @@ def test_ExchangeFetcher_connect_to_host_hostname__success(
     assert mock_ExchangeAccount.call_args.kwargs[
         "default_timezone"
     ] == exchangelib.EWSTimeZone("UTC")
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_connect_to_host__bad_configuration(
-    exchange_mailbox, mock_logger, mock_ExchangeAccount
+    exchange_mailbox, caplog_all, mock_ExchangeAccount
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.connect_to_host`
     in different cases of account `mail_host` in URL form, `timeout` and`mail_host_port` settings.
@@ -351,13 +358,13 @@ def test_ExchangeFetcher_connect_to_host__bad_configuration(
         ExchangeFetcher(exchange_mailbox.account)
 
     mock_ExchangeAccount.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_account__success(
-    exchange_mailbox, mock_logger, mock_ExchangeAccount
+    exchange_mailbox, caplog_all, mock_ExchangeAccount
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
     in case of success with no mailbox given.
@@ -366,14 +373,16 @@ def test_ExchangeFetcher_test_account__success(
 
     assert result is None
     mock_ExchangeAccount.return_value.msg_folder_root.refresh.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_account__ewserror(
-    fake_error_message, exchange_mailbox, mock_logger, mock_ExchangeAccount
+    fake_error_message, exchange_mailbox, caplog_all, mock_ExchangeAccount
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
     in case of an EWSError with no mailbox given.
@@ -386,13 +395,13 @@ def test_ExchangeFetcher_test_account__ewserror(
         ExchangeFetcher(exchange_mailbox.account).test()
 
     mock_ExchangeAccount.return_value.msg_folder_root.refresh.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_account__other_exception(
-    exchange_mailbox, mock_logger, mock_ExchangeAccount
+    exchange_mailbox, caplog_all, mock_ExchangeAccount
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
     in case of an unexpected error with no mailbox given.
@@ -405,13 +414,16 @@ def test_ExchangeFetcher_test_account__other_exception(
         ExchangeFetcher(exchange_mailbox.account).test()
 
     mock_ExchangeAccount.return_value.msg_folder_root.refresh.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_mailbox__success(
-    exchange_mailbox, mock_logger, mock_msg_folder_root
+    exchange_mailbox, caplog_all, mock_msg_folder_root
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
     in case of success with a given mailbox.
@@ -423,14 +435,16 @@ def test_ExchangeFetcher_test_mailbox__success(
     mock_msg_folder_root.__truediv__.return_value.__truediv__.return_value.refresh.assert_called_once_with()
     mock_msg_folder_root.__truediv__.assert_called_once()
     mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_mailbox_subfolder__success(
-    faker, exchange_mailbox, mock_logger, mock_msg_folder_root
+    faker, exchange_mailbox, caplog_all, mock_msg_folder_root
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
     in case of success with a given subfolder mailbox.
@@ -448,14 +462,16 @@ def test_ExchangeFetcher_test_mailbox_subfolder__success(
     mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_called_once_with(
         fake_subfolder_name
     )
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_mailbox__wrong_mailbox(
-    fake_other_account, exchange_mailbox, mock_logger, mock_msg_folder_root
+    fake_other_account, exchange_mailbox, caplog_all, mock_msg_folder_root
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
     in case the given mailbox does not belong to the given account.
@@ -467,14 +483,14 @@ def test_ExchangeFetcher_test_mailbox__wrong_mailbox(
 
     mock_msg_folder_root.refresh.assert_not_called()
     mock_msg_folder_root.__truediv__.return_value.refresh.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_mailbox__ewserror(
     fake_error_message,
     exchange_mailbox,
-    mock_logger,
+    caplog_all,
     mock_msg_folder_root,
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
@@ -489,15 +505,15 @@ def test_ExchangeFetcher_test_mailbox__ewserror(
 
     mock_msg_folder_root.refresh.assert_called_once_with()
     mock_msg_folder_root.__truediv__.return_value.refresh.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_test_mailbox__other_exception(
     fake_error_message,
     exchange_mailbox,
-    mock_logger,
+    caplog_all,
     mock_msg_folder_root,
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.test`
@@ -512,13 +528,16 @@ def test_ExchangeFetcher_test_mailbox__other_exception(
 
     mock_msg_folder_root.refresh.assert_called_once_with()
     mock_msg_folder_root.__truediv__.return_value.refresh.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails_all__success__single_batch(
-    exchange_mailbox, mock_logger, mock_QuerySet, mock_msg_folder_root, mock_Folder
+    exchange_mailbox, caplog_all, mock_QuerySet, mock_msg_folder_root, mock_Folder
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_emails`
     in case of success.
@@ -532,17 +551,19 @@ def test_ExchangeFetcher_fetch_emails_all__success__single_batch(
     mock_Folder.all.assert_called_once_with()
     mock_msg_folder_root.__truediv__.assert_called_once_with(exchange_mailbox.name)
     mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails_all__success__multi_batch(
     monkeypatch,
     exchange_mailbox,
-    mock_logger,
+    caplog_all,
     mock_QuerySet,
     mock_msg_folder_root,
     mock_Folder,
@@ -562,15 +583,17 @@ def test_ExchangeFetcher_fetch_emails_all__success__multi_batch(
     assert mock_Folder.all.call_count == 3
     mock_msg_folder_root.__truediv__.assert_called_with(exchange_mailbox.name)
     mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails_subfolder_all__success(
-    faker, exchange_mailbox, mock_logger, mock_QuerySet, mock_msg_folder_root
+    faker, exchange_mailbox, caplog_all, mock_QuerySet, mock_msg_folder_root
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_emails`
     in case of success with the given mailbox being a subfolder mailbox.
@@ -589,15 +612,17 @@ def test_ExchangeFetcher_fetch_emails_subfolder_all__success(
     mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_called_once_with(
         fake_subfolder_name
     )
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails_filter__success__single_batch(
-    exchange_mailbox, mock_logger, mock_QuerySet, mock_Folder
+    exchange_mailbox, caplog_all, mock_QuerySet, mock_Folder
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_emails`
     in case of success with a criterion other than ALL.
@@ -614,15 +639,17 @@ def test_ExchangeFetcher_fetch_emails_filter__success__single_batch(
     ]
     mock_QuerySet.filter.assert_called_once_with(is_draft=True)
     mock_Folder.all.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails_filter__success__multi_batch(
-    monkeypatch, exchange_mailbox, mock_logger, mock_QuerySet, mock_Folder
+    monkeypatch, exchange_mailbox, caplog_all, mock_QuerySet, mock_Folder
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_emails`
     in case of success with a criterion other than ALL.
@@ -641,15 +668,17 @@ def test_ExchangeFetcher_fetch_emails_filter__success__multi_batch(
     mock_QuerySet.filter.assert_called_with(is_draft=True)
     assert mock_QuerySet.order_by.call_count == 2
     assert mock_Folder.all.call_count == 2
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails__wrong_mailbox(
-    fake_other_account, exchange_mailbox, mock_logger
+    fake_other_account, exchange_mailbox, caplog_all
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_emails`
     in case the given mailbox does not belong to the given account.
@@ -659,12 +688,12 @@ def test_ExchangeFetcher_fetch_emails__wrong_mailbox(
     with pytest.raises(ValueError, match=re.compile("mailbox", re.IGNORECASE)):
         list(ExchangeFetcher(exchange_mailbox.account).fetch_emails(wrong_mailbox))
 
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails__ewserror__query(
-    fake_error_message, exchange_mailbox, mock_logger, mock_Folder
+    fake_error_message, exchange_mailbox, caplog_all, mock_Folder
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_emails`
     in case of an EWSError.
@@ -674,13 +703,13 @@ def test_ExchangeFetcher_fetch_emails__ewserror__query(
     with pytest.raises(MailboxError, match=fake_error_message):
         list(ExchangeFetcher(exchange_mailbox.account).fetch_emails(exchange_mailbox))
 
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_emails__other_exception_query(
-    fake_error_message, exchange_mailbox, mock_logger, mock_Folder
+    fake_error_message, exchange_mailbox, caplog_all, mock_Folder
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_emails`
     in case of an unexpected error.
@@ -690,13 +719,16 @@ def test_ExchangeFetcher_fetch_emails__other_exception_query(
     with pytest.raises(AssertionError, match=fake_error_message):
         list(ExchangeFetcher(exchange_mailbox.account).fetch_emails(exchange_mailbox))
 
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_mailboxes__success(
-    exchange_mailbox, mock_logger, mock_msg_folder_root
+    exchange_mailbox, caplog_all, mock_msg_folder_root
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_mailboxes`
     in case of success.
@@ -714,14 +746,16 @@ def test_ExchangeFetcher_fetch_mailboxes__success(
         for item in mock_msg_folder_root.walk.return_value
         if isinstance(item, exchangelib.Folder) and item.folder_class == "IPF.Note"
     ]
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_mailboxes__ewserror__walk(
-    fake_error_message, exchange_mailbox, mock_logger, mock_msg_folder_root
+    fake_error_message, exchange_mailbox, caplog_all, mock_msg_folder_root
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_mailboxes`
     in case of an EWSError during walking of the folder structure.
@@ -734,13 +768,13 @@ def test_ExchangeFetcher_fetch_mailboxes__ewserror__walk(
         ExchangeFetcher(exchange_mailbox.account).fetch_mailboxes()
 
     mock_msg_folder_root.walk.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_fetch_mailboxes__other_exception_walk(
-    fake_error_message, exchange_mailbox, mock_logger, mock_msg_folder_root
+    fake_error_message, exchange_mailbox, caplog_all, mock_msg_folder_root
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.fetch_mailboxes`
     in case of an unexpected error during walking of the folder structure.
@@ -751,15 +785,18 @@ def test_ExchangeFetcher_fetch_mailboxes__other_exception_walk(
         ExchangeFetcher(exchange_mailbox.account).fetch_mailboxes()
 
     mock_msg_folder_root.walk.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_restore__success(
     exchange_mailbox,
     fake_email_with_file,
-    mock_logger,
+    caplog_all,
     mock_Message,
     mock_msg_folder_root,
 ):
@@ -776,9 +813,11 @@ def test_ExchangeFetcher_restore__success(
     mock_Message.return_value.save.assert_called_once_with()
     mock_msg_folder_root.__truediv__.assert_called_once_with(exchange_mailbox.name)
     mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -786,7 +825,7 @@ def test_ExchangeFetcher_restore__success__subfolder(
     faker,
     exchange_mailbox,
     fake_email_with_file,
-    mock_logger,
+    caplog_all,
     mock_Message,
     mock_msg_folder_root,
 ):
@@ -809,14 +848,16 @@ def test_ExchangeFetcher_restore__success__subfolder(
     mock_msg_folder_root.__truediv__.return_value.__truediv__.assert_called_once_with(
         fake_subfolder_name
     )
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_restore__no_file(
-    exchange_mailbox, fake_email, mock_logger, mock_Message
+    exchange_mailbox, fake_email, caplog_all, mock_Message
 ):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.restore`
     in case the email has no file.
@@ -825,7 +866,7 @@ def test_ExchangeFetcher_restore__no_file(
         ExchangeFetcher(exchange_mailbox.account).restore(fake_email)
 
     mock_Message.assert_not_called()
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -833,7 +874,7 @@ def test_ExchangeFetcher_restore__wrong_mailbox(
     exchange_mailbox,
     fake_email_with_file,
     fake_other_mailbox,
-    mock_logger,
+    caplog_all,
     mock_Message,
     mock_ExchangeAccount,
 ):
@@ -847,7 +888,7 @@ def test_ExchangeFetcher_restore__wrong_mailbox(
         ExchangeFetcher(exchange_mailbox.account).restore(fake_email_with_file)
 
     mock_Message.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -855,7 +896,7 @@ def test_ExchangeFetcher_restore__ewserror(
     fake_error_message,
     fake_email_with_file,
     exchange_mailbox,
-    mock_logger,
+    caplog_all,
     mock_Message,
     mock_ExchangeAccount,
 ):
@@ -871,15 +912,15 @@ def test_ExchangeFetcher_restore__ewserror(
 
     mock_Message.assert_called_once()
     mock_Message.return_value.save.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_ExchangeFetcher_restore__other_error(
     fake_email_with_file,
     exchange_mailbox,
-    mock_logger,
+    caplog_all,
     mock_Message,
     mock_ExchangeAccount,
 ):
@@ -893,18 +934,20 @@ def test_ExchangeFetcher_restore__other_error(
 
     mock_Message.assert_called_once()
     mock_Message.return_value.save.assert_called_once_with()
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_ExchangeFetcher_close__success(exchange_mailbox, mock_logger):
+def test_ExchangeFetcher_close__success(exchange_mailbox, caplog_all):
     """Tests :func:`core.utils.fetchers.ExchangeFetcher.close`
     in case of success.
     """
     ExchangeFetcher(exchange_mailbox.account).close()
 
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -917,20 +960,23 @@ def test_ExchangeFetcher___str__(exchange_mailbox):
 
 
 @pytest.mark.django_db
-def test_ExchangeFetcher_context_manager(exchange_mailbox, mock_logger):
+def test_ExchangeFetcher_context_manager(exchange_mailbox, caplog_all):
     """Tests the context managing of :class:`core.utils.fetchers.ExchangeFetcher`."""
     with ExchangeFetcher(exchange_mailbox.account):
         pass
 
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
-def test_ExchangeFetcher_context_manager_exception(exchange_mailbox, mock_logger):
+def test_ExchangeFetcher_context_manager_exception(exchange_mailbox, caplog_all):
     """Tests the context managing of :class:`core.utils.fetchers.ExchangeFetcher`
     in case of an error.
     """
     with pytest.raises(AssertionError), ExchangeFetcher(exchange_mailbox.account):
         raise AssertionError
 
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)

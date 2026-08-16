@@ -21,15 +21,3 @@
 import logging
 
 import pytest
-
-
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """Mocks :attr:`logger` of the fetcher class."""
-    mock_logger = mocker.Mock(spec=logging.Logger)
-    mocker.patch(
-        "core.utils.fetchers.BaseFetcher.logging.getLogger",
-        return_value=mock_logger,
-        autospec=True,
-    )
-    return mock_logger

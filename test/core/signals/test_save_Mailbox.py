@@ -18,20 +18,16 @@
 
 """Test file for :mod:`core.signals.save_Mailbox`."""
 
+import logging
+
 import pytest
 from model_bakery import baker
 
 from core.models import Daemon, Mailbox
 
 
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """The mocked :attr:`core.signals.save_Mailbox.logger`."""
-    return mocker.patch("core.signals.save_Mailbox.logger", autospec=True)
-
-
 @pytest.mark.django_db
-def test_Mailbox_post_save__from_healthy(mailbox_with_daemons, mock_logger):
+def test_Mailbox_post_save__from_healthy(mailbox_with_daemons, caplog_all):
     """Tests behaviour of :func:`core.signals.save_mailbox.post_save_is_healthy`."""
     mailbox_with_daemons.account.is_healthy = True
     mailbox_with_daemons.account.save(update_fields=["is_healthy"])
@@ -57,11 +53,11 @@ def test_Mailbox_post_save__from_healthy(mailbox_with_daemons, mock_logger):
     assert mailbox_with_daemons.account.is_healthy is True
     for daemon in mailbox_with_daemons.daemons.all():
         assert daemon.is_healthy is False
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_Mailbox_post_save__from_unhealthy(mailbox_with_daemons, mock_logger):
+def test_Mailbox_post_save__from_unhealthy(mailbox_with_daemons, caplog_all):
     """Tests behaviour of :func:`core.signals.save_mailbox.post_save_is_healthy`."""
     mailbox_with_daemons.account.is_healthy = False
     mailbox_with_daemons.account.save(update_fields=["is_healthy"])
@@ -87,4 +83,4 @@ def test_Mailbox_post_save__from_unhealthy(mailbox_with_daemons, mock_logger):
     assert mailbox_with_daemons.account.is_healthy is True
     for daemon in mailbox_with_daemons.daemons.all():
         assert daemon.is_healthy is False
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
