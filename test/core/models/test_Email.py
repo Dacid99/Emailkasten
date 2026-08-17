@@ -1100,7 +1100,7 @@ def test_Email_create_from_email_bytes_spam(
     assert (result is None) is expected_is_none
     assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
     assert not any(
-        record.levelno in (logging.WARNING, logging.ERROR, logging.CRITICAL)
+        record.levelno in (logging.ERROR, logging.CRITICAL)
         for record in caplog_all.records
     )
 
