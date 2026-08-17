@@ -132,7 +132,6 @@ def test_Account_foreign_key_deletion(fake_account):
 def test_Account_unique_constraints(mocker, django_user_model):
     """Tests the unique constraints of :class:`core.models.Account.Account`."""
     mocker.patch("core.models.Account.Account.update_mailboxes")
-    # ruff: disable[S106]
     account_1 = baker.make(
         Account,
         mail_address="abc123",
