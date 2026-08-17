@@ -92,6 +92,7 @@ def pkg_monkeypatch():
 
 @pytest.fixture
 def caplog_all(caplog):
+    """Capture all log levels."""
     caplog.set_level(logging.DEBUG)
     return caplog
 
