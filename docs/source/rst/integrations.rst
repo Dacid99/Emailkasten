@@ -144,3 +144,63 @@ The */health/* endpoint exposes detailed data on Eonvelope's health in various f
 
 For details on the other formats like rss, json, etc. visit
 `the django healthcheck documentation <https://prometheus.io/docs/introduction/overview/>`_.
+
+
+Authentication via OIDC
+-----------------------
+
+Eonvelope supports logging in via one or more OIDC providers like Keycloak, Authelia, Authentik, etc.
+
+The OIDC configuration is done via environmental variables.
+For example, to authenticate via authelia you set the following `OIDC_CONFIG`:
+
+.. code-block:: json
+
+    [
+      {
+        "provider_id": "authelia",
+        "name": "Authelia",
+        "client_id": "eonvelope",
+        "secret": "your_oidc_secret",
+        "settings": {
+          "fetch_userinfo": true,
+          "scope": [
+            "openid",
+            "profile"
+          ],
+          "oauth_pkce_enabled": true,
+          "server_url": "https://authelia.example.com",
+          "token_auth_method": "client_secret_basic",
+          "uid_field": "preferred_username",
+        }
+      }
+    ]
+
+In this example, the callback URL will be `/users/oidc/authelia/login/callback/`.
+Replace *authelia* with your `provider_id`.
+
+The corresponding authelia configuration is therefore:
+
+.. code-block:: yaml
+
+    - client_id: 'eonvelope'
+    client_name: 'Eonvelope'
+    client_secret: '$pbkdf2-sha512$310300$oxc8FyRJseH72gJHfFJ/po$HfE1ggBIzmUzaYtOkLwQ9HaGJ0T4uQ8X7vzc86a2BB8iGV4gykc6UPOIFHETrXnzVTxfjme9aqeeStA'
+    public: false
+    authorization_policy: 'one_factor'
+    require_pkce: true
+    pkce_challenge_method: 'S256'
+    redirect_uris:
+        - 'https://eonvelope.example.org/accounts/oidc/authelia/login/callback'
+    scopes:
+        - 'openid'
+        - 'profile'
+    response_types:
+        - 'code'
+    grant_types:
+        - 'authorization_code'
+    access_token_signed_response_alg: 'none'
+    userinfo_signed_response_alg: 'none'
+    token_endpoint_auth_method: 'client_secret_basic'
+
+See the :doc:`page on configurations <configuration>` for more details.

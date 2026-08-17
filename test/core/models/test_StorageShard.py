@@ -20,8 +20,7 @@
 
 from __future__ import annotations
 
-import asyncio
-import os
+import logging
 
 import pytest
 from django.core.files.storage import default_storage
@@ -34,12 +33,6 @@ from core.models import StorageShard
 @pytest.fixture(autouse=True)
 def always_fake_fs(fake_fs):
     """The following tests all run against a mocked fs."""
-
-
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """The mocked :attr:`core.models.Storage.logger`."""
-    return mocker.patch("core.models.StorageShard.logger", autospec=True)
 
 
 @pytest.mark.django_db
@@ -59,12 +52,12 @@ def test___str__(faker, is_current, expected_status_str):
 
 
 @pytest.mark.django_db
-def test_Storage_healthcheck_clean_storage(mock_logger):
+def test_Storage_healthcheck_clean_storage(caplog_all):
     """Tests the healthcheck in case of a storage that has not been touched yet."""
     health = StorageShard.healthcheck()
 
     assert health
-    mock_logger.critical.assert_not_called()
+    assert not any(record.levelno == logging.CRITICAL for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -85,7 +78,7 @@ def test_Storage_healthcheck_filled_storage(settings):
 
 
 @pytest.mark.django_db
-def test_Storage_health_check__duplicate_current(mock_logger):
+def test_Storage_health_check__duplicate_current(caplog_all):
     """Tests the storage healthcheck in case of a duplicate `current` directory."""
     StorageShard.get_current_storage()
     StorageShard.objects.create(current=True)
@@ -93,11 +86,11 @@ def test_Storage_health_check__duplicate_current(mock_logger):
     health = StorageShard.healthcheck()
 
     assert not health
-    mock_logger.critical.assert_called()
+    assert any(record.levelno == logging.CRITICAL for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_Storage_health_check_file_in_storage_root(settings, mock_logger):
+def test_Storage_health_check_file_in_storage_root(settings, caplog_all):
     """Tests the storage healthcheck in case of dirty storage."""
     with (settings.STORAGE_PATH / "file").open("w") as dummy_file:
         dummy_file.write("Some content")
@@ -105,11 +98,11 @@ def test_Storage_health_check_file_in_storage_root(settings, mock_logger):
     health = StorageShard.healthcheck()
 
     assert not health
-    mock_logger.critical.assert_called()
+    assert any(record.levelno == logging.CRITICAL for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_Storage_health_check__missing_dir(settings, mock_logger):
+def test_Storage_health_check__missing_dir(settings, caplog_all):
     """Tests the storage healthcheck in case of a directory missing in the storage."""
     storage = StorageShard.get_current_storage()
     (settings.STORAGE_PATH / str(storage.shard_directory_name)).rmdir()
@@ -117,7 +110,7 @@ def test_Storage_health_check__missing_dir(settings, mock_logger):
     health = StorageShard.healthcheck()
 
     assert not health
-    mock_logger.critical.assert_called()
+    assert any(record.levelno == logging.CRITICAL for record in caplog_all.records)
 
 
 @pytest.mark.django_db

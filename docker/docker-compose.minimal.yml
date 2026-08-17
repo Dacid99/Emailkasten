@@ -3,12 +3,12 @@ services:
     image: mariadb:latest
     container_name: eonvelope-db
     volumes:
-      - /path/to/eonvelope/mysql:/var/lib/mysql
+      - eonvelope-db-data:/var/lib/mysql
     environment:
-      - MARIADB_DATABASE=email_archive_django # must match web:DATABASE_NAME
-      - MARIADB_USER=user # must match web:DATABASE_USER
-      - MARIADB_PASSWORD=passwd # must match web:DATABASE_PASSWORD
-      - MARIADB_ROOT_PASSWORD=example
+      MARIADB_DATABASE: email_archive_django # must match web:DATABASE_NAME
+      MARIADB_USER: user # must match web:DATABASE_USER
+      MARIADB_PASSWORD: passwd # must match web:DATABASE_PASSWORD
+      MARIADB_ROOT_PASSWORD: example
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
@@ -22,18 +22,23 @@ services:
     image: dacid99/eonvelope:latest
     container_name: eonvelope-web
     volumes:
-      - /path/to/eonvelope/archive:/mnt/archive
-      - /path/to/eonvelope/log:/var/log/eonvelope
+      - eonvelope-archive:/mnt/archive
+      - eonvelope-logs:/var/log/eonvelope
     ports:
       - 1122:443
     environment:
-      - DATABASE=email_archive_django # must match db:MARIADB_DATABASE
-      - DATABASE_USER=user # must match db:MARIADB_USER
-      - DATABASE_PASSWORD=passwd # must match db:MARIADB_PASSWORD
-      - DJANGO_SUPERUSER_PASSWORD=rootqwertz123
-      - SECRET_KEY='PLEASE_REPLACE_ME_WITH_THE_OUTPUT_OF_A_STRONG_RANDOM_GENERATOR!'
-      - ALLOWED_HOSTS=localhost,eonvelope.mydomain.tld # all allowed host URLs separated by ,
+      DATABASE: email_archive_django # must match db:MARIADB_DATABASE
+      DATABASE_USER: user # must match db:MARIADB_USER
+      DATABASE_PASSWORD: passwd # must match db:MARIADB_PASSWORD
+      DJANGO_SUPERUSER_PASSWORD: rootqwertz123
+      SECRET_KEY: 'PLEASE_REPLACE_ME_WITH_THE_OUTPUT_OF_A_STRONG_RANDOM_GENERATOR!'
+      ALLOWED_HOSTS: localhost,eonvelope.mydomain.tld # all allowed host URLs separated by ,
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
+
+volumes:
+  eonvelope-db-data:
+  eonvelope-archive:
+  eonvelope-logs:

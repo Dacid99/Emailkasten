@@ -3,12 +3,12 @@ services:
     image: mariadb:latest
     container_name: eonvelope-db
     volumes:
-      - /path/to/eonvelope/mysql:/var/lib/mysql
+      - eonvelope-db-data:/var/lib/mysql
     environment:
-      - MARIADB_DATABASE=email_archive_django # must match web:DATABASE_NAME
-      - MARIADB_USER=user # must match web:DATABASE_USER
-      - MARIADB_PASSWORD=passwd # must match web:DATABASE_PASSWORD
-      - MARIADB_ROOT_PASSWORD=example
+      MARIADB_DATABASE: email_archive_django # must match web:DATABASE_NAME
+      MARIADB_USER: user # must match web:DATABASE_USER
+      MARIADB_PASSWORD: passwd # must match web:DATABASE_PASSWORD
+      MARIADB_ROOT_PASSWORD: example
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
@@ -22,64 +22,72 @@ services:
     image: dacid99/eonvelope
     container_name: eonvelope-web
     volumes:
-      - /path/to/eonvelope/archive:/mnt/archive
-      - /path/to/eonvelope/log:/var/log/eonvelope
+      - eonvelope-archive:/mnt/archive
+      - eonvelope-logs:/var/log/eonvelope
     ports:
       - 1122:443
     environment:
       # see the docs for all details  https://eonvelope.readthedocs.io/latest/rst/configuration.html#server-admin-settings
       # mandatory
-      - DATABASE=email_archive_django # must match db:MARIADB_DATABASE
-      - DATABASE_USER=user # must match db:MARIADB_USER
-      - DATABASE_PASSWORD=passwd # must match db:MARIADB_PASSWORD
-      - DJANGO_SUPERUSER_PASSWORD=rootqwertz123
-      - SECRET_KEY='PLEASE_REPLACE_ME_WITH_THE_OUTPUT_OF_A_STRONG_RANDOM_GENERATOR!'
-      - ALLOWED_HOSTS=localhost,eonvelope.mydomain.tld # all allowed host URLs separated by ,
+      DATABASE: email_archive_django # must match db:MARIADB_DATABASE
+      DATABASE_USER: user # must match db:MARIADB_USER
+      DATABASE_PASSWORD: passwd # must match db:MARIADB_PASSWORD
+      DJANGO_SUPERUSER_PASSWORD: rootqwertz123
+      SECRET_KEY: 'PLEASE_REPLACE_ME_WITH_THE_OUTPUT_OF_A_STRONG_RANDOM_GENERATOR!'
+      ALLOWED_HOSTS: localhost,eonvelope.mydomain.tld # all allowed host URLs separated by ,
       # optional
-      - DATABASE_TYPE=mysql # possible values: mysql, postgresql, sqlite3; must match the database type of the db container
-      - DATABASE_HOST=db # use this if your database container uses host name different from db
-      - DATABASE_PORT= # use this if your database container does not use the default port
-      - REGISTRATION_ENABLED=False
-      - STRICT_PASSWORDS=True
-      - ACCOUNT_LOGIN_TIMEOUT=900
-      - ACCOUNT_USERNAME_BLACKLIST=[]
-      - ACCOUNT_USERNAME_MIN_LENGTH=1
-      - ACCOUNT_SESSION_REMEMBER= # set this to True if you want users to always be remembered and to False to never remember them. Leave empty to ask on login.
-      - ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE=False
-      - ACCOUNT_REAUTHENTICATION_TIMEOUT=300
-      - ACCOUNT_REAUTHENTICATION_REQUIRED=False
-      - USERSESSIONS_KEEP_UPDATED=True
-      - MFA_TOTP_ISSUER=Eonvelope
-      - MFA_TOTP_TOLERANCE=1
-      - MFA_TOTP_PERIOD=30
-      - MFA_TOTP_DIGITS=6
-      - MFA_RECOVERY_CODE_COUNT=10
-      - MFA_RECOVERY_CODE_DIGITS=8
-      - MFA_TRUST_ENABLED=True
-      - MFA_TRUST_COOKIE_AGE=2419200
-      - MFA_TRUST_COOKIE_SAMESITE=Lax # the samesite value on the trust-browser-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
-      - APP_LOG_LEVEL=INFO
-      - DJANGO_LOG_LEVEL=INFO
-      - CELERY_LOG_LEVEL=INFO
-      - AMQP_LOG_LEVEL=INFO
-      - LOGFILE_MAXSIZE=10485760
-      - LOGFILE_BACKUP_NUMBER=5
-      - CACHE_MIDDLEWARE_SECONDS=600
-      - SECURE_HSTS_SECONDS=31536000
-      - DISALLOWED_USER_AGENTS=.*Trident/.* # collection of regex patterns for user agent strings that must not visit any page of this Eonvelope instance seperated by ,
-      - CSRF_TRUSTED_ORIGINS=https://subdomain.mydomain.tld # all URLs that can be trusted with unsafe requests separated by , . Must start with http:// or https:// each.
-      - CSRF_COOKIE_AGE=31449600
-      - CSRF_COOKIE_SAMESITE=Lax # the samesite value on the csrf-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
-      - LANGUAGE_COOKIE_AGE=2419200
-      - LANGUAGE_COOKIE_SAMESITE=None # the samesite value on the language-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
-      - SESSION_COOKIE_AGE=2419200
-      - SESSION_EXPIRE_AT_BROWSER_CLOSE=False
-      - SESSION_COOKIE_SAMESITE=Lax # the samesite value on the session-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
-      - GUNICORN_WORKER_NUMBER=2
-      - CELERY_WORKER_NUMBER=4
-      - ENABLE_FLOWER=False
-      - DEBUG=False
+      DATABASE_TYPE: mysql # possible values: mysql, postgresql, sqlite3; must match the database type of the db container
+      DATABASE_HOST: db # use this if your database container uses host name different from db
+      DATABASE_PORT:  # use this if your database container does not use the default port
+      REGISTRATION_ENABLED: False
+      STRICT_PASSWORDS: True
+      ACCOUNT_LOGIN_TIMEOUT: 900
+      ACCOUNT_USERNAME_BLACKLIST: '[]'
+      ACCOUNT_USERNAME_MIN_LENGTH: 1
+      ACCOUNT_SESSION_REMEMBER:  # set this to True if you want users to always be remembered and to False to never remember them. Leave empty to ask on login.
+      ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE: False
+      ACCOUNT_REAUTHENTICATION_TIMEOUT: 300
+      ACCOUNT_REAUTHENTICATION_REQUIRED: False
+      USERSESSIONS_KEEP_UPDATED: True
+      MFA_TOTP_ISSUER: Eonvelope
+      MFA_TOTP_TOLERANCE: 1
+      MFA_TOTP_PERIOD: 30
+      MFA_TOTP_DIGITS: 6
+      MFA_RECOVERY_CODE_COUNT: 10
+      MFA_RECOVERY_CODE_DIGITS: 8
+      MFA_TRUST_ENABLED: True
+      MFA_TRUST_COOKIE_AGE: 2419200
+      MFA_TRUST_COOKIE_SAMESITE: Lax # the samesite value on the trust-browser-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
+      OIDC_CONFIG: '[]' # list of json configurations for the IODC integration. See https://docs.allauth.org/en/latest/socialaccount/providers/openid_connect.html for details.
+      OIDC_ONLY: False
+      OIDC_AUTO_SIGNUP: True
+      APP_LOG_LEVEL: INFO
+      DJANGO_LOG_LEVEL: INFO
+      CELERY_LOG_LEVEL: INFO
+      AMQP_LOG_LEVEL: INFO
+      LOGFILE_MAXSIZE: 10485760
+      LOGFILE_BACKUP_NUMBER: 5
+      CACHE_MIDDLEWARE_SECONDS: 600
+      SECURE_HSTS_SECONDS: 31536000
+      DISALLOWED_USER_AGENTS: .*Trident/.* # collection of regex patterns for user agent strings that must not visit any page of this Eonvelope instance seperated by ,
+      CSRF_TRUSTED_ORIGINS: https://subdomain.mydomain.tld # all URLs that can be trusted with unsafe requests separated by , . Must start with http:// or https:// each.
+      CSRF_COOKIE_AGE: 31449600
+      CSRF_COOKIE_SAMESITE: Lax # the samesite value on the csrf-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
+      LANGUAGE_COOKIE_AGE: 2419200
+      LANGUAGE_COOKIE_SAMESITE: None # the samesite value on the language-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
+      SESSION_COOKIE_AGE: 2419200
+      SESSION_EXPIRE_AT_BROWSER_CLOSE: False
+      SESSION_COOKIE_SAMESITE: Lax # the samesite value on the session-cookie. See https://docs.djangoproject.com/en/5.1/ref/settings/#session-cookie-samesite for more info.
+      GUNICORN_WORKER_NUMBER: 2
+      CELERY_WORKER_NUMBER: 4
+      ENABLE_FLOWER: False
+      DEBUG: False
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
+
+volumes:
+  eonvelope-db-data:
+  eonvelope-archive:
+  eonvelope-logs:

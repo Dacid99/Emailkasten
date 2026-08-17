@@ -18,6 +18,7 @@
 
 """Test module for the :class:`IMAP4Fetcher` class."""
 
+import logging
 import re
 
 import pytest
@@ -87,7 +88,7 @@ def mock_IMAP4(mocker, faker):
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher___init___success(mocker, imap_mailbox, mock_logger, mock_IMAP4):
+def test_IMAP4Fetcher___init___success(mocker, imap_mailbox, caplog_all, mock_IMAP4):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.__init__`
     in case of success.
     """
@@ -101,13 +102,15 @@ def test_IMAP4Fetcher___init___success(mocker, imap_mailbox, mock_logger, mock_I
     mock_IMAP4.return_value.login.assert_called_once_with(
         imap_mailbox.account.mail_address, imap_mailbox.account.password
     )
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher___init___connection_error(
-    mocker, fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, fake_error_message, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.__init__`
     in case of failure establishing a connection.
@@ -120,12 +123,13 @@ def test_IMAP4Fetcher___init___connection_error(
 
     spy_IMAP4Fetcher_connect_to_host.assert_called_once()
     mock_IMAP4.return_value.login.assert_not_called()
-    mock_logger.exception.assert_called()
+
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher___init____bad_protocol(
-    mocker, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.__init__`
     in case of the mailbox has a non-IMAP protocol.
@@ -138,12 +142,12 @@ def test_IMAP4Fetcher___init____bad_protocol(
 
     spy_IMAP4Fetcher_connect_to_host.assert_not_called()
     mock_IMAP4.return_value.login.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher___init___login_error(
-    mocker, fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, fake_error_message, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.__init__`
     in case of an error logging in.
@@ -158,12 +162,12 @@ def test_IMAP4Fetcher___init___login_error(
     mock_IMAP4.return_value.login.assert_called_once_with(
         imap_mailbox.account.mail_address, imap_mailbox.account.password
     )
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher___init___login__bad_response(
-    mocker, fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, fake_error_message, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.__init__`
     in case of a bad response logging in.
@@ -178,12 +182,12 @@ def test_IMAP4Fetcher___init___login__bad_response(
     mock_IMAP4.return_value.login.assert_called_once_with(
         imap_mailbox.account.mail_address, imap_mailbox.account.password
     )
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher___init__success__utf_8_credentials(
-    mocker, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.__init__`
     in case of success with non-ASCII credentials.
@@ -209,7 +213,10 @@ def test_IMAP4Fetcher___init__success__utf_8_credentials(
         "utf-8"
     )
 
-    mock_logger.exception.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
@@ -221,7 +228,7 @@ def test_IMAP4Fetcher___init__success__utf_8_credentials(
     ],
 )
 def test_IMAP4Fetcher_connect_to_host__success(
-    imap_mailbox, mock_logger, mock_IMAP4, mail_host_port
+    imap_mailbox, caplog_all, mock_IMAP4, mail_host_port
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.connect_to_host`
     in case of success.
@@ -237,14 +244,16 @@ def test_IMAP4Fetcher_connect_to_host__success(
     if mail_host_port:
         kwargs["port"] = mail_host_port
     mock_IMAP4.assert_called_with(**kwargs)
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_connect_to_host__exception(
-    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.connect_to_host`
     in case of an error.
@@ -260,12 +269,12 @@ def test_IMAP4Fetcher_connect_to_host__exception(
     if timeout := imap_mailbox.account.timeout:
         kwargs["timeout"] = timeout
     mock_IMAP4.assert_called_with(**kwargs)
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_test_account__success(imap_mailbox, mock_logger, mock_IMAP4):
+def test_IMAP4Fetcher_test_account__success(imap_mailbox, caplog_all, mock_IMAP4):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success with no mailbox given.
     """
@@ -273,14 +282,16 @@ def test_IMAP4Fetcher_test_account__success(imap_mailbox, mock_logger, mock_IMAP
 
     assert result is None
     mock_IMAP4.return_value.noop.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_test_account__bad_response(
-    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of a bad response with no mailbox given.
@@ -291,13 +302,13 @@ def test_IMAP4Fetcher_test_account__bad_response(
         IMAP4Fetcher(imap_mailbox.account).test()
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_test_account__exception(
-    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of an error with no mailbox given.
@@ -308,12 +319,12 @@ def test_IMAP4Fetcher_test_account__exception(
         IMAP4Fetcher(imap_mailbox.account).test()
 
     mock_IMAP4.return_value.noop.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_test_mailbox__success(imap_mailbox, mock_logger, mock_IMAP4):
+def test_IMAP4Fetcher_test_mailbox__success(imap_mailbox, caplog_all, mock_IMAP4):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success with a mailbox given.
     """
@@ -326,14 +337,16 @@ def test_IMAP4Fetcher_test_mailbox__success(imap_mailbox, mock_logger, mock_IMAP
     )
     mock_IMAP4.return_value.check.assert_called_once_with()
     mock_IMAP4.return_value.unselect.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_test_mailbox__wrong_mailbox(
-    fake_other_account, imap_mailbox, mock_logger, mock_IMAP4
+    fake_other_account, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of success the given mailbox doesn't belong to the given account.
@@ -344,7 +357,7 @@ def test_IMAP4Fetcher_test_mailbox__wrong_mailbox(
         IMAP4Fetcher(imap_mailbox.account).test(wrong_mailbox)
 
     mock_IMAP4.return_value.noop.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -354,7 +367,7 @@ def test_IMAP4Fetcher_test_mailbox__wrong_mailbox(
 def test_IMAP4Fetcher_test_mailbox__bad_response(
     fake_error_message,
     imap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_IMAP4,
     raising_function,
     expected_calls,
@@ -380,8 +393,8 @@ def test_IMAP4Fetcher_test_mailbox__bad_response(
     if expected_calls[1]:
         mock_IMAP4.return_value.check.assert_called_with()
     mock_IMAP4.return_value.unselect.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -391,7 +404,7 @@ def test_IMAP4Fetcher_test_mailbox__bad_response(
 def test_IMAP4Fetcher_test_mailbox__exception(
     fake_error_message,
     imap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_IMAP4,
     raising_function,
     expected_calls,
@@ -415,13 +428,13 @@ def test_IMAP4Fetcher_test_mailbox__exception(
     assert mock_IMAP4.return_value.check.call_count == expected_calls[1]
     if expected_calls[1]:
         mock_IMAP4.return_value.check.assert_called_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_test_mailbox__bad_response__ignored(
-    imap_mailbox, mock_logger, mock_IMAP4
+    imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of a ignored bad response with a given mailbox.
@@ -436,13 +449,13 @@ def test_IMAP4Fetcher_test_mailbox__bad_response__ignored(
     )
     mock_IMAP4.return_value.check.assert_called_once_with()
     mock_IMAP4.return_value.unselect.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_test_mailbox__exception__ignored(
-    imap_mailbox, mock_logger, mock_IMAP4
+    imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.test`
     in case of an ignored error with a given mailbox.
@@ -456,13 +469,13 @@ def test_IMAP4Fetcher_test_mailbox__exception__ignored(
         utf7_encode(imap_mailbox.name), readonly=True
     )
     mock_IMAP4.return_value.check.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_emails__success__sort__single_batch(
-    mocker, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of success using the SORT action.
@@ -490,15 +503,17 @@ def test_IMAP4Fetcher_fetch_emails__success__sort__single_batch(
         [mocker.call("SORT", "(DATE)", "UTF-8", "ALL"), *expected_uid_fetch_calls]
     )
     mock_IMAP4.return_value.unselect.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_emails__success__sort__multi_batch(
-    mocker, monkeypatch, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, monkeypatch, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of success using the SORT action.
@@ -528,15 +543,17 @@ def test_IMAP4Fetcher_fetch_emails__success__sort__multi_batch(
         [mocker.call("SORT", "(DATE)", "UTF-8", "ALL"), *expected_uid_fetch_calls]
     )
     mock_IMAP4.return_value.unselect.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_emails__success__search__single_batch(
-    mocker, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of success using the SEARCH action.
@@ -563,15 +580,17 @@ def test_IMAP4Fetcher_fetch_emails__success__search__single_batch(
         [mocker.call("SEARCH", "ALL"), *expected_uid_fetch_calls]
     )
     mock_IMAP4.return_value.unselect.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_emails__success__search__multi_batch(
-    mocker, monkeypatch, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, monkeypatch, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of success using the SEARCH action.
@@ -600,15 +619,17 @@ def test_IMAP4Fetcher_fetch_emails__success__search__multi_batch(
         [mocker.call("SEARCH", "ALL"), *expected_uid_fetch_calls]
     )
     mock_IMAP4.return_value.unselect.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_emails__wrong_mailbox(
-    fake_other_account, imap_mailbox, mock_logger
+    fake_other_account, imap_mailbox, caplog_all
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case the given mailbox does not belong to the given account.
@@ -618,11 +639,11 @@ def test_IMAP4Fetcher_fetch_emails__wrong_mailbox(
     with pytest.raises(ValueError, match=re.compile("mailbox", re.IGNORECASE)):
         list(IMAP4Fetcher(imap_mailbox.account).fetch_emails(wrong_mailbox))
 
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_fetch_emails__bad_criterion(imap_mailbox, mock_logger):
+def test_IMAP4Fetcher_fetch_emails__bad_criterion(imap_mailbox, caplog_all):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of an unavailable criterion.
     """
@@ -633,7 +654,7 @@ def test_IMAP4Fetcher_fetch_emails__bad_criterion(imap_mailbox, mock_logger):
             )
         )
 
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -643,7 +664,7 @@ def test_IMAP4Fetcher_fetch_emails__bad_criterion(imap_mailbox, mock_logger):
 def test_IMAP4Fetcher_fetch_emails__bad_response(
     fake_error_message,
     imap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_IMAP4,
     raising_function,
     expected_calls,
@@ -670,8 +691,8 @@ def test_IMAP4Fetcher_fetch_emails__bad_response(
     if expected_calls[1]:
         mock_IMAP4.return_value.uid.assert_called_with("SEARCH", "ALL")
     mock_IMAP4.return_value.unselect.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -681,7 +702,7 @@ def test_IMAP4Fetcher_fetch_emails__bad_response(
 def test_IMAP4Fetcher_fetch_emails__exception(
     fake_error_message,
     imap_mailbox,
-    mock_logger,
+    caplog_all,
     mock_IMAP4,
     raising_function,
     expected_calls,
@@ -706,13 +727,13 @@ def test_IMAP4Fetcher_fetch_emails__exception(
     if expected_calls[1]:
         mock_IMAP4.return_value.uid.assert_called_with("SEARCH", "ALL")
     mock_IMAP4.return_value.unselect.assert_not_called()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_emails__bad_response__ignored(
-    mocker, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of an ignored bad response.
@@ -740,14 +761,14 @@ def test_IMAP4Fetcher_fetch_emails__bad_response__ignored(
         [mocker.call("SEARCH", "ALL"), *expected_uid_fetch_calls]
     )
     mock_IMAP4.return_value.unselect.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_emails__exception__ignored(
-    mocker, imap_mailbox, mock_logger, mock_IMAP4
+    mocker, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_emails`
     in case of an ignored error.
@@ -775,13 +796,13 @@ def test_IMAP4Fetcher_fetch_emails__exception__ignored(
         [mocker.call("SEARCH", "ALL"), *expected_uid_fetch_calls]
     )
     mock_IMAP4.return_value.unselect.assert_called_once_with()
-    mock_logger.debug.assert_called()
-    mock_logger.info.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.INFO for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_fetch_mailboxes__success(imap_mailbox, mock_logger, mock_IMAP4):
+def test_IMAP4Fetcher_fetch_mailboxes__success(imap_mailbox, caplog_all, mock_IMAP4):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_mailboxes`
     in case of success.
     """
@@ -795,14 +816,16 @@ def test_IMAP4Fetcher_fetch_mailboxes__success(imap_mailbox, mock_logger, mock_I
         )
     )
     mock_IMAP4.return_value.list.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_mailboxes__bad_response(
-    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_mailboxes`
     in case of a bad response.
@@ -813,13 +836,13 @@ def test_IMAP4Fetcher_fetch_mailboxes__bad_response(
         IMAP4Fetcher(imap_mailbox.account).fetch_mailboxes()
 
     mock_IMAP4.return_value.list.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_fetch_mailboxes__exception(
-    fake_error_message, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.fetch_mailboxes`
     in case of an error.
@@ -830,13 +853,13 @@ def test_IMAP4Fetcher_fetch_mailboxes__exception(
         IMAP4Fetcher(imap_mailbox.account).fetch_mailboxes()
 
     mock_IMAP4.return_value.list.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_restore__success(
-    imap_mailbox, fake_email_with_file, mock_logger, mock_IMAP4
+    imap_mailbox, fake_email_with_file, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.restore`
     in case of success.
@@ -847,14 +870,16 @@ def test_IMAP4Fetcher_restore__success(
         mock_IMAP4.return_value.append.assert_called_once_with(
             fake_email_with_file.mailbox.name, None, None, email_file.read()
         )
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_restore__no_file(
-    imap_mailbox, fake_email, mock_logger, mock_IMAP4
+    imap_mailbox, fake_email, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.restore`
     in case the email has no file.
@@ -863,7 +888,7 @@ def test_IMAP4Fetcher_restore__no_file(
         IMAP4Fetcher(imap_mailbox.account).restore(fake_email)
 
     mock_IMAP4.return_value.append.assert_not_called()
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -871,7 +896,7 @@ def test_IMAP4Fetcher_restore__wrong_mailbox(
     imap_mailbox,
     fake_email_with_file,
     fake_other_mailbox,
-    mock_logger,
+    caplog_all,
     mock_IMAP4,
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.restore`
@@ -884,12 +909,12 @@ def test_IMAP4Fetcher_restore__wrong_mailbox(
         IMAP4Fetcher(imap_mailbox.account).restore(fake_email_with_file)
 
     mock_IMAP4.return_value.append.assert_not_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_restore__bad_response(
-    fake_error_message, imap_mailbox, fake_email_with_file, mock_logger, mock_IMAP4
+    fake_error_message, imap_mailbox, fake_email_with_file, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.restore`
     in case of a bad response.
@@ -900,13 +925,13 @@ def test_IMAP4Fetcher_restore__bad_response(
         IMAP4Fetcher(imap_mailbox.account).restore(fake_email_with_file)
 
     mock_IMAP4.return_value.append.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
 def test_IMAP4Fetcher_restore__exception(
-    fake_error_message, fake_email_with_file, imap_mailbox, mock_logger, mock_IMAP4
+    fake_error_message, fake_email_with_file, imap_mailbox, caplog_all, mock_IMAP4
 ):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.restore`
     in case of an error.
@@ -917,25 +942,27 @@ def test_IMAP4Fetcher_restore__exception(
         IMAP4Fetcher(imap_mailbox.account).restore(fake_email_with_file)
 
     mock_IMAP4.return_value.append.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_close__success(imap_mailbox, mock_logger, mock_IMAP4):
+def test_IMAP4Fetcher_close__success(imap_mailbox, caplog_all, mock_IMAP4):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.close`
     in case of success.
     """
     IMAP4Fetcher(imap_mailbox.account).close()
 
     mock_IMAP4.return_value.logout.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_not_called()
-    mock_logger.error.assert_not_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_close__bad_response(imap_mailbox, mock_logger, mock_IMAP4):
+def test_IMAP4Fetcher_close__bad_response(imap_mailbox, caplog_all, mock_IMAP4):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.close`
     in case of a bad response.
     """
@@ -944,12 +971,12 @@ def test_IMAP4Fetcher_close__bad_response(imap_mailbox, mock_logger, mock_IMAP4)
     IMAP4Fetcher(imap_mailbox.account).close()
 
     mock_IMAP4.return_value.logout.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_close__exception(imap_mailbox, mock_logger, mock_IMAP4):
+def test_IMAP4Fetcher_close__exception(imap_mailbox, caplog_all, mock_IMAP4):
     """Tests :func:`core.utils.fetchers.IMAP4Fetcher.close`
     in case of an error.
     """
@@ -958,8 +985,8 @@ def test_IMAP4Fetcher_close__exception(imap_mailbox, mock_logger, mock_IMAP4):
     IMAP4Fetcher(imap_mailbox.account).close()
 
     mock_IMAP4.return_value.logout.assert_called_once()
-    mock_logger.debug.assert_called()
-    mock_logger.exception.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)
 
 
 @pytest.mark.django_db
@@ -972,17 +999,20 @@ def test_IMAP4Fetcher___str__(imap_mailbox):
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_context_manager(imap_mailbox, mock_logger, mock_IMAP4):
+def test_IMAP4Fetcher_context_manager(imap_mailbox, caplog_all, mock_IMAP4):
     """Tests the context managing of :class:`core.utils.fetchers.IMAP4Fetcher`."""
     with IMAP4Fetcher(imap_mailbox.account):
         pass
 
     mock_IMAP4.return_value.logout.assert_called_once()
-    mock_logger.error.assert_not_called()
+    assert not any(
+        record.levelno in (logging.ERROR, logging.CRITICAL)
+        for record in caplog_all.records
+    )
 
 
 @pytest.mark.django_db
-def test_IMAP4Fetcher_context_manager_exception(imap_mailbox, mock_logger, mock_IMAP4):
+def test_IMAP4Fetcher_context_manager_exception(imap_mailbox, caplog_all, mock_IMAP4):
     """Tests the context managing of :class:`core.utils.fetchers.IMAP4Fetcher`
     in case of an error.
     """
@@ -990,4 +1020,4 @@ def test_IMAP4Fetcher_context_manager_exception(imap_mailbox, mock_logger, mock_
         raise AssertionError
 
     mock_IMAP4.return_value.logout.assert_called_once()
-    mock_logger.error.assert_called()
+    assert any(record.levelno == logging.ERROR for record in caplog_all.records)

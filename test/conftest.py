@@ -42,6 +42,7 @@ def test_(Classname_methodname)|(functionname)_case(args in order from furthest 
 from __future__ import annotations
 
 import contextlib
+import logging
 import os
 from datetime import UTC, datetime, timedelta, timezone
 from io import BytesIO
@@ -87,6 +88,12 @@ def pkg_monkeypatch():
     mp = pytest.MonkeyPatch()
     yield mp
     mp.undo()
+
+
+@pytest.fixture
+def caplog_all(caplog):
+    caplog.set_level(logging.DEBUG)
+    return caplog
 
 
 # test_email_path, expected_email_features, expected_correspondents_features, expected_attachments_features

@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     "allauth.headless",
     "allauth.socialaccount",
     "allauth.usersessions",
+    "allauth.socialaccount.providers.openid_connect",
     "constance",
     "constance.backends.database",
     "health_check",
@@ -751,6 +752,12 @@ MFA_TRUST_ENABLED = env("MFA_TRUST_ENABLED", cast=bool, default=True)
 MFA_TRUST_COOKIE_AGE = env("MFA_TRUST_COOKIE_AGE", cast=int, default=DEFAULT_COOKIE_AGE)
 MFA_TRUST_COOKIE_SECURE = not DEBUG
 MFA_TRUST_COOKIE_SAMESITE = env("MFA_TRUST_COOKIE_SAMESITE", cast=str, default="Lax")
+
+SOCIALACCOUNT_PROVIDERS = {
+    "openid_connect": {"APPS": env.json("OIDC_CONFIG", default=[])},
+}
+SOCIALACCOUNT_ONLY = env("OIDC_ONLY", cast=bool, default=False)
+SOCIALACCOUNT_OIDC_AUTO_SIGNUP = env("OIDC_AUTO_SIGNUP", cast=bool, default=True)
 
 
 ##### crispy_forms #####

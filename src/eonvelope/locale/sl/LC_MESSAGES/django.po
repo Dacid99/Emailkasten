@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-27 17:03+0000\n"
+"POT-Creation-Date: 2026-08-09 19:33+0000\n"
 "PO-Revision-Date: 2025-12-31 20:14+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Slovenian <https://hosted.weblate.org/projects/eonvelope/"
@@ -188,13 +188,17 @@ msgid "Change Password"
 msgstr ""
 
 #: src/eonvelope/templates/allauth/layouts/manage.html:32
-msgid "Two-Factor Authentication"
+msgid "Third-Party Accounts"
 msgstr ""
 
 #: src/eonvelope/templates/allauth/layouts/manage.html:40
+msgid "Two-Factor Authentication"
+msgstr ""
+
+#: src/eonvelope/templates/allauth/layouts/manage.html:48
 msgid "Sessions"
 msgstr ""
 
-#: src/eonvelope/templates/allauth/layouts/manage.html:47
+#: src/eonvelope/templates/allauth/layouts/manage.html:55
 msgid "Admin panel"
 msgstr ""

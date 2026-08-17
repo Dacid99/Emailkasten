@@ -90,8 +90,8 @@ msgstr "Escolha um ficheiro para fazer upload."
 msgid ""
 "Test failed, there is something wrong with this objects setup: %(error)s"
 msgstr ""
-"Teste falhado, existe alguma coisa errada com a configuração deste objeto: %"
-"(error)s"
+"Teste falhado, existe alguma coisa errada com a configuração deste objeto: "
+"%(error)s"
 
 #: src/web/mixins/TestActionMixin.py:58
 #, python-format
@@ -776,7 +776,8 @@ msgstr "Nenhum email encontrado."
 
 #: src/web/templates/web/email/partials/_filter_list_alternative.html:11
 msgid "You can fetch some from the mailboxes you have set up."
-msgstr "Pode buscar alguns a partir das caixas de correio que tem configuradas."
+msgstr ""
+"Pode buscar alguns a partir das caixas de correio que tem configuradas."
 
 #: src/web/templates/web/email/partials/_reprocess_email-button.html:8
 msgid ""

@@ -18,17 +18,13 @@
 
 """Test file for :mod:`core.signals.save_Daemon`."""
 
+import logging
+
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """The mocked :attr:`core.signals.save_Daemon.logger`."""
-    return mocker.patch("core.signals.save_Daemon.logger", autospec=True)
-
-
 @pytest.mark.django_db
-def test_Daemon_post_save__from_healthy(fake_daemon, mock_logger):
+def test_Daemon_post_save__from_healthy(fake_daemon, caplog_all):
     """Tests :func:`core.signals.save_daemon.post_save_is_healthy`
     for an initially healthy daemon.
     """
@@ -49,11 +45,11 @@ def test_Daemon_post_save__from_healthy(fake_daemon, mock_logger):
     assert fake_daemon.is_healthy is False
     fake_daemon.mailbox.refresh_from_db()
     assert fake_daemon.mailbox.is_healthy is True
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)
 
 
 @pytest.mark.django_db
-def test_Daemon_post_save__from_unhealthy(fake_daemon, mock_logger):
+def test_Daemon_post_save__from_unhealthy(fake_daemon, caplog_all):
     """Tests :func:`core.signals.save_daemon.post_save_is_healthy`
     for an initially unhealthy daemon.
     """
@@ -74,4 +70,4 @@ def test_Daemon_post_save__from_unhealthy(fake_daemon, mock_logger):
     assert fake_daemon.is_healthy is True
     fake_daemon.mailbox.refresh_from_db()
     assert fake_daemon.mailbox.is_healthy is True
-    mock_logger.debug.assert_called()
+    assert any(record.levelno == logging.DEBUG for record in caplog_all.records)

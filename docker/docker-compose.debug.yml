@@ -3,12 +3,12 @@ services:
     image: mariadb:latest
     container_name: eonvelope-db
     volumes:
-      - /path/to/eonvelope/debug/mysql:/var/lib/mysql
+      - eonvelope-db-data:/var/lib/mysql
     environment:
-      - MARIADB_DATABASE=email_archive_django # must match web:DATABASE_NAME
-      - MARIADB_USER=user # must match web:DATABASE_USER
-      - MARIADB_PASSWORD=passwd # must match web:DATABASE_PASSWORD
-      - MARIADB_ROOT_PASSWORD=example
+      MARIADB_DATABASE: email_archive_django # must match web:DATABASE_NAME
+      MARIADB_USER: user # must match web:DATABASE_USER
+      MARIADB_PASSWORD: passwd # must match web:DATABASE_PASSWORD
+      MARIADB_ROOT_PASSWORD: example
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
@@ -29,27 +29,32 @@ services:
     image: eonvelope-debug
     container_name: eonvelope-web
     volumes:
-      - /path/to/eonvelope/debug/archive:/mnt/archive
-      - /path/to/eonvelope/debug/log:/var/log/eonvelope
+      - eonvelope-archive:/mnt/archive
+      - eonvelope-logs:/var/log/eonvelope
     ports:
       - 1122:443
       - 5555:5555
     environment:
-      - DATABASE=email_archive_django # must match db:MARIADB_DATABASE
-      - DATABASE_USER=user # must match db:MARIADB_USER
-      - DATABASE_PASSWORD=passwd # must match db:MARIADB_PASSWORD
-      - DJANGO_SUPERUSER_PASSWORD=rootqwertz123
-      - SECRET_KEY='PLEASE_REPLACE_ME_WITH_THE_OUTPUT_OF_A_STRONG_RANDOM_GENERATOR!'
-      - ALLOWED_HOSTS=*
-      - REGISTRATION_ENABLED=True
-      - LOGFILE_BACKUP_NUMBER=10
-      - APP_LOG_LEVEL=DEBUG
-      - DJANGO_LOG_LEVEL=INFO
-      - CELERY_LOG_LEVEL=DEBUG
-      - AMQP_LOG_LEVEL=DEBUG
-      - ENABLE_FLOWER=True
-      - DEBUG=True
+      DATABASE: email_archive_django # must match db:MARIADB_DATABASE
+      DATABASE_USER: user # must match db:MARIADB_USER
+      DATABASE_PASSWORD: passwd # must match db:MARIADB_PASSWORD
+      DJANGO_SUPERUSER_PASSWORD: rootqwertz123
+      SECRET_KEY: 'PLEASE_REPLACE_ME_WITH_THE_OUTPUT_OF_A_STRONG_RANDOM_GENERATOR!'
+      ALLOWED_HOSTS: '*'
+      REGISTRATION_ENABLED: True
+      LOGFILE_BACKUP_NUMBER: 10
+      APP_LOG_LEVEL: DEBUG
+      DJANGO_LOG_LEVEL: INFO
+      CELERY_LOG_LEVEL: DEBUG
+      AMQP_LOG_LEVEL: DEBUG
+      ENABLE_FLOWER: True
+      DEBUG: True
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
+
+volumes:
+  eonvelope-db-data:
+  eonvelope-archive:
+  eonvelope-logs:
